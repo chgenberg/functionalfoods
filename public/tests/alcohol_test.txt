@@ -1,0 +1,4 @@
+name: Alcohol Test
+description: An alcohol test measures the level of alcohol in your system, helping determine intoxication levels and guide appropriate action for safety or legal purposes.
+what_it_tests: ["Alcohol Alcohol"]
+source_url: https://gettested.io/product/alcohol-test

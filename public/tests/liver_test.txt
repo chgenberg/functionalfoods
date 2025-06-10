@@ -1,0 +1,4 @@
+name: Liver Test
+description: Discover the significance of liver tests in diagnosing conditions. Learn what to expect, how to prepare, and tips for understanding your test results.
+benefits: The liver is one of the most important organs in the body. It is the liver’s job to filter blood by removing toxins and breaking down the nutrients and chemicals. Otherwise, toxins spread to other organs where they can cause damage. If your liver is not functioning well, this can lead to many symptoms and in severe cases can be deadly, which is why it is important to take a liver function test to check for liver health.
+source_url: https://gettested.io/product/liver-test

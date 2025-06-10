@@ -1,0 +1,5 @@
+name: Sorbitol Intolerance Test
+description: The Sorbitol Intolerance Test detects if sorbitol is causing bloating, gas, or digestive issues.
+what_it_tests: ["Hydrogen Hydrogen Methane Methane"]
+benefits: Individuals with sorbitol intolerance may experience symptoms following sorbitol consumption. These symptoms can vary in intensity and include: Abdominal pain and cramps Gas and bloating Intestinal sounds Diarrhoea with gas Avoiding certain fruits, processed products, and chewing gum is crucial for those with sorbitol intolerance.
+source_url: https://gettested.io/product/sorbitol-intolerance-test

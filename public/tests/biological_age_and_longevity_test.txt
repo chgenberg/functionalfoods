@@ -1,0 +1,4 @@
+name: Biological Age And Longevity Test
+description: Test your health from home. More than 150 tests analyzed at ISO-certified lab. More than 10.000 customers all over world. Order online.
+benefits: Biological age provides a more nuanced picture than chronological age, as it reflects your body's health status and function on a deeper level. This test utilizes advanced research and technology to give you insights into your health, longevity, and areas where improvements can be made.
+source_url: https://gettested.io/product/biological-age-and-longevity-test

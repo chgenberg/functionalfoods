@@ -1,0 +1,4 @@
+name: Sti X3 Lab
+description: STI X3 LAB offers cutting-edge testing solutions with precision, efficiency, and expert analysis to meet diverse scientific and industrial needs.
+benefits: STI x3 Lab is the perfect choice for comprehensive screening for sexually transmitted infections without needing to visit a clinic. The test measures three of the most common STIs, giving you a clear picture of your sexual health. Early detection of these infections is crucial to avoid complications and ensure timely and appropriate treatment.
+source_url: https://gettested.io/product/sti-x3-lab

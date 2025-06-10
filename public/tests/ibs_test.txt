@@ -1,0 +1,3 @@
+name: Ibs Test
+description: Discover IBS tests like blood, stool, and breath analysis to help diagnose symptoms and improve gut health.
+source_url: https://gettested.io/product/ibs-test

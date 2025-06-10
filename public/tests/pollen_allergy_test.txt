@@ -1,0 +1,3 @@
+name: Pollen Allergy Test
+description: Discover your pollen allergy triggers with a quick, accurate test. Get personalized treatment options to alleviate symptoms and improve your quality of life.
+source_url: https://gettested.io/product/pollen-allergy-test

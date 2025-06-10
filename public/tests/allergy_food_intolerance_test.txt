@@ -1,0 +1,4 @@
+name: Allergy Food Intolerance Test
+description: Identify food allergies and intolerances with our comprehensive test. Take control of your health by avoiding triggers and improving your quality of life.
+benefits: If symptoms like headaches or skin rashes seem familiar, consider histamine intolerance . This condition, often confused with allergic reactions, results from the body's inability to break down histamine effectively.
+source_url: https://gettested.io/product/allergy-food-intolerance-test

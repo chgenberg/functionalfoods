@@ -1,0 +1,4 @@
+name: Leaky Gut Test
+description: Leaky Gut test detects intestinal permeability linked to digestive issues, inflammation, and chronic conditions.
+what_it_tests: ["Zonulin Zonulin"]
+source_url: https://gettested.io/product/leaky-gut-test

@@ -1,0 +1,5 @@
+name: Sibo Test Lab
+description: The SIBO test is for those who suspect bacterial overgrowth in the small intestine. Studies have shown that 80-85% of people with IBS have SIBO.
+what_it_tests: ["Hydrogen Hydrogen Methane Methane"]
+benefits: SIBO has been theorised to be a possible cause of Irritable Bowel Syndrome (IBS). People diagnosed with IBS can benefit from testing for SIBO as studies have shown that almost 80% of these people have an overgrowth of bacteria in the small intestine. Bacterial overgrowth in the small intestine can create  problems such as: Flatulence Abdominal swelling Abdominal pain or cramps Diarrhoea Constipation If SIBO is left untreated, it can eventually lead to more problems such as leaky gut, depression, headaches, food intolerances, acne, fatigue or autoimmune reactions.
+source_url: https://gettested.io/product/sibo-test-lab

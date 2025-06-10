@@ -1,0 +1,4 @@
+name: Hair Mineral Analysis
+description: Discover vital insights into your health with hair mineral analysis. Assess nutrient levels, detect imbalances, and improve your well-being naturally.
+benefits: Non-Invasive and Simple: Requires only a small amount of hair or nails, making it a painless and straightforward process. Long-Term Exposure Indicator: Hair and nails store information about your body's chemical balance over months, offering a more comprehensive view than blood tests that reflect the current state. ISO-Certified Lab: Analyses are performed at an accredited and ISO-certified laboratory, ensuring the highest standard of precision and reliability in the results.
+source_url: https://gettested.io/product/hair-mineral-analysis

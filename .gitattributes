@@ -1,0 +1,4 @@
+public/**/_optimized/*.webp filter=lfs diff=lfs merge=lfs -text
+public/**/_optimized/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/**/_optimized/*.jpeg filter=lfs diff=lfs merge=lfs -text
+public/**/_optimized/*.png filter=lfs diff=lfs merge=lfs -text

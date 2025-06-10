@@ -1,0 +1,4 @@
+name: Organic Acids Test
+description: The Organic Acids Test helps detect metabolic imbalances, nutrient deficiencies, and toxins, offering valuable insights for personalized health plans.
+benefits: Organic Acids have various health benefits such as: Maintaining the cellular integrity of the gut lining Improving digestion Reducing inflammation Improving the absorption of proteins, amino acids and minerals. Protecting the immune system by providing energy and regulating metabolism It is important to have a decent amount of Organic Acids in the body, not too little but also not too much, as too many Organic Acids can cause side effects like nausea, vomiting or diarrhoea. Consult with your healthcare provider about whether you should take supplements or make dietary changes after receiving your Organic Acid test results.
+source_url: https://gettested.io/product/organic-acids-test

@@ -1,0 +1,5 @@
+name: Hpv Test
+description: Discover the importance of the HPV test in detecting human papillomavirus. Learn how it's performed, interpreted, and its role in protecting your health.
+what_it_tests: ["Human Papillomavirus Human Papillomavirus"]
+benefits: The HPV test is recommended for women as part of routine health check-ups, especially to detect early signs of potential HPV infections that could lead to cervical cancer. Considering that almost all cases of cervical cancer contain HPV DNA, it is crucial to identify and manage these infections early. This test is also relevant for individuals who have not been vaccinated against HPV or where vaccine coverage is insufficient.
+source_url: https://gettested.io/product/hpv-test

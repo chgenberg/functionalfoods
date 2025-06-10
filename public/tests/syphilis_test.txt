@@ -1,0 +1,5 @@
+name: Syphilis Test
+description: A syphilis test detects the bacteria causing syphilis, enabling early diagnosis and timely treatment to prevent complications and promote better health outcomes
+what_it_tests: ["Syphilis (Treponema Pallidum) Syphilis (Treponema Pallidum)"]
+benefits: Syphilis can start with painless sores on the genitals, anus, or mouth. Later, it may cause rashes and fever. It's important to know these signs for early detection and treatment.
+source_url: https://gettested.io/product/syphilis-test

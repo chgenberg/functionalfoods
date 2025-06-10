@@ -1,0 +1,4 @@
+name: Mycoplasma Test
+description: Detects IgG and IgM antibodies against Mycoplasma pneumoniae. Results in 10 minutes, helping to quickly identify ongoing or past respiratory infections.
+benefits: Symptoms can range from mild to more severe and may include: Persistent dry cough Fever and headache Muscle pain and fatigue Sore throat and hoarseness In some cases, pneumonia The test is CE-certified for professional use.
+source_url: https://gettested.io/product/mycoplasma-test

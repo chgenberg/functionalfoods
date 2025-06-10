@@ -1,0 +1,4 @@
+name: Crp Test Rapid
+description: A CRP test measures inflammation levels in the body, aiding in monitoring health conditions and overall wellness. Fast and essential for proactive care.
+what_it_tests: ["CRP CRP"]
+source_url: https://gettested.io/product/crp-test-rapid

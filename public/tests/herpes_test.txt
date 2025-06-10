@@ -1,0 +1,4 @@
+name: Herpes Test
+description: GetTested's Herpes Test detects antibodies against HSV-1 and HSV-2. Results in 15 minutes, indicating past or current infection.
+benefits: Herpes infections can be asymptomatic or cause symptoms such as: Small blisters or sores on the lips, mouth, or genitals Tingling, itching, or burning before an outbreak Fever and swollen lymph nodes during the first infection Recurrent outbreaks triggered by stress, illness, or a weakened immune system The test is CE-certified for professional use.
+source_url: https://gettested.io/product/herpes-test

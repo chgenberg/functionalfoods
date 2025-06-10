@@ -1,0 +1,4 @@
+name: Psa Test Lab Test
+description: A PSA test measures prostate-specific antigen levels to screen for prostate health issues, including cancer. Early detection aids in timely treatment and care.
+benefits: If you are a man over 45 looking to regularly check your prostate health. If you experience symptoms like pain in the urinary tract, difficulties urinating, or an increase in the frequency of urination.
+source_url: https://gettested.io/product/psa-test-lab-test

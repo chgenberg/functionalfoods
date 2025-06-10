@@ -1,0 +1,4 @@
+name: Testosterone Test
+description: A testosterone test kit can measure your levels of testosterone for you and can clarify for you whether your levels are normal or whether you may be in need of further treatment. If the results suggest you have a testosterone deficiency, your doctor may prescribe testosterone replacement therapy (TRT) or you may be referred to an endocrinologist, a specialist in hormone problems. As for women, if your levels turn out to be low, you could be able to get testosterone therapy treatment regardless of whether it’s low or normal, after consulting with your doctor about what is the right step for you.
+what_it_tests: ["Testosterone (free) Testosterone (free)"]
+source_url: https://gettested.io/product/testosterone-test

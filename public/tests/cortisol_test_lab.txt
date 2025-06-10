@@ -1,0 +1,5 @@
+name: Cortisol Test Lab
+description: Learn about cortisol levels through a simple test. Essential for evaluating stress, adrenal health, and detecting potential hormonal imbalances in the body.
+what_it_tests: ["Cortisol Cortisol"]
+benefits: In the long run, however, high levels are harmful to the body and with high levels of cortisol for a long time, fat burning decreases and impairs insulin sensitivity, which in the long run can lead to obesity and type-2 diabetes. Fatigue Low libido Weight gain Difficulty sleeping High blood pressure Poor immune function
+source_url: https://gettested.io/product/cortisol-test-lab

@@ -1,0 +1,3 @@
+name: Adrenal Test
+description: An adrenal test measures hormone levels like cortisol to evaluate adrenal gland function, helping diagnose conditions like adrenal insufficiency or imbalance.
+source_url: https://gettested.io/product/adrenal-test

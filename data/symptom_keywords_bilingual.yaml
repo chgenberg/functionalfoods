@@ -1,0 +1,708 @@
+food_intolerance_80:
+  en:
+  - FODMAP sensitive
+  - IgG test
+  - acne worsened by diet
+  - bloated after meals
+  - eczema after milk
+  - elimination diet
+  - fodmap sensitive
+  - food intolerance
+  - food sensitivity
+  - gluten intolerance
+  - headache after eating
+  - histamine intolerance
+  - i have acne worsened by diet
+  - i have bloated after meals
+  - i have eczema after milk
+  - i have elimination diet
+  - i have fodmap sensitive
+  - i have food intolerance
+  - i have food sensitivity
+  - i have gluten intolerance
+  - i have headache after eating
+  - i have histamine intolerance
+  - i have igg test
+  - i have joint pain after bread
+  - i have lactose intolerance
+  - i have migraine after cheese
+  - i have reaction to alcohol
+  - i have soy intolerance
+  - i have tired after eating
+  - igg test
+  - joint pain after bread
+  - lactose intolerance
+  - migraine after cheese
+  - reaction to alcohol
+  - soy intolerance
+  - tired after eating
+  - why do i have acne worsened by diet
+  - why do i have bloated after meals
+  - why do i have eczema after milk
+  - why do i have elimination diet
+  - why do i have fodmap sensitive
+  - why do i have food intolerance
+  - why do i have food sensitivity
+  - why do i have gluten intolerance
+  - why do i have headache after eating
+  - why do i have histamine intolerance
+  - why do i have igg test
+  - why do i have joint pain after bread
+  - why do i have lactose intolerance
+  - why do i have migraine after cheese
+  - why do i have reaction to alcohol
+  - why do i have soy intolerance
+  - why do i have tired after eating
+  sv:
+  - FODMAP känslig
+  - IgG-test
+  - akne förvärras av kost
+  - eksem efter mjölk
+  - eliminationsdiet
+  - fodmap känslig
+  - födoämnesintolerans
+  - glutenintolerans
+  - har akne förvärras av kost
+  - har eksem efter mjölk
+  - har eliminationsdiet
+  - har fodmap känslig
+  - har födoämnesintolerans
+  - har glutenintolerans
+  - har histaminintolerans
+  - har huvudvärk efter mat
+  - har igg-test
+  - har laktosintolerans
+  - har ledvärk efter bröd
+  - har matintolerans
+  - har matkänslighet
+  - har migrän efter ost
+  - har reaktion på alkohol
+  - har sojaintolerans
+  - har trött efter mat
+  - har uppblåst efter måltid
+  - histaminintolerans
+  - huvudvärk efter mat
+  - igg-test
+  - jag har akne förvärras av kost
+  - jag har eksem efter mjölk
+  - jag har eliminationsdiet
+  - jag har fodmap känslig
+  - jag har födoämnesintolerans
+  - jag har glutenintolerans
+  - jag har histaminintolerans
+  - jag har huvudvärk efter mat
+  - jag har igg-test
+  - jag har laktosintolerans
+  - jag har ledvärk efter bröd
+  - jag har matintolerans
+  - jag har matkänslighet
+  - jag har migrän efter ost
+  - jag har reaktion på alkohol
+  - jag har sojaintolerans
+  - jag har trött efter mat
+  - jag har uppblåst efter måltid
+  - laktosintolerans
+  - ledvärk efter bröd
+  - matintolerans
+  - matkänslighet
+  - migrän efter ost
+  - reaktion på alkohol
+  - sojaintolerans
+  - trött efter mat
+  - uppblåst efter måltid
+  - varför har jag akne förvärras av kost
+  - varför har jag eksem efter mjölk
+  - varför har jag eliminationsdiet
+  - varför har jag fodmap känslig
+  - varför har jag födoämnesintolerans
+  - varför har jag glutenintolerans
+  - varför har jag histaminintolerans
+  - varför har jag huvudvärk efter mat
+  - varför har jag igg-test
+  - varför har jag laktosintolerans
+  - varför har jag ledvärk efter bröd
+  - varför har jag matintolerans
+  - varför har jag matkänslighet
+  - varför har jag migrän efter ost
+  - varför har jag reaktion på alkohol
+  - varför har jag sojaintolerans
+  - varför har jag trött efter mat
+  - varför har jag uppblåst efter måltid
+gut_microbiome_test_xl:
+  en:
+  - IBS
+  - SIBO
+  - abdominal pain
+  - acid reflux
+  - bloated stomach
+  - blood in stool
+  - brain fog
+  - candida
+  - changed stool
+  - constipation
+  - diarrhea
+  - dysbiosis
+  - flatulence
+  - foul-smelling gas
+  - gas discomfort
+  - gas problems
+  - gassy
+  - gastritis
+  - gut flora imbalance
+  - hard stools
+  - heartburn
+  - i have abdominal pain
+  - i have acid reflux
+  - i have bloated stomach
+  - i have blood in stool
+  - i have brain fog
+  - i have candida
+  - i have changed stool
+  - i have constipation
+  - i have diarrhea
+  - i have dysbiosis
+  - i have flatulence
+  - i have foul-smelling gas
+  - i have gas discomfort
+  - i have gas problems
+  - i have gassy
+  - i have gastritis
+  - i have gut flora imbalance
+  - i have hard stools
+  - i have heartburn
+  - i have ibs
+  - i have intestinal inflammation
+  - i have intestinal yeast overgrowth
+  - i have irritable bowel
+  - i have leaky gut
+  - i have loose stools
+  - i have mucous stool
+  - i have nausea
+  - i have poor digestion
+  - i have reflux
+  - i have sensitive gut
+  - i have sibo
+  - i have skin rash linked to gut
+  - i have stomach ache
+  - i have stomach pain
+  - i have stomach pains
+  - i have stress stomach
+  - i have swollen abdomen
+  - i have tired after meals
+  - i have unexplained weight gain
+  - i have vomiting
+  - i have watery stool
+  - i have weight loss
+  - ibs
+  - intestinal inflammation
+  - intestinal yeast overgrowth
+  - irritable bowel
+  - leaky gut
+  - loose stools
+  - mucous stool
+  - nausea
+  - poor digestion
+  - reflux
+  - sensitive gut
+  - sibo
+  - skin rash linked to gut
+  - stomach ache
+  - stomach pain
+  - stomach pains
+  - stress stomach
+  - swollen abdomen
+  - tired after meals
+  - unexplained weight gain
+  - vomiting
+  - watery stool
+  - weight loss
+  - why do i have abdominal pain
+  - why do i have acid reflux
+  - why do i have bloated stomach
+  - why do i have blood in stool
+  - why do i have brain fog
+  - why do i have candida
+  - why do i have changed stool
+  - why do i have constipation
+  - why do i have diarrhea
+  - why do i have dysbiosis
+  - why do i have flatulence
+  - why do i have foul-smelling gas
+  - why do i have gas discomfort
+  - why do i have gas problems
+  - why do i have gassy
+  - why do i have gastritis
+  - why do i have gut flora imbalance
+  - why do i have hard stools
+  - why do i have heartburn
+  - why do i have ibs
+  - why do i have intestinal inflammation
+  - why do i have intestinal yeast overgrowth
+  - why do i have irritable bowel
+  - why do i have leaky gut
+  - why do i have loose stools
+  - why do i have mucous stool
+  - why do i have nausea
+  - why do i have poor digestion
+  - why do i have reflux
+  - why do i have sensitive gut
+  - why do i have sibo
+  - why do i have skin rash linked to gut
+  - why do i have stomach ache
+  - why do i have stomach pain
+  - why do i have stomach pains
+  - why do i have stress stomach
+  - why do i have swollen abdomen
+  - why do i have tired after meals
+  - why do i have unexplained weight gain
+  - why do i have vomiting
+  - why do i have watery stool
+  - why do i have weight loss
+  sv:
+  - IBS
+  - SIBO
+  - blod i avföringen
+  - buksmärta
+  - candida
+  - diarré
+  - dysbios
+  - dålig matsmältning
+  - flatulens
+  - förstoppning
+  - förändrad avföring
+  - gasbesvär
+  - gaser som luktar illa
+  - gasig
+  - gasproblem
+  - halsbränna
+  - har blod i avföringen
+  - har buksmärta
+  - har candida
+  - har diarré
+  - har dysbios
+  - har dålig matsmältning
+  - har flatulens
+  - har förstoppning
+  - har förändrad avföring
+  - har gasbesvär
+  - har gaser som luktar illa
+  - har gasig
+  - har gasproblem
+  - har halsbränna
+  - har hjärndimma
+  - har hudutslag kopplat till mage
+  - har hård mage
+  - har ibs
+  - har illamående
+  - har inflammation i tarmen
+  - har irriterad tarm
+  - har kräkningar
+  - har känslig tarm
+  - har läckande tarm
+  - har lös mage
+  - har magkatarr
+  - har magont
+  - har magsmärtor
+  - har obalans i tarmfloran
+  - har oförklarlig viktuppgång
+  - har ont i magen
+  - har reflux
+  - har sibo
+  - har slemmig avföring
+  - har stressmage
+  - har sura uppstötningar
+  - har svamp i tarmen
+  - har svullen mage
+  - har trött efter måltid
+  - har uppblåst mage
+  - har vattnig avföring
+  - har viktnedgång
+  - hjärndimma
+  - hudutslag kopplat till mage
+  - hård mage
+  - ibs
+  - illamående
+  - inflammation i tarmen
+  - irriterad tarm
+  - jag har blod i avföringen
+  - jag har buksmärta
+  - jag har candida
+  - jag har diarré
+  - jag har dysbios
+  - jag har dålig matsmältning
+  - jag har flatulens
+  - jag har förstoppning
+  - jag har förändrad avföring
+  - jag har gasbesvär
+  - jag har gaser som luktar illa
+  - jag har gasig
+  - jag har gasproblem
+  - jag har halsbränna
+  - jag har hjärndimma
+  - jag har hudutslag kopplat till mage
+  - jag har hård mage
+  - jag har ibs
+  - jag har illamående
+  - jag har inflammation i tarmen
+  - jag har irriterad tarm
+  - jag har kräkningar
+  - jag har känslig tarm
+  - jag har läckande tarm
+  - jag har lös mage
+  - jag har magkatarr
+  - jag har magont
+  - jag har magsmärtor
+  - jag har obalans i tarmfloran
+  - jag har oförklarlig viktuppgång
+  - jag har ont i magen
+  - jag har reflux
+  - jag har sibo
+  - jag har slemmig avföring
+  - jag har stressmage
+  - jag har sura uppstötningar
+  - jag har svamp i tarmen
+  - jag har svullen mage
+  - jag har trött efter måltid
+  - jag har uppblåst mage
+  - jag har vattnig avföring
+  - jag har viktnedgång
+  - kräkningar
+  - känslig tarm
+  - läckande tarm
+  - lös mage
+  - magkatarr
+  - magont
+  - magsmärtor
+  - obalans i tarmfloran
+  - oförklarlig viktuppgång
+  - ont i magen
+  - reflux
+  - sibo
+  - slemmig avföring
+  - stressmage
+  - sura uppstötningar
+  - svamp i tarmen
+  - svullen mage
+  - trött efter måltid
+  - uppblåst mage
+  - varför har jag blod i avföringen
+  - varför har jag buksmärta
+  - varför har jag candida
+  - varför har jag diarré
+  - varför har jag dysbios
+  - varför har jag dålig matsmältning
+  - varför har jag flatulens
+  - varför har jag förstoppning
+  - varför har jag förändrad avföring
+  - varför har jag gasbesvär
+  - varför har jag gaser som luktar illa
+  - varför har jag gasig
+  - varför har jag gasproblem
+  - varför har jag halsbränna
+  - varför har jag hjärndimma
+  - varför har jag hudutslag kopplat till mage
+  - varför har jag hård mage
+  - varför har jag ibs
+  - varför har jag illamående
+  - varför har jag inflammation i tarmen
+  - varför har jag irriterad tarm
+  - varför har jag kräkningar
+  - varför har jag känslig tarm
+  - varför har jag läckande tarm
+  - varför har jag lös mage
+  - varför har jag magkatarr
+  - varför har jag magont
+  - varför har jag magsmärtor
+  - varför har jag obalans i tarmfloran
+  - varför har jag oförklarlig viktuppgång
+  - varför har jag ont i magen
+  - varför har jag reflux
+  - varför har jag sibo
+  - varför har jag slemmig avföring
+  - varför har jag stressmage
+  - varför har jag sura uppstötningar
+  - varför har jag svamp i tarmen
+  - varför har jag svullen mage
+  - varför har jag trött efter måltid
+  - varför har jag uppblåst mage
+  - varför har jag vattnig avföring
+  - varför har jag viktnedgång
+  - vattnig avföring
+  - viktnedgång
+health_test_basic_21:
+  en:
+  - anemia
+  - blood health check
+  - elevated liver enzymes
+  - fatigue
+  - full blood analysis
+  - high CRP
+  - high HbA1c
+  - high LDL
+  - high TSH
+  - high blood lipids
+  - high blood pressure
+  - high cholesterol
+  - high crp
+  - high hba1c
+  - high hemoglobin
+  - high homocysteine
+  - high ldl
+  - high triglycerides
+  - high tsh
+  - i have anemia
+  - i have blood health check
+  - i have elevated liver enzymes
+  - i have fatigue
+  - i have full blood analysis
+  - i have high blood lipids
+  - i have high blood pressure
+  - i have high cholesterol
+  - i have high crp
+  - i have high hba1c
+  - i have high hemoglobin
+  - i have high homocysteine
+  - i have high ldl
+  - i have high triglycerides
+  - i have high tsh
+  - i have iron deficiency
+  - i have kidney values
+  - i have liver values
+  - i have low hdl
+  - i have low hemoglobin
+  - i have low tsh
+  - i have metabolic syndrome
+  - i have risk of diabetes
+  - i have thyroid problems
+  - iron deficiency
+  - kidney values
+  - liver values
+  - low HDL
+  - low TSH
+  - low hdl
+  - low hemoglobin
+  - low tsh
+  - metabolic syndrome
+  - risk of diabetes
+  - thyroid problems
+  - why do i have anemia
+  - why do i have blood health check
+  - why do i have elevated liver enzymes
+  - why do i have fatigue
+  - why do i have full blood analysis
+  - why do i have high blood lipids
+  - why do i have high blood pressure
+  - why do i have high cholesterol
+  - why do i have high crp
+  - why do i have high hba1c
+  - why do i have high hemoglobin
+  - why do i have high homocysteine
+  - why do i have high ldl
+  - why do i have high triglycerides
+  - why do i have high tsh
+  - why do i have iron deficiency
+  - why do i have kidney values
+  - why do i have liver values
+  - why do i have low hdl
+  - why do i have low hemoglobin
+  - why do i have low tsh
+  - why do i have metabolic syndrome
+  - why do i have risk of diabetes
+  - why do i have thyroid problems
+  sv:
+  - HDL lågt
+  - LDL högt
+  - TSH högt
+  - TSH lågt
+  - anemi
+  - fullständig blodanalys
+  - förhöjda leverprover
+  - har anemi
+  - har fullständig blodanalys
+  - har förhöjda leverprover
+  - har hba1c högt
+  - har hdl lågt
+  - har hälsokontroll blod
+  - har höga blodfetter
+  - har högt blodtryck
+  - har högt blodvärde
+  - har högt crp
+  - har högt homocystein
+  - har högt kolesterol
+  - har järnbrist
+  - har ldl högt
+  - har levervärden
+  - har lågt blodvärde
+  - har metabola syndromet
+  - har njurvärden
+  - har risk för diabetes
+  - har sköldkörtelproblem
+  - har triglycerider höga
+  - har trötthet
+  - har tsh högt
+  - har tsh lågt
+  - hba1c högt
+  - hdl lågt
+  - hälsokontroll blod
+  - höga blodfetter
+  - högt CRP
+  - högt blodtryck
+  - högt blodvärde
+  - högt crp
+  - högt homocystein
+  - högt kolesterol
+  - jag har anemi
+  - jag har fullständig blodanalys
+  - jag har förhöjda leverprover
+  - jag har hba1c högt
+  - jag har hdl lågt
+  - jag har hälsokontroll blod
+  - jag har höga blodfetter
+  - jag har högt blodtryck
+  - jag har högt blodvärde
+  - jag har högt crp
+  - jag har högt homocystein
+  - jag har högt kolesterol
+  - jag har järnbrist
+  - jag har ldl högt
+  - jag har levervärden
+  - jag har lågt blodvärde
+  - jag har metabola syndromet
+  - jag har njurvärden
+  - jag har risk för diabetes
+  - jag har sköldkörtelproblem
+  - jag har triglycerider höga
+  - jag har trötthet
+  - jag har tsh högt
+  - jag har tsh lågt
+  - järnbrist
+  - ldl högt
+  - levervärden
+  - lågt blodvärde
+  - metabola syndromet
+  - njurvärden
+  - risk för diabetes
+  - sköldkörtelproblem
+  - triglycerider höga
+  - trötthet
+  - tsh högt
+  - tsh lågt
+  - varför har jag anemi
+  - varför har jag fullständig blodanalys
+  - varför har jag förhöjda leverprover
+  - varför har jag hba1c högt
+  - varför har jag hdl lågt
+  - varför har jag hälsokontroll blod
+  - varför har jag höga blodfetter
+  - varför har jag högt blodtryck
+  - varför har jag högt blodvärde
+  - varför har jag högt crp
+  - varför har jag högt homocystein
+  - varför har jag högt kolesterol
+  - varför har jag järnbrist
+  - varför har jag ldl högt
+  - varför har jag levervärden
+  - varför har jag lågt blodvärde
+  - varför har jag metabola syndromet
+  - varför har jag njurvärden
+  - varför har jag risk för diabetes
+  - varför har jag sköldkörtelproblem
+  - varför har jag triglycerider höga
+  - varför har jag trötthet
+  - varför har jag tsh högt
+  - varför har jag tsh lågt
+vitamin_test_b12_folat_d_e_q10:
+  en:
+  - B12 deficiency
+  - CoQ10 deficiency
+  - b12 deficiency
+  - coq10 deficiency
+  - folate deficiency
+  - hair loss nutrient deficiency
+  - i have b12 deficiency
+  - i have coq10 deficiency
+  - i have folate deficiency
+  - i have hair loss nutrient deficiency
+  - i have low energy
+  - i have low vitamin d
+  - i have muscle weakness
+  - i have recurrent infections
+  - i have seasonal depression
+  - i have vitamin d deficiency
+  - i have vitamin panel
+  - i have vitamin test
+  - low energy
+  - low vitamin D
+  - low vitamin d
+  - muscle weakness
+  - recurrent infections
+  - seasonal depression
+  - vitamin D deficiency
+  - vitamin d deficiency
+  - vitamin panel
+  - vitamin test
+  - why do i have b12 deficiency
+  - why do i have coq10 deficiency
+  - why do i have folate deficiency
+  - why do i have hair loss nutrient deficiency
+  - why do i have low energy
+  - why do i have low vitamin d
+  - why do i have muscle weakness
+  - why do i have recurrent infections
+  - why do i have seasonal depression
+  - why do i have vitamin d deficiency
+  - why do i have vitamin panel
+  - why do i have vitamin test
+  sv:
+  - B12 brist
+  - CoQ10 brist
+  - D-vitaminbrist
+  - b12 brist
+  - coq10 brist
+  - d-vitaminbrist
+  - folatbrist
+  - har b12 brist
+  - har coq10 brist
+  - har d-vitaminbrist
+  - har folatbrist
+  - har håravfall näringsbrist
+  - har låg energi
+  - har lågt d-vitamin
+  - har muskelsvaghet
+  - har vinterdepression
+  - har vitaminpanel
+  - har vitamintest
+  - har återkommande infektioner
+  - håravfall näringsbrist
+  - jag har b12 brist
+  - jag har coq10 brist
+  - jag har d-vitaminbrist
+  - jag har folatbrist
+  - jag har håravfall näringsbrist
+  - jag har låg energi
+  - jag har lågt d-vitamin
+  - jag har muskelsvaghet
+  - jag har vinterdepression
+  - jag har vitaminpanel
+  - jag har vitamintest
+  - jag har återkommande infektioner
+  - låg energi
+  - lågt D-vitamin
+  - lågt d-vitamin
+  - muskelsvaghet
+  - varför har jag b12 brist
+  - varför har jag coq10 brist
+  - varför har jag d-vitaminbrist
+  - varför har jag folatbrist
+  - varför har jag håravfall näringsbrist
+  - varför har jag låg energi
+  - varför har jag lågt d-vitamin
+  - varför har jag muskelsvaghet
+  - varför har jag vinterdepression
+  - varför har jag vitaminpanel
+  - varför har jag vitamintest
+  - varför har jag återkommande infektioner
+  - vinterdepression
+  - vitaminpanel
+  - vitamintest
+  - återkommande infektioner

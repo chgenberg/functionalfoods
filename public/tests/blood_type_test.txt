@@ -1,0 +1,4 @@
+name: Blood Type Test
+description: The blood type test is based on a solid-phase method where monoclonal antibodies (anti-A and anti-B) react with blood antigens. When the blood sample is applied to the test cassette, a visible reaction occurs if a specific antigen is present. The result can be read within one minute.
+benefits: ✔ Fast results – ready to read in just 1 minute ✔ Reliable method – clear identification of the blood type ✔ Useful in medical contexts where blood type information is important For any questions, GetTested’s team is available for support. The test is CE-approved for professional use.*
+source_url: https://gettested.io/product/blood-type-test

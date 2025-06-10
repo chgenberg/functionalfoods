@@ -1,0 +1,3 @@
+name: Iron Deficiency Rapid Test
+description: An iron deficiency test helps diagnose anemia and related health issues. Early detection can prevent complications and improve overall health and well-being.
+source_url: https://gettested.io/product/iron-deficiency-rapid-test

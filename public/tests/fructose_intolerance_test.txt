@@ -1,0 +1,5 @@
+name: Fructose Intolerance Test
+description: A Fructose Intolerance Test helps identify if your body struggles with fructose digestion. Get accurate results to manage symptoms like bloating and discomfort.
+what_it_tests: ["Hydrogen Hydrogen Methane Methane"]
+benefits: Symptoms can include gas, cramps, stomach pain, and diarrhea. Severe cases, particularly in children, might lead to acute illness, breath shortness, and altered blood pH levels. Fructose overload over time can damage the liver and kidneys. Additional symptoms to monitor include tremors, seizures, and abnormal sweating. Often, symptoms first appear following infections or antibiotic treatments, although reduced fructose absorption likely existed since childhood. Testing for lactose intolerance is also advisable, as it often coexists with fructose intolerance.
+source_url: https://gettested.io/product/fructose-intolerance-test

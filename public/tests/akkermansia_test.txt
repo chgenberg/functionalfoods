@@ -1,0 +1,3 @@
+name: Akkermansia Test
+description: Explore the role of Akkermansia in gut health with this test. Assess your microbiome balance and its influence on overall well-being and digestive function.
+source_url: https://gettested.io/product/akkermansia-test

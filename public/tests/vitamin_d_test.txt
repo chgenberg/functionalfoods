@@ -1,0 +1,5 @@
+name: Vitamin D Test
+description: GetTested's Vitamin D test is a vitamin D blood test that checks your Vitamin D levels and helps you detect a possible deficiency. Vitamin D regulates the amount of calcium that your body can absorb from the intestines into the bloodstream. Low vitamin D levels can increase your risk of osteoporosis and broken bones.
+what_it_tests: ["Vitamin D Vitamin D"]
+benefits: A normal level of vitamin D is important for cell production in the body. A low level of Vitamin D therefore, can make us less resistant and more susceptible to infections. Vitamin D deficiency can also lead to muscle and skeletal breakdown as well as high blood pressure. There are also studies that point to a strong link between vitamin D deficiency and cardiovascular disease, depression, and certain forms of cancer. Vitamin D deficiency manifests itself with many nonspecific symptoms such as: Fatigue / exhaustion Bad mood Sleep disorders Pain in the head and neck Muscle weakness Increased susceptibility to infections
+source_url: https://gettested.io/product/vitamin-d-test

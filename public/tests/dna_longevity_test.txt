@@ -1,0 +1,3 @@
+name: Dna Longevity Test
+description: DNA Longevity Test reveals lifespan potential and age-related disease risks for smarter, healthier living choices.
+source_url: https://gettested.io/product/dna-longevity-test

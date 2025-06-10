@@ -1,0 +1,4 @@
+name: Kidney Test
+description: A kidney test evaluates kidney function, detecting issues early to prevent complications. Stay proactive and safeguard your health with regular testing.
+benefits: In the early stages of kidney disease, you usually don't feel sick at all. If it worsens, you may experience some of the following symptoms: Feeling tired Drowsiness or trouble concentrating Loss of appetite / experiencing nausea and vomiting Swelling or stiffness in the hands or feet Frequent or less frequent urination Muscle cramps (painful and involuntary muscle contractions) Darkening of the skin
+source_url: https://gettested.io/product/kidney-test

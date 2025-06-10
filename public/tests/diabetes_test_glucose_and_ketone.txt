@@ -1,0 +1,4 @@
+name: Diabetes Test Glucose And Ketone
+description: Track your health with diabetes tests for glucose and ketone levels. Early detection helps manage blood sugar and maintain a balanced ketone level effectively.
+benefits: Diabetes, a widespread condition, arises from high blood sugar levels, known as hyperglycemia. This often links to reduced insulin production by the pancreas, a hormone vital for regulating blood sugar. There are two main types of diabetes. Type I, or insulin-dependent diabetes, involves an absolute lack of insulin production. Type II, or non-insulin-dependent diabetes, occurs when insulin production is insufficient or the body's cells don't respond adequately to insulin. When blood glucose levels exceed the kidneys' filtering capacity, glucose starts appearing in the urine, making urine testing a useful tool for diabetes monitoring.
+source_url: https://gettested.io/product/diabetes-test-glucose-and-ketone

@@ -1,0 +1,5 @@
+name: Allergy Test Ige
+description: The IgE allergy test evaluates immune responses to allergens, aiding in diagnosing allergies and guiding personalized treatment for better management.
+what_it_tests: ["Total IgE Total IgE"]
+benefits: Immunoglobulin E (IgE) plays a critical role in the body's immune response to toxins, parasites, and environmental factors but can also trigger allergic reactions. Elevated IgE levels may indicate conditions such as asthma, allergic rhinitis, atopic dermatitis, and food allergies. With this rapid test, high IgE levels can be identified quickly, helping guide further steps.
+source_url: https://gettested.io/product/allergy-test-ige

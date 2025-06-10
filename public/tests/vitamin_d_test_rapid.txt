@@ -1,0 +1,5 @@
+name: Vitamin D Test Rapid
+description: Get fast and reliable results with the Vitamin D Rapid Test. Check your vitamin D levels at home with ease, ensuring better health and wellness.
+what_it_tests: ["Vitamin D Vitamin D"]
+benefits: Symptoms of Vitamin D deficiency can be vague and include general fatigue, low mood, weakness, muscle weakness/muscle cramps, digestive problems, and headaches. Prolonged Vitamin D deficiency can lead to serious conditions, particularly affecting the bone tissue of the skeleton, which can result in osteoporosis. Children are particularly sensitive to Vitamin D deficiency as they require adequate levels for proper skeletal development.
+source_url: https://gettested.io/product/vitamin-d-test-rapid

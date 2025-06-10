@@ -1,0 +1,4 @@
+name: Gut Microbiome Test Xl
+description: Explore your gut health with the Gut Microbiome Test XL. Receive personalized insights to improve digestion, balance gut flora, and boost overall well-being.
+benefits: At GetTested, we often refer to this test as perfect for those experiencing stress. Stress affects energy, mood, and notably, digestion. It triggers the sympathetic nervous system and dampens the parasympathetic system, disrupting digestive functions. An unbalanced gut can significantly affect overall body health, highlighting the 'Gut-Brain connection'. Studies link gut health with mental conditions, including depression, autism, Parkinson's, and Alzheimer's.
+source_url: https://gettested.io/product/gut-microbiome-test-xl

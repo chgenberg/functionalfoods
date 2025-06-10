@@ -1,0 +1,4 @@
+name: Vaginal Ph Test
+description: A vaginal pH test helps determine the acidity level of the vagina, aiding in the detection of infections or imbalances, promoting better reproductive health.
+benefits: Symptoms of bacterial vaginosis include foul-smelling discharge, particularly after intercourse and menstruation when the pH level increases. The discharge may be clear, grey, white, or green. Burning sensation at the vaginal opening may also occur. However, it is essential to note that bacterial vaginosis itself does not cause itching, but a yeast infection of Candida, which can produce these symptoms. If you want to test for candida, you can here. Our at home Vaginal pH Test provides you with a simple and reliable method to monitor your vaginal health and detect any pH imbalances in time to take necessary actions and maintain a healthy vaginal environment.
+source_url: https://gettested.io/product/vaginal-ph-test

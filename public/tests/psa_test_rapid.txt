@@ -1,0 +1,5 @@
+name: Psa Test Rapid
+description: Discover GetTested PSA Test, a simple at-home solution to measure prostate-specific antigen levels. Monitor your health conveniently with a finger prick.
+what_it_tests: ["PSA PSA"]
+benefits: We use the PSA Test at GetTested mainly for screening prostate cancer, targeting men over 50 or those with a family history of the disease. However, high PSA levels don't always signal cancer; benign conditions like BPH and prostatitis can also elevate them. If we suspect prostate cancer, we might recommend a rectal exam or ultrasound. Sometimes, we might also consider a biopsy, though it carries certain risks.
+source_url: https://gettested.io/product/psa-test-rapid

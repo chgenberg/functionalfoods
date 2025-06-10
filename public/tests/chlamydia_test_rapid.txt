@@ -1,0 +1,4 @@
+name: Chlamydia Test Rapid
+description: Both men and women take the test from urine. Instructions are included to ensure the sample is collected correctly and easily.
+benefits: Chlamydia, often a silent infection, may present subtle symptoms that are important to recognise. As one of the most common sexually transmitted infections, caused by the bacterium Chlamydia trachomatis , being aware of these symptoms can lead to timely diagnosis and treatment. Here are some symptoms to be mindful of: Abnormal discharge Pain during urination Painful sexual intercourse Testicular pain Rectal pain or discharge Eye inflammation Remember, many individuals with Chlamydia may not exhibit any symptoms, making regular testing crucial.
+source_url: https://gettested.io/product/chlamydia-test-rapid

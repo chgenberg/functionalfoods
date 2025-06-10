@@ -1,0 +1,4 @@
+name: Coenzyme Q10 Test
+description: A Coenzyme Q10 test evaluates your antioxidant levels, essential for energy production and heart health. Get tested today to assess your body's needs.
+benefits: CoQ10, a vitamin-like substance, is essential in various bodily functions. It plays a key role in energy production within the mitochondria, the cell's "powerhouse," and is found in all body cells. High levels of CoQ10 in the brain, heart, liver, and other energy-intensive organs highlight its significance for our immune system and overall health. CoQ10 levels naturally present from birth decline with age, potentially leading to energy shortages and, in severe cases, heart issues.
+source_url: https://gettested.io/product/coenzyme-q10-test

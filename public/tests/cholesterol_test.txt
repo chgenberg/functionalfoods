@@ -1,0 +1,4 @@
+name: Cholesterol Test
+description: If you’re unsure whether this test is right for you, contact our customer support team. We are here to help you choose the best tests for your health goals. Reach us through our contact page or use our live chat for immediate assistance.
+benefits: Testing is vital because high cholesterol can cause strokes and heart attacks. Most people with high cholesterol don’t show symptoms, so testing is the only way to know your levels.
+source_url: https://gettested.io/product/cholesterol-test

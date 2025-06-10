@@ -1,0 +1,3 @@
+name: Parasite Test Rapid
+description: The Parasite Test is user-friendly and requires a stool sample for analysis. It utilises specific test cassettes that provide direct results to detect the presence of these parasites. Early detection is essential for effective treatment and preventing further spread.
+source_url: https://gettested.io/product/parasite-test-rapid

@@ -1,0 +1,4 @@
+name: Vitamin Test Total Deficiency Test
+description: Evaluate your vitamin levels with a comprehensive deficiency test. Detect imbalances early and gain detailed insights to optimize your health and wellness.
+benefits: Vitamin deficiencies often develop slowly, with symptoms appearing long after the deficiency has begun. General symptoms include fatigue, dry skin and hair, depression, and irritability. However, specific deficiencies lead to unique symptoms based on each vitamin's function.
+source_url: https://gettested.io/product/vitamin-test-total-deficiency-test

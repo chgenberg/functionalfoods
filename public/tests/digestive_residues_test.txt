@@ -1,0 +1,4 @@
+name: Digestive Residues Test
+description: Test your health from home. More than 150 tests analyzed at ISO-certified lab. More than 10.000 customers all over world. Order online.
+what_it_tests: ["Fat residues – to assess fat digestion and absorption Nitrogen residues – a marker for protein breakdown Sugar residues – indicates carbohydrate digestion efficiency Water content – reflects stool consistency and potential imbalances Elevated levels of these substances in stool may indicate that nutrients are not being fully absorbed", "potentially due to issues like enzyme deficiencies", "inflammation", "or gut mucosal damage."]
+source_url: https://gettested.io/product/digestive-residues-test

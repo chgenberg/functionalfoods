@@ -1,0 +1,4 @@
+name: Gonorrhoea Test
+description: A gonorrhea test identifies Neisseria gonorrhoeae infection, enabling timely treatment to prevent complications and promote better sexual health outcomes.
+benefits: Here are some common symptoms associated with gonorrhea: Unusual Discharge Painful Urination Genital Swelling Sore Throat Painful Intercourse Abdominal Pain. Fever Testing is the only way to confirm an infection, as many cases are asymptomatic.
+source_url: https://gettested.io/product/gonorrhoea-test

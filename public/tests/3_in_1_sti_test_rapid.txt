@@ -1,0 +1,4 @@
+name: 3 In 1 Sti Test Rapid
+description: The 3 in 1 STI test provides a quick and reliable way to screen for multiple common sexually transmitted infections in one easy process, ensuring peace of mind.
+benefits: The GetTested 3-in-1 STI Test provides an efficient way to test for Chlamydia, Trichomonas, and Gonorrhoea. Understanding the common symptoms of these infections can help you make informed decisions about your health. Here’s what to watch out for with each of these STIs:
+source_url: https://gettested.io/product/3-in-1-sti-test-rapid

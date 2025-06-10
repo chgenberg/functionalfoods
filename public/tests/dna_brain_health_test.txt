@@ -1,0 +1,3 @@
+name: Dna Brain Health Test
+description: DNA Brain Health Test checks genetic risk for cognitive decline, guiding proactive steps to support long-term brain wellness.
+source_url: https://gettested.io/product/dna-brain-health-test

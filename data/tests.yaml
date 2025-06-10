@@ -1,0 +1,125 @@
+food_intolerance_240:
+  category: food_intolerance
+  followup_products:
+  - label: L‑Glutamin Pulver
+    reason: Stöd för tarmbarriären efter positiv candida eller hög IgG.
+    sku: L-GLUTAMINE
+    url: https://yourshop.com/products/l-glutamine
+  - label: Omega‑3 1000 mg
+    reason: Dämpa låggradig inflammation orsakad av reaktiva livsmedel.
+    sku: OMEGA-3
+    url: https://yourshop.com/products/omega-3
+  key_findings:
+  - IgG1_3_antibodies_240
+  - candida_screen
+  lifestyle_actions:
+  - Eliminera reaktiva livsmedel i 8–12 veckor och återintroducera systematiskt.
+  - Stöd tarmbarriären med glutamin och zink.
+  - 'För antiinflammatorisk bas‑kost: mycket grönt, bär, omega‑3‑källor.'
+  name: Food Intolerance – 240 items (IgG)
+  price_eur: 289
+  recommended_retest_interval_months: 12
+  sample_type: blood_spot
+  strong_symptoms_en:
+  - migraines
+  - eczema
+  - bloating
+  - food intolerance
+  - brain fog
+  - joint pain
+  strong_symptoms_sv:
+  - migrän
+  - eksem
+  - uppblåst mage
+  - matintolerans
+  - hjärndimma
+  - ledvärk
+  turnaround_days: 7
+  url: https://gettested.io/product/food-intolerance-240-items
+gut_microbiome_test_xl:
+  category: gut_health
+  followup_products:
+  - label: Probiotic 10 Billion
+    reason: Återställa bakterie­balansen efter dysbios.
+    sku: PROBIO-10B
+    url: https://yourshop.com/products/probio-10b
+  - label: Digestive Enzymes
+    reason: Stötta matsmältningen under tarmåterhämtning.
+    sku: DIGEST-ENZ
+    url: https://yourshop.com/products/digest-enz
+  key_findings:
+  - bacterial_balance_120
+  - parasit_screen
+  - fungi_overgrowth
+  - h_pylori
+  - zonulin
+  - calprotectin
+  - sIgA
+  - antimicrobial_sensitivity
+  lifestyle_actions:
+  - Fokusera på fermenterad mat, prebiotiska fibrer och varierad växtkost.
+  - Identifiera & eliminera patogener enligt rapportens känslighets­tabell.
+  - Stöd mag‑slemhinnan med kollagen, glutamin och stress­reducering.
+  name: GI Advanced Microbiome Profile (Large)
+  price_eur: 349
+  recommended_retest_interval_months: 6
+  sample_type: stool
+  strong_symptoms_en:
+  - bloating
+  - IBS
+  - abdominal pain
+  - skin issues
+  - fatigue
+  - leaky gut
+  strong_symptoms_sv:
+  - uppblåsthet
+  - IBS
+  - magsmärta
+  - hudbesvär
+  - trötthet
+  - läckande tarm
+  turnaround_days: 14
+  url: https://gettested.io/product/gut-microbiome-test-xl
+omega_3_plus:
+  category: fatty_acid_profile
+  followup_products:
+  - label: Omega‑3 Fish Oil 2000 mg
+    reason: Höja omega‑3‑index vid låg EPA/DHA.
+    sku: FISH-OIL-2K
+    url: https://yourshop.com/products/fish-oil-2k
+  - label: Vegan Algae Omega‑3
+    reason: Växtbaserat alternativ för att korrigera omega‑3‑brist.
+    sku: ALGAE-OIL
+    url: https://yourshop.com/products/algae-oil
+  key_findings:
+  - omega_3_index
+  - omega6_to_3_ratio
+  - saturated_to_unsaturated_ratio
+  - ALA
+  - EPA
+  - DHA
+  - AA
+  lifestyle_actions:
+  - Ät fet fisk (lax, makrill, sardiner) 2–3 ggr/vecka.
+  - Byt vegetabiliska omega‑6‑rika oljor mot oliv- eller rapsolja.
+  - Komplettera med alg‑ eller fiskolja för att höja EPA/DHA‑nivåer.
+  name: Omega‑3 Plus Test
+  price_eur: 139
+  recommended_retest_interval_months: 6
+  sample_type: blood_spot
+  strong_symptoms_en:
+  - brain fog
+  - high cholesterol
+  - joint pain
+  - inflammation
+  - low mood
+  - dry skin
+  strong_symptoms_sv:
+  - hjärndimma
+  - högt kolesterol
+  - ledsmärta
+  - inflammation
+  - nedstämdhet
+  - torr hud
+  turnaround_days: 7
+  url: https://gettested.io/product/omega-3-plus

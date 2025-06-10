@@ -1,0 +1,4 @@
+name: Oestrogen And Progesterone Test
+description: Evaluate your hormonal balance with an estrogen and progesterone test. This test provides insights into fertility, menstrual health, and overall well-being.
+benefits: Estrogen levels typically decrease during menopause but can also drop due to factors like stress, poor nutrition, and intense training. Symptoms specific to estrogen deficiency include low libido, pain during sex, urinary tract infections, fatigue, difficulty concentrating, irregular or absent periods, mood swings or depression, weakened bone structure, and hair loss.
+source_url: https://gettested.io/product/oestrogen-and-progesterone-test

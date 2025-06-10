@@ -1,0 +1,3 @@
+name: Amino Acids Test
+description: An amino acids test measures essential and non-essential amino acids, providing valuable insights into nutrition, metabolism, and overall health status.
+source_url: https://gettested.io/product/amino-acids-test

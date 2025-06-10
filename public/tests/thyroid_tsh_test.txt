@@ -1,0 +1,4 @@
+name: Thyroid Tsh Test
+description: The TSH thyroid test measures thyroid-stimulating hormone levels to assess thyroid function and detect disorders like hypothyroidism or hyperthyroidism.
+what_it_tests: ["TSH TSH"]
+source_url: https://gettested.io/product/thyroid-tsh-test

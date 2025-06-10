@@ -1,0 +1,3 @@
+name: Allergy Test Small
+description: Discover your allergies with a quick, precise test. Get fast results to identify triggers and improve your health, all through a convenient and simple process.
+source_url: https://gettested.io/product/allergy-test-small

@@ -1,0 +1,4 @@
+name: Thyroid Test Tpo
+description: Thyroid Test TPO checks thyroid peroxidase antibodies to diagnose autoimmune thyroid disorders like Hashimoto’s or Graves’ disease, aiding in early treatment.
+what_it_tests: ["A-TPO A-TPO"]
+source_url: https://gettested.io/product/thyroid-test-tpo

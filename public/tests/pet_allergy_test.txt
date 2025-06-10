@@ -1,0 +1,3 @@
+name: Pet Allergy Test
+description: Discover the cause of your pet-related allergies with a pet allergy test. Pinpoint triggers, reduce symptoms, and create a healthier, more comfortable home.
+source_url: https://gettested.io/product/pet-allergy-test

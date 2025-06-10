@@ -1,0 +1,4 @@
+name: Fecal Occult Blood Test
+description: The fecal occult blood test identifies hidden blood in stool, aiding in early detection of colorectal cancer, ulcers, and other digestive system issues.
+what_it_tests: ["Fecal occult blood Fecal occult blood"]
+source_url: https://gettested.io/product/fecal-occult-blood-test

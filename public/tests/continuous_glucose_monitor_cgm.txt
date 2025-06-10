@@ -1,0 +1,3 @@
+name: Continuous Glucose Monitor Cgm
+description: Get accurate real-time glucose monitoring with our Continuous Glucose Monitor (CGM). Perfect for managing diabetes, track blood sugar levels seamlessly.
+source_url: https://gettested.io/product/continuous-glucose-monitor-cgm

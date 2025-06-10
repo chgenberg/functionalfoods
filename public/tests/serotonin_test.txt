@@ -1,0 +1,4 @@
+name: Serotonin Test
+description: A serotonin test measures brain serotonin levels, offering valuable insights into mood regulation, mental health, and potential neurological disorders.
+what_it_tests: ["Serotonin Serotonin"]
+source_url: https://gettested.io/product/serotonin-test
