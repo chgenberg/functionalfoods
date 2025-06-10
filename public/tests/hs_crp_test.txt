@@ -1,0 +1,4 @@
+name: Hs Crp Test
+description: The hs-CRP test measures high-sensitivity C-reactive protein levels in the blood, helping assess inflammation and the risk of heart disease or other conditions.
+benefits: Recent studies suggest that chronic low-grade inflammation may increase the risk of cardiovascular diseases, including heart attacks and strokes. These conditions often result from plaque build-up in major blood vessels, a process known as atherosclerosis. Atherosclerosis involves cholesterol deposition and immune cell accumulation: chronic inflammation, detectable through hs-CRP levels in the blood, both triggers and worsens this process.
+source_url: https://gettested.io/product/hs-crp-test

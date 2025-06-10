@@ -1,0 +1,5 @@
+name: Water Quality Test
+description: Protect your health with a professional water quality test. Detect contaminants, assess safety, and improve the water quality in your home for peace of mind.
+what_it_tests: ["pH Level pH Level Hydrogen Sulfide Hydrogen Sulfide Water Metals Water Metals Free Chlorine Free Chlorine Bacteria Bacteria Chloride Chloride Nitrates and Nitrites Nitrates and Nitrites Iron Iron Copper Copper Sulfate Sulfate Total Chlorine Total Chlorine"]
+benefits: To ensure the quality and purity of your water, regular testing is crucial whether you’re on a mains water supply or a well. Proactively testing helps detect any issues early and enables prompt action. This not only safeguards your health but also the longevity of your plumbing and household appliances, reducing risks and extending their lifespan. If you suspect having been exposed to toxic substances, our tests can help. We offer a urine-based Heavy Metal Test and a Hair Mineral Analysis that together provide a detailed look at heavy metals, toxic substances, trace minerals, and minerals in your body.
+source_url: https://gettested.io/product/water-quality-test

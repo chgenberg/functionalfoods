@@ -1,0 +1,3 @@
+name: Gut Microbiome Test Large
+description: Take control of your digestive health with a large gut microbiome test. Discover how your gut bacteria affect digestion, immunity, and overall well-being.
+source_url: https://gettested.io/product/gut-microbiome-test-large

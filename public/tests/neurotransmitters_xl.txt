@@ -1,0 +1,3 @@
+name: Neurotransmitters Xl
+description: Assess your brain health with the Neurotransmitters XL test. It measures key neurotransmitters to help understand mood, focus, and cognitive function.
+source_url: https://gettested.io/product/neurotransmitters-xl

@@ -1,0 +1,4 @@
+name: Dna Methylation Test
+description: The DNA methylation test analyzes epigenetic changes, providing valuable insights into aging, disease risk, and overall genetic health for personalized wellness
+benefits: Understanding your methylation status opens the door to tailored dietary and lifestyle adjustments, potentially revealing hidden health issues or optimizing your wellness strategy. This test suits anyone curious about their genetic health, seeking to tailor their lifestyle to their genetics, or dealing with unexplained health challenges.
+source_url: https://gettested.io/product/dna-methylation-test

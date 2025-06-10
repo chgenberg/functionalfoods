@@ -1,0 +1,4 @@
+name: Strep A Test
+description: The Strep A test quickly identifies Group A Streptococcus bacteria, helping doctors diagnose strep throat and provide the right treatment for faster recovery.
+what_it_tests: ["Streptococcus Group A Streptococcus Group A"]
+source_url: https://gettested.io/product/strep-a-test

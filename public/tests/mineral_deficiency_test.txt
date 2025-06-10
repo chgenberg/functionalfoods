@@ -1,0 +1,4 @@
+name: Mineral Deficiency Test
+description: Discover your essential nutrient levels with a mineral deficiency test. Identify imbalances and get expert insights to optimize your health and well-being.
+benefits: Many people experience vague symptoms for years without a mineral deficiency diagnosis. GetTested’s quick checkup can provide a full report on your mineral status and practical diet optimization tips. Common symptoms for each tested mineral include: Magnesium Deficiency: Sleep disorders, fatigue, irritation, eyelid twitching, muscle cramps/tremors, hypertension. Zinc Deficiency: Weakened immune system, impaired wound healing, reduced sense of smell and taste, poor hair, skin, nails, infertility/impotence/low testosterone, impaired vision or night vision. Selenium Deficiency: Muscle weakness, muscle pain, growing pains, restless legs, skin problems, fatigue.
+source_url: https://gettested.io/product/mineral-deficiency-test

@@ -1,0 +1,4 @@
+name: Parasite Test
+description: Accurate parasite testing for fast results and expert care. Ensure better health with precise detection and treatment.
+benefits: Upset stomach (cramps, flatulence, loss of appetite) Irritable Bowel Syndrome (IBS) Diarrhoea and/or constipation Nausea Fatigue And many more symptoms.
+source_url: https://gettested.io/product/parasite-test

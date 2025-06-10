@@ -1,0 +1,5 @@
+name: Diabetes Test Hba1C
+description: A diabetes test checks blood sugar to detect diabetes or prediabetes for proper treatment and health management.
+what_it_tests: ["HbA1c HbA1c"]
+benefits: Recognizing high blood sugar symptoms is crucial: Increased thirst and frequent urination signal the body's attempt to regulate sugar levels. Unusual fatigue and hunger are common signs of fluctuating blood sugar. Additionally, weight loss, slow healing, skin problems, and tingling sensations can indicate diabetes. Blurred vision and sexual dysfunction are also noteworthy symptoms. In contrast, low blood sugar primarily affects individuals with type-1 diabetes, leading to symptoms like fatigue, irritability, and tremors.
+source_url: https://gettested.io/product/diabetes-test-hba1c

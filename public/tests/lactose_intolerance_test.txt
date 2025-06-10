@@ -1,0 +1,4 @@
+name: Lactose Intolerance Test
+description: Identify lactose intolerance with an easy test. Understand your body's reaction to dairy and manage digestive discomfort for improved health and well-being.
+benefits: Though lactose intolerance is mostly harmless, the symptoms can cause significant discomfort. The most common symptoms include: Stomach pain Diarrhoea Flatulence Nausea Bloating
+source_url: https://gettested.io/product/lactose-intolerance-test

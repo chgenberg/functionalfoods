@@ -1,0 +1,5 @@
+name: D Dimer Test Blood Clots
+description: The D-dimer test finds clot fragments to help detect blood clots, DVT, or PE, ensuring fast, accurate diagnosis and timely care.
+what_it_tests: ["D-dimer D-dimer"]
+benefits: D-dimer, a protein fragment appearing when blood clots dissolve, can indicate serious conditions like DIC, DVT, or PE. Elevated levels, detectable above 500ng/mL, require attention. This test is crucial, especially if you experience symptoms like chest pain, leg swelling, or shortness of breath. It's also recommended for those with a history of clotting disorders, recent surgery, or prolonged immobility.
+source_url: https://gettested.io/product/d-dimer-test-blood-clots

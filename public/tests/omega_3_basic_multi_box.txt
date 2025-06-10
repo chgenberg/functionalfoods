@@ -1,0 +1,4 @@
+name: Omega 3 Basic Multi Box
+description: Explore the health benefits of omega-3 fatty acids for heart, brain, and joint health. Learn about food sources, supplements, and daily intake recommendations.
+benefits: Omega-3, a group of polyunsaturated fatty acids, offers numerous health benefits. These essential nutrients support cardiovascular health, brain function, and inflammation management. As our bodies cannot produce omega-3, we must acquire them through diet or supplements for optimal health.
+source_url: https://gettested.io/product/omega-3-basic-multi-box

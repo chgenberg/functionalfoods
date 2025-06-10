@@ -1,0 +1,4 @@
+name: Lyme Test Iggigm
+description: The Lyme Test (IgG/IgM) identifies antibodies to detect Lyme disease early. Timely diagnosis ensures effective treatment and supports better recovery outcomes.
+benefits: Ticks often carry and transmit Lyme disease, a condition resulting from the Borrelia bacteria. Common symptoms include fever, fatigue, joint pain, and a noticeable skin rash called erythema migrans. Detecting Lyme disease early plays a critical role in effective treatment and halting its advance.
+source_url: https://gettested.io/product/lyme-test-iggigm

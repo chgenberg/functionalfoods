@@ -1,0 +1,4 @@
+name: Cholesterol Test Rapid
+description: A cholesterol test measures your blood lipid levels, helping assess the risk of heart disease and guiding steps to maintain a healthy cardiovascular system.
+what_it_tests: ["Cholesterol Cholesterol"]
+source_url: https://gettested.io/product/cholesterol-test-rapid

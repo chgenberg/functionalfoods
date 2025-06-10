@@ -1,0 +1,4 @@
+name: Epstein Barr Ebv Test
+description: The Epstein Barr (EBV) test detects the virus linked to mononucleosis and other illnesses, aiding in diagnosis and treatment decisions for better care.
+benefits: Symptoms of a primary EBV infection vary but often include fever, swollen lymph nodes, fatigue, sore throat, and an enlarged spleen. Symptoms can range in severity and duration but are usually most pronounced in teenagers and young adults.
+source_url: https://gettested.io/product/epstein-barr-ebv-test

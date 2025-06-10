@@ -1,0 +1,3 @@
+name: Neurotransmitters Plus
+description: The Neurotransmitters Plus is a simple, at-home urine test. Just collect your second morning urine in the provided test tube and send it to our ISO-certified lab. You'll receive your digital results promptly after analysis, offering you a detailed view of your neurotransmitter levels.
+source_url: https://gettested.io/product/neurotransmitters-plus

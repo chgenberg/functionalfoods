@@ -1,0 +1,3 @@
+name: Food Intolerance 80 Items
+description: Discover food intolerances with a medium-level test. Identify dietary triggers, enhance digestion, and achieve a healthier lifestyle with precise results.
+source_url: https://gettested.io/product/food-intolerance-80-items

@@ -1,0 +1,4 @@
+name: Crp Test
+description: The CRP test measures C-reactive protein levels to detect inflammation. It helps assess risks for heart disease, infections, and other inflammatory conditions.
+benefits: C-reactive protein (CRP) is a marker of inflammation in the body, produced by the liver in response to inflammation. A CRP test can reveal the presence of inflammation, which may indicate a variety of health conditions, from infections to autoimmune diseases and cardiovascular diseases. Monitoring your CRP levels can be an important step in understanding your overall health status.
+source_url: https://gettested.io/product/crp-test

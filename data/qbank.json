@@ -1,0 +1,160 @@
+{
+  "q_duration": {
+    "sv": "Hur länge har du haft problemen?",
+    "en": "How long have you had these problems?",
+    "type": "text",
+    "answer_key": "symptom_duration",
+    "priority": 1,
+    "when": [
+      "gut_health",
+      "food_intolerance",
+      "general_health",
+      "vitamin_status"
+    ]
+  },
+  "q_intensity": {
+    "sv": "Hur kraftiga är besvären på en skala 1–5?",
+    "en": "How severe are the symptoms on a scale of 1–5?",
+    "type": "scale_1_5",
+    "answer_key": "symptom_intensity",
+    "priority": 2,
+    "when": [
+      "gut_health",
+      "food_intolerance",
+      "general_health",
+      "vitamin_status"
+    ]
+  },
+  "q_after_meals": {
+    "sv": "Blir besvären värre direkt efter måltid?",
+    "en": "Do the symptoms worsen right after meals?",
+    "type": "boolean",
+    "answer_key": "worse_after_meals",
+    "priority": 1,
+    "when": [
+      "gut_health",
+      "food_intolerance"
+    ]
+  },
+  "q_bowel_pattern": {
+    "sv": "Hur ser din avföring ut vanligtvis?",
+    "en": "What is your usual stool consistency?",
+    "type": "options",
+    "options": [
+      "Hård",
+      "Lös",
+      "Varierande"
+    ],
+    "answer_key": "stool_pattern",
+    "priority": 2,
+    "when": [
+      "gut_health"
+    ]
+  },
+  "q_diet_restrictions": {
+    "sv": "Följer du någon särskild kost (t.ex. vegan, keto, FODMAP)?",
+    "en": "Do you follow any specific diet (e.g. vegan, keto, FODMAP)?",
+    "type": "text",
+    "answer_key": "diet_type",
+    "priority": 3,
+    "when": [
+      "food_intolerance",
+      "vitamin_status",
+      "general_health"
+    ]
+  },
+  "q_medications": {
+    "sv": "Tar du några läkemedel regelbundet?",
+    "en": "Do you take any medications regularly?",
+    "type": "text",
+    "answer_key": "medications",
+    "priority": 3,
+    "when": [
+      "general_health",
+      "vitamin_status",
+      "gut_health"
+    ]
+  },
+  "q_antibiotics_recent": {
+    "sv": "Har du tagit antibiotika de senaste 6 månaderna?",
+    "en": "Have you taken antibiotics in the last 6 months?",
+    "type": "boolean",
+    "answer_key": "recent_antibiotics",
+    "priority": 2,
+    "when": [
+      "gut_health",
+      "food_intolerance"
+    ]
+  },
+  "q_sun_exposure": {
+    "sv": "Hur mycket tid spenderar du utomhus i dagsljus en genomsnittlig dag?",
+    "en": "How much time do you spend outdoors in daylight on an average day?",
+    "type": "options",
+    "options": [
+      "<15 min",
+      "15–30 min",
+      "30–60 min",
+      ">60 min"
+    ],
+    "answer_key": "sun_exposure",
+    "priority": 2,
+    "when": [
+      "vitamin_status"
+    ]
+  },
+  "q_smoking": {
+    "sv": "Röker du?",
+    "en": "Do you smoke?",
+    "type": "boolean",
+    "answer_key": "smoking",
+    "priority": 3,
+    "when": [
+      "general_health"
+    ]
+  },
+  "q_alcohol": {
+    "sv": "Hur många alkoholhaltiga drycker dricker du per vecka?",
+    "en": "How many alcoholic drinks do you consume per week?",
+    "type": "number",
+    "answer_key": "alcohol_units",
+    "priority": 3,
+    "when": [
+      "general_health",
+      "gut_health",
+      "food_intolerance"
+    ]
+  },
+  "q_physical_activity": {
+    "sv": "Hur många minuter pulshöjande aktivitet får du per vecka?",
+    "en": "How many minutes of moderate‑vigorous activity do you get per week?",
+    "type": "number",
+    "answer_key": "activity_minutes",
+    "priority": 2,
+    "when": [
+      "general_health",
+      "vitamin_status"
+    ]
+  },
+  "q_sleep_hours": {
+    "sv": "Hur många timmar sover du per natt i genomsnitt?",
+    "en": "On average, how many hours do you sleep per night?",
+    "type": "number",
+    "answer_key": "sleep_hours",
+    "priority": 2,
+    "when": [
+      "general_health",
+      "vitamin_status"
+    ]
+  },
+  "q_stress_level": {
+    "sv": "Hur upplever du din stressnivå just nu (1–5)?",
+    "en": "How would you rate your current stress level (1–5)?",
+    "type": "scale_1_5",
+    "answer_key": "stress_level",
+    "priority": 2,
+    "when": [
+      "general_health",
+      "gut_health"
+    ]
+  }
+}

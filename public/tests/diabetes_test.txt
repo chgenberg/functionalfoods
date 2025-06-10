@@ -1,0 +1,5 @@
+name: Diabetes Test
+description: The HbA1c test measures average blood sugar over 2–3 months to help diagnose and manage diabetes effectively.
+what_it_tests: ["HbA1c HbA1c"]
+benefits: HbA1c, or glycated hemoglobin, reflects average blood sugar levels over the past three months. Unlike regular blood sugar tests that show a single point in time, HbA1c provides a broader picture of glucose control. This is particularly relevant as red blood cells have a lifespan of approximately four months. This HbA1c test specifically measures the amount of glycated hemoglobin in the blood. A result below 6% is considered normal, while levels above 6% may indicate diabetes. Unlike glucose and ketone urine tests, which provide a different type of health information, this test offers insight into long-term blood sugar control.
+source_url: https://gettested.io/product/diabetes-test

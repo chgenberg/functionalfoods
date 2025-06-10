@@ -1,0 +1,4 @@
+name: Food Intolerance 40 Items
+description: Discover food triggers with a simple food intolerance test. Identify sensitivities to improve digestion, energy, and overall health with expert guidance.
+benefits: If you struggle with food intolerances, you might notice a range of symptoms. These often include digestive issues like bloating, gas, and diarrhoea. Additionally, you may experience headaches, fatigue, or skin irritation such as eczema. Moreover, these symptoms typically appear after consuming certain foods and can vary in intensity. Consequently, identifying and understanding your specific food intolerances can significantly improve your quality of life.
+source_url: https://gettested.io/product/food-intolerance-40-items

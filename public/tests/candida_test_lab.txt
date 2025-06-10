@@ -1,0 +1,4 @@
+name: Candida Test Lab
+description: A Candida test detects yeast infections, offering key insights for effective treatment and lasting relief from uncomfortable symptoms.
+benefits: Candida overgrowth can arise from antibiotic use, dietary choices, stress, or immune system weaknesses. It produces toxins like ethanol and acetaldehyde, leading to diverse symptoms. Recognizing symptoms such as skin issues, digestive disturbances, and sugar cravings is vital.
+source_url: https://gettested.io/product/candida-test-lab

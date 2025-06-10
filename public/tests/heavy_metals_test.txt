@@ -1,0 +1,3 @@
+name: Heavy Metals Test
+description: Protect your health with a heavy metals test. Detect harmful contaminants like lead, mercury, and arsenic in your water supply for peace of mind and safety.
+source_url: https://gettested.io/product/heavy-metals-test

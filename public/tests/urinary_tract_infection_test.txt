@@ -1,0 +1,4 @@
+name: Urinary Tract Infection Test
+description: Get a reliable urinary tract infection test for early detection. Fast, accurate results help prevent complications and discomfort for better treatment outcomes.
+benefits: Back pain Blood in urine Cloudy urine Inability to urinate despite the need Fever Frequent urge to urinate General discomfort Painful urination
+source_url: https://gettested.io/product/urinary-tract-infection-test

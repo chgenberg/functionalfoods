@@ -1,0 +1,3 @@
+name: Celiac Gluten Intolerance Test
+description: Test for celiac disease or gluten intolerance with quick, accurate results to help manage your diet and improve your health.
+source_url: https://gettested.io/product/celiac-gluten-intolerance-test

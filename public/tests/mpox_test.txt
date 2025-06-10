@@ -1,0 +1,4 @@
+name: Mpox Test
+description: Learn about the MPOX test, its role in diagnosing monkeypox, detecting the virus early, and guiding treatment for effective disease management and prevention.
+benefits: Rapid Results: Get answers within 15 minutes. Reliable: Designed to deliver accurate results through a specific enzyme reaction. Easy to Use: Step-by-step instructions make the test simple to perform.
+source_url: https://gettested.io/product/mpox-test

@@ -1,0 +1,40 @@
+<!-- dots.svg  –  1024 × 1536 -->
+<svg width="1024" height="1536" viewBox="0 0 1024 1536"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <g id="dots" fill="#FFFFFF">
+    <!-- radien 14 px ≈ originalstorlek – ändra vid behov -->
+    <circle id="dot-1"  class="dot" cx="535.26" cy="98.89"   r="14"/>
+    <circle id="dot-2"  class="dot" cx="477.14" cy="99.90"   r="14"/>
+    <circle id="dot-3"  class="dot" cx="536.59" cy="143.47"  r="14"/>
+    <circle id="dot-4"  class="dot" cx="475.92" cy="145.00"  r="14"/>
+    <circle id="dot-5"  class="dot" cx="438.86" cy="157.66"  r="14"/>
+    <circle id="dot-6"  class="dot" cx="574.96" cy="159.03"  r="14"/>
+    <circle id="dot-7"  class="dot" cx="506.00" cy="167.71"  r="14"/>
+    <circle id="dot-8"  class="dot" cx="507.00" cy="206.26"  r="14"/>
+    <circle id="dot-9"  class="dot" cx="506.91" cy="262.91"  r="14"/>
+    <circle id="dot-10" class="dot" cx="587.04" cy="294.11"  r="14"/>
+    <circle id="dot-11" class="dot" cx="420.12" cy="295.39"  r="14"/>
+    <circle id="dot-12" class="dot" cx="349.88" cy="344.61"  r="14"/>
+    <circle id="dot-13" class="dot" cx="664.92" cy="347.55"  r="14"/>
+    <circle id="dot-14" class="dot" cx="441.19" cy="406.81"  r="14"/>
+    <circle id="dot-15" class="dot" cx="577.15" cy="408.96"  r="14"/>
+    <circle id="dot-16" class="dot" cx="519.00" cy="427.00"  r="14"/>
+    <circle id="dot-17" class="dot" cx="568.00" cy="555.74"  r="14"/>
+    <circle id="dot-18" class="dot" cx="294.77" cy="578.34"  r="14"/>
+    <circle id="dot-19" class="dot" cx="720.45" cy="579.60"  r="14"/>
+    <circle id="dot-20" class="dot" cx="520.80" cy="685.77"  r="14"/>
+    <circle id="dot-21" class="dot" cx="427.45" cy="689.08"  r="14"/>
+    <circle id="dot-22" class="dot" cx="508.04" cy="787.02"  r="14"/>
+    <circle id="dot-23" class="dot" cx="243.03" cy="794.25"  r="14"/>
+    <circle id="dot-24" class="dot" cx="768.44" cy="797.96"  r="14"/>
+    <circle id="dot-25" class="dot" cx="623.93" cy="806.36"  r="14"/>
+    <circle id="dot-26" class="dot" cx="386.96" cy="807.02"  r="14"/>
+    <circle id="dot-27" class="dot" cx="411.45" cy="1072.83" r="14"/>
+    <circle id="dot-28" class="dot" cx="601.55" cy="1072.92" r="14"/>
+    <circle id="dot-29" class="dot" cx="604.22" cy="1367.00" r="14"/>
+    <circle id="dot-30" class="dot" cx="407.59" cy="1368.20" r="14"/>
+    <circle id="dot-31" class="dot" cx="628.70" cy="1449.72" r="14"/>
+    <circle id="dot-32" class="dot" cx="381.80" cy="1451.97" r="14"/>
+  </g>
+</svg>

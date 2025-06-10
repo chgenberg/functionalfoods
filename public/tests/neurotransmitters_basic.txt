@@ -1,0 +1,3 @@
+name: Neurotransmitters Basic
+description: You can easily complete our Neurotransmitters Basic test at home. Just fill a tube with your second morning urine sample and send it to our ISO-certified lab. We'll analyze your sample for levels of dopamine, serotonin, adrenaline, noradrenaline, and the adrenaline to noradrenaline ratio. We also measure creatinine to ensure your urine concentration is normal, as abnormal dilution or concentration can affect the test results. Once the analysis is complete, you'll receive your results digitally.
+source_url: https://gettested.io/product/neurotransmitters-basic

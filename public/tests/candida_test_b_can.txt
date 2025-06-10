@@ -1,0 +1,4 @@
+name: Candida Test B Can
+description: A Candida test identifies yeast overgrowth, aiding in understanding symptoms like digestive issues, fatigue, and skin problems for better health management.
+what_it_tests: ["Candida albicans Candida albicans"]
+source_url: https://gettested.io/product/candida-test-b-can

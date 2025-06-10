@@ -1,0 +1,3 @@
+name: Omega 3 Plus
+description: To begin, simply take a quick finger prick, then send your sample for analysis at our lab. Subsequently, await your digital feedback. The results provide a comprehensive overview of your omega-3, omega-6, saturated, and unsaturated fatty acid levels, equipping you with vital information to enhance your health.
+source_url: https://gettested.io/product/omega-3-plus

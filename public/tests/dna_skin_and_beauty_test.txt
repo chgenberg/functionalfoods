@@ -1,0 +1,3 @@
+name: Dna Skin And Beauty Test
+description: DNA Skin & Beauty Test analyserer dine gener for at tilbyde personlige hudplejetips til en sundere, mere strålende og ungdommelig hud.
+source_url: https://gettested.io/product/dna-skin-and-beauty-test

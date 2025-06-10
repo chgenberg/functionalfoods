@@ -1,0 +1,3 @@
+name: Vitamin B12 Test
+description: GetTested’s home-based blood test offers a convenient way to monitor vital vitamins. A simple finger prick is all it takes to collect a blood sample, which should be done on an empty stomach in the morning. The sample is then sent for lab analysis, with results delivered digitally. The test price includes shipping to the lab.
+source_url: https://gettested.io/product/vitamin-b12-test

@@ -1,0 +1,4 @@
+name: Allergy Test Medium
+description: Discover your allergy triggers with the Allergy Test Medium from GetTested. Comprehensive, reliable, and fast results to help you take control of your health.
+benefits: The Allergy Test Medium is your solution for identifying specific allergies, aiding in better management and treatment of symptoms. Whether it's seasonal allergies, food sensitivities, or reactions to environmental factors, this test covers a broad spectrum to pinpoint your triggers.
+source_url: https://gettested.io/product/allergy-test-medium

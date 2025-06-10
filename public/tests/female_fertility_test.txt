@@ -1,0 +1,3 @@
+name: Female Fertility Test
+description: This test measures AMH levels through a small blood sample. The result, which shows your AMH level, is available in 10 minutes.
+source_url: https://gettested.io/product/female-fertility-test

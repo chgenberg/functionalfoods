@@ -1,0 +1,4 @@
+name: Ovulation Test 5 Pack
+description: Track your fertility easily with this 5-pack ovulation test—accurate, reliable results for your best chance to conceive.
+what_it_tests: ["Luteinizing Hormone Luteinizing Hormone"]
+source_url: https://gettested.io/product/ovulation-test-5-pack

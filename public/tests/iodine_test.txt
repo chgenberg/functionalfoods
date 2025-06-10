@@ -1,0 +1,4 @@
+name: Iodine Test
+description: Learn about the iodine test, a simple method to detect starch in foods and assess thyroid function. Explore its key applications in health and nutrition.
+benefits: Individuals often turn to iodine supplements to address various conditions, from fatigue and breast lumps to ovarian cysts and goiter prevention.
+source_url: https://gettested.io/product/iodine-test

@@ -1,0 +1,3 @@
+name: Iron Deficiency Test
+description: Iron deficiency test checks ferritin levels to assess iron stores—key for diagnosing anemia and related health issues.
+source_url: https://gettested.io/product/iron-deficiency-test

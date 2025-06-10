@@ -1,0 +1,4 @@
+name: Food Intolerance 240 Items
+description: Discover food sensitivities with a detailed food intolerance test. Pinpoint triggers and enhance your health with accurate, large-scale testing insights.
+benefits: Gastrointestinal Issues : Bloating, gas, diarrhoea, constipation, and abdominal pain. Neurological Symptoms : Headaches, brain fog, and fatigue. Skin Reactions : Rashes, eczema, and acne. Respiratory Problems : Congestion, sneezing, and asthma-like symptoms.
+source_url: https://gettested.io/product/food-intolerance-240-items

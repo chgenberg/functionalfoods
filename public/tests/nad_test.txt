@@ -1,0 +1,4 @@
+name: Nad Test
+description: Analyze NAD and its metabolites to gain insight into your cellular health, energy production and aging process. A simple blood sample that is sent to a lab.
+benefits: NAD and its metabolites are crucial for optimal cellular function. Low levels of NAD+ and its related compounds can impact energy production, increase oxidative stress, and affect your body's ability to repair cells. This test is ideal for individuals who are experiencing: Fatigue and low energy levels Chronic inflammation Signs of aging or decreased cellular function Oxidative stress Difficulty adapting to stress or recovery from illness By measuring NAD and its related metabolites, you can gain valuable insights into your body's cellular health, metabolism, and overall ability to handle environmental stressors.
+source_url: https://gettested.io/product/nad-test

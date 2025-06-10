@@ -1,0 +1,4 @@
+name: Pregnancy Rapid Test
+description: A pregnancy test detects the hormone hCG in urine, providing quick and reliable results to confirm pregnancy, typically a few days after a missed period.
+what_it_tests: ["hCG hCG"]
+source_url: https://gettested.io/product/pregnancy-rapid-test

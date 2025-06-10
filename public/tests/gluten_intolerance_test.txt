@@ -1,0 +1,4 @@
+name: Gluten Intolerance Test
+description: Discover if gluten is affecting your health with a simple intolerance test. Identify symptoms like bloating, fatigue, and discomfort. Get answers now.
+benefits: Gluten is a protein naturally found in wheat and other grains. Many foods, including pasta, cereal, and beer, as well as vitamins and cosmetics, contain gluten. Gluten acts as a binder, holding food together. For instance, without gluten, pizza dough would easily tear. Most people tolerate gluten well, as it can be beneficial for the good bacteria in the gut. However, some people experience serious side effects after consuming gluten, indicating gluten intolerance. When you have gluten intolerance, you might feel sick after eating products containing gluten. Gluten intolerance is one of the most prominent autoimmune diseases, affecting about 1% of the world's population.
+source_url: https://gettested.io/product/gluten-intolerance-test

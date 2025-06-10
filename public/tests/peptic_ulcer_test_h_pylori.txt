@@ -1,0 +1,3 @@
+name: Peptic Ulcer Test H Pylori
+description: Detect peptic ulcers effectively with our H. pylori test. Pinpoint the root cause early and begin treatment to improve digestive health and overall well-being.
+source_url: https://gettested.io/product/peptic-ulcer-test-h-pylori

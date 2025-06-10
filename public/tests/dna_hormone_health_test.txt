@@ -1,0 +1,4 @@
+name: Dna Hormone Health Test
+description: DNA Hormone Health Test reveals hormonal imbalances through genetics, offering tailored wellness recommendations.
+benefits: Optimizing hormone health is crucial for overall well-being, impacting energy levels, metabolism, mood, and more. Moreover, this DNA test is perfect for individuals seeking to understand their unique hormone health profile, those experiencing symptoms that could be hormone-related, or anyone interested in personalized health optimization.
+source_url: https://gettested.io/product/dna-hormone-health-test

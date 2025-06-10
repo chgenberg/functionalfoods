@@ -1,0 +1,4 @@
+name: Sperm Test
+description: A sperm test evaluates sperm count, motility, and morphology, providing vital information for assessing male fertility and supporting family planning efforts.
+what_it_tests: ["Sperm-(SP-10) Sperm-(SP-10)"]
+source_url: https://gettested.io/product/sperm-test

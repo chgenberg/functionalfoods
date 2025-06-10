@@ -1,0 +1,3 @@
+name: Dna Immunity And Inflammation Test
+description: DNA Immunity & Inflammation Test reveals how your genes affect immune response and inflammation to guide personalized health choices.
+source_url: https://gettested.io/product/dna-immunity-and-inflammation-test

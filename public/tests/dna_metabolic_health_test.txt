@@ -1,0 +1,3 @@
+name: Dna Metabolic Health Test
+description: The DNA Metabolic Health Test analyzes genetic markers to offer personalized insights into metabolism, weight management, and custom health strategies.
+source_url: https://gettested.io/product/dna-metabolic-health-test
