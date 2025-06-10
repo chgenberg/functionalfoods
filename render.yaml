@@ -1,7 +1,7 @@
 services:
   # Frontend (Next.js)
   - type: web
-    name: ulrika-functional-foods
+    name: functionalfoods
     env: node
     buildCommand: npm install && npm run build
     startCommand: npm start
@@ -13,15 +13,12 @@ services:
 
   # Backend (Python/FastAPI)
   - type: web
-    name: ulrika-functional-foods-api
+    name: functionalfoods-api
     env: python
-    buildCommand: |
-      python3 -m pip install --upgrade pip
-      pip3 install -r requirements.txt
-    startCommand: python3 -m uvicorn back:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /health
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app/backend/nutrient_analysis.py
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.7
+        value: 3.11.0
       - key: OPENAI_API_KEY
         sync: false 
