@@ -1,6 +1,21 @@
 # app/backend/nutrient_analysis.py
 
 from typing import Dict, List, Any
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+app = FastAPI()
+
+class UserResponses(BaseModel):
+    symptoms: List[str]
+    diet: str
+    age: int
+    gender: str
 
 class NutrientAnalyzer:
     def __init__(self):
@@ -106,3 +121,27 @@ class NutrientAnalyzer:
                 })
         
         return recommendations
+
+# Initialize the analyzer
+analyzer = NutrientAnalyzer()
+
+@app.get("/")
+async def root():
+    return {"message": "Nutrient Analysis API is running"}
+
+@app.post("/analyze")
+async def analyze_nutrients(responses: UserResponses):
+    try:
+        nutrients = analyzer.analyze_responses(responses.dict())
+        recommendations = analyzer.generate_recommendations(nutrients)
+        return {
+            "nutrients": nutrients,
+            "recommendations": recommendations
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 10000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
