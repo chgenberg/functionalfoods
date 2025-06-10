@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useRef, useEffect, useState } from "react";
 
 // Mappa varje punkt till en kroppsdel
 export const dots = [
@@ -61,54 +60,100 @@ export const dots = [
   }
 ];
 
+const imageWidth = 720;
+const imageHeight = 1080;
+const originalCircleSize = 23;
+const overlayButtonSize = 28;
+const offset = (overlayButtonSize - originalCircleSize) / 2;
+
+const points = [
+  { id: "head", label: "Head", x: 360, y: 100 },
+  { id: "chest", label: "Chest", x: 360, y: 280 },
+  { id: "stomache", label: "Stomache", x: 360, y: 400 },
+  { id: "right-arm", label: "Right arm", x: 230, y: 440 },
+  { id: "left-arm", label: "Left arm", x: 490, y: 440 },
+  { id: "genitals", label: "Genitals", x: 360, y: 520 },
+  { id: "right-leg", label: "Right leg", x: 310, y: 830 },
+  { id: "left-leg", label: "Left leg", x: 410, y: 830 },
+];
+
 interface BodyMapProps {
   onSelect: (dotId: string | null) => void;
   selected: string | null;
 }
 
 export default function BodyMap({ onSelect, selected }: BodyMapProps) {
-  const [hoveredDot, setHoveredDot] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth;
+        setScale(width / imageWidth);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div className="relative w-full max-w-md">
-      <Image
-        src="/Silouette.png"
-        alt="Kroppskarta"
-        width={400}
-        height={800}
-        className="w-full h-auto"
-      />
-      
-      {dots.map((dot) => (
-        <div
-          key={dot.id}
-          className={`absolute w-4 h-4 rounded-full cursor-pointer transition-all duration-300 ${
-            selected === dot.id
-              ? "bg-[#4B2E19] scale-125"
-              : hoveredDot === dot.id
-              ? "bg-[#6B3F23] scale-110"
-              : "bg-[#4B2E19] hover:bg-[#6B3F23]"
-          }`}
+    <div style={{ width: "100%", padding: "0.5rem 0" }}>
+      <div
+        ref={containerRef}
+        style={{
+          width: "100%",
+          maxWidth: 320,
+          aspectRatio: `${imageWidth} / ${imageHeight}`,
+          margin: "0 auto",
+          position: "relative",
+        }}
+      >
+        <img
+          src="/Body_map.png"
+          alt="Kroppskarta"
+          width={imageWidth}
+          height={imageHeight}
           style={{
-            left: `${dot.x}%`,
-            top: `${dot.y}%`,
-            transform: "translate(-50%, -50%)",
+            width: "100%",
+            height: "auto",
+            display: "block",
+            objectFit: "contain",
           }}
-          onClick={() => onSelect(dot.id)}
-          onMouseEnter={() => setHoveredDot(dot.id)}
-          onMouseLeave={() => setHoveredDot(null)}
-        >
-          {(selected === dot.id || hoveredDot === dot.id) && (
-            <div
-              className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-white rounded-lg shadow-lg p-2 min-w-[200px] z-10"
-              style={{ whiteSpace: "nowrap" }}
-            >
-              <div className="font-semibold text-[#4B2E19]">{dot.label}</div>
-              <div className="text-sm text-gray-600">{dot.description}</div>
-            </div>
-          )}
-        </div>
-      ))}
+        />
+        {points.map((point) => (
+          <button
+            key={point.id}
+            onClick={() => onSelect(point.id)}
+            style={{
+              position: "absolute",
+              left: `${(point.x / imageWidth) * 100}%`,
+              top: `${(point.y / imageHeight) * 100}%`,
+              width: "24px",
+              height: "24px",
+              transform: 'translate(-50%, -50%)',
+              borderRadius: "50%",
+              background: selected === point.id ? "#4B2E19" : "#8B2323",
+              border: selected === point.id ? "2px solid #fff" : "none",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              zIndex: 10,
+              padding: 0,
+            }}
+            aria-label={point.label}
+            onMouseEnter={(e) => {
+              if (selected !== point.id) {
+                e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translate(-50%, -50%)';
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
