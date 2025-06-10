@@ -1,0 +1,24 @@
+services:
+  # Frontend (Next.js)
+  - type: web
+    name: ulrika-functional-foods
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false
+
+  # Backend (Python/FastAPI)
+  - type: web
+    name: ulrika-functional-foods-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn back:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: OPENAI_API_KEY
+        sync: false 
