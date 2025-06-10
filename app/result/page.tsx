@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import AIChatBox from "../components/AIChatBox";
 import MicronutrientQuestionModal from "../components/MicronutrientQuestionModal";
+import { AnalysisResult } from '../types';
+import Link from 'next/link';
 
 // Färg för siluetten och chattbubblor
 const bubbleColor = "#f3f4f6"; // Samma som siluetten/landningssidan
@@ -43,21 +45,51 @@ const riskProfileLabels = {
 
 export default function ResultPage() {
   const searchParams = useSearchParams();
-  const [result, setResult] = useState<any>(null);
-  const [showMicronutrientPopup, setShowMicronutrientPopup] = useState(false);
+  const data = searchParams.get('data');
+  
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-[#071625] flex items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full mx-4">
+          <h1 className="text-2xl font-bold text-[#4B2E19] mb-4">Ingen data hittades</h1>
+          <p className="text-gray-600 mb-6">Det verkar som att något gick fel. Försök igen.</p>
+          <Link
+            href="/"
+            className="px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] transition-colors inline-block"
+          >
+            Tillbaka till start
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    const data = searchParams.get("data");
-    if (data) setResult(JSON.parse(decodeURIComponent(data)));
-  }, [searchParams]);
-
-  if (!result) return <div className="text-white">Loading...</div>;
+  let result: AnalysisResult;
+  try {
+    result = JSON.parse(decodeURIComponent(data));
+  } catch (error) {
+    return (
+      <div className="min-h-screen bg-[#071625] flex items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full mx-4">
+          <h1 className="text-2xl font-bold text-[#4B2E19] mb-4">Felaktig data</h1>
+          <p className="text-gray-600 mb-6">Det verkar som att analysen inte kunde läsas korrekt. Försök igen.</p>
+          <Link
+            href="/"
+            className="px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] transition-colors inline-block"
+          >
+            Tillbaka till start
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#071625] flex flex-col items-center py-12">
       <h1 className="text-4xl font-extrabold mb-10 text-center tracking-widest text-white" style={{ letterSpacing: "0.15em" }}>
         YOUR PERSONAL HEALTH REPORT
       </h1>
+      
       {/* Video container */}
       <div className="w-full max-w-4xl mb-10">
         <div className="relative">
@@ -106,125 +138,80 @@ export default function ResultPage() {
           </div>
         </div>
       </div>
+
       <div className="w-full flex flex-col items-center">
         <div className="w-full max-w-4xl flex flex-col gap-6">
-          {blocks.map((block, i) => {
-            const value = result[block.key];
-            if (!value) return null;
-
-            // Special rendering for AI chat
-            if (block.key === "aiChatIntro") {
-              return (
-                <div key={block.key} className="flex justify-center w-full">
-                  <div className="w-full flex flex-col items-center">
-                    <div className="text-center text-lg font-semibold mb-4">
-                      {typeof value === "string" ? value : ""}
-                    </div>
-                    <AIChatBox analysis={result} />
-                  </div>
-                </div>
-              );
-            }
-
-            // Special rendering for Holistic Health Advices
-            if (block.key === "holisticAdvices") {
-              return (
-                <div key={block.key} className="flex justify-center w-full">
-                  <div className="rounded-3xl shadow-lg px-8 py-7 max-w-3xl w-full bg-gradient-to-br from-green-50 to-blue-50 border border-green-200">
-                    <div className="font-bold mb-3 tracking-wide uppercase text-base text-green-900">
-                      {block.title}
-                    </div>
-                    <HolisticAdvicesBlock value={value} />
-                  </div>
-                </div>
-              );
-            }
-
-            // Special rendering for risk profile
-            if (block.key === "riskProfile") {
-              // Filtrera labels så att bara de som finns i resultatet visas
-              const relevantKeys = Object.keys(value || {});
-              const filteredLabels = Object.fromEntries(
-                Object.entries(riskProfileLabels).filter(([key]) => relevantKeys.includes(key))
-              );
-
-              return (
-                <div key={block.key} className="flex justify-center w-full">
-                  <div className="rounded-3xl shadow-lg px-10 py-8 max-w-4xl w-full bg-white border border-gray-200 mb-8">
-                    <div className="font-bold mb-2 tracking-wide uppercase text-2xl text-[#4B2E19] text-center">
-                      {block.title}
-                    </div>
-                    <div className="text-xs text-gray-500 text-center mb-6">
-                      Click on a profile for more information
-                    </div>
-                    <RiskProfileDashboard value={value} labels={filteredLabels} />
-                  </div>
-                </div>
-              );
-            }
-
-            // Special rendering for micronutrients
-            if (block.key === "micronutrients") {
-              return (
-                <div key={block.key} className="flex justify-center w-full">
-                  <div className="rounded-3xl shadow-lg px-10 py-8 max-w-4xl w-full bg-white border border-gray-200 mb-8">
-                    <div className="font-bold mb-2 tracking-wide uppercase text-2xl text-[#4B2E19] text-center">
-                      {block.title}
-                    </div>
-                    <MicronutrientTable
-                      data={value}
-                      onStartAnalysis={() => setShowMicronutrientPopup(true)}
-                    />
-                  </div>
-                </div>
-              );
-            }
-
-            // Övriga block: chattbubblor ut mot kanterna
-            const alignRight = i % 2 === 1;
-            const bubbleBg = alignRight ? bubbleAltColor : bubbleColor;
-            const textColor = "#222";
-
-            return (
-              <div
-                key={block.key}
-                className={`flex ${alignRight ? "justify-end" : "justify-start"} w-full`}
-              >
-                <div
-                  className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300"
-                  style={{
-                    background: bubbleBg,
-                    color: textColor,
-                    borderTopLeftRadius: alignRight ? "2rem" : "0.5rem",
-                    borderTopRightRadius: alignRight ? "0.5rem" : "2rem",
-                    borderBottomLeftRadius: "2rem",
-                    borderBottomRightRadius: "2rem",
-                    marginLeft: alignRight ? "auto" : "0",
-                    marginRight: alignRight ? "0" : "auto",
-                  }}
-                >
-                  <div className="font-bold mb-2 tracking-wide uppercase text-sm" style={{ color: "#222" }}>
-                    {block.title}
-                  </div>
-                  <ChatBlockContent blockKey={block.key} value={value} />
-                </div>
+          {/* Summary */}
+          <div className="flex justify-start w-full">
+            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-blue-50 to-green-50 border border-blue-200">
+              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-blue-900">
+                SAMMANFATTNING
               </div>
-            );
-          })}
+              <p className="text-gray-700">{result.summary}</p>
+            </div>
+          </div>
+
+          {/* Recommendations */}
+          <div className="flex justify-end w-full">
+            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200">
+              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-green-900">
+                REKOMMENDATIONER
+              </div>
+              <ul className="space-y-2">
+                {result.recommendations.map((rec, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="text-green-900 mr-2">•</span>
+                    <span className="text-gray-700">{rec}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Functional Foods */}
+          <div className="flex justify-start w-full">
+            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-blue-50 to-green-50 border border-blue-200">
+              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-blue-900">
+                FUNKTIONELLA LIVSMEDEL
+              </div>
+              <ul className="space-y-2">
+                {result.functionalFoods.map((food, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="text-blue-900 mr-2">•</span>
+                    <span className="text-gray-700">{food}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Lifestyle Changes */}
+          <div className="flex justify-end w-full">
+            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200">
+              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-green-900">
+                LIVSSTILSFÖRÄNDRINGAR
+              </div>
+              <ul className="space-y-2">
+                {result.lifestyleChanges.map((change, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="text-green-900 mr-2">•</span>
+                    <span className="text-gray-700">{change}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
           <div className="flex justify-center mt-10">
-            <a
+            <Link
               href="/"
               className="px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] shadow-lg transition-all duration-300"
             >
-              Back to Start
-            </a>
+              Tillbaka till start
+            </Link>
           </div>
         </div>
       </div>
-      {showMicronutrientPopup && (
-        <MicronutrientQuestionModal onClose={() => setShowMicronutrientPopup(false)} />
-      )}
     </div>
   );
 }

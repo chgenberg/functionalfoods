@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -8,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Min App",
-  description: "En modern webbapplikation byggd med Next.js",
+  title: "Functional Foods - Förbättra din hälsa genom funktionell kost",
+  description: "Utbildning och kunskap om funktionell kost och livsstil för bättre hälsa.",
 };
 
 export default function RootLayout({
@@ -20,9 +22,13 @@ export default function RootLayout({
   return (
     <html lang="sv">
       <body className={`${inter.className} antialiased min-h-screen flex flex-col`}>
-        <main className="flex-grow">
-          {children}
-        </main>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow pt-20">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
