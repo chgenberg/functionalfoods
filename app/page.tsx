@@ -85,9 +85,14 @@ export default function Home() {
   const [privacyChecked, setPrivacyChecked] = useState(false);
   const [emailStepDone, setEmailStepDone] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
 
   async function handleAskQuestions() {
     if (!selectedDot || !description) return;
+    if (!emailStepDone) {
+      setShowEmailPopup(true);
+      return;
+    }
     setLoadingPopup({ visible: true, messages: ["Thinking...", "Preparing questions...", "Soon ready..."], durations: [3000, 3500, 900] });
     try {
       setLoading(true);
@@ -224,7 +229,7 @@ export default function Home() {
 
       <input
         type="text"
-        placeholder="Describe your problem..."
+        placeholder="Beskriv ditt problem..."
         value={description}
         onChange={e => setDescription(e.target.value)}
         className="mt-8 px-4 py-2 rounded-lg bg-[#071625] text-white border border-gray-600 w-80 focus:outline-none focus:ring-2 focus:ring-[#4B2E19] shadow-md transition-all duration-300"
@@ -236,31 +241,37 @@ export default function Home() {
         className="mt-4 px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={!selectedDot || !description || loading}
       >
-        {loading ? "Thinking..." : "SEND"}
+        {loading ? "Analyserar..." : "ANALYSERA"}
       </button>
 
       <div className="mt-2 flex flex-col items-center">
-        <span className="text-xs text-white mb-1">or...</span>
+        <span className="text-xs text-white mb-1">eller...</span>
         <button
           className="text-sm text-white underline hover:text-gray-200 transition"
-          onClick={() => setShowMicronutrientPopup(true)}
+          onClick={() => {
+            if (!emailStepDone) {
+              setShowEmailPopup(true);
+            } else {
+              setShowMicronutrientPopup(true);
+            }
+          }}
           type="button"
         >
-          do our micronutrient test
+          gör vårt näringsanalys-test
         </button>
       </div>
       
-      {/* Email step before questions */}
-      {!emailStepDone && (
+      {/* Email popup */}
+      {showEmailPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
           <div className="bg-white rounded-3xl p-8 max-w-lg w-full min-h-[320px] shadow-2xl flex flex-col items-center relative">
-            <h2 className="text-xl font-bold mb-6 text-gray-800">Before you start</h2>
+            <h2 className="text-xl font-bold mb-6 text-gray-800">Innan du börjar</h2>
             <label className="w-full mb-4">
-              <span className="block text-gray-700 font-medium mb-1">Your email address</span>
+              <span className="block text-gray-700 font-medium mb-1">Din e-postadress</span>
               <input
                 type="email"
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#4B2E19] bg-[#f3f4f6] text-gray-800 shadow transition-all duration-300"
-                placeholder="you@email.com"
+                placeholder="du@email.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
@@ -272,30 +283,43 @@ export default function Home() {
                 checked={privacyChecked}
                 onChange={e => setPrivacyChecked(e.target.checked)}
               />
-              <span className="text-gray-700 text-sm">I agree with the privacy policy</span>
+              <span className="text-gray-700 text-sm">Jag godkänner integritetspolicyn</span>
             </label>
             <div className="text-xs text-gray-500 mb-4 text-center">
-              We hate SPAM and will never share your information to a 3rd party.
+              Vi hatar spam och kommer aldrig att dela din information med tredje part.
             </div>
             {emailError && <div className="text-red-600 text-sm mb-2">{emailError}</div>}
             <button
               className="px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
-                // Enkel e-postvalidering
                 if (!email.match(/^[^@]+@[^@]+\.[^@]+$/)) {
-                  setEmailError("Please enter a valid email address.");
+                  setEmailError("Vänligen ange en giltig e-postadress.");
                   return;
                 }
                 if (!privacyChecked) {
-                  setEmailError("You must agree with the privacy policy.");
+                  setEmailError("Du måste godkänna integritetspolicyn.");
                   return;
                 }
                 setEmailError("");
                 setEmailStepDone(true);
+                setShowEmailPopup(false);
+                if (showMicronutrientPopup) {
+                  setShowMicronutrientPopup(true);
+                } else {
+                  handleAskQuestions();
+                }
               }}
               disabled={!email || !privacyChecked}
             >
-              Start
+              Börja
+            </button>
+            <button
+              type="button"
+              className="absolute right-4 top-4 text-2xl font-bold text-[#4B2E19] hover:text-[#6B3F23] transition shadow-md"
+              onClick={() => setShowEmailPopup(false)}
+              aria-label="Stäng"
+            >
+              ×
             </button>
           </div>
         </div>
