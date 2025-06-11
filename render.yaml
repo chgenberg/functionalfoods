@@ -16,11 +16,13 @@ services:
     name: functional-foods-backend
     env: python
     buildCommand: |
-      python3.11 -m pip install --upgrade pip
-      python3.11 -m pip install -r requirements.txt
-    startCommand: python3.11 -m uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: PYTHONPATH
-        value: . 
+        value: .
+      - key: PORT
+        value: 10000 
