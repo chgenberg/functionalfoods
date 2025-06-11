@@ -150,9 +150,11 @@ export default function Home() {
       {/* Hero Section - More compact */}
       <section className="container-custom pt-4 md:pt-6 pb-6 md:pb-8">
         <div className="text-center max-w-3xl mx-auto mb-4 md:mb-6">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-light mb-2 animate-fade-in">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 animate-fade-in tracking-tight">
             ANALYSERA DIN HÄLSA MED{" "}
-            <span className="text-gradient">FUNCTIONAL FOODS</span>
+            <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">
+              FUNCTIONAL FOODS
+            </span>
           </h1>
           <p className="text-sm md:text-base text-text-secondary animate-fade-in px-4" style={{ animationDelay: '0.2s' }}>
             Få personliga kostråd baserat på dina hälsoutmaningar.

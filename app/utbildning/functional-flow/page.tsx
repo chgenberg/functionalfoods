@@ -58,8 +58,8 @@ export default function FunctionalFlowPage() {
 
           {/* Course Info */}
           <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-light mb-4">
-              Functional <span className="text-gradient">Flow</span>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
+              Functional <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">Flow</span>
             </h1>
             
             <div className="flex items-center gap-4 text-text-secondary mb-6">

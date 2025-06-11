@@ -24,13 +24,13 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
   return (
     <button
       onClick={handleAddToCart}
-      className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-colors ${
+      className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 ${
         isAdded
-          ? 'bg-green-500 text-white'
-          : 'bg-primary text-white hover:bg-primary/90'
+          ? 'bg-green-500 text-white shadow-lg'
+          : 'bg-primary text-white hover:bg-primary/90 shadow-md hover:shadow-lg'
       }`}
     >
-      <ShoppingCart className="w-5 h-5" />
+      <ShoppingCart className={`w-5 h-5 transition-transform duration-300 ${isAdded ? 'rotate-12' : ''}`} />
       {isAdded ? 'Tillagd i varukorg' : 'Lägg i varukorg'}
     </button>
   );

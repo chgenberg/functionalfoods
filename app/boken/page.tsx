@@ -13,8 +13,8 @@ export default function BookPage() {
       <div className="container-custom section-padding">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-light mb-4">
-            Functional Foods: <span className="text-gradient">Mat för ett friskare liv</span>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
+            Functional Foods: <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">Mat för ett friskare liv</span>
           </h1>
           <p className="text-lg text-text-secondary">
             Din guide till en hälsosammare livsstil genom smart kost
