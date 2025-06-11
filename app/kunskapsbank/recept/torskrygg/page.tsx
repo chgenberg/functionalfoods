@@ -2,7 +2,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowLeft, Clock, Users, ChefHat, Heart, Zap, CheckCircle, Star, Share2, Bookmark, Timer, ChevronDown, ChevronUp } from 'lucide-react';
+import { FiClock, FiUsers, FiArrowLeft, FiHeart, FiZap, FiCheckCircle, FiStar, FiShare2, FiBookmark, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { GiCookingPot } from 'react-icons/gi';
 
 export default function TorskryggRecipe() {
   const [servings, setServings] = useState(2);
@@ -104,7 +105,7 @@ export default function TorskryggRecipe() {
         {/* Back button */}
         <div className="absolute top-8 left-8">
           <Link href="/kunskapsbank/recept" className="flex items-center gap-2 text-white hover:text-white/80 transition-colors bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full">
-            <ArrowLeft className="w-5 h-5" />
+            <FiArrowLeft className="w-4 h-4 mr-2" />
             <span>Tillbaka till recept</span>
           </Link>
         </div>
@@ -112,10 +113,10 @@ export default function TorskryggRecipe() {
         {/* Action buttons */}
         <div className="absolute top-8 right-8 flex gap-3">
           <button className="bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors">
-            <Share2 className="w-5 h-5" />
+            <FiShare2 className="w-5 h-5" />
           </button>
           <button className="bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors">
-            <Bookmark className="w-5 h-5" />
+            <FiBookmark className="w-5 h-5" />
           </button>
         </div>
 
@@ -129,7 +130,7 @@ export default function TorskryggRecipe() {
                 </span>
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <FiStar className="w-4 h-4" />
                   ))}
                   <span className="text-white/80 ml-2 text-sm">(4.9)</span>
                 </div>
@@ -142,15 +143,15 @@ export default function TorskryggRecipe() {
               </p>
               <div className="flex items-center gap-6 text-white/80">
                 <span className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
+                  <FiClock className="w-8 h-8" />
                   20 min
                 </span>
                 <span className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
+                  <FiUsers className="w-8 h-8" />
                   {servings} portioner
                 </span>
                 <span className="flex items-center gap-2">
-                  <ChefHat className="w-5 h-5" />
+                  <GiCookingPot className="w-5 h-5" />
                   Lätt
                 </span>
               </div>
@@ -165,22 +166,22 @@ export default function TorskryggRecipe() {
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 animate-fade-in">
             <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
-              <Heart className="w-8 h-8 text-red-500 mx-auto mb-2" />
+              <FiHeart className="w-8 h-8" />
               <p className="text-2xl font-bold text-primary">{nutritionPer100g.calories * servings}</p>
               <p className="text-sm text-text-secondary">Kalorier totalt</p>
             </div>
             <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
-              <Zap className="w-8 h-8 text-accent mx-auto mb-2" />
+              <FiZap className="w-8 h-8" />
               <p className="text-2xl font-bold text-primary">{nutritionPer100g.protein * servings}g</p>
               <p className="text-sm text-text-secondary">Protein</p>
             </div>
             <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
-              <Timer className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+              <FiClock className="w-8 h-8" />
               <p className="text-2xl font-bold text-primary">20</p>
               <p className="text-sm text-text-secondary">Minuter</p>
             </div>
             <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
-              <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+              <FiCheckCircle className="w-8 h-8" />
               <p className="text-2xl font-bold text-primary">12</p>
               <p className="text-sm text-text-secondary">Steg</p>
             </div>
@@ -197,8 +198,8 @@ export default function TorskryggRecipe() {
                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {expandedSections.includes('ingredients') ? 
-                      <ChevronUp className="w-5 h-5" /> : 
-                      <ChevronDown className="w-5 h-5" />
+                      <FiChevronUp className="w-5 h-5" /> : 
+                      <FiChevronDown className="w-5 h-5" />
                     }
                   </button>
                 </div>
@@ -242,7 +243,7 @@ export default function TorskryggRecipe() {
                                 : 'border-gray-300 hover:border-accent'
                             }`}>
                               {checkedIngredients.includes(index) && (
-                                <CheckCircle className="w-3 h-3 text-white" />
+                                <FiCheckCircle className="w-3 h-3 text-white" />
                               )}
                             </div>
                             <span className="flex-1">
@@ -270,7 +271,7 @@ export default function TorskryggRecipe() {
                                 : 'border-gray-300 hover:border-accent'
                             }`}>
                               {checkedIngredients.includes(index + 10) && (
-                                <CheckCircle className="w-3 h-3 text-white" />
+                                <FiCheckCircle className="w-3 h-3 text-white" />
                               )}
                             </div>
                             <span className="flex-1">
@@ -318,7 +319,7 @@ export default function TorskryggRecipe() {
                       onClick={() => startTimer(15)}
                       className="flex items-center gap-2 bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition-colors"
                     >
-                      <Timer className="w-4 h-4" />
+                      <FiClock className="w-4 h-4" />
                       Timer (15 min)
                     </button>
                     <button 
@@ -326,8 +327,8 @@ export default function TorskryggRecipe() {
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                     >
                       {expandedSections.includes('instructions') ? 
-                        <ChevronUp className="w-5 h-5" /> : 
-                        <ChevronDown className="w-5 h-5" />
+                        <FiChevronUp className="w-5 h-5" /> : 
+                        <FiChevronDown className="w-5 h-5" />
                       }
                     </button>
                   </div>
@@ -349,7 +350,7 @@ export default function TorskryggRecipe() {
                             : 'bg-accent text-white'
                         }`}>
                           {checkedSteps.includes(index) ? 
-                            <CheckCircle className="w-4 h-4" /> : 
+                            <FiCheckCircle className="w-4 h-4" /> : 
                             index + 1
                           }
                         </div>
@@ -364,7 +365,7 @@ export default function TorskryggRecipe() {
                 {/* Tips Section */}
                 <div className="mt-8 p-6 bg-blue-50 rounded-xl">
                   <h3 className="font-bold text-primary mb-3 uppercase flex items-center gap-2">
-                    <ChefHat className="w-5 h-5" />
+                    <GiCookingPot className="w-5 h-5" />
                     Tips från kocken
                   </h3>
                   <ul className="space-y-2 text-sm text-gray-700">

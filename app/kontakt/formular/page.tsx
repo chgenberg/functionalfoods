@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { Send, Mail, User, MessageSquare, Sparkles, Phone, MapPin, Clock } from 'lucide-react';
+import { FiMail, FiPhone, FiMapPin, FiSend } from 'react-icons/fi';
 
 export default function KontaktFormular() {
   const [formData, setFormData] = useState({
@@ -34,7 +34,7 @@ export default function KontaktFormular() {
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4">
-            <Sparkles className="w-4 h-4" />
+            <FiSend className="w-4 h-4" />
             <span>Vi svarar inom 24 timmar</span>
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
@@ -52,7 +52,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <Phone className="w-6 h-6 text-accent" />
+                  <FiPhone className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">Telefon</h3>
@@ -64,7 +64,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <Mail className="w-6 h-6 text-accent" />
+                  <FiMail className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">E-post</h3>
@@ -76,7 +76,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-accent" />
+                  <FiMapPin className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">Adress</h3>
@@ -88,7 +88,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.5s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-accent" />
+                  <FiSend className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">Öppettider</h3>
@@ -108,7 +108,7 @@ export default function KontaktFormular() {
                       Namn
                     </label>
                     <div className="relative">
-                      <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'namn' ? 'text-accent' : 'text-gray-400'}`} />
+                      <FiMail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'namn' ? 'text-accent' : 'text-gray-400'}`} />
                       <input
                         type="text"
                         id="namn"
@@ -128,7 +128,7 @@ export default function KontaktFormular() {
                       E-post
                     </label>
                     <div className="relative">
-                      <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'email' ? 'text-accent' : 'text-gray-400'}`} />
+                      <FiMail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'email' ? 'text-accent' : 'text-gray-400'}`} />
                       <input
                         type="email"
                         id="email"
@@ -149,7 +149,7 @@ export default function KontaktFormular() {
                     Ämne
                   </label>
                   <div className="relative">
-                    <MessageSquare className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'amne' ? 'text-accent' : 'text-gray-400'}`} />
+                    <FiSend className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'amne' ? 'text-accent' : 'text-gray-400'}`} />
                     <input
                       type="text"
                       id="amne"
@@ -198,7 +198,7 @@ export default function KontaktFormular() {
                     ) : (
                       <>
                         Skicka meddelande
-                        <Send className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        <FiSend className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </span>
@@ -225,7 +225,7 @@ export default function KontaktFormular() {
             </p>
             <a href="/kontakt/faq" className="btn-secondary inline-flex items-center">
               Se vanliga frågor
-              <Sparkles className="ml-2 w-4 h-4" />
+              <FiSend className="ml-2 w-4 h-4" />
             </a>
           </div>
         </div>

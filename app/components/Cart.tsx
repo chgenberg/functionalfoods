@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from '../context/CartContext';
-import { Trash2, Plus, Minus } from 'lucide-react';
+import { FiTrash2, FiPlus, FiMinus } from 'react-icons/fi';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -47,14 +47,14 @@ export default function Cart() {
                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                 className="p-1 hover:bg-gray-100 rounded"
               >
-                <Minus className="w-4 h-4" />
+                <FiMinus className="w-4 h-4" />
               </button>
               <span className="w-8 text-center">{item.quantity}</span>
               <button
                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                 className="p-1 hover:bg-gray-100 rounded"
               >
-                <Plus className="w-4 h-4" />
+                <FiPlus className="w-4 h-4" />
               </button>
             </div>
             <div className="w-24 text-right">
@@ -64,7 +64,7 @@ export default function Cart() {
               onClick={() => removeItem(item.id)}
               className="p-2 hover:bg-red-50 rounded text-red-600"
             >
-              <Trash2 className="w-5 h-5" />
+              <FiTrash2 className="w-5 h-5" />
             </button>
           </div>
         ))}

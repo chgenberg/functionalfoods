@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { Search, ArrowLeft, FileText, Utensils, MessageCircle, Filter } from 'lucide-react';
+import { FiSearch, FiArrowLeft } from 'react-icons/fi';
 import Link from 'next/link';
 
 export default function Sok() {
@@ -15,7 +15,7 @@ export default function Sok() {
       title: "Antiinflammatorisk kost - En guide",
       excerpt: "Lär dig hur du kan minska inflammation i kroppen genom rätt kostval...",
       type: "article",
-      icon: FileText,
+      icon: FiSearch,
       href: "/kunskapsbank/blogg/antiinflammatorisk-kost"
     },
     {
@@ -23,7 +23,7 @@ export default function Sok() {
       title: "Gröna smoothies för energi",
       excerpt: "Recept på näringsrika smoothies som ger dig energi hela dagen...",
       type: "recipe",
-      icon: Utensils,
+      icon: FiSearch,
       href: "/kunskapsbank/recept/grona-smoothies"
     },
     {
@@ -31,7 +31,7 @@ export default function Sok() {
       title: "Vad är probiotika?",
       excerpt: "Allt du behöver veta om probiotika och dess hälsofördelar...",
       type: "faq",
-      icon: MessageCircle,
+      icon: FiSearch,
       href: "/kontakt/faq#probiotika"
     }
   ];
@@ -63,7 +63,7 @@ export default function Sok() {
       <div className="container-custom section-padding">
         {/* Back Link */}
         <Link href="/kunskapsbank" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <FiArrowLeft className="w-4 h-4 mr-2" />
           Tillbaka till kunskapsbank
         </Link>
 
@@ -88,7 +88,7 @@ export default function Sok() {
                 placeholder="Vad letar du efter?"
                 className="w-full px-6 py-4 pl-14 rounded-2xl bg-white shadow-lg text-lg focus:outline-none focus:ring-2 focus:ring-accent focus:shadow-xl transition-all duration-200"
               />
-              <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
               <button
                 type="submit"
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 btn-primary px-6 py-2"
@@ -100,7 +100,7 @@ export default function Sok() {
 
           {/* Filters */}
           <div className="flex items-center justify-center gap-2 mt-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <Filter className="w-4 h-4 text-text-secondary" />
+            <FiSearch className="w-4 h-4 text-text-secondary" />
             {filters.map((filter) => (
               <button
                 key={filter.value}
@@ -151,7 +151,7 @@ export default function Sok() {
                 </>
               ) : (
                 <div className="text-center py-12">
-                  <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <FiSearch className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                   <p className="text-text-secondary">Inga resultat hittades för "{searchQuery}"</p>
                   <p className="text-sm text-text-secondary mt-2">Prova att söka med andra ord</p>
                 </div>

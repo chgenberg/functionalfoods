@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Share2, Bookmark } from 'lucide-react';
+import { FiArrowLeft, FiClock, FiCalendar, FiShare2, FiBookmark } from 'react-icons/fi';
 
 export default function FunctionalFoodsBlogPost() {
   return (
@@ -19,7 +19,7 @@ export default function FunctionalFoodsBlogPost() {
         {/* Back button */}
         <div className="absolute top-8 left-8">
           <Link href="/kunskapsbank/blogg" className="flex items-center gap-2 text-white hover:text-white/80 transition-colors">
-            <ArrowLeft className="w-5 h-5" />
+            <FiArrowLeft className="w-4 h-4 mr-2" />
             <span>Tillbaka till bloggen</span>
           </Link>
         </div>
@@ -36,11 +36,11 @@ export default function FunctionalFoodsBlogPost() {
               </h1>
               <div className="flex items-center gap-6 text-white/80">
                 <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
+                  <FiCalendar className="w-4 h-4" />
                   15 januari 2024
                 </span>
                 <span className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
+                  <FiClock className="w-4 h-4" />
                   5 min läsning
                 </span>
               </div>
@@ -55,10 +55,10 @@ export default function FunctionalFoodsBlogPost() {
           {/* Share buttons */}
           <div className="flex justify-end gap-4 mb-8">
             <button className="p-3 rounded-full bg-background-secondary hover:bg-gray-200 transition-colors">
-              <Share2 className="w-5 h-5 text-text-secondary" />
+              <FiShare2 className="w-5 h-5" />
             </button>
             <button className="p-3 rounded-full bg-background-secondary hover:bg-gray-200 transition-colors">
-              <Bookmark className="w-5 h-5 text-text-secondary" />
+              <FiBookmark className="w-5 h-5" />
             </button>
           </div>
 
