@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import BodyMap, { dots } from "./components/BodyMap";
 import { Question, UserResponse } from "@/app/types";
 import MicronutrientQuestionModal from "./components/MicronutrientQuestionModal";
@@ -346,13 +347,13 @@ export default function Home() {
             <div className="relative z-10">
               <h2 className="text-2xl md:text-3xl font-bold mb-4">Redo att börja din hälsoresa?</h2>
               <p className="text-lg mb-6 opacity-90">Starta din personliga hälsoanalys nu och få skräddarsydda rekommendationer direkt.</p>
-              <button 
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              <Link 
+                href="/utbildning"
                 className="bg-white text-accent px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors duration-200 inline-flex items-center gap-2 group"
               >
                 Börja nu
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
