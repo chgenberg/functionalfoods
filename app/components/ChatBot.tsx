@@ -154,10 +154,12 @@ export default function ChatBot() {
                 {message.sender === 'bot' ? (
                   <div 
                     className="text-sm prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: message.text }}
+                    dangerouslySetInnerHTML={{ 
+                      __html: message.text.replace(/\n/g, '<br />')
+                    }}
                   />
                 ) : (
-                  <p className="text-sm">{message.text}</p>
+                  <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                 )}
                 <p className="text-xs opacity-70 mt-1">
                   {message.timestamp.toLocaleTimeString('sv-SE', {

@@ -277,59 +277,6 @@ export const bodyPartQuestions: Record<string, Question[]> = {
       type: "text"
     }
   ],
-  genitals: [
-    {
-      id: "genitals-1",
-      question: "Vad är ditt huvudsakliga problem – smärta, klåda, utslag, urinbesvär?",
-      type: "multiple-choice",
-      options: ["Smärta", "Klåda", "Utslag", "Urinbesvär"]
-    },
-    {
-      id: "genitals-2",
-      question: "När började symtomen och hur har de utvecklats?",
-      type: "text"
-    },
-    {
-      id: "genitals-3",
-      question: "Kopplas besvären till menscykel, sexuell aktivitet eller träning?",
-      type: "text"
-    },
-    {
-      id: "genitals-4",
-      question: "Har du sveda eller blod vid urinering?",
-      type: "text"
-    },
-    {
-      id: "genitals-5",
-      question: "Hur ofta dricker du vatten/örttéer per dag?",
-      type: "text"
-    },
-    {
-      id: "genitals-6",
-      question: "Använder du snäva kläder eller syntetiska underkläder vid träning?",
-      type: "text"
-    },
-    {
-      id: "genitals-7",
-      question: "Har du bytt tvättmedel, intimprodukter eller preventivmedel nyligen?",
-      type: "text"
-    },
-    {
-      id: "genitals-8",
-      question: "Intar du tranbär, probiotika eller D-mannos regelbundet?",
-      type: "text"
-    },
-    {
-      id: "genitals-9",
-      question: "Har du eller partnern testats för könssjukdomar senaste året?",
-      type: "text"
-    },
-    {
-      id: "genitals-10",
-      question: "Har du haft plötslig, kraftig smärta, hög feber eller synlig blödning?",
-      type: "text"
-    }
-  ],
   "right-arm": [
     {
       id: "right-arm-1",
@@ -540,6 +487,59 @@ export const bodyPartQuestions: Record<string, Question[]> = {
     {
       id: "left-leg-10",
       question: "Har du ramlat eller haft plötslig, kraftig smärta som hindrar belastning?",
+      type: "text"
+    }
+  ],
+  genitals: [
+    {
+      id: "genitals-1",
+      question: "Vad är ditt huvudsakliga problem – smärta, klåda, utslag, urinbesvär?",
+      type: "multiple-choice",
+      options: ["Smärta", "Klåda", "Utslag", "Urinbesvär"]
+    },
+    {
+      id: "genitals-2",
+      question: "När började symtomen och hur har de utvecklats?",
+      type: "text"
+    },
+    {
+      id: "genitals-3",
+      question: "Kopplas besvären till menscykel, sexuell aktivitet eller träning?",
+      type: "text"
+    },
+    {
+      id: "genitals-4",
+      question: "Har du sveda eller blod vid urinering?",
+      type: "text"
+    },
+    {
+      id: "genitals-5",
+      question: "Hur ofta dricker du vatten/örttéer per dag?",
+      type: "text"
+    },
+    {
+      id: "genitals-6",
+      question: "Använder du snäva kläder eller syntetiska underkläder vid träning?",
+      type: "text"
+    },
+    {
+      id: "genitals-7",
+      question: "Har du bytt tvättmedel, intimprodukter eller preventivmedel nyligen?",
+      type: "text"
+    },
+    {
+      id: "genitals-8",
+      question: "Intar du tranbär, probiotika eller D-mannos regelbundet?",
+      type: "text"
+    },
+    {
+      id: "genitals-9",
+      question: "Har du eller partnern testats för könssjukdomar senaste året?",
+      type: "text"
+    },
+    {
+      id: "genitals-10",
+      question: "Har du haft plötslig, kraftig smärta, hög feber eller synlig blödning?",
       type: "text"
     }
   ]

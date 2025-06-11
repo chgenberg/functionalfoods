@@ -94,7 +94,7 @@ export default function AdressPage() {
                     {info.icon && <info.icon className="w-5 h-5 text-accent" />}
                   </div>
                   <div className="ml-4">
-                    <h3 className="font-medium text-primary mb-1">{info.title}</h3>
+                    <h3 className="font-semibold text-primary mb-1 text-lg md:text-xl tracking-wide uppercase letter-spacing-wider">{info.title}</h3>
                     {info.content.map((line, i) => (
                       <p key={i} className="text-text-secondary">{line}</p>
                     ))}

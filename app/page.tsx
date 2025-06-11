@@ -137,33 +137,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
-      {/* Hero Section with Image */}
-      <section className="relative h-[80vh] w-full overflow-hidden">
-        {/* Hero Image */}
-        <Image
-          src="/leaflet2.png"
-          alt="Functional Foods"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/40"></div>
-        
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <div className="text-center text-white max-w-4xl mx-auto px-4">
-            <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-6 animate-fade-in">
-              Functional Foods
-            </h1>
-            <p className="text-xl md:text-2xl font-light mb-8 animate-fade-in animation-delay-200">
-              Mat som medicin för kropp och själ
-            </p>
-            <button 
-              onClick={() => scrollToAnalysis()}
-              className="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400"
-            >
-              Starta din hälsoresa
-            </button>
-          </div>
+      {/* Hero Section with Leaf Background */}
+      <section className="relative w-full overflow-hidden h-[60vh] flex items-center justify-center" style={{ backgroundImage: 'url(/leaf.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="relative z-10 flex flex-col items-center justify-center w-full px-4">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-light tracking-tight mb-4 sm:mb-6 text-white animate-fade-in text-center">
+            Functional Foods
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl font-light mb-6 sm:mb-8 text-white animate-fade-in animation-delay-200 text-center">
+            Mat som medicin för kropp och själ
+          </p>
+          <button 
+            onClick={() => scrollToAnalysis()}
+            className="bg-white text-primary hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-base sm:text-lg"
+          >
+            Starta din hälsoresa
+          </button>
         </div>
       </section>
 
@@ -173,6 +162,9 @@ export default function Home() {
           <h2 className="text-3xl font-light text-center mb-8 text-gray-800">
             BESKRIV DINA BESVÄR
           </h2>
+          <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+            Klicka på den del av kroppen där du upplever besvär. Detta hjälper oss att förstå dina symptom bättre och ge dig mer relevanta rekommendationer.
+          </p>
           
           <div className="relative">
             {/* Body Map - No white background */}
@@ -182,7 +174,7 @@ export default function Home() {
             
             {/* Description Bubble */}
             {selectedDot && (
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
                 <div className="bg-white rounded-3xl shadow-2xl p-6 animate-scale-in min-w-[350px] max-w-md">
                   <button
                     onClick={() => setSelectedDot(null)}

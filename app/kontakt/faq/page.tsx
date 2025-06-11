@@ -186,7 +186,7 @@ export default function FAQ() {
               className="animate-fade-in"
               style={{ animationDelay: `${0.3 + sectionIndex * 0.1}s` }}
             >
-              <h2 className="text-2xl font-light text-primary mb-6 flex items-center">
+              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-6 flex items-center tracking-wide uppercase letter-spacing-wider">
                 <FiMessageCircle className="w-6 h-6 text-accent mr-3" />
                 {section.title}
               </h2>

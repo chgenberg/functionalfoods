@@ -4,6 +4,7 @@ import { Question, bodyPartQuestions, AnalysisResult } from '../types';
 import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import LoadingAnalysis from './LoadingAnalysis';
+import { GiSparkles } from 'react-icons/gi';
 
 interface QuestionnaireProps {
   bodyPart: string;
@@ -17,7 +18,17 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
   const [answers, setAnswers] = useState<string[]>([]);
   const [textInput, setTextInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoadingPopup, setShowLoadingPopup] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
   const questions = bodyPartQuestions[bodyPart] || [];
+
+  const loadingMessages = [
+    "Analyserar dina svar...",
+    "Genererar personliga rekommendationer...",
+    "Förbereder din hälsoplan..."
+  ];
+  const loadingDurations = [3000, 3000, 1000];
 
   const handleAnswer = (answer: string) => {
     const newAnswers = [...answers];
@@ -33,8 +44,15 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
   };
 
   const handleComplete = async () => {
+    setShowLoadingPopup(true);
+    setLoadingError(null);
     setIsLoading(true);
-    
+    setLoadingStep(0);
+    // Animate loading steps
+    for (let i = 1; i < loadingMessages.length; i++) {
+      await new Promise(res => setTimeout(res, loadingDurations[i - 1]));
+      setLoadingStep(i);
+    }
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -53,15 +71,12 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
       }
 
       const result = await response.json();
-      
-      // Spara resultatet i localStorage för att kunna visa det på resultatsidan
       localStorage.setItem('analysisResult', JSON.stringify(result));
-      
-      // Navigera till resultatsidan
       router.push('/dummy-result');
     } catch (error) {
-      console.error('Error analyzing:', error);
+      setLoadingError('Något gick fel vid analysen. Försök igen.');
       setIsLoading(false);
+      setShowLoadingPopup(false);
     }
   };
 
@@ -151,6 +166,35 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
         );
     }
   };
+
+  if (showLoadingPopup) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl px-12 py-10 flex flex-col items-center shadow-2xl max-w-md w-full mx-4 animate-fade-in">
+          <div className="w-full h-2 bg-gray-200 rounded-full mb-8 overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-accent to-accent-hover rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${((loadingStep + 1) / loadingMessages.length) * 100}%` }}
+            />
+          </div>
+          <GiSparkles className="w-12 h-12 text-accent mb-4 animate-pulse" />
+          <div className="text-xl font-medium text-primary mb-2 text-center">{loadingMessages[loadingStep]}</div>
+          <div className="text-sm text-text-secondary">Vänligen vänta medan vi bearbetar din information...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadingError) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl px-8 py-6 shadow-2xl max-w-md w-full mx-4 animate-fade-in text-center">
+          <div className="text-red-600 text-lg font-semibold mb-4">{loadingError}</div>
+          <button onClick={() => setLoadingError(null)} className="mt-2 px-6 py-2 bg-accent text-white rounded-full">Stäng</button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <LoadingAnalysis />;

@@ -8,10 +8,19 @@ const openai = new OpenAI({
 // Läs in kursinformation
 async function getCourseInfo() {
   try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const [basicsResponse, flowResponse] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/functionalbasics.txt`),
-      fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/functionalflow.txt`)
+      fetch(`${baseUrl}/functionalbasics.txt`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' })
     ]);
+    
+    if (!basicsResponse.ok || !flowResponse.ok) {
+      console.error('Failed to load course info:', {
+        basics: basicsResponse.status,
+        flow: flowResponse.status
+      });
+      return { basicsText: '', flowText: '' };
+    }
     
     const basicsText = await basicsResponse.text();
     const flowText = await flowResponse.text();
@@ -44,8 +53,23 @@ function markdownToHtml(text: string): string {
 }
 
 export async function POST(request: Request) {
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('Missing OPENAI_API_KEY');
+    return NextResponse.json(
+      { message: "<p>Konfigurationsfel. Vänligen kontakta support.</p>" },
+      { status: 500 }
+    );
+  }
+
   try {
     const { message } = await request.json();
+    
+    if (!message || typeof message !== 'string') {
+      return NextResponse.json(
+        { message: "<p>Ogiltig förfrågan. Vänligen försök igen.</p>" },
+        { status: 400 }
+      );
+    }
     
     // Hämta kursinformation
     const { basicsText, flowText } = await getCourseInfo();
