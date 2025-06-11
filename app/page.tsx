@@ -123,12 +123,36 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
+      {/* Video Section - New */}
+      <section className="container-custom pt-8 pb-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-accent/5 to-accent/10 p-1">
+            <div className="rounded-3xl overflow-hidden bg-white">
+              <video 
+                className="w-full h-auto"
+                controls
+                playsInline
+                controlsList="nodownload nofullscreen"
+                style={{ 
+                  '--media-controls-background': 'transparent',
+                  '--media-controls-color': 'white',
+                  '--media-controls-hover-color': '#f0f0f0'
+                } as React.CSSProperties}
+              >
+                <source src="/Ulrika_ desktop.MP4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section - More compact */}
       <section className="container-custom pt-4 md:pt-6 pb-6 md:pb-8">
         <div className="text-center max-w-3xl mx-auto mb-4 md:mb-6">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-light mb-2 animate-fade-in">
-            Analysera din hälsa med{" "}
-            <span className="text-gradient">Functional Foods</span>
+            ANALYSERA DIN HÄLSA MED{" "}
+            <span className="text-gradient">FUNCTIONAL FOODS</span>
           </h1>
           <p className="text-sm md:text-base text-text-secondary animate-fade-in px-4" style={{ animationDelay: '0.2s' }}>
             Få personliga kostråd baserat på dina hälsoutmaningar.
