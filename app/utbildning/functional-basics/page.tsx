@@ -111,7 +111,7 @@ export default function FunctionalBasicsPage() {
                 className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow animate-fade-in"
                 style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               >
-                <benefit.icon className="w-10 h-10 text-accent mb-4" />
+                {benefit.icon && <benefit.icon className="w-10 h-10 text-accent mb-4" />}
                 <h3 className="text-xl font-medium text-primary mb-3">{benefit.title}</h3>
                 <p className="text-text-secondary">{benefit.description}</p>
               </div>

@@ -1,6 +1,5 @@
 "use client";
 import dynamic from 'next/dynamic';
-import 'leaflet/dist/leaflet.css';
 import { FiMapPin, FiClock, FiPhone, FiMail, FiArrowLeft } from 'react-icons/fi';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -92,7 +91,7 @@ export default function AdressPage() {
               {contactInfo.map((info, index) => (
                 <div key={index} className="flex items-start">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <info.icon className="w-5 h-5 text-accent" />
+                    {info.icon && <info.icon className="w-5 h-5 text-accent" />}
                   </div>
                   <div className="ml-4">
                     <h3 className="font-medium text-primary mb-1">{info.title}</h3>
