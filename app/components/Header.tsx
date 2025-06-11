@@ -62,11 +62,11 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 z-10">
             <Image
-              src="/FunctionalLogo.png"
+              src="/logo2.png"
               alt="Functional Foods"
-              width={140}
-              height={56}
-              className="h-14 w-auto"
+              width={180}
+              height={72}
+              className="h-16 w-auto"
               priority
             />
           </Link>

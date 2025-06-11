@@ -2,28 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;700&display=swap');
+
 @layer base {
   :root {
     /* Primary Colors */
-    --primary: #23272f;
-    --primary-light: #3a4151;
-    --secondary: #6b7a8f;
+    --primary: #112A12;
+    --primary-light: #014421;
+    --secondary: #014421;
     
-    /* Accent Colors - Mycket mörkgrön */
-    --accent: #0b3d1a;
-    --accent-hover: #14532d;
+    /* Accent Colors */
+    --accent: #112A12;
+    --accent-hover: #014421;
     
     /* Text Colors */
-    --text-primary: #23272f;
-    --text-secondary: #4b5563;
-    --text-light: #8B98A9;
+    --text-primary: #112A12;
+    --text-secondary: #014421;
+    --text-light: #014421;
     
     /* Background Colors */
-    --background: #FFFDF3;
-    --background-secondary: #FAF6E9;
+    --background: #F3EFE3;
+    --background-secondary: #F3EFE3;
     
     /* Border Colors */
-    --border: #E5D4B1;
+    --border: #014421;
     
     /* Status Colors */
     --success: #228B22;
@@ -37,13 +39,15 @@
   
   body {
     @apply bg-background text-text-primary;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold tracking-tight uppercase;
+    font-family: 'Work Sans', sans-serif;
   }
   
   h1 {
@@ -59,7 +63,7 @@
   }
   
   p {
-    @apply leading-relaxed;
+    @apply leading-relaxed font-normal;
   }
 }
 

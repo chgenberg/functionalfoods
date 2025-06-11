@@ -13,6 +13,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Functional Foods - Förbättra din hälsa genom funktionell kost",
   description: "Utbildning och kunskap om funktionell kost och livsstil för bättre hälsa.",
+  icons: {
+    icon: '/f_favicon.png',
+    shortcut: '/f_favicon.png',
+    apple: '/f_favicon.png',
+  },
 };
 
 export default function RootLayout({
