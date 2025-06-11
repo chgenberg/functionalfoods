@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { BookOpen, Clock, Users, ArrowRight } from 'lucide-react';
+import { FiBookOpen, FiClock, FiUsers, FiArrowRight } from 'react-icons/fi';
 import { useState } from 'react';
 
 export default function UtbildningPage() {
@@ -75,11 +75,11 @@ export default function UtbildningPage() {
                 {/* Meta Info */}
                 <div className="flex items-center gap-4 text-sm text-text-secondary mb-4">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
+                    <FiClock className="w-5 h-5" />
                     <span>{course.duration}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
+                    <FiUsers className="w-5 h-5" />
                     <span>{course.level}</span>
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export default function UtbildningPage() {
                   className="btn-primary w-full flex items-center justify-center group/btn hover:scale-105 transition-all duration-300"
                 >
                   <span>Läs mer</span>
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                  <FiArrowRight className="ml-2 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
@@ -111,14 +111,14 @@ export default function UtbildningPage() {
         {/* CTA Section */}
         <div className="mt-16 text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
           <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
-            <BookOpen className="w-12 h-12 text-accent mx-auto mb-4" />
+            <FiBookOpen className="w-5 h-5 text-accent mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-primary mb-3">Osäker på vilken kurs som passar dig?</h2>
             <p className="text-text-secondary mb-6">
               Kontakta oss så hjälper vi dig att hitta rätt utbildning för dina behov och mål.
             </p>
             <Link href="/kontakt/formular" className="btn-secondary inline-flex items-center">
               Kontakta oss
-              <ArrowRight className="ml-2 w-4 h-4" />
+              <FiArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </div>
         </div>
