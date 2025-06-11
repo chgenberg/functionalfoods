@@ -9,6 +9,7 @@ import Questionnaire from "./components/Questionnaire";
 import { AnalysisResult } from "./types";
 import { FiArrowRight, FiActivity, FiHeart, FiZap, FiShield } from 'react-icons/fi';
 import { GiSparkles, GiBrain } from 'react-icons/gi';
+import Image from "next/image";
 
 function LoadingPopup({ messages, durations, onDone, visible }: { messages: string[]; durations?: number[]; onDone?: () => void; visible: boolean }) {
   const [step, setStep] = useState(0);
@@ -72,6 +73,17 @@ export default function Home() {
   const [loadingPopup, setLoadingPopup] = useState<{ visible: boolean; messages: string[]; durations?: number[] }>({ visible: false, messages: [] });
   const router = useRouter();
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [showMicronutrientModal, setShowMicronutrientModal] = useState(false);
+  const [showLoadingPopup, setShowLoadingPopup] = useState(false);
+  const [selectedBodyPart, setSelectedBodyPart] = useState('');
+  const [symptomDescription, setSymptomDescription] = useState('');
+
+  const scrollToAnalysis = () => {
+    const element = document.getElementById('analysis-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   async function handleAskQuestions() {
     if (!selectedDot || !description) return;
@@ -125,150 +137,74 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
-      {/* Video Hero Section */}
+      {/* Hero Section with Image */}
       <section className="relative h-[80vh] w-full overflow-hidden">
-        {/* Video background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/front.mp4" type="video/mp4" />
-        </video>
-        
-        {/* Fallback gradient background for when video fails */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-600 to-green-800 opacity-0">
-          <div className="absolute inset-0 bg-black/30"></div>
-        </div>
+        {/* Hero Image */}
+        <Image
+          src="/leaflet2.png"
+          alt="Functional Foods"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/40"></div>
         
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <div className="text-center text-white max-w-3xl px-4">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
-              VÄLKOMMEN TILL FUNCTIONAL FOODS
+          <div className="text-center text-white max-w-4xl mx-auto px-4">
+            <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-6 animate-fade-in">
+              Functional Foods
             </h1>
-            <p className="text-lg md:text-xl mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Din väg till ett friskare liv genom personlig näringsrådgivning
+            <p className="text-xl md:text-2xl font-light mb-8 animate-fade-in animation-delay-200">
+              Mat som medicin för kropp och själ
             </p>
-            <Link 
-              href="/utbildning"
-              className="inline-block bg-accent hover:bg-accent-hover text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 animate-fade-in"
-              style={{ animationDelay: '0.4s' }}
+            <button 
+              onClick={() => scrollToAnalysis()}
+              className="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400"
             >
-              Utforska våra kurser
-            </Link>
+              Starta din hälsoresa
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Body Map and Description Section */}
-      <section className="container-custom pt-12 md:pt-16 pb-8 md:pb-12">
-        <div className="text-center max-w-3xl mx-auto mb-4 md:mb-6">
-          <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4 animate-fade-in">
-            <GiSparkles className="w-4 h-4" />
-            <span>Personlig hälsoanalys på 5 minuter</span>
-          </div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 animate-fade-in tracking-tight">
-            ANALYSERA DIN HÄLSA MED{" "}
-            <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold animate-gradient">
-              FUNCTIONAL FOODS
-            </span>
-          </h1>
-          <p className="text-sm md:text-base text-text-secondary animate-fade-in px-4" style={{ animationDelay: '0.2s' }}>
-            Få personliga kostråd baserat på dina hälsoutmaningar.
-          </p>
-        </div>
-
-        {/* Steps Container */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {/* Body Map Section */}
-          <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <div className="p-0 shadow-none bg-transparent rounded-none transition-none">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
-                    <span className="text-accent font-bold">1</span>
-                  </div>
-                  <h2 className="text-lg md:text-xl font-light text-primary">VÄLJ OMRÅDE</h2>
-                </div>
-                <FiActivity className="w-5 h-5 text-accent animate-pulse" />
-              </div>
-              <p className="text-xs md:text-sm text-text-secondary mb-4">Klicka på det område där du upplever besvär</p>
-              <div className="flex justify-center" style={{ background: 'transparent' }}>
-                <BodyMap onSelect={setSelectedDot} selected={selectedDot} />
-              </div>
+      {/* Analysis Section */}
+      <section id="analysis-section" className="py-16 px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-xl p-8 transform transition-all duration-300 hover:shadow-2xl">
+            <h2 className="text-2xl font-light text-center mb-6 text-gray-800">
+              BESKRIV DINA BESVÄR
+            </h2>
+            
+            <div className="space-y-4">
+              <BodyMap onSelect={setSelectedDot} selected={selectedDot} />
+              
               {selectedDot && (
-                <div className="mt-4 p-3 bg-accent/5 rounded-lg animate-fade-in">
-                  <p className="text-sm text-accent font-medium">
-                    ✓ {selectedDot === 'head' ? 'Huvud' : 
-                       selectedDot === 'chest' ? 'Bröst' :
-                       selectedDot === 'stomache' ? 'Mage' :
-                       selectedDot === 'right-arm' ? 'Höger arm' :
-                       selectedDot === 'left-arm' ? 'Vänster arm' :
-                       selectedDot === 'genitals' ? 'Underliv' :
-                       selectedDot === 'right-leg' ? 'Höger ben' :
-                       selectedDot === 'left-leg' ? 'Vänster ben' :
-                       selectedDot} valt
-                  </p>
+                <div className="animate-fade-in">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Beskriv dina besvär i {selectedDot}:
+                  </label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full p-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 resize-none"
+                    rows={3}
+                    placeholder="Beskriv dina symptom här..."
+                  />
+                  
+                  <button
+                    onClick={handleAskQuestions}
+                    disabled={!description.trim()}
+                    className={`mt-4 w-full py-3 px-6 rounded-full font-medium transition-all duration-300 transform ${
+                      description.trim()
+                        ? 'bg-gradient-to-r from-accent to-accent-hover text-white hover:scale-105 shadow-lg'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    Starta analys
+                  </button>
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Description Section */}
-          <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <div className="bg-white rounded-2xl shadow-lg p-6 h-full flex flex-col hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
-                    <span className="text-accent font-bold">2</span>
-                  </div>
-                  <h2 className="text-lg md:text-xl font-light text-primary">Beskriv dina besvär</h2>
-                </div>
-                <GiBrain className="w-5 h-5 text-accent" />
-              </div>
-              <textarea
-                placeholder="Beskriv ditt problem så detaljerat som möjligt..."
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                className="w-full px-3 md:px-4 py-2 md:py-3 rounded-lg border border-border focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all duration-200 resize-none text-sm md:text-base flex-grow"
-                style={{ minHeight: '120px' }}
-              />
-              
-              <div className="mt-4 space-y-3">
-                {description && (
-                  <div className="flex items-center gap-2 text-sm text-text-secondary animate-fade-in">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span>{description.length} tecken</span>
-                  </div>
-                )}
-                
-                <button
-                  onClick={handleAskQuestions}
-                  className="w-full btn-primary flex items-center justify-center group py-3 md:py-4 text-base md:text-lg font-medium relative overflow-hidden"
-                  disabled={!selectedDot || !description || loading}
-                >
-                  <span className="relative z-10 flex items-center">
-                    {loading ? "Analyserar..." : "Starta analys"}
-                    <FiArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-accent-hover to-accent transform translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress Indicators */}
-        <div className="mt-8 flex justify-center items-center gap-4 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${selectedDot ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-            <div className={`w-2 h-2 rounded-full ${selectedDot ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-            <span className="text-sm font-medium">Område valt</span>
-          </div>
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${description ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-            <div className={`w-2 h-2 rounded-full ${description ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-            <span className="text-sm font-medium">Beskrivning klar</span>
           </div>
         </div>
       </section>
