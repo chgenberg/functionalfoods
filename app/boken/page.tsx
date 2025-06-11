@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { ShoppingCart, BookOpen, Award, Package } from 'lucide-react';
-import AddToCart from '../components/AddToCart';
 
 export default function BookPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -49,15 +48,6 @@ export default function BookPage() {
               <div className="flex items-baseline justify-between mb-4">
                 <p className="text-3xl font-light text-primary">239 kr</p>
                 <p className="text-sm text-text-secondary">Moms ingår</p>
-              </div>
-              <div className="mb-4">
-                <AddToCart
-                  id="book-1"
-                  name="Functional Foods: Mat för ett friskare liv"
-                  price={239}
-                  type="book"
-                  image="/boken.png"
-                />
               </div>
               <Link
                 href="https://thebookaffair.se/collections/ulrika-davidsson/products/functional-foods"
