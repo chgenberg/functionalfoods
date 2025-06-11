@@ -20,10 +20,8 @@ services:
       . .venv/bin/activate
       python3 -m pip install --upgrade pip
       python3 -m pip install -r requirements.txt
-      python3 -m pip install uvicorn[standard] --no-cache-dir
     startCommand: |
-      . .venv/bin/activate
-      python3 -m uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT
+      source .venv/bin/activate && python3 -m uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0 
