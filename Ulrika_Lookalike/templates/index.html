@@ -16,6 +16,53 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
 
+        .video-hero {
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-hero video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .leaf-section {
+            width: 100%;
+            padding: 4rem 2rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .leaf-image {
+            max-width: 300px;
+            height: auto;
+            flex-shrink: 0;
+        }
+
+        .leaf-text {
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .leaf-text h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .leaf-text p {
+            color: #34495e;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
         .container {
             max-width: 800px;
             width: 90%;
@@ -145,6 +192,22 @@
     </style>
 </head>
 <body>
+    <!-- Video Hero Section -->
+    <div class="video-hero">
+        <video autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='videos/hero.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Leaf Image Section -->
+    <div class="leaf-section">
+        <img src="{{ url_for('static', filename='images/leaf.png') }}" alt="Leaf" class="leaf-image">
+        <div class="leaf-text">
+            <h2>Välkommen till Ulrika's Bokgenerator</h2>
+            <p>Skapa din egen unika bok med hjälp av vår avancerade AI-teknik. Fyll i informationen nedan för att komma igång.</p>
+        </div>
+    </div>
+
     <div class="container">
         <h1>Ulrika's Bokgenerator</h1>
         
