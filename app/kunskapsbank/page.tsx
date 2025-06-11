@@ -51,8 +51,8 @@ export default function KunskapsbankPage() {
       <div className="container-custom section-padding">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-light mb-4">
-            <span className="text-gradient">Kunskapsbank</span>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
+            <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">Kunskapsbank</span>
           </h1>
           <p className="text-lg text-text-secondary">
             Utforska vår samling av artiklar, recept och expertkunskap om functional foods och hälsosam livsstil
@@ -106,7 +106,7 @@ export default function KunskapsbankPage() {
         {/* CTA Section */}
         <div className="mt-16 text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
           <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
-            <h2 className="text-2xl font-light text-primary mb-3">Vill du lära dig mer?</h2>
+            <h2 className="text-2xl font-bold text-primary mb-3">Vill du lära dig mer?</h2>
             <p className="text-text-secondary mb-6">
               Fördjupa din kunskap med våra omfattande kurser om functional foods och hälsosam livsstil.
             </p>

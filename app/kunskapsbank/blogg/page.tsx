@@ -61,8 +61,8 @@ export default function BlogPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-background to-background-secondary py-20">
         <div className="container-custom">
-          <h1 className="text-5xl md:text-6xl font-light text-center mb-6">
-            Kunskapsbank <span className="text-gradient">Blogg</span>
+          <h1 className="text-5xl md:text-6xl font-bold text-center mb-6 tracking-tight">
+            Kunskapsbank <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">Blogg</span>
           </h1>
           <p className="text-xl text-text-secondary text-center max-w-3xl mx-auto">
             Utforska våra artiklar om functional foods, hälsa och välmående. 

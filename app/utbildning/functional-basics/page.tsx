@@ -67,8 +67,8 @@ export default function FunctionalBasicsPage() {
 
           {/* Course Info */}
           <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-light mb-4">
-              Functional <span className="text-gradient">Basics</span>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
+              Functional <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">Basics</span>
             </h1>
             
             <div className="flex items-center gap-4 text-text-secondary mb-6">
@@ -135,8 +135,8 @@ export default function FunctionalBasicsPage() {
 
         {/* Benefits Section */}
         <div className="mb-16">
-          <h2 className="text-2xl md:text-3xl font-light text-center mb-12">
-            Vinsten med att äta enligt <span className="text-gradient">Functional Foods</span>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+            Vinsten med att äta enligt <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">Functional Foods</span>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -157,7 +157,7 @@ export default function FunctionalBasicsPage() {
         {/* Target Audience */}
         <div className="text-center animate-fade-in" style={{ animationDelay: '0.9s' }}>
           <div className="bg-white rounded-2xl p-8 shadow-lg max-w-3xl mx-auto">
-            <h2 className="text-2xl font-light text-primary mb-4">För vem?</h2>
+            <h2 className="text-2xl font-bold text-primary mb-4">För vem?</h2>
             <p className="text-text-secondary mb-6">
               Den här kursen är för dig som vill förbättra din hälsa steg för steg och samtidigt njuta av god och näringsrik mat – utan att det blir krångligt.
             </p>

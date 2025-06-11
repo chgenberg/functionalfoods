@@ -36,8 +36,8 @@ export default function UtbildningPage() {
       <div className="container-custom section-padding">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-light mb-4">
-            Vårt <span className="text-gradient">kursutbud</span>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
+            Vårt <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">kursutbud</span>
           </h1>
           <p className="text-lg text-text-secondary">
             Varje kropp är unik – därför erbjuder vi kunskap om functional foods och mervärdesmat 
@@ -99,12 +99,12 @@ export default function UtbildningPage() {
 
                 <Link 
                   href={course.href}
-                  className="btn-primary w-full flex items-center justify-center group/btn"
+                  className="btn-primary w-full flex items-center justify-center group/btn hover:scale-105 transition-all duration-300"
                 >
                   <span>Läs mer</span>
                   <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
-                <div className="mt-4">
+                <div className="mt-4 flex justify-center">
                   <AddToCart
                     id={course.id}
                     name={course.title}
@@ -122,7 +122,7 @@ export default function UtbildningPage() {
         <div className="mt-16 text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
           <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
             <BookOpen className="w-12 h-12 text-accent mx-auto mb-4" />
-            <h2 className="text-2xl font-light text-primary mb-3">Osäker på vilken kurs som passar dig?</h2>
+            <h2 className="text-2xl font-bold text-primary mb-3">Osäker på vilken kurs som passar dig?</h2>
             <p className="text-text-secondary mb-6">
               Kontakta oss så hjälper vi dig att hitta rätt utbildning för dina behov och mål.
             </p>
