@@ -1,7 +1,8 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, Sparkles, Package, CreditCard } from 'lucide-react';
+import { FiArrowLeft, FiTrash2, FiShoppingBag, FiMinus, FiPlus, FiCreditCard } from 'react-icons/fi';
+import { GiSparkles } from 'react-icons/gi';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -23,7 +24,7 @@ export default function CartPage() {
           <div className="max-w-2xl mx-auto text-center">
             <div className="mb-8 animate-fade-in">
               <div className="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <ShoppingBag className="w-12 h-12 text-accent" />
+                <FiShoppingBag className="w-12 h-12 text-accent" />
               </div>
               <h2 className="text-3xl font-bold text-primary mb-4">Din varukorg är tom</h2>
               <p className="text-lg text-text-secondary mb-8">
@@ -34,14 +35,14 @@ export default function CartPage() {
                   href="/utbildning" 
                   className="btn-primary inline-flex items-center justify-center group"
                 >
-                  <ShoppingBag className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  <FiShoppingBag className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                   Utforska kurser
                 </Link>
                 <Link 
                   href="/" 
                   className="btn-secondary inline-flex items-center justify-center"
                 >
-                  <ArrowLeft className="w-5 h-5 mr-2" />
+                  <FiArrowLeft className="w-5 h-5 mr-2" />
                   Tillbaka till start
                 </Link>
               </div>
@@ -62,7 +63,7 @@ export default function CartPage() {
               href="/utbildning" 
               className="inline-flex items-center text-text-secondary hover:text-primary mb-4 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <FiArrowLeft className="w-4 h-4 mr-2" />
               Fortsätt handla
             </Link>
             <h1 className="text-3xl md:text-4xl font-bold text-primary">
@@ -89,9 +90,9 @@ export default function CartPage() {
                     <div className="relative w-full sm:w-32 h-32 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl overflow-hidden flex-shrink-0">
                       <div className="absolute inset-0 flex items-center justify-center">
                         {item.type === 'course' ? (
-                          <Package className="w-12 h-12 text-accent" />
+                          <FiShoppingBag className="w-12 h-12 text-accent" />
                         ) : (
-                          <ShoppingBag className="w-12 h-12 text-accent" />
+                          <FiShoppingBag className="w-12 h-12 text-accent" />
                         )}
                       </div>
                     </div>
@@ -110,7 +111,7 @@ export default function CartPage() {
                           className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors group"
                           aria-label="Ta bort produkt"
                         >
-                          <Trash2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                          <FiTrash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
                         </button>
                       </div>
 
@@ -122,7 +123,7 @@ export default function CartPage() {
                             className="p-2 hover:bg-white rounded-md transition-colors"
                             aria-label="Minska antal"
                           >
-                            <Minus className="w-4 h-4" />
+                            <FiMinus className="w-4 h-4" />
                           </button>
                           <span className="w-12 text-center font-medium">{item.quantity}</span>
                           <button 
@@ -130,7 +131,7 @@ export default function CartPage() {
                             className="p-2 hover:bg-white rounded-md transition-colors"
                             aria-label="Öka antal"
                           >
-                            <Plus className="w-4 h-4" />
+                            <FiPlus className="w-4 h-4" />
                           </button>
                         </div>
 
@@ -154,7 +155,7 @@ export default function CartPage() {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
                 <h2 className="text-xl font-bold text-primary mb-6 flex items-center">
-                  <Sparkles className="w-5 h-5 mr-2 text-accent" />
+                  <GiSparkles className="w-5 h-5 mr-2 text-accent" />
                   Ordersammanfattning
                 </h2>
 
@@ -180,7 +181,7 @@ export default function CartPage() {
                   href="/checkout" 
                   className="btn-primary w-full flex items-center justify-center group mb-4"
                 >
-                  <CreditCard className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  <FiCreditCard className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                   Gå till kassan
                 </Link>
 

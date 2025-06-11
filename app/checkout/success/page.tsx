@@ -1,7 +1,8 @@
 "use client";
 import { useCart } from '../../context/CartContext';
 import { useEffect } from 'react';
-import { CheckCircle } from 'lucide-react';
+import { FiArrowLeft, FiCheckCircle } from 'react-icons/fi';
+import { GiSparkles } from 'react-icons/gi';
 import Link from 'next/link';
 
 export default function CheckoutSuccess() {
@@ -17,7 +18,7 @@ export default function CheckoutSuccess() {
       <div className="max-w-md w-full mx-auto px-4">
         <div className="bg-white rounded-lg shadow-sm p-8 text-center">
           <div className="flex justify-center mb-6">
-            <CheckCircle className="w-16 h-16 text-green-500" />
+            <GiSparkles className="w-16 h-16 text-accent mb-6" />
           </div>
           <h1 className="text-2xl font-semibold mb-4">Tack för din beställning!</h1>
           <p className="text-gray-600 mb-8">

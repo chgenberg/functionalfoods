@@ -2,7 +2,8 @@
 import { useCart } from '../context/CartContext';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, CreditCard, ShoppingBag, Shield, CheckCircle2, Loader2 } from 'lucide-react';
+import { FiArrowLeft, FiCreditCard, FiLock } from 'react-icons/fi';
+import { GiSparkles } from 'react-icons/gi';
 
 export default function Checkout() {
   const { items, total } = useCart();
@@ -21,7 +22,7 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center p-8 animate-fade-in">
-        <ShoppingBag className="w-16 h-16 text-accent mb-6" />
+        <GiSparkles className="w-16 h-16 text-accent mb-6" />
         <h2 className="text-2xl font-semibold mb-4">Din varukorg är tom</h2>
         <p className="text-text-secondary mb-8 text-center max-w-md">Lägg till produkter för att komma igång med din beställning</p>
         <button 
@@ -29,7 +30,7 @@ export default function Checkout() {
           className="btn-primary flex items-center gap-2 group"
         >
           Utforska kurser
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          <FiArrowLeft className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
     );
@@ -53,7 +54,7 @@ export default function Checkout() {
             <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <ShoppingBag className="w-6 h-6 text-accent" />
+                  <GiSparkles className="w-6 h-6 text-accent" />
                   <h2 className="text-xl font-semibold">Din beställning</h2>
                 </div>
                 
@@ -85,7 +86,7 @@ export default function Checkout() {
             <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <div className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <CreditCard className="w-6 h-6 text-accent" />
+                  <FiCreditCard className="w-5 h-5" />
                   <h2 className="text-xl font-semibold">Betalningsmetod</h2>
                 </div>
 
@@ -109,9 +110,9 @@ export default function Checkout() {
                       </div>
                     </div>
                     {selectedPayment === 'klarna' && isProcessing ? (
-                      <Loader2 className="w-5 h-5 text-accent animate-spin" />
+                      <FiLock className="w-4 h-4 text-accent animate-spin" />
                     ) : selectedPayment === 'klarna' ? (
-                      <CheckCircle2 className="w-5 h-5 text-accent" />
+                      <GiSparkles className="w-5 h-5 text-accent" />
                     ) : null}
                   </button>
 
@@ -134,15 +135,15 @@ export default function Checkout() {
                       </div>
                     </div>
                     {selectedPayment === 'swish' && isProcessing ? (
-                      <Loader2 className="w-5 h-5 text-accent animate-spin" />
+                      <FiLock className="w-4 h-4 text-accent animate-spin" />
                     ) : selectedPayment === 'swish' ? (
-                      <CheckCircle2 className="w-5 h-5 text-accent" />
+                      <GiSparkles className="w-5 h-5 text-accent" />
                     ) : null}
                   </button>
                 </div>
 
                 <div className="mt-6 p-4 bg-background rounded-xl flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-accent mt-0.5" />
+                  <FiLock className="w-4 h-4 text-accent mt-0.5" />
                   <div>
                     <p className="font-medium text-sm">Säker betalning</p>
                     <p className="text-xs text-text-secondary">Alla betalningar är säkra och krypterade</p>
