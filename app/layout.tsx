@@ -3,6 +3,8 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
+import ChatBot from './components/ChatBot'
+import NewsletterBanner from './components/NewsletterBanner'
 
 export const metadata: Metadata = {
   title: "Ulrika Functional Foods",
@@ -23,6 +25,7 @@ export default function RootLayout({
     <html lang="sv" data-version="2024-fixed">
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <CartProvider>
+          <NewsletterBanner />
           <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-grow pt-20">
@@ -30,6 +33,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <ChatBot />
         </CartProvider>
       </body>
     </html>

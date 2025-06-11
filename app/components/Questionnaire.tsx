@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Question, bodyPartQuestions, AnalysisResult } from '../types';
 import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import LoadingAnalysis from './LoadingAnalysis';
 
 interface QuestionnaireProps {
   bodyPart: string;
@@ -27,14 +28,14 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
       setCurrentQuestion(currentQuestion + 1);
       setTextInput('');
     } else {
-      handleComplete(newAnswers);
+      handleComplete();
     }
   };
 
-  const handleComplete = async (finalAnswers: string[]) => {
+  const handleComplete = async () => {
+    setIsLoading(true);
+    
     try {
-      setIsLoading(true);
-      
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
@@ -43,24 +44,23 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
         body: JSON.stringify({
           bodyPart,
           description,
-          answers: finalAnswers,
+          answers,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to analyze responses');
+        throw new Error('Failed to analyze');
       }
 
-      const result: AnalysisResult = await response.json();
+      const result = await response.json();
       
-      // Navigera till resultatsidan med analysen som query parameter
-      const queryString = encodeURIComponent(JSON.stringify(result));
-      router.push(`/result?data=${queryString}`);
+      // Spara resultatet i localStorage för att kunna visa det på resultatsidan
+      localStorage.setItem('analysisResult', JSON.stringify(result));
+      
+      // Navigera till resultatsidan
+      router.push('/dummy-result');
     } catch (error) {
-      console.error('Error analyzing responses:', error);
-      // Visa ett felmeddelande för användaren
-      alert('Ett fel uppstod när vi skulle analysera dina svar. Försök igen senare.');
-    } finally {
+      console.error('Error analyzing:', error);
       setIsLoading(false);
     }
   };
@@ -151,6 +151,10 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
         );
     }
   };
+
+  if (isLoading) {
+    return <LoadingAnalysis />;
+  }
 
   if (questions.length === 0) {
     return (
@@ -252,7 +256,7 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
           
           {currentQuestion === questions.length - 1 && questions[currentQuestion].type !== 'text' && (
             <button
-              onClick={() => handleComplete(answers)}
+              onClick={() => handleComplete()}
               className="px-8 py-3 bg-gradient-to-r from-accent to-accent-hover text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2"
             >
               Slutför analys
