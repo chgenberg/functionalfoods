@@ -1,37 +1,29 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { Clock, CheckCircle, ShoppingCart, ArrowLeft, Sparkles, Heart, Brain, Utensils } from 'lucide-react';
+import { Clock, CheckCircle, ArrowLeft, Heart, Brain, Zap } from 'lucide-react';
 import { useState } from 'react';
+import AddToCart from '@/app/components/AddToCart';
 
 export default function FunctionalBasicsPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const benefits = [
     {
-      icon: Sparkles,
-      title: "Mer energi & bättre humör",
-      description: "Stabilt blodsocker minskar humörsvängningar hos både barn och vuxna."
-    },
-    {
       icon: Heart,
-      title: "Starkare immunförsvar",
-      description: "Näringsrik mat med antioxidanter hjälper kroppen att bekämpa sjukdomar."
+      title: "Grundläggande förståelse",
+      description: "Lär dig grunderna i funktionell kost och hur den påverkar din hälsa."
     },
     {
       icon: Brain,
-      title: "Hormonell balans",
-      description: "Alla kroppens hormoner påverkas positivt av en näringsrik kost."
+      title: "Praktiska verktyg",
+      description: "Få konkreta verktyg och strategier för att implementera funktionell kost i ditt liv."
+    },
+    {
+      icon: Zap,
+      title: "Personlig anpassning",
+      description: "Lär dig anpassa din kost efter dina individuella behov och mål."
     }
-  ];
-
-  const courseIncludes = [
-    "75 näringsrika recept",
-    "Kompletta måltidsplaner",
-    "Inköpslistor",
-    "Vetenskaplig grund",
-    "Livstidsåtkomst",
-    "Expertkunskap"
   ];
 
   return (
@@ -74,35 +66,39 @@ export default function FunctionalBasicsPage() {
             <div className="flex items-center gap-4 text-text-secondary mb-6">
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                <span>6 veckor</span>
+                <span>4 veckor</span>
               </div>
               <div className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Nybörjarnivå</span>
             </div>
 
             <p className="text-lg text-text-secondary mb-8">
-              Vill du använda maten som ditt främsta verktyg för bättre hälsa och ett längre liv? 
-              Functional Basics ger dig kunskap, recept och måltidsplaner som stärker ditt immunförsvar 
-              och får kropp och sinne att prestera på topp.
+              En grundläggande kurs som ger dig kunskap om funktionell kost och dess påverkan på din hälsa. 
+              Perfekt för dig som vill lära dig grunderna och få verktyg för att göra hållbara förändringar i din kosthållning.
             </p>
 
             {/* Price Box */}
             <div className="bg-white rounded-2xl p-6 shadow-lg mb-8">
               <div className="flex items-baseline gap-3 mb-4">
-                <span className="text-3xl font-light text-primary">2,295 kr</span>
+                <span className="text-xl text-gray-400 line-through">1,495 kr</span>
+                <span className="text-3xl font-light text-primary">1,196 kr</span>
+                <span className="text-sm text-accent bg-accent/10 px-2 py-1 rounded">-20%</span>
               </div>
               
-              <button className="btn-primary w-full flex items-center justify-center group">
-                <ShoppingCart className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                Lägg till i varukorg
-              </button>
+              <AddToCart
+                id="functional-basics"
+                name="Functional Basics"
+                price={1196}
+                type="course"
+                image="/functional_basics.png"
+              />
             </div>
 
             {/* Quick Features */}
-            <div className="grid grid-cols-2 gap-3">
-              {courseIncludes.map((feature, i) => (
-                <div key={i} className="flex items-center text-sm text-text-secondary">
-                  <CheckCircle className="w-4 h-4 text-accent mr-2 flex-shrink-0" />
+            <div className="space-y-3">
+              {['Grundläggande teori', 'Praktiska övningar', 'Expertkunskap', 'Livstidsåtkomst'].map((feature, i) => (
+                <div key={i} className="flex items-center text-text-secondary">
+                  <CheckCircle className="w-5 h-5 text-accent mr-3" />
                   <span>{feature}</span>
                 </div>
               ))}
@@ -110,33 +106,10 @@ export default function FunctionalBasicsPage() {
           </div>
         </div>
 
-        {/* About Section */}
-        <div className="max-w-4xl mx-auto mb-16">
-          <h2 className="text-2xl md:text-3xl font-light text-center mb-12">
-            Vad är <span className="text-gradient">Functional Foods?</span>
-          </h2>
-          
-          <div className="bg-white rounded-2xl p-8 shadow-lg animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <p className="text-lg text-text-secondary mb-6">
-              Functional Foods är naturliga livsmedel med specifika hälsofrämjande egenskaper. 
-              De hjälper kroppen att fungera optimalt genom att ge stöd åt hormonsystemet, 
-              immunförsvaret, matsmältningen och energinivåerna.
-            </p>
-            
-            <div className="bg-accent/10 rounded-xl p-6 border-l-4 border-accent">
-              <Utensils className="w-8 h-8 text-accent mb-3" />
-              <p className="text-text-secondary">
-                <strong>Exempel på rätter:</strong> Pokébowl med kyckling, havrefrallor med morötter och aprikoser, 
-                laxburgare med krämig grönsaksröra, vegetarisk currygryta, bananplättar med jordgubbar och kokos.
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Benefits Section */}
         <div className="mb-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Vinsten med att äta enligt <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">Functional Foods</span>
+          <h2 className="text-2xl md:text-3xl font-light text-center mb-12">
+            Vad du <span className="text-gradient">uppnår</span>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -144,7 +117,7 @@ export default function FunctionalBasicsPage() {
               <div 
                 key={index}
                 className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow animate-fade-in"
-                style={{ animationDelay: `${0.6 + index * 0.1}s` }}
+                style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               >
                 <benefit.icon className="w-10 h-10 text-accent mb-4" />
                 <h3 className="text-xl font-medium text-primary mb-3">{benefit.title}</h3>
@@ -154,17 +127,20 @@ export default function FunctionalBasicsPage() {
           </div>
         </div>
 
-        {/* Target Audience */}
-        <div className="text-center animate-fade-in" style={{ animationDelay: '0.9s' }}>
-          <div className="bg-white rounded-2xl p-8 shadow-lg max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold text-primary mb-4">För vem?</h2>
+        {/* CTA Section */}
+        <div className="text-center animate-fade-in" style={{ animationDelay: '0.8s' }}>
+          <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
+            <h2 className="text-2xl font-light text-primary mb-4">Redo att börja din resa?</h2>
             <p className="text-text-secondary mb-6">
-              Den här kursen är för dig som vill förbättra din hälsa steg för steg och samtidigt njuta av god och näringsrik mat – utan att det blir krångligt.
+              Investera i din hälsa idag och känn skillnaden redan inom några veckor.
             </p>
-            <p className="text-text-secondary">
-              Perfekt för dig som vill bli av med ojämnt blodsocker, känna dig mätt och tillfreds efter måltider, 
-              få mer energi och lära dig mer om antiinflammatorisk kost.
-            </p>
+            <AddToCart
+              id="functional-basics"
+              name="Functional Basics"
+              price={1196}
+              type="course"
+              image="/functional_basics.png"
+            />
           </div>
         </div>
       </div>
