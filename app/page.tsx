@@ -169,26 +169,41 @@ export default function Home() {
 
       {/* Analysis Section */}
       <section id="analysis-section" className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-xl p-8 transform transition-all duration-300 hover:shadow-2xl">
-            <h2 className="text-2xl font-light text-center mb-6 text-gray-800">
-              BESKRIV DINA BESVÄR
-            </h2>
-            
-            <div className="space-y-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-light text-center mb-8 text-gray-800">
+            BESKRIV DINA BESVÄR
+          </h2>
+          
+          <div className="relative">
+            {/* Body Map - No white background */}
+            <div className="flex justify-center">
               <BodyMap onSelect={setSelectedDot} selected={selectedDot} />
-              
-              {selectedDot && (
-                <div className="animate-fade-in">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Beskriv dina besvär i {selectedDot}:
-                  </label>
+            </div>
+            
+            {/* Description Bubble */}
+            {selectedDot && (
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                <div className="bg-white rounded-3xl shadow-2xl p-6 animate-scale-in min-w-[350px] max-w-md">
+                  <button
+                    onClick={() => setSelectedDot(null)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                  
+                  <h3 className="text-lg font-medium text-gray-800 mb-4">
+                    Steg 2: Beskriv dina besvär i {selectedDot}
+                  </h3>
+                  
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full p-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 resize-none"
-                    rows={3}
+                    rows={4}
                     placeholder="Beskriv dina symptom här..."
+                    autoFocus
                   />
                   
                   <button
@@ -203,8 +218,8 @@ export default function Home() {
                     Starta analys
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
