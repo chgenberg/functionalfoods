@@ -1,1 +1,2 @@
-web: uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT 
+web: npm start
+backend: python3 start_backend.py 
