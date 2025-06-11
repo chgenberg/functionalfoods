@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Instagram, Facebook, Linkedin, ArrowRight } from 'lucide-react';
+import { FiMail, FiPhone, FiMapPin, FiArrowRight } from 'react-icons/fi';
+import { FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -51,7 +52,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200"
               >
-                <Instagram className="h-5 w-5" />
+                <FaInstagram className="w-5 h-5" />
               </a>
               <a 
                 href="https://facebook.com" 
@@ -59,7 +60,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200"
               >
-                <Facebook className="h-5 w-5" />
+                <FaFacebook className="w-5 h-5" />
               </a>
               <a 
                 href="https://linkedin.com" 
@@ -67,7 +68,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200"
               >
-                <Linkedin className="h-5 w-5" />
+                <FaLinkedin className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -83,7 +84,7 @@ export default function Footer() {
                     className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
                   >
                     <span>{link.label}</span>
-                    <ArrowRight className="h-4 w-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                    <FiArrowRight className="w-4 h-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                   </Link>
                 </li>
               ))}
@@ -101,7 +102,7 @@ export default function Footer() {
                     className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
                   >
                     <span>{link.label}</span>
-                    <ArrowRight className="h-4 w-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                    <FiArrowRight className="w-4 h-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                   </Link>
                 </li>
               ))}
@@ -117,7 +118,7 @@ export default function Footer() {
                   href="mailto:info@functionalfoods.se" 
                   className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center"
                 >
-                  <Mail className="h-4 w-4 mr-2" />
+                  <FiMail className="w-5 h-5 mr-2" />
                   <span className="text-sm">info@functionalfoods.se</span>
                 </a>
               </li>
@@ -126,12 +127,12 @@ export default function Footer() {
                   href="tel:+46XXXXXXXX" 
                   className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center"
                 >
-                  <Phone className="h-4 w-4 mr-2" />
+                  <FiPhone className="w-5 h-5 mr-2" />
                   <span className="text-sm">+46 XX XXX XX XX</span>
                 </a>
               </li>
               <li className="flex items-start">
-                <MapPin className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                <FiMapPin className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-gray-400">Stockholm, Sverige</span>
               </li>
             </ul>
