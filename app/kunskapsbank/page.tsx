@@ -85,7 +85,7 @@ export default function KunskapsbankPage() {
                 
                 {/* Icon Overlay */}
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                  <section.icon className={`w-5 h-5 ${section.color}`} />
+                  {section.icon && <section.icon className={`w-5 h-5 ${section.color}`} />}
                 </div>
               </div>
               

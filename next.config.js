@@ -17,13 +17,21 @@ const nextConfig = {
       test: /\.py$/,
       use: 'raw-loader'
     });
+    config.module.rules.push({
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader'],
+    });
     return config;
   },
 
   // Lägg till Python-stöd för API-routes
   experimental: {
     serverComponentsExternalPackages: ['python-shell']
-  }
+  },
+
+  images: {
+    domains: ['tile.openstreetmap.org'],
+  },
 }
 
 module.exports = nextConfig
