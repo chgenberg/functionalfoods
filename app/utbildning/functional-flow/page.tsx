@@ -125,6 +125,9 @@ export default function FunctionalFlowPage() {
             <p className="text-text-secondary mb-6">
               Investera i din hälsa idag och känn skillnaden redan inom några veckor.
             </p>
+            <button className="btn-primary inline-flex items-center">
+              Lägg i varukorg
+            </button>
           </div>
         </div>
       </div>
