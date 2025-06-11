@@ -2,12 +2,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, ShoppingCart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { items } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,6 +110,16 @@ export default function Header() {
                 )}
               </div>
             ))}
+            <li className="ml-auto">
+              <Link href="/cart" className="relative">
+                <ShoppingCart className="w-7 h-7" />
+                {items.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                    {items.reduce((sum, item) => sum + item.quantity, 0)}
+                  </span>
+                )}
+              </Link>
+            </li>
           </nav>
 
           {/* Mobile menu button */}
