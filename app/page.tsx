@@ -138,7 +138,7 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
       {/* Hero Section with Leaf Background */}
-      <section className="relative w-full overflow-hidden h-[60vh] flex items-center justify-center" style={{ backgroundImage: 'url(/leaf.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <section className="relative w-full overflow-hidden h-[90vh] flex items-center justify-center" style={{ backgroundImage: 'url(/ulrika.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-4">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-light tracking-tight mb-4 sm:mb-6 text-white animate-fade-in text-center">
