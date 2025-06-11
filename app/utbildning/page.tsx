@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BookOpen, Clock, Users, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import AddToCart from '../components/AddToCart';
 
 export default function UtbildningPage() {
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({ basics: false, flow: false });
@@ -103,6 +104,15 @@ export default function UtbildningPage() {
                   <span>Läs mer</span>
                   <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
+                <div className="mt-4">
+                  <AddToCart
+                    id={course.id}
+                    name={course.title}
+                    price={course.id === 'basics' ? 1999 : 2499}
+                    type="course"
+                    image={course.image}
+                  />
+                </div>
               </div>
             </div>
           ))}

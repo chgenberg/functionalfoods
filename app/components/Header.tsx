@@ -46,6 +46,11 @@ export default function Header() {
       label: "KONTAKT",
       href: "/kontakt/adress",
     },
+    {
+      label: "VARUKORG",
+      href: "/cart",
+      icon: <ShoppingCart className="w-7 h-7" />,
+    },
   ];
 
   return (
@@ -79,11 +84,16 @@ export default function Header() {
                   href={item.href}
                   className="flex items-center space-x-1 text-primary hover:text-accent px-1 py-2 text-sm font-medium tracking-wider transition-colors duration-200"
                 >
-                  <span>{item.label}</span>
+                  {item.icon || <span>{item.label}</span>}
                   {item.submenu && (
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                       activeDropdown === item.label ? 'rotate-180' : ''
                     }`} />
+                  )}
+                  {item.icon && items.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                      {items.reduce((sum, item) => sum + item.quantity, 0)}
+                    </span>
                   )}
                 </Link>
                 
@@ -110,16 +120,6 @@ export default function Header() {
                 )}
               </div>
             ))}
-            <li className="ml-auto">
-              <Link href="/cart" className="relative">
-                <ShoppingCart className="w-7 h-7" />
-                {items.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-                    {items.reduce((sum, item) => sum + item.quantity, 0)}
-                  </span>
-                )}
-              </Link>
-            </li>
           </nav>
 
           {/* Mobile menu button */}
