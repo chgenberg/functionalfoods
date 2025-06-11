@@ -45,9 +45,9 @@ export default function BookPage() {
           <div className="space-y-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             {/* Price and Buy Button */}
             <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <div className="flex items-baseline justify-between mb-4">
+              <div className="flex flex-col items-center mb-4">
                 <p className="text-3xl font-light text-primary">239 kr</p>
-                <p className="text-sm text-text-secondary">Moms ingår</p>
+                <p className="text-sm text-text-secondary mt-1">Moms ingår</p>
               </div>
               <Link
                 href="https://thebookaffair.se/collections/ulrika-davidsson/products/functional-foods"

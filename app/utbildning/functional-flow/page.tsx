@@ -2,11 +2,26 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap } from 'react-icons/fi';
+import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap, FiShoppingCart } from 'react-icons/fi';
 import { GiBrain } from 'react-icons/gi';
+import { useCart } from '../../context/CartContext';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { addItem } = useCart();
+
+  const course = {
+    id: 'functional-flow',
+    name: 'Functional Flow',
+    price: 1836,
+    type: 'course' as const,
+    image: '/functional_flow.png',
+    quantity: 1
+  };
+
+  const handleAddToCart = () => {
+    addItem(course);
+  };
 
   const benefits = [
     {
@@ -79,10 +94,19 @@ export default function FunctionalFlowPage() {
 
             {/* Price Box */}
             <div className="bg-white rounded-2xl p-6 shadow-lg mb-8">
-              <div className="flex items-baseline gap-3 mb-4">
-                <span className="text-xl text-gray-400 line-through">2,295 kr</span>
-                <span className="text-3xl font-light text-primary">1,836 kr</span>
-                <span className="text-sm text-accent bg-accent/10 px-2 py-1 rounded">-20%</span>
+              <div className="flex items-baseline justify-between mb-4">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-xl text-gray-400 line-through">2,295 kr</span>
+                  <span className="text-3xl font-light text-primary">1,836 kr</span>
+                  <span className="text-sm text-accent bg-accent/10 px-2 py-1 rounded">-20%</span>
+                </div>
+                <button 
+                  onClick={handleAddToCart}
+                  className="btn-primary flex items-center gap-2 px-6 py-3"
+                >
+                  <FiShoppingCart className="w-4 h-4" />
+                  Lägg i varukorg
+                </button>
               </div>
             </div>
 

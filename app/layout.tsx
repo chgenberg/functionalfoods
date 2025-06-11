@@ -5,8 +5,8 @@ import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
 
 export const metadata: Metadata = {
-  title: "Functional Foods - Förbättra din hälsa genom funktionell kost",
-  description: "Utbildning och kunskap om funktionell kost och livsstil för bättre hälsa.",
+  title: "Ulrika Functional Foods",
+  description: "Funktionella livsmedel för hälsa och välmående",
   icons: {
     icon: '/f_favicon.png',
     shortcut: '/f_favicon.png',
@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="sv" data-version="2024-fixed">
-      <body className="antialiased min-h-screen flex flex-col font-sans">
+      <body className="font-sans antialiased min-h-screen flex flex-col">
         <CartProvider>
           <div className="flex flex-col min-h-screen">
             <Header />

@@ -127,6 +127,7 @@ export default function Home() {
     <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
       {/* Video Hero Section */}
       <section className="relative h-[80vh] w-full overflow-hidden">
+        {/* Video background */}
         <video
           autoPlay
           loop
@@ -136,6 +137,12 @@ export default function Home() {
         >
           <source src="/front.mp4" type="video/mp4" />
         </video>
+        
+        {/* Fallback gradient background for when video fails */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-600 to-green-800 opacity-0">
+          <div className="absolute inset-0 bg-black/30"></div>
+        </div>
+        
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
           <div className="text-center text-white max-w-3xl px-4">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
@@ -276,9 +283,9 @@ export default function Home() {
 
       {showQuestionnaire && (
         <Questionnaire
-          onComplete={handleQuestionnaireComplete}
-          onCancel={() => setShowQuestionnaire(false)}
           bodyPart={selectedDot || ''}
+          description={description}
+          onCancel={() => setShowQuestionnaire(false)}
         />
       )}
 
