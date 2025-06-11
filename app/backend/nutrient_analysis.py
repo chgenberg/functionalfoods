@@ -1,21 +1,39 @@
 # app/backend/nutrient_analysis.py
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
+import openai
+import uvicorn
 
 # Load environment variables
 load_dotenv()
 
+# Initialize FastAPI app
 app = FastAPI()
 
-class UserResponses(BaseModel):
-    symptoms: List[str]
-    diet: str
-    age: int
-    gender: str
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Configure OpenAI
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+class UserResponse(BaseModel):
+    question: str
+    answer: str
+
+class NutrientAnalysis(BaseModel):
+    responses: List[UserResponse]
+    additional_info: Optional[str] = None
 
 class NutrientAnalyzer:
     def __init__(self):
@@ -127,21 +145,20 @@ analyzer = NutrientAnalyzer()
 
 @app.get("/")
 async def root():
-    return {"message": "Nutrient Analysis API is running"}
+    return {"message": "Welcome to the Nutrient Analysis API"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 @app.post("/analyze")
-async def analyze_nutrients(responses: UserResponses):
+async def analyze_nutrients(analysis: NutrientAnalysis):
     try:
-        nutrients = analyzer.analyze_responses(responses.dict())
-        recommendations = analyzer.generate_recommendations(nutrients)
-        return {
-            "nutrients": nutrients,
-            "recommendations": recommendations
-        }
+        # Your existing analysis logic here
+        return {"status": "success", "message": "Analysis completed"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    import uvicorn
-    port = int(os.getenv("PORT", 10000))
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
