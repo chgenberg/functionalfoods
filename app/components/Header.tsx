@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, ChevronDown, ShoppingCart } from 'lucide-react';
+import { FiShoppingCart, FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 
 export default function Header() {
@@ -49,7 +49,7 @@ export default function Header() {
     {
       label: "VARUKORG",
       href: "/cart",
-      icon: <ShoppingCart className="w-7 h-7" />,
+      icon: <FiShoppingCart className="w-5 h-5" />,
     },
   ];
 
@@ -86,7 +86,7 @@ export default function Header() {
                 >
                   {item.icon || <span>{item.label}</span>}
                   {item.submenu && (
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    <FiChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                       activeDropdown === item.label ? 'rotate-180' : ''
                     }`} />
                   )}
@@ -129,9 +129,9 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
+              <FiX className="w-6 h-6" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <FiMenu className="w-6 h-6" />
             )}
           </button>
         </div>
