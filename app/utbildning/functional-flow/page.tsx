@@ -1,25 +1,26 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { Clock, CheckCircle, ArrowLeft, Heart, Brain, Zap } from 'lucide-react';
 import { useState } from 'react';
+import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap } from 'react-icons/fi';
+import { GiBrain } from 'react-icons/gi';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const benefits = [
     {
-      icon: Heart,
+      icon: FiHeart,
       title: "Förbättrad tarmflora",
       description: "Genom att minimera processad mat, socker och onödiga tillsatser kan tarmfloran balanseras och inflammation minskas."
     },
     {
-      icon: Brain,
+      icon: GiBrain,
       title: "Minskad inflammation",
       description: "En kost rik på antiinflammatoriska livsmedel kan minska kroppens inflammatoriska processer och förbättra den allmänna hälsan."
     },
     {
-      icon: Zap,
+      icon: FiZap,
       title: "Balanserat blodsocker",
       description: "Håll blodsockret stabilt för jämnare energi genom dagen och bättre allmän hälsa."
     }
@@ -30,7 +31,7 @@ export default function FunctionalFlowPage() {
       <div className="container-custom section-padding">
         {/* Back Link */}
         <Link href="/utbildning" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <FiArrowLeft className="w-4 h-4 mr-2" />
           Tillbaka till kurser
         </Link>
 
@@ -64,7 +65,7 @@ export default function FunctionalFlowPage() {
             
             <div className="flex items-center gap-4 text-text-secondary mb-6">
               <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
+                <FiClock className="w-5 h-5" />
                 <span>6 veckor</span>
               </div>
               <div className="w-1 h-1 bg-gray-300 rounded-full" />
@@ -89,7 +90,7 @@ export default function FunctionalFlowPage() {
             <div className="space-y-3">
               {['Recept och måltidsplaner', 'Inköpslistor', 'Expertkunskap', 'Livstidsåtkomst'].map((feature, i) => (
                 <div key={i} className="flex items-center text-text-secondary">
-                  <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                  <FiCheckCircle className="w-5 h-5 text-accent mr-3" />
                   <span>{feature}</span>
                 </div>
               ))}
