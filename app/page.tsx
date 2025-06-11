@@ -7,7 +7,8 @@ import { Question, UserResponse } from "@/app/types";
 import MicronutrientQuestionModal from "./components/MicronutrientQuestionModal";
 import Questionnaire from "./components/Questionnaire";
 import { AnalysisResult } from "./types";
-import { ArrowRight, Sparkles, Brain, Heart, Zap, Shield, Leaf, Activity } from 'lucide-react';
+import { FiArrowRight, FiActivity, FiHeart, FiZap, FiShield } from 'react-icons/fi';
+import { GiSparkles, GiBrain } from 'react-icons/gi';
 
 function LoadingPopup({ messages, durations, onDone, visible }: { messages: string[]; durations?: number[]; onDone?: () => void; visible: boolean }) {
   const [step, setStep] = useState(0);
@@ -50,7 +51,7 @@ function LoadingPopup({ messages, durations, onDone, visible }: { messages: stri
             }}
           />
         </div>
-        <Sparkles className="w-12 h-12 text-accent mb-4 animate-pulse" />
+        <GiSparkles className="w-12 h-12 text-accent mb-4 animate-pulse" />
         <div className="text-xl font-medium text-primary mb-2 text-center">{messages[step]}</div>
         <div className="text-sm text-text-secondary">Vänligen vänta medan vi bearbetar din information...</div>
       </div>
@@ -158,7 +159,7 @@ export default function Home() {
       <section className="container-custom pt-12 md:pt-16 pb-8 md:pb-12">
         <div className="text-center max-w-3xl mx-auto mb-4 md:mb-6">
           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4 animate-fade-in">
-            <Sparkles className="w-4 h-4" />
+            <GiSparkles className="w-4 h-4" />
             <span>Personlig hälsoanalys på 5 minuter</span>
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 animate-fade-in tracking-tight">
@@ -184,7 +185,7 @@ export default function Home() {
                   </div>
                   <h2 className="text-lg md:text-xl font-light text-primary">VÄLJ OMRÅDE</h2>
                 </div>
-                <Activity className="w-5 h-5 text-accent animate-pulse" />
+                <FiActivity className="w-5 h-5 text-accent animate-pulse" />
               </div>
               <p className="text-xs md:text-sm text-text-secondary mb-4">Klicka på det område där du upplever besvär</p>
               <div className="flex justify-center" style={{ background: 'transparent' }}>
@@ -218,7 +219,7 @@ export default function Home() {
                   </div>
                   <h2 className="text-lg md:text-xl font-light text-primary">Beskriv dina besvär</h2>
                 </div>
-                <Brain className="w-5 h-5 text-accent" />
+                <GiBrain className="w-5 h-5 text-accent" />
               </div>
               <textarea
                 placeholder="Beskriv ditt problem så detaljerat som möjligt..."
@@ -243,7 +244,7 @@ export default function Home() {
                 >
                   <span className="relative z-10 flex items-center">
                     {loading ? "Analyserar..." : "Starta analys"}
-                    <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                    <FiArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-accent-hover to-accent transform translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
                 </button>
