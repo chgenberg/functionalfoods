@@ -151,7 +151,14 @@ export default function ChatBot() {
                     : 'bg-gray-100 text-gray-800 rounded-bl-none'
                 }`}
               >
-                <p className="text-sm">{message.text}</p>
+                {message.sender === 'bot' ? (
+                  <div 
+                    className="text-sm prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: message.text }}
+                  />
+                ) : (
+                  <p className="text-sm">{message.text}</p>
+                )}
                 <p className="text-xs opacity-70 mt-1">
                   {message.timestamp.toLocaleTimeString('sv-SE', {
                     hour: '2-digit',

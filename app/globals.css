@@ -199,4 +199,13 @@
   .glow:hover {
     box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
   }
+  
+  /* Animation delays */
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
 }

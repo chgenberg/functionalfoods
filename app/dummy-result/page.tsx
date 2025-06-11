@@ -52,45 +52,6 @@ export default function DummyResultPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-[#f8f5f0]">
-      {/* Header med logo och meny */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <Image
-                src="/FunctionalLogo.png"
-                alt="Functional Foods"
-                width={120}
-                height={48}
-                className="object-contain cursor-pointer"
-              />
-            </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/shop" className="text-gray-600 hover:text-gray-900 font-light transition-colors">
-                SHOP
-              </Link>
-              <Link href="/om-oss" className="text-gray-600 hover:text-gray-900 font-light transition-colors">
-                Om oss
-              </Link>
-              <Link href="/inspiration" className="text-gray-600 hover:text-gray-900 font-light transition-colors">
-                Inspiration
-              </Link>
-              <Link href="/kontakt" className="text-gray-600 hover:text-gray-900 font-light transition-colors">
-                Kontakta oss
-              </Link>
-            </nav>
-            {/* Mobilmeny-knapp */}
-            <button className="md:hidden text-gray-600 hover:text-gray-900">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-        {/* Avskiljande linje */}
-        <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-      </div>
-
       {/* Hero video sektion */}
       <div className="bg-gradient-to-b from-white to-[#fafaf8] py-8">
         <div className="max-w-5xl mx-auto px-4">
