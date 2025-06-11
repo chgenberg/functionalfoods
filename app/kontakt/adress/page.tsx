@@ -86,8 +86,8 @@ export default function Adress() {
 
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-light mb-4">
-            Hitta <span className="text-gradient">oss</span>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 uppercase">
+            HITTA <span className="text-gradient">OSS</span>
           </h1>
           <p className="text-lg text-text-secondary">
             Välkommen att besöka oss eller kontakta oss via telefon och e-post

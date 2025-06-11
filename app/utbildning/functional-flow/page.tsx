@@ -1,8 +1,9 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { Clock, CheckCircle, ShoppingCart, ArrowLeft, Heart, Brain, Zap } from 'lucide-react';
+import { Clock, CheckCircle, ArrowLeft, Heart, Brain, Zap } from 'lucide-react';
 import { useState } from 'react';
+import AddToCart from '@/app/components/AddToCart';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -84,10 +85,13 @@ export default function FunctionalFlowPage() {
                 <span className="text-sm text-accent bg-accent/10 px-2 py-1 rounded">-20%</span>
               </div>
               
-              <button className="btn-primary w-full flex items-center justify-center group">
-                <ShoppingCart className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                Lägg till i varukorg
-              </button>
+              <AddToCart
+                id="functional-flow"
+                name="Functional Flow"
+                price={1836}
+                type="course"
+                image="/functional_flow.png"
+              />
             </div>
 
             {/* Quick Features */}
@@ -130,10 +134,13 @@ export default function FunctionalFlowPage() {
             <p className="text-text-secondary mb-6">
               Investera i din hälsa idag och känn skillnaden redan inom några veckor.
             </p>
-            <button className="btn-primary inline-flex items-center">
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Köp kursen nu
-            </button>
+            <AddToCart
+              id="functional-flow"
+              name="Functional Flow"
+              price={1836}
+              type="course"
+              image="/functional_flow.png"
+            />
           </div>
         </div>
       </div>
