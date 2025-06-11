@@ -1,28 +1,29 @@
 services:
   # Frontend (Next.js)
   - type: web
-    name: functionalfoods
+    name: ulrika-functional-foods-frontend
     env: node
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: OPENAI_API_KEY
-        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        value: https://ulrika-functional-foods-backend.onrender.com
 
   # Backend (Python/FastAPI)
   - type: web
-    name: functionalfoods-api
+    name: ulrika-functional-foods-backend
     env: python
     buildCommand: |
+      apt-get update && apt-get install -y python3 python3-pip
       python3 -m pip install --upgrade pip
       pip3 install -r requirements.txt
-    startCommand: python3 -m uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT
+    startCommand: python3 app/backend/nutrient_analysis.py
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: OPENAI_API_KEY
-        sync: false
+        value: 3.9.0
       - key: PORT
-        value: 10000 
+        value: 8000
+      - key: OPENAI_API_KEY
+        sync: false 
