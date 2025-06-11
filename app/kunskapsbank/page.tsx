@@ -1,7 +1,8 @@
 "use client";
 import Image from 'next/image';
 import Link from 'next/link';
-import { BookOpen, Search, MessageCircle, Utensils, ArrowRight } from 'lucide-react';
+import { FiBookOpen, FiSearch, FiMessageCircle, FiArrowRight } from 'react-icons/fi';
+import { GiCookingPot } from 'react-icons/gi';
 import { useState } from 'react';
 
 export default function KunskapsbankPage() {
@@ -14,7 +15,7 @@ export default function KunskapsbankPage() {
       description: "Läs våra senaste artiklar om hälsa, kost och livsstil",
       image: "/blogg.png",
       href: "/kunskapsbank/blogg",
-      icon: BookOpen,
+      icon: FiBookOpen,
       color: "text-blue-600"
     },
     {
@@ -23,7 +24,7 @@ export default function KunskapsbankPage() {
       description: "Utforska våra hälsosamma och goda recept",
       image: "/recept.png",
       href: "/kunskapsbank/recept",
-      icon: Utensils,
+      icon: GiCookingPot,
       color: "text-green-600"
     },
     {
@@ -32,7 +33,7 @@ export default function KunskapsbankPage() {
       description: "Hitta specifik information i vår kunskapsbank",
       image: "/sok.png",
       href: "/kunskapsbank/sok",
-      icon: Search,
+      icon: FiSearch,
       color: "text-purple-600"
     },
     {
@@ -41,7 +42,7 @@ export default function KunskapsbankPage() {
       description: "Svar på vanliga frågor om kost och hälsa",
       image: "/faq.png",
       href: "/kontakt/faq",
-      icon: MessageCircle,
+      icon: FiMessageCircle,
       color: "text-orange-600"
     }
   ];
@@ -84,7 +85,7 @@ export default function KunskapsbankPage() {
                 
                 {/* Icon Overlay */}
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                  <section.icon className={`w-6 h-6 ${section.color}`} />
+                  <section.icon className={`w-5 h-5 ${section.color}`} />
                 </div>
               </div>
               
@@ -96,7 +97,7 @@ export default function KunskapsbankPage() {
                 
                 <div className="flex items-center text-accent text-sm font-medium">
                   <span>Utforska</span>
-                  <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  <FiArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </Link>
@@ -112,7 +113,7 @@ export default function KunskapsbankPage() {
             </p>
             <Link href="/utbildning" className="btn-primary inline-flex items-center">
               Se våra kurser
-              <ArrowRight className="ml-2 w-4 h-4" />
+              <FiArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </div>
         </div>

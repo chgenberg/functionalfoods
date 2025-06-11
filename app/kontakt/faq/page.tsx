@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, MessageCircle, ArrowLeft, Search } from 'lucide-react';
+import { FiChevronDown, FiChevronUp, FiArrowLeft, FiSearch, FiMessageCircle } from 'react-icons/fi';
 import Link from 'next/link';
 
 export default function FAQ() {
@@ -150,7 +150,7 @@ export default function FAQ() {
       <div className="container-custom section-padding">
         {/* Back Link */}
         <Link href="/kontakt" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <FiArrowLeft className="w-4 h-4 mr-2" />
           Tillbaka till kontakt
         </Link>
 
@@ -174,7 +174,7 @@ export default function FAQ() {
               placeholder="Sök bland frågor..."
               className="w-full px-6 py-3 pl-12 rounded-2xl bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-accent focus:shadow-xl transition-all duration-200"
             />
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           </div>
         </div>
         
@@ -187,7 +187,7 @@ export default function FAQ() {
               style={{ animationDelay: `${0.3 + sectionIndex * 0.1}s` }}
             >
               <h2 className="text-2xl font-light text-primary mb-6 flex items-center">
-                <MessageCircle className="w-6 h-6 text-accent mr-3" />
+                <FiMessageCircle className="w-6 h-6 text-accent mr-3" />
                 {section.title}
               </h2>
               
@@ -209,9 +209,9 @@ export default function FAQ() {
                           {item.q}
                         </h3>
                         {isOpen ? (
-                          <ChevronUp className="w-5 h-5 text-accent flex-shrink-0" />
+                          <FiChevronUp className="w-5 h-5 text-accent flex-shrink-0" />
                         ) : (
-                          <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-accent flex-shrink-0" />
+                          <FiChevronDown className="w-5 h-5 text-gray-400 group-hover:text-accent flex-shrink-0" />
                         )}
                       </button>
                       
@@ -233,7 +233,7 @@ export default function FAQ() {
         {/* No Results */}
         {searchQuery && filteredSections.length === 0 && (
           <div className="text-center py-12">
-            <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <FiMessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <p className="text-text-secondary">Inga frågor hittades för "{searchQuery}"</p>
             <button 
               onClick={() => setSearchQuery('')}
@@ -253,7 +253,7 @@ export default function FAQ() {
             </p>
             <Link href="/kontakt/formular" className="btn-primary inline-flex items-center">
               Kontakta oss
-              <ArrowLeft className="ml-2 w-4 h-4 rotate-180" />
+              <FiArrowLeft className="ml-2 w-4 h-4 rotate-180" />
             </Link>
           </div>
         </div>

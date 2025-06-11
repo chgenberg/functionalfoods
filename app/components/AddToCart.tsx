@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from '../context/CartContext';
-import { ShoppingCart } from 'lucide-react';
+import { FiShoppingCart } from 'react-icons/fi';
 import { useState } from 'react';
 
 interface AddToCartProps {
@@ -30,7 +30,7 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
           : 'bg-primary text-white hover:bg-primary/90 shadow-md hover:shadow-lg'
       }`}
     >
-      <ShoppingCart className={`w-5 h-5 transition-transform duration-300 ${isAdded ? 'rotate-12' : ''}`} />
+      <FiShoppingCart className={`w-5 h-5 transition-transform duration-300 ${isAdded ? 'rotate-12' : ''}`} />
       {isAdded ? 'Tillagd i varukorg' : 'Lägg i varukorg'}
     </button>
   );

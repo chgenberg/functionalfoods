@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, ArrowRight, Search, Tag } from 'lucide-react';
+import { FiCalendar, FiClock, FiArrowRight, FiSearch, FiTag } from 'react-icons/fi';
 
 interface BlogPost {
   id: string;
@@ -78,7 +78,7 @@ export default function BlogPage() {
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Sök artiklar..."
@@ -144,11 +144,11 @@ export default function BlogPage() {
                   <div className="p-6">
                     <div className="flex items-center gap-4 text-sm text-text-secondary mb-3">
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
+                        <FiCalendar className="w-4 h-4" />
                         {new Date(post.date).toLocaleDateString('sv-SE')}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
+                        <FiClock className="w-4 h-4" />
                         {post.readTime}
                       </span>
                     </div>
@@ -165,7 +165,7 @@ export default function BlogPage() {
                     <div className="flex flex-wrap gap-2 mb-4">
                       {post.tags.map(tag => (
                         <span key={tag} className="flex items-center gap-1 text-xs text-text-secondary bg-background-secondary px-2 py-1 rounded">
-                          <Tag className="w-3 h-3" />
+                          <FiTag className="w-4 h-4" />
                           {tag}
                         </span>
                       ))}
@@ -173,7 +173,7 @@ export default function BlogPage() {
 
                     <div className="flex items-center text-accent font-medium group-hover:gap-2 transition-all duration-200">
                       <span>Läs mer</span>
-                      <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                      <FiArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </div>
