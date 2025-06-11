@@ -1,55 +1,60 @@
 "use client";
 import { useEffect, useState } from 'react';
-import L from 'leaflet';
+import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { MapPin, Phone, Mail, Clock, ArrowLeft, Building } from 'lucide-react';
 import Link from 'next/link';
+
+// Dynamically import Leaflet to avoid SSR issues
+const L = dynamic(() => import('leaflet').then((mod) => mod.default), { ssr: false });
 
 export default function Adress() {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
-    // Fix för Leaflet ikoner i Next.js
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/leaflet/marker-icon-2x.png',
-      iconUrl: '/leaflet/marker-icon.png',
-      shadowUrl: '/leaflet/marker-shadow.png',
-    });
+    if (typeof window !== 'undefined') {
+      // Fix för Leaflet ikoner i Next.js
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: '/leaflet/marker-icon-2x.png',
+        iconUrl: '/leaflet/marker-icon.png',
+        shadowUrl: '/leaflet/marker-shadow.png',
+      });
 
-    // Initiera kartan
-    const map = L.map('map').setView([59.3293, 18.0686], 15);
+      // Initiera kartan
+      const map = L.map('map').setView([59.3293, 18.0686], 15);
 
-    // Lägg till OpenStreetMap-lager med custom styling
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      className: 'map-tiles'
-    }).addTo(map);
+      // Lägg till OpenStreetMap-lager med custom styling
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        className: 'map-tiles'
+      }).addTo(map);
 
-    // Custom marker
-    const customIcon = L.divIcon({
-      html: `<div class="custom-marker">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="#D97757"/>
-        </svg>
-      </div>`,
-      className: 'custom-div-icon',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
+      // Custom marker
+      const customIcon = L.divIcon({
+        html: `<div class="custom-marker">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="#D97757"/>
+          </svg>
+        </div>`,
+        className: 'custom-div-icon',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
 
-    // Lägg till markör
-    L.marker([59.3293, 18.0686], { icon: customIcon })
-      .addTo(map)
-      .bindPopup('<div class="font-medium">Functional Foods</div><div class="text-sm text-gray-600">Box 6211, Stockholm</div>')
-      .openPopup();
+      // Lägg till markör
+      L.marker([59.3293, 18.0686], { icon: customIcon })
+        .addTo(map)
+        .bindPopup('<div class="font-medium">Functional Foods</div><div class="text-sm text-gray-600">Box 6211, Stockholm</div>')
+        .openPopup();
 
-    setMapLoaded(true);
+      setMapLoaded(true);
 
-    // Städa upp när komponenten unmountas
-    return () => {
-      map.remove();
-    };
+      // Städa upp när komponenten unmountas
+      return () => {
+        map.remove();
+      };
+    }
   }, []);
 
   const contactInfo = [
