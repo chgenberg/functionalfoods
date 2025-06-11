@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Clock, CheckCircle, ArrowLeft, Heart, Brain, Zap } from 'lucide-react';
 import { useState } from 'react';
-import AddToCart from '@/app/components/AddToCart';
 
 export default function FunctionalBasicsPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -84,14 +83,6 @@ export default function FunctionalBasicsPage() {
                 <span className="text-3xl font-light text-primary">1,196 kr</span>
                 <span className="text-sm text-accent bg-accent/10 px-2 py-1 rounded">-20%</span>
               </div>
-              
-              <AddToCart
-                id="functional-basics"
-                name="Functional Basics"
-                price={1196}
-                type="course"
-                image="/functional_basics.png"
-              />
             </div>
 
             {/* Quick Features */}
@@ -134,13 +125,6 @@ export default function FunctionalBasicsPage() {
             <p className="text-text-secondary mb-6">
               Investera i din hälsa idag och känn skillnaden redan inom några veckor.
             </p>
-            <AddToCart
-              id="functional-basics"
-              name="Functional Basics"
-              price={1196}
-              type="course"
-              image="/functional_basics.png"
-            />
           </div>
         </div>
       </div>
