@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import AIChatBox from "../components/AIChatBox";
 import MicronutrientQuestionModal from "../components/MicronutrientQuestionModal";
@@ -43,7 +43,7 @@ const riskProfileLabels = {
   activity: "Physical Activity"
 };
 
-export default function ResultPage() {
+function ResultPageContent() {
   const searchParams = useSearchParams();
   const data = searchParams.get('data');
   
@@ -213,6 +213,22 @@ export default function ResultPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-[#071625] flex items-center justify-center">
+      <div className="text-white text-xl">Laddar...</div>
+    </div>
+  );
+}
+
+export default function ResultPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ResultPageContent />
+    </Suspense>
   );
 }
 
