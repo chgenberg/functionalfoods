@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { Question, bodyPartQuestions } from '../types';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
 
 interface QuestionnaireProps {
   bodyPart: string;
@@ -131,7 +131,7 @@ export default function Questionnaire({ bodyPart, onComplete, onCancel }: Questi
             className="p-2 rounded-lg hover:bg-background-secondary transition-colors duration-200"
             aria-label="Avbryt"
           >
-            <X className="w-5 h-5 text-text-secondary" />
+            <FiX className="w-5 h-5 text-text-secondary" />
           </button>
         </div>
         
@@ -159,7 +159,7 @@ export default function Questionnaire({ bodyPart, onComplete, onCancel }: Questi
           disabled={currentQuestion === 0}
           className="flex items-center space-x-2 text-text-secondary hover:text-primary transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <FiChevronLeft className="w-5 h-5" />
           <span>Föregående</span>
         </button>
         
