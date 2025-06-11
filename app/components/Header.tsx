@@ -40,16 +40,12 @@ export default function Header() {
         { label: "Recept", href: "/kunskapsbank/recept" },
         { label: "Sök", href: "/kunskapsbank/sok" },
         { label: "FAQ", href: "/kontakt/faq" },
+        { label: "Generera bok", href: "/genererabok" },
       ],
     },
     {
       label: "KONTAKT",
       href: "/kontakt/adress",
-    },
-    {
-      label: "VARUKORG",
-      href: "/cart",
-      icon: <FiShoppingCart className="w-5 h-5" />,
     },
   ];
 
@@ -84,19 +80,13 @@ export default function Header() {
                   href={item.href}
                   className="flex items-center space-x-1 text-primary hover:text-accent px-1 py-2 text-sm font-medium tracking-wider transition-colors duration-200"
                 >
-                  {item.icon || <span>{item.label}</span>}
+                  <span>{item.label}</span>
                   {item.submenu && (
                     <FiChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                       activeDropdown === item.label ? 'rotate-180' : ''
                     }`} />
                   )}
-                  {item.icon && items.length > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-                      {items.reduce((sum, item) => sum + item.quantity, 0)}
-                    </span>
-                  )}
                 </Link>
-                
                 {/* Dropdown Menu */}
                 {item.submenu && (
                   <div className={`absolute left-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black/5 transition-all duration-200 ${
@@ -120,20 +110,40 @@ export default function Header() {
                 )}
               </div>
             ))}
+            {/* Desktop: Varukorgsikon */}
+            <Link href="/cart" className="relative p-2 rounded-lg text-primary hover:bg-background-secondary transition-colors duration-200">
+              <FiShoppingCart className="w-5 h-5" />
+              {items.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                  {items.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              )}
+            </Link>
           </nav>
 
           {/* Mobile menu button */}
-          <button
-            type="button"
-            className="lg:hidden p-2 rounded-lg text-primary hover:bg-background-secondary transition-colors duration-200"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <FiX className="w-6 h-6" />
-            ) : (
-              <FiMenu className="w-6 h-6" />
-            )}
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            {/* Mobil: Varukorgsikon bredvid hamburgare */}
+            <Link href="/cart" className="relative p-2 rounded-lg text-primary hover:bg-background-secondary transition-colors duration-200">
+              <FiShoppingCart className="w-6 h-6" />
+              {items.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                  {items.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              )}
+            </Link>
+            <button
+              type="button"
+              className="p-2 rounded-lg text-primary hover:bg-background-secondary transition-colors duration-200"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <FiX className="w-6 h-6" />
+              ) : (
+                <FiMenu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
