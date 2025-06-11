@@ -16,9 +16,13 @@ services:
     name: functional-foods-backend
     env: python
     buildCommand: |
+      python -m venv venv
+      . venv/bin/activate
       python -m pip install --upgrade pip
       pip install -r requirements.txt
-    startCommand: uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT
+    startCommand: |
+      . venv/bin/activate
+      python -m uvicorn app.backend.nutrient_analysis:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
