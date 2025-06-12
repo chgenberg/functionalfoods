@@ -128,13 +128,17 @@ export default function AdminBlogPage() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex gap-2 justify-end">
-                        <button className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all duration-200">
-                          <FiEye className="w-4 h-4" />
-                        </button>
-                        <button className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all duration-200">
-                          <FiEdit className="w-4 h-4" />
-                        </button>
-                        <button className="p-2 text-error hover:bg-error/10 rounded-lg transition-all duration-200">
+                        <Link href={`/admin/blog/${post.slug}`} passHref>
+                          <a className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all duration-200" title="Förhandsgranska">
+                            <FiEye className="w-4 h-4" />
+                          </a>
+                        </Link>
+                        <Link href={`/admin/blog/${post.slug}/edit`} passHref>
+                          <a className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all duration-200" title="Redigera">
+                            <FiEdit className="w-4 h-4" />
+                          </a>
+                        </Link>
+                        <button className="p-2 text-error hover:bg-error/10 rounded-lg transition-all duration-200" title="Ta bort">
                           <FiTrash2 className="w-4 h-4" />
                         </button>
                       </div>
