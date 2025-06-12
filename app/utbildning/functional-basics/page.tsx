@@ -171,7 +171,20 @@ export default function FunctionalBasicsPage() {
             className="flex justify-center lg:justify-end order-2 lg:order-1"
           >
             <div className="relative group">
-              <div className={`transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
+              {/* Mobile image */}
+              <div className={`block lg:hidden transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
+                <Image 
+                  src="/ulrika_mobile.png" 
+                  alt="Functional Basics Mobile" 
+                  width={350}
+                  height={350}
+                  className="rounded-2xl shadow-2xl"
+                  onLoad={() => setImageLoaded(true)}
+                  priority
+                />
+              </div>
+              {/* Desktop image */}
+              <div className={`hidden lg:block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
                   src="/functional_basics.png" 
                   alt="Functional Basics" 
@@ -183,7 +196,7 @@ export default function FunctionalBasicsPage() {
                 />
               </div>
               {!imageLoaded && (
-                <div className="absolute inset-0 bg-gray-200 rounded-2xl animate-pulse w-[450px] h-[450px]" />
+                <div className="absolute inset-0 bg-gray-200 rounded-2xl animate-pulse w-[350px] h-[350px] lg:w-[450px] lg:h-[450px]" />
               )}
               {/* Floating badges */}
               <motion.div
