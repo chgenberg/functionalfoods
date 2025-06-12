@@ -84,18 +84,22 @@ export async function POST(request: NextRequest) {
 
     const responseString = completion.choices[0]?.message?.content;
     if (!responseString) {
-        throw new Error("Fick inget svar från OpenAI");
+        throw new Error("Fick inget svar från OpenAI för textgenerering.");
     }
 
     const articleData = JSON.parse(responseString);
-
+    if (!articleData.imagePrompt) {
+        throw new Error("Fick inget imagePrompt från OpenAI i svaret.");
+    }
+    
     // Generera bild med DALL-E 3
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
-      prompt: articleData.imagePrompt,
+      prompt: `Fotorealistisk, högkvalitativ bild: ${articleData.imagePrompt}`, // Förtydligad prompt
       n: 1,
       size: "1024x1024",
-      quality: "standard",
+      quality: "hd", // Använder hd för bättre kvalitet
+      style: "vivid" // Använder vivid för mer färgstarka bilder
     });
 
     const imageUrl = imageResponse.data?.[0]?.url;
@@ -105,11 +109,18 @@ export async function POST(request: NextRequest) {
 
     // Ladda ner bilden från OpenAI och ladda upp till Vercel Blob
     const imageFetch = await fetch(imageUrl);
+    if (!imageFetch.ok) {
+      throw new Error(`Kunde inte hämta bild från OpenAI: ${imageFetch.statusText}`);
+    }
     const imageBlob = await imageFetch.blob();
     const blob = await put(`${articleData.slug}-${Date.now()}.png`, imageBlob, {
       access: 'public',
     });
 
+    if (!blob.url) {
+      throw new Error("Misslyckades med att ladda upp bild till Vercel Blob.");
+    }
+    
     // Schemalägg publicering (slumpmässig dag och tid inom nästa vecka)
     const scheduledAt = new Date();
     scheduledAt.setDate(scheduledAt.getDate() + Math.floor(Math.random() * 7)); // 0-6 dagar framåt
@@ -135,20 +146,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newBlogPost);
 
   } catch (error) {
-    console.error("Fel vid artikelgenerering:", error);
-    let errorMessage = "Kunde inte generera artikel";
-    let errorDetails: any = {};
+    console.error("[API_GENERATE_ARTICLE_ERROR]", error);
+    
+    let errorMessage = "Ett okänt fel inträffade vid artikelgenerering.";
+    let statusCode = 500;
 
-    if (error instanceof SyntaxError) { // JSON parse error
-        errorMessage = "Kunde inte tolka svaret från OpenAI.";
-        errorDetails = { details: error.message };
+    if (error instanceof OpenAI.APIError) {
+      errorMessage = `OpenAI API-fel: ${error.message}`;
+      statusCode = error.status || 500;
+    } else if (error instanceof SyntaxError) {
+        errorMessage = `Kunde inte tolka svaret från servern: ${error.message}`;
     } else if (error instanceof Error) {
         errorMessage = error.message;
     }
 
     return NextResponse.json(
-      { error: errorMessage, ...errorDetails },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     );
   }
 } 
