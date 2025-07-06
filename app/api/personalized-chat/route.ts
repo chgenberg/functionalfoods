@@ -50,21 +50,50 @@ async function getCourseInfo() {
   }
 }
 
-// Konvertera markdown till HTML
-function markdownToHtml(text: string): string {
-  // Konvertera **text** till <strong>text</strong>
-  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+// Konvertera text till HTML med korrekt formatering
+function formatToHtml(text: string): string {
+  // Dela upp i stycken baserat på dubbla radbrytningar
+  const paragraphs = text.split(/\n\s*\n/);
   
-  // Konvertera *text* till <em>text</em>
-  text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  
-  // Lägg till styckeindelning
-  const paragraphs = text.split('\n\n');
-  const htmlParagraphs = paragraphs.map(p => {
-    if (p.trim()) {
-      return `<p>${p.trim()}</p>`;
+  const htmlParagraphs = paragraphs.map(paragraph => {
+    if (!paragraph.trim()) return '';
+    
+    let formattedParagraph = paragraph.trim();
+    
+    // Konvertera **text** till <strong>text</strong>
+    formattedParagraph = formattedParagraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Konvertera *text* till <em>text</em>
+    formattedParagraph = formattedParagraph.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Hantera listor som börjar med - eller •
+    if (formattedParagraph.includes('\n-') || formattedParagraph.includes('\n•')) {
+      const lines = formattedParagraph.split('\n');
+      let listItems = [];
+      let regularText = [];
+      
+      for (const line of lines) {
+        if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
+          listItems.push(`<li>${line.trim().substring(1).trim()}</li>`);
+        } else if (listItems.length > 0) {
+          // Avsluta listan och börja ny text
+          regularText.push(`<ul>${listItems.join('')}</ul>`);
+          listItems = [];
+          if (line.trim()) regularText.push(`<p>${line.trim()}</p>`);
+        } else {
+          if (line.trim()) regularText.push(line.trim());
+        }
+      }
+      
+      // Lägg till eventuell kvarvarande lista
+      if (listItems.length > 0) {
+        regularText.push(`<ul>${listItems.join('')}</ul>`);
+      }
+      
+      return regularText.join('');
     }
-    return '';
+    
+    return `<p>${formattedParagraph}</p>`;
   }).filter(p => p);
   
   return htmlParagraphs.join('');
@@ -229,12 +258,14 @@ VIKTIGA REGLER:
 3. ${userContext ? 'Använd användarens personliga information för att ge skräddarsydda råd' : 'Ge allmänna råd eftersom användaren inte är inloggad'}
 4. ${userContext ? 'Referera till användarens quiz-resultat, hälsoprofil och tidigare analyser när det är relevant' : ''}
 5. Om någon frågar om något som INTE handlar om hälsa, functional foods, nutrition, recept eller longevity, svara vänligt att du är specialiserad på dessa områden
-6. AVSLUTA ALDRIG MITT I EN MENING - se till att alla meningar är kompletta
-7. Använd styckeindelning för bättre läsbarhet
-8. Håll svaren koncisa men kompletta (max 300 ord)
-9. Rekommendera gärna våra kurser när det är relevant
-10. Använd emojis sparsamt men effektivt
-${userContext ? '11. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
+6. VIKTIGT: AVSLUTA ALDRIG MITT I EN MENING - se till att alla meningar är kompletta och avslutas korrekt
+7. Använd tydlig styckeindelning med dubbla radbrytningar mellan olika ämnen
+8. Använd fetstil för viktiga begrepp och rubriker genom att skriva **text** (detta konverteras automatiskt)
+9. Skapa listor med - för punkter när det är lämpligt
+10. Håll svaren koncisa men kompletta (max 300 ord)
+11. Rekommendera gärna våra kurser när det är relevant
+12. Använd emojis sparsamt men effektivt
+${userContext ? '13. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
@@ -255,8 +286,8 @@ ${userContext ? '11. Kom ihåg att du känner till användarens hälsostatus och
       response = response.trim() + '.';
     }
     
-    // Konvertera markdown till HTML
-    const htmlResponse = markdownToHtml(response);
+    // Konvertera text till HTML
+    const htmlResponse = formatToHtml(response);
 
     // Spara chat-meddelandet i databasen om användaren är inloggad
     if (userId && user) {

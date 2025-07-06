@@ -148,48 +148,37 @@ export default function Home() {
 
   if (showQuiz) {
     return (
-      <div className="min-h-screen">
+      <div className="fixed inset-0 z-50">
         <HealthQuiz 
           onComplete={handleQuizComplete}
           onClose={() => setShowQuiz(false)}
         />
-        
-        {/* Scroll indicator */}
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40">
-          <button
-            onClick={scrollToAnalysis}
-            className="bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 hover:text-gray-900 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 text-sm"
-          >
-            <span>Eller använd symptomanalys</span>
-            <FiArrowDown className="w-4 h-4" />
-          </button>
-        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
-      {/* Hero Section with Leaf Background */}
-      <section className="relative w-full overflow-hidden h-[90vh] flex items-center justify-center" style={{ backgroundImage: 'url(/ulrika.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      {/* Hero Section with Ulrika Background */}
+      <section className="relative w-full overflow-hidden h-screen flex items-center justify-center" style={{ backgroundImage: 'url(/ulrika.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-4">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-light tracking-tight mb-4 sm:mb-6 text-white animate-fade-in text-center">
-            Functional Foods
+            FUNCTIONAL FOODS
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl font-light mb-6 sm:mb-8 text-white animate-fade-in animation-delay-200 text-center">
+          <p className="text-lg sm:text-xl md:text-2xl font-light mb-8 sm:mb-12 text-white animate-fade-in animation-delay-200 text-center">
             Mat som medicin för kropp och själ
           </p>
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <button 
               onClick={() => setShowQuiz(true)}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-base sm:text-lg"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-lg shadow-lg hover:shadow-xl"
             >
               Starta Hälsoquiz
             </button>
             <button 
               onClick={() => scrollToAnalysis()}
-              className="bg-white text-primary hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-base sm:text-lg"
+              className="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-lg shadow-lg hover:shadow-xl"
             >
               Symptomanalys
             </button>

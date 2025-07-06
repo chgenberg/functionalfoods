@@ -32,21 +32,50 @@ async function getCourseInfo() {
   }
 }
 
-// Konvertera markdown till HTML
-function markdownToHtml(text: string): string {
-  // Konvertera **text** till <strong>text</strong>
-  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+// Konvertera text till HTML med korrekt formatering
+function formatToHtml(text: string): string {
+  // Dela upp i stycken baserat på dubbla radbrytningar
+  const paragraphs = text.split(/\n\s*\n/);
   
-  // Konvertera *text* till <em>text</em>
-  text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  
-  // Lägg till styckeindelning
-  const paragraphs = text.split('\n\n');
-  const htmlParagraphs = paragraphs.map(p => {
-    if (p.trim()) {
-      return `<p>${p.trim()}</p>`;
+  const htmlParagraphs = paragraphs.map(paragraph => {
+    if (!paragraph.trim()) return '';
+    
+    let formattedParagraph = paragraph.trim();
+    
+    // Konvertera **text** till <strong>text</strong>
+    formattedParagraph = formattedParagraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Konvertera *text* till <em>text</em>
+    formattedParagraph = formattedParagraph.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Hantera listor som börjar med - eller •
+    if (formattedParagraph.includes('\n-') || formattedParagraph.includes('\n•')) {
+      const lines = formattedParagraph.split('\n');
+      let listItems = [];
+      let regularText = [];
+      
+      for (const line of lines) {
+        if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
+          listItems.push(`<li>${line.trim().substring(1).trim()}</li>`);
+        } else if (listItems.length > 0) {
+          // Avsluta listan och börja ny text
+          regularText.push(`<ul>${listItems.join('')}</ul>`);
+          listItems = [];
+          if (line.trim()) regularText.push(`<p>${line.trim()}</p>`);
+        } else {
+          if (line.trim()) regularText.push(line.trim());
+        }
+      }
+      
+      // Lägg till eventuell kvarvarande lista
+      if (listItems.length > 0) {
+        regularText.push(`<ul>${listItems.join('')}</ul>`);
+      }
+      
+      return regularText.join('');
     }
-    return '';
+    
+    return `<p>${formattedParagraph}</p>`;
   }).filter(p => p);
   
   return htmlParagraphs.join('');
@@ -92,11 +121,13 @@ VIKTIGA REGLER:
 2. Var vänlig, professionell och hjälpsam
 3. Ge konkreta och praktiska råd
 4. Om någon frågar om något som INTE handlar om hälsa, functional foods, nutrition, recept eller longevity, svara vänligt att du är specialiserad på dessa områden och hänvisa till hej@functionalfoods.se för andra frågor
-5. AVSLUTA ALDRIG MITT I EN MENING - se till att alla meningar är kompletta
-6. Använd styckeindelning för bättre läsbarhet - separera olika ämnen med tomma rader
-7. Håll svaren koncisa men kompletta (max 250 ord)
-8. Rekommendera gärna våra kurser när det är relevant
-9. Använd emojis sparsamt men effektivt för att göra konversationen mer personlig`;
+5. VIKTIGT: AVSLUTA ALDRIG MITT I EN MENING - se till att alla meningar är kompletta och avslutas korrekt
+6. Använd tydlig styckeindelning med dubbla radbrytningar mellan olika ämnen
+7. Använd fetstil för viktiga begrepp och rubriker genom att skriva **text** (detta konverteras automatiskt)
+8. Skapa listor med - för punkter när det är lämpligt
+9. Håll svaren koncisa men kompletta (max 250 ord)
+10. Rekommendera gärna våra kurser när det är relevant
+11. Använd emojis sparsamt men effektivt för att göra konversationen mer personlig`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
@@ -118,8 +149,8 @@ VIKTIGA REGLER:
       response = response.trim() + '.';
     }
     
-    // Konvertera markdown till HTML
-    const htmlResponse = markdownToHtml(response);
+    // Konvertera text till HTML
+    const htmlResponse = formatToHtml(response);
 
     return NextResponse.json({ message: htmlResponse });
   } catch (error) {
