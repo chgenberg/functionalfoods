@@ -171,6 +171,12 @@ export default function Header() {
             {user ? (
               <div className="flex items-center gap-2">
                 <Link
+                  href="/mina-kurser"
+                  className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors text-sm font-medium"
+                >
+                  Mina kurser
+                </Link>
+                <Link
                   href={user.role === 'admin' ? '/admin' : '/dashboard'}
                   className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-accent transition-colors text-sm font-medium"
                 >
