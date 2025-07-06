@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import { NextRequest, NextResponse } from "next/server";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 // Ulrika Davidssons skrivstil och tonalitet
 const ULRIKA_STYLE_PROMPT = `
@@ -30,6 +30,13 @@ interface GenerateBookRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!openai) {
+      return NextResponse.json(
+        { error: "OpenAI API-nyckel är inte konfigurerad" },
+        { status: 500 }
+      );
+    }
+
     const body: GenerateBookRequest = await request.json();
     const { title, topic, chapters, currentChapter = 1 } = body;
 

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+}) : null;
 
 // Läs in kursinformation
 async function getCourseInfo() {
@@ -53,7 +53,7 @@ function markdownToHtml(text: string): string {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.OPENAI_API_KEY) {
+  if (!openai || !process.env.OPENAI_API_KEY) {
     console.error('Missing OPENAI_API_KEY');
     return NextResponse.json(
       { message: "<p>Konfigurationsfel. Vänligen kontakta support.</p>" },
