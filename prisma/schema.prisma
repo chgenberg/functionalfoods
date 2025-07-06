@@ -21,6 +21,10 @@ model User {
   blogPosts     BlogPost[]
   courses       Course[]
   healthMetrics HealthMetric[]
+  quizResults   QuizResult[]
+  chatMessages  ChatMessage[]
+  healthProfile HealthProfile?
+  symptomAnalyses SymptomAnalysis[]
 }
 
 model Course {
@@ -74,4 +78,58 @@ model BlogPost {
   updatedAt   DateTime  @updatedAt
   authorId    String
   author      User      @relation(fields: [authorId], references: [id])
+}
+
+model QuizResult {
+  id          String   @id @default(uuid())
+  answers     Json     // Lagrar quiz-svaren som JSON
+  results     Json     // Lagrar AI-genererade resultat
+  healthScore Int      // Total hälsopoäng 0-100
+  energyScore Int      // Energi 0-10
+  sleepScore  Int      // Sömn 0-10
+  stressScore Int      // Stress 0-10
+  dietScore   Int      // Kost 0-10
+  exerciseScore Int    // Motion 0-10
+  userId      String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  message   String
+  response  String
+  context   Json?    // Lagrar kontext (quiz-resultat, symptomanalys etc)
+  userId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model HealthProfile {
+  id                String   @id @default(uuid())
+  age               Int?
+  gender            String?
+  weight            Float?
+  height            Float?
+  activityLevel     String?
+  dietaryRestrictions String?
+  healthGoals       Json?    // Array av hälsomål
+  currentSymptoms   Json?    // Array av nuvarande symptom
+  medications       Json?    // Array av mediciner
+  supplements       Json?    // Array av kosttillskott
+  allergies         Json?    // Array av allergier
+  userId            String   @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id])
+}
+
+model SymptomAnalysis {
+  id          String   @id @default(uuid())
+  bodyPart    String
+  description String
+  analysis    Json     // AI-genererad analys
+  userId      String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
 }

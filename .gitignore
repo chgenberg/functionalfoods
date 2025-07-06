@@ -76,3 +76,6 @@ yarn-debug.log*
 yarn-error.log*
 
 /src/generated/prisma
+
+# Quiz folder (separate git repository)
+QUIZ-Functional/

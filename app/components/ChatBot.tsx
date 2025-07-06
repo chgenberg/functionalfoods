@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { FiX, FiSend, FiMessageCircle } from 'react-icons/fi';
+import UserProfileSummary from './UserProfileSummary';
 
 interface Message {
   id: string;
@@ -53,11 +54,18 @@ export default function ChatBot() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch('/api/personalized-chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({ message: inputValue }),
       });
 
@@ -139,6 +147,8 @@ export default function ChatBot() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* User Profile Summary */}
+          <UserProfileSummary compact={true} />
           {messages.map((message) => (
             <div
               key={message.id}

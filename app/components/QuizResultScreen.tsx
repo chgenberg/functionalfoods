@@ -128,11 +128,18 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
     const fetchRecommendations = async () => {
       try {
+        const token = localStorage.getItem('token');
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+        };
+        
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch('/api/quiz-results', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
           body: JSON.stringify({ answers: quizData }),
         });
 
