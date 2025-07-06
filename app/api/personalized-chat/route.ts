@@ -50,10 +50,13 @@ async function getCourseInfo() {
   }
 }
 
-// Konvertera text till HTML med korrekt formatering
+// Konvertera text till HTML med korrekt formatering och styckeindelning
 function formatToHtml(text: string): string {
-  // Dela upp i stycken baserat på dubbla radbrytningar
-  const paragraphs = text.split(/\n\s*\n/);
+  // Normalisera radbrytningar och dela upp i stycken
+  let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  
+  // Dela upp i stycken baserat på dubbla radbrytningar ELLER enkla radbrytningar följt av stor bokstav
+  const paragraphs = normalizedText.split(/\n\s*\n|\n(?=[A-ZÅÄÖ])/);
   
   const htmlParagraphs = paragraphs.map(paragraph => {
     if (!paragraph.trim()) return '';
@@ -77,9 +80,9 @@ function formatToHtml(text: string): string {
           listItems.push(`<li>${line.trim().substring(1).trim()}</li>`);
         } else if (listItems.length > 0) {
           // Avsluta listan och börja ny text
-          regularText.push(`<ul>${listItems.join('')}</ul>`);
+          regularText.push(`<ul class="list-disc ml-4 mb-2">${listItems.join('')}</ul>`);
           listItems = [];
-          if (line.trim()) regularText.push(`<p>${line.trim()}</p>`);
+          if (line.trim()) regularText.push(`<p class="mb-3">${line.trim()}</p>`);
         } else {
           if (line.trim()) regularText.push(line.trim());
         }
@@ -87,13 +90,14 @@ function formatToHtml(text: string): string {
       
       // Lägg till eventuell kvarvarande lista
       if (listItems.length > 0) {
-        regularText.push(`<ul>${listItems.join('')}</ul>`);
+        regularText.push(`<ul class="list-disc ml-4 mb-2">${listItems.join('')}</ul>`);
       }
       
       return regularText.join('');
     }
     
-    return `<p>${formattedParagraph}</p>`;
+    // Lägg till CSS-klasser för bättre spacing
+    return `<p class="mb-3">${formattedParagraph}</p>`;
   }).filter(p => p);
   
   return htmlParagraphs.join('');
@@ -259,12 +263,14 @@ VIKTIGA REGLER:
 4. ${userContext ? 'Referera till användarens quiz-resultat, hälsoprofil och tidigare analyser när det är relevant' : ''}
 5. Om någon frågar om något som INTE handlar om hälsa, functional foods, nutrition, recept eller longevity, svara vänligt att du är specialiserad på dessa områden
 6. VIKTIGT: AVSLUTA ALDRIG MITT I EN MENING - se till att alla meningar är kompletta och avslutas korrekt
-7. Använd tydlig styckeindelning med dubbla radbrytningar mellan olika ämnen
-8. Använd fetstil för viktiga begrepp och rubriker genom att skriva **text** (detta konverteras automatiskt)
-9. Skapa listor med - för punkter när det är lämpligt
-10. Håll svaren koncisa men kompletta (max 300 ord)
-11. Rekommendera gärna våra kurser när det är relevant
-12. Använd emojis sparsamt men effektivt
+7. Använd TYDLIG styckeindelning - dela upp svaret i korta stycken (2-3 meningar per stycke)
+8. Separera olika ämnen och koncept med dubbla radbrytningar
+9. Använd fetstil för viktiga begrepp och rubriker genom att skriva **text** (detta konverteras automatiskt)
+10. Skapa listor med - för punkter när det är lämpligt
+11. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
+12. Håll svaren koncisa men kompletta (max 300 ord)
+13. Rekommendera gärna våra kurser när det är relevant
+14. Använd emojis sparsamt men effektivt
 ${userContext ? '13. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
 
     const completion = await openai.chat.completions.create({
