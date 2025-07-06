@@ -62,7 +62,7 @@ function LoadingPopup({ messages, durations, onDone, visible }: { messages: stri
 }
 
 export default function Home() {
-  const [showQuiz, setShowQuiz] = useState(true);
+  const [showQuiz, setShowQuiz] = useState(false);
   const [selectedDot, setSelectedDot] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<Question[] | null>(null);
