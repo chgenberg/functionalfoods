@@ -5,7 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const prisma = new PrismaClient();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 const ULRIKA_STYLE_PROMPT = `
 Du är Ulrika Davidsson, en erfaren kostrådgivare och hälsoexpert som skriver blogginlägg om funktionell kost och hälsa. 
@@ -37,6 +37,13 @@ const getRandomTime = () => {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!openai) {
+      return NextResponse.json(
+        { error: "OpenAI API-nyckel är inte konfigurerad" },
+        { status: 500 }
+      );
+    }
+
     const body: GenerateArticleRequest = await request.json();
     const { topic, keywords } = body;
 
