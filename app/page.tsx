@@ -7,9 +7,10 @@ import { Question, UserResponse } from "@/app/types";
 import MicronutrientQuestionModal from "./components/MicronutrientQuestionModal";
 import Questionnaire from "./components/Questionnaire";
 import { AnalysisResult } from "./types";
-import { FiArrowRight, FiActivity, FiHeart, FiZap, FiShield } from 'react-icons/fi';
+import { FiArrowRight, FiActivity, FiHeart, FiZap, FiShield, FiArrowDown } from 'react-icons/fi';
 import { GiSparkles, GiBrain } from 'react-icons/gi';
 import Image from "next/image";
+import HealthQuiz from "./components/HealthQuiz";
 
 function LoadingPopup({ messages, durations, onDone, visible }: { messages: string[]; durations?: number[]; onDone?: () => void; visible: boolean }) {
   const [step, setStep] = useState(0);
@@ -61,6 +62,7 @@ function LoadingPopup({ messages, durations, onDone, visible }: { messages: stri
 }
 
 export default function Home() {
+  const [showQuiz, setShowQuiz] = useState(true);
   const [selectedDot, setSelectedDot] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<Question[] | null>(null);
@@ -79,10 +81,19 @@ export default function Home() {
   const [symptomDescription, setSymptomDescription] = useState('');
 
   const scrollToAnalysis = () => {
-    const element = document.getElementById('analysis-section');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    setShowQuiz(false);
+    setTimeout(() => {
+      const element = document.getElementById('analysis-section');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  const handleQuizComplete = (answers: Record<number, string>) => {
+    console.log('Quiz completed with answers:', answers);
+    // Quiz-resultaten hanteras nu av QuizResultScreen komponenten
+    // som automatiskt visas när quizet är klart
   };
 
   async function handleAskQuestions() {
@@ -135,6 +146,28 @@ export default function Home() {
     }
   }
 
+  if (showQuiz) {
+    return (
+      <div className="min-h-screen">
+        <HealthQuiz 
+          onComplete={handleQuizComplete}
+          onClose={() => setShowQuiz(false)}
+        />
+        
+        {/* Scroll indicator */}
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40">
+          <button
+            onClick={scrollToAnalysis}
+            className="bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 hover:text-gray-900 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 text-sm"
+          >
+            <span>Eller använd symptomanalys</span>
+            <FiArrowDown className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
       {/* Hero Section with Leaf Background */}
@@ -147,12 +180,20 @@ export default function Home() {
           <p className="text-lg sm:text-xl md:text-2xl font-light mb-6 sm:mb-8 text-white animate-fade-in animation-delay-200 text-center">
             Mat som medicin för kropp och själ
           </p>
-          <button 
-            onClick={() => scrollToAnalysis()}
-            className="bg-white text-primary hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-base sm:text-lg"
-          >
-            Starta din hälsoresa
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <button 
+              onClick={() => setShowQuiz(true)}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-base sm:text-lg"
+            >
+              Starta Hälsoquiz
+            </button>
+            <button 
+              onClick={() => scrollToAnalysis()}
+              className="bg-white text-primary hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium transition-all transform hover:scale-105 animate-fade-in animation-delay-400 text-base sm:text-lg"
+            >
+              Symptomanalys
+            </button>
+          </div>
         </div>
       </section>
 

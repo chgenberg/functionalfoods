@@ -98,7 +98,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 z-10">
             <Image
-              src="/logo2.png"
+              src="/FF_logo.svg"
               alt="Functional Foods"
               width={180}
               height={72}
@@ -280,13 +280,6 @@ export default function Header() {
               </div>
 
               <div className="space-y-3 sm:space-y-4 mb-6">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 sm:py-4 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] hover:shadow-lg flex items-center justify-center gap-3">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                  </svg>
-                  <span className="text-sm sm:text-base">BankID</span>
-                </button>
-                
                 <button className="w-full bg-red-500 hover:bg-red-600 text-white py-3 sm:py-4 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] hover:shadow-lg flex items-center justify-center gap-3">
                   <FaGoogle className="w-5 h-5" />
                   <span className="text-sm sm:text-base">Google</span>
