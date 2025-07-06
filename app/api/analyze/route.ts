@@ -3,9 +3,9 @@ import OpenAI from 'openai';
 import { AnalysisResult } from '@/app/types';
 
 // Använd miljövariabeln för API-nyckeln
-const openai = new OpenAI({
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+}) : null;
 
 export async function POST(req: NextRequest) {
   try {
