@@ -227,4 +227,18 @@
   .animation-delay-400 {
     animation-delay: 400ms;
   }
+  
+  /* Responsive hero background images */
+  .hero-background {
+    background-image: url('/ulrika_mobile.png');
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* Desktop and tablet - use regular ulrika.png */
+  @media (min-width: 768px) {
+    .hero-background {
+      background-image: url('/ulrika.png');
+    }
+  }
 }
