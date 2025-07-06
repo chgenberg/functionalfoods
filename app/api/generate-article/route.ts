@@ -1,7 +1,8 @@
 import { OpenAI } from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { put } from '@vercel/blob';
+import fs from 'fs/promises';
+import path from 'path';
 
 const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -107,19 +108,24 @@ export async function POST(request: NextRequest) {
         throw new Error("Kunde inte generera bild med DALL-E 3 eller hitta bild-URL i svaret.");
     }
 
-    // Ladda ner bilden från OpenAI och ladda upp till Vercel Blob
+    // Ladda ner bilden från OpenAI och spara lokalt
     const imageFetch = await fetch(imageUrl);
     if (!imageFetch.ok) {
       throw new Error(`Kunde inte hämta bild från OpenAI: ${imageFetch.statusText}`);
     }
-    const imageBlob = await imageFetch.blob();
-    const blob = await put(`${articleData.slug}-${Date.now()}.png`, imageBlob, {
-      access: 'public',
-    });
-
-    if (!blob.url) {
-      throw new Error("Misslyckades med att ladda upp bild till Vercel Blob.");
-    }
+    
+    const imageBuffer = Buffer.from(await imageFetch.arrayBuffer());
+    const fileName = `${articleData.slug}-${Date.now()}.png`;
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    
+    // Skapa uploads-mappen om den inte finns
+    await fs.mkdir(uploadsDir, { recursive: true });
+    
+    // Spara bilden
+    const filePath = path.join(uploadsDir, fileName);
+    await fs.writeFile(filePath, imageBuffer);
+    
+    const imagePublicUrl = `/uploads/${fileName}`;
     
     // Schemalägg publicering (slumpmässig dag och tid inom nästa vecka)
     const scheduledAt = new Date();
@@ -133,7 +139,7 @@ export async function POST(request: NextRequest) {
             title: articleData.title,
             slug: articleData.slug,
             content: articleData.content,
-            imageUrl: blob.url,
+            imageUrl: imagePublicUrl,
             imageAlt: articleData.imagePrompt, // Använder prompten som alt-text
             metaTitle: articleData.metaTitle,
             metaDesc: articleData.metaDesc,
