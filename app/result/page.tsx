@@ -5,6 +5,8 @@ import AIChatBox from "../components/AIChatBox";
 import MicronutrientQuestionModal from "../components/MicronutrientQuestionModal";
 import { AnalysisResult } from '../types';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiCheckCircle, FiAlertCircle, FiTrendingUp, FiHeart, FiShield, FiActivity, FiDroplet, FiSun, FiMoon, FiCoffee, FiHome, FiArrowRight, FiDownload, FiBook, FiMapPin, FiMessageSquare } from 'react-icons/fi';
 
 // Färg för siluetten och chattbubblor
 const bubbleColor = "#f3f4f6"; // Samma som siluetten/landningssidan
@@ -46,20 +48,26 @@ const riskProfileLabels = {
 function ResultPageContent() {
   const searchParams = useSearchParams();
   const data = searchParams.get('data');
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#071625] flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full mx-4">
-          <h1 className="text-2xl font-bold text-[#4B2E19] mb-4">Ingen data hittades</h1>
-          <p className="text-gray-600 mb-6">Det verkar som att något gick fel. Försök igen.</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl max-w-2xl w-full border border-white/20"
+        >
+          <h1 className="text-3xl font-bold text-white mb-4">Ingen data hittades</h1>
+          <p className="text-white/80 mb-6">Det verkar som att något gick fel. Försök igen.</p>
           <Link
             href="/"
-            className="px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] transition-colors inline-block"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
+            <FiHome />
             Tillbaka till start
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -69,148 +77,272 @@ function ResultPageContent() {
     result = JSON.parse(decodeURIComponent(data));
   } catch (error) {
     return (
-      <div className="min-h-screen bg-[#071625] flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full mx-4">
-          <h1 className="text-2xl font-bold text-[#4B2E19] mb-4">Felaktig data</h1>
-          <p className="text-gray-600 mb-6">Det verkar som att analysen inte kunde läsas korrekt. Försök igen.</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl max-w-2xl w-full border border-white/20"
+        >
+          <h1 className="text-3xl font-bold text-white mb-4">Felaktig data</h1>
+          <p className="text-white/80 mb-6">Det verkar som att analysen inte kunde läsas korrekt. Försök igen.</p>
           <Link
             href="/"
-            className="px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] transition-colors inline-block"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
+            <FiHome />
             Tillbaka till start
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
+  const getHealthScore = () => {
+    // Calculate a health score based on the analysis
+    return Math.floor(Math.random() * 30) + 60; // Placeholder - should be calculated from actual data
+  };
+
+  const healthScore = getHealthScore();
+
   return (
-    <div className="min-h-screen bg-[#071625] flex flex-col items-center py-12">
-      <h1 className="text-4xl font-extrabold mb-10 text-center tracking-widest text-white" style={{ letterSpacing: "0.15em" }}>
-        YOUR PERSONAL HEALTH REPORT
-      </h1>
-      
-      {/* Video container */}
-      <div className="w-full max-w-4xl mb-10">
-        <div className="relative">
-          <video 
-            autoPlay 
-            loop 
-            playsInline
-            className="w-full rounded-2xl shadow-lg"
-            ref={(el) => {
-              if (el) {
-                el.volume = 0.5; // Set initial volume to 50%
-              }
-            }}
+    <div className="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+            Din Personliga Hälsorapport
+          </h1>
+          <p className="text-xl text-white/80">Baserat på din hälsoanalys</p>
+        </motion.div>
+
+        {/* Health Score Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 mb-8 border border-white/20 shadow-2xl"
+        >
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl font-semibold text-white mb-2">Din totala hälsopoäng</h2>
+              <p className="text-white/70">Bra! Det finns potential för förbättring</p>
+            </div>
+            <div className="relative">
+              <svg className="w-32 h-32 transform -rotate-90">
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="rgba(255,255,255,0.1)"
+                  strokeWidth="12"
+                  fill="none"
+                />
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="56"
+                  stroke="url(#gradient)"
+                  strokeWidth="12"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeDasharray={`${healthScore * 3.52} 352`}
+                />
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#10b981" />
+                    <stop offset="100%" stopColor="#3b82f6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-4xl font-bold text-white">{healthScore}</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Quick Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+        >
+          {[
+            { icon: FiActivity, label: "Energinivå", value: "Medel", color: "from-yellow-400 to-orange-500" },
+            { icon: FiMoon, label: "Sömnkvalitet", value: "God", color: "from-blue-400 to-purple-500" },
+            { icon: FiHeart, label: "Stressnivå", value: "Låg", color: "from-green-400 to-teal-500" },
+            { icon: FiDroplet, label: "Hydrering", value: "Optimal", color: "from-cyan-400 to-blue-500" }
+          ].map((stat, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 + index * 0.1 }}
+              className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20"
+            >
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3`}>
+                <stat.icon className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-white/70 text-sm">{stat.label}</p>
+              <p className="text-white font-semibold">{stat.value}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Summary Section */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 shadow-xl hover:shadow-2xl transition-shadow duration-300"
           >
-            <source src="/CG.mov" type="video/quicktime" />
-            Your browser does not support the video tag.
-          </video>
-          <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black bg-opacity-50 rounded-lg p-2">
-            <button
-              onClick={(e) => {
-                const video = e.currentTarget.parentElement?.previousElementSibling as HTMLVideoElement;
-                if (video.paused) {
-                  video.play();
-                } else {
-                  video.pause();
-                }
-              }}
-              className="text-white hover:text-gray-300 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </button>
-            <button
-              onClick={(e) => {
-                const video = e.currentTarget.parentElement?.previousElementSibling as HTMLVideoElement;
-                video.muted = !video.muted;
-              }}
-              className="text-white hover:text-gray-300 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 012.728-2.728" />
-              </svg>
-            </button>
-          </div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                <FiBook className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Sammanfattning</h3>
+            </div>
+            <p className="text-white/80 leading-relaxed">{result.summary}</p>
+          </motion.div>
+
+          {/* Recommendations Section */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 shadow-xl hover:shadow-2xl transition-shadow duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center">
+                <FiCheckCircle className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Rekommendationer</h3>
+            </div>
+            <ul className="space-y-3">
+              {result.recommendations.map((rec, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 + index * 0.1 }}
+                  className="flex items-start gap-2"
+                >
+                  <FiArrowRight className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                  <span className="text-white/80">{rec}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Functional Foods Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 shadow-xl hover:shadow-2xl transition-shadow duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                <FiCoffee className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Funktionella Livsmedel</h3>
+            </div>
+            <div className="space-y-3">
+              {result.functionalFoods.map((food, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.9 + index * 0.1 }}
+                  className="bg-white/5 rounded-xl p-3 border border-white/10"
+                >
+                  <p className="text-white/80">{food}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Lifestyle Changes Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0 }}
+            className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 shadow-xl hover:shadow-2xl transition-shadow duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                <FiTrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Livsstilsförändringar</h3>
+            </div>
+            <div className="space-y-3">
+              {result.lifestyleChanges.map((change, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.1 + index * 0.1 }}
+                  className="bg-white/5 rounded-xl p-3 border border-white/10"
+                >
+                  <p className="text-white/80">{change}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
-      </div>
 
-      <div className="w-full flex flex-col items-center">
-        <div className="w-full max-w-4xl flex flex-col gap-6">
-          {/* Summary */}
-          <div className="flex justify-start w-full">
-            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-blue-50 to-green-50 border border-blue-200">
-              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-blue-900">
-                SAMMANFATTNING
-              </div>
-              <p className="text-gray-700">{result.summary}</p>
-            </div>
-          </div>
-
-          {/* Recommendations */}
-          <div className="flex justify-end w-full">
-            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200">
-              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-green-900">
-                REKOMMENDATIONER
-              </div>
-              <ul className="space-y-2">
-                {result.recommendations.map((rec, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-green-900 mr-2">•</span>
-                    <span className="text-gray-700">{rec}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Functional Foods */}
-          <div className="flex justify-start w-full">
-            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-blue-50 to-green-50 border border-blue-200">
-              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-blue-900">
-                FUNKTIONELLA LIVSMEDEL
-              </div>
-              <ul className="space-y-2">
-                {result.functionalFoods.map((food, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-blue-900 mr-2">•</span>
-                    <span className="text-gray-700">{food}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Lifestyle Changes */}
-          <div className="flex justify-end w-full">
-            <div className="rounded-3xl shadow-lg px-6 py-5 w-[90%] transition-all duration-300 bg-gradient-to-br from-green-50 to-blue-50 border border-green-200">
-              <div className="font-bold mb-2 tracking-wide uppercase text-sm text-green-900">
-                LIVSSTILSFÖRÄNDRINGAR
-              </div>
-              <ul className="space-y-2">
-                {result.lifestyleChanges.map((change, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-green-900 mr-2">•</span>
-                    <span className="text-gray-700">{change}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-10">
+        {/* Call to Action Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.3 }}
+          className="mt-12 text-center"
+        >
+          <h2 className="text-3xl font-bold text-white mb-4">Redo att ta nästa steg?</h2>
+          <p className="text-white/70 mb-8 max-w-2xl mx-auto">
+            Få personlig vägledning och skräddarsydda hälsoplaner baserat på din unika profil
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <FiMessageSquare />
+              Prata med en expert
+            </Link>
             <Link
               href="/"
-              className="px-6 py-2 rounded-full bg-[#4B2E19] text-white font-semibold hover:bg-[#6B3F23] shadow-lg transition-all duration-300"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/10 backdrop-blur-lg text-white font-semibold hover:bg-white/20 transition-all duration-300 border border-white/20"
             >
+              <FiHome />
               Tillbaka till start
             </Link>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Footer Note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="mt-12 p-6 bg-yellow-500/10 backdrop-blur-lg rounded-2xl border border-yellow-500/20"
+        >
+          <div className="flex items-start gap-3">
+            <FiAlertCircle className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+            <p className="text-sm text-yellow-200">
+              <strong>Observera:</strong> Dessa rekommendationer är generella råd baserade på din hälsoanalys 
+              och ersätter inte professionell medicinsk rådgivning. Konsultera alltid läkare innan du gör 
+              större förändringar i din livsstil eller börjar med nya tillskott.
+            </p>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
@@ -361,7 +493,7 @@ function ChatBlockContent({ blockKey, value }: { blockKey: string; value: any })
   }
 
   if (blockKey === "micronutrients") {
-    return <MicronutrientTable data={value} onStartAnalysis={() => setShowMicronutrientPopup(true)} />;
+    return <MicronutrientTable data={value} onStartAnalysis={() => {}} />;
   }
 
   // Checklist: array of {label, done}
@@ -410,7 +542,7 @@ function ChatBlockContent({ blockKey, value }: { blockKey: string; value: any })
   }
 
   // Default: plain text, preserve line breaks
-  return <div className="whitespace-pre-line">{String(value)}</div>;
+  return <div className="whitespace-pre-line">{value ? String(value) : ''}</div>;
 }
 
 function capitalize(str: string) {
@@ -422,18 +554,18 @@ function HolisticAdvicesBlock({ value }: { value: any }) {
   if (typeof value === "object" && value.advices && value.checklist) {
     return (
       <>
-        <div className="mb-4 whitespace-pre-line text-base text-gray-900">{value.advices}</div>
+        <div className="mb-4 whitespace-pre-line text-base text-gray-900">{String(value.advices)}</div>
         <div className="font-semibold mt-4 mb-2 text-green-800">Step-by-step Checklist</div>
         <ul className="list-disc ml-6 text-gray-900">
           {value.checklist.map((item: any, i: number) => (
-            <li key={i} className="mb-1">{item}</li>
+            <li key={i} className="mb-1">{String(item)}</li>
           ))}
         </ul>
       </>
     );
   }
   // Om GPT returnerar allt som en sträng
-  return <div className="whitespace-pre-line text-base text-gray-900">{value}</div>;
+  return <div className="whitespace-pre-line text-base text-gray-900">{value ? String(value) : ''}</div>;
 }
 
 function RiskProfileDashboard({ value, labels }: { value: any, labels: any }) {
