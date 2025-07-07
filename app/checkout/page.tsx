@@ -1,22 +1,72 @@
 "use client";
 import { useCart } from '../context/CartContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiArrowLeft, FiCreditCard, FiLock } from 'react-icons/fi';
+import { FiArrowLeft, FiCreditCard, FiLock, FiUser } from 'react-icons/fi';
 import { GiSparkles } from 'react-icons/gi';
+import Link from 'next/link';
 
 export default function Checkout() {
-  const { items, total } = useCart();
+  const { items, total, clearCart } = useCart();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<'klarna' | 'swish' | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    // Kontrollera om användaren är inloggad
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    
+    if (token && userStr) {
+      setUser(JSON.parse(userStr));
+    }
+  }, []);
 
   const handlePayment = async (provider: 'klarna' | 'swish') => {
+    if (!user) {
+      setError('Du måste vara inloggad för att köpa kurser');
+      return;
+    }
+
     setIsProcessing(true);
     setSelectedPayment(provider);
-    setTimeout(() => {
+    setError('');
+
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Skicka köpet till API:et
+      const response = await fetch('/api/purchases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          items: items,
+          paymentMethod: provider
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Något gick fel med betalningen');
+      }
+
+      // Rensa varukorgen
+      clearCart();
+      
+      // Redirect till success-sidan
       router.push('/checkout/success');
-    }, 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Något gick fel med betalningen');
+    } finally {
+      setIsProcessing(false);
+      setSelectedPayment(null);
+    }
   };
 
   if (items.length === 0) {
@@ -48,6 +98,40 @@ export default function Checkout() {
               Nästan klar! Välj betalningsmetod för att slutföra din beställning.
             </p>
           </div>
+
+          {/* Visa inloggningskrav om användaren inte är inloggad */}
+          {!user && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 animate-fade-in">
+              <div className="flex items-center gap-3">
+                <FiUser className="w-5 h-5 text-yellow-600" />
+                <div>
+                  <p className="font-medium text-yellow-800">Logga in för att fortsätta</p>
+                  <p className="text-sm text-yellow-600">Du måste vara inloggad för att köpa kurser och få tillgång till materialet.</p>
+                </div>
+              </div>
+              <div className="mt-4 flex gap-3">
+                <Link
+                  href="/login"
+                  className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors"
+                >
+                  Logga in
+                </Link>
+                <Link
+                  href="/login"
+                  className="bg-white border border-yellow-300 text-yellow-700 px-4 py-2 rounded-lg hover:bg-yellow-50 transition-colors"
+                >
+                  Skapa konto
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Visa felmeddelande */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 animate-fade-in">
+              <p className="text-red-800 font-medium">{error}</p>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Order Summary */}
@@ -93,12 +177,12 @@ export default function Checkout() {
                 <div className="space-y-4">
                   <button 
                     onClick={() => handlePayment('klarna')} 
-                    disabled={isProcessing}
+                    disabled={isProcessing || !user}
                     className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 ${
                       selectedPayment === 'klarna' 
                         ? 'border-accent bg-accent/5' 
                         : 'border-border hover:border-accent/50'
-                    }`}
+                    } ${!user ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[#ffb3c7] rounded-lg flex items-center justify-center">
@@ -118,12 +202,12 @@ export default function Checkout() {
 
                   <button 
                     onClick={() => handlePayment('swish')} 
-                    disabled={isProcessing}
+                    disabled={isProcessing || !user}
                     className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 ${
                       selectedPayment === 'swish' 
                         ? 'border-accent bg-accent/5' 
                         : 'border-border hover:border-accent/50'
-                    }`}
+                    } ${!user ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[#5cc900] rounded-lg flex items-center justify-center">

@@ -26,6 +26,7 @@ model User {
   healthProfile HealthProfile?
   symptomAnalyses SymptomAnalysis[]
   purchases     Purchase[]
+  orders        Order[]
 }
 
 model Course {
@@ -64,44 +65,39 @@ model HealthMetric {
 }
 
 model BlogPost {
-  id          String    @id @default(uuid())
-  title       String
-  slug        String    @unique
-  content     String
-  imageUrl    String
-  imageAlt    String
-  metaTitle   String
-  metaDesc    String
-  status      String
-  scheduledAt DateTime?
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  authorId    String
-  author      User      @relation(fields: [authorId], references: [id])
+  id           String   @id @default(uuid())
+  title        String
+  slug         String   @unique
+  content      String
+  excerpt      String?
+  coverImage   String?
+  published    Boolean  @default(false)
+  publishedAt  DateTime?
+  authorId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  author       User     @relation(fields: [authorId], references: [id])
 }
 
 model QuizResult {
-  id          String   @id @default(uuid())
-  answers     Json     // Lagrar quiz-svaren som JSON
-  results     Json     // Lagrar AI-genererade resultat
-  healthScore Int      // Total hälsopoäng 0-100
-  energyScore Int      // Energi 0-10
-  sleepScore  Int      // Sömn 0-10
-  stressScore Int      // Stress 0-10
-  dietScore   Int      // Kost 0-10
-  exerciseScore Int    // Motion 0-10
-  userId      String
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
+  id              String   @id @default(uuid())
+  userId          String
+  healthScore     Int
+  energyScore     Int
+  sleepScore      Int
+  stressScore     Int
+  dietScore       Int
+  exerciseScore   Int
+  recommendations Json     // Array av rekommendationer
+  completedAt     DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id])
 }
 
 model ChatMessage {
   id        String   @id @default(uuid())
-  message   String
-  response  String
-  context   Json?    // Lagrar kontext (quiz-resultat, symptomanalys etc)
   userId    String
+  message   String
+  response  String?
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
 }
@@ -145,6 +141,56 @@ model CourseProduct {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   purchases   Purchase[]
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  orderNumber   String      @unique // Human readable order number
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  status        OrderStatus @default(PENDING)
+  totalAmount   Float
+  currency      String      @default("SEK")
+  items         OrderItem[]
+  payment       Payment?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@index([userId])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id          String        @id @default(uuid())
+  orderId     String
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  courseId    String?
+  course      CourseProduct? @relation(fields: [courseId], references: [id])
+  name        String        // Store name for historical purposes
+  price       Float         // Store price at time of purchase
+  quantity    Int
+  type        String        // 'course', 'book', etc.
+  createdAt   DateTime      @default(now())
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  orderId         String        @unique
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  paymentMethod   String        // 'klarna', 'swish', 'stripe', etc.
+  status          PaymentStatus @default(PENDING)
+  amount          Float
+  currency        String        @default("SEK")
+  externalId      String?       // Payment provider's transaction ID
+  gatewayResponse Json?         // Store full response from payment gateway
+  failureReason   String?       // If payment failed
+  processedAt     DateTime?     // When payment was completed
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@index([externalId])
+  @@index([status])
 }
 
 model Purchase {
@@ -155,8 +201,27 @@ model Purchase {
   course     CourseProduct @relation(fields: [courseId], references: [id])
   amount     Float
   status     String   @default("completed") // completed, pending, refunded
+  orderId    String?  // Link to new Order system
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   
   @@unique([userId, courseId])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
 }

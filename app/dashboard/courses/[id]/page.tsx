@@ -1,88 +1,85 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { 
   FiPlay, FiDownload, FiBook, FiChevronLeft, FiCheckCircle,
   FiClock, FiUsers, FiStar, FiHeart, FiShare2, FiFileText,
   FiVideo, FiPlayCircle, FiPause, FiSkipForward, FiVolume2
 } from "react-icons/fi";
 
+interface Lesson {
+  id: number;
+  title: string;
+  type: string;
+  duration: string;
+}
+
+interface Week {
+  week: number;
+  title: string;
+  description: string;
+  lessons: Lesson[];
+}
+
+interface Course {
+  id: string;
+  name: string;
+  description: string;
+  weeks: Week[];
+}
+
 export default function CoursePage() {
   const params = useParams();
-  const courseId = params.id;
+  const router = useRouter();
+  const courseId = params.id as string;
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [currentWeek, setCurrentWeek] = useState(1);
   const [playingVideo, setPlayingVideo] = useState<number | null>(null);
   const [completedLessons, setCompletedLessons] = useState<number[]>([1, 2, 3]);
 
-  // Dummy course data
-  const courseData = {
-    "1": {
-      title: "Functional Flow",
-      subtitle: "6 veckors avancerad kurs i funktionell kost",
-      description: "Djupdyka i anti-inflammatorisk kost och tarmhälsa för optimal välmående",
-      instructor: "Ulrika Davidsson",
-      totalWeeks: 6,
-      totalLessons: 18,
-      completedLessons: 12,
-      progress: 65
-    },
-    "2": {
-      title: "Functional Basics",
-      subtitle: "Grundkurs i funktionell kost",
-      description: "Lär dig grunderna inom funktionell kost för bättre hälsa och välmående",
-      instructor: "Ulrika Davidsson",
-      totalWeeks: 6,
-      totalLessons: 15,
-      completedLessons: 15,
-      progress: 100
-    }
-  };
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          router.push('/login');
+          return;
+        }
 
-  const course = courseData[courseId as keyof typeof courseData];
+        const res = await fetch(`/api/courses/${courseId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
-  const weeks = [
-    {
-      week: 1,
-      title: "Grunderna i funktionell kost",
-      description: "Introduktion till funktionella livsmedel och deras hälsoeffekter",
-      lessons: [
-        { id: 1, title: "Välkommen till kursen", type: "video", duration: "12 min", completed: true },
-        { id: 2, title: "Vad är funktionell kost?", type: "video", duration: "18 min", completed: true },
-        { id: 3, title: "Kursmaterial vecka 1", type: "pdf", duration: "15 sidor", completed: true }
-      ]
-    },
-    {
-      week: 2,
-      title: "Tarmhälsa och mikrobiom",
-      description: "Förstå tarmens roll för din övergripande hälsa",
-      lessons: [
-        { id: 4, title: "Tarmens ekosystem", type: "video", duration: "22 min", completed: true },
-        { id: 5, title: "Probiotika vs prebiotika", type: "video", duration: "16 min", completed: true },
-        { id: 6, title: "Recept: Fermenterade livsmedel", type: "recipe", duration: "5 recept", completed: false }
-      ]
-    },
-    {
-      week: 3,
-      title: "Anti-inflammatorisk kost",
-      description: "Minska inflammation genom medveten måltidsplanering",
-      lessons: [
-        { id: 7, title: "Inflammation och kost", type: "video", duration: "20 min", completed: false },
-        { id: 8, title: "Omega-3 och dess betydelse", type: "video", duration: "14 min", completed: false },
-        { id: 9, title: "Måltidsplanering vecka 3", type: "pdf", duration: "Veckoplan", completed: false }
-      ]
-    },
-    {
-      week: 4,
-      title: "Adaptogener och superfoods",
-      description: "Upptäck kraftfulla växter för stresshantering",
-      lessons: [
-        { id: 10, title: "Introduktion till adaptogener", type: "video", duration: "19 min", completed: false },
-        { id: 11, title: "Populära superfoods", type: "video", duration: "17 min", completed: false },
-        { id: 12, title: "Smoothie-recept med adaptogener", type: "recipe", duration: "8 recept", completed: false }
-      ]
-    }
-  ];
+        if (!res.ok) {
+          if (res.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            router.push('/login');
+            return;
+          } else if (res.status === 403) {
+            setError('Du har inte tillgång till denna kurs');
+            return;
+          }
+          throw new Error('Failed to fetch course');
+        }
+
+        const courseData = await res.json();
+        setCourse(courseData);
+      } catch (error) {
+        console.error('Error fetching course:', error);
+        setError('Ett fel uppstod vid laddning av kursen');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourse();
+  }, [courseId, router]);
 
   const toggleLessonComplete = (lessonId: number) => {
     if (completedLessons.includes(lessonId)) {
@@ -101,9 +98,46 @@ export default function CoursePage() {
     }
   };
 
-  if (!course) {
-    return <div>Kurs ej hittad</div>;
+  const calculateProgress = () => {
+    if (!course || !course.weeks) return 0;
+    const totalLessons = course.weeks.reduce((total, week) => total + week.lessons.length, 0);
+    return totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
+  };
+
+  const getTotalLessons = () => {
+    if (!course || !course.weeks) return 0;
+    return course.weeks.reduce((total, week) => total + week.lessons.length, 0);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-gray-600">Laddar kurs...</p>
+        </div>
+      </div>
+    );
   }
+
+  if (error || !course) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-xl font-semibold text-gray-800 mb-4">{error || 'Kursen hittades inte'}</h1>
+          <Link 
+            href="/mina-kurser"
+            className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Tillbaka till mina kurser
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const progress = calculateProgress();
+  const totalLessons = getTotalLessons();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
@@ -112,14 +146,14 @@ export default function CoursePage() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <Link 
-              href="/dashboard" 
+              href="/mina-kurser" 
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
               <FiChevronLeft className="w-5 h-5 text-gray-600" />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">{course.title}</h1>
-              <p className="text-sm text-gray-600">{course.subtitle}</p>
+              <h1 className="text-xl font-bold text-gray-800">{course.name}</h1>
+              <p className="text-sm text-gray-600">{course.description}</p>
             </div>
           </div>
         </div>
@@ -133,17 +167,17 @@ export default function CoursePage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold text-gray-800">Din progress</h2>
-                <span className="text-2xl font-bold text-primary">{course.progress}%</span>
+                <span className="text-2xl font-bold text-primary">{progress}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
                 <div 
                   className="h-3 bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
-                  style={{ width: `${course.progress}%` }}
+                  style={{ width: `${progress}%` }}
                 ></div>
               </div>
               <div className="flex justify-between text-sm text-gray-600">
-                <span>{course.completedLessons} av {course.totalLessons} lektioner slutförda</span>
-                <span>Vecka {currentWeek} av {course.totalWeeks}</span>
+                <span>{completedLessons.length} av {totalLessons} lektioner slutförda</span>
+                <span>Vecka {currentWeek} av {course.weeks.length}</span>
               </div>
             </div>
 
@@ -181,8 +215,8 @@ export default function CoursePage() {
                 
                 <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">Vad är funktionell kost?</h3>
-                    <p className="text-gray-600">Vecka 1 • 18 minuter</p>
+                    <h3 className="text-lg font-semibold text-gray-800">Video spelar</h3>
+                    <p className="text-gray-600">Vecka {currentWeek} • Lektion {playingVideo}</p>
                   </div>
                   <button
                     onClick={() => toggleLessonComplete(playingVideo)}
@@ -202,7 +236,7 @@ export default function CoursePage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">Kursinnehåll</h2>
               <div className="flex gap-2 mb-6 overflow-x-auto">
-                {weeks.map((week) => (
+                {course.weeks.map((week) => (
                   <button
                     key={week.week}
                     onClick={() => setCurrentWeek(week.week)}
@@ -218,7 +252,7 @@ export default function CoursePage() {
               </div>
 
               {/* Current Week Content */}
-              {weeks
+              {course.weeks
                 .filter((week) => week.week === currentWeek)
                 .map((week) => (
                   <div key={week.week}>
@@ -271,7 +305,7 @@ export default function CoursePage() {
                                   <FiClock className="w-4 h-4" />
                                   {lesson.duration}
                                   <span className="text-gray-400">•</span>
-                                  <span className="capitalize">{lesson.type}</span>
+                                  <span className="capitalize">{lesson.type === 'recipe' ? 'Recept' : lesson.type === 'pdf' ? 'PDF' : 'Video'}</span>
                                 </div>
                               </div>
 
@@ -301,7 +335,7 @@ export default function CoursePage() {
                     <span className="text-white font-semibold">U</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-800">{course.instructor}</p>
+                    <p className="font-medium text-gray-800">Ulrika Davidsson</p>
                     <p className="text-sm text-gray-600">Kursansvarig</p>
                   </div>
                 </div>
@@ -311,15 +345,15 @@ export default function CoursePage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Kurslängd:</span>
-                    <span className="font-medium">{course.totalWeeks} veckor</span>
+                    <span className="font-medium">{course.weeks.length} veckor</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Totalt lektioner:</span>
-                    <span className="font-medium">{course.totalLessons}</span>
+                    <span className="font-medium">{totalLessons}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Nivå:</span>
-                    <span className="font-medium">Avancerad</span>
+                    <span className="font-medium">{course.name === 'Functional Flow' ? 'Avancerad' : 'Grundläggande'}</span>
                   </div>
                 </div>
               </div>
