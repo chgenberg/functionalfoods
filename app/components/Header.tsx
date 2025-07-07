@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiUser, FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiLogOut } from 'react-icons/fi';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
@@ -94,7 +94,7 @@ export default function Header() {
       scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'
     }`}>
       <div className="container-custom">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 z-10">
             <Image
@@ -102,7 +102,7 @@ export default function Header() {
               alt="Functional Foods"
               width={180}
               height={72}
-              className="h-16 w-auto"
+              className="h-12 md:h-16 w-auto"
               priority
             />
           </Link>
@@ -152,18 +152,24 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button and cart */}
           <div className="flex items-center gap-2 lg:hidden">
+            <Link href="/cart" className="relative p-2">
+              <FiShoppingCart className="w-5 h-5 text-primary" />
+              {items.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">{items.length}</span>
+              )}
+            </Link>
             <button
               type="button"
-              className="p-2 rounded-lg text-primary hover:bg-background-secondary transition-colors duration-200"
+              className="relative w-10 h-10 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? (
-                <FiX className="w-6 h-6" />
-              ) : (
-                <FiMenu className="w-6 h-6" />
-              )}
+              <div className="w-5 h-5 relative">
+                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-2' : 'top-1'}`}></span>
+                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'top-2'}`}></span>
+                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-2' : 'top-3'}`}></span>
+              </div>
             </button>
           </div>
 
@@ -207,27 +213,36 @@ export default function Header() {
           </div>
         </div>
 
+        {/* Mobile menu overlay */}
+        {mobileMenuOpen && (
+          <div 
+            className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        
         {/* Mobile menu */}
-        <div className={`lg:hidden transition-all duration-300 ${
-          mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+        <div className={`lg:hidden fixed left-0 right-0 top-16 bg-white shadow-lg transition-all duration-500 z-50 ${
+          mobileMenuOpen ? 'max-h-[calc(100vh-4rem)] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
         }`}>
-          <nav className="py-4 space-y-1">
-            {menuItems.map((item) => (
-              <div key={item.label}>
+          <nav className="py-6 px-4 space-y-2 max-h-[calc(100vh-6rem)] overflow-y-auto">
+            {menuItems.map((item, index) => (
+              <div key={item.label} className={`animate-fade-in-up`} style={{ animationDelay: `${index * 50}ms` }}>
                 <Link
                   href={item.href}
-                  className="block px-4 py-3 text-base font-medium text-primary hover:text-accent hover:bg-background-secondary rounded-lg transition-colors duration-200"
+                  className="flex items-center justify-between px-5 py-4 text-lg font-medium text-primary hover:text-accent bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {item.submenu && <FiChevronDown className="w-5 h-5" />}
                 </Link>
                 {item.submenu && (
-                  <div className="mt-1 ml-4 space-y-1">
+                  <div className="mt-2 space-y-1 pl-4">
                     {item.submenu.map((subItem) => (
                       <Link
                         key={subItem.label}
                         href={subItem.href}
-                        className="block px-4 py-2 text-sm text-text-secondary hover:text-accent hover:bg-background-secondary rounded-lg transition-colors duration-200"
+                        className="block px-5 py-3 text-base text-text-secondary hover:text-accent bg-white hover:bg-gray-50 rounded-xl transition-all duration-200"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         {subItem.label}
@@ -237,6 +252,51 @@ export default function Header() {
                 )}
               </div>
             ))}
+            
+            {/* Login/User section in mobile menu */}
+            <div className="pt-4 mt-4 border-t border-gray-200">
+              {user ? (
+                <div className="space-y-2">
+                  <Link
+                    href="/mina-kurser"
+                    className="flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-green-600 hover:bg-green-700 rounded-2xl transition-all duration-200"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>Mina kurser</span>
+                    <FiArrowRight className="w-5 h-5" />
+                  </Link>
+                  <Link
+                    href={user.role === 'admin' ? '/admin' : '/dashboard'}
+                    className="flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-primary hover:bg-accent rounded-2xl transition-all duration-200"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>Min sida</span>
+                    <FiUser className="w-5 h-5" />
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center justify-between px-5 py-4 text-lg font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-2xl transition-all duration-200"
+                  >
+                    <span>Logga ut</span>
+                    <FiLogOut className="w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setShowLogin(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-primary hover:bg-accent rounded-2xl transition-all duration-200"
+                >
+                  <span>Logga in</span>
+                  <FiUser className="w-5 h-5" />
+                </button>
+              )}
+            </div>
           </nav>
         </div>
       </div>
@@ -437,6 +497,9 @@ export default function Header() {
         .animate-scale-in {
           animation: scaleIn 0.5s cubic-bezier(0.4,0,0.2,1);
         }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
+        }
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -444,6 +507,16 @@ export default function Header() {
         @keyframes scaleIn {
           from { opacity: 0; transform: scale(0.95) translateY(20px); }
           to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes fadeInUp {
+          from { 
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
     </header>

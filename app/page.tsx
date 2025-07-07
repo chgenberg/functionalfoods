@@ -158,7 +158,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
+    <div className="min-h-screen -mt-16 md:-mt-20" style={{ backgroundColor: '#fffdf3' }}>
       {/* Hero Section with Ulrika Background */}
       <section className="relative w-full overflow-hidden h-screen flex items-center justify-center hero-background">
         <div className="absolute inset-0 bg-black/30" />
