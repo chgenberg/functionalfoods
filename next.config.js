@@ -26,7 +26,16 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['tile.openstreetmap.org'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'tile.openstreetmap.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'functionalfoods.se',
+      },
+    ],
   },
 }
 

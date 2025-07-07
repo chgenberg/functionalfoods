@@ -1,0 +1,150 @@
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+
+interface Recipe {
+  id: string;
+  title: string;
+  excerpt: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  categories: string[];
+  ingredients: string[];
+  slug: string;
+  isPremium: boolean;
+  date: string;
+  author: {
+    name: string;
+    username: string;
+  };
+}
+
+interface RecipeCardProps {
+  recipe: Recipe;
+  userAccess: {
+    hasAccess: boolean;
+    userId: string | null;
+  };
+}
+
+const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
+  const canAccess = !recipe.isPremium || userAccess.hasAccess;
+  const imageUrl = recipe.imageUrl || '/images/recipe-placeholder.jpg';
+
+  return (
+    <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
+      {/* Image Container */}
+      <div className="relative h-64 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        
+        {recipe.imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={recipe.imageAlt || recipe.title}
+            fill
+            className="object-cover group-hover:scale-110 transition-transform duration-500"
+            unoptimized
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-green-100 to-blue-100 flex items-center justify-center">
+            <svg className="w-16 h-16 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+        )}
+
+        {/* Premium Badge */}
+        {recipe.isPremium && (
+          <div className="absolute top-4 right-4 z-20">
+            <div className="bg-gradient-to-r from-amber-400 to-amber-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center space-x-1">
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span>Premium</span>
+            </div>
+          </div>
+        )}
+
+        {/* Categories on hover */}
+        <div className="absolute bottom-4 left-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="flex flex-wrap gap-2">
+            {recipe.categories?.slice(0, 3).map((category, index) => (
+              <span
+                key={index}
+                className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs px-2 py-1 rounded-full font-medium"
+              >
+                {category}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
+          {recipe.title}
+        </h3>
+        
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          {recipe.excerpt}
+        </p>
+
+        {/* Meta info */}
+        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+          <span className="flex items-center">
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            {recipe.author?.name || 'Functional Foods'}
+          </span>
+          {recipe.ingredients && recipe.ingredients.length > 0 && (
+            <span className="flex items-center">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              {recipe.ingredients.length} ingredienser
+            </span>
+          )}
+        </div>
+
+        {/* Action button */}
+        {canAccess ? (
+          <a
+            href={`/kunskapsbank/recept/${recipe.slug}`}
+            className="block w-full text-center bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 font-medium shadow-md"
+          >
+            Visa recept
+          </a>
+        ) : (
+          <div>
+            <button
+              disabled
+              className="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-lg font-medium cursor-not-allowed"
+            >
+              <div className="flex items-center justify-center">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Premium recept
+              </div>
+            </button>
+            <a
+              href="/utbildning"
+              className="block text-center text-green-600 hover:text-green-700 text-sm mt-2 font-medium"
+            >
+              Köp kurs för tillgång →
+            </a>
+          </div>
+        )}
+      </div>
+
+      {/* Hover effect border */}
+      <div className="absolute inset-0 border-2 border-green-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+    </div>
+  );
+};
+
+export default RecipeCard; 
