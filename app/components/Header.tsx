@@ -152,14 +152,8 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Mobile menu button and cart */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <Link href="/cart" className="relative p-2">
-              <FiShoppingCart className="w-5 h-5 text-primary" />
-              {items.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">{items.length}</span>
-              )}
-            </Link>
+          {/* Mobile menu button - visible only on mobile */}
+          <div className="lg:hidden">
             <button
               type="button"
               className="relative w-10 h-10 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center"
@@ -175,7 +169,7 @@ export default function Header() {
 
           <div className="flex items-center gap-4">
             {user ? (
-              <div className="flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-2">
                 <Link
                   href="/mina-kurser"
                   className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors text-sm font-medium"
@@ -197,17 +191,37 @@ export default function Header() {
               </div>
             ) : (
               <button
-                className="rounded-full p-2 hover:bg-primary/10 transition relative"
+                className="rounded-full p-2 hover:bg-primary/10 transition relative hidden md:block"
                 onClick={() => setShowLogin(true)}
                 aria-label="Logga in"
               >
                 <FiUser className="w-6 h-6 text-primary" />
               </button>
             )}
+            
+            {/* Mobile user icon */}
+            {user ? (
+              <button
+                className="rounded-full p-2 hover:bg-primary/10 transition relative md:hidden"
+                onClick={() => setMobileMenuOpen(true)}
+                aria-label="Meny"
+              >
+                <FiUser className="w-5 h-5 text-primary" />
+              </button>
+            ) : (
+              <button
+                className="rounded-full p-2 hover:bg-primary/10 transition relative md:hidden"
+                onClick={() => setShowLogin(true)}
+                aria-label="Logga in"
+              >
+                <FiUser className="w-5 h-5 text-primary" />
+              </button>
+            )}
+            
             <Link href="/cart" className="rounded-full p-2 hover:bg-primary/10 transition relative" aria-label="Varukorg">
-              <FiShoppingCart className="w-6 h-6 text-primary" />
+              <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               {items.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full px-1.5 py-0.5 shadow">{items.length}</span>
+                <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">{items.length}</span>
               )}
             </Link>
           </div>
