@@ -5,6 +5,7 @@ import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import LoadingAnalysis from './LoadingAnalysis';
 import { GiSparkles } from 'react-icons/gi';
+import QuizResultScreen from './QuizResultScreen';
 
 interface QuestionnaireProps {
   bodyPart: string;
@@ -21,6 +22,8 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
   const [showLoadingPopup, setShowLoadingPopup] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [loadingError, setLoadingError] = useState<string | null>(null);
+  const [showResults, setShowResults] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
   const questions = bodyPartQuestions[bodyPart] || [];
 
   const loadingMessages = [
@@ -44,44 +47,85 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
   };
 
   const handleComplete = async () => {
-    setShowLoadingPopup(true);
-    setLoadingError(null);
     setIsLoading(true);
-    setLoadingStep(0);
-    // Animate loading steps
-    for (let i = 1; i < loadingMessages.length; i++) {
-      await new Promise(res => setTimeout(res, loadingDurations[i - 1]));
-      setLoadingStep(i);
-    }
-    try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          bodyPart,
-          description,
-          answers,
-        }),
-      });
+    setLoadingError(null);
+    
+    // Show loading screen for 12 seconds
+    setTimeout(async () => {
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            bodyPart,
+            description,
+            answers,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to analyze');
+        if (!response.ok) {
+          throw new Error('Failed to analyze');
+        }
+
+        const result = await response.json();
+        
+        // Transform the result to match QuizResultScreen format
+        const transformedResult = {
+          symptoms: [
+            { symptom: bodyPart, severity: 7 },
+            { symptom: description, severity: 5 }
+          ],
+          recommendations: result.recommendations?.map((rec: string, index: number) => ({
+            nutrient: `Rekommendation ${index + 1}`,
+            description: rec,
+            foods: result.functionalFoods?.slice(index * 2, index * 2 + 2) || [],
+            supplements: "Konsultera en läkare för specifika doseringar"
+          })) || [],
+          quickWins: [
+            { 
+              icon: "🥤", 
+              title: "Drick mer vatten", 
+              description: "Minst 2 liter per dag",
+              emoji: "💧"
+            },
+            { 
+              icon: "🛌", 
+              title: "Sov 7-9 timmar", 
+              description: "Regelbunden sömn är viktigt",
+              emoji: "😴"
+            },
+            { 
+              icon: "🧘", 
+              title: "Minska stress", 
+              description: "Prova meditation eller yoga",
+              emoji: "🧘‍♀️"
+            }
+          ]
+        };
+        
+        setAnalysisResult(transformedResult);
+        setShowResults(true);
+        setIsLoading(false);
+      } catch (error) {
+        setLoadingError('Något gick fel vid analysen. Försök igen.');
+        setIsLoading(false);
       }
-
-      const result = await response.json();
-      localStorage.setItem('analysisResult', JSON.stringify(result));
-      router.push('/dummy-result');
-    } catch (error) {
-      setLoadingError('Något gick fel vid analysen. Försök igen.');
-      setIsLoading(false);
-      setShowLoadingPopup(false);
-    }
+    }, 12000); // 12 seconds loading time
   };
 
   const handleScaleAnswer = (value: number) => {
     handleAnswer(value.toString());
+  };
+
+  const handleRestart = () => {
+    setShowResults(false);
+    setCurrentQuestion(0);
+    setAnswers([]);
+    setTextInput('');
+    setAnalysisResult(null);
+    onCancel();
   };
 
   const handlePrevious = () => {
@@ -198,6 +242,10 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
 
   if (isLoading) {
     return <LoadingAnalysis />;
+  }
+
+  if (showResults && analysisResult) {
+    return <QuizResultScreen quizData={analysisResult} onRestart={handleRestart} />;
   }
 
   if (questions.length === 0) {

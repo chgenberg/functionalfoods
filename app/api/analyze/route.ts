@@ -25,13 +25,6 @@ function getUserIdFromToken(token: string) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!openai) {
-    return NextResponse.json(
-      { error: 'OpenAI API key not configured' },
-      { status: 500 }
-    );
-  }
-
   try {
     const { bodyPart, description, answers } = await req.json();
 
@@ -43,41 +36,95 @@ export async function POST(req: NextRequest) {
       userId = getUserIdFromToken(token);
     }
 
-    // Skapa en prompt för OpenAI baserad på svaren
-    const prompt = `Baserat på följande information, skapa en detaljerad hälsorapport:
+    // Mock analysis function - returns realistic results based on input
+    const generateMockAnalysis = (bodyPart: string, description: string, answers: string[]): AnalysisResult => {
+      const bodyPartAnalysis: Record<string, any> = {
+        huvud: {
+          summary: "Du upplever huvudvärk som kan vara relaterad till stress, dehydrering eller spänning i nacke och axlar. Din beskrivning tyder på att det kan finnas livsstilsfaktorer som påverkar dina besvär.",
+          recommendations: [
+            "Drick mer vatten - minst 2-3 liter per dag",
+            "Implementera stresshanteringstekniker som meditation eller djupandning",
+            "Kontrollera din sömnkvalitet och sträva efter 7-8 timmar per natt",
+            "Överväg magnesiumtillskott för muskelavslappning"
+          ],
+          functionalFoods: [
+            "Ingefära - naturlig smärtlindring och antiinflammatorisk",
+            "Mörk choklad (70%+) - innehåller magnesium",
+            "Mandlar och valnötter - rika på magnesium",
+            "Fet fisk - omega-3 för att minska inflammation",
+            "Körsbär - naturligt melatonin för bättre sömn"
+          ],
+          lifestyleChanges: [
+            "Gör regelbundna pauser från skärmarbete",
+            "Stretcha nacke och axlar dagligen",
+            "Undvik för mycket koffein, särskilt på eftermiddagen",
+            "Skapa en avslappnande kvällsrutin"
+          ]
+        },
+        mage: {
+          summary: "Dina magbesvär kan vara relaterade till stress, kosthållning eller tarmhälsa. Symtomen tyder på att din matsmältning kan förbättras genom kostförändringar och stresshantering.",
+          recommendations: [
+            "Inkludera mer probiotika i din kost för bättre tarmhälsa",
+            "Ät långsammare och tugga maten ordentligt",
+            "Undvik mat som utlöser besvär",
+            "Överväg att föra en matdagbok"
+          ],
+          functionalFoods: [
+            "Fermenterade livsmedel (kimchi, kefir, surkål)",
+            "Ingefära - lugnar magen och hjälper matsmältningen",
+            "Kamomillte - antiinflammatorisk och lugnande",
+            "Havregryn - innehåller lösliga fibrer",
+            "Bananer - lätta att smälta och innehåller kalium"
+          ],
+          lifestyleChanges: [
+            "Ät mindre måltider oftare",
+            "Undvik att äta sent på kvällen",
+            "Minska stress genom meditation eller yoga",
+            "Drick vatten mellan måltider, inte under"
+          ]
+        },
+        rygg: {
+          summary: "Dina ryggbesvär kan bero på hållning, muskelspänningar eller brist på rörlighet. En kombination av stärkande övningar och antiinflammatorisk kost kan hjälpa.",
+          recommendations: [
+            "Stärk dina kärnmuskler med riktade övningar",
+            "Förbättra din ergonomi på arbetsplatsen",
+            "Inkludera antiinflammatoriska livsmedel i kosten",
+            "Sträck ut regelbundet under dagen"
+          ],
+          functionalFoods: [
+            "Körsbär - naturliga antiinflammatoriska egenskaper",
+            "Fet fisk - omega-3 för att minska inflammation",
+            "Kurkuma - kraftfull antiinflammatorisk krydda",
+            "Gröna bladgrönsaker - rika på magnesium",
+            "Bär - antioxidanter som bekämpar inflammation"
+          ],
+          lifestyleChanges: [
+            "Gör dagliga stretchingövningar",
+            "Använd ergonomiska hjälpmedel",
+            "Ta regelbundna rörelsepausen",
+            "Sov på en stödjande madrass"
+          ]
+        }
+      };
 
-Kroppsdel: ${bodyPart}
-Beskrivning av besvär: ${description}
-Svar på frågor:
-${answers.map((answer: string, index: number) => `Fråga ${index + 1}: ${answer}`).join('\n')}
+      // Get analysis for specific body part or use general analysis
+      const analysis = bodyPartAnalysis[bodyPart] || bodyPartAnalysis.huvud;
+      
+      // Customize based on description and answers
+      if (description.toLowerCase().includes('stress')) {
+        analysis.recommendations.unshift("Prioritera stresshantering - detta verkar vara en viktig faktor");
+        analysis.lifestyleChanges.unshift("Implementera daglig meditation eller mindfulness");
+      }
+      
+      if (description.toLowerCase().includes('sömn')) {
+        analysis.recommendations.push("Förbättra din sömnhygien");
+        analysis.functionalFoods.push("Kamomillte - främjar avslappning och sömn");
+      }
 
-Skapa en analys med följande strukturerade svar:
+      return analysis;
+    };
 
-1. SAMMANFATTNING: En kort sammanfattning av personens hälsotillstånd och huvudproblem.
-
-2. REKOMMENDATIONER: En lista med konkreta rekommendationer för att förbättra hälsan.
-
-3. FUNKTIONELLA LIVSMEDEL: En lista med specifika funktionella livsmedel som kan hjälpa till.
-
-4. LIVSSTILSFÖRÄNDRINGAR: En lista med livsstilsförändringar som kan förbättra hälsan.
-
-Formatera svaret som ett JSON-objekt med följande struktur:
-{
-  "summary": "sammanfattningstext",
-  "recommendations": ["rekommendation1", "rekommendation2", ...],
-  "functionalFoods": ["livsmedel1", "livsmedel2", ...],
-  "lifestyleChanges": ["förändring1", "förändring2", ...]
-}
-
-Svara ENDAST med JSON-objektet, utan någon ytterligare text.`;
-
-    const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: "gpt-4-turbo-preview",
-      response_format: { type: "json_object" },
-    });
-
-    const analysisResult: AnalysisResult = JSON.parse(completion.choices[0].message.content || '{}');
+    const analysisResult = generateMockAnalysis(bodyPart, description, answers);
 
     // Spara symptomanalys i databasen om användaren är inloggad
     if (userId) {
@@ -87,7 +134,7 @@ Svara ENDAST med JSON-objektet, utan någon ytterligare text.`;
             userId,
             bodyPart,
             description,
-            analysis: analysisResult
+            analysis: analysisResult as any
           }
         });
       } catch (dbError) {
@@ -99,8 +146,12 @@ Svara ENDAST med JSON-objektet, utan någon ytterligare text.`;
     return NextResponse.json(analysisResult);
   } catch (error) {
     console.error('Error in analyze endpoint:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace'
+    });
     return NextResponse.json(
-      { error: 'Failed to analyze responses' },
+      { error: 'Failed to analyze responses', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   } finally {

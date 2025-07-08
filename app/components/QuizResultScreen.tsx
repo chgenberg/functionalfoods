@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield } from 'react-icons/fi';
+import LoadingAnalysis from './LoadingAnalysis';
 
 interface QuizResultData {
   profile: string;
@@ -32,9 +33,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('summary');
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingMessage, setLoadingMessage] = useState('Analyserar dina svar...');
-  const [currentTip, setCurrentTip] = useState(0);
   const [healthScores, setHealthScores] = useState<HealthScores>({
     energi: 5,
     sömn: 5,
@@ -81,52 +79,12 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     return Math.round((total / 50) * 100);
   };
 
-  const tips = [
-    { icon: '💡', text: 'Visste du att tarmhälsan påverkar både humör och energinivå?' },
-    { icon: '🥗', text: 'En färgglad tallrik ger dig fler antioxidanter och näringsämnen!' },
-    { icon: '💤', text: 'Kvalitetssömn är grunden för ett starkt immunförsvar.' },
-    { icon: '🚶', text: '10 minuters promenad efter maten förbättrar blodsockerkontroll.' },
-    { icon: '💊', text: 'Rätt functional foods kan optimera din kropps naturliga processer.' }
-  ];
-
   useEffect(() => {
-    // Loading messages rotation
-    const messages = [
-      'Analyserar dina svar...',
-      'Sätter ihop en kostrekommendation...',
-      'Tänker på hur livsstilsval kan spela in...',
-      'Analyserar hur Functional Foods kan hjälpa dig...',
-      'Förbereder rekommendationer...'
-    ];
-    
-    let messageIndex = 0;
-    let progress = 0;
-    
-    const progressInterval = setInterval(() => {
-      progress += 100 / 90; // Complete in 90 seconds
-      setLoadingProgress(Math.min(progress, 95));
-      
-      if (progress >= 20 && messageIndex < 1) {
-        messageIndex = 1;
-        setLoadingMessage(messages[messageIndex]);
-      } else if (progress >= 40 && messageIndex < 2) {
-        messageIndex = 2;
-        setLoadingMessage(messages[messageIndex]);
-      } else if (progress >= 60 && messageIndex < 3) {
-        messageIndex = 3;
-        setLoadingMessage(messages[messageIndex]);
-      } else if (progress >= 80 && messageIndex < 4) {
-        messageIndex = 4;
-        setLoadingMessage(messages[messageIndex]);
-      }
-    }, 1000);
-
-    // Rotate tips every 3 seconds
-    const tipInterval = setInterval(() => {
-      setCurrentTip((prev) => (prev + 1) % tips.length);
-    }, 3000);
-
     const fetchRecommendations = async () => {
+      // Show loading for at least 12 seconds for better UX
+      const minLoadingTime = 12000;
+      const startTime = Date.now();
+
       try {
         const token = localStorage.getItem('token');
         const headers: Record<string, string> = {
@@ -154,60 +112,25 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
         const calculatedScores = calculateHealthScores();
         setHealthScores(calculatedScores);
         
-        clearInterval(progressInterval);
-        setLoadingProgress(100);
-        setTimeout(() => setLoading(false), 500);
+        // Wait for minimum loading time
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+        
+        setTimeout(() => {
+          setLoading(false);
+        }, remainingTime);
       } catch (error) {
         console.error('Error fetching recommendations:', error);
-        clearInterval(progressInterval);
         setError('Kunde inte hämta rekommendationer. Försök igen senare.');
         setLoading(false);
       }
     };
 
     fetchRecommendations();
-    
-    return () => {
-      clearInterval(progressInterval);
-      clearInterval(tipInterval);
-    };
-  }, [quizData, tips.length]);
+  }, [quizData]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center"
-        >
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">{loadingMessage}</h2>
-            <p className="text-gray-600">Vi skapar personliga rekommendationer baserat på din hälsoprofil</p>
-          </div>
-          
-          <div className="mb-6">
-            <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
-              <motion.div 
-                className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${loadingProgress}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-            <span className="text-sm text-gray-500">{Math.round(loadingProgress)}%</span>
-          </div>
-          
-          <div className="bg-green-50 rounded-2xl p-4">
-            <h3 className="flex items-center justify-center space-x-2 text-green-800 font-medium mb-2">
-              <span className="text-2xl">{tips[currentTip].icon}</span>
-              <span>Hälsotips</span>
-            </h3>
-            <p className="text-green-700 text-sm">{tips[currentTip].text}</p>
-          </div>
-        </motion.div>
-      </div>
-    );
+    return <LoadingAnalysis />;
   }
 
   if (error) {
