@@ -7,7 +7,7 @@ import { GiSparkles } from 'react-icons/gi';
 import Link from 'next/link';
 
 export default function Checkout() {
-  const { items, total, clearCart } = useCart();
+  const { items, total, clearCart, isLoaded } = useCart();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<'klarna' | 'swish' | null>(null);
@@ -68,6 +68,15 @@ export default function Checkout() {
       setSelectedPayment(null);
     }
   };
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-[400px] flex flex-col items-center justify-center p-8 animate-fade-in">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+        <p className="text-text-secondary">Laddar checkout...</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (

@@ -34,9 +34,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
   const imageUrl = recipe.imageUrl || '/images/recipe-placeholder.jpg';
 
   return (
-    <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
-      {/* Image Container */}
-      <div className="relative h-64 overflow-hidden">
+    <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 h-[520px] flex flex-col">
+      {/* Image Container - Fixed height */}
+      <div className="relative h-48 overflow-hidden flex-shrink-0">
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         
         {recipe.imageUrl ? (
@@ -82,26 +82,32 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
-          {recipe.title}
-        </h3>
+      {/* Content - Flexible height with fixed structure */}
+      <div className="p-6 flex flex-col flex-grow">
+        {/* Title - Fixed height with line clamp */}
+        <div className="h-14 mb-3">
+          <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-green-600 transition-colors leading-tight">
+            {recipe.title}
+          </h3>
+        </div>
         
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-          {recipe.excerpt}
-        </p>
+        {/* Excerpt - Fixed height with line clamp */}
+        <div className="h-16 mb-4">
+          <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+            {recipe.excerpt}
+          </p>
+        </div>
 
-        {/* Meta info */}
-        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-          <span className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Meta info - Fixed height */}
+        <div className="flex items-center justify-between text-xs text-gray-500 mb-4 h-4">
+          <span className="flex items-center truncate">
+            <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            {recipe.author?.name || 'Functional Foods'}
+            <span className="truncate">{recipe.author?.name || 'Functional Foods'}</span>
           </span>
           {recipe.ingredients && recipe.ingredients.length > 0 && (
-            <span className="flex items-center">
+            <span className="flex items-center flex-shrink-0 ml-2">
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
@@ -110,35 +116,40 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
           )}
         </div>
 
-        {/* Action button */}
-        {canAccess ? (
-          <a
-            href={`/kunskapsbank/recept/${recipe.slug}`}
-            className="block w-full text-center bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 font-medium shadow-md"
-          >
-            Visa recept
-          </a>
-        ) : (
-          <div>
-            <button
-              disabled
-              className="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-lg font-medium cursor-not-allowed"
-            >
-              <div className="flex items-center justify-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                Premium recept
-              </div>
-            </button>
+        {/* Spacer to push button to bottom */}
+        <div className="flex-grow"></div>
+
+        {/* Action button - Fixed at bottom */}
+        <div className="mt-auto">
+          {canAccess ? (
             <a
-              href="/utbildning"
-              className="block text-center text-green-600 hover:text-green-700 text-sm mt-2 font-medium"
+              href={`/kunskapsbank/recept/${recipe.slug}`}
+              className="block w-full text-center bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 font-medium shadow-md"
             >
-              Köp kurs för tillgång →
+              Visa recept
             </a>
-          </div>
-        )}
+          ) : (
+            <div>
+              <button
+                disabled
+                className="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-lg font-medium cursor-not-allowed mb-2"
+              >
+                <div className="flex items-center justify-center">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Premium recept
+                </div>
+              </button>
+              <a
+                href="/utbildning"
+                className="block text-center text-green-600 hover:text-green-700 text-sm font-medium"
+              >
+                Köp kurs för tillgång →
+              </a>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Hover effect border */}

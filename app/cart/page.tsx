@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, total } = useCart();
+  const { items, removeItem, updateQuantity, total, isLoaded } = useCart();
   const [removingItem, setRemovingItem] = useState<string | null>(null);
 
   const handleRemove = async (id: string) => {
@@ -16,6 +16,21 @@ export default function CartPage() {
     removeItem(id);
     setRemovingItem(null);
   };
+
+  if (!isLoaded) {
+    return (
+      <main className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
+        <div className="container-custom section-padding">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-text-secondary">Laddar varukorg...</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (items.length === 0) {
     return (

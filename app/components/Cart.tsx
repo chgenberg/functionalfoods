@@ -5,7 +5,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Cart() {
-  const { items, removeItem, updateQuantity, total } = useCart();
+  const { items, removeItem, updateQuantity, total, isLoaded } = useCart();
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-[400px] flex flex-col items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+        <p className="text-gray-600">Laddar varukorg...</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (

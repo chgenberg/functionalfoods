@@ -11,7 +11,7 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { items } = useCart();
+  const { items, isLoaded } = useCart();
   const [showLogin, setShowLogin] = useState(false);
   const [tab, setTab] = useState<'login' | 'signup'>('login');
   const [showPassword, setShowPassword] = useState(false);
@@ -263,7 +263,7 @@ export default function Header() {
             
             <Link href="/cart" className="rounded-full p-2 hover:bg-primary/10 transition relative" aria-label="Varukorg">
               <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-              {items.length > 0 && (
+              {isLoaded && items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">{items.length}</span>
               )}
             </Link>

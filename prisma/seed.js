@@ -17,15 +17,43 @@ async function main() {
     },
   });
 
-  // Skapa test-kund
-  const customerPassword = await bcrypt.hash('test123', 10);
-  const customer = await prisma.user.upsert({
-    where: { email: 'test@example.com' },
+  // Skapa testkonton med olika behörighetsnivåer
+  
+  // 1. Gratis användare (ingen kurs köpt)
+  const freeUserPassword = await bcrypt.hash('gratis123', 10);
+  const freeUser = await prisma.user.upsert({
+    where: { email: 'gratis@test.se' },
     update: {},
     create: {
-      email: 'test@example.com',
-      name: 'Test User',
-      password: customerPassword,
+      email: 'gratis@test.se',
+      name: 'Gratis Användare',
+      password: freeUserPassword,
+      role: 'customer',
+    },
+  });
+
+  // 2. Functional Flow användare
+  const flowUserPassword = await bcrypt.hash('flow123', 10);
+  const flowUser = await prisma.user.upsert({
+    where: { email: 'flow@test.se' },
+    update: {},
+    create: {
+      email: 'flow@test.se',
+      name: 'Flow Användare',
+      password: flowUserPassword,
+      role: 'customer',
+    },
+  });
+
+  // 3. Functional Basics användare
+  const basicsUserPassword = await bcrypt.hash('basics123', 10);
+  const basicsUser = await prisma.user.upsert({
+    where: { email: 'basics@test.se' },
+    update: {},
+    create: {
+      email: 'basics@test.se',
+      name: 'Basics Användare',
+      password: basicsUserPassword,
       role: 'customer',
     },
   });
@@ -135,17 +163,66 @@ async function main() {
     }
   });
 
-  // Skapa ett köp för test-användaren
-  const purchase = await prisma.purchase.create({
-    data: {
-      userId: customer.id,
+  // Skapa köp för användarna
+  
+  // Flow-användaren köper Functional Flow
+  const flowPurchase = await prisma.purchase.upsert({
+    where: {
+      userId_courseId: {
+        userId: flowUser.id,
+        courseId: functionalFlow.id
+      }
+    },
+    update: {},
+    create: {
+      userId: flowUser.id,
       courseId: functionalFlow.id,
       amount: functionalFlow.price,
       status: 'completed'
     }
   });
 
-  console.log({ admin, customer, functionalFlow, functionalBasics, purchase });
+  // Basics-användaren köper Functional Basics
+  const basicsPurchase = await prisma.purchase.upsert({
+    where: {
+      userId_courseId: {
+        userId: basicsUser.id,
+        courseId: functionalBasics.id
+      }
+    },
+    update: {},
+    create: {
+      userId: basicsUser.id,
+      courseId: functionalBasics.id,
+      amount: functionalBasics.price,
+      status: 'completed'
+    }
+  });
+
+  // Gratis användaren har inga köp
+
+  console.log('=== TESTKONTON SKAPADE ===');
+  console.log('1. Gratis användare:');
+  console.log('   Email: gratis@test.se');
+  console.log('   Lösenord: gratis123');
+  console.log('   Tillgång: Endast gratis innehåll');
+  console.log('');
+  console.log('2. Functional Flow användare:');
+  console.log('   Email: flow@test.se');
+  console.log('   Lösenord: flow123');
+  console.log('   Tillgång: Functional Flow kurs + alla premium recept');
+  console.log('');
+  console.log('3. Functional Basics användare:');
+  console.log('   Email: basics@test.se');
+  console.log('   Lösenord: basics123');
+  console.log('   Tillgång: Functional Basics kurs + alla premium recept');
+  console.log('');
+  console.log('Admin:');
+  console.log('   Email: admin@functionalfoods.se');
+  console.log('   Lösenord: admin123');
+  console.log('   Tillgång: Administratörsrättigheter');
+
+  console.log({ admin, freeUser, flowUser, basicsUser, functionalFlow, functionalBasics, flowPurchase, basicsPurchase });
 }
 
 main()

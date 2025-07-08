@@ -17,6 +17,7 @@ interface CartContextType {
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   total: number;
+  isLoaded: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -24,22 +25,43 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load cart from localStorage on mount
+  // Load cart from localStorage on mount - only on client side
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setItems(JSON.parse(savedCart));
+    if (typeof window !== 'undefined') {
+      try {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          if (Array.isArray(parsedCart)) {
+            setItems(parsedCart);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading cart from localStorage:', error);
+        // Clear invalid data
+        localStorage.removeItem('cart');
+      } finally {
+        setIsLoaded(true);
+      }
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever it changes - only on client side
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
+    if (isLoaded && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('cart', JSON.stringify(items));
+      } catch (error) {
+        console.error('Error saving cart to localStorage:', error);
+      }
+    }
+    
     // Calculate total
     const newTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     setTotal(newTotal);
-  }, [items]);
+  }, [items, isLoaded]);
 
   const addItem = (item: CartItem) => {
     setItems(currentItems => {
@@ -58,7 +80,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (id: string, quantity: number) => {
-    if (quantity < 1) return;
+    if (quantity < 1) {
+      removeItem(id);
+      return;
+    }
     setItems(currentItems =>
       currentItems.map(item =>
         item.id === id ? { ...item, quantity } : item
@@ -68,6 +93,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('cart');
+      } catch (error) {
+        console.error('Error clearing cart from localStorage:', error);
+      }
+    }
   };
 
   return (
@@ -77,7 +109,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       removeItem,
       updateQuantity,
       clearCart,
-      total
+      total,
+      isLoaded
     }}>
       {children}
     </CartContext.Provider>
