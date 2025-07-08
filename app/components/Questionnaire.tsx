@@ -5,7 +5,7 @@ import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import LoadingAnalysis from './LoadingAnalysis';
 import { GiSparkles } from 'react-icons/gi';
-import QuizResultScreen from './QuizResultScreen';
+import SymptomResultScreen from './SymptomResultScreen';
 
 interface QuestionnaireProps {
   bodyPart: string;
@@ -264,7 +264,7 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
   }
 
   if (showResults && analysisResult) {
-    return <QuizResultScreen quizData={analysisResult} onRestart={handleRestart} />;
+    return <SymptomResultScreen resultData={analysisResult} onRestart={handleRestart} />;
   }
 
   if (questions.length === 0) {

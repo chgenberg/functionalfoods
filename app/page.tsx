@@ -164,8 +164,10 @@ export default function Home() {
       <section className="relative w-full overflow-hidden h-screen flex items-center justify-center hero-background">
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-4">
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-light tracking-tight mb-4 sm:mb-6 text-white animate-fade-in text-center">
-            FUNCTIONAL FOODS
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-4 sm:mb-6 text-white animate-fade-in text-center uppercase drop-shadow-2xl">
+            <span className="bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
+              FUNCTIONAL FOODS
+            </span>
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl font-light mb-8 sm:mb-12 text-white animate-fade-in animation-delay-200 text-center">
             Mat som medicin för kropp och själ

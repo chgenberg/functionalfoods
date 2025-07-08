@@ -81,16 +81,16 @@ export default function LoadingAnalysis() {
       }
     }, 3000);
 
-    // Animate health metrics
+    // Animate health metrics progressively
     const metricsInterval = setInterval(() => {
       setHealthMetrics(prev => ({
-        stress: Math.min(100, prev.stress + Math.random() * 20),
-        energy: Math.min(100, prev.energy + Math.random() * 15),
-        nutrition: Math.min(100, prev.nutrition + Math.random() * 18),
-        sleep: Math.min(100, prev.sleep + Math.random() * 16),
-        activity: Math.min(100, prev.activity + Math.random() * 17)
+        stress: Math.min(85, prev.stress + Math.random() * 3),
+        energy: Math.min(90, prev.energy + Math.random() * 2.5),
+        nutrition: Math.min(95, prev.nutrition + Math.random() * 2.8),
+        sleep: Math.min(88, prev.sleep + Math.random() * 2.6),
+        activity: Math.min(82, prev.activity + Math.random() * 2.7)
       }));
-    }, 500);
+    }, 800);
 
     const totalDuration = messages.reduce((acc, msg) => acc + msg.duration, 0);
     const progressInterval = 50;

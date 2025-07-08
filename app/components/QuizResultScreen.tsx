@@ -24,7 +24,21 @@ interface HealthScores {
 }
 
 interface QuizResultScreenProps {
-  quizData: Record<number, string>;
+  quizData: Record<number, string> | {
+    symptoms: Array<{ symptom: string; severity: number }>;
+    recommendations: Array<{
+      nutrient: string;
+      description: string;
+      foods: string[];
+      supplements: string;
+    }>;
+    quickWins: Array<{
+      icon: string;
+      title: string;
+      description: string;
+      emoji: string;
+    }>;
+  };
   onRestart: () => void;
 }
 
@@ -41,35 +55,62 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     motion: 5
   });
 
+  // Type guard to check if quizData is quiz answers or result data
+  const isQuizAnswers = (data: any): data is Record<number, string> => {
+    return typeof data === 'object' && !('symptoms' in data);
+  };
+
+  // Type guard to check if quizData is result data
+  const isResultData = (data: any): data is {
+    symptoms: Array<{ symptom: string; severity: number }>;
+    recommendations: Array<{
+      nutrient: string;
+      description: string;
+      foods: string[];
+      supplements: string;
+    }>;
+    quickWins: Array<{
+      icon: string;
+      title: string;
+      description: string;
+      emoji: string;
+    }>;
+  } => {
+    return typeof data === 'object' && 'symptoms' in data;
+  };
+
   const calculateHealthScores = (): HealthScores => {
     const scores: HealthScores = {
-      energi: 5,
-      sömn: 5,
-      stress: 5,
-      kost: 5,
+      energi: 7,
+      sömn: 6,
+      stress: 6,
+      kost: 7,
       motion: 5
     };
 
-    // Map quiz answers to scores
-    if (quizData[0] === 'high_energy') scores.energi = 8;
-    else if (quizData[0] === 'low_energy') scores.energi = 3;
-    else if (quizData[0] === 'afternoon_dip') scores.energi = 5;
+    // Only calculate from quiz answers if we have them
+    if (isQuizAnswers(quizData)) {
+      // Map quiz answers to scores
+      if (quizData[0] === 'high_energy') scores.energi = 8;
+      else if (quizData[0] === 'low_energy') scores.energi = 3;
+      else if (quizData[0] === 'afternoon_dip') scores.energi = 5;
 
-    if (quizData[1] === 'excellent_sleep') scores.sömn = 9;
-    else if (quizData[1] === 'poor_sleep') scores.sömn = 3;
-    else if (quizData[1] === 'good_sleep') scores.sömn = 7;
+      if (quizData[1] === 'excellent_sleep') scores.sömn = 9;
+      else if (quizData[1] === 'poor_sleep') scores.sömn = 3;
+      else if (quizData[1] === 'good_sleep') scores.sömn = 7;
 
-    if (quizData[2] === 'low_stress') scores.stress = 8;
-    else if (quizData[2] === 'chronic_stress') scores.stress = 3;
-    else if (quizData[2] === 'moderate_stress') scores.stress = 5;
+      if (quizData[2] === 'low_stress') scores.stress = 8;
+      else if (quizData[2] === 'chronic_stress') scores.stress = 3;
+      else if (quizData[2] === 'moderate_stress') scores.stress = 5;
 
-    if (quizData[3] === 'very_active') scores.motion = 8;
-    else if (quizData[3] === 'sedentary') scores.motion = 3;
-    else if (quizData[3] === 'active') scores.motion = 6;
+      if (quizData[3] === 'very_active') scores.motion = 8;
+      else if (quizData[3] === 'sedentary') scores.motion = 3;
+      else if (quizData[3] === 'active') scores.motion = 6;
 
-    if (quizData[4] === 'excellent_diet') scores.kost = 8;
-    else if (quizData[4] === 'poor_diet') scores.kost = 3;
-    else if (quizData[4] === 'good_diet') scores.kost = 6;
+      if (quizData[4] === 'excellent_diet') scores.kost = 8;
+      else if (quizData[4] === 'poor_diet') scores.kost = 3;
+      else if (quizData[4] === 'good_diet') scores.kost = 6;
+    }
 
     return scores;
   };
