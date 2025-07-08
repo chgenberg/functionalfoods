@@ -1,10 +1,11 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiRefreshCw, FiHeart, FiZap } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiShoppingCart, FiBook, FiHeart } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
 
 interface SymptomResultScreenProps {
-  resultData: {
+  analysisResult: {
     symptoms: Array<{ symptom: string; severity: number }>;
     recommendations: Array<{
       nutrient: string;
@@ -19,251 +20,302 @@ interface SymptomResultScreenProps {
       emoji: string;
     }>;
   };
-  onRestart: () => void;
+  onBack: () => void;
 }
 
-const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ resultData, onRestart }) => {
-  const [activeTab, setActiveTab] = React.useState('summary');
+const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResult, onBack }) => {
+  const [activeTab, setActiveTab] = useState('recommendations');
+  const router = useRouter();
 
   const tabs = [
-    { id: 'summary', label: 'Sammanfattning', icon: '📊' },
-    { id: 'recommendations', label: 'Rekommendationer', icon: '🍃' },
-    { id: 'nextsteps', label: 'Nästa steg', icon: '⭐' }
+    { id: 'recommendations', label: 'Rekommendationer', icon: '🎯' },
+    { id: 'foods', label: 'Functional Foods', icon: '🥗' },
+    { id: 'supplements', label: 'Kosttillskott', icon: '💊' },
+    { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' }
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          {/* Scrolling title container */}
-          <div className="relative overflow-hidden mb-4">
-            <motion.div
-              className="flex whitespace-nowrap"
-              animate={{
-                x: [0, -1920]
-              }}
-              transition={{
-                x: {
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear"
-                }
-              }}
-            >
-              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
-                DIN PERSONALISERADE SYMPTOMANALYS
-              </h1>
-              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
-                DIN PERSONALISERADE SYMPTOMANALYS
-              </h1>
-              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
-                DIN PERSONALISERADE SYMPTOMANALYS
-              </h1>
-            </motion.div>
-            
-            {/* Gradient fade edges */}
-            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-green-50 to-transparent pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-blue-50 to-transparent pointer-events-none" />
-          </div>
-        </motion.div>
+  const getSeverityColor = (severity: number) => {
+    if (severity >= 7) return 'text-red-600';
+    if (severity >= 4) return 'text-yellow-600';
+    return 'text-green-600';
+  };
 
-        {/* Quick Wins */}
+  const getSeverityBgColor = (severity: number) => {
+    if (severity >= 7) return 'bg-red-100';
+    if (severity >= 4) return 'bg-yellow-100';
+    return 'bg-green-100';
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-16">
+        <div className="max-w-4xl mx-auto px-4">
+          <button
+            onClick={onBack}
+            className="mb-6 text-white/80 hover:text-white inline-flex items-center space-x-2 transition-colors"
+          >
+            <FiArrowLeft className="w-5 h-5" />
+            <span>Tillbaka</span>
+          </button>
+          
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl font-bold mb-4"
+          >
+            Din Symptomanalys
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-xl opacity-90"
+          >
+            Personliga rekommendationer baserat på dina symptom
+          </motion.p>
+        </div>
+      </div>
+
+      {/* Symptoms Overview */}
+      <div className="max-w-4xl mx-auto px-4 -mt-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl shadow-xl p-6 mb-8"
+          className="bg-white rounded-2xl shadow-xl p-8 mb-8"
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-            <span className="text-2xl mr-2">🎯</span>
-            Snabba vinster för din hälsa:
-          </h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            {resultData.quickWins.map((win, index) => (
-              <motion.div 
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Dina symptom</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {analysisResult.symptoms.map((item, index) => (
+              <motion.div
                 key={index}
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`p-4 rounded-lg ${getSeverityBgColor(item.severity)}`}
               >
-                <motion.div 
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.5 }}
-                  className="text-2xl mb-2"
-                >
-                  {win.emoji}
-                </motion.div>
-                <div className="text-sm font-medium text-gray-800">{win.title}</div>
-                <div className="text-xs text-gray-600 mt-1">{win.description}</div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-800">{item.symptom}</span>
+                  <span className={`font-semibold ${getSeverityColor(item.severity)}`}>
+                    {item.severity}/10
+                  </span>
+                </div>
+                <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${item.severity * 10}%` }}
+                    transition={{ duration: 1, delay: 0.2 + index * 0.1 }}
+                    className={`h-2 rounded-full ${
+                      item.severity >= 7 ? 'bg-red-500' :
+                      item.severity >= 4 ? 'bg-yellow-500' : 'bg-green-500'
+                    }`}
+                  />
+                </div>
               </motion.div>
             ))}
           </div>
         </motion.div>
+      </div>
 
-        {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white rounded-3xl shadow-xl overflow-hidden"
-        >
-          {/* Tab Headers */}
-          <div className="flex overflow-x-auto bg-gray-50 p-2">
+      {/* Content Tabs */}
+      <div className="max-w-4xl mx-auto px-4">
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-xl shadow-sm p-1 mb-6">
+          <div className="flex flex-wrap">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap ${
+                className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'bg-white text-green-600 shadow-md'
-                    : 'text-gray-600 hover:text-green-600'
+                    ? 'bg-purple-600 text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
                 <span className="text-lg">{tab.icon}</span>
-                <span>{tab.label}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </div>
+        </div>
 
-          {/* Tab Content */}
-          <div className="p-6">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {activeTab === 'summary' && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Din Symptomanalys</h2>
-                    
-                    {/* Symptoms */}
-                    <div className="mb-8">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-4">Identifierade symptom:</h3>
-                      <div className="space-y-3">
-                        {resultData.symptoms.map((symptom, index) => (
-                          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                            <span className="font-medium text-gray-700">{symptom.symptom}</span>
-                            <div className="flex items-center space-x-2">
-                              <span className="text-sm text-gray-500">Intensitet:</span>
-                              <span className="text-lg font-bold text-orange-600">{symptom.severity}/10</span>
-                            </div>
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {activeTab === 'recommendations' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-xl shadow-sm p-8">
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-6">Snabba förbättringar</h2>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {analysisResult.quickWins.map((win, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.02 }}
+                        className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:shadow-lg"
+                      >
+                        <div className="text-3xl mb-3">{win.emoji}</div>
+                        <h4 className="font-semibold text-gray-800 mb-2">{win.title}</h4>
+                        <p className="text-gray-600 text-sm">{win.description}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {analysisResult.recommendations.map((rec, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-xl shadow-sm p-8"
+                  >
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-purple-100 rounded-full p-3 flex-shrink-0">
+                        <FiCheckCircle className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-3">{rec.nutrient}</h3>
+                        <p className="text-gray-700 mb-4">{rec.description}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === 'foods' && (
+              <div className="bg-white rounded-xl shadow-sm p-8">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-6">Rekommenderade livsmedel</h2>
+                <div className="space-y-6">
+                  {analysisResult.recommendations.map((rec, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <h3 className="text-lg font-semibold text-purple-600 mb-3">
+                        {rec.nutrient}
+                      </h3>
+                      <div className="grid md:grid-cols-2 gap-3">
+                        {rec.foods.map((food, foodIndex) => (
+                          <div
+                            key={foodIndex}
+                            className="flex items-center space-x-2 p-3 bg-purple-50 rounded-lg"
+                          >
+                            <span className="text-purple-600">•</span>
+                            <span className="text-gray-700">{food}</span>
                           </div>
                         ))}
                       </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'supplements' && (
+              <div className="bg-white rounded-xl shadow-sm p-8">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-6">Kosttillskott</h2>
+                <div className="space-y-6">
+                  {analysisResult.recommendations.map((rec, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="border-l-4 border-purple-500 pl-6"
+                    >
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">{rec.nutrient}</h3>
+                      <p className="text-gray-700">{rec.supplements}</p>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                <div className="mt-8 p-6 bg-yellow-50 rounded-xl border border-yellow-200">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Observera:</strong> Konsultera alltid läkare innan du börjar med nya kosttillskott, 
+                    särskilt om du har befintliga hälsotillstånd eller tar mediciner.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'lifestyle' && (
+              <div className="bg-white rounded-xl shadow-sm p-8">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-6">Livsstilsförändringar</h2>
+                <div className="space-y-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
+                      <FiHeart className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800 mb-2">Daglig rörelse</h3>
+                      <p className="text-gray-700">
+                        Inkludera minst 30 minuters fysisk aktivitet varje dag. 
+                        Detta kan vara allt från en promenad till yoga eller styrketräning.
+                      </p>
                     </div>
                   </div>
-                )}
-
-                {activeTab === 'recommendations' && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Functional Food Rekommendationer</h2>
-                    <div className="space-y-6">
-                      {resultData.recommendations.map((rec, index) => (
-                        <div key={index} className="bg-green-50 rounded-2xl p-6 border border-green-100">
-                          <h3 className="text-xl font-semibold text-green-800 mb-3">{rec.nutrient}</h3>
-                          <p className="text-gray-700 mb-4">{rec.description}</p>
-                          
-                          <div className="grid md:grid-cols-2 gap-4">
-                            <div className="bg-white rounded-xl p-4 border border-green-200">
-                              <h4 className="font-medium text-green-700 mb-2">Rekommenderade livsmedel:</h4>
-                              <ul className="text-gray-600 text-sm space-y-1">
-                                {rec.foods.map((food, foodIndex) => (
-                                  <li key={foodIndex}>• {food}</li>
-                                ))}
-                              </ul>
-                            </div>
-                            
-                            <div className="bg-white rounded-xl p-4 border border-green-200">
-                              <h4 className="font-medium text-green-700 mb-2">Kosttillskott:</h4>
-                              <p className="text-gray-600 text-sm">{rec.supplements}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
+                      <FiHeart className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800 mb-2">Stresshantering</h3>
+                      <p className="text-gray-700">
+                        Praktisera mindfulness, meditation eller djupandning dagligen. 
+                        Även korta pauser under dagen kan göra stor skillnad.
+                      </p>
                     </div>
                   </div>
-                )}
-
-                {activeTab === 'nextsteps' && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Nästa steg</h2>
-                    <div className="space-y-4">
-                      <div className="flex items-start space-x-3 p-4 bg-purple-50 rounded-xl">
-                        <div className="bg-purple-200 rounded-full p-2 flex-shrink-0">
-                          <span className="text-purple-600 font-bold">1</span>
-                        </div>
-                        <p className="text-gray-700">Börja med att implementera en rekommendation i taget för bästa resultat</p>
-                      </div>
-                      
-                      <div className="flex items-start space-x-3 p-4 bg-purple-50 rounded-xl">
-                        <div className="bg-purple-200 rounded-full p-2 flex-shrink-0">
-                          <span className="text-purple-600 font-bold">2</span>
-                        </div>
-                        <p className="text-gray-700">Håll en hälsodagbok för att spåra förändringar i dina symptom</p>
-                      </div>
-                      
-                      <div className="flex items-start space-x-3 p-4 bg-purple-50 rounded-xl">
-                        <div className="bg-purple-200 rounded-full p-2 flex-shrink-0">
-                          <span className="text-purple-600 font-bold">3</span>
-                        </div>
-                        <p className="text-gray-700">Konsultera en läkare om symptomen kvarstår eller förvärras</p>
-                      </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-purple-100 rounded-full p-3 flex-shrink-0">
+                      <FiHeart className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800 mb-2">Sömnkvalitet</h3>
+                      <p className="text-gray-700">
+                        Sikta på 7-9 timmars sömn per natt. Skapa en avslappnande kvällsrutin 
+                        och undvik skärmar minst en timme före sänggåendet.
+                      </p>
                     </div>
                   </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </motion.div>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
-        {/* Quote */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-center my-8"
-        >
-          <blockquote className="text-xl italic text-gray-600 mb-2">
-            "Mat som medicin för kropp och själ"
-          </blockquote>
-          <cite className="text-gray-500">- Ulrika Davidsson</cite>
-        </motion.div>
-
-        {/* Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-center"
-        >
+        {/* Action Buttons */}
+        <div className="mt-12 pb-12 flex flex-col sm:flex-row gap-4 justify-center">
           <button
-            onClick={onRestart}
-            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 mx-auto"
+            onClick={() => router.push('/dashboard/courses/functional-basics')}
+            className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg hover:shadow-xl inline-flex items-center justify-center space-x-2"
           >
-            <FiRefreshCw className="w-5 h-5" />
-            <span>Gör ny analys</span>
+            <FiBook className="w-5 h-5" />
+            <span>Lär dig mer om Functional Foods</span>
           </button>
-        </motion.div>
-
-        {/* Disclaimer */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0 }}
-          className="mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-200"
-        >
-          <p className="text-sm text-yellow-800">
-            <strong>Observera:</strong> Denna analys är baserad på dina symptombeskrivningar och ersätter inte professionell medicinsk rådgivning. 
-            Konsultera alltid läkare vid allvarliga eller ihållande symptom.
-          </p>
-        </motion.div>
+          
+          <button
+            onClick={() => router.push('/cart')}
+            className="bg-white text-purple-600 border-2 border-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-purple-50 transition-all duration-300 inline-flex items-center justify-center space-x-2"
+          >
+            <FiShoppingCart className="w-5 h-5" />
+            <span>Handla rekommenderade produkter</span>
+          </button>
+        </div>
       </div>
     </div>
   );

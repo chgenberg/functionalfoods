@@ -264,7 +264,7 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
   }
 
   if (showResults && analysisResult) {
-    return <SymptomResultScreen resultData={analysisResult} onRestart={handleRestart} />;
+    return <SymptomResultScreen analysisResult={analysisResult} onBack={handleRestart} />;
   }
 
   if (questions.length === 0) {

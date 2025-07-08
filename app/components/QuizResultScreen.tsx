@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield } from 'react-icons/fi';
+import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity } from 'react-icons/fi';
 import LoadingAnalysis from './LoadingAnalysis';
 
 interface QuizResultData {
@@ -48,10 +48,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('summary');
   const [healthScores, setHealthScores] = useState<HealthScores>({
-    energi: 5,
-    sömn: 5,
-    stress: 5,
-    kost: 5,
+    energi: 7,
+    sömn: 6,
+    stress: 6,
+    kost: 7,
     motion: 5
   });
 
@@ -79,7 +79,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     return typeof data === 'object' && 'symptoms' in data;
   };
 
-  const calculateHealthScores = (): HealthScores => {
+  const calculateHealthScores = (data: Record<number, string>): HealthScores => {
     const scores: HealthScores = {
       energi: 7,
       sömn: 6,
@@ -88,29 +88,26 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
       motion: 5
     };
 
-    // Only calculate from quiz answers if we have them
-    if (isQuizAnswers(quizData)) {
-      // Map quiz answers to scores
-      if (quizData[0] === 'high_energy') scores.energi = 8;
-      else if (quizData[0] === 'low_energy') scores.energi = 3;
-      else if (quizData[0] === 'afternoon_dip') scores.energi = 5;
+    // Map quiz answers to scores
+    if (data[0] === 'high_energy') scores.energi = 8;
+    else if (data[0] === 'low_energy') scores.energi = 3;
+    else if (data[0] === 'afternoon_dip') scores.energi = 5;
 
-      if (quizData[1] === 'excellent_sleep') scores.sömn = 9;
-      else if (quizData[1] === 'poor_sleep') scores.sömn = 3;
-      else if (quizData[1] === 'good_sleep') scores.sömn = 7;
+    if (data[1] === 'excellent_sleep') scores.sömn = 9;
+    else if (data[1] === 'poor_sleep') scores.sömn = 3;
+    else if (data[1] === 'good_sleep') scores.sömn = 7;
 
-      if (quizData[2] === 'low_stress') scores.stress = 8;
-      else if (quizData[2] === 'chronic_stress') scores.stress = 3;
-      else if (quizData[2] === 'moderate_stress') scores.stress = 5;
+    if (data[2] === 'low_stress') scores.stress = 8;
+    else if (data[2] === 'chronic_stress') scores.stress = 3;
+    else if (data[2] === 'moderate_stress') scores.stress = 5;
 
-      if (quizData[3] === 'very_active') scores.motion = 8;
-      else if (quizData[3] === 'sedentary') scores.motion = 3;
-      else if (quizData[3] === 'active') scores.motion = 6;
+    if (data[3] === 'very_active') scores.motion = 8;
+    else if (data[3] === 'sedentary') scores.motion = 3;
+    else if (data[3] === 'active') scores.motion = 6;
 
-      if (quizData[4] === 'excellent_diet') scores.kost = 8;
-      else if (quizData[4] === 'poor_diet') scores.kost = 3;
-      else if (quizData[4] === 'good_diet') scores.kost = 6;
-    }
+    if (data[4] === 'excellent_diet') scores.kost = 8;
+    else if (data[4] === 'poor_diet') scores.kost = 3;
+    else if (data[4] === 'good_diet') scores.kost = 6;
 
     return scores;
   };
@@ -125,6 +122,40 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
       // Show loading for at least 12 seconds for better UX
       const minLoadingTime = 12000;
       const startTime = Date.now();
+
+      // Define fallback data
+      const fallbackData = {
+        profile: "Baserat på dina svar verkar du ha en aktiv livsstil med goda vanor. Det finns dock några områden där vi kan optimera din hälsa ytterligare genom rätt functional foods.",
+        recommendations: [
+          {
+            title: "Magnesium för bättre återhämtning",
+            description: "Magnesium hjälper med muskelåterhämtning och sömnkvalitet",
+            howToUse: "Ta 200-400mg magnesiumcitrat 1 timme före sänggåendet"
+          },
+          {
+            title: "Omega-3 för hjärnhälsa",
+            description: "Omega-3 fettsyror stödjer kognitiv funktion och minskar inflammation",
+            howToUse: "Ät fet fisk 2-3 gånger per vecka eller ta fiskolja 1000mg dagligen"
+          },
+          {
+            title: "Probiotika för maghälsa",
+            description: "Probiotika stödjer en hälsosam tarmflora och immunförsvar",
+            howToUse: "Ta en högkvalitativ probiotika med minst 10 miljarder CFU dagligen"
+          }
+        ],
+        lifestyleAdvice: [
+          "Drick 2-3 liter vatten dagligen för optimal hydration",
+          "Inkludera 30 minuters rörelse i din dagliga rutin",
+          "Prioritera 7-9 timmars sömn varje natt",
+          "Ät en färgglad kost med mycket grönsaker och frukt"
+        ],
+        nextSteps: [
+          "Börja med att implementera en functional food i taget",
+          "Håll en hälsodagbok för att spåra förändringar",
+          "Konsultera en läkare innan du börjar med nya kosttillskott",
+          "Överväg att gå vår Functional Basics kurs för djupare kunskap"
+        ]
+      };
 
       try {
         const token = localStorage.getItem('token');
@@ -144,46 +175,22 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
         if (!response.ok) {
           console.warn(`Quiz results API failed: ${response.status}, using fallback data`);
-          // Use fallback data instead of throwing error
-          const fallbackData = {
-            profile: "Baserat på dina svar verkar du ha en aktiv livsstil med goda vanor. Det finns dock några områden där vi kan optimera din hälsa ytterligare genom rätt functional foods.",
-            recommendations: [
-              {
-                title: "Magnesium för bättre återhämtning",
-                description: "Magnesium hjälper med muskelåterhämtning och sömnkvalitet",
-                howToUse: "Ta 200-400mg magnesiumcitrat 1 timme före sänggåendet"
-              },
-              {
-                title: "Omega-3 för hjärnhälsa",
-                description: "Omega-3 fettsyror stödjer kognitiv funktion och minskar inflammation",
-                howToUse: "Ät fet fisk 2-3 gånger per vecka eller ta fiskolja 1000mg dagligen"
-              }
-            ],
-            lifestyleAdvice: [
-              "Drick 2-3 liter vatten dagligen för optimal hydration",
-              "Inkludera 30 minuters rörelse i din dagliga rutin",
-              "Prioritera 7-9 timmars sömn varje natt"
-            ],
-            nextSteps: [
-              "Börja med att implementera en functional food i taget",
-              "Håll en hälsodagbok för att spåra förändringar",
-              "Konsultera en läkare innan du börjar med nya kosttillskott"
-            ]
-          };
           setRecommendations(fallbackData);
         } else {
           try {
             const data = await response.json();
-            setRecommendations(data.results);
+            setRecommendations(data.results || fallbackData);
           } catch (parseError) {
             console.error('Error parsing quiz results:', parseError);
-            throw new Error('Invalid response format');
+            setRecommendations(fallbackData);
           }
         }
         
-        // Calculate health scores
-        const calculatedScores = calculateHealthScores();
-        setHealthScores(calculatedScores);
+        // Calculate health scores only if we have quiz answers
+        if (isQuizAnswers(quizData)) {
+          const calculatedScores = calculateHealthScores(quizData);
+          setHealthScores(calculatedScores);
+        }
         
         // Wait for minimum loading time
         const elapsedTime = Date.now() - startTime;
@@ -231,301 +238,321 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   const totalScore = calculateTotalScore();
   
   const getScoreMessage = (score: number) => {
-    if (score >= 80) return { text: "Utmärkt! Du är på rätt väg!", emoji: "🌟" };
-    if (score >= 60) return { text: "Bra! Det finns potential för förbättring", emoji: "💪" };
-    if (score >= 40) return { text: "Okej start! Låt oss förbättra din hälsa", emoji: "🌱" };
-    return { text: "Tid för förändring! Vi hjälper dig", emoji: "🚀" };
+    if (score >= 80) return { text: "Utmärkt! Du är på rätt väg!", emoji: "🌟", color: "text-green-600" };
+    if (score >= 60) return { text: "Bra! Det finns potential för förbättring", emoji: "💪", color: "text-blue-600" };
+    if (score >= 40) return { text: "Okej start! Låt oss förbättra din hälsa", emoji: "🌱", color: "text-yellow-600" };
+    return { text: "Tid för förändring! Vi hjälper dig", emoji: "🚀", color: "text-orange-600" };
   };
 
   const scoreMessage = getScoreMessage(totalScore);
 
   const tabs = [
-    { id: 'summary', label: 'Sammanfattning', icon: '📊' },
-    { id: 'recommendations', label: 'Rekommendationer', icon: '🍃' },
+    { id: 'summary', label: 'Översikt', icon: '📊' },
+    { id: 'recommendations', label: 'Functional Foods', icon: '🥗' },
     { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' },
     { id: 'nextsteps', label: 'Nästa steg', icon: '⭐' }
   ];
 
+  const healthAreas = [
+    { key: 'energi', label: 'Energi', icon: FiZap, color: 'from-yellow-400 to-orange-500' },
+    { key: 'sömn', label: 'Sömn', icon: FiShield, color: 'from-purple-400 to-purple-600' },
+    { key: 'stress', label: 'Stress', icon: FiHeart, color: 'from-pink-400 to-red-500' },
+    { key: 'kost', label: 'Kost', icon: FiTarget, color: 'from-green-400 to-green-600' },
+    { key: 'motion', label: 'Motion', icon: FiActivity, color: 'from-blue-400 to-blue-600' }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-16">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl font-bold mb-4"
+          >
+            Din Personliga Hälsoanalys
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-xl opacity-90"
+          >
+            Baserat på dina svar har vi skapat en skräddarsydd plan för dig
+          </motion.p>
+        </div>
+      </div>
+
+      {/* Score Section */}
+      <div className="max-w-6xl mx-auto px-4 -mt-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="bg-white rounded-3xl shadow-2xl p-8 mb-8"
         >
-          {/* Scrolling title container */}
-          <div className="relative overflow-hidden mb-4">
-            <motion.div
-              className="flex whitespace-nowrap"
-              animate={{
-                x: [0, -1920]
-              }}
-              transition={{
-                x: {
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear"
-                }
-              }}
-            >
-              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
-                DINA PERSONALISERADE REKOMMENDATIONER
-              </h1>
-              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
-                DINA PERSONALISERADE REKOMMENDATIONER
-              </h1>
-              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
-                DINA PERSONALISERADE REKOMMENDATIONER
-              </h1>
-            </motion.div>
-            
-            {/* Gradient fade edges */}
-            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-green-50 to-transparent pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-blue-50 to-transparent pointer-events-none" />
-          </div>
-          
-          <div className="bg-white rounded-3xl shadow-xl p-6 inline-block">
-            <div className="flex items-center justify-center space-x-4">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-green-600">{totalScore}</div>
-                <div className="text-sm text-gray-500">/100</div>
-              </div>
-              <div className="text-left">
-                <p className="text-lg font-medium text-gray-800">Din totala hälsopoäng</p>
-                <div className="flex items-center space-x-2 mt-1">
-                  <span className="text-2xl">{scoreMessage.emoji}</span>
-                  <span className="text-gray-600">{scoreMessage.text}</span>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Total Score - Larger */}
+            <div className="lg:col-span-1 text-center">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Din totala hälsopoäng</h2>
+              <div className="relative inline-block">
+                <svg className="w-48 h-48">
+                  <circle
+                    cx="96"
+                    cy="96"
+                    r="88"
+                    stroke="#e5e7eb"
+                    strokeWidth="12"
+                    fill="none"
+                  />
+                  <circle
+                    cx="96"
+                    cy="96"
+                    r="88"
+                    stroke="url(#scoreGradient)"
+                    strokeWidth="12"
+                    fill="none"
+                    strokeDasharray={`${(totalScore / 100) * 553} 553`}
+                    transform="rotate(-90 96 96)"
+                    className="transition-all duration-2000"
+                    strokeLinecap="round"
+                  />
+                  <defs>
+                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#22c55e" />
+                      <stop offset="100%" stopColor="#16a34a" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div>
+                    <div className="text-5xl font-bold text-gray-800">{totalScore}</div>
+                    <div className="text-lg text-gray-500">av 100</div>
+                  </div>
                 </div>
+              </div>
+              <div className="mt-4">
+                <div className="text-4xl mb-2">{scoreMessage.emoji}</div>
+                <p className={`text-lg font-medium ${scoreMessage.color}`}>{scoreMessage.text}</p>
+              </div>
+            </div>
+
+            {/* Health Areas - Circular indicators */}
+            <div className="lg:col-span-2">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-6">Dina hälsoområden</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {healthAreas.map((area, index) => {
+                  const Icon = area.icon;
+                  const score = healthScores[area.key as keyof HealthScores];
+                  const percentage = (score / 10) * 100;
+                  
+                  return (
+                    <motion.div
+                      key={area.key}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="text-center"
+                    >
+                      <div className="relative inline-block mb-3">
+                        <svg className="w-20 h-20">
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="36"
+                            stroke="#e5e7eb"
+                            strokeWidth="6"
+                            fill="none"
+                          />
+                                                     <circle
+                             cx="40"
+                             cy="40"
+                             r="36"
+                             stroke="#22c55e"
+                             strokeWidth="6"
+                             fill="none"
+                             strokeDasharray={`${(percentage / 100) * 226} 226`}
+                             transform="rotate(-90 40 40)"
+                             className="transition-all duration-1000"
+                             strokeLinecap="round"
+                           />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Icon className="w-6 h-6 text-gray-600" />
+                        </div>
+                      </div>
+                      <h4 className="font-medium text-gray-800 mb-1">{area.label}</h4>
+                      <div className="text-2xl font-bold text-gray-800">{score}<span className="text-sm text-gray-500">/10</span></div>
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </motion.div>
+      </div>
 
-        {/* Quick Wins */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl shadow-xl p-6 mb-8"
-        >
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-            <span className="text-2xl mr-2">🎯</span>
-            Snabba vinster för din hälsa:
-          </h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="bg-blue-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
-            >
-              <motion.div 
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="text-2xl mb-2"
-              >💧</motion.div>
-              <div className="text-sm font-medium text-blue-800">Drick 2L vatten dagligen</div>
-            </motion.div>
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="bg-green-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
-            >
-              <motion.div 
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                className="text-2xl mb-2"
-              >🚶</motion.div>
-              <div className="text-sm font-medium text-green-800">10 min promenad efter lunch</div>
-            </motion.div>
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="bg-purple-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
-            >
-              <motion.div 
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                className="text-2xl mb-2"
-              >😴</motion.div>
-              <div className="text-sm font-medium text-purple-800">Sov före 22:30</div>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white rounded-3xl shadow-xl overflow-hidden"
-        >
-          {/* Tab Headers */}
-          <div className="flex overflow-x-auto bg-gray-50 p-2">
+      {/* Content Tabs */}
+      <div className="max-w-6xl mx-auto px-4">
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-2xl shadow-lg p-2 mb-8">
+          <div className="flex flex-wrap">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap ${
+                className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 rounded-xl font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'bg-white text-green-600 shadow-md'
-                    : 'text-gray-600 hover:text-green-600'
+                    ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
                 }`}
               >
-                <span className="text-lg">{tab.icon}</span>
-                <span>{tab.label}</span>
+                <span className="text-xl">{tab.icon}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </div>
+        </div>
 
-          {/* Tab Content */}
-          <div className="p-6">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {activeTab === 'summary' && recommendations && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Din Hälsosammanfattning</h2>
-                    <div className="prose prose-green max-w-none">
-                      <p className="text-gray-700 text-lg leading-relaxed">{recommendations.profile}</p>
-                    </div>
-                    
-                    <div className="mt-8">
-                      <h3 className="text-xl font-semibold text-gray-800 mb-4">Dina poäng per område:</h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {Object.entries(healthScores).map(([key, score]) => {
-                          const icons: Record<string, string> = {
-                            energi: '⚡',
-                            sömn: '😴',
-                            stress: '🧘',
-                            kost: '🥗',
-                            motion: '🏃'
-                          };
-                          const labels: Record<string, string> = {
-                            energi: 'Energi',
-                            sömn: 'Sömn',
-                            stress: 'Stress',
-                            kost: 'Kost',
-                            motion: 'Motion'
-                          };
-                          
-                          return (
-                            <div key={key} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                              <div className="flex items-center space-x-2">
-                                <span className="text-xl">{icons[key]}</span>
-                                <span className="font-medium text-gray-700">{labels[key]}</span>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <span className="text-lg font-bold text-green-600">{score}</span>
-                                <span className="text-gray-500">/10</span>
-                              </div>
-                            </div>
-                          );
-                        })}
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {activeTab === 'summary' && recommendations && (
+              <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-6">Din hälsoprofil</h2>
+                <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                  {recommendations.profile}
+                </p>
+                
+                {/* Quick Actions */}
+                <div className="grid md:grid-cols-3 gap-6 mt-8">
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center cursor-pointer"
+                  >
+                    <div className="text-4xl mb-3">💧</div>
+                    <h4 className="font-semibold text-gray-800 mb-2">Hydration</h4>
+                    <p className="text-sm text-gray-600">Drick 2L vatten dagligen</p>
+                  </motion.div>
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center cursor-pointer"
+                  >
+                    <div className="text-4xl mb-3">🥗</div>
+                    <h4 className="font-semibold text-gray-800 mb-2">Nutrition</h4>
+                    <p className="text-sm text-gray-600">Ät varierat och färgglatt</p>
+                  </motion.div>
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center cursor-pointer"
+                  >
+                    <div className="text-4xl mb-3">😴</div>
+                    <h4 className="font-semibold text-gray-800 mb-2">Vila</h4>
+                    <p className="text-sm text-gray-600">7-9 timmars sömn</p>
+                  </motion.div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'recommendations' && recommendations && (
+              <div className="space-y-6">
+                {recommendations.recommendations.map((rec, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-2xl shadow-lg p-8"
+                  >
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-green-100 rounded-full p-4 flex-shrink-0">
+                        <FiCheckCircle className="w-8 h-8 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-3">{rec.title}</h3>
+                        <p className="text-gray-700 mb-6 text-lg">{rec.description}</p>
+                        <div className="bg-green-50 rounded-xl p-4">
+                          <h4 className="font-medium text-green-800 mb-2">Så här använder du det:</h4>
+                          <p className="text-green-700">{rec.howToUse}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
 
-                {activeTab === 'recommendations' && recommendations && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Functional Food Rekommendationer</h2>
-                    <div className="space-y-6">
-                      {recommendations.recommendations.map((rec, index) => (
-                        <div key={index} className="bg-green-50 rounded-2xl p-6 border border-green-100">
-                          <h3 className="text-xl font-semibold text-green-800 mb-3">{rec.title}</h3>
-                          <p className="text-gray-700 mb-4">{rec.description}</p>
-                          <div className="bg-white rounded-xl p-4 border border-green-200">
-                            <h4 className="font-medium text-green-700 mb-2">Hur du använder det:</h4>
-                            <p className="text-gray-600">{rec.howToUse}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+            {activeTab === 'lifestyle' && recommendations && (
+              <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-6">Livsstilsråd för optimal hälsa</h2>
+                <div className="space-y-6">
+                  {recommendations.lifestyleAdvice.map((advice, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
+                    >
+                      <FiHeart className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
+                      <p className="text-gray-700 text-lg">{advice}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                {activeTab === 'lifestyle' && recommendations && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Livsstilsråd</h2>
-                    <div className="space-y-4">
-                      {recommendations.lifestyleAdvice.map((advice, index) => (
-                        <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 rounded-xl">
-                          <div className="bg-blue-200 rounded-full p-2 flex-shrink-0">
-                            <FiHeart className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <p className="text-gray-700">{advice}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+            {activeTab === 'nextsteps' && recommendations && (
+              <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-6">Dina nästa steg</h2>
+                <div className="space-y-6">
+                  {recommendations.nextSteps.map((step, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
+                    >
+                      <div className="bg-purple-100 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-purple-600 font-semibold">{index + 1}</span>
+                      </div>
+                      <p className="text-gray-700 text-lg">{step}</p>
+                    </motion.div>
+                  ))}
+                </div>
 
-                {activeTab === 'nextsteps' && recommendations && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Nästa steg</h2>
-                    <div className="space-y-4">
-                      {recommendations.nextSteps.map((step, index) => (
-                        <div key={index} className="flex items-start space-x-3 p-4 bg-purple-50 rounded-xl">
-                          <div className="bg-purple-200 rounded-full p-2 flex-shrink-0">
-                            <span className="text-purple-600 font-bold">{index + 1}</span>
-                          </div>
-                          <p className="text-gray-700">{step}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </motion.div>
+                {/* CTA Button */}
+                <div className="mt-10 text-center">
+                  <button 
+                    onClick={() => window.location.href = '/dashboard/courses/functional-basics'}
+                    className="bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full font-semibold text-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl inline-flex items-center space-x-3 transform hover:scale-105"
+                  >
+                    <span>Kom igång med Functional Basics</span>
+                    <FiArrowRight className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
-        {/* Quote */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-center my-8"
-        >
-          <blockquote className="text-xl italic text-gray-600 mb-2">
-            "Let food be thy medicine and medicine be thy food"
-          </blockquote>
-          <cite className="text-gray-500">- Hippocrates</cite>
-        </motion.div>
-
-        {/* Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-center"
-        >
+        {/* Bottom Actions */}
+        <div className="mt-12 pb-12 text-center">
           <button
             onClick={onRestart}
-            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 mx-auto"
+            className="text-gray-600 hover:text-gray-800 font-medium inline-flex items-center space-x-2 transition-colors text-lg"
           >
             <FiRefreshCw className="w-5 h-5" />
             <span>Gör om testet</span>
           </button>
-        </motion.div>
-
-        {/* Disclaimer */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0 }}
-          className="mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-200"
-        >
-          <p className="text-sm text-yellow-800">
-            <strong>Observera:</strong> Dessa rekommendationer är generella råd baserade på dina 
-            quiz-svar och ersätter inte professionell medicinsk rådgivning. 
-            Konsultera alltid läkare innan du gör större förändringar i din livsstil eller börjar med nya tillskott.
-          </p>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
