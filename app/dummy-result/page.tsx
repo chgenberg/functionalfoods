@@ -40,13 +40,40 @@ export default function DummyResultPage() {
   }
 
   if (!analysisData) {
+    // Add default test data for demonstration
+    const defaultData: AnalysisResult = {
+      summary: "Du verkar vara en person med hög energi och utmärkt sömnkvalitet, vilket är väldigt positivt. Din stressnivå är måttlig, och du är något aktiv, vilket indikerar att du tar hand om din fysiska hälsa. Din kost är blandad och du har ibland matsmältningsproblem, men din immunitet är stark. Du verkar ha utmärkt fokus men upplever ibland energiförluster. Du är intresserad av att stärka ditt immunförsvar ytterligare.",
+      recommendations: [
+        "Inkludera mer probiotika i din kost för bättre matsmältning",
+        "Lägg till omega-3 rika livsmedel som lax och valnötter",
+        "Öka intaget av antioxidantrika bär och grönsaker",
+        "Överväg att lägga till magnesium för bättre sömnkvalitet"
+      ],
+      functionalFoods: [
+        "Fermenterade livsmedel (kimchi, kefir)",
+        "Fet fisk (lax, makrill, sardiner)",
+        "Nötter och frön (valnötter, chiafrön)",
+        "Mörkgröna bladgrönsaker",
+        "Bär (blåbär, hallon, björnbär)"
+      ],
+      lifestyleChanges: [
+        "Implementera regelbundna måltidstider för bättre matsmältning",
+        "Lägg till 10 minuters meditation för stresshantering",
+        "Öka vattenintaget till 2-3 liter per dag",
+        "Inkludera mer varierad motion i din rutin"
+      ]
+    };
+    
+    // Use default data instead of showing error
+    setAnalysisData(defaultData);
+  }
+
+  // Early return if still no data (shouldn't happen now)
+  if (!analysisData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600 mb-4">Ingen analysdata hittades.</p>
-          <Link href="/" className="text-green-500 hover:text-green-600 underline">
-            Gå tillbaka till startsidan
-          </Link>
+          <p className="text-gray-600 mb-4">Laddar...</p>
         </div>
       </div>
     );
