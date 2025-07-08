@@ -1,115 +1,175 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { FiBookOpen, FiZap, FiCheckCircle, FiSearch, FiFilter, FiArrowRight } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { 
+  FiBook, FiCalendar, FiUsers, FiAward, FiChevronRight,
+  FiClock, FiCheckCircle, FiLock, FiStar
+} from 'react-icons/fi';
+import { GiFruitBowl, GiHealthNormal } from 'react-icons/gi';
 
-const allCourses = [
-  {
-    id: 1,
-    title: 'Functional Flow',
-    category: 'Avancerad Nutrition',
-    progress: 65,
-    image: '/functional_flow.png',
-    description: 'En djupdykning i anti-inflammatorisk kost och hur du optimerar din hälsa på cellnivå.',
-    totalModules: 8,
-    completedModules: 5,
-  },
-  {
-    id: 2,
-    title: 'Functional Basics',
-    category: 'Grundläggande Hälsa',
-    progress: 100,
-    image: '/functional_basics.png',
-    description: 'Lär dig grunderna i funktionell kost och bygg en stabil grund för en hälsosammare livsstil.',
-    totalModules: 6,
-    completedModules: 6,
-  },
-];
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  modules: number;
+  progress: number;
+  status: 'active' | 'completed' | 'locked';
+  icon: React.ElementType;
+  color: string;
+  link: string;
+}
 
-const CourseCard = ({ course }: { course: typeof allCourses[0] }) => {
-  const isCompleted = course.progress === 100;
+export default function CoursesPage() {
+  const courses: Course[] = [
+    {
+      id: 'functional-basics',
+      title: 'Functional Basics',
+      description: '6 veckors program för optimal hälsa',
+      duration: '6 veckor',
+      modules: 6,
+      progress: 33,
+      status: 'active',
+      icon: GiFruitBowl,
+      color: 'from-green-500 to-teal-600',
+      link: '/dashboard/courses/functional-basics'
+    },
+    {
+      id: 'functional-flow',
+      title: 'Functional Flow',
+      description: 'Avancerad kurs i functional foods',
+      duration: '8 veckor',
+      modules: 8,
+      progress: 0,
+      status: 'locked',
+      icon: GiHealthNormal,
+      color: 'from-purple-500 to-pink-600',
+      link: '#'
+    }
+  ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden group">
-      <div className="relative h-48 w-full">
-        <Image src={course.image} alt={course.title} layout="fill" objectFit="cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-        <div className="absolute top-4 right-4 bg-primary/80 text-white text-xs font-semibold px-3 py-1 rounded-full">{course.category}</div>
-      </div>
-      <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h3>
-        <p className="text-gray-600 text-sm mb-4 flex-grow">{course.description}</p>
-        
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
-            <span>Framsteg</span>
-            <span className="font-semibold">{course.progress}%</span>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-purple-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Mina kurser</h1>
+          <p className="text-xl text-gray-600">
+            Välkommen till dina kurser inom Functional Foods
+          </p>
+        </div>
+
+        {/* Courses Grid */}
+        <div className="grid md:grid-cols-2 gap-8">
+          {courses.map((course, index) => (
+            <motion.div
+              key={course.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={`relative ${course.status === 'locked' ? 'opacity-75' : ''}`}
+            >
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                {/* Course Header */}
+                <div className={`bg-gradient-to-r ${course.color} p-6 text-white`}>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <course.icon className="w-12 h-12 mb-4" />
+                      <h2 className="text-2xl font-bold mb-2">{course.title}</h2>
+                      <p className="text-white/90">{course.description}</p>
+                    </div>
+                    {course.status === 'active' && (
+                      <div className="bg-white/20 rounded-full px-3 py-1 text-sm">
+                        Aktiv
+                      </div>
+                    )}
+                    {course.status === 'completed' && (
+                      <div className="bg-green-500 rounded-full px-3 py-1 text-sm">
+                        Slutförd
+                      </div>
+                    )}
+                    {course.status === 'locked' && (
+                      <FiLock className="w-6 h-6" />
+                    )}
+                  </div>
+                </div>
+
+                {/* Course Content */}
+                <div className="p-6">
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-center space-x-2">
+                      <FiClock className="w-5 h-5 text-gray-400" />
+                      <span className="text-gray-600">{course.duration}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <FiBook className="w-5 h-5 text-gray-400" />
+                      <span className="text-gray-600">{course.modules} moduler</span>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  {course.status !== 'locked' && (
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                        <span>Progress</span>
+                        <span>{course.progress}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${course.progress}%` }}
+                          transition={{ duration: 1, delay: 0.5 }}
+                          className={`h-full bg-gradient-to-r ${course.color}`}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Button */}
+                  {course.status === 'locked' ? (
+                    <button
+                      disabled
+                      className="w-full py-3 px-4 bg-gray-100 text-gray-400 rounded-lg font-medium cursor-not-allowed"
+                    >
+                      Låst
+                    </button>
+                  ) : (
+                    <Link
+                      href={course.link}
+                      className={`w-full py-3 px-4 bg-gradient-to-r ${course.color} text-white rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center space-x-2`}
+                    >
+                      <span>
+                        {course.status === 'active' ? 'Fortsätt' : 'Se certifikat'}
+                      </span>
+                      <FiChevronRight className="w-5 h-5" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Additional Info */}
+        <div className="mt-12 bg-white rounded-2xl shadow-lg p-8">
+          <div className="flex items-start space-x-4">
+            <div className="bg-purple-100 rounded-full p-3">
+              <FiStar className="w-6 h-6 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Fler kurser kommer snart!
+              </h3>
+              <p className="text-gray-600">
+                Vi arbetar på att ta fram fler spännande kurser inom functional foods. 
+                Håll utkik efter uppdateringar och nya möjligheter att fördjupa din kunskap.
+              </p>
+            </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className={`h-2.5 rounded-full bg-gradient-to-r ${isCompleted ? 'from-green-400 to-green-600' : 'from-primary to-accent'}`}
-              style={{ width: `${course.progress}%` }}
-            ></div>
-          </div>
-        </div>
-
-        <Link 
-          href={`/dashboard/courses/${course.id}`} 
-          className="mt-auto w-full text-center bg-gray-100 group-hover:bg-primary group-hover:text-white transition-colors duration-300 text-primary font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2"
-        >
-          {isCompleted ? <><FiCheckCircle /> Se resultat</> : <><FiZap /> Fortsätt kurs</>}
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-
-export default function MyCoursesPage() {
-  return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mina kurser</h1>
-          <p className="text-gray-600 mt-1">Din resa mot en bättre hälsa fortsätter här.</p>
-        </div>
-        <Link href="/utbildning" className="btn-primary inline-flex items-center gap-2">
-            <FiBookOpen />
-            <span>Hitta nya kurser</span>
-        </Link>
-      </div>
-      
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-grow">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input type="text" placeholder="Sök bland dina kurser..." className="input-style pl-12" />
-        </div>
-        <div className="relative">
-          <FiFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <select className="input-style appearance-none pl-12 pr-10">
-            <option>Alla</option>
-            <option>Pågående</option>
-            <option>Avslutade</option>
-            <option>Ej påbörjade</option>
-          </select>
         </div>
       </div>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {allCourses.map(course => (
-          <CourseCard key={course.id} course={course} />
-        ))}
-      </div>
-       <style jsx global>{`
-        .input-style {
-          @apply w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors;
-        }
-         .btn-primary {
-           @apply bg-primary hover:bg-accent text-white font-semibold px-5 py-3 rounded-lg transition-colors shadow-sm hover:shadow-md;
-        }
-      `}</style>
     </div>
   );
 } 

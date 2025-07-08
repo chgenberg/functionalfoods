@@ -222,35 +222,7 @@ Vill du följa vad som händer kring Functional Foods och ta del av tips, recept
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Functional Basics</h1>
-              <p className="text-gray-600 mt-1">6 veckors program för optimal hälsa</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-500">Din progress</p>
-                <div className="flex items-center gap-2">
-                  <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(completedSections.length / knowledgeModules.length) * 100}%` }}
-                      className="h-full bg-gradient-to-r from-primary to-accent"
-                    />
-                  </div>
-                  <span className="text-sm font-medium text-gray-700">
-                    {Math.round((completedSections.length / knowledgeModules.length) * 100)}%
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen">{/* Removed bg gradient as layout handles it */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

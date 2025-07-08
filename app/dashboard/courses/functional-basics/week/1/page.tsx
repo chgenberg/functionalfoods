@@ -91,34 +91,15 @@ export default function Week1Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-6">
-            <Link href="/dashboard/courses/functional-basics" 
-                  className="inline-flex items-center text-gray-600 hover:text-primary transition-colors mb-4">
-              <FiArrowLeft className="mr-2" />
-              Tillbaka till kursöversikt
-            </Link>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Vecka 1: Introduktion till Functional Foods</h1>
-                <p className="text-gray-600 mt-2">Lär dig grunderna och kom igång med din hälsoresa</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="bg-green-100 rounded-full p-3">
-                  <FaLeaf className="w-8 h-8 text-green-600" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div>
+      {/* Page Title */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Vecka 1: Introduktion till Functional Foods</h1>
+        <p className="text-gray-600 mt-2">Lär dig grunderna och kom igång med din hälsoresa</p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="mb-8">
         <div className="bg-white rounded-2xl shadow-lg p-2">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {tabs.map((tab) => (
