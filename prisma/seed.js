@@ -4,6 +4,64 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log('Seeding database...');
+
+  // Create forum categories
+  const categories = [
+    {
+      name: 'Recept & Kost',
+      description: 'Dela dina favoritrecept och diskutera functional foods',
+      color: 'green',
+      icon: 'utensils',
+      order: 1
+    },
+    {
+      name: 'Kurser & Utbildning',
+      description: 'Diskussioner om kurserna och dina lärdomar',
+      color: 'blue',
+      icon: 'book',
+      order: 2
+    },
+    {
+      name: 'Hälsa & Välmående',
+      description: 'Allmän hälsodiskussion och tips',
+      color: 'purple',
+      icon: 'heart',
+      order: 3
+    },
+    {
+      name: 'Kosttillskott',
+      description: 'Rekommendationer och erfarenheter av kosttillskott',
+      color: 'orange',
+      icon: 'pill',
+      order: 4
+    },
+    {
+      name: 'Träning & Motion',
+      description: 'Träningsrutiner och fysisk aktivitet',
+      color: 'red',
+      icon: 'activity',
+      order: 5
+    },
+    {
+      name: 'Allmänt',
+      description: 'Övriga diskussioner och community-chat',
+      color: 'gray',
+      icon: 'message-circle',
+      order: 6
+    }
+  ];
+
+  for (const category of categories) {
+    await prisma.forumCategory.upsert({
+      where: { name: category.name },
+      update: {},
+      create: category
+    });
+  }
+
+  console.log('Forum categories seeded!');
+
   // Skapa admin-användare
   const adminPassword = await bcrypt.hash('admin123', 10);
   const admin = await prisma.user.upsert({

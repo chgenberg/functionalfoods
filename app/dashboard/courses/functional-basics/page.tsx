@@ -204,6 +204,7 @@ export default function FunctionalBasicsPage() {
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [showNewGoalModal, setShowNewGoalModal] = useState(false);
   const [newGoalWeek, setNewGoalWeek] = useState<number>(1);
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
   // Gruppera mål per vecka
   const goalsByWeek = goals.reduce((acc, goal) => {
@@ -301,10 +302,7 @@ export default function FunctionalBasicsPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative group cursor-pointer"
-            onClick={() => {
-              // Here you can add video player logic
-              alert('Video kommer snart!');
-            }}
+            onClick={() => setShowVideoModal(true)}
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl transform transition-transform duration-300 group-hover:scale-105">
               <img
@@ -705,6 +703,46 @@ export default function FunctionalBasicsPage() {
                 </button>
               </div>
             </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Video Modal */}
+      {showVideoModal && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-black rounded-2xl overflow-hidden max-w-4xl w-full max-h-[80vh] relative"
+          >
+            <button
+              onClick={() => setShowVideoModal(false)}
+              className="absolute top-4 right-4 z-10 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            {/* Video Player */}
+            <div className="aspect-video">
+              <iframe
+                src="https://player.vimeo.com/video/123456789?autoplay=1&title=0&byline=0&portrait=0"
+                className="w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+                title="Functional Basics Introduktion"
+              ></iframe>
+            </div>
+            
+            <div className="p-6 bg-gray-900 text-white">
+              <h3 className="text-xl font-bold mb-2">Välkommen till Functional Basics</h3>
+              <p className="text-gray-300">
+                I denna introduktionsvideo får du en överblick av kursen och vad du kan förvänta dig. 
+                Ulrika guidar dig genom de grundläggande principerna för functional foods.
+              </p>
+            </div>
           </motion.div>
         </div>
       )}

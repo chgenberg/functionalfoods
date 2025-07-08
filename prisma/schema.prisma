@@ -28,6 +28,9 @@ model User {
   purchases     Purchase[]
   orders        Order[]
   goals         Goal[]
+  forumThreads  ForumThread[]
+  forumReplies  ForumReply[]
+  forumLikes    ForumLike[]
 }
 
 model Course {
@@ -229,6 +232,74 @@ model Goal {
   @@index([userId])
   @@index([status])
   @@index([weekNumber])
+}
+
+model ForumCategory {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String?
+  color       String      @default("gray") // For UI theming
+  icon        String?     // Icon name
+  order       Int         @default(0) // For sorting
+  isActive    Boolean     @default(true)
+  threads     ForumThread[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model ForumThread {
+  id          String        @id @default(uuid())
+  title       String
+  content     String
+  isSticky    Boolean       @default(false) // Sticky threads appear at top
+  isLocked    Boolean       @default(false) // Locked threads can't receive replies
+  views       Int           @default(0)
+  authorId    String
+  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    ForumCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  replies     ForumReply[]
+  likes       ForumLike[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model ForumReply {
+  id        String      @id @default(uuid())
+  content   String
+  authorId  String
+  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  threadId  String
+  thread    ForumThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  parentId  String?     // For nested replies
+  parent    ForumReply? @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: Cascade)
+  children  ForumReply[] @relation("ReplyToReply")
+  likes     ForumLike[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  
+  @@index([threadId])
+  @@index([authorId])
+  @@index([parentId])
+}
+
+model ForumLike {
+  id       String      @id @default(uuid())
+  userId   String
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  threadId String?
+  thread   ForumThread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  replyId  String?
+  reply    ForumReply? @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  
+  @@unique([userId, threadId])
+  @@unique([userId, replyId])
+  @@index([userId])
 }
 
 enum OrderStatus {
