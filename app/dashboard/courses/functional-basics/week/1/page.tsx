@@ -45,8 +45,7 @@ export default function Week1Page() {
     { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
     { id: 'goals', label: 'Målsättning', icon: FiTarget, color: 'from-orange-500 to-red-600' },
     { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-purple-500 to-pink-600' },
-    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' },
-    { id: 'knowledge', label: 'Kunskap', icon: FiBook, color: 'from-indigo-500 to-purple-600' }
+    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
 
   const mealPlan: Record<string, DayMeals> = {
@@ -101,7 +100,7 @@ export default function Week1Page() {
       {/* Tab Navigation */}
       <div className="mb-8">
         <div className="bg-white rounded-2xl shadow-lg p-2">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -257,18 +256,7 @@ export default function Week1Page() {
             </motion.div>
           )}
 
-          {/* Knowledge Tab */}
-          {activeTab === 'knowledge' && (
-            <motion.div
-              key="knowledge"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
-            >
-              <KnowledgeSection />
-            </motion.div>
-          )}
+
         </AnimatePresence>
       </div>
 

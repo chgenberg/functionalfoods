@@ -35,6 +35,11 @@ export default function FunctionalBasicsLayout({
       icon: FiCalendar,
     },
     {
+      label: 'Vecka 3',
+      href: '/dashboard/courses/functional-basics/week/3',
+      icon: FiCalendar,
+    },
+    {
       label: 'Kunskapsmaterial',
       href: '/dashboard/courses/functional-basics/material',
       icon: FiBook,

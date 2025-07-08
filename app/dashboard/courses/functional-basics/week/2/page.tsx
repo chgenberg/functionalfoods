@@ -14,7 +14,7 @@ import {
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
 import Image from 'next/image';
-import { MealPlanSection, ShoppingListSection, KnowledgeSection } from './components';
+import { MealPlanSection, ShoppingListSection } from './components';
 
 interface TabProps {
   id: string;
@@ -30,8 +30,7 @@ export default function Week2Page() {
   const tabs: TabProps[] = [
     { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
     { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-purple-500 to-pink-600' },
-    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' },
-    { id: 'knowledge', label: 'Kunskap', icon: FiBook, color: 'from-indigo-500 to-purple-600' }
+    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
 
   const mealPlan = {
@@ -240,19 +239,25 @@ export default function Week2Page() {
             </motion.div>
           )}
 
-          {/* Knowledge Tab */}
-          {activeTab === 'knowledge' && (
-            <motion.div
-              key="knowledge"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
-            >
-              <KnowledgeSection />
-            </motion.div>
-          )}
+
         </AnimatePresence>
+      </div>
+
+      {/* Next Week Button */}
+      <div className="pb-16">
+        <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-8 text-white text-center">
+          <h3 className="text-2xl font-bold mb-4">Redo för nästa steg?</h3>
+          <p className="text-lg mb-6">
+            När du känner dig redo, fortsätt till vecka 3 för att utforska flexibilitet och periodisk fasta.
+          </p>
+          <Link
+            href="/dashboard/courses/functional-basics/week/3"
+            className="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          >
+            Fortsätt till vecka 3
+            <FiChevronRight className="ml-2" />
+          </Link>
+        </div>
       </div>
     </div>
   );

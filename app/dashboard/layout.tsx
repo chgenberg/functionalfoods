@@ -75,6 +75,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  
+  // Check if we're in the functional-basics course
+  const isInFunctionalBasics = pathname?.includes('/dashboard/courses/functional-basics');
+
+  // If in Functional Basics, just render children without the sidebar
+  if (isInFunctionalBasics) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50/50">
