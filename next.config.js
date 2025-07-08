@@ -37,6 +37,15 @@ const nextConfig = {
       },
     ],
   },
+
+  async rewrites() {
+    return [
+      {
+        source: '/scraped_content_basic/:path*',
+        destination: '/api/scraped-content/:path*',
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig

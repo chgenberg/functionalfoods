@@ -2,572 +2,420 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  FiChevronRight, FiBook, FiVideo, FiFileText, FiUsers, 
-  FiAward, FiCheckCircle, FiLock, FiPlayCircle, FiExternalLink,
-  FiGrid, FiList, FiCalendar, FiShoppingCart
+  FiCalendar, FiCheckCircle, FiClock, FiDownload,
+  FiAward, FiTrendingUp, FiBook, FiUsers,
+  FiPlay, FiLock, FiUnlock, FiStar
 } from 'react-icons/fi';
-import { GiFruitBowl, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
-import { FaInstagram } from 'react-icons/fa';
+import { 
+  GiFruitBowl, GiMeal, GiHealthNormal, GiMeat
+} from 'react-icons/gi';
 
-interface Section {
-  id: string;
-  title: string;
-  description: string;
-  type: 'onboarding' | 'content' | 'knowledge' | 'social' | 'offboarding';
-  videoUrl?: string;
-  links?: { title: string; url: string; icon?: React.ElementType }[];
-  completed?: boolean;
-}
-
-interface WeeklyContent {
+interface WeekProgress {
   week: number;
   title: string;
   description: string;
-  recipes: number;
-  shoppingList: boolean;
-  mealPlan: boolean;
-  locked: boolean;
+  status: 'completed' | 'current' | 'locked';
+  completedLessons: number;
+  totalLessons: number;
+  icon: React.ElementType;
 }
 
-export default function FunctionalBasicsCoursePage() {
-  const [activeSection, setActiveSection] = useState<string>('onboarding');
+export default function FunctionalBasicsOverview() {
+  const [completedWeeks, setCompletedWeeks] = useState<number[]>([]);
   const [currentWeek, setCurrentWeek] = useState(1);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-  const sections: Section[] = [
-    {
-      id: 'onboarding',
-      title: 'Välkommen till Functional Basics',
-      type: 'onboarding',
-      description: `Nu har du en spännande resa framför dig under dessa 6 veckor med näringsrika och hälsobringade recept och du kommer att få lära dig grunderna i Functional Foods. Du får praktiska kostscheman att följa, recept för alla måltider och inköpslistor för varje vecka.
-
-Efter dessa 6 veckor har du dels lärt dig mycket om matlagning och hur du får in alla näringsämnen i din kost samt fördelarna som kommer: ökad näringsnivå, förbättrad matsmältning, bättre hjärthälsa, minskad inflammation i kroppen, ökade energinivåer och ett bättre immunförsvar.
-
-Du kommer att tacka dig själv, även om det kan finnas dagar när det känns tufft. Mitt bästa tips är planering! Förbered dig för veckan och laga gärna upp flera maträtter på samma gång så att du är väl förberedd.
-
-Varmt välkommen till framtidens kost för en god hälsa och ett friskare liv!
-
-/Ulrika`,
-      videoUrl: 'https://player.vimeo.com/video/1056709544?h=9265a3d6ae&badge=0&autopause=0&player_id=0&app_id=58479',
-      links: [
-        { 
-          title: 'Läs mer om vad Functional Foods är', 
-          url: '/dashboard/courses/functional-basics/material/vad-ar-functional-foods',
-          icon: FiBook
-        },
-        { 
-          title: 'Frågor och svar om kursen', 
-          url: '/dashboard/courses/functional-basics/material/fragor-och-svars',
-          icon: FiFileText
-        }
-      ]
-    },
-    {
-      id: 'knowledge',
-      title: 'Kunskapsdokument och artiklar',
-      type: 'knowledge',
-      description: `För att göra det enkelt för dig finns det en guide med Functional Foods råvaror med livsmedel som verkligen gör nytta i din kropp och du lär dig vad råvarorna ger för hälsoeffekt.
-
-Du kommer att använda råvaror från de 10 livsmedelskategorierna som ingår i den så kallade mervärdesmaten i nya recept som jag har skapat som är rika på antioxidanter, probiotika, prebiotika, fibrer, omega-3, vitaminer och mineraler. Jag har också samlat en del av de studier som jag har inspirerats av för den här kursen i en artikel.
-
-Jag uppmuntrar er att läsa igenom artiklarna och kunskapsdokumenten som finns i kursen.`,
-      links: [
-        { 
-          title: 'Topplista med Functional Foods', 
-          url: '/dashboard/courses/functional-basics/material/functional-foods-topplista',
-          icon: GiFruitBowl
-        },
-        { 
-          title: 'Studie - Functional foods for health', 
-          url: '/dashboard/courses/functional-basics/material/studie-om-functional-foods',
-          icon: FiFileText
-        }
-      ]
-    },
-    {
-      id: 'social',
-      title: 'COACHNING OCH FUNCTIONAL FOODS PÅ SOCIALA MEDIER',
-      type: 'social',
-      description: `För att du ska få en så värdefull och lärorik tid i din kurs som möjligt så erbjuder vi coachning via vår plattform Mighty. När du laddar ned appen Mighty Network kan du hålla kontakt med oss coacher som finns tillgängliga för att svara på dina frågor. Följ den länk som du fick i ditt bekräftelsemejl när du köpte kursen för att gå med i vår community via appen Mighty Network.
-
-Du kan alltid kontakta oss via vår kundsupport: info@functionalfoods.se
-
-Vill du följa vad som händer kring Functional Foods och ta del av tips, recept, nyheter, erbjudanden och vår härliga gemenskap så häng med oss här -->`,
-      links: [
-        { 
-          title: 'Mighty Networks', 
-          url: 'https://functional-foods-with-ulrika.mn.co/share/HkMuGsHR6elHab44?utm_source=manual',
-          icon: FiUsers
-        },
-        { 
-          title: 'Functional Foods på Instagram', 
-          url: 'https://www.instagram.com/functionalfoods.se/?hl=sv',
-          icon: FaInstagram
-        }
-      ]
+  useEffect(() => {
+    // Load progress from localStorage
+    const saved = localStorage.getItem('functionalBasicsProgress');
+    if (saved) {
+      const progress = JSON.parse(saved);
+      setCompletedWeeks(progress.completedWeeks || []);
+      setCurrentWeek(progress.currentWeek || 1);
     }
-  ];
+  }, []);
 
-  const weeklyContent: WeeklyContent[] = [
+  const weekProgress: WeekProgress[] = [
     {
       week: 1,
-      title: 'Introduktion till Functional Foods',
-      description: 'Lär dig grunderna och kom igång med din hälsoresa',
-      recipes: 21,
-      shoppingList: true,
-      mealPlan: true,
-      locked: false
+      title: 'Introduktion',
+      description: 'Lär dig grunderna i Functional Foods',
+      status: completedWeeks.includes(1) ? 'completed' : currentWeek === 1 ? 'current' : 'locked',
+      completedLessons: completedWeeks.includes(1) ? 7 : currentWeek === 1 ? 3 : 0,
+      totalLessons: 7,
+      icon: GiFruitBowl
     },
     {
       week: 2,
-      title: 'Bygga hälsosamma vanor',
-      description: 'Fördjupa din kunskap och etablera rutiner',
-      recipes: 21,
-      shoppingList: true,
-      mealPlan: true,
-      locked: false
+      title: 'Bygga vanor',
+      description: 'Etablera hälsosamma matvanor',
+      status: completedWeeks.includes(2) ? 'completed' : currentWeek === 2 ? 'current' : 'locked',
+      completedLessons: completedWeeks.includes(2) ? 7 : currentWeek === 2 ? 2 : 0,
+      totalLessons: 7,
+      icon: GiMeal
     },
     {
       week: 3,
-      title: 'Flexibilitet & Fasta',
-      description: 'Utforska flexibilitet och periodisk fasta',
-      recipes: 21,
-      shoppingList: true,
-      mealPlan: true,
-      locked: false
+      title: 'Fördjupning',
+      description: 'Utforska avancerade koncept',
+      status: completedWeeks.includes(3) ? 'completed' : currentWeek === 3 ? 'current' : 'locked',
+      completedLessons: completedWeeks.includes(3) ? 7 : currentWeek === 3 ? 1 : 0,
+      totalLessons: 7,
+      icon: GiHealthNormal
     },
     {
       week: 4,
-      title: 'Stärk immunförsvaret',
-      description: 'Mat som boostar ditt immunförsvar',
-      recipes: 21,
-      shoppingList: true,
-      mealPlan: true,
-      locked: true
+      title: 'Experimentera',
+      description: 'Nya smaker och kombinationer',
+      status: completedWeeks.includes(4) ? 'completed' : currentWeek === 4 ? 'current' : 'locked',
+      completedLessons: completedWeeks.includes(4) ? 7 : currentWeek === 4 ? 0 : 0,
+      totalLessons: 7,
+      icon: GiMeat
     },
     {
       week: 5,
-      title: 'Antiinflammatorisk kost',
-      description: 'Minska inflammation med rätt mat',
-      recipes: 21,
-      shoppingList: true,
-      mealPlan: true,
-      locked: true
+      title: 'Flexibilitet',
+      description: 'Anpassa efter dina behov',
+      status: completedWeeks.includes(5) ? 'completed' : currentWeek === 5 ? 'current' : 'locked',
+      completedLessons: 0,
+      totalLessons: 7,
+      icon: FiStar
     },
     {
       week: 6,
-      title: 'Livslång hälsa',
-      description: 'Sammanfattning och vägen framåt',
-      recipes: 21,
-      shoppingList: true,
-      mealPlan: true,
-      locked: true
+      title: 'Mastery',
+      description: 'Bli din egen hälsoexpert',
+      status: 'locked',
+      completedLessons: 0,
+      totalLessons: 7,
+      icon: FiAward
     }
   ];
 
-  const knowledgeModules = [
-    {
-      id: 'vad-ar-functional-foods',
-      title: 'Vad är Functional Foods?',
-      description: 'Grundläggande introduktion till funktionella livsmedel',
-      icon: GiFruitBowl,
-      completed: completedSections.includes('vad-ar-functional-foods')
-    },
-    {
-      id: 'fordelarna-med-functional-foods',
-      title: 'Fördelarna med Functional Foods',
-      description: 'Upptäck alla hälsofördelar',
-      icon: GiHealthNormal,
-      completed: completedSections.includes('fordelarna-med-functional-foods')
-    },
-    {
-      id: 'dags-att-komma-igang',
-      title: 'Dags att komma igång',
-      description: 'Praktiska tips för att starta din resa',
-      icon: FiPlayCircle,
-      completed: completedSections.includes('dags-att-komma-igang')
-    },
-    {
-      id: 'att-valja-ratt-proteiner',
-      title: 'Att välja rätt proteiner',
-      description: 'Guide till proteinrika livsmedel',
-      icon: GiCookingPot,
-      completed: completedSections.includes('att-valja-ratt-proteiner')
-    },
-    {
-      id: 'att-valja-ratt-kolhydrater',
-      title: 'Att välja rätt kolhydrater',
-      description: 'Smarta kolhydrater för stabil energi',
-      icon: FiGrid,
-      completed: completedSections.includes('att-valja-ratt-kolhydrater')
-    },
-    {
-      id: 'functional-foods-topplista',
-      title: 'Functional Foods Topplista',
-      description: 'De 10 viktigaste kategorierna',
-      icon: FiAward,
-      completed: completedSections.includes('functional-foods-topplista')
-    }
-  ];
+  const totalProgress = Math.round(
+    (weekProgress.reduce((acc, week) => acc + week.completedLessons, 0) / 
+    weekProgress.reduce((acc, week) => acc + week.totalLessons, 0)) * 100
+  );
 
-  const handleSectionComplete = (sectionId: string) => {
-    setCompletedSections(prev => 
-      prev.includes(sectionId) 
-        ? prev.filter(id => id !== sectionId)
-        : [...prev, sectionId]
-    );
+  const handlePlayVideo = () => {
+    setIsVideoPlaying(true);
   };
 
   return (
-    <div className="min-h-screen">{/* Removed bg gradient as layout handles it */}
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sidebar Navigation */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Kursinnehåll</h2>
-              <nav className="space-y-2">
-                {sections.map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => setActiveSection(section.id)}
-                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center justify-between group ${
-                      activeSection === section.id
-                        ? 'bg-gradient-to-r from-primary to-accent text-white'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
-                  >
-                    <span className="font-medium">{section.title}</span>
-                    <FiChevronRight className={`w-5 h-5 transition-transform ${
-                      activeSection === section.id ? 'rotate-90' : 'group-hover:translate-x-1'
-                    }`} />
-                  </button>
-                ))}
-                
-                <div className="border-t pt-4 mt-4">
-                  <button
-                    onClick={() => setActiveSection('weekly')}
-                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center justify-between group ${
-                      activeSection === 'weekly'
-                        ? 'bg-gradient-to-r from-primary to-accent text-white'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FiCalendar className="w-5 h-5" />
-                      <span className="font-medium">Veckoplaner & Recept</span>
-                    </div>
-                    <FiChevronRight className={`w-5 h-5 transition-transform ${
-                      activeSection === 'weekly' ? 'rotate-90' : 'group-hover:translate-x-1'
-                    }`} />
-                  </button>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-purple-50">
+      {/* Hero Section with Vimeo Video */}
+      <div className="relative">
+        {/* Clean container */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+            {/* Video Container */}
+            <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+              {!isVideoPlaying ? (
+                // Minimalistic video thumbnail with beautiful background
+                <div className="absolute inset-0 flex items-center justify-center">
                   
-                  <button
-                    onClick={() => setActiveSection('knowledge-modules')}
-                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center justify-between group ${
-                      activeSection === 'knowledge-modules'
-                        ? 'bg-gradient-to-r from-primary to-accent text-white'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FiBook className="w-5 h-5" />
-                      <span className="font-medium">Kunskapsmoduler</span>
+                  {/* Background image */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{
+                      backgroundImage: 'url(/ulrika3.png)'
+                    }}
+                  ></div>
+                  
+                  {/* Dark overlay for better contrast */}
+                  <div className="absolute inset-0 bg-black/40"></div>
+                  
+                  {/* Beautiful gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-400/30 via-teal-500/30 to-blue-600/30"></div>
+                  
+                  {/* Overlay with organic shapes */}
+                  <div className="absolute inset-0">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-teal-500/10 to-blue-500/10"></div>
+                    <div className="absolute top-0 left-0 w-full h-full opacity-5">
+                      <div className="absolute top-8 left-8 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+                      <div className="absolute bottom-12 right-12 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+                      <div className="absolute top-1/3 right-1/4 w-20 h-20 bg-white rounded-full blur-2xl"></div>
+                      <div className="absolute bottom-1/3 left-1/4 w-24 h-24 bg-white rounded-full blur-2xl"></div>
                     </div>
-                    <FiChevronRight className={`w-5 h-5 transition-transform ${
-                      activeSection === 'knowledge-modules' ? 'rotate-90' : 'group-hover:translate-x-1'
-                    }`} />
-                  </button>
+                  </div>
+                  
+                  {/* Subtle pattern overlay */}
+                  <div className="absolute inset-0 opacity-5">
+                    <div className="w-full h-full" style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3C/g%3E%3C/svg%3E")`,
+                      backgroundSize: '40px 40px'
+                    }}></div>
+                  </div>
+                  
+                  {/* Main content - perfectly centered */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center z-10 w-full px-8">
+                      {/* Play button */}
+                      <motion.button
+                        onClick={handlePlayVideo}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="group mb-8 bg-white/95 backdrop-blur-sm rounded-full p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-white mx-auto"
+                      >
+                        <FiPlay className="w-12 h-12 text-green-600 ml-1" />
+                      </motion.button>
+                      
+                      {/* Course title */}
+                      <div className="mb-4">
+                        <h2 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
+                          FUNCTIONAL BASICS
+                        </h2>
+                        <p className="text-xl text-white/90 mb-4 drop-shadow">
+                          Introduktionsvideo med Ulrika Davidsson
+                        </p>
+                        
+                        {/* Duration */}
+                        <div className="inline-flex items-center bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium border border-white/30">
+                          <FiClock className="w-4 h-4 mr-2" />
+                          5:32
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </nav>
+              ) : (
+                // Actual video iframe
+                <iframe
+                  src="https://player.vimeo.com/video/1056709544?h=9265a3d6ae&autoplay=1&title=0&byline=0&portrait=0"
+                  className="absolute top-0 left-0 w-full h-full rounded-3xl"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Content Below Video */}
+        <div className="text-center px-4 py-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-gray-900">
+              Functional Basics
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto text-gray-700">
+              Din 6-veckors resa mot optimal hälsa genom functional foods
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href={`/dashboard/courses/functional-basics/week/${currentWeek}`}
+                className="bg-gradient-to-r from-green-500 to-teal-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105"
+              >
+                Fortsätt där du slutade
+              </Link>
+              <Link 
+                href="/dashboard/courses/functional-basics/material"
+                className="bg-white text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 border border-gray-300"
+              >
+                Utforska kursmaterial
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Progress Overview */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-3xl shadow-xl p-8 mb-12"
+        >
+          <div className="flex flex-col md:flex-row items-center justify-between mb-6">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Din framgång</h2>
+              <p className="text-gray-600">Du är på rätt väg mot ett hälsosammare liv!</p>
+            </div>
+            <div className="mt-4 md:mt-0 text-center">
+              <div className="text-5xl font-bold text-green-600">{totalProgress}%</div>
+              <p className="text-gray-600">Genomfört</p>
             </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="lg:col-span-2">
-            <AnimatePresence mode="wait">
-              {/* Onboarding Section */}
-              {activeSection === 'onboarding' && (
-                <motion.div
-                  key="onboarding"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="space-y-6"
-                >
-                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    {/* Video Section */}
-                    <div className="aspect-video bg-gray-100">
-                      <iframe
-                        src={sections[0].videoUrl}
-                        className="w-full h-full"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        allowFullScreen
+          {/* Progress Bar */}
+          <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden mb-8">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${totalProgress}%` }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="absolute left-0 top-0 h-full bg-gradient-to-r from-green-500 to-teal-600"
+            />
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center">
+              <FiCalendar className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{completedWeeks.length}</div>
+              <p className="text-gray-600">Veckor klara</p>
+            </div>
+            <div className="text-center">
+              <GiMeal className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">84</div>
+              <p className="text-gray-600">Recept lagade</p>
+            </div>
+            <div className="text-center">
+              <FiTrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">15</div>
+              <p className="text-gray-600">Nya vanor</p>
+            </div>
+            <div className="text-center">
+              <FiAward className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">3</div>
+              <p className="text-gray-600">Certifikat</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Week Progress Cards */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mb-12"
+        >
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Kursöversikt</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {weekProgress.map((week, index) => (
+              <motion.div
+                key={week.week}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
+                className={`relative bg-white rounded-2xl shadow-lg overflow-hidden ${
+                  week.status === 'locked' ? 'opacity-75' : ''
+                }`}
+              >
+                {/* Status Badge */}
+                <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${
+                  week.status === 'completed' ? 'bg-green-100 text-green-800' :
+                  week.status === 'current' ? 'bg-blue-100 text-blue-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {week.status === 'completed' ? 'Klar' :
+                   week.status === 'current' ? 'Pågående' : 'Låst'}
+                </div>
+
+                <div className="p-6">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+                    week.status === 'completed' ? 'bg-green-100' :
+                    week.status === 'current' ? 'bg-blue-100' :
+                    'bg-gray-100'
+                  }`}>
+                    <week.icon className={`w-8 h-8 ${
+                      week.status === 'completed' ? 'text-green-600' :
+                      week.status === 'current' ? 'text-blue-600' :
+                      'text-gray-400'
+                    }`} />
+                  </div>
+
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    Vecka {week.week}: {week.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4">{week.description}</p>
+
+                  {/* Progress */}
+                  <div className="mb-4">
+                    <div className="flex justify-between text-sm text-gray-600 mb-1">
+                      <span>Framsteg</span>
+                      <span>{week.completedLessons}/{week.totalLessons} lektioner</span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full transition-all duration-500 ${
+                          week.status === 'completed' ? 'bg-green-500' :
+                          week.status === 'current' ? 'bg-blue-500' :
+                          'bg-gray-300'
+                        }`}
+                        style={{ width: `${(week.completedLessons / week.totalLessons) * 100}%` }}
                       />
                     </div>
-                    
-                    {/* Content */}
-                    <div className="p-8">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-4">{sections[0].title}</h2>
-                      <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-line">
-                        {sections[0].description}
-                      </div>
-                      
-                      {/* Links */}
-                      <div className="mt-8 space-y-3">
-                        {sections[0].links?.map((link, index) => (
-                          <Link
-                            key={index}
-                            href={link.url}
-                            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
-                          >
-                            <div className="flex items-center gap-3">
-                              {link.icon && <link.icon className="w-5 h-5 text-primary" />}
-                              <span className="font-medium text-gray-700">{link.title}</span>
-                            </div>
-                            <FiExternalLink className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
                   </div>
-                </motion.div>
-              )}
 
-              {/* Knowledge Section */}
-              {activeSection === 'knowledge' && (
-                <motion.div
-                  key="knowledge"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="space-y-6"
-                >
-                  <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">{sections[1].title}</h2>
-                    <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-line mb-8">
-                      {sections[1].description}
-                    </div>
-                    
-                    {/* Links */}
-                    <div className="space-y-3">
-                      {sections[1].links?.map((link, index) => (
-                        <Link
-                          key={index}
-                          href={link.url}
-                          className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-all group"
-                        >
-                          <div className="flex items-center gap-3">
-                            {link.icon && <link.icon className="w-5 h-5 text-primary" />}
-                            <span className="font-medium text-gray-700">{link.title}</span>
-                          </div>
-                          <FiChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Social Section */}
-              {activeSection === 'social' && (
-                <motion.div
-                  key="social"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="space-y-6"
-                >
-                  <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">{sections[2].title}</h2>
-                    <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-line mb-8">
-                      {sections[2].description}
-                    </div>
-                    
-                    {/* Social Links */}
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {sections[2].links?.map((link, index) => (
-                        <a
-                          key={index}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-3 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl hover:from-blue-100 hover:to-purple-100 transition-all group"
-                        >
-                          {link.icon && <link.icon className="w-6 h-6 text-primary" />}
-                          <span className="font-medium text-gray-700">{link.title}</span>
-                          <FiExternalLink className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Weekly Content Section */}
-              {activeSection === 'weekly' && (
-                <motion.div
-                  key="weekly"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="space-y-6"
-                >
-                  <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-2xl font-bold text-gray-900">Veckoplaner & Recept</h2>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setViewMode('grid')}
-                          className={`p-2 rounded-lg transition-colors ${
-                            viewMode === 'grid' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                          }`}
-                        >
-                          <FiGrid className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => setViewMode('list')}
-                          className={`p-2 rounded-lg transition-colors ${
-                            viewMode === 'list' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                          }`}
-                        >
-                          <FiList className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Weekly Grid/List */}
-                    <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 gap-4' : 'space-y-4'}>
-                      {weeklyContent.map((week) => (
-                        <motion.div
-                          key={week.week}
-                          whileHover={{ scale: week.locked ? 1 : 1.02 }}
-                          className={`relative rounded-xl p-6 transition-all ${
-                            week.locked 
-                              ? 'bg-gray-50 opacity-60' 
-                              : 'bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 cursor-pointer'
-                          }`}
-                          onClick={() => {
-                            if (!week.locked) {
-                              if (week.week === 1) {
-                                window.location.href = '/dashboard/courses/functional-basics/week/1';
-                              } else if (week.week === 2) {
-                                window.location.href = '/dashboard/courses/functional-basics/week/2';
-                              } else {
-                                setCurrentWeek(week.week);
-                              }
-                            }
-                          }}
-                        >
-                          {week.locked && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-xl">
-                              <FiLock className="w-8 h-8 text-gray-400" />
-                            </div>
-                          )}
-                          
-                          <div className="flex items-start justify-between mb-3">
-                            <div>
-                              <h3 className="text-lg font-semibold text-gray-900">Vecka {week.week}</h3>
-                              <p className="text-sm text-gray-600 mt-1">{week.title}</p>
-                            </div>
-                            {currentWeek === week.week && !week.locked && (
-                              <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Aktiv</span>
-                            )}
-                          </div>
-                          
-                          <p className="text-sm text-gray-600 mb-4">{week.description}</p>
-                          
-                          <div className="flex items-center gap-4 text-sm">
-                            <div className="flex items-center gap-1">
-                              <GiCookingPot className="w-4 h-4 text-primary" />
-                              <span className="text-gray-600">{week.recipes} recept</span>
-                            </div>
-                            {week.mealPlan && (
-                              <div className="flex items-center gap-1">
-                                <FiCalendar className="w-4 h-4 text-primary" />
-                                <span className="text-gray-600">Kostschema</span>
-                              </div>
-                            )}
-                            {week.shoppingList && (
-                              <div className="flex items-center gap-1">
-                                <FiShoppingCart className="w-4 h-4 text-primary" />
-                                <span className="text-gray-600">Inköpslista</span>
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Knowledge Modules Section */}
-              {activeSection === 'knowledge-modules' && (
-                <motion.div
-                  key="knowledge-modules"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="space-y-6"
-                >
-                  <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Kunskapsmoduler</h2>
-                    
-                    <div className="space-y-4">
-                      {knowledgeModules.map((module, index) => {
-                        const Icon = module.icon;
-                        return (
-                          <motion.div
-                            key={module.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                          >
-                            <Link
-                              href={`/dashboard/courses/functional-basics/material/${module.id}`}
-                              className="flex items-center justify-between p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all group"
-                            >
-                              <div className="flex items-center gap-4">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                  module.completed 
-                                    ? 'bg-green-100 text-green-600' 
-                                    : 'bg-gradient-to-r from-primary/20 to-accent/20 text-primary'
-                                }`}>
-                                  {module.completed ? (
-                                    <FiCheckCircle className="w-6 h-6" />
-                                  ) : (
-                                    <Icon className="w-6 h-6" />
-                                  )}
-                                </div>
-                                <div>
-                                  <h3 className="font-semibold text-gray-900">{module.title}</h3>
-                                  <p className="text-sm text-gray-600 mt-1">{module.description}</p>
-                                </div>
-                              </div>
-                              <FiChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                            </Link>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                    
-                    <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
-                      <p className="text-sm text-gray-600">
-                        <span className="font-medium text-gray-900">Tips:</span> Gå igenom modulerna i ordning för bästa lärupplevelse. 
-                        Varje modul bygger på den föregående.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {/* Action Button */}
+                  {week.status !== 'locked' ? (
+                    <Link
+                      href={`/dashboard/courses/functional-basics/week/${week.week}`}
+                      className={`block w-full text-center py-3 rounded-lg font-semibold transition-all ${
+                        week.status === 'completed' 
+                          ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg transform hover:scale-105'
+                      }`}
+                    >
+                      {week.status === 'completed' ? 'Se igen' : 'Fortsätt'}
+                    </Link>
+                  ) : (
+                    <button
+                      disabled
+                      className="block w-full text-center py-3 rounded-lg font-semibold bg-gray-100 text-gray-400 cursor-not-allowed"
+                    >
+                      <FiLock className="inline-block mr-2" />
+                      Låst
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="grid md:grid-cols-3 gap-6 mb-12"
+        >
+          <Link href="/dashboard/courses/functional-basics/material" className="group">
+            <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-lg transform transition-all group-hover:scale-105">
+              <FiBook className="w-8 h-8 mb-4" />
+              <h3 className="text-xl font-bold mb-2">Kunskapsmaterial</h3>
+              <p className="opacity-90">Fördjupa din kunskap med våra artiklar</p>
+            </div>
+          </Link>
+
+          <Link href="/dashboard/courses/functional-basics/downloads" className="group">
+            <div className="bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl p-6 text-white shadow-lg transform transition-all group-hover:scale-105">
+              <FiDownload className="w-8 h-8 mb-4" />
+              <h3 className="text-xl font-bold mb-2">Nedladdningar</h3>
+              <p className="opacity-90">Hämta PDF:er och guider</p>
+            </div>
+          </Link>
+
+          <Link href="/dashboard/courses/functional-basics/community" className="group">
+            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg transform transition-all group-hover:scale-105">
+              <FiUsers className="w-8 h-8 mb-4" />
+              <h3 className="text-xl font-bold mb-2">Community</h3>
+              <p className="opacity-90">Dela erfarenheter med andra</p>
+            </div>
+          </Link>
+        </motion.div>
+
+        {/* Motivational Quote */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="bg-gradient-to-r from-green-100 to-blue-100 rounded-3xl p-8 text-center"
+        >
+          <p className="text-2xl font-medium text-gray-800 italic mb-4">
+            "Mat är inte bara bränsle, det är information som talar till din DNA och berättar vad den ska göra."
+          </p>
+          <p className="text-gray-600">- Ulrika Davidsson</p>
+        </motion.div>
       </div>
     </div>
   );

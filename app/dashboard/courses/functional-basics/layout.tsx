@@ -40,6 +40,21 @@ export default function FunctionalBasicsLayout({
       icon: FiCalendar,
     },
     {
+      label: 'Vecka 4',
+      href: '/dashboard/courses/functional-basics/week/4',
+      icon: FiCalendar,
+    },
+    {
+      label: 'Vecka 5',
+      href: '/dashboard/courses/functional-basics/week/5',
+      icon: FiCalendar,
+    },
+    {
+      label: 'Vecka 6',
+      href: '/dashboard/courses/functional-basics/week/6',
+      icon: FiCalendar,
+    },
+    {
       label: 'Målsättning',
       href: '/dashboard/courses/functional-basics/goals',
       icon: FiTarget,
@@ -58,24 +73,6 @@ export default function FunctionalBasicsLayout({
       label: 'Nedladdningar',
       href: '/dashboard/courses/functional-basics/downloads',
       icon: FiDownload,
-    },
-  ];
-
-  const bottomNavItems = [
-    {
-      label: 'Översikt',
-      href: '/dashboard',
-      icon: FiHome,
-    },
-    {
-      label: 'Mina kurser',
-      href: '/dashboard/courses',
-      icon: FiAward,
-    },
-    {
-      label: 'Inställningar',
-      href: '/dashboard/settings',
-      icon: FiSettings,
     },
   ];
 
@@ -107,12 +104,6 @@ export default function FunctionalBasicsLayout({
 
             {/* User Menu */}
             <div className="flex items-center space-x-4">
-              <Link
-                href="/dashboard"
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Till översikt
-              </Link>
               <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-semibold">
                 U
               </div>
@@ -157,23 +148,6 @@ export default function FunctionalBasicsLayout({
                 );
               })}
             </nav>
-
-            {/* Bottom Navigation */}
-            <div className="border-t border-gray-200 p-4">
-              <nav className="space-y-1">
-                {bottomNavItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <item.icon className="mr-3 h-5 w-5 text-gray-400" />
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
           </div>
         </aside>
 

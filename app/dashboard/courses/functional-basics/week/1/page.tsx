@@ -128,7 +128,7 @@ export default function Week1Page() {
       </div>
 
       {/* Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pb-16">
+      <div className="pb-16">
         <AnimatePresence mode="wait">
           {/* Overview Tab */}
           {activeTab === 'overview' && (
@@ -237,13 +237,6 @@ export default function Week1Page() {
               {/* Calendar View */}
               <CalendarView mealPlan={mealPlan} weekNumber={1} />
               
-              {/* Traditional Meal Plan View */}
-              <MealPlanSection 
-                mealPlan={mealPlan}
-                expandedDay={expandedDay}
-                setExpandedDay={setExpandedDay}
-              />
-
               {/* Recipe Highlights */}
               <RecipeHighlights />
             </motion.div>
@@ -261,13 +254,11 @@ export default function Week1Page() {
               <ShoppingListSection />
             </motion.div>
           )}
-
-
         </AnimatePresence>
       </div>
 
       {/* Next Week Button */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div className="pb-16">
         <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">Redo för nästa steg?</h3>
           <p className="text-lg mb-6">

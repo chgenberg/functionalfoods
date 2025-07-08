@@ -1,17 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiCalendar, FiClock, FiChevronLeft, FiChevronRight,
-  FiSun, FiSunrise, FiSunset
-} from 'react-icons/fi';
-import { GiMeal, GiCookingPot, GiFruitBowl } from 'react-icons/gi';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { FiCalendar, FiCheck, FiClock } from 'react-icons/fi';
 
 interface MealItem {
   name: string;
   recipeLink?: string;
+  note?: string;
 }
 
 interface DayMeals {
@@ -19,6 +15,7 @@ interface DayMeals {
   lunch: MealItem;
   dinner: MealItem;
   snack?: MealItem;
+  dessert?: MealItem;
 }
 
 interface CalendarViewProps {
@@ -26,155 +23,231 @@ interface CalendarViewProps {
   weekNumber: number;
 }
 
+const weekDays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+
 export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
-  const [selectedDay, setSelectedDay] = useState<string>(Object.keys(mealPlan)[0]);
-  const days = Object.keys(mealPlan);
-  
-  const dayIcons = {
-    breakfast: { icon: FiSunrise, color: 'from-orange-400 to-yellow-500', time: '07:00' },
-    lunch: { icon: FiSun, color: 'from-blue-400 to-cyan-500', time: '12:00' },
-    dinner: { icon: FiSunset, color: 'from-purple-400 to-pink-500', time: '18:00' },
-    snack: { icon: GiFruitBowl, color: 'from-green-400 to-teal-500', time: '15:00' }
+  const [selectedDay, setSelectedDay] = useState(0);
+  const [currentDayIndex, setCurrentDayIndex] = useState(0);
+
+  useEffect(() => {
+    // Calculate which day of the week it is (0 = Monday, 6 = Sunday)
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    // Convert Sunday (0) to 6, and shift other days back by 1
+    const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    
+    // Calculate which week we're in and which day
+    const courseStartDate = new Date('2025-01-06'); // Adjust this to actual course start
+    const daysSinceStart = Math.floor((today.getTime() - courseStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    const currentWeek = Math.floor(daysSinceStart / 7) + 1;
+    
+    if (currentWeek === weekNumber) {
+      setCurrentDayIndex(adjustedDay);
+      setSelectedDay(adjustedDay);
+    } else if (currentWeek > weekNumber) {
+      // Past week - all days are completed
+      setCurrentDayIndex(7);
+    } else {
+      // Future week - no days are completed
+      setCurrentDayIndex(-1);
+    }
+  }, [weekNumber]);
+
+  const getDayStatus = (dayIndex: number) => {
+    if (dayIndex < currentDayIndex) return 'completed';
+    if (dayIndex === currentDayIndex) return 'current';
+    return 'upcoming';
   };
 
-  const currentDayIndex = days.indexOf(selectedDay);
-
-  const navigateDay = (direction: 'prev' | 'next') => {
-    const newIndex = direction === 'prev' 
-      ? (currentDayIndex - 1 + days.length) % days.length
-      : (currentDayIndex + 1) % days.length;
-    setSelectedDay(days[newIndex]);
-  };
+  const currentDayMeals = mealPlan[weekDays[selectedDay]];
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-      {/* Calendar Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <FiCalendar className="w-8 h-8" />
-            <h2 className="text-2xl font-bold">Vecka {weekNumber} - Kostschema</h2>
-          </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => navigateDay('prev')}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-            >
-              <FiChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => navigateDay('next')}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-            >
-              <FiChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+    <div className="space-y-6">
+      {/* Calendar Grid */}
+      <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <FiCalendar className="w-6 h-6 text-purple-600" />
+          <h3 className="text-2xl font-bold text-gray-900">Vecka {weekNumber} - Kostschema</h3>
         </div>
 
-        {/* Day Selector */}
-        <div className="grid grid-cols-7 gap-2">
-          {days.map((day) => (
-            <button
-              key={day}
-              onClick={() => setSelectedDay(day)}
-              className={`py-3 px-2 rounded-xl font-medium transition-all ${
-                selectedDay === day
-                  ? 'bg-white text-purple-600 shadow-lg transform scale-105'
-                  : 'bg-white/20 hover:bg-white/30'
-              }`}
-            >
-              <div className="text-xs opacity-90">{day.slice(0, 3)}</div>
-              <div className="text-sm font-bold">{day.slice(0, 1)}</div>
-            </button>
-          ))}
+        <div className="grid grid-cols-7 gap-2 mb-8">
+          {weekDays.map((day, index) => {
+            const status = getDayStatus(index);
+            return (
+              <motion.button
+                key={day}
+                onClick={() => setSelectedDay(index)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative p-4 rounded-xl transition-all duration-300 ${
+                  selectedDay === index
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg transform scale-105'
+                    : status === 'completed'
+                    ? 'bg-orange-100 text-orange-800 hover:bg-orange-200'
+                    : status === 'current'
+                    ? 'bg-green-100 text-green-800 hover:bg-green-200 ring-2 ring-green-500'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <div className="text-xs font-medium opacity-80 mb-1">
+                  {day.slice(0, 3).toUpperCase()}
+                </div>
+                <div className="text-lg font-bold">
+                  {index + 1}
+                </div>
+                {status === 'completed' && (
+                  <FiCheck className="absolute top-1 right-1 w-4 h-4" />
+                )}
+                {status === 'current' && (
+                  <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                )}
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Legend */}
+        <div className="flex flex-wrap gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-orange-100 rounded" />
+            <span className="text-gray-600">Genomförd</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-green-100 rounded ring-2 ring-green-500" />
+            <span className="text-gray-600">Idag</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-gray-100 rounded" />
+            <span className="text-gray-600">Kommande</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded" />
+            <span className="text-gray-600">Vald dag</span>
+          </div>
         </div>
       </div>
 
       {/* Selected Day Meals */}
-      <div className="p-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedDay}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-4"
-          >
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">{selectedDay}</h3>
-            
-            <div className="grid gap-4">
-              {Object.entries(mealPlan[selectedDay]).map(([mealType, meal]) => {
-                const mealInfo = dayIcons[mealType as keyof typeof dayIcons];
-                return (
-                  <motion.div
-                    key={mealType}
-                    whileHover={{ scale: 1.02 }}
-                    className="relative overflow-hidden rounded-2xl shadow-lg"
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-r ${mealInfo.color} opacity-10`} />
-                    <div className="relative p-6 flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className={`bg-gradient-to-r ${mealInfo.color} p-3 rounded-xl text-white`}>
-                          <mealInfo.icon className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <div className="flex items-center space-x-2 text-sm text-gray-500 mb-1">
-                            <FiClock className="w-4 h-4" />
-                            <span>{mealInfo.time}</span>
-                            <span className="capitalize font-medium">{mealType}</span>
-                          </div>
-                          {meal.recipeLink ? (
-                            <Link 
-                              href={meal.recipeLink}
-                              className="text-lg font-semibold text-gray-900 hover:text-purple-600 transition-colors"
-                            >
-                              {meal.name}
-                            </Link>
-                          ) : (
-                            <p className="text-lg font-semibold text-gray-900">{meal.name}</p>
-                          )}
-                        </div>
-                      </div>
-                      {meal.recipeLink && (
-                        <Link
-                          href={meal.recipeLink}
-                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                        >
-                          <FiChevronRight className="w-5 h-5 text-gray-400" />
-                        </Link>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+      <motion.div
+        key={selectedDay}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-2xl shadow-lg p-6"
+      >
+        <h4 className="text-xl font-bold text-gray-900 mb-6">
+          {weekDays[selectedDay]}s måltider
+        </h4>
 
-            {/* Quick Stats for the Day */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <p className="text-sm text-gray-500">Måltider</p>
-                  <p className="text-xl font-bold text-gray-900">
-                    {Object.keys(mealPlan[selectedDay]).length}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Recept</p>
-                  <p className="text-xl font-bold text-purple-600">
-                    {Object.values(mealPlan[selectedDay]).filter(m => m.recipeLink).length}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Rester</p>
-                  <p className="text-xl font-bold text-green-600">
-                    {Object.values(mealPlan[selectedDay]).filter(m => m.name.includes('Rester')).length}
-                  </p>
-                </div>
-              </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Breakfast */}
+          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">🌅</span>
+              <h5 className="font-semibold text-gray-900">Frukost</h5>
+              <FiClock className="w-4 h-4 text-gray-500 ml-auto" />
+              <span className="text-sm text-gray-500">07:00</span>
             </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+            <p className="text-gray-700 mb-3">{currentDayMeals.breakfast.name}</p>
+            {currentDayMeals.breakfast.recipeLink && (
+              <a 
+                href={currentDayMeals.breakfast.recipeLink}
+                className="text-sm text-orange-600 hover:text-orange-700 font-medium"
+              >
+                Se recept →
+              </a>
+            )}
+          </div>
+
+          {/* Lunch */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">☀️</span>
+              <h5 className="font-semibold text-gray-900">Lunch</h5>
+              <FiClock className="w-4 h-4 text-gray-500 ml-auto" />
+              <span className="text-sm text-gray-500">12:00</span>
+            </div>
+            <p className="text-gray-700 mb-3">{currentDayMeals.lunch.name}</p>
+            {currentDayMeals.lunch.note && (
+              <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                {currentDayMeals.lunch.note}
+              </span>
+            )}
+            {currentDayMeals.lunch.recipeLink && (
+              <a 
+                href={currentDayMeals.lunch.recipeLink}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium block mt-2"
+              >
+                Se recept →
+              </a>
+            )}
+          </div>
+
+          {/* Dinner */}
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">🌙</span>
+              <h5 className="font-semibold text-gray-900">Middag</h5>
+              <FiClock className="w-4 h-4 text-gray-500 ml-auto" />
+              <span className="text-sm text-gray-500">18:00</span>
+            </div>
+            <p className="text-gray-700 mb-3">{currentDayMeals.dinner.name}</p>
+            {currentDayMeals.dinner.note && (
+              <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                {currentDayMeals.dinner.note}
+              </span>
+            )}
+            {currentDayMeals.dinner.recipeLink && (
+              <a 
+                href={currentDayMeals.dinner.recipeLink}
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium block mt-2"
+              >
+                Se recept →
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Snack/Dessert if exists */}
+        {(currentDayMeals.snack || currentDayMeals.dessert) && (
+          <div className="mt-6 grid md:grid-cols-2 gap-6">
+            {currentDayMeals.snack && (
+              <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-2xl">🥜</span>
+                  <h5 className="font-semibold text-gray-900">Mellanmål</h5>
+                </div>
+                <p className="text-gray-700">{currentDayMeals.snack.name}</p>
+                {currentDayMeals.snack.recipeLink && (
+                  <a 
+                    href={currentDayMeals.snack.recipeLink}
+                    className="text-sm text-green-600 hover:text-green-700 font-medium block mt-2"
+                  >
+                    Se recept →
+                  </a>
+                )}
+              </div>
+            )}
+            
+            {currentDayMeals.dessert && (
+              <div className="bg-gradient-to-br from-pink-50 to-red-50 rounded-xl p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-2xl">🍰</span>
+                  <h5 className="font-semibold text-gray-900">Efterrätt</h5>
+                </div>
+                <p className="text-gray-700">{currentDayMeals.dessert.name}</p>
+                {currentDayMeals.dessert.recipeLink && (
+                  <a 
+                    href={currentDayMeals.dessert.recipeLink}
+                    className="text-sm text-pink-600 hover:text-pink-700 font-medium block mt-2"
+                  >
+                    Se recept →
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 } 

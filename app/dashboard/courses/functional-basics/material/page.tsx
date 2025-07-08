@@ -1,522 +1,397 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  FiBook, FiX, FiClock, FiCheckCircle, FiFileText,
-  FiHeart, FiTarget, FiTrendingUp, FiAward
+  FiBook, FiClock, FiArrowRight, FiSearch, FiFilter,
+  FiBookOpen, FiTarget, FiHeart, FiStar, FiAward
 } from 'react-icons/fi';
-import { 
-  GiFruitBowl, GiHealthNormal, GiMeal, GiWheat
-} from 'react-icons/gi';
+import { GiMeal, GiFruitBowl, GiHealthNormal, GiWheat, GiMeat } from 'react-icons/gi';
+import Link from 'next/link';
 
-interface KnowledgeItem {
+interface KnowledgeModule {
   id: string;
   title: string;
   description: string;
   icon: React.ElementType;
   color: string;
   readTime: string;
-  completed?: boolean;
-  content: string;
+  category: string;
 }
 
 export default function KnowledgeMaterialPage() {
-  const [selectedItem, setSelectedItem] = useState<KnowledgeItem | null>(null);
-  const [completedItems, setCompletedItems] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('alla');
+  const [completedModules, setCompletedModules] = useState<string[]>([]);
 
-  const knowledgeItems: KnowledgeItem[] = [
+  const modules: KnowledgeModule[] = [
     {
-      id: 'vad-ar-functional-foods',
+      id: 'vad-ar-functional-foods-2',
       title: 'Vad är Functional Foods?',
       description: 'Lär dig grunderna om mervärdesmat och dess 10 livsmedelskategorier',
       icon: GiFruitBowl,
       color: 'from-green-500 to-teal-600',
-      readTime: '15 min',
-      content: `Functional Foods är livsmedel som ger hälsofördelar utöver grundläggande näring. Dessa livsmedel innehåller bioaktiva föreningar som kan förbättra hälsan och minska risken för sjukdomar.
-
-De 10 huvudkategorierna inom Functional Foods:
-
-1. **Bär och frukter** - Rika på antioxidanter, vitaminer och fiber
-2. **Grönsaker** - Fullpackade med vitaminer, mineraler och fytokemikalier
-3. **Fullkorn** - Ger långsam energi och viktiga B-vitaminer
-4. **Nötter och frön** - Innehåller hälsosamma fetter och protein
-5. **Fet fisk** - Omega-3 fettsyror för hjärta och hjärna
-6. **Probiotika** - Stödjer tarmhälsan och immunförsvaret
-7. **Örter och kryddor** - Antiinflammatoriska egenskaper
-8. **Te och kaffe** - Antioxidanter och bioaktiva föreningar
-9. **Mörk choklad** - Flavonoider för hjärthälsa
-10. **Fermenterade livsmedel** - Probiotika och förbättrad näringsupptag`
-    },
-    {
-      id: 'fordelarna-med-functional-foods',
-      title: 'Fördelarna med Functional Foods',
-      description: 'Upptäck alla hälsofördelar och hur din kropp påverkas positivt',
-      icon: GiHealthNormal,
-      color: 'from-purple-500 to-pink-600',
-      readTime: '20 min',
-      content: `Functional Foods erbjuder många hälsofördelar som kan förbättra din livskvalitet betydligt:
-
-**Fysiska fördelar:**
-• Ökad energinivå och uthållighet
-• Förbättrad matsmältning och tarmhälsa
-• Stärkt immunförsvar
-• Minskad inflammation i kroppen
-• Bättre hjärthälsa och blodcirkulation
-• Stabilare blodsockernivåer
-• Hälsosammare hud, hår och naglar
-
-**Mentala fördelar:**
-• Förbättrad koncentration och fokus
-• Bättre minnesfunktion
-• Minskad risk för depression och ångest
-• Förbättrad sömnkvalitet
-• Ökad mental klarhet
-
-**Långsiktiga fördelar:**
-• Minskad risk för kroniska sjukdomar
-• Hälsosamt åldrande
-• Bättre viktkontroll
-• Ökad livslängd med god livskvalitet`
-    },
-    {
-      id: 'dags-att-komma-igang',
-      title: 'Dags att komma igång',
-      description: 'Praktiska tips för att starta din resa med functional foods',
-      icon: FiTarget,
-      color: 'from-orange-500 to-red-600',
-      readTime: '25 min',
-      content: `Att börja med Functional Foods behöver inte vara komplicerat. Här är en steg-för-steg guide:
-
-**Vecka 1-2: Grundläggande förändringar**
-• Börja dagen med ett näringsrikt frukost
-• Byt ut vitt bröd mot fullkorn
-• Lägg till bär i din yoghurt eller gröt
-• Drick grönt te istället för läsk
-
-**Vecka 3-4: Utöka repertoaren**
-• Introducera fet fisk 2-3 gånger i veckan
-• Experimentera med nya grönsaker
-• Prova fermenterade livsmedel som kimchi eller kefir
-• Använd mer örter och kryddor i matlagningen
-
-**Tips för framgång:**
-1. Planera dina måltider i förväg
-2. Handla med lista baserad på recepten
-3. Förbered matlådor för veckan
-4. Ha hälsosamma snacks tillgängliga
-5. Drick mycket vatten
-6. Lyssna på din kropp
-7. Var tålmodig - förändringar tar tid
-
-**Vanliga misstag att undvika:**
-• Att göra för stora förändringar på en gång
-• Att skippa måltider
-• Att inte dricka tillräckligt med vatten
-• Att ge upp för tidigt`
-    },
-    {
-      id: 'att-valja-ratt-proteiner',
-      title: 'Att välja rätt proteiner',
-      description: 'Guide till proteinrika livsmedel inom functional foods',
-      icon: GiMeal,
-      color: 'from-blue-500 to-indigo-600',
-      readTime: '15 min',
-      content: `Protein är en viktig byggsten för kroppen. Här är de bästa proteinvalen inom Functional Foods:
-
-**Animaliska proteinkällor:**
-• **Fet fisk** (lax, makrill, sardiner) - Omega-3 + protein
-• **Ägg** - Komplett protein med alla aminosyror
-• **Grekisk yoghurt** - Protein + probiotika
-• **Cottage cheese** - Högt proteininnehåll, låg fetthalt
-
-**Vegetabiliska proteinkällor:**
-• **Quinoa** - Komplett protein + fiber
-• **Linser** - Protein + järn + fiber
-• **Kikärtor** - Protein + komplex kolhydrater
-• **Hampfrön** - Protein + omega-3
-• **Mandlar** - Protein + vitamin E
-• **Chiafrön** - Protein + omega-3 + fiber
-
-**Proteinbehov:**
-• Normalaktiv vuxen: 0,8-1g per kg kroppsvikt
-• Aktiv/tränar: 1,2-1,6g per kg kroppsvikt
-• Äldre: 1-1,2g per kg kroppsvikt
-
-**Tips för optimal proteinupptag:**
-• Fördela proteinintaget över dagen
-• Kombinera olika proteinkällor
-• Ät protein efter träning
-• Inkludera protein i varje måltid`
-    },
-    {
-      id: 'att-valja-ratt-kolhydrater',
-      title: 'Att välja rätt kolhydrater',
-      description: 'Smarta kolhydrater för stabil energi och blodsockerkontroll',
-      icon: GiWheat,
-      color: 'from-yellow-500 to-orange-600',
-      readTime: '15 min',
-      content: `Kolhydrater ger energi, men kvaliteten spelar stor roll. Här är de bästa valen:
-
-**Fullkorn och hela gryn:**
-• **Havre** - Beta-glukaner för hjärthälsa
-• **Quinoa** - Protein + långsam energi
-• **Bovete** - Glutenfritt + antioxidanter
-• **Fullkornsris** - B-vitaminer + fiber
-• **Hirs** - Mineralrikt + lättsmält
-
-**Grönsaker som kolhydratkällor:**
-• **Sötpotatis** - Betakaroten + fiber
-• **Rödbetor** - Nitrater för blodflöde
-• **Morötter** - Vitamin A + fiber
-• **Broccoli** - Låg GI + C-vitamin
-• **Blomkål** - Låg i kalorier + näringsrik
-
-**Frukt och bär:**
-• **Blåbär** - Antioxidanter + låg GI
-• **Äpplen** - Pektin + långsam energi
-• **Päron** - Fiber + mineraler
-• **Citrusfrukter** - C-vitamin + flavonoider
-
-**Tips för stabilt blodsocker:**
-• Välj hela livsmedel framför processade
-• Kombinera kolhydrater med protein/fett
-• Ät fiber-rika kolhydrater
-• Undvik raffinerat socker
-• Välj livsmedel med lågt GI`
+      readTime: '6 min',
+      category: 'Grundläggande'
     },
     {
       id: 'functional-foods-topplista',
       title: 'Functional Foods Topplista',
-      description: 'De mest kraftfulla livsmedlen för optimal hälsa',
+      description: 'De mest kraftfulla livsmedlen för din hälsa',
+      icon: FiStar,
+      color: 'from-purple-500 to-pink-600',
+      readTime: '8 min',
+      category: 'Grundläggande'
+    },
+    {
+      id: 'fordelarna-med-functional-foods',
+      title: 'Fördelarna med Functional Foods',
+      description: 'Upptäck de omfattande hälsofördelarna',
+      icon: FiHeart,
+      color: 'from-red-500 to-pink-600',
+      readTime: '10 min',
+      category: 'Hälsofördelar'
+    },
+    {
+      id: 'functional-foods-3-steg-till-ett-friskare-liv',
+      title: 'Functional Foods - 3 steg till ett friskare liv',
+      description: 'En steg-för-steg guide till bättre hälsa',
+      icon: FiBookOpen,
+      color: 'from-teal-500 to-green-600',
+      readTime: '12 min',
+      category: 'Praktisk guide'
+    },
+    {
+      id: 'dags-att-komma-igang',
+      title: 'Dags att komma igång',
+      description: 'Praktiska tips för att starta din resa',
+      icon: FiTarget,
+      color: 'from-orange-500 to-red-600',
+      readTime: '12 min',
+      category: 'Praktisk guide'
+    },
+    {
+      id: 'att-valja-ratt-kolhydrater',
+      title: 'Att välja rätt kolhydrater',
+      description: 'Skillnaden mellan bra och dåliga kolhydrater',
+      icon: GiWheat,
+      color: 'from-yellow-500 to-orange-600',
+      readTime: '10 min',
+      category: 'Näringslära'
+    },
+    {
+      id: 'att-valja-ratt-proteiner',
+      title: 'Att välja rätt proteiner',
+      description: 'Kompletta proteinkällor för optimal hälsa',
+      icon: GiMeal,
+      color: 'from-blue-500 to-indigo-600',
+      readTime: '10 min',
+      category: 'Näringslära'
+    },
+    {
+      id: 'ersattningsguide-for-kolhydrater',
+      title: 'Ersättningsguide för kolhydrater',
+      description: 'Hälsosamma alternativ till traditionella kolhydrater',
+      icon: GiWheat,
+      color: 'from-amber-500 to-yellow-600',
+      readTime: '6 min',
+      category: 'Näringslära'
+    },
+    {
+      id: 'motivation-och-reflektion',
+      title: 'Motivation och reflektion',
+      description: 'Verktyg för att hålla motivationen uppe',
       icon: FiAward,
       color: 'from-indigo-500 to-purple-600',
+      readTime: '15 min',
+      category: 'Mindset'
+    },
+    {
+      id: 'functional-foods-som-livsstil',
+      title: 'Functional Foods som livsstil',
+      description: 'Gör hälsosam mat till en naturlig del av vardagen',
+      icon: FiHeart,
+      color: 'from-violet-500 to-purple-600',
+      readTime: '6 min',
+      category: 'Mindset'
+    },
+    {
+      id: 'benbuljong',
+      title: 'Benbuljong - Naturens healing elixir',
+      description: 'Lär dig tillaga näringsrik benbuljong',
+      icon: GiMeal,
+      color: 'from-amber-500 to-orange-600',
+      readTime: '8 min',
+      category: 'Recept & Tips'
+    },
+    {
+      id: 'drycker',
+      title: 'Hälsosamma drycker',
+      description: 'Upptäck näringsrika drycker för optimal hälsa',
+      icon: GiHealthNormal,
+      color: 'from-cyan-500 to-blue-600',
+      readTime: '6 min',
+      category: 'Recept & Tips'
+    },
+    {
+      id: 'naturens-egna-halsobomber',
+      title: 'Naturens egna hälsobomber',
+      description: 'Superfoods som förvandlar din hälsa',
+      icon: FiStar,
+      color: 'from-emerald-500 to-green-600',
+      readTime: '8 min',
+      category: 'Superfoods'
+    },
+    {
+      id: 'att-ata-ute-med-functional-foods',
+      title: 'Att äta ute med Functional Foods',
+      description: 'Tips för hälsosamma val på restaurang',
+      icon: GiMeal,
+      color: 'from-rose-500 to-pink-600',
       readTime: '10 min',
-      content: `Här är de absolut bästa functional foods du bör inkludera regelbundet:
-
-**Topp 10 Superfoods:**
-
-1. **Blåbär** - Antioxidantkungen
-   • Skyddar hjärnan
-   • Förbättrar minnet
-   • Antiinflammatoriskt
-
-2. **Lax** - Omega-3 bomben
-   • Hjärthälsa
-   • Hjärnfunktion
-   • Antiinflammatoriskt
-
-3. **Grönkål** - Näringspaketet
-   • Vitamin K, A, C
-   • Kalcium
-   • Antioxidanter
-
-4. **Valnötter** - Hjärnmaten
-   • Omega-3
-   • Vitamin E
-   • Förbättrar kognition
-
-5. **Avokado** - Fettbomben
-   • Enkelomättade fetter
-   • Fiber
-   • Kalium
-
-6. **Grönt te** - Antioxidantdrycken
-   • EGCG
-   • L-teanin
-   • Metabolism-boost
-
-7. **Mörk choklad (70%+)** - Hjärtevännen
-   • Flavonoider
-   • Järn
-   • Magnesium
-
-8. **Linser** - Proteinpaketet
-   • Vegetabiliskt protein
-   • Järn
-   • Folat
-
-9. **Ingefära** - Inflammationshämmaren
-   • Gingerol
-   • Matsmältning
-   • Illamående-lindring
-
-10. **Gurkmeja** - Guldkryddan
-    • Curcumin
-    • Antiinflammatoriskt
-    • Antioxidant`
+      category: 'Praktisk guide'
     },
     {
-      id: 'periodisk-fasta',
-      title: 'Periodisk fasta - ger klarhet och energi',
-      description: 'Lär dig om fördelarna med periodisk fasta och hur du kommer igång',
-      icon: FiClock,
-      color: 'from-green-600 to-teal-700',
-      readTime: '20 min',
-      content: `Periodisk fasta är ett kraftfullt verktyg för hälsa och välbefinnande:
-
-**Vad är periodisk fasta?**
-Periodisk fasta innebär att du växlar mellan perioder av ätande och fasta. Det handlar inte om VAD du äter, utan NÄR du äter.
-
-**Populära metoder:**
-• **16:8** - Fasta 16 timmar, ät inom 8 timmar
-• **5:2** - Ät normalt 5 dagar, begränsa till 500-600 kcal 2 dagar
-• **Eat-Stop-Eat** - 24 timmars fasta 1-2 gånger per vecka
-
-**Fördelar med periodisk fasta:**
-• Förbättrad insulinkänslighet
-• Ökad fettförbränning
-• Cellulär reparation (autofagi)
-• Förbättrad hjärnfunktion
-• Minskad inflammation
-• Ökad tillväxthormon
-• Förenklad vardag
-
-**Så kommer du igång med 16:8:**
-1. Välj ditt ätfönster (ex. 12:00-20:00)
-2. Börja gradvis - förläng fastan stegvis
-3. Drick vatten, te, svart kaffe under fastan
-4. Ät näringsrika måltider i ätfönstret
-5. Lyssna på din kropp
-
-**Tips för framgång:**
-• Håll dig sysselsatt under fastan
-• Drick mycket vatten
-• Få tillräckligt med sömn
-• Ät tillräckligt under ätfönstret
-• Var tålmodig - kroppen behöver vänja sig`
+      id: 'at-mer-functional-foods-pa-ett-enkelt-satt',
+      title: 'Ät mer Functional Foods på ett enkelt sätt',
+      description: 'Enkla strategier för att öka näringsintaget',
+      icon: GiFruitBowl,
+      color: 'from-lime-500 to-green-600',
+      readTime: '8 min',
+      category: 'Praktisk guide'
     },
     {
-      id: 'functional-foods-3-steg',
-      title: 'Functional Foods - 3 steg till ett friskare liv',
-      description: 'En strukturerad approach för långsiktig framgång',
-      icon: FiTrendingUp,
-      color: 'from-purple-600 to-indigo-700',
-      readTime: '30 min',
-      content: `Här är de tre stegen för att integrera functional foods i ditt liv:
-
-**STEG 1: RENSA & FÖRBERED (Vecka 1-2)**
-
-*Rensa ut:*
-• Processade livsmedel
-• Raffinerat socker
-• Transfetter
-• Artificiella tillsatser
-
-*Fyll på med:*
-• Färska grönsaker och frukter
-• Fullkornsprodukter
-• Nötter och frön
-• Naturliga kryddor
-
-*Förberedelser:*
-• Planera veckans måltider
-• Förbered matlådor
-• Organisera kök och skafferi
-• Skapa rutiner
-
-**STEG 2: BYGG & EXPERIMENTERA (Vecka 3-4)**
-
-*Introducera nya livsmedel:*
-• Prova en ny grönsak varje vecka
-• Testa olika fullkorn
-• Experimentera med kryddor
-• Utforska fermenterade livsmedel
-
-*Skapa vanor:*
-• Ät frukost varje dag
-• Inkludera grönsaker i varje måltid
-• Drick grönt te dagligen
-• Snacksa på nötter och frön
-
-*Lär dig laga mat:*
-• Prova nya recept
-• Lär dig grundläggande tekniker
-• Experimentera med smaker
-• Gör mat från grunden
-
-**STEG 3: FÖRFINA & UPPRÄTTHÅLL (Vecka 5+)**
-
-*Optimera näringsintaget:*
-• Balansera makronutrienter
-• Fokusera på mikronäringsämnen
-• Timing av måltider
-• Individuell anpassning
-
-*Långsiktig strategi:*
-• 80/20 regeln (80% hälsosamt)
-• Flexibilitet vid sociala tillfällen
-• Fortsätt experimentera
-• Följ kroppens signaler
-
-*Livsstilsfaktorer:*
-• Regelbunden motion
-• God sömn
-• Stresshantering
-• Social gemenskap
-
-**Nyckeln till framgång:**
-Kom ihåg att detta är en livsstil, inte en diet. Var snäll mot dig själv, fira små framsteg och fokusera på hur du mår snarare än hur du ser ut.`
+      id: 'periodisk-fasta-ger-klarhet-och-energi',
+      title: 'Periodisk fasta ger klarhet och energi',
+      description: 'Fördelarna med kontrollerad fasta',
+      icon: FiTarget,
+      color: 'from-sky-500 to-blue-600',
+      readTime: '8 min',
+      category: 'Hälsofördelar'
+    },
+    {
+      id: 'reflektion-vecka-3',
+      title: 'Reflektion vecka 3',
+      description: 'Utvärdera dina framsteg och lärdomar',
+      icon: FiBook,
+      color: 'from-teal-500 to-cyan-600',
+      readTime: '5 min',
+      category: 'Reflektion'
+    },
+    {
+      id: 'fragor-och-svars',
+      title: 'Frågor och svar',
+      description: 'Svar på vanliga frågor om Functional Foods',
+      icon: FiBookOpen,
+      color: 'from-indigo-500 to-blue-600',
+      readTime: '15 min',
+      category: 'FAQ'
+    },
+    {
+      id: 'maldokument-styrelsemote-1',
+      title: 'Målsättning och planering',
+      description: 'Strukturerad planering för hälsomål',
+      icon: FiTarget,
+      color: 'from-purple-500 to-indigo-600',
+      readTime: '8 min',
+      category: 'Planering'
+    },
+    {
+      id: 'maldokument-styrelsemote-2',
+      title: 'Utvärdering och nästa steg',
+      description: 'Reflektera och planera framåt',
+      icon: FiAward,
+      color: 'from-pink-500 to-purple-600',
+      readTime: '6 min',
+      category: 'Planering'
     }
   ];
 
-  const toggleCompleted = (id: string) => {
-    setCompletedItems(prev =>
-      prev.includes(id)
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
-    );
+  const categories = [
+    'alla',
+    'Grundläggande',
+    'Hälsofördelar', 
+    'Praktisk guide',
+    'Näringslära',
+    'Mindset',
+    'Recept & Tips',
+    'Superfoods',
+    'Reflektion',
+    'FAQ',
+    'Planering'
+  ];
+
+  const filteredModules = modules.filter(module => {
+    const matchesSearch = module.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         module.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'alla' || module.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const toggleModule = (moduleId: string) => {
+    if (completedModules.includes(moduleId)) {
+      setCompletedModules(completedModules.filter(id => id !== moduleId));
+    } else {
+      setCompletedModules([...completedModules, moduleId]);
+    }
   };
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Kunskapsmaterial</h1>
-        <p className="text-gray-600 mt-2">Fördjupa din kunskap om functional foods</p>
-      </div>
-
-      {/* Progress Bar */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Din läsning</h3>
-          <span className="text-sm text-gray-600">
-            {completedItems.length} av {knowledgeItems.length} slutförda
-          </span>
-        </div>
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-green-600 to-teal-700 text-white py-16">
+        <div className="max-w-6xl mx-auto px-4 text-center">
           <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${(completedItems.length / knowledgeItems.length) * 100}%` }}
-            className="h-full bg-gradient-to-r from-green-500 to-teal-600"
-          />
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              Kunskapsmaterial
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+              Fördjupa din kunskap om Functional Foods med våra expertskrivna artiklar
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                <span className="text-2xl font-bold">{modules.length}</span>
+                <span className="text-sm opacity-90 ml-2">Artiklar</span>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                <span className="text-2xl font-bold">{categories.length - 1}</span>
+                <span className="text-sm opacity-90 ml-2">Kategorier</span>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                <span className="text-2xl font-bold">{completedModules.length}</span>
+                <span className="text-sm opacity-90 ml-2">Lästa</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Knowledge Items Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {knowledgeItems.map((item) => {
-          const isCompleted = completedItems.includes(item.id);
-          return (
-            <motion.div
-              key={item.id}
-              whileHover={{ scale: 1.02 }}
-              onClick={() => setSelectedItem(item)}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
-            >
-              <div className={`bg-gradient-to-r ${item.color} p-6 text-white`}>
-                <div className="flex items-start justify-between">
-                  <item.icon className="w-12 h-12" />
-                  {isCompleted && (
-                    <FiCheckCircle className="w-6 h-6" />
-                  )}
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-600 mb-4">{item.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center text-sm text-gray-500">
-                    <FiClock className="mr-1" />
-                    {item.readTime}
-                  </span>
-                  <span className="text-sm font-medium text-purple-600">
-                    Läs mer →
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
+      {/* Search and Filter */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-2xl shadow-lg p-6 mb-8"
+        >
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Sök artiklar..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+            </div>
+            
+            {/* Category Filter */}
+            <div className="relative">
+              <FiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="pl-10 pr-8 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white"
+              >
+                {categories.map(category => (
+                  <option key={category} value={category}>
+                    {category === 'alla' ? 'Alla kategorier' : category}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </motion.div>
 
-      {/* Popup Modal */}
-      <AnimatePresence>
-        {selectedItem && (
+        {/* Articles Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredModules.map((module, index) => (
+            <motion.div
+              key={module.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index }}
+              className="group"
+            >
+              <Link href={`/dashboard/courses/functional-basics/material/${module.id}`}>
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 h-full">
+                  {/* Header with gradient */}
+                  <div className={`bg-gradient-to-r ${module.color} p-6 text-white relative overflow-hidden`}>
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                    <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -ml-8 -mb-8"></div>
+                    
+                    <div className="relative z-10">
+                      <module.icon className="w-8 h-8 mb-3" />
+                      <div className="text-sm opacity-90 mb-2">{module.category}</div>
+                      <h3 className="text-xl font-bold leading-tight">{module.title}</h3>
+                    </div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-6">
+                    <p className="text-gray-600 mb-4 line-clamp-3">{module.description}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FiClock className="w-4 h-4 mr-1" />
+                        <span>{module.readTime}</span>
+                      </div>
+                      
+                      <div className="flex items-center text-green-600 font-semibold group-hover:text-green-700">
+                        <span className="mr-2">Läs mer</span>
+                        <FiArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                    
+                    {/* Progress indicator */}
+                    {completedModules.includes(module.id) && (
+                      <div className="mt-4 flex items-center text-green-600">
+                        <div className="w-2 h-2 bg-green-600 rounded-full mr-2"></div>
+                        <span className="text-sm font-medium">Läst</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* No results */}
+        {filteredModules.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-            onClick={() => setSelectedItem(null)}
+            className="text-center py-12"
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
-            >
-              <div className={`bg-gradient-to-r ${selectedItem.color} p-6 text-white`}>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2">{selectedItem.title}</h2>
-                    <p className="opacity-90">{selectedItem.description}</p>
-                  </div>
-                  <button
-                    onClick={() => setSelectedItem(null)}
-                    className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-                  >
-                    <FiX className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="p-6 overflow-y-auto max-h-[60vh]">
-                <div className="prose prose-lg max-w-none">
-                  {selectedItem.content.split('\n').map((paragraph, index) => {
-                    if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
-                      return (
-                        <h3 key={index} className="text-xl font-bold text-gray-900 mt-6 mb-3">
-                          {paragraph.replace(/\*\*/g, '')}
-                        </h3>
-                      );
-                    } else if (paragraph.startsWith('•')) {
-                      return (
-                        <li key={index} className="ml-4 text-gray-700">
-                          {paragraph.substring(1).trim()}
-                        </li>
-                      );
-                    } else if (paragraph.match(/^\d+\./)) {
-                      return (
-                        <li key={index} className="ml-4 text-gray-700 list-decimal">
-                          {paragraph}
-                        </li>
-                      );
-                    } else if (paragraph.trim()) {
-                      return (
-                        <p key={index} className="text-gray-700 mb-4">
-                          {paragraph}
-                        </p>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              </div>
-
-              <div className="p-6 border-t border-gray-200 flex items-center justify-between">
-                <span className="flex items-center text-sm text-gray-500">
-                  <FiClock className="mr-1" />
-                  {selectedItem.readTime} läsning
-                </span>
-                <button
-                  onClick={() => {
-                    toggleCompleted(selectedItem.id);
-                    setSelectedItem(null);
-                  }}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    completedItems.includes(selectedItem.id)
-                      ? 'bg-gray-200 text-gray-700'
-                      : 'bg-gradient-to-r from-green-500 to-teal-600 text-white'
-                  }`}
-                >
-                  {completedItems.includes(selectedItem.id) ? 'Markera som oläst' : 'Markera som läst'}
-                </button>
-              </div>
-            </motion.div>
+            <FiBook className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">Inga artiklar hittades</h3>
+            <p className="text-gray-500">Prova att ändra dina sökkriterier</p>
           </motion.div>
         )}
-      </AnimatePresence>
+
+        {/* Back to Course */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-center mt-12"
+        >
+          <Link
+            href="/dashboard/courses/functional-basics"
+            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105"
+          >
+            <FiArrowRight className="w-5 h-5 mr-2 rotate-180" />
+            Tillbaka till kursen
+          </Link>
+        </motion.div>
+      </div>
     </div>
   );
 } 

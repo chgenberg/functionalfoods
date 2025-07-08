@@ -13,8 +13,8 @@ import {
   GiWheat, GiMeat, GiWaterBottle
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
-import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
 import { CalendarView } from '../components/CalendarView';
+import { ShoppingListSection, RecipeHighlights } from './components';
 import { GoalsSection } from '../components/GoalsSection';
 
 interface TabProps {
@@ -24,9 +24,21 @@ interface TabProps {
   color: string;
 }
 
+interface MealItem {
+  name: string;
+  recipeLink?: string;
+  note?: string;
+}
+
+interface DayMeals {
+  breakfast: MealItem;
+  lunch: MealItem;
+  dinner: MealItem;
+  snack?: MealItem;
+}
+
 export default function Week3Page() {
   const [activeTab, setActiveTab] = useState('overview');
-  const [expandedDay, setExpandedDay] = useState<string | null>(null);
 
   const tabs: TabProps[] = [
     { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
@@ -35,41 +47,41 @@ export default function Week3Page() {
     { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
 
-  const mealPlan = {
+  const mealPlan: Record<string, DayMeals> = {
     Måndag: {
       breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-      lunch: { name: 'Päronsallad med chevréost (Rester)', recipeLink: '/kunskapsbank/recept/paronsallad' },
+      lunch: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad', note: 'Rester' },
       dinner: { name: 'Kycklingfylld aubergine', recipeLink: '/kunskapsbank/recept/kycklingfylld-aubergine' }
     },
     Tisdag: {
       breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-lax' },
-      lunch: { name: 'Kycklingfylld aubergine (Rester)' },
+      lunch: { name: 'Kycklingfylld aubergine', note: 'Rester' },
       dinner: { name: 'Rökt lax med blomkålsallad och citronyoghurt', recipeLink: '/kunskapsbank/recept/rokt-lax-blomkalsallad' }
     },
     Onsdag: {
       breakfast: { name: 'Rödbetsjuice', recipeLink: '/kunskapsbank/recept/rodbetsjuice' },
-      lunch: { name: 'Rökt lax med blomkålsallad och citronyoghurt (Rester)' },
+      lunch: { name: 'Rökt lax med blomkålsallad och citronyoghurt', note: 'Rester' },
       dinner: { name: 'Vegetarisk currygryta med panéer', recipeLink: '/kunskapsbank/recept/vegetarisk-currygryta' }
     },
     Torsdag: {
-      breakfast: { name: 'Rödbetsjuice (Rester)' },
-      lunch: { name: 'Vegetarisk currygryta med panéer (Rester)' },
-      dinner: { name: 'Kycklinggryta med bakad spetskål (Rester)' }
+      breakfast: { name: 'Rödbetsjuice', note: 'Rester' },
+      lunch: { name: 'Vegetarisk currygryta med panéer', note: 'Rester' },
+      dinner: { name: 'Kycklinggryta med bakad spetskål', note: 'Rester' }
     },
     Fredag: {
       breakfast: { name: 'Havrefralla med morötter och torkade aprikoser', recipeLink: '/kunskapsbank/recept/havrefralla' },
-      lunch: { name: 'Lax med fetaost och rostade rotfrukter (Rester)' },
+      lunch: { name: 'Lax med fetaost och rostade rotfrukter', note: 'Rester' },
       dinner: { name: 'Hamburgare med hummus', recipeLink: '/kunskapsbank/recept/hamburgare-hummus' }
     },
     Lördag: {
       breakfast: { name: 'Keso med granola och fruktsallad', recipeLink: '/kunskapsbank/recept/keso-granola' },
-      lunch: { name: 'Hamburgare med hummus (Rester)' },
+      lunch: { name: 'Hamburgare med hummus', note: 'Rester' },
       dinner: { name: 'Ugnsbakad kyckling med tzatziki och sallad', recipeLink: '/kunskapsbank/recept/ugnsbakad-kyckling' },
       snack: { name: 'Mandel och citronpaj', recipeLink: '/kunskapsbank/recept/mandel-citronpaj' }
     },
     Söndag: {
       breakfast: { name: 'Omelett med hallon', recipeLink: '/kunskapsbank/recept/omelett-hallon' },
-      lunch: { name: 'Ugnsbakad kyckling med tzatziki och sallad (Rester)' },
+      lunch: { name: 'Ugnsbakad kyckling med tzatziki och sallad', note: 'Rester' },
       dinner: { name: 'Lax med waldorfsallad', recipeLink: '/kunskapsbank/recept/lax-waldorfsallad' }
     }
   };
@@ -235,13 +247,6 @@ export default function Week3Page() {
             >
               {/* Calendar View */}
               <CalendarView mealPlan={mealPlan} weekNumber={3} />
-              
-              {/* Traditional Meal Plan View */}
-              <MealPlanSection 
-                mealPlan={mealPlan}
-                expandedDay={expandedDay}
-                setExpandedDay={setExpandedDay}
-              />
 
               {/* Recipe Highlights */}
               <RecipeHighlights />

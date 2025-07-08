@@ -166,31 +166,71 @@ export function RecipeHighlights() {
   const recipes = [
     { name: 'Omelett med champinjoner', time: 'Måndag - Frukost', image: '/images/omelett-champinjoner.jpg' },
     { name: 'Torskrygg med ägghack', time: 'Tisdag - Middag', image: '/images/torskrygg.jpg' },
-    { name: 'Lax med fetaost', time: 'Fredag - Middag', image: '/images/lax-feta.jpg' },
-    { name: 'Äppelpaj med vaniljkräm', time: 'Lördag - Efterrätt', image: '/images/appelpaj.jpg' }
+    { name: 'Lax med fetaost', time: 'Fredag - Middag', image: '/images/lax-feta.jpg' }
   ];
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8">
       <h3 className="text-2xl font-bold text-gray-900 mb-6">Veckans höjdpunkter</h3>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         {recipes.map((recipe, index) => (
           <motion.div
             key={index}
-            whileHover={{ scale: 1.05 }}
-            className="relative rounded-xl overflow-hidden shadow-lg cursor-pointer group"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            whileHover={{ 
+              scale: 1.05,
+              y: -5,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-gradient-to-br from-green-50 to-teal-50 hover:shadow-2xl transition-all duration-300"
           >
-            <div className="aspect-w-4 aspect-h-3 bg-gradient-to-br from-green-100 to-blue-100">
-              <div className="flex items-center justify-center">
-                <GiMeal className="w-16 h-16 text-gray-400" />
+            {/* Background with gradient overlay */}
+            <div className="aspect-w-4 aspect-h-3 bg-gradient-to-br from-green-100 via-teal-100 to-blue-100 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 via-teal-500/20 to-blue-600/20" />
+              
+              {/* Decorative elements */}
+              <div className="absolute inset-0">
+                <div className="absolute top-2 right-2 w-8 h-8 bg-white/20 rounded-full blur-sm"></div>
+                <div className="absolute bottom-4 left-4 w-6 h-6 bg-white/30 rounded-full blur-sm"></div>
+                <div className="absolute top-1/2 left-1/3 w-4 h-4 bg-white/25 rounded-full blur-sm"></div>
+              </div>
+              
+              {/* Icon */}
+              <div className="flex items-center justify-center relative z-10">
+                <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg group-hover:bg-white group-hover:scale-110 transition-all duration-300">
+                  <GiMeal className="w-8 h-8 text-green-600" />
+                </div>
+              </div>
+              
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
+            
+            {/* Content */}
+            <div className="p-4 bg-white relative">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+              
+              <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-green-600 transition-colors duration-300">
+                {recipe.name}
+              </h4>
+              <p className="text-sm text-gray-600 mb-3 group-hover:text-gray-700 transition-colors duration-300">
+                {recipe.time}
+              </p>
+              
+              {/* Action indicator */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-1 text-xs text-gray-500">
+                  <FiClock className="w-3 h-3" />
+                  <span>15 min</span>
+                </div>
+                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                  <FiChevronRight className="w-4 h-4" />
+                </div>
               </div>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-              <h4 className="font-bold text-lg mb-1">{recipe.name}</h4>
-              <p className="text-sm opacity-90">{recipe.time}</p>
-            </div>
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
           </motion.div>
         ))}
       </div>
@@ -316,18 +356,60 @@ export function MealPlanSection({
           ].map((recipe, index) => (
             <motion.div
               key={index}
-              whileHover={{ scale: 1.05 }}
-              className="relative rounded-xl overflow-hidden shadow-md cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ 
+                scale: 1.05,
+                y: -8,
+                transition: { duration: 0.2 }
+              }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-2xl transition-all duration-300"
             >
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-green-100 to-blue-100">
-                <div className="flex items-center justify-center">
-                  <GiMeal className="w-16 h-16 text-gray-400" />
+              {/* Background with gradient overlay */}
+              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 via-pink-500/20 to-orange-600/20" />
+                
+                {/* Decorative elements */}
+                <div className="absolute inset-0">
+                  <div className="absolute top-3 right-3 w-10 h-10 bg-white/20 rounded-full blur-sm"></div>
+                  <div className="absolute bottom-4 left-4 w-6 h-6 bg-white/30 rounded-full blur-sm"></div>
+                  <div className="absolute top-1/3 left-1/4 w-4 h-4 bg-white/25 rounded-full blur-sm"></div>
                 </div>
+                
+                {/* Icon */}
+                <div className="flex items-center justify-center relative z-10">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg group-hover:bg-white group-hover:scale-110 transition-all duration-300">
+                    <GiMeal className="w-8 h-8 text-purple-600" />
+                  </div>
+                </div>
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                <h4 className="font-semibold text-lg">{recipe.name}</h4>
-                <p className="text-sm opacity-90">{recipe.time}</p>
+              
+              {/* Content */}
+              <div className="p-4 bg-white relative">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                
+                <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-purple-600 transition-colors duration-300">
+                  {recipe.name}
+                </h4>
+                <p className="text-sm text-gray-600 mb-3 group-hover:text-gray-700 transition-colors duration-300">
+                  {recipe.time}
+                </p>
+                
+                {/* Action indicator */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1 text-xs text-gray-500">
+                    <FiClock className="w-3 h-3" />
+                    <span>20 min</span>
+                  </div>
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                    <FiChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}

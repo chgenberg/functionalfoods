@@ -13,8 +13,8 @@ import {
   GiWheat, GiMeat, GiWaterBottle
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
-import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
 import { CalendarView } from '../components/CalendarView';
+import { ShoppingListSection, RecipeHighlights } from './components';
 import { GoalsSection } from '../components/GoalsSection';
 
 interface TabProps {
@@ -24,9 +24,21 @@ interface TabProps {
   color: string;
 }
 
+interface MealItem {
+  name: string;
+  recipeLink?: string;
+  note?: string;
+}
+
+interface DayMeals {
+  breakfast: MealItem;
+  lunch: MealItem;
+  dinner: MealItem;
+  snack?: MealItem;
+}
+
 export default function Week2Page() {
   const [activeTab, setActiveTab] = useState('overview');
-  const [expandedDay, setExpandedDay] = useState<string | null>(null);
 
   const tabs: TabProps[] = [
     { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
@@ -35,15 +47,15 @@ export default function Week2Page() {
     { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
 
-  const mealPlan = {
+  const mealPlan: Record<string, DayMeals> = {
     Måndag: {
       breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-      lunch: { name: 'Ugnsbakad tomat med köttfärs (Rester)' },
+      lunch: { name: 'Ugnsbakad tomat med köttfärs', note: 'Rester' },
       dinner: { name: 'Nudelsoppa med grönsaker', recipeLink: '/kunskapsbank/recept/nudelsoppa' }
     },
     Tisdag: {
       breakfast: { name: 'Omelett med champinjoner', recipeLink: '/kunskapsbank/recept/omelett-champinjoner' },
-      lunch: { name: 'Nudelsoppa med grönsaker (Rester)' },
+      lunch: { name: 'Nudelsoppa med grönsaker', note: 'Rester' },
       dinner: { name: 'Torskrygg med ägghack och sparris', recipeLink: '/kunskapsbank/recept/torskrygg' }
     },
     Onsdag: {
@@ -52,25 +64,25 @@ export default function Week2Page() {
       dinner: { name: 'Turkiska lammfärsspett', recipeLink: '/kunskapsbank/recept/lammfarsspett' }
     },
     Torsdag: {
-      breakfast: { name: 'Omelett med champinjoner (Rester)' },
-      lunch: { name: 'Torskrygg med ägghack och sparris (Rester)' },
+      breakfast: { name: 'Omelett med champinjoner', note: 'Rester' },
+      lunch: { name: 'Torskrygg med ägghack och sparris', note: 'Rester' },
       dinner: { name: 'Kycklinggryta med bakad spetskål', recipeLink: '/kunskapsbank/recept/kycklinggryta' }
     },
     Fredag: {
       breakfast: { name: 'Havrefralla med morötter och torkade aprikoser', recipeLink: '/kunskapsbank/recept/havrefralla' },
-      lunch: { name: 'Turkiska lammfärsspett (Rester)' },
+      lunch: { name: 'Turkiska lammfärsspett', note: 'Rester' },
       dinner: { name: 'Lax med fetaost och rostade rotfrukter', recipeLink: '/kunskapsbank/recept/lax-feta' }
     },
     Lördag: {
       breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-lax' },
-      lunch: { name: 'Kycklinggryta med bakad spetskål (Rester)' },
+      lunch: { name: 'Kycklinggryta med bakad spetskål', note: 'Rester' },
       dinner: { name: 'Asiatiska köttbullar', recipeLink: '/kunskapsbank/recept/asiatiska-kottbullar' },
       snack: { name: 'Jordgubbar med chokladkräm', recipeLink: '/kunskapsbank/recept/chokladkram' }
     },
     Söndag: {
-      breakfast: { name: 'Äggröra med lax (Rester)' },
-      lunch: { name: 'Lax med fetaost och rostade rotfrukter (Rester)' },
-      dinner: { name: 'Asiatiska köttbullar (Rester)' }
+      breakfast: { name: 'Äggröra med lax', note: 'Rester' },
+      lunch: { name: 'Lax med fetaost och rostade rotfrukter', note: 'Rester' },
+      dinner: { name: 'Asiatiska köttbullar', note: 'Rester' }
     }
   };
 
@@ -235,13 +247,6 @@ export default function Week2Page() {
               {/* Calendar View */}
               <CalendarView mealPlan={mealPlan} weekNumber={2} />
               
-              {/* Traditional Meal Plan View */}
-              <MealPlanSection 
-                mealPlan={mealPlan}
-                expandedDay={expandedDay}
-                setExpandedDay={setExpandedDay}
-              />
-
               {/* Recipe Highlights */}
               <RecipeHighlights />
             </motion.div>

@@ -27,6 +27,7 @@ model User {
   symptomAnalyses SymptomAnalysis[]
   purchases     Purchase[]
   orders        Order[]
+  goals         Goal[]
 }
 
 model Course {
@@ -206,6 +207,28 @@ model Purchase {
   updatedAt  DateTime @updatedAt
   
   @@unique([userId, courseId])
+}
+
+model Goal {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  category    String    // 'weekly', 'health', 'nutrition', 'exercise', 'general'
+  priority    String    @default("medium") // 'low', 'medium', 'high'
+  status      String    @default("active") // 'active', 'completed', 'paused', 'cancelled'
+  progress    Int       @default(0) // 0-100
+  targetDate  DateTime?
+  completedAt DateTime?
+  weekNumber  Int?      // For course-specific weekly goals
+  courseId    String?   // Link to specific course
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([weekNumber])
 }
 
 enum OrderStatus {
