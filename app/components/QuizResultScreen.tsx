@@ -406,9 +406,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
               {activeTab === 'summary' && recommendations && (
                 <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
                   <h2 className="text-3xl font-semibold text-gray-800 mb-6">Din hälsoprofil</h2>
-                  <p className="text-lg text-gray-700 leading-relaxed mb-8">
-                    {recommendations.profile}
-                  </p>
+                  <div 
+                    className="text-lg text-gray-700 leading-relaxed mb-8"
+                    dangerouslySetInnerHTML={{ __html: recommendations.profile }}
+                  />
                   
                   {/* Quick Actions */}
                   <div className="grid md:grid-cols-3 gap-6 mt-8">
@@ -456,10 +457,16 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         </div>
                         <div className="flex-1">
                           <h3 className="text-2xl font-semibold text-gray-800 mb-3">{rec.title}</h3>
-                          <p className="text-gray-700 mb-6 text-lg">{rec.description}</p>
+                          <div 
+                            className="text-gray-700 mb-6 text-lg"
+                            dangerouslySetInnerHTML={{ __html: rec.description }}
+                          />
                           <div className="bg-green-50 rounded-xl p-4">
                             <h4 className="font-medium text-green-800 mb-2">Så här använder du det:</h4>
-                            <p className="text-green-700">{rec.howToUse}</p>
+                            <div 
+                              className="text-green-700"
+                              dangerouslySetInnerHTML={{ __html: rec.howToUse }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -481,7 +488,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
                       >
                         <FiHeart className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
-                        <p className="text-gray-700 text-lg">{advice}</p>
+                        <div 
+                          className="text-gray-700 text-lg"
+                          dangerouslySetInnerHTML={{ __html: advice }}
+                        />
                       </motion.div>
                     ))}
                   </div>
@@ -503,7 +513,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         <div className="bg-purple-100 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
                           <span className="text-purple-600 font-semibold">{index + 1}</span>
                         </div>
-                        <p className="text-gray-700 text-lg">{step}</p>
+                        <div 
+                          className="text-gray-700 text-lg"
+                          dangerouslySetInnerHTML={{ __html: step }}
+                        />
                       </motion.div>
                     ))}
                   </div>

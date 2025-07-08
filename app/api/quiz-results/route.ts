@@ -91,35 +91,45 @@ export async function POST(request: NextRequest) {
     }).join('\n');
 
     const prompt = `
-Du är Ulrika Davidsson, en expert på functional foods och hälsa. Analysera följande quiz-svar och ge personaliserade rekommendationer för functional foods.
+Du är Ulrika Davidsson, en expert på functional foods och hälsa. Analysera följande quiz-svar och ge personaliserade rekommendationer.
 
 Quiz-svar:
 ${answerSummary}
 
 Baserat på svaren, ge:
-1. En kort sammanfattning av personens hälsoprofil
-2. 3-5 specifika functional food rekommendationer med förklaring
-3. Livsstilsråd som kompletterar functional foods
-4. Nästa steg för att förbättra hälsan
+1. En kort sammanfattning av personens hälsoprofil (2-3 meningar)
+2. 4-6 specifika functional food rekommendationer med förklaring
+3. 6-8 konkreta livsstilsråd som kompletterar functional foods (inkludera sömn, motion, stress, kost, mindfulness)
+4. 5-7 nästa steg för att förbättra hälsan
 
 Svara på svenska och håll en varm, uppmuntrande ton som Ulrika Davidsson.
+Använd HTML-formatering: <strong> för viktiga begrepp, <br> för radbrytningar, <p> för stycken.
+Var konkret och specifik i dina råd.
+
 Formatera svaret som JSON med följande struktur:
 {
-  "profile": "Kort sammanfattning av hälsoprofil",
+  "profile": "Kort sammanfattning av hälsoprofil med HTML-formatering",
   "recommendations": [
     {
       "title": "Functional food titel",
-      "description": "Beskrivning och fördelar",
-      "howToUse": "Hur man använder det"
+      "description": "Beskrivning och fördelar med HTML-formatering",
+      "howToUse": "Hur man använder det med HTML-formatering"
     }
   ],
   "lifestyleAdvice": [
-    "Livsstilsråd 1",
-    "Livsstilsråd 2"
+    "Livsstilsråd 1 med HTML-formatering",
+    "Livsstilsråd 2 med HTML-formatering",
+    "Livsstilsråd 3 med HTML-formatering",
+    "Livsstilsråd 4 med HTML-formatering",
+    "Livsstilsråd 5 med HTML-formatering",
+    "Livsstilsråd 6 med HTML-formatering"
   ],
   "nextSteps": [
-    "Nästa steg 1",
-    "Nästa steg 2"
+    "Nästa steg 1 med HTML-formatering",
+    "Nästa steg 2 med HTML-formatering",
+    "Nästa steg 3 med HTML-formatering",
+    "Nästa steg 4 med HTML-formatering",
+    "Nästa steg 5 med HTML-formatering"
   ]
 }`;
 
@@ -128,7 +138,7 @@ Formatera svaret som JSON med följande struktur:
       messages: [
         {
           role: "system",
-          content: "Du är Ulrika Davidsson, en expert på functional foods och hälsa. Du ger personaliserade råd baserat på quiz-svar."
+          content: "Du är Ulrika Davidsson, en expert på functional foods och hälsa. Du ger personaliserade råd baserat på quiz-svar. Använd HTML-formatering: <strong> för fetstil, <br> för radbrytningar, <p> för stycken."
         },
         {
           role: "user",
@@ -136,7 +146,7 @@ Formatera svaret som JSON med följande struktur:
         }
       ],
       temperature: 0.7,
-      max_tokens: 2000,
+      max_tokens: 4000,
     });
 
     const result = completion.choices[0]?.message?.content;
@@ -148,26 +158,55 @@ Formatera svaret som JSON med följande struktur:
     // Try to parse the JSON response
     let parsedResult;
     try {
-      parsedResult = JSON.parse(result);
+      // Clean the result string first
+      let cleanResult = result.trim();
+      
+      // Remove any markdown code blocks
+      cleanResult = cleanResult.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      
+      // Try to find JSON content between first { and last }
+      const firstBrace = cleanResult.indexOf('{');
+      const lastBrace = cleanResult.lastIndexOf('}');
+      
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        cleanResult = cleanResult.substring(firstBrace, lastBrace + 1);
+      }
+      
+      parsedResult = JSON.parse(cleanResult);
+      
+      // Validate the structure
+      if (!parsedResult.profile || !parsedResult.recommendations) {
+        throw new Error('Invalid structure');
+      }
+      
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', result);
-      // Fallback to a structured response
+      // Create a better fallback using the raw result
+             const cleanText = result.replace(/```json|```/g, '').replace(/^\s*\{.*?\}\s*/, '').trim();
+      
       parsedResult = {
-        profile: "Baserat på dina svar har vi analyserat din hälsoprofil.",
+        profile: "<p>Baserat på dina svar har vi analyserat din hälsoprofil och skapat personaliserade rekommendationer för dig.</p>",
         recommendations: [
           {
-            title: "Personaliserade rekommendationer",
-            description: result,
-            howToUse: "Följ råden som beskrivs ovan."
+            title: "AI-genererade rekommendationer",
+            description: `<p>${cleanText.substring(0, 500)}...</p>`,
+            howToUse: "<p>Implementera dessa råd gradvis i din vardag för bästa resultat.</p>"
           }
         ],
         lifestyleAdvice: [
-          "Fortsätt med hälsosamma vanor",
-          "Konsultera en hälsoexpert för mer detaljerad vägledning"
+          "<strong>Prioritera god sömn</strong> - sträva efter 7-9 timmar per natt<br>Skapa en avslappnande kvällsrutin",
+          "<strong>Rör dig regelbundet</strong> - minst 30 minuter daglig aktivitet<br>Variera mellan styrka och kondition",
+          "<strong>Hantera stress</strong> - prova mindfulness eller meditation<br>Ta pauser under arbetsdagen",
+          "<strong>Ät näringsrik kost</strong> - fokusera på hela, naturliga livsmedel<br>Inkludera grönsaker i varje måltid",
+          "<strong>Håll dig hydrerad</strong> - drick 2-3 liter vatten dagligen<br>Börja dagen med ett glas vatten",
+          "<strong>Skapa balans</strong> - hitta tid för återhämtning och vila<br>Sätt gränser mellan arbete och fritid"
         ],
         nextSteps: [
-          "Implementera de rekommenderade förändringarna gradvis",
-          "Följ upp din progress regelbundet"
+          "<strong>Vecka 1-2:</strong> Implementera en ny hälsovana i taget<br>Börja med den som känns enklast",
+          "<strong>Vecka 3-4:</strong> Lägg till functional foods i din dagliga kost<br>Börja med 1-2 produkter",
+          "<strong>Månad 2:</strong> Förbättra din sömnhygien och kvällsrutin<br>Skapa en konsekvent sovtid",
+          "<strong>Månad 3:</strong> Öka din fysiska aktivitet gradvis<br>Hitta aktiviteter du verkligen tycker om",
+          "<strong>Långsiktigt:</strong> Följ upp din progress regelbundet<br>Justera strategin baserat på resultat"
         ]
       };
     }
