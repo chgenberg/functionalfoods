@@ -106,20 +106,9 @@ export async function GET(request: NextRequest) {
     // Read all recipes from CSV
     const allRecipes = getRecipesFromCSV();
     
-    // Filter recipes based on user access
-    let filteredRecipes = allRecipes.filter(recipe => {
-      // Always show published recipes (free for everyone)
-      if (recipe.Status === 'publish') {
-        return true;
-      }
-      
-      // Only show draft recipes to users with course access
-      if (recipe.Status === 'draft') {
-        return hasAccess;
-      }
-      
-      return false;
-    });
+    // Don't filter by access - show all recipes
+    // We'll handle access control in the frontend
+    let filteredRecipes = allRecipes;
     
     // Apply category filter
     if (category && category !== 'all') {

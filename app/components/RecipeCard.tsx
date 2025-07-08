@@ -31,7 +31,7 @@ interface RecipeCardProps {
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
   const canAccess = !recipe.isPremium || userAccess.hasAccess;
-  const imageUrl = recipe.imageUrl || '/images/recipe-placeholder.jpg';
+  const imageUrl = recipe.imageUrl || '/images/recipe-placeholder.svg';
 
   return (
     <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 h-[520px] flex flex-col">

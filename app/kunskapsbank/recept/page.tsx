@@ -340,7 +340,7 @@ const RecipesPage = () => {
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="md:w-1/4">
                     <img
-                      src={recipe.imageUrl || '/images/recipe-placeholder.jpg'}
+                      src={recipe.imageUrl || '/images/recipe-placeholder.svg'}
                       alt={recipe.imageAlt || recipe.title}
                       className="w-full h-48 md:h-32 object-cover rounded-lg"
                     />

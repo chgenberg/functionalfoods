@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle } from 'react-icons/fi';
 import { AnalysisResult } from "../types";
 
 export default function DummyResultPage() {
   const [analysisData, setAnalysisData] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('summary');
 
   useEffect(() => {
     // Hämta analysresultat från localStorage
@@ -28,7 +30,7 @@ export default function DummyResultPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Laddar din analys...</p>
@@ -39,7 +41,7 @@ export default function DummyResultPage() {
 
   if (!analysisData) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600 mb-4">Ingen analysdata hittades.</p>
           <Link href="/" className="text-green-500 hover:text-green-600 underline">
@@ -50,168 +52,264 @@ export default function DummyResultPage() {
     );
   }
 
+  const tabs = [
+    { id: 'summary', label: 'Sammanfattning', icon: '📊' },
+    { id: 'recommendations', label: 'Rekommendationer', icon: '🍃' },
+    { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' },
+    { id: 'courses', label: 'Kurser', icon: '⭐' }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-[#f8f5f0]">
-      {/* Hero video sektion */}
-      <div className="bg-gradient-to-b from-white to-[#fafaf8] py-8">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-            <video 
-              autoPlay 
-              loop 
-              muted
-              playsInline
-              className="w-full h-auto"
-              style={{ maxHeight: '500px', objectFit: 'cover' }}
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header with scrolling text */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          {/* Scrolling title container */}
+          <div className="relative overflow-hidden mb-4">
+            <motion.div
+              className="flex whitespace-nowrap"
+              animate={{
+                x: [0, -1920]
+              }}
+              transition={{
+                x: {
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear"
+                }
+              }}
             >
-              <source src="/Ulrika.mp4" type="video/mp4" />
-              Din webbläsare stöder inte videouppspelning.
-            </video>
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
+                DIN PERSONLIGA HÄLSOANALYS
+              </h1>
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
+                DIN PERSONLIGA HÄLSOANALYS
+              </h1>
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
+                DIN PERSONLIGA HÄLSOANALYS
+              </h1>
+            </motion.div>
             
-            {/* Overlay med play/pause kontroller */}
-            <div className="absolute bottom-4 right-4 flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  const video = e.currentTarget.closest('.relative')?.querySelector('video');
-                  if (video) {
-                    if (video.paused) {
-                      video.play();
-                    } else {
-                      video.pause();
-                    }
-                  }
-                }}
-                className="bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white hover:text-gray-900 rounded-full p-2 transition-all duration-200 shadow-lg"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </button>
-              <button
-                onClick={(e) => {
-                  const video = e.currentTarget.closest('.relative')?.querySelector('video');
-                  if (video) {
-                    video.muted = !video.muted;
-                  }
-                }}
-                className="bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white hover:text-gray-900 rounded-full p-2 transition-all duration-200 shadow-lg"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                </svg>
-              </button>
-            </div>
+            {/* Gradient fade edges */}
+            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-green-50 to-transparent pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-blue-50 to-transparent pointer-events-none" />
           </div>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Huvudinnehåll */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Personlig hälsning */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-light tracking-tight text-gray-900 mb-4">
-            DIN PERSONLIGA HÄLSOANALYS
-          </h1>
-          <p className="text-lg text-gray-600 font-light">
-            Baserat på dina svar har vi identifierat områden där Functional Foods kan göra stor skillnad
-          </p>
-        </div>
-
-        {/* Sammanfattning */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-light text-gray-800 mb-6 flex items-center">
-            <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-              <span className="text-green-600">✓</span>
-            </span>
-            Sammanfattning
-          </h2>
-          <p className="text-gray-700 font-light leading-relaxed">
-            {analysisData.summary}
-          </p>
-        </div>
-
-        {/* Rekommendationer */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-light text-gray-800 mb-6">
-            Personliga Rekommendationer
-          </h2>
-          <div className="space-y-4">
-            {analysisData.recommendations.map((recommendation: string, index: number) => (
-              <div key={index} className="flex items-start">
-                <div className="w-2 h-2 bg-green-400 rounded-full mt-2 mr-3"></div>
-                <p className="text-gray-700 font-light">{recommendation}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Functional Foods */}
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl shadow-lg p-8 mb-8 border border-green-100">
-          <h2 className="text-2xl font-light text-gray-800 mb-6">
-            Rekommenderade Functional Foods
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {analysisData.functionalFoods.map((food: string, index: number) => (
-              <div key={index} className="bg-white rounded-xl p-4 shadow-sm">
-                <div className="flex items-center">
-                  <span className="text-2xl mr-3">🥗</span>
-                  <p className="text-gray-700">{food}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Livsstilsförändringar */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-light text-gray-800 mb-6">
-            Livsstilsförändringar
-          </h2>
-          <div className="space-y-4">
-            {analysisData.lifestyleChanges.map((change: string, index: number) => (
-              <div key={index} className="flex items-start">
-                <span className="text-blue-500 mr-3">•</span>
-                <p className="text-gray-700 font-light">{change}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Rekommenderad kurs */}
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl shadow-lg p-8 mb-8 border border-green-100">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-light text-gray-800">
-              Perfekt Kurs För Dig
-            </h2>
-          </div>
-          
-          <div className="bg-white rounded-xl p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-3">
-              Functional Flow
-            </h3>
-            <p className="text-gray-600 mb-4">
-              En 6-veckorskurs specialdesignad för dig som vill förbättra din maghälsa, minska inflammation och skapa naturligt flöde i vardagen. Perfekt för dina identifierade behov.
-            </p>
-            
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-              <p className="text-sm text-green-800">
-                <span className="font-semibold">Specialpris just nu:</span> 1.836 kr 
-                <span className="text-green-600 ml-2">(ord. pris 2.295 kr)</span>
-              </p>
-            </div>
-
-            <Link 
-              href="/utbildning/functional-flow" 
-              className="block w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-center"
+        {/* Quick Wins */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-3xl shadow-xl p-6 mb-8"
+        >
+          <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <span className="text-2xl mr-2">🎯</span>
+            Snabba vinster för din hälsa:
+          </h3>
+          <div className="grid md:grid-cols-3 gap-4">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="bg-blue-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
             >
-              Gå till kurssidan →
-            </Link>
+              <motion.div 
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-2xl mb-2"
+              >💧</motion.div>
+              <div className="text-sm font-medium text-blue-800">Drick 2L vatten dagligen</div>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="bg-green-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
+            >
+              <motion.div 
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                className="text-2xl mb-2"
+              >🚶</motion.div>
+              <div className="text-sm font-medium text-green-800">10 min promenad efter lunch</div>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="bg-purple-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
+            >
+              <motion.div 
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                className="text-2xl mb-2"
+              >😴</motion.div>
+              <div className="text-sm font-medium text-purple-800">Sov före 22:30</div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white rounded-3xl shadow-xl overflow-hidden"
+        >
+          {/* Tab Headers */}
+          <div className="flex overflow-x-auto bg-gray-50 p-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'bg-white text-green-600 shadow-md'
+                    : 'text-gray-600 hover:text-green-600'
+                }`}
+              >
+                <span className="text-lg">{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {activeTab === 'summary' && (
+                  <div>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Din Sammanfattning</h2>
+                    <div className="prose prose-green max-w-none">
+                      <p className="text-gray-700 text-lg leading-relaxed">{analysisData.summary}</p>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'recommendations' && (
+                  <div>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Personliga Rekommendationer</h2>
+                    <div className="space-y-4">
+                      {analysisData.recommendations.map((recommendation: string, index: number) => (
+                        <div key={index} className="flex items-start space-x-3 p-4 bg-green-50 rounded-xl">
+                          <div className="bg-green-200 rounded-full p-2 flex-shrink-0">
+                            <FiCheckCircle className="w-5 h-5 text-green-600" />
+                          </div>
+                          <p className="text-gray-700">{recommendation}</p>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-8">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-4">Rekommenderade Functional Foods</h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {analysisData.functionalFoods.map((food: string, index: number) => (
+                          <div key={index} className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 border border-green-200">
+                            <div className="flex items-center">
+                              <span className="text-2xl mr-3">🥗</span>
+                              <p className="text-gray-700 font-medium">{food}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'lifestyle' && (
+                  <div>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Livsstilsförändringar</h2>
+                    <div className="space-y-4">
+                      {analysisData.lifestyleChanges.map((change: string, index: number) => (
+                        <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 rounded-xl">
+                          <div className="bg-blue-200 rounded-full p-2 flex-shrink-0">
+                            <FiHeart className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <p className="text-gray-700">{change}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'courses' && (
+                  <div>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Rekommenderade Kurser</h2>
+                    <div className="space-y-6">
+                      {/* Functional Basics */}
+                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">Functional Basics</h3>
+                            <p className="text-gray-600">
+                              Perfekt för dig som vill lära dig grunderna i funktionell mat. En 6-veckorskurs som ger dig alla verktyg för att börja din hälsoresa.
+                            </p>
+                          </div>
+                          <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                            Nybörjare
+                          </span>
+                        </div>
+                        <div className="bg-purple-100 border border-purple-300 rounded-lg p-3 mb-4">
+                          <p className="text-sm text-purple-800">
+                            <span className="font-semibold">Specialpris:</span> 1.836 kr 
+                            <span className="text-purple-600 ml-2">(ord. pris 2.295 kr)</span>
+                          </p>
+                        </div>
+                        <Link 
+                          href="/utbildning/functional-basics" 
+                          className="block w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-center"
+                        >
+                          Läs mer om kursen →
+                        </Link>
+                      </div>
+
+                      {/* Functional Flow */}
+                      <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 border border-green-200">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">Functional Flow</h3>
+                            <p className="text-gray-600">
+                              För dig som vill gå djupare och skapa naturligt flöde i vardagen. Fokus på maghälsa, inflammation och avancerade strategier.
+                            </p>
+                          </div>
+                          <span className="bg-green-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                            Avancerad
+                          </span>
+                        </div>
+                        <div className="bg-green-100 border border-green-300 rounded-lg p-3 mb-4">
+                          <p className="text-sm text-green-800">
+                            <span className="font-semibold">Specialpris:</span> 1.836 kr 
+                            <span className="text-green-600 ml-2">(ord. pris 2.295 kr)</span>
+                          </p>
+                        </div>
+                        <Link 
+                          href="/utbildning/functional-flow" 
+                          className="block w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-center"
+                        >
+                          Läs mer om kursen →
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </motion.div>
 
         {/* Call to action */}
-        <div className="text-center mt-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="text-center mt-12"
+        >
           <p className="text-gray-600 mb-4">
             Har du frågor om din analys eller våra kurser?
           </p>
@@ -221,7 +319,7 @@ export default function DummyResultPage() {
           >
             Kontakta oss
           </Link>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
