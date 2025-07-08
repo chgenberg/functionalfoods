@@ -87,8 +87,8 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
             )}
           </div>
           
-          <Link href={`/dashboard/community/thread/${thread.id}`}>
-            <h3 className="text-lg font-semibold text-gray-900 hover:text-orange-600 transition-colors group-hover:text-orange-600 mb-2">
+          <Link href={`/dashboard/courses/functional-basics/community/thread/${thread.id}`}>
+            <h3 className="text-lg font-semibold text-gray-900 hover:text-green-600 transition-colors group-hover:text-green-600 mb-2">
               {thread.title}
             </h3>
           </Link>
