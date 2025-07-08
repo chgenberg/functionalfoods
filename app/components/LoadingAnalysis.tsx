@@ -162,12 +162,12 @@ export default function LoadingAnalysis() {
               background: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.3)`
             }}
             initial={{ 
-              x: Math.random() * window.innerWidth,
-              y: window.innerHeight + 10
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+              y: (typeof window !== 'undefined' ? window.innerHeight : 800) + 10
             }}
             animate={{ 
               y: -10,
-              x: Math.random() * window.innerWidth
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200)
             }}
             transition={{
               duration: Math.random() * 10 + 10,

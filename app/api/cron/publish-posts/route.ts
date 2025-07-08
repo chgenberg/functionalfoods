@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient, BlogPost } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
 export async function GET() {
   try {
+    // Check if DATABASE_URL is available
+    if (!process.env.DATABASE_URL) {
+      console.log('DATABASE_URL not configured, skipping cron job');
+      return NextResponse.json({ message: 'Database not configured' });
+    }
+
+    const prisma = new PrismaClient();
     const now = new Date();
 
     // Hitta alla inlägg som är schemalagda att publiceras nu eller tidigare
@@ -35,10 +40,13 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({
+    const result = NextResponse.json({
       message: `Publicerade ${updatedPosts.count} inlägg.`,
       publishedIds: postsToPublish.map((post: BlogPost) => post.id),
     });
+
+    await prisma.$disconnect();
+    return result;
 
   } catch (error) {
     console.error('Fel i cron-jobb för publicering:', error);
