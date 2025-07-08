@@ -479,7 +479,7 @@ export default function FunctionalBasicsPage() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-6xl"
+            className="relative w-full max-w-4xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -487,15 +487,15 @@ export default function FunctionalBasicsPage() {
               whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowVideoModal(false)}
-              className="absolute -top-4 -right-4 md:-top-8 md:-right-8 z-20 bg-white text-gray-900 rounded-full p-2 md:p-3 shadow-xl hover:shadow-2xl transition-all duration-200"
+              className="absolute -top-4 -right-4 z-20 bg-white text-gray-900 rounded-full p-3 shadow-xl hover:shadow-2xl transition-all duration-200"
             >
-              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </motion.button>
             
             {/* Video Container */}
-            <div className="bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
               {/* Video Player Wrapper */}
               <div className="relative aspect-video bg-gradient-to-br from-gray-900 to-black">
                 {/* Loading Shimmer Effect */}
@@ -513,33 +513,19 @@ export default function FunctionalBasicsPage() {
               </div>
               
               {/* Enhanced Info Section */}
-              <div className="bg-gradient-to-br from-green-50 to-teal-50 p-6 md:p-8">
+              <div className="p-6 bg-gradient-to-br from-white to-gray-50">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
                       Välkommen till Functional Basics
                     </h3>
-                    <p className="text-gray-600 text-sm md:text-base mb-3">
-                      Introduktionsvideo där Ulrika Davidsson guidar dig genom kursens upplägg och mål
+                    <p className="text-gray-600 leading-relaxed">
+                      I denna introduktionsvideo guidar Ulrika Davidsson dig genom kursens upplägg och mål. 
+                      Lär dig grunderna i functional foods och hur de kan förbättra din hälsa steg för steg.
                     </p>
-                    <div className="flex flex-wrap items-center gap-3 text-sm">
-                      <span className="flex items-center gap-1.5 text-gray-700">
-                        <FiClock className="w-4 h-4 text-green-600" />
-                        <span className="font-medium">5:32 min</span>
-                      </span>
-                      <span className="flex items-center gap-1.5 text-gray-700">
-                        <FiAward className="w-4 h-4 text-green-600" />
-                        <span className="font-medium">Grundkurs</span>
-                      </span>
-                      <span className="flex items-center gap-1.5 text-gray-700">
-                        <FiUsers className="w-4 h-4 text-green-600" />
-                        <span className="font-medium">För alla nivåer</span>
-                      </span>
-                    </div>
                   </div>
                   
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}

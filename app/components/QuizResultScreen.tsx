@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity } from 'react-icons/fi';
+import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity, FiBookOpen, FiAlertTriangle, FiPhone } from 'react-icons/fi';
 import LoadingAnalysis from './LoadingAnalysis';
 
 interface QuizResultData {
@@ -13,6 +13,10 @@ interface QuizResultData {
   }>;
   lifestyleAdvice: string[];
   nextSteps: string[];
+  scientificReferences: string[];
+  warningSignals: string[];
+  successMetrics: string[];
+  courseRecommendation: string;
 }
 
 interface HealthScores {
@@ -135,7 +139,24 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
           "Håll en hälsodagbok för att spåra förändringar",
           "Konsultera en läkare innan du börjar med nya kosttillskott",
           "Överväg att gå vår Functional Basics kurs för djupare kunskap"
-        ]
+        ],
+        scientificReferences: [
+          "Studier visar att magnesium kan förbättra sömnkvalitet med 23%",
+          "Omega-3 forskning indikerar förbättrad kognitiv funktion inom 4-6 veckor",
+          "Probiotika studier visar stärkt immunförsvar och bättre tarmhälsa"
+        ],
+        warningSignals: [
+          "Kontakta läkare om du upplever ihållande trötthet trots förbättringar",
+          "Sök medicinsk hjälp vid allergiska reaktioner mot kosttillskott",
+          "Konsultera vårdpersonal innan du ändrar medicineringar"
+        ],
+        successMetrics: [
+          "Mät energinivåer dagligen på skala 1-10",
+          "Spåra sömnkvalitet och tid till insomnande",
+          "Notera förändringar i humör och välbefinnande",
+          "Bedöm matsmältning och allmän hälsa veckovis"
+        ],
+        courseRecommendation: "Du kan förbättra din hälsa ytterligare genom att gå vår Functional Basics kurs. Denna kurs ger dig djupare förståelse för hur functional foods kan påverka din hälsa och hur du kan implementera dem i din vardag."
       };
 
       try {
@@ -231,7 +252,11 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     { id: 'summary', label: 'Översikt', icon: '📊' },
     { id: 'recommendations', label: 'Functional Foods', icon: '🥗' },
     { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' },
-    { id: 'nextsteps', label: 'Nästa steg', icon: '⭐' }
+    { id: 'nextsteps', label: 'Handlingsplan', icon: '⭐' },
+    { id: 'course', label: 'Kursrekommendation', icon: '🎓' },
+    { id: 'science', label: 'Forskning', icon: '🔬' },
+    { id: 'warnings', label: 'Varningar', icon: '⚠️' },
+    { id: 'metrics', label: 'Mätning', icon: '📈' }
   ];
 
   const healthAreas = [
@@ -524,12 +549,158 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                   {/* CTA Button */}
                   <div className="mt-10 text-center">
                     <button 
-                      onClick={() => window.location.href = '/dashboard/courses/functional-basics'}
+                      onClick={() => window.location.href = '/utbildning/functional-flow'}
                       className="bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full font-semibold text-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl inline-flex items-center space-x-3 transform hover:scale-105"
                     >
-                      <span>Kom igång med Functional Basics</span>
+                      <span>Kom igång med Functional Flow</span>
                       <FiArrowRight className="w-6 h-6" />
                     </button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'course' && recommendations && (
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Vår rekommenderade kurs</h2>
+                  <div 
+                    className="text-lg text-gray-700 leading-relaxed mb-8"
+                    dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation }}
+                  />
+                  
+                  {/* Course CTA Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => window.location.href = '/utbildning/functional-flow'}
+                      className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl inline-flex items-center justify-center space-x-3"
+                    >
+                      <span>Functional Flow - Rekommenderad</span>
+                      <FiArrowRight className="w-5 h-5" />
+                    </motion.button>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => window.location.href = '/utbildning/functional-basics'}
+                      className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl inline-flex items-center justify-center space-x-3"
+                    >
+                      <span>Functional Basics - Grundkurs</span>
+                      <FiArrowRight className="w-5 h-5" />
+                    </motion.button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'science' && recommendations && (
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Vetenskapligt stöd</h2>
+                  <div className="space-y-6">
+                    {recommendations.scientificReferences.map((reference, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-start space-x-4 p-6 bg-blue-50 rounded-xl"
+                      >
+                        <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
+                          <FiBookOpen className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div 
+                          className="text-gray-700 text-lg"
+                          dangerouslySetInnerHTML={{ __html: reference }}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="mt-8 p-6 bg-blue-50 rounded-xl">
+                    <p className="text-blue-800 text-sm">
+                      <strong>Observera:</strong> Alla rekommendationer baseras på vetenskaplig forskning, men individuella resultat kan variera. 
+                      Konsultera alltid en läkare innan du gör större förändringar i din kost eller livsstil.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'warnings' && recommendations && (
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Viktiga varningar</h2>
+                  <div className="space-y-6">
+                    {recommendations.warningSignals.map((warning, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-start space-x-4 p-6 bg-orange-50 rounded-xl border-l-4 border-orange-400"
+                      >
+                        <div className="bg-orange-100 rounded-full p-3 flex-shrink-0">
+                          <FiAlertTriangle className="w-6 h-6 text-orange-600" />
+                        </div>
+                        <div 
+                          className="text-gray-700 text-lg"
+                          dangerouslySetInnerHTML={{ __html: warning }}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="mt-8 p-6 bg-red-50 rounded-xl border border-red-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <FiPhone className="w-6 h-6 text-red-600" />
+                      <h3 className="text-xl font-semibold text-red-800">Akut hjälp</h3>
+                    </div>
+                    <p className="text-red-700">
+                      Vid akuta hälsoproblem, ring <strong>1177</strong> för vårdguiden eller <strong>112</strong> vid nödsituationer.
+                      Functional foods ersätter aldrig medicinsk behandling.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'metrics' && recommendations && (
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Mät dina framsteg</h2>
+                  <div className="space-y-6">
+                    {recommendations.successMetrics.map((metric, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-start space-x-4 p-6 bg-green-50 rounded-xl"
+                      >
+                        <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
+                          <FiTrendingUp className="w-6 h-6 text-green-600" />
+                        </div>
+                        <div 
+                          className="text-gray-700 text-lg"
+                          dangerouslySetInnerHTML={{ __html: metric }}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                  
+                  {/* Tracking Tips */}
+                  <div className="mt-8 grid md:grid-cols-2 gap-6">
+                    <div className="p-6 bg-purple-50 rounded-xl">
+                      <h3 className="text-lg font-semibold text-purple-800 mb-3">📱 Digitala verktyg</h3>
+                      <ul className="text-purple-700 space-y-2">
+                        <li>• Hälsoappar för daglig loggning</li>
+                        <li>• Fitnesstracker för sömn och aktivitet</li>
+                        <li>• Stresshanteringsappar</li>
+                        <li>• Näringsappar för kostanalys</li>
+                      </ul>
+                    </div>
+                    <div className="p-6 bg-blue-50 rounded-xl">
+                      <h3 className="text-lg font-semibold text-blue-800 mb-3">📝 Traditionell loggning</h3>
+                      <ul className="text-blue-700 space-y-2">
+                        <li>• Hälsodagbok på papper</li>
+                        <li>• Veckovis utvärdering</li>
+                        <li>• Foto-dokumentation</li>
+                        <li>• Månadsvis reflektion</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               )}

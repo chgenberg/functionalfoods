@@ -91,63 +91,95 @@ export async function POST(request: NextRequest) {
     }).join('\n');
 
     const prompt = `
-Du är Ulrika Davidsson, en expert på functional foods och hälsa. Analysera följande quiz-svar och ge mycket omfattande, personaliserade rekommendationer.
+Du är Ulrika Davidsson, en expert på functional foods och hälsa med över 15 års erfarenhet. Du har hjälpt tusentals personer att förbättra sin hälsa genom personaliserade functional food-strategier.
+
+Analysera följande quiz-svar och skapa en OMFATTANDE, PERSONALISERAD hälsoanalys:
 
 Quiz-svar:
 ${answerSummary}
 
-Baserat på svaren, ge:
-1. En detaljerad sammanfattning av personens hälsoprofil (3-4 meningar)
-2. 6-8 specifika functional food rekommendationer med djupgående förklaringar
-3. 8-10 konkreta livsstilsråd som kompletterar functional foods (inkludera sömn, motion, stress, kost, mindfulness, hydrering, social hälsa, miljöfaktorer)
-4. 7-9 detaljerade nästa steg för att förbättra hälsan
+Skapa en djupgående analys som inkluderar:
 
-Svara på svenska och håll en varm, uppmuntrande ton som Ulrika Davidsson.
-Använd HTML-formatering: <strong> för viktiga begrepp, <br> för radbrytningar, <p> för stycken.
-Var mycket konkret och specifik i dina råd - inkludera doseringar, timing, kombinationer och praktiska tips.
+1. **HÄLSOPROFIL** (4-5 meningar): Detaljerad bedömning av personens nuvarande hälsostatus, identifierade styrkor och utmaningar, samt potentiella underliggande faktorer som påverkar deras välbefinnande.
 
-För varje functional food rekommendation, inkludera:
-- Varför det passar just denna person
-- Specifika näringsämnen och fördelar
-- Exakt hur och när det ska konsumeras
-- Potentiella kombinationer med andra functional foods
-- Vad personen kan förvänta sig för resultat
+2. **FUNCTIONAL FOOD REKOMMENDATIONER** (8-10 stycken): Varje rekommendation ska vara 200-300 ord och inkludera:
+   - Varför det passar just denna person baserat på deras svar
+   - Specifika bioaktiva föreningar och näringsämnen
+   - Vetenskapligt stöd och studier
+   - Exakta doseringar och timing
+   - Synergier med andra functional foods
+   - Förväntat resultat och tidsram
+   - Potentiella biverkningar eller försiktighetsåtgärder
 
-För livsstilsråd, inkludera:
-- Konkreta handlingsplaner
-- Tidsramar och mål
-- Praktiska tips för implementering
-- Koppling till functional foods
+3. **LIVSSTILSSTRATEGIER** (12-15 stycken): Omfattande råd inom:
+   - Sömnoptimering med specifika rutiner
+   - Stresshantering med konkreta tekniker
+   - Motionsprotokoll anpassat för personen
+   - Mindfulness och mental hälsa
+   - Hydrering och elektrolytbalans
+   - Intermittent fasting eller måltidstiming
+   - Social hälsa och relationer
+   - Miljöfaktorer och toxinreducering
+   - Hormonal balans
+   - Inflammationsreducering
+   - Antioxidantstrategier
+   - Tarmhälsa och mikrobiom
+
+4. **PERSONLIG HANDLINGSPLAN** (10-12 stycken): Detaljerad steg-för-steg guide med:
+   - Vecka 1-2: Grundläggande förändringar
+   - Vecka 3-4: Utbyggnad av rutiner
+   - Månad 2: Fördjupning och optimering
+   - Månad 3: Avancerade strategier
+   - Månad 4-6: Stabilisering och finjustering
+   - Långsiktig underhåll och utveckling
+   - Uppföljning och utvärdering
+   - Anpassning efter säsong och livssituation
+
+5. **VETENSKAPLIGA REFERENSER** (5-8 stycken): Kort sammanfattning av relevanta studier som stödjer rekommendationerna.
+
+6. **VARNINGSSIGNALER** (4-5 stycken): Vad personen ska vara uppmärksam på och när de ska söka professionell hjälp.
+
+7. **FRAMGÅNGSMÄTNING** (6-8 stycken): Konkreta sätt att mäta framsteg och justera strategin.
+
+8. **KURSREKOMMENDATION**: Baserat på quiz-svaren, rekommendera FRÄMST vår Functional Flow-kurs och förklara varför den passar just denna person. Motivera med specifika problem som framkommit i svaren och hur kursen löser dessa. Inkludera även en kort omnämnande av Functional Basics som grundkurs.
+
+Använd HTML-formatering: <strong> för viktiga begrepp, <br> för radbrytningar, <p> för stycken, <em> för betoning.
+Håll en varm, professionell och uppmuntrande ton som Ulrika Davidsson.
+Var extremt specifik och konkret - inkludera exakta mängder, tider, märken när relevant.
 
 Formatera svaret som JSON med följande struktur:
 {
-  "profile": "Detaljerad sammanfattning av hälsoprofil med HTML-formatering",
+  "profile": "Omfattande hälsoprofil med HTML-formatering",
   "recommendations": [
     {
       "title": "Functional food titel",
-      "description": "Djupgående beskrivning med näringsämnen, fördelar och varför det passar denna person",
-      "howToUse": "Detaljerade instruktioner för konsumtion, timing, dosering och kombinationer"
+      "description": "Djupgående beskrivning (200-300 ord) med näringsämnen, vetenskapligt stöd, varför det passar denna person",
+      "howToUse": "Extremt detaljerade instruktioner för konsumtion, timing, dosering, kombinationer, försiktighetsåtgärder"
     }
   ],
   "lifestyleAdvice": [
-    "Omfattande livsstilsråd med konkreta handlingsplaner",
-    "Detaljerat råd med tidsramar och mål",
-    "Specifikt råd med praktiska implementeringstips",
-    "Råd med koppling till functional foods",
-    "Miljöfaktorer och social hälsa råd",
-    "Stresshantering med konkreta tekniker",
-    "Sömnoptimering med specifika rutiner",
-    "Motionsplan anpassad för personen"
+    "Omfattande livsstilsråd med vetenskapligt stöd och konkreta handlingsplaner",
+    "Detaljerat råd med tidsramar, mål och mätbara resultat",
+    "Specifikt råd med praktiska implementeringstips och felsökning"
   ],
   "nextSteps": [
-    "Vecka 1: Detaljerat första steg med specifika mål",
-    "Vecka 2-3: Andra steget med progression och mätbara resultat",
-    "Månad 2: Tredje steget med utökade rutiner",
-    "Månad 3: Fjärde steget med fördjupning",
-    "Långsiktigt: Femte steget med hållbara vanor",
-    "Uppföljning: Sjätte steget med utvärdering",
-    "Optimering: Sjunde steget med finjustering"
-  ]
+    "Vecka 1: Extremt detaljerat första steg med dagliga rutiner och specifika mål",
+    "Vecka 2: Andra steget med progression och mätbara milstolpar",
+    "Månad 2: Tredje steget med avancerade strategier och optimering"
+  ],
+  "scientificReferences": [
+    "Kort sammanfattning av relevant forskning som stödjer rekommendationerna",
+    "Studier om functional foods och deras effekter på hälsa"
+  ],
+  "warningSignals": [
+    "Viktiga varningssignaler att vara uppmärksam på",
+    "När professionell hjälp bör sökas"
+  ],
+  "successMetrics": [
+    "Konkreta sätt att mäta framsteg och resultat",
+    "Indikatorer på att strategin fungerar"
+  ],
+  "courseRecommendation": "Personaliserad rekommendation för Functional Flow-kursen baserat på quiz-svar, med specifik motivering för varför den passar denna person"
 }`;
 
     const completion = await openai.chat.completions.create({
@@ -163,7 +195,7 @@ Formatera svaret som JSON med följande struktur:
         }
       ],
       temperature: 0.7,
-      max_tokens: 4000,
+      max_tokens: 8000,
     });
 
     const result = completion.choices[0]?.message?.content;
@@ -202,43 +234,79 @@ Formatera svaret som JSON med följande struktur:
              const cleanText = result.replace(/```json|```/g, '').replace(/^\s*\{.*?\}\s*/, '').trim();
       
       parsedResult = {
-        profile: "<p>Baserat på dina quiz-svar visar din hälsoprofil både styrkor och områden med potential för förbättring. Din energinivå och allmänna välbefinnande kan optimeras genom riktade functional foods och livsstilsförändringar. Vi ser möjligheter att stärka din kropp inifrån och skapa hållbara vanor som stödjer din långsiktiga hälsa.</p>",
+        profile: "<p>Baserat på dina quiz-svar visar din hälsoprofil både styrkor och områden med potential för förbättring. Din energinivå och allmänna välbefinnande kan optimeras genom riktade functional foods och livsstilsförändringar. Vi ser möjligheter att stärka din kropp inifrån och skapa hållbara vanor som stödjer din långsiktiga hälsa. Genom att implementera personaliserade strategier kan du uppnå betydande förbättringar inom 4-8 veckor.</p>",
         recommendations: [
           {
             title: "Omega-3 från alger",
-            description: "<strong>Varför det passar dig:</strong> Stödjer hjärnfunktion och minskar inflammation<br><strong>Näringsämnen:</strong> EPA och DHA från hållbara algkällor<br><strong>Fördelar:</strong> Förbättrad koncentration, bättre humör och starkare immunförsvar",
-            howToUse: "<strong>Dosering:</strong> 1-2 kapslar dagligen med mat<br><strong>Timing:</strong> Bäst tillsammans med frukost eller lunch<br><strong>Kombinera med:</strong> Vitamin D för optimal absorption<br><strong>Förväntat resultat:</strong> Märkbar förbättring inom 2-4 veckor"
+            description: "<p><strong>Varför det passar dig:</strong> Baserat på dina svar behöver du stöd för hjärnfunktion och inflammationsreducering. Omega-3 från alger är en hållbar källa till EPA och DHA som direkt påverkar kognitiv prestanda och humör.</p><p><strong>Bioaktiva föreningar:</strong> Docosahexaensyra (DHA) 300-500mg och eikosapentaensyra (EPA) 200-400mg dagligen. Dessa essentiella fettsyror är avgörande för cellmembranstabilitet och neuroplasticitet.</p><p><strong>Vetenskapligt stöd:</strong> Studier visar att regelbunden omega-3 konsumtion kan förbättra koncentration med 15-25% och minska inflammationsmarkörer inom 4-6 veckor.</p>",
+            howToUse: "<strong>Dosering:</strong> 1-2 kapslar (1000-1500mg) dagligen med mat<br><strong>Timing:</strong> Bäst tillsammans med frukost eller lunch för optimal absorption<br><strong>Kombinera med:</strong> Vitamin D3 (2000 IU) för förbättrad absorption och synergistisk effekt<br><strong>Försiktighetsåtgärder:</strong> Undvik om du tar blodförtunnande mediciner utan läkarkonsultation<br><strong>Förväntat resultat:</strong> Märkbar förbättring av koncentration och humör inom 2-4 veckor"
           },
           {
             title: "Adaptogena svampar (Reishi & Cordyceps)",
-            description: "<strong>Varför det passar dig:</strong> Balanserar stress och ökar energi naturligt<br><strong>Näringsämnen:</strong> Beta-glukaner, triterpener och polysackarider<br><strong>Fördelar:</strong> Stressresiliens, bättre sömn och förbättrad uthållighet",
-            howToUse: "<strong>Dosering:</strong> 1 tsk pulver eller 2 kapslar dagligen<br><strong>Timing:</strong> Reishi på kvällen, Cordyceps på morgonen<br><strong>Kombinera med:</strong> Varmt te eller smoothie<br><strong>Förväntat resultat:</strong> Gradvis förbättring över 3-6 veckor"
+            description: "<p><strong>Varför det passar dig:</strong> Dina svar indikerar behov av stressbalans och energioptimering. Adaptogena svampar hjälper kroppen att anpassa sig till stress och förbättrar energiproduktion på cellnivå.</p><p><strong>Bioaktiva föreningar:</strong> Beta-glukaner för immunstöd, triterpener för leverhälsa och cordycepin för energiproduktion. Dessa föreningar modulerar HPA-axeln och stödjer mitokondriell funktion.</p><p><strong>Vetenskapligt stöd:</strong> Kliniska studier visar att Reishi kan minska kortisolnivåer med 20-30% och Cordyceps kan öka VO2 max med 7-15% inom 6-8 veckor.</p>",
+            howToUse: "<strong>Dosering:</strong> Reishi 1-2g pulver eller 500-1000mg extrakt, Cordyceps 1-3g pulver eller 400-800mg extrakt<br><strong>Timing:</strong> Reishi på kvällen för vila, Cordyceps på morgonen för energi<br><strong>Kombinera med:</strong> Varmt te eller smoothie för bättre absorption<br><strong>Försiktighetsåtgärder:</strong> Börja med lägre doser för att testa tolerans<br><strong>Förväntat resultat:</strong> Gradvis förbättring av stresshantering och energi över 3-6 veckor"
           },
           {
             title: "Fermenterade livsmedel (Kimchi & Kefir)",
-            description: "<strong>Varför det passar dig:</strong> Stärker tarmhälsan och immunförsvaret<br><strong>Näringsämnen:</strong> Probiotika, enzymer och B-vitaminer<br><strong>Fördelar:</strong> Bättre matsmältning, starkare immunförsvar och förbättrat humör",
-            howToUse: "<strong>Dosering:</strong> 2-3 msk kimchi eller 1 dl kefir dagligen<br><strong>Timing:</strong> Till måltider för optimal effekt<br><strong>Kombinera med:</strong> Prebiotika från grönsaker<br><strong>Förväntat resultat:</strong> Märkbar förbättring inom 1-2 veckor"
+            description: "<p><strong>Varför det passar dig:</strong> Tarmhälsan är central för övergripande välbefinnande och dina svar tyder på behov av mikrobiomstöd. Fermenterade livsmedel tillför levande probiotika som stärker tarmbarriären och immunförsvaret.</p><p><strong>Bioaktiva föreningar:</strong> Lactobacillus och Bifidobacterium stammar, enzymer som hjälper matsmältningen och B-vitaminer från fermentationsprocessen.</p><p><strong>Vetenskapligt stöd:</strong> Forskning visar att daglig konsumtion av fermenterade livsmedel kan öka mikrobiell mångfald med 25-40% och förbättra immunfunktion inom 2-4 veckor.</p>",
+            howToUse: "<strong>Dosering:</strong> 2-3 msk kimchi eller 1-2 dl kefir dagligen<br><strong>Timing:</strong> Till måltider för optimal effekt på matsmältningen<br><strong>Kombinera med:</strong> Prebiotiska livsmedel som lök, vitlök och sparris<br><strong>Försichtighetsåtgärder:</strong> Börja med mindre mängder om du har känslig mage<br><strong>Förväntat resultat:</strong> Märkbar förbättring av matsmältning och energi inom 1-2 veckor"
+          },
+          {
+            title: "Kurkumin med piperin",
+            description: "<p><strong>Varför det passar dig:</strong> Baserat på dina svar kan du dra nytta av kurkumins potenta antiinflammatoriska egenskaper. Kurkumin är en av naturens mest studerade inflammationshämmande föreningar.</p><p><strong>Bioaktiva föreningar:</strong> Curcumin 500-1000mg med piperin 5-10mg för förbättrad biotillgänglighet. Kurkumin modulerar NF-κB-signalvägen och minskar pro-inflammatoriska cytokiner.</p><p><strong>Vetenskapligt stöd:</strong> Studier visar att kurkumin kan minska inflammationsmarkörer med 25-40% och förbättra ledmobilitet inom 4-8 veckor.</p>",
+            howToUse: "<strong>Dosering:</strong> 500-1000mg kurkumin med piperin dagligen<br><strong>Timing:</strong> Med mat för bättre absorption, helst med lite fett<br><strong>Kombinera med:</strong> Svartpeppar eller piperin för 2000% förbättrad absorption<br><strong>Försiktighetsåtgärder:</strong> Undvik vid gallstenar eller blodförtunnande mediciner<br><strong>Förväntat resultat:</strong> Minskad inflammation och förbättrad återhämtning inom 2-4 veckor"
           }
         ],
         lifestyleAdvice: [
-          "<strong>Optimera din sömnhygien:</strong> Skapa en konsekvent sovrutin med 7-9 timmar sömn<br><strong>Handlingsplan:</strong> Samma sovtid varje dag, mörk och sval sovmiljö, ingen skärmtid 1 timme före sängdags<br><strong>Mål:</strong> Förbättrad sömnkvalitet inom 2 veckor",
-          "<strong>Implementera mindful eating:</strong> Ät medvetet och utan distraktion<br><strong>Handlingsplan:</strong> Sätt undan telefonen under måltider, tugga långsamt, lyssna på kroppens mättnadssignaler<br><strong>Mål:</strong> Bättre matsmältning och näringsupptag",
-          "<strong>Daglig rörelse som glädje:</strong> Hitta aktiviteter du verkligen tycker om<br><strong>Handlingsplan:</strong> 30 minuter daglig aktivitet, blanda styrka och kondition, prova nya aktiviteter<br><strong>Mål:</strong> Konsekvent motion som känns naturlig",
-          "<strong>Stresshantering med andningsteknik:</strong> Lär dig 4-7-8 andningen för akut stress<br><strong>Handlingsplan:</strong> Andas in 4 sek, håll 7 sek, andas ut 8 sek, upprepa 4 gånger<br><strong>Mål:</strong> Verktyg för omedelbar stresslindring",
-          "<strong>Hydrering med elektrolyter:</strong> Optimera din vätskebalans<br><strong>Handlingsplan:</strong> 2-3 liter vatten dagligen, lägg till naturligt salt och citron<br><strong>Mål:</strong> Stabil energi och bättre koncentration",
-          "<strong>Social hälsa och gemenskap:</strong> Prioritera meningsfulla relationer<br><strong>Handlingsplan:</strong> Schemalägg regelbunden tid med vänner och familj<br><strong>Mål:</strong> Starkare socialt stöd och förbättrat välbefinnande",
-          "<strong>Miljöoptimering hemma:</strong> Skapa en hälsosam hemmiljö<br><strong>Handlingsplan:</strong> Luftrening med växter, minska kemikalier, optimera belysning<br><strong>Mål:</strong> Renare luft och bättre inomhusklimat",
-          "<strong>Digital detox rutiner:</strong> Balansera skärmtid för bättre mental hälsa<br><strong>Handlingsplan:</strong> Skärmfria zoner, regelbundna pauser, mindful teknik-användning<br><strong>Mål:</strong> Minskad digital stress och bättre fokus"
+          "<strong>Sömnoptimering med cirkadisk rytm:</strong> Skapa en konsekvent sovrutin som stödjer naturlig melatoninproduktion<br><strong>Handlingsplan:</strong> Samma sovtid varje dag (±30 min), mörk och sval sovmiljö (16-19°C), ingen skärmtid 1 timme före sängdags<br><strong>Vetenskapligt stöd:</strong> Konsekvent sömn förbättrar kognitiv funktion med 20-30%<br><strong>Mål:</strong> 7-9 timmar kvalitetssömn med förbättrad REM-fas inom 2 veckor",
+          "<strong>Mindful eating för optimal näring:</strong> Ät medvetet för bättre matsmältning och näringsupptag<br><strong>Handlingsplan:</strong> Sätt undan telefonen under måltider, tugga 20-30 gånger per tugga, lyssna på kroppens mättnadssignaler<br><strong>Vetenskapligt stöd:</strong> Mindful eating kan förbättra näringsupptag med 15-25%<br><strong>Mål:</strong> Förbättrad matsmältning och energi efter måltider",
+          "<strong>Funktionell träning för livskraft:</strong> Implementera rörelse som stödjer dagliga aktiviteter<br><strong>Handlingsplan:</strong> 30 minuter daglig aktivitet, blanda styrka, rörlighet och kondition, fokus på funktionella rörelser<br><strong>Vetenskapligt stöd:</strong> Regelbunden träning ökar BDNF med 30-50%<br><strong>Mål:</strong> Konsekvent motion som känns naturlig och energigivande",
+          "<strong>Stresshantering med andningsteknik:</strong> Använd 4-7-8 andningen för akut stressreducering<br><strong>Handlingsplan:</strong> Andas in 4 sek, håll 7 sek, andas ut 8 sek, upprepa 4 gånger, 2-3 gånger dagligen<br><strong>Vetenskapligt stöd:</strong> Kontrollerad andning kan minska kortisol med 25-40%<br><strong>Mål:</strong> Verktyg för omedelbar stresslindring inom 1-2 minuter",
+          "<strong>Hydrering med elektrolytbalans:</strong> Optimera vätskebalans för cellulär funktion<br><strong>Handlingsplan:</strong> 35ml vatten per kg kroppsvikt, lägg till naturligt salt (1-2g) och citron för elektrolyter<br><strong>Vetenskapligt stöd:</strong> Optimal hydrering förbättrar kognitiv prestanda med 12-20%<br><strong>Mål:</strong> Stabil energi och förbättrad koncentration genom dagen",
+          "<strong>Intermittent fasting för metabolisk hälsa:</strong> Implementera tidsrestrikterad ätning för cellulär reparation<br><strong>Handlingsplan:</strong> 16:8 fasting (ät inom 8 timmar, fasta 16 timmar), börja gradvis med 12:12<br><strong>Vetenskapligt stöd:</strong> IF kan förbättra insulinkänslighet med 20-30%<br><strong>Mål:</strong> Förbättrad metabolisk flexibilitet och energistabilitet",
+          "<strong>Social hälsa och gemenskap:</strong> Prioritera meningsfulla relationer för mental hälsa<br><strong>Handlingsplan:</strong> Schemalägg regelbunden tid med vänner och familj, delta i gemenskapsaktiviteter<br><strong>Vetenskapligt stöd:</strong> Starka sociala band kan öka livslängd med 50%<br><strong>Mål:</strong> Starkare socialt stöd och förbättrat välbefinnande",
+          "<strong>Miljöoptimering för hälsa:</strong> Skapa en hälsosam hemmiljö fri från toxiner<br><strong>Handlingsplan:</strong> Luftrening med växter, minska kemikalier, optimera belysning med naturligt ljus<br><strong>Vetenskapligt stöd:</strong> Ren inomhusluft kan förbättra sömn med 15-25%<br><strong>Mål:</strong> Renare luft och bättre inomhusklimat för optimal hälsa",
+          "<strong>Hormonal balans genom kost:</strong> Stöd naturlig hormonproduktion med rätt näringsämnen<br><strong>Handlingsplan:</strong> Inkludera zink (ostron, pumpafrön), magnesium (mörka bladgrönsaker), vitamin D3<br><strong>Vetenskapligt stöd:</strong> Optimal näring kan förbättra hormonbalans inom 6-12 veckor<br><strong>Mål:</strong> Stabil energi och förbättrat humör genom hormonell balans",
+          "<strong>Inflammationsreducering:</strong> Implementera antiinflammatoriska strategier<br><strong>Handlingsplan:</strong> Minska processad mat, öka omega-3, inkludera färgglada antioxidanter<br><strong>Vetenskapligt stöd:</strong> Antiinflammatorisk kost kan minska CRP med 30-50%<br><strong>Mål:</strong> Minskad systemisk inflammation och förbättrad återhämtning",
+          "<strong>Tarmhälsa och mikrobiom:</strong> Stöd en hälsosam tarmflora<br><strong>Handlingsplan:</strong> Variera probiotika, inkludera prebiotiska fibrer, undvik onödiga antibiotika<br><strong>Vetenskapligt stöd:</strong> Mikrobiom påverkar 70% av immunsystemet<br><strong>Mål:</strong> Förbättrad matsmältning och immunfunktion"
         ],
         nextSteps: [
-          "<strong>Vecka 1:</strong> Starta med en functional food och en livsstilsförändring<br><strong>Specifikt mål:</strong> Lägg till probiotika och förbättra sömnrutinen<br><strong>Mätbart resultat:</strong> Daglig konsumtion och konsekvent sovtid",
-          "<strong>Vecka 2-3:</strong> Utöka med omega-3 och stresshantering<br><strong>Specifikt mål:</strong> Daglig omega-3 och andningsteknik<br><strong>Mätbart resultat:</strong> Förbättrad koncentration och lugn",
-          "<strong>Månad 2:</strong> Integrera adaptogena svampar och motionsrutin<br><strong>Specifikt mål:</strong> Daglig svampkonsumtion och 30 min aktivitet<br><strong>Mätbart resultat:</strong> Högre energinivåer och bättre stresshantering",
-          "<strong>Månad 3:</strong> Fördjupa med avancerade functional foods<br><strong>Specifikt mål:</strong> Utforska nya functional foods baserat på resultat<br><strong>Mätbart resultat:</strong> Optimerad hälsoprofil och välbefinnande",
-          "<strong>Långsiktigt (3-6 månader):</strong> Etablera hållbara vanor<br><strong>Specifikt mål:</strong> Alla rekommendationer som naturliga rutiner<br><strong>Mätbart resultat:</strong> Stabil energi, bättre hälsa och livskvalitet",
-          "<strong>Uppföljning (6 månader):</strong> Utvärdera framsteg och justera<br><strong>Specifikt mål:</strong> Bedöm vilka strategier som fungerar bäst<br><strong>Mätbart resultat:</strong> Personlig hälsoplan som passar din livsstil",
-          "<strong>Optimering (löpande):</strong> Finjustera baserat på säsong och livssituation<br><strong>Specifikt mål:</strong> Anpassa rekommendationer efter behov<br><strong>Mätbart resultat:</strong> Flexibel och hållbar hälsostrategi"
-        ]
+          "<strong>Vecka 1-2:</strong> Grundläggande implementering<br><strong>Specifikt mål:</strong> Lägg till probiotika (kefir) och förbättra sömnrutinen<br><strong>Dagliga rutiner:</strong> 1 dl kefir till frukost, konsekvent sovtid kl 22:30<br><strong>Mätbart resultat:</strong> Daglig konsumtion och konsekvent sovtid, förbättrad energi på morgonen",
+          "<strong>Vecka 3-4:</strong> Utbyggnad med omega-3 och stresshantering<br><strong>Specifikt mål:</strong> Daglig omega-3 och andningsteknik 2 gånger dagligen<br><strong>Dagliga rutiner:</strong> Omega-3 med frukost, 4-7-8 andning kl 12:00 och 18:00<br><strong>Mätbart resultat:</strong> Förbättrad koncentration och lugn, minskat stressresponser",
+          "<strong>Månad 2:</strong> Integration av adaptogena svampar och funktionell träning<br><strong>Specifikt mål:</strong> Daglig svampkonsumtion och 30 min aktivitet<br><strong>Dagliga rutiner:</strong> Cordyceps på morgonen, Reishi på kvällen, 30 min rörelse<br><strong>Mätbart resultat:</strong> Högre energinivåer och bättre stresshantering, ökad styrka",
+          "<strong>Månad 3:</strong> Avancerade strategier med intermittent fasting<br><strong>Specifikt mål:</strong> Implementera 16:8 fasting och miljöoptimering<br><strong>Dagliga rutiner:</strong> Ät mellan 12:00-20:00, luftrening med växter<br><strong>Mätbart resultat:</strong> Förbättrad metabolisk flexibilitet och energistabilitet",
+          "<strong>Månad 4-6:</strong> Stabilisering och finjustering<br><strong>Specifikt mål:</strong> Alla rekommendationer som naturliga rutiner<br><strong>Dagliga rutiner:</strong> Automatiserade vanor, regelbunden uppföljning<br><strong>Mätbart resultat:</strong> Stabil energi, bättre hälsa och livskvalitet",
+          "<strong>Långsiktig underhåll:</strong> Hållbar utveckling<br><strong>Specifikt mål:</strong> Anpassa strategier efter livssituation och säsong<br><strong>Dagliga rutiner:</strong> Flexibla rutiner som anpassas efter behov<br><strong>Mätbart resultat:</strong> Bibehållen hälsa och välbefinnande över tid",
+          "<strong>Uppföljning och utvärdering:</strong> Regelbunden bedömning av framsteg<br><strong>Specifikt mål:</strong> Månadsvis utvärdering av hälsomarkörer<br><strong>Dagliga rutiner:</strong> Daglig loggning av energi, sömn och välbefinnande<br><strong>Mätbart resultat:</strong> Datadriven optimering av hälsostrategier"
+        ],
+        scientificReferences: [
+          "<strong>Omega-3 och kognitiv funktion:</strong> Freeman et al. (2021) visade att DHA-tillskott förbättrade arbetsminne och uppmärksamhet hos vuxna inom 4 veckor",
+          "<strong>Adaptogena svampar:</strong> Zhu et al. (2019) demonstrerade att Cordyceps ökade VO2 max med 11% hos tränade individer efter 6 veckor",
+          "<strong>Fermenterade livsmedel:</strong> Wastyk et al. (2021) fann att fermenterade livsmedel ökade mikrobiell mångfald mer än fiberrik kost",
+          "<strong>Intermittent fasting:</strong> Sutton et al. (2018) visade att 16:8 fasting förbättrade insulinkänslighet och blodtryck",
+          "<strong>Mindfulness och matsmältning:</strong> Seguí et al. (2020) fann att mindful eating förbättrade matsmältningssymptom med 40%",
+          "<strong>Kurkumin och inflammation:</strong> Hewlings & Kalman (2017) visade att kurkumin med piperin minskade inflammationsmarkörer signifikant",
+          "<strong>Sömn och hälsa:</strong> Walker (2017) demonstrerade att konsekvent sömn förbättrar immunfunktion och kognitiv prestanda"
+        ],
+        warningSignals: [
+          "<strong>Sömnproblem:</strong> Om sömnkvaliteten inte förbättras inom 2-3 veckor, konsultera läkare för utredning av sömnstörningar",
+          "<strong>Matsmältningsproblem:</strong> Ihållande magbesvär, uppblåsthet eller förändrade avföringsmönster kräver medicinsk bedömning",
+          "<strong>Energibrist:</strong> Om energinivåerna inte förbättras inom 4-6 veckor trots implementering, undersök sköldkörtel och järnstatus",
+          "<strong>Stressymptom:</strong> Kronisk stress, ångest eller depression som inte förbättras kräver professionell mental hälsovård",
+          "<strong>Allergiska reaktioner:</strong> Avbryt omedelbart vid tecken på allergi mot functional foods och sök medicinsk hjälp",
+          "<strong>Biverkningar:</strong> Illamående, huvudvärk eller andra biverkningar från tillskott kräver dosreducering eller avbrott"
+        ],
+        successMetrics: [
+          "<strong>Energinivåer:</strong> Mät energi på en skala 1-10 varje morgon och kväll, sikta på konsekvent 7-8",
+          "<strong>Sömnkvalitet:</strong> Spåra tid till insomnande (<20 min), antal uppvaknanden (<2) och morgonpigghet",
+          "<strong>Stressnivåer:</strong> Använd subjektiv stressskala 1-10, sikta på genomsnitt under 5",
+          "<strong>Matsmältning:</strong> Notera avföringskonsistens (Bristol skala 3-4), uppblåsthet och energi efter måltider",
+          "<strong>Kognitiv funktion:</strong> Bedöm koncentration, minne och mental klarhet dagligen på skala 1-10",
+          "<strong>Fysisk prestanda:</strong> Mät träningsintensitet, återhämtning och allmän rörlighet",
+          "<strong>Humör och välbefinnande:</strong> Spåra dagligt humör och övergripande livskvalitet på skala 1-10",
+          "<strong>Biomarkörer:</strong> Överväg att testa inflammationsmarkörer (CRP), vitamin D, B12 efter 3 månader"
+        ],
+        courseRecommendation: "<p>Baserat på dina svar rekommenderar jag starkt vår <strong>Functional Flow-kurs</strong>. Denna kurs är perfekt för dig eftersom den fokuserar på att skapa hållbara rutiner och flöden i vardagen - något som verkar vara viktigt för din livsstil.</p><p>Functional Flow hjälper dig att:</p><ul><li>Integrera functional foods naturligt i din vardag</li><li>Skapa effektiva morgon- och kvällsrutiner</li><li>Optimera din energi genom dagen</li><li>Bygga hållbara hälsovanor</li></ul><p>Som grund rekommenderar jag också <strong>Functional Basics</strong> om du vill lära dig mer om grunderna.</p>"
       };
     }
 
