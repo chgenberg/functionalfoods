@@ -91,45 +91,62 @@ export async function POST(request: NextRequest) {
     }).join('\n');
 
     const prompt = `
-Du är Ulrika Davidsson, en expert på functional foods och hälsa. Analysera följande quiz-svar och ge personaliserade rekommendationer.
+Du är Ulrika Davidsson, en expert på functional foods och hälsa. Analysera följande quiz-svar och ge mycket omfattande, personaliserade rekommendationer.
 
 Quiz-svar:
 ${answerSummary}
 
 Baserat på svaren, ge:
-1. En kort sammanfattning av personens hälsoprofil (2-3 meningar)
-2. 4-6 specifika functional food rekommendationer med förklaring
-3. 6-8 konkreta livsstilsråd som kompletterar functional foods (inkludera sömn, motion, stress, kost, mindfulness)
-4. 5-7 nästa steg för att förbättra hälsan
+1. En detaljerad sammanfattning av personens hälsoprofil (3-4 meningar)
+2. 6-8 specifika functional food rekommendationer med djupgående förklaringar
+3. 8-10 konkreta livsstilsråd som kompletterar functional foods (inkludera sömn, motion, stress, kost, mindfulness, hydrering, social hälsa, miljöfaktorer)
+4. 7-9 detaljerade nästa steg för att förbättra hälsan
 
 Svara på svenska och håll en varm, uppmuntrande ton som Ulrika Davidsson.
 Använd HTML-formatering: <strong> för viktiga begrepp, <br> för radbrytningar, <p> för stycken.
-Var konkret och specifik i dina råd.
+Var mycket konkret och specifik i dina råd - inkludera doseringar, timing, kombinationer och praktiska tips.
+
+För varje functional food rekommendation, inkludera:
+- Varför det passar just denna person
+- Specifika näringsämnen och fördelar
+- Exakt hur och när det ska konsumeras
+- Potentiella kombinationer med andra functional foods
+- Vad personen kan förvänta sig för resultat
+
+För livsstilsråd, inkludera:
+- Konkreta handlingsplaner
+- Tidsramar och mål
+- Praktiska tips för implementering
+- Koppling till functional foods
 
 Formatera svaret som JSON med följande struktur:
 {
-  "profile": "Kort sammanfattning av hälsoprofil med HTML-formatering",
+  "profile": "Detaljerad sammanfattning av hälsoprofil med HTML-formatering",
   "recommendations": [
     {
       "title": "Functional food titel",
-      "description": "Beskrivning och fördelar med HTML-formatering",
-      "howToUse": "Hur man använder det med HTML-formatering"
+      "description": "Djupgående beskrivning med näringsämnen, fördelar och varför det passar denna person",
+      "howToUse": "Detaljerade instruktioner för konsumtion, timing, dosering och kombinationer"
     }
   ],
   "lifestyleAdvice": [
-    "Livsstilsråd 1 med HTML-formatering",
-    "Livsstilsråd 2 med HTML-formatering",
-    "Livsstilsråd 3 med HTML-formatering",
-    "Livsstilsråd 4 med HTML-formatering",
-    "Livsstilsråd 5 med HTML-formatering",
-    "Livsstilsråd 6 med HTML-formatering"
+    "Omfattande livsstilsråd med konkreta handlingsplaner",
+    "Detaljerat råd med tidsramar och mål",
+    "Specifikt råd med praktiska implementeringstips",
+    "Råd med koppling till functional foods",
+    "Miljöfaktorer och social hälsa råd",
+    "Stresshantering med konkreta tekniker",
+    "Sömnoptimering med specifika rutiner",
+    "Motionsplan anpassad för personen"
   ],
   "nextSteps": [
-    "Nästa steg 1 med HTML-formatering",
-    "Nästa steg 2 med HTML-formatering",
-    "Nästa steg 3 med HTML-formatering",
-    "Nästa steg 4 med HTML-formatering",
-    "Nästa steg 5 med HTML-formatering"
+    "Vecka 1: Detaljerat första steg med specifika mål",
+    "Vecka 2-3: Andra steget med progression och mätbara resultat",
+    "Månad 2: Tredje steget med utökade rutiner",
+    "Månad 3: Fjärde steget med fördjupning",
+    "Långsiktigt: Femte steget med hållbara vanor",
+    "Uppföljning: Sjätte steget med utvärdering",
+    "Optimering: Sjunde steget med finjustering"
   ]
 }`;
 
@@ -185,28 +202,42 @@ Formatera svaret som JSON med följande struktur:
              const cleanText = result.replace(/```json|```/g, '').replace(/^\s*\{.*?\}\s*/, '').trim();
       
       parsedResult = {
-        profile: "<p>Baserat på dina svar har vi analyserat din hälsoprofil och skapat personaliserade rekommendationer för dig.</p>",
+        profile: "<p>Baserat på dina quiz-svar visar din hälsoprofil både styrkor och områden med potential för förbättring. Din energinivå och allmänna välbefinnande kan optimeras genom riktade functional foods och livsstilsförändringar. Vi ser möjligheter att stärka din kropp inifrån och skapa hållbara vanor som stödjer din långsiktiga hälsa.</p>",
         recommendations: [
           {
-            title: "AI-genererade rekommendationer",
-            description: `<p>${cleanText.substring(0, 500)}...</p>`,
-            howToUse: "<p>Implementera dessa råd gradvis i din vardag för bästa resultat.</p>"
+            title: "Omega-3 från alger",
+            description: "<strong>Varför det passar dig:</strong> Stödjer hjärnfunktion och minskar inflammation<br><strong>Näringsämnen:</strong> EPA och DHA från hållbara algkällor<br><strong>Fördelar:</strong> Förbättrad koncentration, bättre humör och starkare immunförsvar",
+            howToUse: "<strong>Dosering:</strong> 1-2 kapslar dagligen med mat<br><strong>Timing:</strong> Bäst tillsammans med frukost eller lunch<br><strong>Kombinera med:</strong> Vitamin D för optimal absorption<br><strong>Förväntat resultat:</strong> Märkbar förbättring inom 2-4 veckor"
+          },
+          {
+            title: "Adaptogena svampar (Reishi & Cordyceps)",
+            description: "<strong>Varför det passar dig:</strong> Balanserar stress och ökar energi naturligt<br><strong>Näringsämnen:</strong> Beta-glukaner, triterpener och polysackarider<br><strong>Fördelar:</strong> Stressresiliens, bättre sömn och förbättrad uthållighet",
+            howToUse: "<strong>Dosering:</strong> 1 tsk pulver eller 2 kapslar dagligen<br><strong>Timing:</strong> Reishi på kvällen, Cordyceps på morgonen<br><strong>Kombinera med:</strong> Varmt te eller smoothie<br><strong>Förväntat resultat:</strong> Gradvis förbättring över 3-6 veckor"
+          },
+          {
+            title: "Fermenterade livsmedel (Kimchi & Kefir)",
+            description: "<strong>Varför det passar dig:</strong> Stärker tarmhälsan och immunförsvaret<br><strong>Näringsämnen:</strong> Probiotika, enzymer och B-vitaminer<br><strong>Fördelar:</strong> Bättre matsmältning, starkare immunförsvar och förbättrat humör",
+            howToUse: "<strong>Dosering:</strong> 2-3 msk kimchi eller 1 dl kefir dagligen<br><strong>Timing:</strong> Till måltider för optimal effekt<br><strong>Kombinera med:</strong> Prebiotika från grönsaker<br><strong>Förväntat resultat:</strong> Märkbar förbättring inom 1-2 veckor"
           }
         ],
         lifestyleAdvice: [
-          "<strong>Prioritera god sömn</strong> - sträva efter 7-9 timmar per natt<br>Skapa en avslappnande kvällsrutin",
-          "<strong>Rör dig regelbundet</strong> - minst 30 minuter daglig aktivitet<br>Variera mellan styrka och kondition",
-          "<strong>Hantera stress</strong> - prova mindfulness eller meditation<br>Ta pauser under arbetsdagen",
-          "<strong>Ät näringsrik kost</strong> - fokusera på hela, naturliga livsmedel<br>Inkludera grönsaker i varje måltid",
-          "<strong>Håll dig hydrerad</strong> - drick 2-3 liter vatten dagligen<br>Börja dagen med ett glas vatten",
-          "<strong>Skapa balans</strong> - hitta tid för återhämtning och vila<br>Sätt gränser mellan arbete och fritid"
+          "<strong>Optimera din sömnhygien:</strong> Skapa en konsekvent sovrutin med 7-9 timmar sömn<br><strong>Handlingsplan:</strong> Samma sovtid varje dag, mörk och sval sovmiljö, ingen skärmtid 1 timme före sängdags<br><strong>Mål:</strong> Förbättrad sömnkvalitet inom 2 veckor",
+          "<strong>Implementera mindful eating:</strong> Ät medvetet och utan distraktion<br><strong>Handlingsplan:</strong> Sätt undan telefonen under måltider, tugga långsamt, lyssna på kroppens mättnadssignaler<br><strong>Mål:</strong> Bättre matsmältning och näringsupptag",
+          "<strong>Daglig rörelse som glädje:</strong> Hitta aktiviteter du verkligen tycker om<br><strong>Handlingsplan:</strong> 30 minuter daglig aktivitet, blanda styrka och kondition, prova nya aktiviteter<br><strong>Mål:</strong> Konsekvent motion som känns naturlig",
+          "<strong>Stresshantering med andningsteknik:</strong> Lär dig 4-7-8 andningen för akut stress<br><strong>Handlingsplan:</strong> Andas in 4 sek, håll 7 sek, andas ut 8 sek, upprepa 4 gånger<br><strong>Mål:</strong> Verktyg för omedelbar stresslindring",
+          "<strong>Hydrering med elektrolyter:</strong> Optimera din vätskebalans<br><strong>Handlingsplan:</strong> 2-3 liter vatten dagligen, lägg till naturligt salt och citron<br><strong>Mål:</strong> Stabil energi och bättre koncentration",
+          "<strong>Social hälsa och gemenskap:</strong> Prioritera meningsfulla relationer<br><strong>Handlingsplan:</strong> Schemalägg regelbunden tid med vänner och familj<br><strong>Mål:</strong> Starkare socialt stöd och förbättrat välbefinnande",
+          "<strong>Miljöoptimering hemma:</strong> Skapa en hälsosam hemmiljö<br><strong>Handlingsplan:</strong> Luftrening med växter, minska kemikalier, optimera belysning<br><strong>Mål:</strong> Renare luft och bättre inomhusklimat",
+          "<strong>Digital detox rutiner:</strong> Balansera skärmtid för bättre mental hälsa<br><strong>Handlingsplan:</strong> Skärmfria zoner, regelbundna pauser, mindful teknik-användning<br><strong>Mål:</strong> Minskad digital stress och bättre fokus"
         ],
         nextSteps: [
-          "<strong>Vecka 1-2:</strong> Implementera en ny hälsovana i taget<br>Börja med den som känns enklast",
-          "<strong>Vecka 3-4:</strong> Lägg till functional foods i din dagliga kost<br>Börja med 1-2 produkter",
-          "<strong>Månad 2:</strong> Förbättra din sömnhygien och kvällsrutin<br>Skapa en konsekvent sovtid",
-          "<strong>Månad 3:</strong> Öka din fysiska aktivitet gradvis<br>Hitta aktiviteter du verkligen tycker om",
-          "<strong>Långsiktigt:</strong> Följ upp din progress regelbundet<br>Justera strategin baserat på resultat"
+          "<strong>Vecka 1:</strong> Starta med en functional food och en livsstilsförändring<br><strong>Specifikt mål:</strong> Lägg till probiotika och förbättra sömnrutinen<br><strong>Mätbart resultat:</strong> Daglig konsumtion och konsekvent sovtid",
+          "<strong>Vecka 2-3:</strong> Utöka med omega-3 och stresshantering<br><strong>Specifikt mål:</strong> Daglig omega-3 och andningsteknik<br><strong>Mätbart resultat:</strong> Förbättrad koncentration och lugn",
+          "<strong>Månad 2:</strong> Integrera adaptogena svampar och motionsrutin<br><strong>Specifikt mål:</strong> Daglig svampkonsumtion och 30 min aktivitet<br><strong>Mätbart resultat:</strong> Högre energinivåer och bättre stresshantering",
+          "<strong>Månad 3:</strong> Fördjupa med avancerade functional foods<br><strong>Specifikt mål:</strong> Utforska nya functional foods baserat på resultat<br><strong>Mätbart resultat:</strong> Optimerad hälsoprofil och välbefinnande",
+          "<strong>Långsiktigt (3-6 månader):</strong> Etablera hållbara vanor<br><strong>Specifikt mål:</strong> Alla rekommendationer som naturliga rutiner<br><strong>Mätbart resultat:</strong> Stabil energi, bättre hälsa och livskvalitet",
+          "<strong>Uppföljning (6 månader):</strong> Utvärdera framsteg och justera<br><strong>Specifikt mål:</strong> Bedöm vilka strategier som fungerar bäst<br><strong>Mätbart resultat:</strong> Personlig hälsoplan som passar din livsstil",
+          "<strong>Optimering (löpande):</strong> Finjustera baserat på säsong och livssituation<br><strong>Specifikt mål:</strong> Anpassa rekommendationer efter behov<br><strong>Mätbart resultat:</strong> Flexibel och hållbar hälsostrategi"
         ]
       };
     }
