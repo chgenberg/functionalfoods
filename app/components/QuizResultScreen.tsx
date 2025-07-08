@@ -60,25 +60,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     return typeof data === 'object' && !('symptoms' in data);
   };
 
-  // Type guard to check if quizData is result data
-  const isResultData = (data: any): data is {
-    symptoms: Array<{ symptom: string; severity: number }>;
-    recommendations: Array<{
-      nutrient: string;
-      description: string;
-      foods: string[];
-      supplements: string;
-    }>;
-    quickWins: Array<{
-      icon: string;
-      title: string;
-      description: string;
-      emoji: string;
-    }>;
-  } => {
-    return typeof data === 'object' && 'symptoms' in data;
-  };
-
   const calculateHealthScores = (data: Record<number, string>): HealthScores => {
     const scores: HealthScores = {
       energi: 7,
@@ -215,11 +196,11 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+      <div className="w-full bg-gradient-to-br from-red-50 to-orange-50 py-16 px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center"
+          className="bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto text-center"
         >
           <div className="text-6xl mb-4">⚠️</div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">Något gick fel</h2>
@@ -254,15 +235,15 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   ];
 
   const healthAreas = [
-    { key: 'energi', label: 'Energi', icon: FiZap, color: 'from-yellow-400 to-orange-500' },
-    { key: 'sömn', label: 'Sömn', icon: FiShield, color: 'from-purple-400 to-purple-600' },
-    { key: 'stress', label: 'Stress', icon: FiHeart, color: 'from-pink-400 to-red-500' },
-    { key: 'kost', label: 'Kost', icon: FiTarget, color: 'from-green-400 to-green-600' },
-    { key: 'motion', label: 'Motion', icon: FiActivity, color: 'from-blue-400 to-blue-600' }
+    { key: 'energi', label: 'Energi', icon: FiZap, color: '#fbbf24' },
+    { key: 'sömn', label: 'Sömn', icon: FiShield, color: '#a855f7' },
+    { key: 'stress', label: 'Stress', icon: FiHeart, color: '#f472b6' },
+    { key: 'kost', label: 'Kost', icon: FiTarget, color: '#22c55e' },
+    { key: 'motion', label: 'Motion', icon: FiActivity, color: '#3b82f6' }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+    <div className="w-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       {/* Header Section */}
       <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-16">
         <div className="max-w-6xl mx-auto px-4 text-center">
@@ -285,11 +266,11 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
       </div>
 
       {/* Score Section */}
-      <div className="max-w-6xl mx-auto px-4 -mt-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl shadow-2xl p-8 mb-8"
+          className="bg-white rounded-3xl shadow-2xl p-8 mb-8 -mt-16 relative z-10"
         >
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Total Score - Larger */}
@@ -364,18 +345,18 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                             strokeWidth="6"
                             fill="none"
                           />
-                                                     <circle
-                             cx="40"
-                             cy="40"
-                             r="36"
-                             stroke="#22c55e"
-                             strokeWidth="6"
-                             fill="none"
-                             strokeDasharray={`${(percentage / 100) * 226} 226`}
-                             transform="rotate(-90 40 40)"
-                             className="transition-all duration-1000"
-                             strokeLinecap="round"
-                           />
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="36"
+                            stroke={area.color}
+                            strokeWidth="6"
+                            fill="none"
+                            strokeDasharray={`${(percentage / 100) * 226} 226`}
+                            transform="rotate(-90 40 40)"
+                            className="transition-all duration-1000"
+                            strokeLinecap="round"
+                          />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
                           <Icon className="w-6 h-6 text-gray-600" />
@@ -390,168 +371,168 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
             </div>
           </div>
         </motion.div>
-      </div>
 
-      {/* Content Tabs */}
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-2xl shadow-lg p-2 mb-8">
-          <div className="flex flex-wrap">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 rounded-xl font-medium transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg'
-                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-                }`}
-              >
-                <span className="text-xl">{tab.icon}</span>
-                <span className="hidden sm:inline">{tab.label}</span>
-              </button>
-            ))}
+        {/* Content Tabs */}
+        <div className="max-w-6xl mx-auto">
+          {/* Tab Navigation */}
+          <div className="bg-white rounded-2xl shadow-lg p-2 mb-8">
+            <div className="flex flex-wrap">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 rounded-xl font-medium transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg'
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                  }`}
+                >
+                  <span className="text-xl">{tab.icon}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Tab Content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {activeTab === 'summary' && recommendations && (
-              <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-6">Din hälsoprofil</h2>
-                <p className="text-lg text-gray-700 leading-relaxed mb-8">
-                  {recommendations.profile}
-                </p>
-                
-                {/* Quick Actions */}
-                <div className="grid md:grid-cols-3 gap-6 mt-8">
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center cursor-pointer"
-                  >
-                    <div className="text-4xl mb-3">💧</div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Hydration</h4>
-                    <p className="text-sm text-gray-600">Drick 2L vatten dagligen</p>
-                  </motion.div>
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center cursor-pointer"
-                  >
-                    <div className="text-4xl mb-3">🥗</div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Nutrition</h4>
-                    <p className="text-sm text-gray-600">Ät varierat och färgglatt</p>
-                  </motion.div>
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center cursor-pointer"
-                  >
-                    <div className="text-4xl mb-3">😴</div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Vila</h4>
-                    <p className="text-sm text-gray-600">7-9 timmars sömn</p>
-                  </motion.div>
+          {/* Tab Content */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {activeTab === 'summary' && recommendations && (
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Din hälsoprofil</h2>
+                  <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                    {recommendations.profile}
+                  </p>
+                  
+                  {/* Quick Actions */}
+                  <div className="grid md:grid-cols-3 gap-6 mt-8">
+                    <motion.div 
+                      whileHover={{ scale: 1.05 }}
+                      className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center cursor-pointer"
+                    >
+                      <div className="text-4xl mb-3">💧</div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Hydration</h4>
+                      <p className="text-sm text-gray-600">Drick 2L vatten dagligen</p>
+                    </motion.div>
+                    <motion.div 
+                      whileHover={{ scale: 1.05 }}
+                      className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center cursor-pointer"
+                    >
+                      <div className="text-4xl mb-3">🥗</div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Nutrition</h4>
+                      <p className="text-sm text-gray-600">Ät varierat och färgglatt</p>
+                    </motion.div>
+                    <motion.div 
+                      whileHover={{ scale: 1.05 }}
+                      className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center cursor-pointer"
+                    >
+                      <div className="text-4xl mb-3">😴</div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Vila</h4>
+                      <p className="text-sm text-gray-600">7-9 timmars sömn</p>
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeTab === 'recommendations' && recommendations && (
-              <div className="space-y-6">
-                {recommendations.recommendations.map((rec, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-2xl shadow-lg p-8"
-                  >
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-green-100 rounded-full p-4 flex-shrink-0">
-                        <FiCheckCircle className="w-8 h-8 text-green-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-3">{rec.title}</h3>
-                        <p className="text-gray-700 mb-6 text-lg">{rec.description}</p>
-                        <div className="bg-green-50 rounded-xl p-4">
-                          <h4 className="font-medium text-green-800 mb-2">Så här använder du det:</h4>
-                          <p className="text-green-700">{rec.howToUse}</p>
+              {activeTab === 'recommendations' && recommendations && (
+                <div className="space-y-6">
+                  {recommendations.recommendations.map((rec, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white rounded-2xl shadow-lg p-8"
+                    >
+                      <div className="flex items-start space-x-4">
+                        <div className="bg-green-100 rounded-full p-4 flex-shrink-0">
+                          <FiCheckCircle className="w-8 h-8 text-green-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-2xl font-semibold text-gray-800 mb-3">{rec.title}</h3>
+                          <p className="text-gray-700 mb-6 text-lg">{rec.description}</p>
+                          <div className="bg-green-50 rounded-xl p-4">
+                            <h4 className="font-medium text-green-800 mb-2">Så här använder du det:</h4>
+                            <p className="text-green-700">{rec.howToUse}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'lifestyle' && recommendations && (
-              <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-6">Livsstilsråd för optimal hälsa</h2>
-                <div className="space-y-6">
-                  {recommendations.lifestyleAdvice.map((advice, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
-                    >
-                      <FiHeart className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
-                      <p className="text-gray-700 text-lg">{advice}</p>
                     </motion.div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeTab === 'nextsteps' && recommendations && (
-              <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-6">Dina nästa steg</h2>
-                <div className="space-y-6">
-                  {recommendations.nextSteps.map((step, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
+              {activeTab === 'lifestyle' && recommendations && (
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Livsstilsråd för optimal hälsa</h2>
+                  <div className="space-y-6">
+                    {recommendations.lifestyleAdvice.map((advice, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
+                      >
+                        <FiHeart className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
+                        <p className="text-gray-700 text-lg">{advice}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'nextsteps' && recommendations && (
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Dina nästa steg</h2>
+                  <div className="space-y-6">
+                    {recommendations.nextSteps.map((step, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
+                      >
+                        <div className="bg-purple-100 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-purple-600 font-semibold">{index + 1}</span>
+                        </div>
+                        <p className="text-gray-700 text-lg">{step}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* CTA Button */}
+                  <div className="mt-10 text-center">
+                    <button 
+                      onClick={() => window.location.href = '/dashboard/courses/functional-basics'}
+                      className="bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full font-semibold text-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl inline-flex items-center space-x-3 transform hover:scale-105"
                     >
-                      <div className="bg-purple-100 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
-                        <span className="text-purple-600 font-semibold">{index + 1}</span>
-                      </div>
-                      <p className="text-gray-700 text-lg">{step}</p>
-                    </motion.div>
-                  ))}
+                      <span>Kom igång med Functional Basics</span>
+                      <FiArrowRight className="w-6 h-6" />
+                    </button>
+                  </div>
                 </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-                {/* CTA Button */}
-                <div className="mt-10 text-center">
-                  <button 
-                    onClick={() => window.location.href = '/dashboard/courses/functional-basics'}
-                    className="bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full font-semibold text-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl inline-flex items-center space-x-3 transform hover:scale-105"
-                  >
-                    <span>Kom igång med Functional Basics</span>
-                    <FiArrowRight className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Bottom Actions */}
-        <div className="mt-12 pb-12 text-center">
-          <button
-            onClick={onRestart}
-            className="text-gray-600 hover:text-gray-800 font-medium inline-flex items-center space-x-2 transition-colors text-lg"
-          >
-            <FiRefreshCw className="w-5 h-5" />
-            <span>Gör om testet</span>
-          </button>
+          {/* Bottom Actions */}
+          <div className="mt-12 pb-12 text-center">
+            <button
+              onClick={onRestart}
+              className="text-gray-600 hover:text-gray-800 font-medium inline-flex items-center space-x-2 transition-colors text-lg"
+            >
+              <FiRefreshCw className="w-5 h-5" />
+              <span>Gör om testet</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
