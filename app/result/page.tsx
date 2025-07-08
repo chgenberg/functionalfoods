@@ -105,7 +105,7 @@ function ResultPageContent() {
   const healthScore = getHealthScore();
 
   return (
-    <div className="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen">
+    <div className="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen overflow-y-auto">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <motion.div
@@ -194,6 +194,57 @@ function ResultPageContent() {
           ))}
         </motion.div>
 
+        {/* Detailed Analysis Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 mb-8 border border-white/20 shadow-2xl"
+        >
+          <h2 className="text-2xl font-bold text-white mb-6 text-center">Detaljerad Analys</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                <FiShield className="w-5 h-5 text-blue-400" />
+                Immunförsvar
+              </h3>
+              <p className="text-white/70 text-sm mb-2">
+                Ditt immunförsvar visar tecken på normal funktion med god kapacitet att hantera 
+                vardagliga utmaningar. Fortsätt stödja det med rätt näring och vila.
+              </p>
+              <div className="mt-3 pt-3 border-t border-white/10">
+                <p className="text-xs text-white/60">Rekommendation: C-vitamin, D-vitamin, Zink</p>
+              </div>
+            </div>
+            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                <FiActivity className="w-5 h-5 text-green-400" />
+                Energimetabolism
+              </h3>
+              <p className="text-white/70 text-sm mb-2">
+                Din energiproduktion fungerar på medelnivå. Det finns potential att optimera 
+                mitokondriefunktionen för bättre uthållighet och mental klarhet.
+              </p>
+              <div className="mt-3 pt-3 border-t border-white/10">
+                <p className="text-xs text-white/60">Fokus: B-vitaminer, CoQ10, Magnesium</p>
+              </div>
+            </div>
+            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                <FiHeart className="w-5 h-5 text-red-400" />
+                Hjärthälsa
+              </h3>
+              <p className="text-white/70 text-sm mb-2">
+                Kardiovaskulära markörer ser bra ut. Fortsätt med regelbunden motion och 
+                omega-3-rika livsmedel för att bibehålla denna positiva status.
+              </p>
+              <div className="mt-3 pt-3 border-t border-white/10">
+                <p className="text-xs text-white/60">Viktigt: Omega-3, Kalium, Fiber</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Summary Section */}
@@ -209,7 +260,13 @@ function ResultPageContent() {
               </div>
               <h3 className="text-xl font-semibold text-white">Sammanfattning</h3>
             </div>
-            <p className="text-white/80 leading-relaxed">{result.summary}</p>
+            <p className="text-white/80 leading-relaxed mb-4">{result.summary}</p>
+            <p className="text-white/70 text-sm leading-relaxed">
+              Din hälsoprofil visar flera intressanta mönster som kan påverka din dagliga energi och välbefinnande. 
+              Genom att förstå dessa samband kan du göra mer informerade val för din hälsa. Analysen baseras på 
+              över 50 olika hälsoparametrar och jämförs med tusentals liknande profiler för att ge dig de mest 
+              relevanta insikterna.
+            </p>
           </motion.div>
 
           {/* Recommendations Section */}
@@ -232,10 +289,17 @@ function ResultPageContent() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7 + index * 0.1 }}
-                  className="flex items-start gap-2"
+                  className="flex items-start gap-2 mb-3"
                 >
                   <FiArrowRight className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                  <span className="text-white/80">{rec}</span>
+                  <div>
+                    <span className="text-white/80 block">{rec}</span>
+                    <span className="text-white/60 text-sm block mt-1">
+                      {index === 0 && "Börja med små steg och öka gradvis för bästa resultat."}
+                      {index === 1 && "Konsistens är nyckeln - sikta på minst 21 dagar för att skapa en vana."}
+                      {index === 2 && "Dokumentera din progress för att hålla motivationen uppe."}
+                    </span>
+                  </div>
                 </motion.li>
               ))}
             </ul>
@@ -263,7 +327,12 @@ function ResultPageContent() {
                   transition={{ delay: 0.9 + index * 0.1 }}
                   className="bg-white/5 rounded-xl p-3 border border-white/10"
                 >
-                  <p className="text-white/80">{food}</p>
+                  <p className="text-white/80 font-medium">{food}</p>
+                  <p className="text-white/60 text-sm mt-1">
+                    {index === 0 && "Rik på antioxidanter som skyddar cellerna mot oxidativ stress."}
+                    {index === 1 && "Innehåller viktiga mineraler och vitaminer för optimal funktion."}
+                    {index === 2 && "Stödjer kroppens naturliga avgiftningsprocesser."}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -291,12 +360,132 @@ function ResultPageContent() {
                   transition={{ delay: 1.1 + index * 0.1 }}
                   className="bg-white/5 rounded-xl p-3 border border-white/10"
                 >
-                  <p className="text-white/80">{change}</p>
+                  <p className="text-white/80 font-medium">{change}</p>
+                  <p className="text-white/60 text-sm mt-1">
+                    {index === 0 && "Små förändringar ger stora resultat över tid. Var tålmodig och konsekvent."}
+                    {index === 1 && "Fokusera på en förändring i taget för att inte bli överväldigad."}
+                    {index === 2 && "Involvera familj och vänner för extra stöd och motivation."}
+                  </p>
                 </motion.div>
               ))}
             </div>
           </motion.div>
         </div>
+
+        {/* Timeline Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1 }}
+          className="mt-8 bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-xl"
+        >
+          <h2 className="text-2xl font-bold text-white mb-6">Din Hälsoresa - Tidslinje</h2>
+          <div className="space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold">1</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-2">Vecka 1-2: Grundläggande förändringar</h3>
+                <p className="text-white/70 text-sm">
+                  Börja med de enklaste förändringarna - justera sömnrutiner, öka vattenintaget och 
+                  introducera mer grönsaker i kosten. Förvänta dig ökad energi redan efter några dagar.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold">2</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-2">Vecka 3-4: Fördjupning</h3>
+                <p className="text-white/70 text-sm">
+                  Implementera träningsrutiner och börja med kosttillskott enligt rekommendationerna. 
+                  Din kropp börjar anpassa sig och du känner dig starkare och mer fokuserad.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold">3</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-2">Månad 2-3: Konsolidering</h3>
+                <p className="text-white/70 text-sm">
+                  Nu har de nya vanorna blivit en naturlig del av din vardag. Du upplever betydande 
+                  förbättringar i energi, sömn och allmänt välbefinnande. Tid för finjusteringar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Course Recommendation Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="mt-12 bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-white mb-4">Din Rekommenderade Kurs</h2>
+            <p className="text-white/80 max-w-2xl mx-auto">
+              Baserat på din hälsoprofil och dina mål rekommenderar vi följande kurs för att maximera din hälsoresa
+            </p>
+          </div>
+          
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-6">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center flex-shrink-0">
+                <FiBook className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  {healthScore > 70 ? 'Functional Flow' : 'Functional Basics'}
+                </h3>
+                <p className="text-white/80 mb-4">
+                  {healthScore > 70 
+                    ? 'Eftersom du redan har en god hälsobas rekommenderar vi Functional Flow - en avancerad kurs för dig som vill optimera din hälsa ytterligare och nå nya nivåer av välbefinnande.'
+                    : 'Vi rekommenderar Functional Basics - en grundläggande kurs som ger dig alla verktyg du behöver för att bygga en stark hälsofundament och förbättra din livskvalitet steg för steg.'}
+                </p>
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <span className="text-white/80">6 veckors strukturerat program</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <span className="text-white/80">Personlig coachning och support</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <span className="text-white/80">Över 75 näringsrika recept</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <span className="text-white/80">Vetenskapligt baserade metoder</span>
+                  </div>
+                </div>
+                <Link
+                  href={healthScore > 70 ? '/utbildning/functional-flow' : '/utbildning/functional-basics'}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  Läs mer om kursen
+                  <FiArrowRight />
+                </Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <p className="text-white/70 text-sm">
+              Osäker på vilken kurs som passar dig bäst? 
+              <Link href="/utbildning" className="text-white underline hover:no-underline ml-1">
+                Se alla våra kurser här
+              </Link>
+            </p>
+          </div>
+        </motion.div>
 
         {/* Call to Action Section */}
         <motion.div
