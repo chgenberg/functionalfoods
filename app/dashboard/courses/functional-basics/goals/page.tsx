@@ -90,12 +90,12 @@ export default function GoalsOverviewPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mina målsättningar</h1>
-          <p className="text-gray-600 mt-2">Översikt över alla dina mål genom kursen</p>
+          <h1 className="text-2xl font-bold text-gray-900">Mina målsättningar</h1>
+          <p className="text-gray-600 mt-1 text-sm">Översikt över alla dina mål genom kursen</p>
         </div>
         <Link 
-          href="/dashboard/courses/functional-basics/week/1"
-          className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+          href="/dashboard/courses/functional-basics"
+          className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
         >
           <FiPlus className="w-4 h-4" />
           <span>Nytt mål</span>
@@ -103,76 +103,76 @@ export default function GoalsOverviewPage() {
       </div>
 
       {/* Overall Progress */}
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Total framgång</h2>
-            <p className="text-gray-600">Din övergripande måluppfyllelse</p>
+            <h2 className="text-lg font-semibold text-gray-900">Total framgång</h2>
+            <p className="text-gray-600 text-sm">Din övergripande måluppfyllelse</p>
           </div>
           <div className="text-center">
-            <div className="relative w-32 h-32">
-              <svg className="w-32 h-32 transform -rotate-90">
+            <div className="relative w-24 h-24">
+              <svg className="w-24 h-24 transform -rotate-90">
                 <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
+                  cx="48"
+                  cy="48"
+                  r="40"
                   stroke="currentColor"
-                  strokeWidth="12"
+                  strokeWidth="8"
                   fill="none"
                   className="text-gray-200"
                 />
                 <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
+                  cx="48"
+                  cy="48"
+                  r="40"
                   stroke="currentColor"
-                  strokeWidth="12"
+                  strokeWidth="8"
                   fill="none"
-                  strokeDasharray={`${2 * Math.PI * 56}`}
-                  strokeDashoffset={`${2 * Math.PI * 56 * (1 - stats.completionRate / 100)}`}
+                  strokeDasharray={`${2 * Math.PI * 40}`}
+                  strokeDashoffset={`${2 * Math.PI * 40 * (1 - stats.completionRate / 100)}`}
                   className="text-green-600 transition-all duration-1000"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-3xl font-bold text-gray-900">{stats.completionRate}%</span>
+                <span className="text-2xl font-bold text-gray-900">{stats.completionRate}%</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="bg-blue-50 rounded-xl p-4">
-            <FiTarget className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-            <p className="text-sm text-gray-600">Totala mål</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div className="bg-blue-50 rounded-lg p-3">
+            <FiTarget className="w-6 h-6 text-blue-600 mx-auto mb-1" />
+            <p className="text-xl font-bold text-gray-900">{stats.total}</p>
+            <p className="text-xs text-gray-600">Totala mål</p>
           </div>
-          <div className="bg-green-50 rounded-xl p-4">
-            <FiCheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
-            <p className="text-sm text-gray-600">Avklarade</p>
+          <div className="bg-green-50 rounded-lg p-3">
+            <FiCheckCircle className="w-6 h-6 text-green-600 mx-auto mb-1" />
+            <p className="text-xl font-bold text-gray-900">{stats.completed}</p>
+            <p className="text-xs text-gray-600">Avklarade</p>
           </div>
-          <div className="bg-yellow-50 rounded-xl p-4">
-            <FiClock className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{stats.active}</p>
-            <p className="text-sm text-gray-600">Aktiva</p>
+          <div className="bg-yellow-50 rounded-lg p-3">
+            <FiClock className="w-6 h-6 text-yellow-600 mx-auto mb-1" />
+            <p className="text-xl font-bold text-gray-900">{stats.active}</p>
+            <p className="text-xs text-gray-600">Aktiva</p>
           </div>
-          <div className="bg-red-50 rounded-xl p-4">
-            <FiFlag className="w-8 h-8 text-red-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-gray-900">{stats.overdue}</p>
-            <p className="text-sm text-gray-600">Försenade</p>
+          <div className="bg-red-50 rounded-lg p-3">
+            <FiFlag className="w-6 h-6 text-red-600 mx-auto mb-1" />
+            <p className="text-xl font-bold text-gray-900">{stats.overdue}</p>
+            <p className="text-xs text-gray-600">Försenade</p>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-lg p-6">
-        <div className="flex flex-wrap items-center gap-4">
+      <div className="bg-white rounded-xl shadow-md p-4">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center space-x-2">
-            <FiFilter className="w-5 h-5 text-gray-600" />
+            <FiFilter className="w-4 h-4 text-gray-600" />
             <span className="text-sm font-medium text-gray-700">Filter:</span>
           </div>
           
-          <div className="flex space-x-2">
+          <div className="flex space-x-1">
             {[
               { key: 'all', label: 'Alla' },
               { key: 'active', label: 'Aktiva' },
@@ -182,7 +182,7 @@ export default function GoalsOverviewPage() {
               <button
                 key={filter.key}
                 onClick={() => setFilterType(filter.key as FilterType)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                   filterType === filter.key
                     ? 'bg-orange-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -193,7 +193,7 @@ export default function GoalsOverviewPage() {
             ))}
           </div>
 
-          <div className="flex space-x-2">
+          <div className="border-l pl-3 flex space-x-1">
             {[
               { key: 'all', label: 'Alla kategorier' },
               { key: 'weekly', label: 'Veckomål' },
@@ -204,7 +204,7 @@ export default function GoalsOverviewPage() {
               <button
                 key={category.key}
                 onClick={() => setCategoryFilter(category.key as CategoryFilter)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                   categoryFilter === category.key
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -218,7 +218,7 @@ export default function GoalsOverviewPage() {
       </div>
 
       {/* Goals by Category */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {Object.entries(goalsByCategory).map(([category, categoryGoals]) => {
           const completed = categoryGoals.filter(g => g.status === 'completed').length;
           const total = categoryGoals.length;
@@ -227,25 +227,25 @@ export default function GoalsOverviewPage() {
             <motion.div
               key={category}
               whileHover={{ scale: 1.02 }}
-              className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all"
+              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className={`bg-gradient-to-r ${getCategoryColor(category)} text-white rounded-lg p-2`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <div className={`bg-gradient-to-r ${getCategoryColor(category)} text-white rounded-lg p-1.5`}>
                     {getCategoryIcon(category)}
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 capitalize">{category}</h3>
-                    <p className="text-sm text-gray-600">{completed}/{total} klara</p>
+                    <h3 className="font-semibold text-gray-900 text-sm capitalize">{category}</h3>
+                    <p className="text-xs text-gray-600">{completed}/{total} klara</p>
                   </div>
                 </div>
                 {total > 0 && completed === total && (
-                  <FiAward className="w-6 h-6 text-yellow-500" />
+                  <FiAward className="w-5 h-5 text-yellow-500" />
                 )}
               </div>
 
               {total > 0 && (
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(completed / total) * 100}%` }}
@@ -259,9 +259,9 @@ export default function GoalsOverviewPage() {
       </div>
 
       {/* Week by Week Goals */}
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Mål per vecka</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mål per vecka</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {weeks.map((week) => {
             const weekGoals = goalsByWeek[week] || [];
             const weekCompleted = weekGoals.filter(g => g.status === 'completed').length;
@@ -272,25 +272,25 @@ export default function GoalsOverviewPage() {
                 key={week}
                 whileHover={{ scale: 1.02 }}
                 onClick={() => setSelectedWeek(selectedWeek === week ? null : week)}
-                className="bg-gray-50 rounded-xl p-6 cursor-pointer hover:bg-gray-100 transition-all"
+                className="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-all"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg px-3 py-1">
-                      <span className="font-bold">Vecka {week}</span>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded px-2 py-0.5 text-sm">
+                      <span className="font-semibold">Vecka {week}</span>
                     </div>
                     {weekTotal > 0 && weekCompleted === weekTotal && (
-                      <FiAward className="w-6 h-6 text-yellow-500" />
+                      <FiAward className="w-5 h-5 text-yellow-500" />
                     )}
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-xs text-gray-600">
                     {weekCompleted}/{weekTotal}
                   </span>
                 </div>
 
                 {weekTotal > 0 ? (
                   <>
-                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-4">
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mb-3">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${(weekCompleted / weekTotal) * 100}%` }}
@@ -302,49 +302,46 @@ export default function GoalsOverviewPage() {
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="space-y-2 mt-4"
+                        className="space-y-2 mt-3"
                       >
                         {weekGoals.map((goal) => (
                           <div
                             key={goal.id}
-                            className={`flex items-center justify-between p-3 rounded-lg ${
+                            className={`flex items-center justify-between p-2 rounded ${
                               goal.status === 'completed' ? 'bg-green-50' : 'bg-white'
                             }`}
                           >
                             <div className="flex items-center space-x-2">
                               {goal.status === 'completed' ? (
-                                <FiCheckCircle className="w-4 h-4 text-green-600" />
+                                <FiCheckCircle className="w-3 h-3 text-green-600" />
                               ) : (
-                                <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
+                                <div className="w-3 h-3 rounded-full border-2 border-gray-300" />
                               )}
-                              <span className={`text-sm ${
+                              <span className={`text-xs ${
                                 goal.status === 'completed' ? 'text-gray-600 line-through' : 'text-gray-800'
                               }`}>
                                 {goal.title}
                               </span>
                             </div>
-                            <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(goal.priority)}`}>
-                              {goal.priority}
-                            </span>
                           </div>
                         ))}
                         <Link
                           href={`/dashboard/courses/functional-basics/week/${week}`}
-                          className="block w-full text-center py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
+                          className="block w-full text-center py-1.5 bg-orange-600 text-white rounded text-xs hover:bg-orange-700 transition-colors"
                         >
-                          Hantera mål för vecka {week}
+                          Hantera mål
                         </Link>
                       </motion.div>
                     )}
                   </>
                 ) : (
-                  <div className="text-center py-4 text-gray-400">
-                    <p className="text-sm">Inga mål satta ännu</p>
+                  <div className="text-center py-3 text-gray-400">
+                    <p className="text-xs">Inga mål satta</p>
                     <Link
                       href={`/dashboard/courses/functional-basics/week/${week}`}
-                      className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                      className="text-orange-600 hover:text-orange-700 text-xs font-medium"
                     >
-                      Sätt mål för vecka {week}
+                      Sätt mål →
                     </Link>
                   </div>
                 )}
@@ -355,23 +352,17 @@ export default function GoalsOverviewPage() {
       </div>
 
       {/* Detailed Goals List */}
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Alla mål</h2>
-        
-        {filteredGoals.length === 0 ? (
-          <div className="text-center py-12">
-            <FiTarget className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Inga mål hittades</h3>
-            <p className="text-gray-600">Prova att ändra dina filter eller skapa ett nytt mål</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
+      {filteredGoals.length > 0 && (
+        <div className="bg-white rounded-xl shadow-md p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Alla mål</h2>
+          
+          <div className="space-y-3">
             {filteredGoals.map((goal) => (
               <motion.div
                 key={goal.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`p-4 rounded-lg border-2 transition-all ${
+                className={`p-3 rounded-lg border ${
                   goal.status === 'completed'
                     ? 'bg-green-50 border-green-200'
                     : 'bg-gray-50 border-gray-200'
@@ -380,42 +371,37 @@ export default function GoalsOverviewPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     {goal.status === 'completed' ? (
-                      <FiCheckCircle className="w-5 h-5 text-green-600" />
+                      <FiCheckCircle className="w-4 h-4 text-green-600" />
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-gray-300" />
+                      <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
                     )}
                     <div>
-                      <h4 className={`font-medium ${
+                      <h4 className={`font-medium text-sm ${
                         goal.status === 'completed' ? 'text-gray-600 line-through' : 'text-gray-900'
                       }`}>
                         {goal.title}
                       </h4>
                       {goal.description && (
-                        <p className="text-sm text-gray-600 mt-1">{goal.description}</p>
+                        <p className="text-xs text-gray-600 mt-0.5">{goal.description}</p>
                       )}
-                      <div className="flex items-center space-x-4 mt-2">
-                        <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(goal.priority)}`}>
+                      <div className="flex items-center space-x-3 mt-1">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${getPriorityColor(goal.priority)}`}>
                           {goal.priority}
                         </span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(goal.category)} text-white`}>
-                          {goal.category}
+                        <span className="text-xs text-gray-500">
+                          {goal.category} • Vecka {goal.weekNumber}
                         </span>
-                        {goal.weekNumber && (
-                          <span className="text-xs text-gray-500">
-                            Vecka {goal.weekNumber}
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    {goal.status !== 'completed' && (
+                    {goal.status !== 'completed' && goal.progress > 0 && (
                       <div className="text-right">
-                        <div className="text-sm font-medium text-gray-900">{goal.progress}%</div>
-                        <div className="w-20 h-2 bg-gray-200 rounded-full">
+                        <div className="text-xs font-medium text-gray-700">{goal.progress}%</div>
+                        <div className="w-16 h-1.5 bg-gray-200 rounded-full">
                           <div 
-                            className="h-2 bg-orange-600 rounded-full transition-all duration-300"
+                            className="h-1.5 bg-orange-600 rounded-full transition-all duration-300"
                             style={{ width: `${goal.progress}%` }}
                           />
                         </div>
@@ -425,9 +411,9 @@ export default function GoalsOverviewPage() {
                     {goal.weekNumber && (
                       <Link
                         href={`/dashboard/courses/functional-basics/week/${goal.weekNumber}`}
-                        className="p-2 text-gray-400 hover:text-orange-600 transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-orange-600 transition-colors"
                       >
-                        <FiEdit3 className="w-4 h-4" />
+                        <FiEdit3 className="w-3 h-3" />
                       </Link>
                     )}
                   </div>
@@ -435,31 +421,17 @@ export default function GoalsOverviewPage() {
               </motion.div>
             ))}
           </div>
-        )}
-      </div>
-
-      {/* Motivational Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white text-center">
-        <FiStar className="w-12 h-12 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold mb-4">Fortsätt så!</h3>
-        <p className="text-lg mb-6">
-          Varje mål du sätter och uppnår tar dig närmare en hälsosammare livsstil. 
-          Kom ihåg att fira dina framsteg, stora som små!
-        </p>
-        <div className="flex justify-center space-x-4">
-          <Link
-            href="/dashboard/courses/functional-basics"
-            className="bg-white text-purple-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-          >
-            Tillbaka till kursen
-          </Link>
-          <Link
-            href="/dashboard/courses/functional-basics/week/1"
-            className="bg-purple-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-800 transition-colors"
-          >
-            Sätt nytt mål
-          </Link>
         </div>
+      )}
+
+      {/* Back to course link */}
+      <div className="text-center">
+        <Link
+          href="/dashboard/courses/functional-basics"
+          className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium"
+        >
+          <span>← Tillbaka till kursen</span>
+        </Link>
       </div>
     </div>
   );

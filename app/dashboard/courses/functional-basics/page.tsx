@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiTarget, FiCheckCircle, FiPlus, FiBook, FiDownload,
-  FiTrendingUp, FiAward, FiStar, FiActivity, FiHeart, FiZap, FiEdit3
+  FiTrendingUp, FiAward, FiStar, FiActivity, FiHeart, FiZap, FiEdit3, FiChevronDown, FiCheck, FiArrowRight
 } from 'react-icons/fi';
 import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
@@ -232,7 +232,7 @@ export default function FunctionalBasicsPage() {
         courseId: 'functional-basics'
       });
     } catch (error) {
-      console.error('Error activating goal:', error);
+      console.error(`Error activating goal: ${error}`);
     }
   };
 
@@ -301,6 +301,10 @@ export default function FunctionalBasicsPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative group cursor-pointer"
+            onClick={() => {
+              // Here you can add video player logic
+              alert('Video kommer snart!');
+            }}
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl transform transition-transform duration-300 group-hover:scale-105">
               <img
@@ -343,7 +347,7 @@ export default function FunctionalBasicsPage() {
               <FiTarget className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900">Målsättning</h3>
+              <h3 className="font-semibold text-gray-900 text-base">Målsättning</h3>
               <p className="text-gray-600 text-sm">Hantera dina mål</p>
             </div>
           </div>
@@ -355,7 +359,7 @@ export default function FunctionalBasicsPage() {
               <FiBook className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900">Kursmaterial</h3>
+              <h3 className="font-semibold text-gray-900 text-base">Kursmaterial</h3>
               <p className="text-gray-600 text-sm">Alla resurser</p>
             </div>
           </div>
@@ -367,7 +371,7 @@ export default function FunctionalBasicsPage() {
               <FiDownload className="w-6 h-6 text-orange-600" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900">Nedladdningar</h3>
+              <h3 className="font-semibold text-gray-900 text-base">Nedladdningar</h3>
               <p className="text-gray-600 text-sm">PDF:er & guider</p>
             </div>
           </div>
@@ -377,7 +381,7 @@ export default function FunctionalBasicsPage() {
       {/* Weekly Progress */}
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">MÅL PER VECKA</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Veckans mål</h2>
           <button
             onClick={() => setShowNewGoalModal(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg"
@@ -398,20 +402,21 @@ export default function FunctionalBasicsPage() {
             return (
               <motion.div
                 key={week.number}
-                className="border-2 border-gray-200 rounded-xl overflow-hidden"
+                className={`border-2 rounded-xl overflow-hidden transition-all ${
+                  isExpanded ? 'border-orange-500 shadow-lg' : 'border-gray-200'
+                }`}
                 initial={false}
-                animate={{ 
-                  borderColor: isExpanded ? '#f97316' : '#e5e7eb'
-                }}
               >
                 <div 
-                  className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+                  className={`p-6 cursor-pointer transition-colors ${
+                    isExpanded ? 'bg-orange-50' : 'hover:bg-gray-50'
+                  }`}
                   onClick={() => setExpandedWeek(isExpanded ? null : week.number)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className={`
-                        px-4 py-2 rounded-lg font-bold text-white
+                        w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white
                         ${week.number === 1 ? 'bg-gradient-to-r from-purple-500 to-pink-600' : 
                           week.number === 2 ? 'bg-gradient-to-r from-blue-500 to-cyan-600' :
                           week.number === 3 ? 'bg-gradient-to-r from-green-500 to-teal-600' :
@@ -419,152 +424,168 @@ export default function FunctionalBasicsPage() {
                           week.number === 5 ? 'bg-gradient-to-r from-red-500 to-pink-600' :
                           'bg-gradient-to-r from-indigo-500 to-purple-600'}
                       `}>
-                        Vecka {week.number}
+                        {week.number}
                       </div>
                       
-                      <div>
-                        <h3 className="font-bold text-gray-900">{week.title}</h3>
-                        <p className="text-gray-600 text-sm">
-                          {totalGoals > 0 ? `${completedGoals}/${totalGoals} mål klara` : 'Inga mål satta ännu'}
-                        </p>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900">{week.title}</h3>
+                        <div className="flex items-center space-x-4 mt-1">
+                          <p className="text-sm text-gray-600">
+                            {totalGoals > 0 ? (
+                              <span className="flex items-center space-x-1">
+                                <FiCheckCircle className="w-4 h-4 text-green-500" />
+                                <span>{completedGoals}/{totalGoals} mål klara</span>
+                              </span>
+                            ) : (
+                              <span className="text-orange-600">Klicka för att se förslag på mål</span>
+                            )}
+                          </p>
+                          {totalGoals > 0 && (
+                            <div className="flex-1 max-w-xs">
+                              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <motion.div
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${(completedGoals / totalGoals) * 100}%` }}
+                                  className="h-full bg-gradient-to-r from-green-500 to-teal-600"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-4">
-                      {totalGoals > 0 && (
-                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${(completedGoals / totalGoals) * 100}%` }}
-                            className="h-full bg-gradient-to-r from-green-500 to-teal-600"
-                          />
-                        </div>
-                      )}
-                      
-                      <Link
-                        href={`/dashboard/courses/functional-basics/week/${week.number}`}
-                        className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors flex items-center space-x-2"
-                        onClick={(e) => e.stopPropagation()}
+                    <div className="flex items-center space-x-3">
+                      <motion.div
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
                       >
-                        <FiPlay className="w-4 h-4" />
-                        <span>Starta</span>
-                      </Link>
+                        <FiChevronDown className="w-5 h-5 text-gray-400" />
+                      </motion.div>
                     </div>
                   </div>
                 </div>
 
-                {isExpanded && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="border-t border-gray-200 bg-gray-50 p-6"
-                  >
-                    <div className="space-y-4">
-                      <h4 className="font-bold text-gray-900 mb-4">Rekommenderade mål för veckan:</h4>
-                      
-                      {/* Aktiva mål */}
-                      {weekGoals.map((goal) => (
-                        <div
-                          key={goal.id}
-                          className={`flex items-center justify-between p-4 rounded-lg border-2 ${
-                            goal.status === 'completed' 
-                              ? 'bg-green-50 border-green-200' 
-                              : 'bg-white border-gray-200'
-                          }`}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <button
-                              onClick={() => toggleGoalCompletion(goal.id, goal.status)}
-                              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                goal.status === 'completed'
-                                  ? 'bg-green-600 border-green-600 text-white'
-                                  : 'border-gray-300 hover:border-green-500'
-                              }`}
-                            >
-                              {goal.status === 'completed' && <FiCheckCircle className="w-4 h-4" />}
-                            </button>
-                            <div>
-                              <h5 className={`font-medium ${
-                                goal.status === 'completed' ? 'text-gray-600 line-through' : 'text-gray-900'
-                              }`}>
-                                {goal.title}
-                              </h5>
-                              <p className="text-sm text-gray-600">{goal.description}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center space-x-2">
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              goal.priority === 'high' ? 'bg-red-100 text-red-600' :
-                              goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-600' :
-                              'bg-green-100 text-green-600'
-                            }`}>
-                              {goal.priority}
-                            </span>
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              goal.category === 'nutrition' ? 'bg-purple-100 text-purple-600' :
-                              goal.category === 'health' ? 'bg-green-100 text-green-600' :
-                              goal.category === 'weekly' ? 'bg-blue-100 text-blue-600' :
-                              'bg-gray-100 text-gray-600'
-                            }`}>
-                              {goal.category}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                      
-                      {/* Fördefinierade mål som inte är aktiverade */}
-                      {predefinedGoals.map((predefinedGoal, index) => {
-                        const isAlreadyActive = weekGoals.some(g => g.title === predefinedGoal.title);
-                        if (isAlreadyActive) return null;
-                        
-                        return (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between p-4 rounded-lg border-2 border-dashed border-gray-300 bg-white"
-                          >
-                            <div className="flex items-center space-x-3">
-                              <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                                <FiPlus className="w-4 h-4 text-gray-400" />
-                              </div>
-                              <div>
-                                <h5 className="font-medium text-gray-700">{predefinedGoal.title}</h5>
-                                <p className="text-sm text-gray-500">{predefinedGoal.description}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2">
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                predefinedGoal.priority === 'high' ? 'bg-red-100 text-red-600' :
-                                predefinedGoal.priority === 'medium' ? 'bg-yellow-100 text-yellow-600' :
-                                'bg-green-100 text-green-600'
-                              }`}>
-                                {predefinedGoal.priority}
-                              </span>
-                              <button
-                                onClick={() => activatePredefinedGoal(week.number, predefinedGoal)}
-                                disabled={loading}
-                                className="bg-orange-600 text-white px-3 py-1 rounded-lg hover:bg-orange-700 transition-colors text-sm disabled:opacity-50"
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="border-t border-gray-200 bg-gray-50"
+                    >
+                      <div className="p-6 space-y-4">
+                        {/* Active goals */}
+                        {weekGoals.length > 0 && (
+                          <div className="space-y-3">
+                            <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">Aktiva mål</h4>
+                            {weekGoals.map((goal) => (
+                              <motion.div
+                                key={goal.id}
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                className={`flex items-center justify-between p-4 rounded-lg border ${
+                                  goal.status === 'completed' 
+                                    ? 'bg-green-50 border-green-200' 
+                                    : 'bg-white border-gray-200 hover:border-gray-300'
+                                } transition-all`}
                               >
-                                Aktivera
-                              </button>
-                            </div>
+                                <div className="flex items-center space-x-3 flex-1">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleGoalCompletion(goal.id, goal.status);
+                                    }}
+                                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                                      goal.status === 'completed'
+                                        ? 'bg-green-600 border-green-600 text-white'
+                                        : 'border-gray-300 hover:border-green-500'
+                                    }`}
+                                  >
+                                    {goal.status === 'completed' && <FiCheck className="w-3 h-3" />}
+                                  </button>
+                                  <div className="flex-1">
+                                    <h5 className={`font-medium ${
+                                      goal.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-900'
+                                    }`}>
+                                      {goal.title}
+                                    </h5>
+                                    {goal.description && (
+                                      <p className="text-sm text-gray-600 mt-1">{goal.description}</p>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <div className="flex items-center space-x-2 ml-4">
+                                  <span className={`text-xs px-2 py-1 rounded-full ${
+                                    goal.priority === 'high' ? 'bg-red-100 text-red-700' :
+                                    goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                    'bg-green-100 text-green-700'
+                                  }`}>
+                                    {goal.priority === 'high' ? 'Hög' : goal.priority === 'medium' ? 'Medel' : 'Låg'}
+                                  </span>
+                                </div>
+                              </motion.div>
+                            ))}
                           </div>
-                        );
-                      })}
-                      
-                      <div className="mt-4 pt-4 border-t border-gray-200">
-                        <Link
-                          href={`/dashboard/courses/functional-basics/week/${week.number}`}
-                          className="block w-full text-center py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
-                        >
-                          Gå till vecka {week.number} →
-                        </Link>
+                        )}
+                        
+                        {/* Suggested goals */}
+                        <div className="space-y-3">
+                          <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">
+                            {weekGoals.length > 0 ? 'Förslag på fler mål' : 'Förslag på mål för veckan'}
+                          </h4>
+                          {predefinedGoals.map((predefinedGoal, index) => {
+                            const isAlreadyActive = weekGoals.some(g => g.title === predefinedGoal.title);
+                            if (isAlreadyActive) return null;
+                            
+                            return (
+                              <motion.div
+                                key={index}
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="flex items-center justify-between p-4 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-orange-400 transition-all group"
+                              >
+                                <div className="flex items-center space-x-3 flex-1">
+                                  <div className="text-2xl">{predefinedGoal.icon}</div>
+                                  <div className="flex-1">
+                                    <h5 className="font-medium text-gray-800 group-hover:text-gray-900">
+                                      {predefinedGoal.title.replace(predefinedGoal.icon, '').trim()}
+                                    </h5>
+                                    <p className="text-sm text-gray-600 mt-1">{predefinedGoal.description}</p>
+                                  </div>
+                                </div>
+                                
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    activatePredefinedGoal(week.number, predefinedGoal);
+                                  }}
+                                  disabled={loading}
+                                  className="ml-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium disabled:opacity-50 whitespace-nowrap"
+                                >
+                                  Lägg till
+                                </button>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                        
+                        <div className="mt-6 pt-4 border-t border-gray-200">
+                          <Link
+                            href={`/dashboard/courses/functional-basics/week/${week.number}`}
+                            className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium"
+                          >
+                            <span>Gå till vecka {week.number}</span>
+                            <FiArrowRight className="w-4 h-4" />
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             );
           })}
