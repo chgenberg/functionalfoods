@@ -8,7 +8,7 @@ import {
   FiHome, FiBook, FiSettings, FiMenu, FiX, FiCalendar,
   FiAward, FiUsers, FiDownload, FiChevronRight, FiTarget
 } from 'react-icons/fi';
-import { GiFruitBowl } from 'react-icons/gi';
+import { GiFruitBowl, GiMeal } from 'react-icons/gi';
 
 export default function FunctionalBasicsLayout({
   children,
@@ -23,6 +23,11 @@ export default function FunctionalBasicsLayout({
       label: 'Kursöversikt',
       href: '/dashboard/courses/functional-basics',
       icon: FiHome,
+    },
+    {
+      label: 'Kostschema',
+      href: '/dashboard/courses/functional-basics/kostschema',
+      icon: GiMeal,
     },
     {
       label: 'Vecka 1',
