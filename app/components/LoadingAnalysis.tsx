@@ -5,6 +5,11 @@ import { FiActivity, FiHeart, FiZap, FiShield, FiTrendingUp, FiCheckCircle } fro
 import { GiBrain, GiStomach, GiFruitBowl, GiMeal, GiBodyBalance, GiHeartBeats, GiMeditation } from 'react-icons/gi';
 
 export default function LoadingAnalysis() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [messageIndex, setMessageIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [showTips, setShowTips] = useState(false);
@@ -127,6 +132,26 @@ export default function LoadingAnalysis() {
   }, [showTips]);
 
   const CurrentIcon = messages[messageIndex].icon;
+
+  // Simple fallback during SSR
+  if (!mounted) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
+        <div className="max-w-lg w-full mx-4">
+          <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 text-center">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+              <GiBrain className="w-12 h-12 text-white" />
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Analyserar dina svar...</h2>
+            <p className="text-gray-600 mb-6">Vi skapar personliga rekommendationer baserat på din hälsoprofil</p>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full w-1/3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const MetricBar = ({ label, value, icon: Icon, color }: any) => (
     <div className="mb-4">

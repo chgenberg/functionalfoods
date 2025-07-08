@@ -69,7 +69,13 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
           throw new Error('Failed to analyze');
         }
 
-        const result = await response.json();
+        let result;
+        try {
+          result = await response.json();
+        } catch (parseError) {
+          console.error('Error parsing response:', parseError);
+          throw new Error('Invalid response format');
+        }
         
         // Transform the result to match QuizResultScreen format
         const transformedResult = {
@@ -82,7 +88,20 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
             description: rec,
             foods: result.functionalFoods?.slice(index * 2, index * 2 + 2) || [],
             supplements: "Konsultera en läkare för specifika doseringar"
-          })) || [],
+          })) || [
+            {
+              nutrient: "Magnesium",
+              description: "Hjälper mot muskelspänningar och stress",
+              foods: ["Nötter", "Mörk choklad", "Avokado"],
+              supplements: "Magnesiumcitrat 200-400mg dagligen"
+            },
+            {
+              nutrient: "Omega-3",
+              description: "Minskar inflammation och stödjer hjärnhälsan",
+              foods: ["Fet fisk", "Valnötter", "Chiafrön"],
+              supplements: "Fiskolja 1000mg dagligen"
+            }
+          ],
           quickWins: [
             { 
               icon: "🥤", 
