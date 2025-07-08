@@ -349,7 +349,7 @@ interface HealthQuizProps {
 }
 
 const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'quiz' | 'result'>('welcome');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'quiz' | 'result'>('quiz');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isAnimating, setIsAnimating] = useState(false);

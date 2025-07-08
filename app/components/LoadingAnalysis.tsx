@@ -14,13 +14,7 @@ export default function LoadingAnalysis() {
   const [progress, setProgress] = useState(0);
   const [showTips, setShowTips] = useState(false);
   const [currentTip, setCurrentTip] = useState(0);
-  const [healthMetrics, setHealthMetrics] = useState({
-    stress: 0,
-    energy: 0,
-    nutrition: 0,
-    sleep: 0,
-    activity: 0
-  });
+  // Removed health metrics state
   
   const messages = [
     { 
@@ -81,16 +75,7 @@ export default function LoadingAnalysis() {
       }
     }, 3000);
 
-    // Animate health metrics progressively
-    const metricsInterval = setInterval(() => {
-      setHealthMetrics(prev => ({
-        stress: Math.min(85, prev.stress + Math.random() * 3),
-        energy: Math.min(90, prev.energy + Math.random() * 2.5),
-        nutrition: Math.min(95, prev.nutrition + Math.random() * 2.8),
-        sleep: Math.min(88, prev.sleep + Math.random() * 2.6),
-        activity: Math.min(82, prev.activity + Math.random() * 2.7)
-      }));
-    }, 800);
+    // Removed health metrics animation
 
     const totalDuration = messages.reduce((acc, msg) => acc + msg.duration, 0);
     const progressInterval = 50;
@@ -127,7 +112,6 @@ export default function LoadingAnalysis() {
       clearInterval(tipInterval);
       clearInterval(progressTimer);
       clearInterval(messageTimer);
-      clearInterval(metricsInterval);
     };
   }, [showTips]);
 
@@ -153,25 +137,7 @@ export default function LoadingAnalysis() {
     );
   }
 
-  const MetricBar = ({ label, value, icon: Icon, color }: any) => (
-    <div className="mb-4">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <Icon className="w-4 h-4 text-gray-600" />
-          <span className="text-sm font-medium text-gray-700">{label}</span>
-        </div>
-        <span className="text-sm font-bold text-gray-800">{Math.round(value)}%</span>
-      </div>
-      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-        <motion.div
-          className={`h-full bg-gradient-to-r ${color}`}
-          initial={{ width: 0 }}
-          animate={{ width: `${value}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        />
-      </div>
-    </div>
-  );
+  // Removed MetricBar component
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
@@ -363,42 +329,8 @@ export default function LoadingAnalysis() {
             </div>
           </div>
 
-          {/* Right Column - Health Metrics & Tips */}
+          {/* Right Column - Tips & AI Info */}
           <div>
-            {/* Health Metrics */}
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Analyserar hälsoområden</h3>
-              <MetricBar 
-                label="Stressnivå" 
-                value={healthMetrics.stress} 
-                icon={GiMeditation}
-                color="from-purple-400 to-purple-600"
-              />
-              <MetricBar 
-                label="Energinivå" 
-                value={healthMetrics.energy} 
-                icon={FiZap}
-                color="from-yellow-400 to-orange-600"
-              />
-              <MetricBar 
-                label="Näringsstatus" 
-                value={healthMetrics.nutrition} 
-                icon={GiFruitBowl}
-                color="from-green-400 to-green-600"
-              />
-              <MetricBar 
-                label="Sömnkvalitet" 
-                value={healthMetrics.sleep} 
-                icon={GiBrain}
-                color="from-blue-400 to-blue-600"
-              />
-              <MetricBar 
-                label="Aktivitetsnivå" 
-                value={healthMetrics.activity} 
-                icon={FiActivity}
-                color="from-red-400 to-red-600"
-              />
-            </div>
 
             {/* Health Tips */}
             <AnimatePresence mode="wait">
