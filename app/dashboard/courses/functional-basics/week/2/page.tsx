@@ -14,8 +14,8 @@ import {
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
-import { ShoppingListSection, RecipeHighlights } from './components';
 import { GoalsSection } from '../components/GoalsSection';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
@@ -47,44 +47,9 @@ export default function Week2Page() {
     { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
 
-  const mealPlan: Record<string, DayMeals> = {
-    Måndag: {
-      breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-      lunch: { name: 'Ugnsbakad tomat med köttfärs', note: 'Rester' },
-      dinner: { name: 'Nudelsoppa med grönsaker', recipeLink: '/kunskapsbank/recept/nudelsoppa' }
-    },
-    Tisdag: {
-      breakfast: { name: 'Omelett med champinjoner', recipeLink: '/kunskapsbank/recept/omelett-champinjoner' },
-      lunch: { name: 'Nudelsoppa med grönsaker', note: 'Rester' },
-      dinner: { name: 'Torskrygg med ägghack och sparris', recipeLink: '/kunskapsbank/recept/torskrygg' }
-    },
-    Onsdag: {
-      breakfast: { name: 'Grön smoothie', recipeLink: '/kunskapsbank/recept/gron-smoothie' },
-      lunch: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad' },
-      dinner: { name: 'Turkiska lammfärsspett', recipeLink: '/kunskapsbank/recept/lammfarsspett' }
-    },
-    Torsdag: {
-      breakfast: { name: 'Omelett med champinjoner', note: 'Rester' },
-      lunch: { name: 'Torskrygg med ägghack och sparris', note: 'Rester' },
-      dinner: { name: 'Kycklinggryta med bakad spetskål', recipeLink: '/kunskapsbank/recept/kycklinggryta' }
-    },
-    Fredag: {
-      breakfast: { name: 'Havrefralla med morötter och torkade aprikoser', recipeLink: '/kunskapsbank/recept/havrefralla' },
-      lunch: { name: 'Turkiska lammfärsspett', note: 'Rester' },
-      dinner: { name: 'Lax med fetaost och rostade rotfrukter', recipeLink: '/kunskapsbank/recept/lax-feta' }
-    },
-    Lördag: {
-      breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-lax' },
-      lunch: { name: 'Kycklinggryta med bakad spetskål', note: 'Rester' },
-      dinner: { name: 'Asiatiska köttbullar', recipeLink: '/kunskapsbank/recept/asiatiska-kottbullar' },
-      snack: { name: 'Jordgubbar med chokladkräm', recipeLink: '/kunskapsbank/recept/chokladkram' }
-    },
-    Söndag: {
-      breakfast: { name: 'Äggröra med lax', note: 'Rester' },
-      lunch: { name: 'Lax med fetaost och rostade rotfrukter', note: 'Rester' },
-      dinner: { name: 'Asiatiska köttbullar', note: 'Rester' }
-    }
-  };
+  // Hämta centraliserad måltidsdata för vecka 2
+  const weekData = getWeekData(2);
+  const mealPlan = weekData?.days || {};
 
   return (
     <div>
@@ -248,7 +213,10 @@ export default function Week2Page() {
               <CalendarView mealPlan={mealPlan} weekNumber={2} />
               
               {/* Recipe Highlights */}
-              <RecipeHighlights />
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans recept</h3>
+                <p className="text-gray-600">Upptäck nya smaker och tekniker med veckans utvalda recept.</p>
+              </div>
             </motion.div>
           )}
 
@@ -261,7 +229,10 @@ export default function Week2Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-8"
             >
-              <ShoppingListSection />
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Inköpslista</h3>
+                <p className="text-gray-600">Planera dina inköp för vecka 2.</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

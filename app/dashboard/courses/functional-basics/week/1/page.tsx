@@ -14,7 +14,7 @@ import {
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
 import Image from 'next/image';
-import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
+// import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
@@ -202,7 +202,10 @@ export default function Week1Page() {
               <CalendarView mealPlan={mealPlan} weekNumber={1} />
               
               {/* Recipe Highlights */}
-              <RecipeHighlights />
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans recept</h3>
+                <p className="text-gray-600">Upptäck nya smaker och tekniker med veckans utvalda recept.</p>
+              </div>
             </motion.div>
           )}
 
@@ -215,7 +218,10 @@ export default function Week1Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-4 md:space-y-8"
             >
-              <ShoppingListSection />
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Inköpslista</h3>
+                <p className="text-gray-600">Planera dina inköp för vecka 1.</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
