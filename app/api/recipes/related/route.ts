@@ -3,6 +3,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { parse } from 'csv-parse/sync';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 interface Recipe {
   id: string;
   title: string;
@@ -34,10 +37,9 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const currentSlug = searchParams.get('current');
-    const limit = parseInt(searchParams.get('limit') || '3');
-    const categories = searchParams.get('categories')?.split(',') || [];
+    const currentSlug = request.nextUrl.searchParams.get('current');
+    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '3');
+    const categories = request.nextUrl.searchParams.get('categories')?.split(',') || [];
 
     // Read CSV file
     const csvFilePath = path.join(process.cwd(), 'Recept', 'Recept_Functional.csv');

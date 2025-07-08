@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { FiArrowLeft, FiCheckCircle, FiChevronRight, FiInfo, FiTarget, FiZap, FiShield } from 'react-icons/fi';
-import { GiMuscleUp, GiMeat, GiFish, GiChicken, GiEgg, GiBeans, GiGrainBundle, GiBodyBalance } from 'react-icons/gi';
+import { GiMuscleUp, GiMeat, GiChicken, GiGrainBundle, GiBodyBalance } from 'react-icons/gi';
+import { FaFish, FaEgg, FaSeedling } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProteinSource {
@@ -33,7 +34,7 @@ export default function AttValjaRattProteinerPage() {
     {
       id: 'fish',
       name: 'Fisk & Skaldjur',
-      icon: GiFish,
+      icon: FaFish,
       description: 'Lax, tonfisk, torsk och räkor - rika på omega-3 och högkvalitativt protein.',
       benefits: ['Omega-3 fettsyror', 'Komplett protein', 'D-vitamin', 'Selen'],
       tips: ['Välj MSC-märkt fisk', 'Ät fet fisk 2-3 ggr/vecka', 'Variera mellan olika sorter'],
@@ -63,7 +64,7 @@ export default function AttValjaRattProteinerPage() {
     {
       id: 'eggs',
       name: 'Ägg',
-      icon: GiEgg,
+      icon: FaEgg,
       description: 'KRAV-märkta ägg - komplett protein med alla essentiella aminosyror.',
       benefits: ['Komplett protein', 'Kolin', 'D-vitamin', 'Lutein'],
       tips: ['Välj ekologiska/KRAV', 'Ät hela ägget', 'Perfekt till frukost'],
@@ -73,7 +74,7 @@ export default function AttValjaRattProteinerPage() {
     {
       id: 'legumes',
       name: 'Baljväxter',
-      icon: GiBeans,
+      icon: FaSeedling,
       description: 'Linser, bönor och kikärter - vegetabiliska proteinkällor med fiber.',
       benefits: ['Fiber', 'Folat', 'Järn', 'Långsamma kolhydrater'],
       tips: ['Kombinera med spannmål', 'Blötlägg före tillagning', 'Perfekt i grytor'],

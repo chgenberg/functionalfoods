@@ -5,6 +5,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { parse } from 'csv-parse/sync';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 // Interface for recipe data
@@ -276,9 +279,8 @@ function getStaticContentResults(searchTerm: string): SearchResult[] {
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const query = searchParams.get('q');
-    const type = searchParams.get('type') || 'all';
+    const query = request.nextUrl.searchParams.get('q');
+    const type = request.nextUrl.searchParams.get('type') || 'all';
     
     if (!query || query.length < 2) {
       return NextResponse.json({

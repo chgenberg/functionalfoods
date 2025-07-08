@@ -5,6 +5,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { parse } from 'csv-parse/sync';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 // Interface for recipe data
@@ -79,11 +82,10 @@ async function checkUserAccess(userId: string): Promise<boolean> {
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category');
-    const search = searchParams.get('search');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const category = request.nextUrl.searchParams.get('category');
+    const search = request.nextUrl.searchParams.get('search');
+    const page = parseInt(request.nextUrl.searchParams.get('page') || '1');
+    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '50');
     
     // Get user from JWT token (optional)
     let userId: string | null = null;
