@@ -14,8 +14,8 @@ import {
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
-import { ShoppingListSection, RecipeHighlights } from './components';
 import { GoalsSection } from '../components/GoalsSection';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
@@ -47,44 +47,9 @@ export default function Week3Page() {
     { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
 
-  const mealPlan: Record<string, DayMeals> = {
-    Måndag: {
-      breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-      lunch: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad', note: 'Rester' },
-      dinner: { name: 'Kycklingfylld aubergine', recipeLink: '/kunskapsbank/recept/kycklingfylld-aubergine' }
-    },
-    Tisdag: {
-      breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-lax' },
-      lunch: { name: 'Kycklingfylld aubergine', note: 'Rester' },
-      dinner: { name: 'Rökt lax med blomkålsallad och citronyoghurt', recipeLink: '/kunskapsbank/recept/rokt-lax-blomkalsallad' }
-    },
-    Onsdag: {
-      breakfast: { name: 'Rödbetsjuice', recipeLink: '/kunskapsbank/recept/rodbetsjuice' },
-      lunch: { name: 'Rökt lax med blomkålsallad och citronyoghurt', note: 'Rester' },
-      dinner: { name: 'Vegetarisk currygryta med panéer', recipeLink: '/kunskapsbank/recept/vegetarisk-currygryta' }
-    },
-    Torsdag: {
-      breakfast: { name: 'Rödbetsjuice', note: 'Rester' },
-      lunch: { name: 'Vegetarisk currygryta med panéer', note: 'Rester' },
-      dinner: { name: 'Kycklinggryta med bakad spetskål', note: 'Rester' }
-    },
-    Fredag: {
-      breakfast: { name: 'Havrefralla med morötter och torkade aprikoser', recipeLink: '/kunskapsbank/recept/havrefralla' },
-      lunch: { name: 'Lax med fetaost och rostade rotfrukter', note: 'Rester' },
-      dinner: { name: 'Hamburgare med hummus', recipeLink: '/kunskapsbank/recept/hamburgare-hummus' }
-    },
-    Lördag: {
-      breakfast: { name: 'Keso med granola och fruktsallad', recipeLink: '/kunskapsbank/recept/keso-granola' },
-      lunch: { name: 'Hamburgare med hummus', note: 'Rester' },
-      dinner: { name: 'Ugnsbakad kyckling med tzatziki och sallad', recipeLink: '/kunskapsbank/recept/ugnsbakad-kyckling' },
-      snack: { name: 'Mandel och citronpaj', recipeLink: '/kunskapsbank/recept/mandel-citronpaj' }
-    },
-    Söndag: {
-      breakfast: { name: 'Omelett med hallon', recipeLink: '/kunskapsbank/recept/omelett-hallon' },
-      lunch: { name: 'Ugnsbakad kyckling med tzatziki och sallad', note: 'Rester' },
-      dinner: { name: 'Lax med waldorfsallad', recipeLink: '/kunskapsbank/recept/lax-waldorfsallad' }
-    }
-  };
+  // Hämta centraliserad måltidsdata för vecka 3
+  const weekData = getWeekData(3);
+  const mealPlan = weekData?.days || {};
 
   return (
     <div>
@@ -249,7 +214,10 @@ export default function Week3Page() {
               <CalendarView mealPlan={mealPlan} weekNumber={3} />
 
               {/* Recipe Highlights */}
-              <RecipeHighlights />
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans recept</h3>
+                <p className="text-gray-600">Upptäck nya smaker och tekniker med veckans utvalda recept.</p>
+              </div>
             </motion.div>
           )}
 
@@ -262,7 +230,10 @@ export default function Week3Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-8"
             >
-              <ShoppingListSection />
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Inköpslista</h3>
+                <p className="text-gray-600">Planera dina inköp för vecka 3.</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

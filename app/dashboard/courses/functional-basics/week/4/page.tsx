@@ -14,6 +14,7 @@ import {
 } from 'react-icons/gi';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
@@ -35,43 +36,9 @@ interface DayMeals {
   snack?: MealItem;
 }
 
-const mealPlan: Record<string, DayMeals> = {
-  Måndag: {
-    breakfast: { name: 'Overnight oats med banan och kanel' },
-    lunch: { name: 'Kyckling i grön curry' },
-    dinner: { name: 'Lax med fetaost och rostade rotfrukter', recipeLink: '/kunskapsbank/recept/lax-feta' }
-  },
-  Tisdag: {
-    breakfast: { name: 'Äggröra med paprika' },
-    lunch: { name: 'Lax med fetaost och rostade rotfrukter', recipeLink: '/kunskapsbank/recept/lax-feta', note: 'Rester' },
-    dinner: { name: 'Kycklingfärswok med groddar' }
-  },
-  Onsdag: {
-    breakfast: { name: 'Chiafrögrön' },
-    lunch: { name: 'Kycklingfärswok med groddar', note: 'Rester' },
-    dinner: { name: 'Torskrygg med tapenade och grönsaker', recipeLink: '/kunskapsbank/recept/torskrygg' }
-  },
-  Torsdag: {
-    breakfast: { name: 'Bananplättar med jordgubbar och kokos' },
-    lunch: { name: 'Torskrygg med tapenade och grönsaker', recipeLink: '/kunskapsbank/recept/torskrygg', note: 'Rester' },
-    dinner: { name: 'Köttfärslimpa med ajvar och rostad sötpotatis' }
-  },
-  Fredag: {
-    breakfast: { name: 'Bananplättar med jordgubbar och kokos', note: 'Rester' },
-    lunch: { name: 'Köttfärslimpa med ajvar och rostad sötpotatis', note: 'Rester' },
-    dinner: { name: 'Skaldjursgryta med torsk i gul curry' }
-  },
-  Lördag: {
-    breakfast: { name: 'Mangosmoothie med spenat' },
-    lunch: { name: 'Skaldjursgryta med torsk i gul curry', note: 'Rester' },
-    dinner: { name: 'Kycklinjärpar med linssallad' }
-  },
-  Söndag: {
-    breakfast: { name: 'Mangosmoothie med spenat', note: 'Rester' },
-    lunch: { name: 'Kycklinjärpar med linssallad', note: 'Rester' },
-    dinner: { name: 'Laxfilé med ratatouille' }
-  }
-};
+// Hämta centraliserad måltidsdata för vecka 4
+const weekData = getWeekData(4);
+const mealPlan = weekData?.days || {};
 
 const shoppingList = {
   'Frukt/grönt': [

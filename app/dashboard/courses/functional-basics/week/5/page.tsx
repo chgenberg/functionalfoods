@@ -14,6 +14,7 @@ import {
 } from 'react-icons/gi';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
@@ -36,44 +37,9 @@ interface DayMeals {
   dessert?: MealItem;
 }
 
-const mealPlan: Record<string, DayMeals> = {
-  Måndag: {
-    breakfast: { name: 'Yoghurt med ketomüsli' },
-    lunch: { name: 'Torsk från mellanöstern' },
-    dinner: { name: 'Japansk kycklingfärswok med groddar' }
-  },
-  Tisdag: {
-    breakfast: { name: 'Äggröra med paprika' },
-    lunch: { name: 'Japansk kycklingfärswok med groddar', note: 'Rester' },
-    dinner: { name: 'Grekisk sallad' }
-  },
-  Onsdag: {
-    breakfast: { name: 'Chiafrögrön' },
-    lunch: { name: 'Lax med fetaost och rostade rotfrukter', recipeLink: '/kunskapsbank/recept/lax-feta' },
-    dinner: { name: 'Köttfärslimpa med ajvar och rostad sötpotatis' }
-  },
-  Torsdag: {
-    breakfast: { name: 'Bananplättar med jordgubbar och kokos' },
-    lunch: { name: 'Köttfärslimpa med ajvar och rostad sötpotatis', note: 'Rester' },
-    dinner: { name: 'Vegetarisk currygryta med paneer', note: 'Rester' }
-  },
-  Fredag: {
-    breakfast: { name: 'Bananplättar med jordgubbar och kokos', note: 'Rester' },
-    lunch: { name: 'Kycklinggryta med röda linser' },
-    dinner: { name: 'Skaldjursgryta med torsk i gul curry' }
-  },
-  Lördag: {
-    breakfast: { name: 'Mangosmoothie med spenat' },
-    lunch: { name: 'Skaldjursgryta med torsk i gul curry', note: 'Rester' },
-    dinner: { name: 'Kycklingjärpar med linssallad' },
-    dessert: { name: 'Mandelkaka med frukt' }
-  },
-  Söndag: {
-    breakfast: { name: 'Mangosmoothie med spenat', note: 'Rester' },
-    lunch: { name: 'Kycklingjärpar med linssallad', note: 'Rester' },
-    dinner: { name: 'Laxfilé med ratatouille' }
-  }
-};
+// Hämta centraliserad måltidsdata för vecka 5
+const weekData = getWeekData(5);
+const mealPlan = weekData?.days || {};
 
 const shoppingList = {
   'Frukt/grönt': [

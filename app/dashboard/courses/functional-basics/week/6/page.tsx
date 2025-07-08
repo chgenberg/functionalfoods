@@ -9,6 +9,7 @@ import {
 import Link from 'next/link';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface MealItem {
   name: string;
@@ -24,44 +25,9 @@ interface DayMeals {
   dessert?: MealItem;
 }
 
-const mealPlan: Record<string, DayMeals> = {
-  Måndag: {
-    breakfast: { name: 'Havrefralla med morötter och torkade aprikoser' },
-    lunch: { name: 'Laxfilé med ratatouille' },
-    dinner: { name: 'Grönsokswok med kyckling' }
-  },
-  Tisdag: {
-    breakfast: { name: 'Kokt ägg med majonnäs' },
-    lunch: { name: 'Grönsokswok med kyckling', note: 'Rester' },
-    dinner: { name: 'Köttfärspytt med italienska smaker' }
-  },
-  Onsdag: {
-    breakfast: { name: 'Mango med keso och nötter' },
-    lunch: { name: 'Köttfärspytt med italienska smaker', note: 'Rester' },
-    dinner: { name: 'Indisk laxgryta med röda linser' }
-  },
-  Torsdag: {
-    breakfast: { name: 'Äggröra med granatäpple och kiwi' },
-    lunch: { name: 'Indisk laxgryta med röda linser', note: 'Rester' },
-    dinner: { name: 'Quinoasallad med stekt halloumi' }
-  },
-  Fredag: {
-    breakfast: { name: 'Havregrynsgrön med apelsin och kokos' },
-    lunch: { name: 'Quinoasallad med stekt halloumi', note: 'Rester' },
-    dinner: { name: 'Torsk teriyaki med grönsaker' }
-  },
-  Lördag: {
-    breakfast: { name: 'Hallon- och blåbärssmoothie' },
-    lunch: { name: 'Torsk teriyaki med grönsaker', note: 'Rester' },
-    dinner: { name: 'Lammgryta med plommon och bulgur' },
-    dessert: { name: 'Tropisk fruktsallad' }
-  },
-  Söndag: {
-    breakfast: { name: 'Hallon- och blåbärssmoothie', note: 'Rester' },
-    lunch: { name: 'Lammgryta med plommon och bulgur', note: 'Rester' },
-    dinner: { name: 'Kycklinggryta med bakad spetskål', note: 'Rester' }
-  }
-};
+// Hämta centraliserad måltidsdata för vecka 6
+const weekData = getWeekData(6);
+const mealPlan = weekData?.days || {};
 
 const shoppingList = {
   'Frukt/grönt': [
