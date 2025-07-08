@@ -530,48 +530,7 @@ export default function KostschemaPage() {
               )}
             </div>
 
-            {/* Veckoöversikt */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                {currentWeekData?.title || `Vecka ${currentWeekNumber}`}
-              </h3>
-              <div className="space-y-3">
-                {[1, 2, 3, 4, 5, 6, 7].map((dayInWeek) => {
-                  const absoluteDay = ((currentWeekNumber - 1) * 7) + dayInWeek;
-                  const dayMeals = getMealForDay(absoluteDay);
-                  
-                  return (
-                    <motion.button
-                      key={dayInWeek}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        setSelectedDay(absoluteDay);
-                        // Update selected date to match the day
-                        const newDate = new Date(courseStartDate);
-                        newDate.setDate(newDate.getDate() + absoluteDay - 1);
-                        setSelectedDate(newDate);
-                      }}
-                      className={`w-full text-left p-3 rounded-lg border-2 transition-all duration-200 ${
-                        selectedDay === absoluteDay 
-                          ? 'border-green-600 bg-green-50' 
-                          : 'border-gray-200 hover:border-green-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-900">Dag {absoluteDay}</span>
-                        {selectedDay === absoluteDay && (
-                          <FiCheck className="w-4 h-4 text-green-600" />
-                        )}
-                      </div>
-                      <span className="text-sm text-gray-500">
-                        {dayMeals?.breakfast.name || 'Måltid saknas'}
-                      </span>
-                    </motion.button>
-                  );
-                })}
-              </div>
-            </div>
+            {/* Veckoöversikt removed */}
           </motion.div>
         </div>
       </div>
