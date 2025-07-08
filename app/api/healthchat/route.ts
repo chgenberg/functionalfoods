@@ -26,7 +26,7 @@ Always answer in English.
     ];
 
     const gptResponse = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", // Byt till "gpt-4" om du har tillgång
+      model: "gpt-4o-mini",
       messages: gptMessages,
       max_tokens: 400,
     });

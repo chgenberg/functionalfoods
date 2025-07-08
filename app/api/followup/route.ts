@@ -32,7 +32,7 @@ Return ONLY valid JSON, nothing else.
 `;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 600,
       temperature: 0.7,

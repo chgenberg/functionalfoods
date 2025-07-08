@@ -274,7 +274,7 @@ VIKTIGA REGLER:
 ${userContext ? '13. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-turbo-preview",
+      model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
