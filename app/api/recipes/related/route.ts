@@ -103,8 +103,10 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    // Filter out current recipe
-    let filteredRecipes = recipes.filter(recipe => recipe.slug !== currentSlug);
+    // Filter out current recipe and only include free recipes (status: 'publish')
+    let filteredRecipes = recipes.filter(recipe => 
+      recipe.slug !== currentSlug && recipe.status === 'publish' && !recipe.isPremium
+    );
 
     // If categories are provided, try to find recipes with similar categories first
     if (categories.length > 0) {
