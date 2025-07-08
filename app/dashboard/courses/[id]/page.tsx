@@ -363,6 +363,13 @@ export default function CoursePage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Kursåtgärder</h3>
               <div className="space-y-3">
+                {courseId === 'functional-basics' && (
+                  <Link href="/dashboard/courses/functional-basics/material" className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <FiBook className="w-5 h-5 text-primary" />
+                    <span className="font-medium text-gray-800">Kursmaterial</span>
+                  </Link>
+                )}
+                
                 <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
                   <FiDownload className="w-5 h-5 text-blue-600" />
                   <span className="font-medium text-gray-800">Ladda ner allt material</span>

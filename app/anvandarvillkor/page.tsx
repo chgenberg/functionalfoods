@@ -1,78 +1,88 @@
 import React from 'react';
 
-export default function Anvandarvillkor() {
+export default function AnvandarvillkorPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">Användarvillkor</h1>
-      <p className="text-gray-600 mb-8">Gäller från: 10 juni 2025</p>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-8">
+            Användarvillkor
+          </h1>
+          
+          <div className="prose prose-lg max-w-none">
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-primary mb-4">
+                Hur betalar jag för min kurs?
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                När du köper en kurs från vår hemsida kan du välja att betala med Swish eller kortbetalning. 
+                All betalning förutom Swish hanteras via vår externa betallösning Stripe. När ditt köp har 
+                gått igenom hos Stripe får du en bekräftelse på detta i din mailkorg.
+              </p>
+            </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">1. Allmänt</h2>
-        <p>Dessa villkor reglerar ditt användande av functionalfoods.se och köp av våra digitala kurser, receptsamlingar och andra produkter.</p>
-      </section>
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-primary mb-4">
+                Mitt konto
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                När du gjort ditt första köp hos oss får du inloggningsuppgifter via email. Där hittar 
+                länken till ditt konto som ligger på vår hemsida. Det är här du loggar in till ditt 
+                kursmaterial. I inloggat läge kan du byta till ett eget lösenord under Mina Sidor – 
+                Kontouppgifter. Mailadressen är alltid den du uppgav i ditt köp. Ska du köpa ny kurs 
+                rekommenderar vi att du är inloggad om du har ett konto sedan tidigare.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                På Mitt konto kan du se de köp du gjort samt de kurser du har tillgång till. Du har 
+                tillgång till kursmaterialet 365 dagar från det att köpet har genomförts.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Kvitton på dina köp hittar du under rubriken kontodetaljer/mina köp.
+              </p>
+            </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">2. Parter</h2>
-        <p>"Vi/oss" = Ulrikas Kickstart AB, org.nr 559051-3387. "Du/kunden" = den fysiska person som besöker eller handlar på webbplatsen.</p>
-      </section>
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-primary mb-4">
+                Använd ditt Friskvårdsbidrag
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Det går utmärkt att använda ditt friskvårdsbidrag för våra kurser. Om din arbetsgivare 
+                accepterar att du köper din kurs direkt på vår hemsida så är det viktigt att du sparar 
+                kvittot på ditt köp från oss som du sedan ger till din arbetsgivare. Vill din arbetsgivare 
+                att ditt personnummer ska vara synligt på kvittot så ange detta vid köpet, det är inget 
+                som krävs från vår sida. Denna typ av information sparas inte i våra system med hänsyn 
+                till GDPR.
+              </p>
+            </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">3. Ålder & konto</h2>
-        <p>Du måste vara minst 18 år (eller ha målsmans godkännande) för att genomföra köp. Inloggningsuppgifter är personliga och får inte delas.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">4. Beställning & betalning</h2>
-        <p>Betalning sker med Swish eller kort (Visa/MasterCard) via Stripe. Belopp debiteras direkt och kvitto skickas via e-post.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">5. Leverans & åtkomst</h2>
-        <ul className="list-disc pl-6">
-          <li>Digitala kurser görs tillgängliga på ditt konto omedelbart efter slutförd betalning.</li>
-          <li>Åtkomst gäller 365 dagar från köpet om inget annat anges.</li>
-        </ul>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">6. Ångerrätt</h2>
-        <p>Som konsument har du 14 dagars ångerrätt enligt distansavtalslagen. Ångerrätten upphör om du loggar in och tar del av det digitala materialet innan 14 dagar passerat.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">7. Hälsodisclaimer</h2>
-        <p>Innehållet är av utbildande karaktär och ersätter inte medicinsk rådgivning. Rådfråga alltid hälso- eller sjukvårdspersonal vid specifika hälsoproblem.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">8. Immateriella rättigheter</h2>
-        <p>Allt innehåll (text, video, grafik, recept) ägs av Ulrikas Kickstart AB eller dess licensgivare. Kopiering, spridning eller kommersiell användning utan uttryckligt tillstånd är förbjuden.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">9. Ansvarsbegränsning</h2>
-        <p>Vi ansvarar inte för indirekta skador eller utebliven vinst. Vårt totala ansvar är begränsat till det belopp du betalat för den aktuella produkten/tjänsten.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">10. Force majeure</h2>
-        <p>Vi är befriade från ansvar vid händelser utanför vår kontroll (t.ex. myndighetsbeslut, driftavbrott, pandemi).</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">11. Ändringar av villkor</h2>
-        <p>Vi kan uppdatera villkoren. Ny version publiceras på webbplatsen och gäller från publiceringsdatumet.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">12. Tillämplig lag & tvist</h2>
-        <p>Svensk rätt gäller. Tvist kan prövas av Allmänna Reklamationsnämnden (ARN) eller allmän domstol i Sverige.</p>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">13. Kontakt</h2>
-        <p>E-post: info@functionalfoods.se | Postadress: Ulrikas Kickstart AB, Odengatan 106 lgh 1603, 113 22 Stockholm.</p>
-      </section>
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-primary mb-4">
+                Ångerrätt
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Att bli kund hos Ulrikas Kickstart innebär att du som Kund skall känna dig trygg med 
+                ditt köp. Som privatkund har du rätt till 14 dagars ångerrätt. Din ångerrätt börjar gälla 
+                från det att du mottagit din bokningsbekräftelse till en kurs eller leverans av produkt. 
+                Din ångerrätt upphör att gälla efter 14 dagar alternativt när du tagit del av 
+                kursen/medlemskapet om detta sker innan de 14 dagarna. För att nyttja ångerrätten, 
+                vänligen kontakta oss inom 14 dagar alternativt innan du påbörjar kursen/tar del av 
+                materialet.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Återbetalning/kreditering sker i första hand alltid till det ursprungliga betalsättet, 
+                vilket normalt sker inom 10 arbetsdagar från det att vi mottagit din förfrågan om att 
+                nyttja ångerrätt.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                Kontakta vår kundsupport om du har frågor:{' '}
+                <a href="mailto:info@functionalfoods.se" className="text-primary hover:underline">
+                  info@functionalfoods.se
+                </a>
+              </p>
+            </section>
+          </div>
+        </div>
+      </div>
     </div>
   );
 } 

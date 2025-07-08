@@ -34,9 +34,10 @@ export default function Footer() {
       { label: 'FAQ', href: '/kontakt/faq' },
     ],
     juridisk: [
+      { label: 'Användarvillkor', href: '/anvandarvillkor' },
+      { label: 'Personuppgifter', href: '/personuppgifter' },
       { label: 'Integritetspolicy', href: '/integritetspolicy' },
       { label: 'Cookie-policy', href: '/cookie-policy' },
-      { label: 'Användarvillkor', href: '/anvandarvillkor' },
     ],
   };
 

@@ -259,9 +259,37 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            DINA PERSONALISERADE REKOMMENDATIONER
-          </h1>
+          {/* Scrolling title container */}
+          <div className="relative overflow-hidden mb-4">
+            <motion.div
+              className="flex whitespace-nowrap"
+              animate={{
+                x: [0, -1920]
+              }}
+              transition={{
+                x: {
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear"
+                }
+              }}
+            >
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
+                DINA PERSONALISERADE REKOMMENDATIONER
+              </h1>
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
+                DINA PERSONALISERADE REKOMMENDATIONER
+              </h1>
+              <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 mr-8">
+                DINA PERSONALISERADE REKOMMENDATIONER
+              </h1>
+            </motion.div>
+            
+            {/* Gradient fade edges */}
+            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-green-50 to-transparent pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-blue-50 to-transparent pointer-events-none" />
+          </div>
+          
           <div className="bg-white rounded-3xl shadow-xl p-6 inline-block">
             <div className="flex items-center justify-center space-x-4">
               <div className="text-center">
@@ -291,18 +319,39 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
             Snabba vinster för din hälsa:
           </h3>
           <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-blue-50 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-2">💧</div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="bg-blue-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
+            >
+              <motion.div 
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-2xl mb-2"
+              >💧</motion.div>
               <div className="text-sm font-medium text-blue-800">Drick 2L vatten dagligen</div>
-            </div>
-            <div className="bg-green-50 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-2">🚶</div>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="bg-green-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
+            >
+              <motion.div 
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                className="text-2xl mb-2"
+              >🚶</motion.div>
               <div className="text-sm font-medium text-green-800">10 min promenad efter lunch</div>
-            </div>
-            <div className="bg-purple-50 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-2">😴</div>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="bg-purple-50 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
+            >
+              <motion.div 
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                className="text-2xl mb-2"
+              >😴</motion.div>
               <div className="text-sm font-medium text-purple-800">Sov före 22:30</div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 

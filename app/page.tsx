@@ -11,6 +11,7 @@ import { FiArrowRight, FiActivity, FiHeart, FiZap, FiShield, FiArrowDown } from 
 import { GiSparkles, GiBrain } from 'react-icons/gi';
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
+import NewsletterSignup from "./components/NewsletterSignup";
 
 function LoadingPopup({ messages, durations, onDone, visible }: { messages: string[]; durations?: number[]; onDone?: () => void; visible: boolean }) {
   const [step, setStep] = useState(0);
@@ -216,7 +217,7 @@ export default function Home() {
                   </button>
                   
                   <h3 className="text-lg font-medium text-gray-800 mb-4">
-                    Steg 2: Beskriv dina besvär i {selectedDot}
+                    STEG 2: BESKRIV DINA BESVÄR
                   </h3>
                   
                   <textarea
@@ -268,6 +269,18 @@ export default function Home() {
         visible={loadingPopup.visible}
         onDone={() => setLoadingPopup({ visible: false, messages: [] })}
       />
+
+      {/* Newsletter Section */}
+      <section className="py-16 px-4 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+        <div className="max-w-4xl mx-auto">
+          <NewsletterSignup 
+            variant="hero"
+            showName={true}
+            title="Bli en del av Functional Foods familjen!"
+            subtitle="Få exklusiva recept, hälsotips och specialerbjudanden direkt i din inkorg varje vecka"
+          />
+        </div>
+      </section>
     </div>
   );
 }
