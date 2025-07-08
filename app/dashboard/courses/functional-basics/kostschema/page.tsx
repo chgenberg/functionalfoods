@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FiChevronLeft, FiChevronRight, FiCalendar, FiClock, 
@@ -134,8 +134,61 @@ export default function KostschemaPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(1);
+  const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const courseStartDate = new Date('2025-01-06'); // Set your actual course start date
+  // Hämta användarens kursstartdatum
+  useEffect(() => {
+    const fetchCourseStartDate = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          // Fallback till dagens datum om ingen token
+          const today = new Date();
+          setCourseStartDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch('/api/user/course-start-date', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCourseStartDate(new Date(data.courseStartDate));
+        } else {
+          // Fallback till dagens datum om API-anrop misslyckas
+          const today = new Date();
+          setCourseStartDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+        }
+      } catch (error) {
+        console.error('Error fetching course start date:', error);
+        // Fallback till dagens datum
+        const today = new Date();
+        setCourseStartDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourseStartDate();
+  }, []);
+
+  // Visa loading state medan vi hämtar kursstartdatum
+  if (loading || !courseStartDate) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Laddar kostschema...</p>
+        </div>
+      </div>
+    );
+  }
+
   const courseEndDate = new Date(courseStartDate);
   courseEndDate.setDate(courseEndDate.getDate() + 42); // 6 veckor
 
