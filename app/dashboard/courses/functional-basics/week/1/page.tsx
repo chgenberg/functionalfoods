@@ -290,6 +290,23 @@ export default function Week1Page() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Next Week Button */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-8 text-white text-center">
+          <h3 className="text-2xl font-bold mb-4">Redo för nästa steg?</h3>
+          <p className="text-lg mb-6">
+            När du känner dig redo, fortsätt till vecka 2 för att fördjupa din kunskap och bygga starkare vanor.
+          </p>
+          <Link
+            href="/dashboard/courses/functional-basics/week/2"
+            className="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          >
+            Fortsätt till vecka 2
+            <FiChevronRight className="ml-2" />
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

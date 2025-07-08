@@ -485,8 +485,6 @@ Vill du följa vad som händer kring Functional Foods och ta del av tips, recept
                                 window.location.href = '/dashboard/courses/functional-basics/week/1';
                               } else if (week.week === 2) {
                                 window.location.href = '/dashboard/courses/functional-basics/week/2';
-                              } else if (week.week === 3) {
-                                window.location.href = '/dashboard/courses/functional-basics/week/3';
                               } else {
                                 setCurrentWeek(week.week);
                               }
