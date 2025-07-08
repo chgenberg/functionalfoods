@@ -55,6 +55,7 @@ const RecipeDetailPage = () => {
   const { user } = useAuth();
   
   const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [relatedRecipes, setRelatedRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userAccess, setUserAccess] = useState<{ hasAccess: boolean; userId: string | null }>({ hasAccess: false, userId: null });
@@ -105,10 +106,28 @@ const RecipeDetailPage = () => {
       const data: RecipePageData = await response.json();
       setRecipe(data.recipe);
       setUserAccess(data.userAccess);
+      
+      // Fetch related recipes
+      fetchRelatedRecipes(slug, data.recipe.categories);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRelatedRecipes = async (currentSlug: string, categories: string[]) => {
+    try {
+      const categoriesParam = categories.join(',');
+      const response = await fetch(`/api/recipes/related?current=${currentSlug}&categories=${categoriesParam}&limit=3`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setRelatedRecipes(data.recipes || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch related recipes:', err);
+      // Don't show error to user, just continue without related recipes
     }
   };
 
@@ -561,20 +580,98 @@ const RecipeDetailPage = () => {
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Fler recept att utforska</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <a
-                key={i}
-                href="/kunskapsbank/recept"
-                className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all"
-              >
-                <div className="h-40 bg-gradient-to-br from-green-100 to-blue-100"></div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
-                    Laddar fler recept...
-                  </h3>
+            {relatedRecipes.length > 0 ? (
+              relatedRecipes.map((relatedRecipe) => (
+                <a
+                  key={relatedRecipe.id}
+                  href={`/kunskapsbank/recept/${relatedRecipe.slug}`}
+                  className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-105"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    {relatedRecipe.imageUrl ? (
+                      <Image
+                        src={relatedRecipe.imageUrl}
+                        alt={relatedRecipe.imageAlt || relatedRecipe.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="h-full bg-gradient-to-br from-green-100 via-blue-100 to-purple-100 flex items-center justify-center">
+                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                    {relatedRecipe.isPremium && (
+                      <div className="absolute top-3 right-3">
+                        <span className="bg-gradient-to-r from-amber-400 to-amber-600 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                          <span>Premium</span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {relatedRecipe.categories.slice(0, 2).map((category, index) => (
+                        <span
+                          key={index}
+                          className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium"
+                        >
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                    <h3 className="font-bold text-lg text-gray-900 group-hover:text-green-600 transition-colors mb-2 line-clamp-2">
+                      {relatedRecipe.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                      {relatedRecipe.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span className="flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        {relatedRecipe.author.name}
+                      </span>
+                      <span className="flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        {relatedRecipe.ingredients.length} ingredienser
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              ))
+            ) : (
+              // Fallback placeholders while loading or if no related recipes found
+              [1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse"
+                >
+                  <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200"></div>
+                  <div className="p-6">
+                    <div className="flex gap-2 mb-3">
+                      <div className="h-4 bg-gray-200 rounded-full w-16"></div>
+                      <div className="h-4 bg-gray-200 rounded-full w-20"></div>
+                    </div>
+                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-1"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+                    <div className="flex justify-between">
+                      <div className="h-3 bg-gray-200 rounded w-20"></div>
+                      <div className="h-3 bg-gray-200 rounded w-24"></div>
+                    </div>
+                  </div>
                 </div>
-              </a>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
