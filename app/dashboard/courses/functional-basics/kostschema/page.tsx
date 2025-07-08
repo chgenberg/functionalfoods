@@ -1,317 +1,38 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { 
   FiChevronLeft, FiChevronRight, FiCalendar, FiClock, 
   FiStar, FiHeart, FiShoppingCart, FiDownload, FiPrinter,
   FiSun, FiMoon, FiCoffee, FiCheck, FiPlus
 } from 'react-icons/fi';
 import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
-
-// Utökat kostschema för alla 6 veckor
-const mealPlan = {
-  week1: {
-    title: "Vecka 1: Grundläggande Functional Foods",
-    days: {
-      1: {
-        breakfast: {
-          name: "Antioxidant-smoothie bowl",
-          description: "Blåbär, acai, chiaseed, mandelmjölk, granola",
-          calories: 420,
-          nutrients: ["Antioxidanter", "Omega-3", "Fiber"],
-          time: "15 min",
-          difficulty: "Lätt"
-        },
-        lunch: {
-          name: "Quinoa-sallad med avokado",
-          description: "Quinoa, avokado, rucola, valnötter, citronvinägrett",
-          calories: 580,
-          nutrients: ["Protein", "Fiber", "Hälsosamma fetter"],
-          time: "20 min",
-          difficulty: "Lätt"
-        },
-        dinner: {
-          name: "Lax med rostad broccoli",
-          description: "Grillad lax, rostad broccoli, sötpotatis, örter",
-          calories: 650,
-          nutrients: ["Omega-3", "Protein", "Vitamin C"],
-          time: "30 min",
-          difficulty: "Medel"
-        },
-        snack: {
-          name: "Nötmix med mörk choklad",
-          description: "Mandlar, valnötter, mörk choklad 70%",
-          calories: 200,
-          nutrients: ["Antioxidanter", "Magnesium"],
-          time: "0 min",
-          difficulty: "Lätt"
-        }
-      },
-      2: {
-        breakfast: {
-          name: "Overnight oats med bär",
-          description: "Havregryn, chiaseed, blåbär, mandelmjölk, honung",
-          calories: 380,
-          nutrients: ["Fiber", "Protein", "Antioxidanter"],
-          time: "5 min",
-          difficulty: "Lätt"
-        },
-        lunch: {
-          name: "Kyckling med rostad regnbågssallad",
-          description: "Grillad kyckling, rostad paprika, zucchini, hummus",
-          calories: 520,
-          nutrients: ["Protein", "Vitamin A", "Fiber"],
-          time: "25 min",
-          difficulty: "Medel"
-        },
-        dinner: {
-          name: "Vegetarisk chili med bönor",
-          description: "Svarta bönor, kidneybönor, tomater, paprika, kryddor",
-          calories: 480,
-          nutrients: ["Protein", "Fiber", "Järn"],
-          time: "40 min",
-          difficulty: "Medel"
-        },
-        snack: {
-          name: "Grekisk yoghurt med nötter",
-          description: "Grekisk yoghurt, honung, hackade valnötter",
-          calories: 180,
-          nutrients: ["Protein", "Probiotika"],
-          time: "2 min",
-          difficulty: "Lätt"
-        }
-      },
-      3: {
-        breakfast: {
-          name: "Avokado-toast med ägg",
-          description: "Fullkornsbröd, avokado, pocherat ägg, tomater",
-          calories: 450,
-          nutrients: ["Protein", "Hälsosamma fetter", "Fiber"],
-          time: "12 min",
-          difficulty: "Lätt"
-        },
-        lunch: {
-          name: "Buddha bowl med tempeh",
-          description: "Tempeh, quinoa, edamame, morötter, tahini-dressing",
-          calories: 600,
-          nutrients: ["Protein", "Probiotika", "Fiber"],
-          time: "25 min",
-          difficulty: "Medel"
-        },
-        dinner: {
-          name: "Torsk med grönsaker",
-          description: "Bakad torsk, sparris, cherry-tomater, citron",
-          calories: 420,
-          nutrients: ["Protein", "Omega-3", "Vitamin C"],
-          time: "25 min",
-          difficulty: "Lätt"
-        },
-        snack: {
-          name: "Hummus med grönsaker",
-          description: "Hemgjord hummus, morötter, gurka, paprika",
-          calories: 150,
-          nutrients: ["Protein", "Fiber"],
-          time: "5 min",
-          difficulty: "Lätt"
-        }
-      },
-      4: {
-        breakfast: {
-          name: "Grön smoothie",
-          description: "Spenat, mango, banan, ingefära, kokosvatten",
-          calories: 320,
-          nutrients: ["Vitamin C", "Kalium", "Antioxidanter"],
-          time: "8 min",
-          difficulty: "Lätt"
-        },
-        lunch: {
-          name: "Linssoppa med grönsaker",
-          description: "Röda linser, morötter, selleri, tomater, kryddor",
-          calories: 380,
-          nutrients: ["Protein", "Fiber", "Järn"],
-          time: "30 min",
-          difficulty: "Lätt"
-        },
-        dinner: {
-          name: "Kyckling med rostad pumpa",
-          description: "Rostad kyckling, butternut-pumpa, rödlök, timjan",
-          calories: 580,
-          nutrients: ["Protein", "Vitamin A", "Fiber"],
-          time: "45 min",
-          difficulty: "Medel"
-        },
-        snack: {
-          name: "Äppelskivor med mandelbutter",
-          description: "Färskt äpple, naturell mandelbutter",
-          calories: 220,
-          nutrients: ["Fiber", "Hälsosamma fetter"],
-          time: "2 min",
-          difficulty: "Lätt"
-        }
-      },
-      5: {
-        breakfast: {
-          name: "Chia-pudding med frukt",
-          description: "Chiaseed, mandelmjölk, vanilj, färska bär",
-          calories: 350,
-          nutrients: ["Omega-3", "Fiber", "Protein"],
-          time: "10 min",
-          difficulty: "Lätt"
-        },
-        lunch: {
-          name: "Sallad med halloumi",
-          description: "Grillad halloumi, blandsallad, tomater, olivolja",
-          calories: 480,
-          nutrients: ["Protein", "Kalcium", "Vitamin K"],
-          time: "15 min",
-          difficulty: "Lätt"
-        },
-        dinner: {
-          name: "Vegetarisk pasta",
-          description: "Fullkornspasta, zucchini, tomater, basilika, parmesan",
-          calories: 520,
-          nutrients: ["Fiber", "Protein", "Vitamin C"],
-          time: "20 min",
-          difficulty: "Lätt"
-        },
-        snack: {
-          name: "Smoothie med protein",
-          description: "Banan, bär, proteinpulver, mandelmjölk",
-          calories: 280,
-          nutrients: ["Protein", "Kalium"],
-          time: "5 min",
-          difficulty: "Lätt"
-        }
-      },
-      6: {
-        breakfast: {
-          name: "Fullkornsmüsli med yoghurt",
-          description: "Müsli, grekisk yoghurt, färska bär, honung",
-          calories: 420,
-          nutrients: ["Fiber", "Protein", "Probiotika"],
-          time: "5 min",
-          difficulty: "Lätt"
-        },
-        lunch: {
-          name: "Wraps med kyckling",
-          description: "Fullkornswrap, kyckling, avokado, sallad, hummus",
-          calories: 550,
-          nutrients: ["Protein", "Fiber", "Hälsosamma fetter"],
-          time: "10 min",
-          difficulty: "Lätt"
-        },
-        dinner: {
-          name: "Lax med quinoa",
-          description: "Bakad lax, quinoa, broccoli, citron-örtsås",
-          calories: 620,
-          nutrients: ["Omega-3", "Protein", "Fiber"],
-          time: "30 min",
-          difficulty: "Medel"
-        },
-        snack: {
-          name: "Energibollar",
-          description: "Dadlar, mandlar, kakao, kokos",
-          calories: 180,
-          nutrients: ["Naturlig energi", "Fiber"],
-          time: "15 min",
-          difficulty: "Lätt"
-        }
-      },
-      7: {
-        breakfast: {
-          name: "Pannkakor med bär",
-          description: "Havrepannkakor, blåbär, grekisk yoghurt, lönnsirap",
-          calories: 480,
-          nutrients: ["Fiber", "Protein", "Antioxidanter"],
-          time: "20 min",
-          difficulty: "Medel"
-        },
-        lunch: {
-          name: "Poke bowl",
-          description: "Ris, tonfisk, avokado, gurka, edamame, srirachamayo",
-          calories: 580,
-          nutrients: ["Protein", "Omega-3", "Hälsosamma fetter"],
-          time: "15 min",
-          difficulty: "Lätt"
-        },
-        dinner: {
-          name: "Vegetarisk curry",
-          description: "Kikärtor, kokosmjölk, spenat, tomater, kryddor",
-          calories: 450,
-          nutrients: ["Protein", "Fiber", "Järn"],
-          time: "35 min",
-          difficulty: "Medel"
-        },
-        snack: {
-          name: "Kefir med nötter",
-          description: "Kefir, honung, blandade nötter",
-          calories: 200,
-          nutrients: ["Probiotika", "Protein"],
-          time: "2 min",
-          difficulty: "Lätt"
-        }
-      }
-    }
-  },
-  week2: {
-    title: "Vecka 2: Antiinflammatorisk kost",
-    days: {
-      1: {
-        breakfast: {
-          name: "Gurkmeja-smoothie bowl",
-          description: "Mango, gurkmeja, ingefära, kokosyoghurt, granola",
-          calories: 400,
-          nutrients: ["Antiinflammatorisk", "Vitamin C", "Fiber"],
-          time: "12 min",
-          difficulty: "Lätt"
-        },
-        lunch: {
-          name: "Lax med avokado-sallad",
-          description: "Grillad lax, avokado, rucola, olivolja, citron",
-          calories: 620,
-          nutrients: ["Omega-3", "Protein", "Hälsosamma fetter"],
-          time: "20 min",
-          difficulty: "Lätt"
-        },
-        dinner: {
-          name: "Kyckling med rostad kål",
-          description: "Rostad kyckling, grönkål, sötpotatis, vitlök",
-          calories: 580,
-          nutrients: ["Protein", "Vitamin K", "Antioxidanter"],
-          time: "35 min",
-          difficulty: "Medel"
-        },
-        snack: {
-          name: "Valnötter med mörk choklad",
-          description: "Valnötter, mörk choklad 85%, goji-bär",
-          calories: 220,
-          nutrients: ["Omega-3", "Antioxidanter"],
-          time: "0 min",
-          difficulty: "Lätt"
-        }
-      },
-      // Fortsätt med liknande struktur för dag 2-7...
-    }
-  },
-  // Fortsätt med week3-week6...
-};
-
-type MealPlanKey = keyof typeof mealPlan;
+import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
 
 const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: any }) => {
   const typeColors: Record<string, string> = {
     breakfast: 'from-yellow-400 to-orange-500',
     lunch: 'from-green-400 to-teal-500',
     dinner: 'from-blue-400 to-purple-500',
-    snack: 'from-pink-400 to-rose-500'
+    snack: 'from-pink-400 to-rose-500',
+    dessert: 'from-purple-400 to-pink-500'
   };
 
   const typeNames: Record<string, string> = {
     breakfast: 'Frukost',
     lunch: 'Lunch',
     dinner: 'Middag',
-    snack: 'Mellanmål'
+    snack: 'Mellanmål',
+    dessert: 'Efterrätt'
+  };
+
+  const typeTimes: Record<string, string> = {
+    breakfast: '07:00',
+    lunch: '12:00',
+    dinner: '18:00',
+    snack: '15:00',
+    dessert: '20:00'
   };
 
   return (
@@ -325,16 +46,27 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
         </div>
         <div>
           <h4 className="font-semibold text-gray-900">{typeNames[type]}</h4>
-          <p className="text-sm text-gray-500">{meal.time} • {meal.difficulty}</p>
+          <p className="text-sm text-gray-500">{typeTimes[type]}</p>
         </div>
       </div>
       
       <h5 className="font-medium text-gray-900 mb-2">{meal.name}</h5>
-      <p className="text-sm text-gray-600 mb-3">{meal.description}</p>
+      {meal.note && (
+        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mb-2">
+          {meal.note}
+        </span>
+      )}
       
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-gray-900">{meal.calories} kcal</span>
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between">
+        {meal.recipeLink && (
+          <a 
+            href={meal.recipeLink}
+            className="text-sm text-green-600 hover:text-green-700 font-medium"
+          >
+            Se recept →
+          </a>
+        )}
+        <div className="flex items-center gap-2 ml-auto">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -351,19 +83,17 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
           </motion.button>
         </div>
       </div>
-      
-      <div className="flex flex-wrap gap-1">
-        {meal.nutrients.map((nutrient: string, index: number) => (
-          <span key={index} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
-            {nutrient}
-          </span>
-        ))}
-      </div>
     </motion.div>
   );
 };
 
-const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, dayNumber }: any) => {
+const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, dayNumber, isCurrentWeek }: any) => {
+  const weekNumber = Math.ceil(dayNumber / 7);
+  const weekColors = [
+    'bg-purple-500', 'bg-blue-500', 'bg-green-500', 
+    'bg-yellow-500', 'bg-red-500', 'bg-indigo-500'
+  ];
+  
   return (
     <motion.button
       whileHover={{ scale: hasMealPlan ? 1.05 : 1 }}
@@ -372,11 +102,13 @@ const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, day
       className={`
         relative w-full h-12 sm:h-14 rounded-lg border-2 transition-all duration-200 text-sm font-medium
         ${isToday 
-          ? 'border-green-500 bg-green-50 text-green-700' 
+          ? 'border-green-500 bg-green-50 text-green-700 shadow-md' 
           : isSelected 
-            ? 'border-green-600 bg-green-600 text-white' 
+            ? 'border-green-600 bg-green-600 text-white shadow-lg' 
             : hasMealPlan
-              ? 'border-gray-200 bg-white text-gray-900 hover:border-green-300 hover:bg-green-50'
+              ? isCurrentWeek
+                ? 'border-green-300 bg-green-50 text-gray-900 hover:border-green-400'
+                : 'border-gray-200 bg-white text-gray-900 hover:border-green-300 hover:bg-green-50'
               : 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
         }
       `}
@@ -384,12 +116,15 @@ const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, day
     >
       <div className="flex flex-col items-center justify-center h-full">
         <span className="text-xs opacity-70">{day}</span>
-        <span>{date}</span>
+        <span className={isSelected ? 'font-bold' : ''}>{date}</span>
       </div>
       {hasMealPlan && (
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+        <div className={`absolute -top-1 -right-1 w-5 h-5 ${weekColors[(weekNumber - 1) % 6]} rounded-full flex items-center justify-center shadow-sm`}>
           <span className="text-xs text-white font-bold">{dayNumber}</span>
         </div>
+      )}
+      {isToday && (
+        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-green-500 rounded-full"></div>
       )}
     </motion.button>
   );
@@ -399,10 +134,9 @@ export default function KostschemaPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(1);
-  const [selectedWeek, setSelectedWeek] = useState('week1');
 
-  const courseStartDate = new Date();
-  const courseEndDate = new Date();
+  const courseStartDate = new Date('2025-01-06'); // Set your actual course start date
+  const courseEndDate = new Date(courseStartDate);
   courseEndDate.setDate(courseEndDate.getDate() + 42); // 6 veckor
 
   const getDaysInMonth = (date: Date) => {
@@ -432,13 +166,6 @@ export default function KostschemaPage() {
     return Math.max(1, Math.min(diffDays, 42));
   };
 
-  const getWeekFromDay = (day: number): MealPlanKey => {
-    if (day <= 7) return 'week1';
-    if (day <= 14) return 'week2';
-    // För nu returnerar vi week1 som fallback tills vi lägger till fler veckor
-    return 'week1';
-  };
-
   const days = getDaysInMonth(currentMonth);
   const monthNames = [
     'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
@@ -446,9 +173,34 @@ export default function KostschemaPage() {
   ];
   const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
 
-  const currentWeek = getWeekFromDay(selectedDay);
-  const dayInWeek = selectedDay <= 7 ? selectedDay : ((selectedDay - 1) % 7) + 1;
-  const currentDayMeals = mealPlan[currentWeek]?.days[dayInWeek as keyof typeof mealPlan[typeof currentWeek]['days']];
+  // Get current day's meals from centralized data
+  const currentDayMeals = getMealForDay(selectedDay);
+  const currentWeekNumber = Math.ceil(selectedDay / 7);
+  const currentWeekData = getWeekData(currentWeekNumber);
+
+  // Calculate meal totals
+  const calculateTotalCalories = () => {
+    if (!currentDayMeals) return 0;
+    let total = 0;
+    // These are approximate values - you can adjust them
+    if (currentDayMeals.breakfast) total += 380;
+    if (currentDayMeals.lunch) total += 520;
+    if (currentDayMeals.dinner) total += 580;
+    if (currentDayMeals.snack) total += 200;
+    if (currentDayMeals.dessert) total += 250;
+    return total;
+  };
+
+  const countMeals = () => {
+    if (!currentDayMeals) return 0;
+    let count = 0;
+    if (currentDayMeals.breakfast) count++;
+    if (currentDayMeals.lunch) count++;
+    if (currentDayMeals.dinner) count++;
+    if (currentDayMeals.snack) count++;
+    if (currentDayMeals.dessert) count++;
+    return count;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
@@ -565,6 +317,7 @@ export default function KostschemaPage() {
                   const isSelected = day.toDateString() === selectedDate.toDateString();
                   const isInCourse = isDateInCourse(day);
                   const dayOfCourse = getCurrentDayOfCourse(day);
+                  const isCurrentWeek = dayOfCourse && Math.ceil(dayOfCourse / 7) === currentWeekNumber;
                   
                   return (
                     <CalendarDay
@@ -575,6 +328,7 @@ export default function KostschemaPage() {
                       isSelected={isSelected}
                       hasMealPlan={isInCourse}
                       dayNumber={isInCourse ? dayOfCourse : null}
+                      isCurrentWeek={isCurrentWeek}
                       onClick={() => {
                         if (isInCourse) {
                           setSelectedDate(day);
@@ -600,8 +354,42 @@ export default function KostschemaPage() {
                     Dag {selectedDay} av 42
                   </span>
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                    {mealPlan[currentWeek]?.title || 'Vecka 1'}
+                    {currentWeekData?.title || `Vecka ${currentWeekNumber}`}
                   </span>
+                </div>
+                
+                {/* Snabbnavigering veckor */}
+                <div className="mt-4 pt-3 border-t border-green-200">
+                  <p className="text-xs text-green-700 mb-2 font-medium">Snabbnavigering:</p>
+                  <div className="grid grid-cols-3 gap-1">
+                    {[1, 2, 3, 4, 5, 6].map((week) => (
+                      <motion.button
+                        key={week}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          const firstDayOfWeek = (week - 1) * 7 + 1;
+                          setSelectedDay(firstDayOfWeek);
+                          const newDate = new Date(courseStartDate);
+                          newDate.setDate(newDate.getDate() + firstDayOfWeek - 1);
+                          setSelectedDate(newDate);
+                          
+                          // Uppdatera kalendermånaden om nödvändigt
+                          if (newDate.getMonth() !== currentMonth.getMonth() || 
+                              newDate.getFullYear() !== currentMonth.getFullYear()) {
+                            setCurrentMonth(new Date(newDate.getFullYear(), newDate.getMonth(), 1));
+                          }
+                        }}
+                        className={`text-xs px-2 py-1.5 rounded-lg transition-all ${
+                          currentWeekNumber === week
+                            ? 'bg-green-600 text-white font-semibold'
+                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        }`}
+                      >
+                        V{week}
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -644,11 +432,20 @@ export default function KostschemaPage() {
                     type="dinner" 
                     icon={FiMoon} 
                   />
-                  <MealCard 
-                    meal={currentDayMeals.snack} 
-                    type="snack" 
-                    icon={FiStar} 
-                  />
+                  {currentDayMeals.snack && (
+                    <MealCard 
+                      meal={currentDayMeals.snack} 
+                      type="snack" 
+                      icon={FiStar} 
+                    />
+                  )}
+                  {currentDayMeals.dessert && (
+                    <MealCard 
+                      meal={currentDayMeals.dessert} 
+                      type="dessert" 
+                      icon={GiFruitBowl} 
+                    />
+                  )}
 
                   {/* Dagens totaler */}
                   <div className="mt-6 p-4 bg-gray-50 rounded-xl">
@@ -657,15 +454,12 @@ export default function KostschemaPage() {
                       <div>
                         <span className="text-gray-600">Kalorier:</span>
                         <span className="font-medium text-gray-900 ml-2">
-                          {currentDayMeals.breakfast.calories + 
-                           currentDayMeals.lunch.calories + 
-                           currentDayMeals.dinner.calories + 
-                           currentDayMeals.snack.calories} kcal
+                          {calculateTotalCalories()} kcal
                         </span>
                       </div>
                       <div>
                         <span className="text-gray-600">Måltider:</span>
-                        <span className="font-medium text-gray-900 ml-2">4</span>
+                        <span className="font-medium text-gray-900 ml-2">{countMeals()}</span>
                       </div>
                     </div>
                   </div>
@@ -686,22 +480,25 @@ export default function KostschemaPage() {
             {/* Veckoöversikt */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
-                {mealPlan[currentWeek]?.title || 'Vecka 1'}
+                {currentWeekData?.title || `Vecka ${currentWeekNumber}`}
               </h3>
               <div className="space-y-3">
                 {[1, 2, 3, 4, 5, 6, 7].map((dayInWeek) => {
-                  const absoluteDay = currentWeek === 'week1' ? dayInWeek : 
-                                     currentWeek === 'week2' ? dayInWeek + 7 :
-                                     dayInWeek;
-                  
-                  const dayMeals = mealPlan[currentWeek]?.days[dayInWeek as keyof typeof mealPlan[typeof currentWeek]['days']];
+                  const absoluteDay = ((currentWeekNumber - 1) * 7) + dayInWeek;
+                  const dayMeals = getMealForDay(absoluteDay);
                   
                   return (
                     <motion.button
                       key={dayInWeek}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => setSelectedDay(absoluteDay)}
+                      onClick={() => {
+                        setSelectedDay(absoluteDay);
+                        // Update selected date to match the day
+                        const newDate = new Date(courseStartDate);
+                        newDate.setDate(newDate.getDate() + absoluteDay - 1);
+                        setSelectedDate(newDate);
+                      }}
                       className={`w-full text-left p-3 rounded-lg border-2 transition-all duration-200 ${
                         selectedDay === absoluteDay 
                           ? 'border-green-600 bg-green-50' 

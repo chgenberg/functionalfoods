@@ -26,9 +26,9 @@ export default function RecipePage() {
           <div className="flex justify-center mb-6">
             <div className="bg-orange-100 rounded-full p-6">
               <FiTool className="w-16 h-16 text-orange-600" />
-            </div>
           </div>
-          
+        </div>
+
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             {readableName}
           </h1>

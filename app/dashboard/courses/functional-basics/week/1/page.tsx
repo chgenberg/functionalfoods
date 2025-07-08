@@ -17,6 +17,7 @@ import Image from 'next/image';
 import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
@@ -50,46 +51,9 @@ export default function Week1Page() {
     { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
 
-  const mealPlan: Record<string, DayMeals> = {
-    Måndag: {
-      breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-      lunch: { name: 'Tonfisksallad med äpple', recipeLink: '/kunskapsbank/recept/tonfisksallad' },
-      dinner: { name: 'Squashspagetti med köttfärssås', recipeLink: '/kunskapsbank/recept/squashspagetti' },
-      snack: { name: 'Ketomüsli', recipeLink: '/kunskapsbank/recept/ketomysli' }
-    },
-    Tisdag: {
-      breakfast: { name: 'Stekt ägg med lax', recipeLink: '/kunskapsbank/recept/stekt-agg-lax' },
-      lunch: { name: 'Squashspagetti med köttfärssås (Rester)' },
-      dinner: { name: 'Het ratatouille', recipeLink: '/kunskapsbank/recept/het-ratatouille' }
-    },
-    Onsdag: {
-      breakfast: { name: 'Grön smoothie', recipeLink: '/kunskapsbank/recept/gron-smoothie' },
-      lunch: { name: 'Pokebowl med kyckling', recipeLink: '/kunskapsbank/recept/pokebowl' },
-      dinner: { name: 'Köttfärsbiffar med stekt blomkål', recipeLink: '/kunskapsbank/recept/kottfarsbiffar' }
-    },
-    Torsdag: {
-      breakfast: { name: 'Omelett med tomat', recipeLink: '/kunskapsbank/recept/omelett-tomat' },
-      lunch: { name: 'Het ratatouille (Rester)' },
-      dinner: { name: 'Pokebowl med kyckling (Rester)' },
-      snack: { name: 'Havrefrallor med morötter och aprikoser', recipeLink: '/kunskapsbank/recept/havrefrallor' }
-    },
-    Fredag: {
-      breakfast: { name: 'Havrefralla med morötter och torkade aprikoser', recipeLink: '/kunskapsbank/recept/havrefralla' },
-      lunch: { name: 'Köttfärsbiffar med stekt blomkål (Rester)' },
-      dinner: { name: 'Kycklinggryta med bakad spetskål', recipeLink: '/kunskapsbank/recept/kycklinggryta' }
-    },
-    Lördag: {
-      breakfast: { name: 'Tropisk Smoothiebowl', recipeLink: '/kunskapsbank/recept/smoothiebowl' },
-      lunch: { name: 'Kycklinggryta med bakad spetskål (Rester)' },
-      dinner: { name: 'Laxburgare med krämig grönsaksröra', recipeLink: '/kunskapsbank/recept/laxburgare' },
-      snack: { name: 'Mangoglass', recipeLink: '/kunskapsbank/recept/mangoglass' }
-    },
-    Söndag: {
-      breakfast: { name: 'Tropisk Smoothiebowl (Rester)' },
-      lunch: { name: 'Laxburgare med krämig grönsaksröra (Rester)' },
-      dinner: { name: 'Ugnsbakad tomat med köttfärs', recipeLink: '/kunskapsbank/recept/ugnsbakad-tomat' }
-    }
-  };
+  // Get meal plan from centralized data
+  const weekData = getWeekData(1);
+  const mealPlan = weekData?.days || {};
 
   return (
     <div className="pb-20 md:pb-8">

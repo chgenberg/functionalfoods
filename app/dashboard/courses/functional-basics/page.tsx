@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiTarget, FiCheckCircle, FiPlus, FiBook, FiDownload,
-  FiTrendingUp, FiAward, FiStar, FiActivity, FiHeart, FiZap, FiEdit3, FiChevronDown, FiCheck, FiArrowRight
+  FiTrendingUp, FiAward, FiStar, FiActivity, FiHeart, FiZap, FiEdit3, FiChevronDown, FiCheck, FiArrowRight, FiUsers
 } from 'react-icons/fi';
 import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
@@ -465,43 +465,95 @@ export default function FunctionalBasicsPage() {
         </div>
       </div>
 
-      {/* Video Modal - Mobile Optimized */}
+      {/* Video Modal - Enhanced Professional Design */}
       {showVideoModal && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-2 sm:p-4">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4"
+          onClick={() => setShowVideoModal(false)}
+        >
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-black rounded-lg md:rounded-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] md:max-h-[80vh] relative"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="relative w-full max-w-6xl"
+            onClick={(e) => e.stopPropagation()}
           >
-            <button
+            {/* Close Button */}
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => setShowVideoModal(false)}
-              className="absolute top-2 right-2 md:top-4 md:right-4 z-10 bg-black/50 text-white rounded-full p-1.5 md:p-2 hover:bg-black/70 transition-colors"
+              className="absolute -top-4 -right-4 md:-top-8 md:-right-8 z-20 bg-white text-gray-900 rounded-full p-2 md:p-3 shadow-xl hover:shadow-2xl transition-all duration-200"
             >
               <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </button>
+            </motion.button>
             
-            {/* Video Player */}
-            <div className="aspect-video">
-              <iframe
-                src="https://player.vimeo.com/video/1056709544?h=9265a3d6ae&autoplay=1&title=0&byline=0&portrait=0"
-                className="w-full h-full"
-                frameBorder="0"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-                title="Functional Basics Introduktion"
-              ></iframe>
-            </div>
-            
-            <div className="p-3 md:p-4 bg-gray-900 text-white">
-              <h3 className="text-base md:text-lg font-bold mb-1 md:mb-2">Välkommen till Functional Basics</h3>
-              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
-                Introduktionsvideo med Ulrika Davidsson om grundläggande principerna för functional foods.
-              </p>
+            {/* Video Container */}
+            <div className="bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
+              {/* Video Player Wrapper */}
+              <div className="relative aspect-video bg-gradient-to-br from-gray-900 to-black">
+                {/* Loading Shimmer Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
+                
+                {/* Video Player */}
+                <iframe
+                  src="https://player.vimeo.com/video/1056709544?h=9265a3d6ae&autoplay=1&title=0&byline=0&portrait=0&color=10b981&quality=1080p"
+                  className="absolute inset-0 w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title="Functional Basics Introduktion"
+                ></iframe>
+              </div>
+              
+              {/* Enhanced Info Section */}
+              <div className="bg-gradient-to-br from-green-50 to-teal-50 p-6 md:p-8">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                      Välkommen till Functional Basics
+                    </h3>
+                    <p className="text-gray-600 text-sm md:text-base mb-3">
+                      Introduktionsvideo där Ulrika Davidsson guidar dig genom kursens upplägg och mål
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3 text-sm">
+                      <span className="flex items-center gap-1.5 text-gray-700">
+                        <FiClock className="w-4 h-4 text-green-600" />
+                        <span className="font-medium">5:32 min</span>
+                      </span>
+                      <span className="flex items-center gap-1.5 text-gray-700">
+                        <FiAward className="w-4 h-4 text-green-600" />
+                        <span className="font-medium">Grundkurs</span>
+                      </span>
+                      <span className="flex items-center gap-1.5 text-gray-700">
+                        <FiUsers className="w-4 h-4 text-green-600" />
+                        <span className="font-medium">För alla nivåer</span>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-3">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                      onClick={() => setShowVideoModal(false)}
+                    >
+                      Stäng video
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

@@ -75,7 +75,7 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
         </div>
         
         <div className="flex-grow">
-          <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2">
             <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${getCategoryStyle(thread.category.color)}`}>
               {thread.category.name}
             </span>
@@ -110,31 +110,31 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
         </div>
         
         <div className="flex-shrink-0 flex items-center gap-6 text-sm text-gray-600">
-          <div className="flex items-center gap-2" title="Svar">
+            <div className="flex items-center gap-2" title="Svar">
             <FiMessageSquare className="w-4 h-4 text-gray-400"/>
             <span className="font-medium">{thread._count.replies}</span>
           </div>
           <div className="flex items-center gap-2" title="Gillningar">
             <FiThumbsUp className="w-4 h-4 text-gray-400"/>
             <span className="font-medium">{thread._count.likes}</span>
-          </div>
-          <div className="flex items-center gap-2" title="Visningar">
+            </div>
+             <div className="flex items-center gap-2" title="Visningar">
             <FiEye className="w-4 h-4 text-gray-400"/>
-            <span className="font-medium">{thread.views}</span>
-          </div>
+                <span className="font-medium">{thread.views}</span>
+            </div>
           
           {lastReply && (
             <div className="text-right">
-              <p className="text-xs text-gray-500">Senaste svar</p>
+                <p className="text-xs text-gray-500">Senaste svar</p>
               <p className="font-medium text-xs">
                 {new Date(lastReply.createdAt).toLocaleDateString('sv-SE')}
               </p>
             </div>
           )}
         </div>
-      </div>
+    </div>
     </motion.div>
-  );
+);
 };
 
 export default function CommunityPage() {
@@ -322,8 +322,8 @@ export default function CommunityPage() {
         ) : threads.length > 0 ? (
           <AnimatePresence>
             {threads.map((thread) => (
-              <ThreadItem key={thread.id} thread={thread} />
-            ))}
+            <ThreadItem key={thread.id} thread={thread} />
+        ))}
           </AnimatePresence>
         ) : (
           <div className="text-center py-12 bg-white rounded-xl shadow-sm">

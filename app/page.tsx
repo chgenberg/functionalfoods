@@ -96,10 +96,10 @@ export default function Home() {
   // If showing quiz, render it as overlay
   if (showQuiz) {
     return (
-      <HealthQuiz 
-        onComplete={handleQuizComplete}
-        onClose={() => setShowQuiz(false)}
-      />
+        <HealthQuiz 
+          onComplete={handleQuizComplete}
+          onClose={() => setShowQuiz(false)}
+        />
     );
   }
 
@@ -148,21 +148,21 @@ export default function Home() {
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-4 md:mb-6 leading-tight">
                 UPPTÄCK KRAFTEN I
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600 font-bold">
-                  FUNCTIONAL FOODS
+            FUNCTIONAL FOODS
                 </span>
-              </h1>
+          </h1>
               <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
-                Mat som medicin för kropp och själ
-              </p>
+            Mat som medicin för kropp och själ
+          </p>
               
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-8 md:mb-12">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowQuiz(true)}
+              onClick={() => setShowQuiz(true)}
                   className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
-                >
-                  Starta Hälsoquiz
+            >
+              Starta Hälsoquiz
                   <FiArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
                 <Link
@@ -345,9 +345,9 @@ export default function Home() {
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
               Vad våra kunder <span className="font-bold text-green-600">säger</span>
-            </h2>
+          </h2>
           </motion.div>
-
+          
           <div className="relative">
             <AnimatePresence mode="wait">
               <motion.div
@@ -384,7 +384,7 @@ export default function Home() {
                   }`}
                 />
               ))}
-            </div>
+              </div>
           </div>
         </div>
       </section>
@@ -398,7 +398,7 @@ export default function Home() {
             subtitle="Bli först med att få våra bästa råd och recept direkt i din inkorg"
             showName={true}
           />
-        </div>
+          </div>
       </section>
 
       {/* CTA Section - Mobile Optimized */}
