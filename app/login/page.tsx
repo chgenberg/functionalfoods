@@ -1,6 +1,6 @@
 "use client";
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { FiMail, FiLock, FiUser, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
 import Image from 'next/image';
@@ -16,6 +16,10 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get redirect parameter
+  const redirect = searchParams.get('redirect');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +43,20 @@ export default function LoginPage() {
 
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        router.push('/dashboard');
+        
+        // Handle redirect logic
+        if (redirect) {
+          router.push(redirect);
+        } else {
+          // Check if user has specific course access and redirect accordingly
+          if (email === 'basics@test.se') {
+            router.push('/dashboard/courses/functional-basics');
+          } else if (email === 'flow@test.se') {
+            router.push('/dashboard/courses/functional-flow');
+          } else {
+            router.push('/dashboard');
+          }
+        }
       } else {
         // Register logic
         if (password !== confirmPassword) {
@@ -60,7 +77,13 @@ export default function LoginPage() {
 
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        router.push('/dashboard');
+        
+        // Handle redirect logic for registration
+        if (redirect) {
+          router.push(redirect);
+        } else {
+          router.push('/dashboard');
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Något gick fel');

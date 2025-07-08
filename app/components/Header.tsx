@@ -24,6 +24,16 @@ export default function Header() {
   const [signupPassword, setSignupPassword] = useState('');
   const { user, logout } = useAuth();
 
+  const getDirectDashboardLink = (email: string) => {
+    if (email === 'basics@test.se') {
+      return '/dashboard/courses/functional-basics';
+    } else if (email === 'flow@test.se') {
+      return '/dashboard/courses/functional-flow';
+    } else {
+      return '/dashboard';
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -78,10 +88,14 @@ export default function Header() {
       } else {
         localStorage.setItem('token', data.token);
         setShowLogin(false);
-        // Redirect based on role
+        // Redirect based on role and email
         const payload = JSON.parse(atob(data.token.split('.')[1]));
         if (payload.role === 'admin') {
           window.location.href = '/admin';
+        } else if (loginEmail === 'basics@test.se') {
+          window.location.href = '/dashboard/courses/functional-basics';
+        } else if (loginEmail === 'flow@test.se') {
+          window.location.href = '/dashboard/courses/functional-flow';
         } else {
           window.location.href = '/dashboard';
         }
@@ -220,7 +234,7 @@ export default function Header() {
                   Mina kurser
                 </Link>
                 <Link
-                  href={user.role === 'admin' ? '/admin' : '/dashboard'}
+                  href={user.role === 'admin' ? '/admin' : getDirectDashboardLink(user.email)}
                   className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-accent transition-colors text-sm font-medium"
                 >
                   Min sida
@@ -323,7 +337,7 @@ export default function Header() {
                     <FiArrowRight className="w-5 h-5" />
                   </Link>
                   <Link
-                    href={user.role === 'admin' ? '/admin' : '/dashboard'}
+                    href={user.role === 'admin' ? '/admin' : getDirectDashboardLink(user.email)}
                     className="flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-primary hover:bg-accent rounded-2xl transition-all duration-200"
                     onClick={() => setMobileMenuOpen(false)}
                   >

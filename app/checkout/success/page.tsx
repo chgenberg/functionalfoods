@@ -20,6 +20,17 @@ export default function CheckoutSuccess() {
     }
   }, [clearCart]);
 
+  const getDirectCourseLink = (email: string) => {
+    // Direct users to their specific course based on email
+    if (email === 'basics@test.se') {
+      return '/dashboard/courses/functional-basics';
+    } else if (email === 'flow@test.se') {
+      return '/dashboard/courses/functional-flow';
+    } else {
+      return '/mina-kurser';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
       <div className="max-w-md w-full mx-auto px-4">
@@ -57,11 +68,11 @@ export default function CheckoutSuccess() {
             {user ? (
               <>
                 <Link
-                  href="/mina-kurser"
+                  href={getDirectCourseLink(user.email)}
                   className="block w-full bg-primary text-white text-center py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2"
                 >
                   <FiPlay className="w-5 h-5" />
-                  Börja med mina kurser
+                  Börja med din kurs
                 </Link>
                 <Link
                   href="/utbildning"
@@ -73,7 +84,7 @@ export default function CheckoutSuccess() {
             ) : (
               <>
                 <Link
-                  href="/login"
+                  href="/login?redirect=/dashboard/courses/functional-basics"
                   className="block w-full bg-primary text-white text-center py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2"
                 >
                   <FiPlay className="w-5 h-5" />

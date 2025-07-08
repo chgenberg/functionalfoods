@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowRight, FiArrowLeft, FiX } from 'react-icons/fi';
+import { FiArrowRight, FiArrowLeft, FiX, FiCheckCircle } from 'react-icons/fi';
+import Image from 'next/image';
 import QuizResultScreen from './QuizResultScreen';
 
 interface QuizOption {
@@ -397,71 +398,169 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
 
   if (currentStep === 'welcome') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 0.1, scale: 1 }}
+            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+            className="absolute top-20 left-20 w-96 h-96 bg-green-300 rounded-full filter blur-3xl"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 0.1, scale: 1 }}
+            transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", delay: 1 }}
+            className="absolute bottom-20 right-20 w-96 h-96 bg-blue-300 rounded-full filter blur-3xl"
+          />
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto text-center"
+          className="max-w-6xl mx-auto relative z-10"
         >
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="mb-8"
-            >
-              <h1 className="text-4xl md:text-6xl font-light mb-4 text-gray-800">
-                UPPTÄCK DIN PERFEKTA
-                <span className="text-green-600 font-medium"> FUNCTIONAL FOOD</span>
-              </h1>
-              <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                Få personaliserade rekommendationer baserat på din livsstil och hälsobehov enligt <strong>Ulrika Davidssons</strong> beprövade metod. 
-                Vårt intelligenta quiz analyserar dina vanor och ger dig skräddarsydda råd för optimal hälsa genom functional foods.
-              </p>
-            </motion.div>
+          <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
+            <div className="grid lg:grid-cols-2 gap-0">
+              {/* Left side - Content */}
+              <div className="p-8 md:p-12 order-2 lg:order-1">
+                <motion.div
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="mb-8"
+                >
+                  <h1 className="text-3xl md:text-5xl font-light mb-4 text-gray-800 leading-tight">
+                    UPPTÄCK DIN PERFEKTA
+                    <span className="text-green-600 font-bold block">FUNCTIONAL FOOD</span>
+                  </h1>
+                  <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                    Få personaliserade rekommendationer baserat på din livsstil och hälsobehov enligt <strong className="text-green-700">Ulrika Davidssons</strong> beprövade metod.
+                  </p>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="grid md:grid-cols-3 gap-6 mb-8"
-            >
-              <div className="flex items-center justify-center space-x-3 p-4 bg-green-50 rounded-xl">
-                <div className="text-2xl">🎯</div>
-                <span className="text-gray-700">Personaliserade rekommendationer</span>
-              </div>
-              <div className="flex items-center justify-center space-x-3 p-4 bg-blue-50 rounded-xl">
-                <div className="text-2xl">🧬</div>
-                <span className="text-gray-700">Vetenskapligt baserade råd</span>
-              </div>
-              <div className="flex items-center justify-center space-x-3 p-4 bg-purple-50 rounded-xl">
-                <div className="text-2xl">⚡</div>
-                <span className="text-gray-700">Snabb analys på 2 minuter</span>
-              </div>
-            </motion.div>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="space-y-4 mb-8"
+                >
+                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-2xl hover:shadow-md transition-shadow">
+                    <div className="text-2xl">🎯</div>
+                    <span className="text-gray-700 font-medium">Personaliserade rekommendationer</span>
+                  </div>
+                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl hover:shadow-md transition-shadow">
+                    <div className="text-2xl">🧬</div>
+                    <span className="text-gray-700 font-medium">Vetenskapligt baserade råd</span>
+                  </div>
+                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl hover:shadow-md transition-shadow">
+                    <div className="text-2xl">⚡</div>
+                    <span className="text-gray-700 font-medium">Snabb analys på 2 minuter</span>
+                  </div>
+                </motion.div>
 
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={startQuiz}
-              className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-full font-medium text-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 mx-auto"
-            >
-              <span>Starta Ditt Personliga Quiz</span>
-              <FiArrowRight className="w-5 h-5" />
-            </motion.button>
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={startQuiz}
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-10 py-5 rounded-full font-semibold text-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-xl flex items-center space-x-3 group"
+                >
+                  <span>Starta Ditt Personliga Quiz</span>
+                  <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.button>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-              className="text-gray-500 mt-4"
-            >
-              10 smarta frågor • Kostnadsfritt • Inga mejl krävs
-            </motion.p>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  className="text-gray-500 mt-6 text-sm"
+                >
+                  10 smarta frågor • Kostnadsfritt • Inga mejl krävs
+                </motion.p>
+              </div>
+
+              {/* Right side - Ulrika's image */}
+              <div className="relative p-8 md:p-12 order-1 lg:order-2 bg-gradient-to-br from-green-50 to-blue-50">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                  className="relative"
+                >
+                  {/* Organic shape frame */}
+                  <div 
+                    className="absolute inset-0 bg-gradient-to-br from-green-400 to-green-600 shadow-2xl"
+                    style={{
+                      clipPath: "polygon(30% 0%, 70% 0%, 100% 20%, 100% 70%, 80% 100%, 20% 100%, 0% 80%, 0% 30%)",
+                      transform: "scale(1.05)"
+                    }}
+                  />
+                  
+                  {/* Image container with organic shape */}
+                  <div 
+                    className="relative overflow-hidden"
+                    style={{
+                      clipPath: "polygon(30% 0%, 70% 0%, 100% 20%, 100% 70%, 80% 100%, 20% 100%, 0% 80%, 0% 30%)"
+                    }}
+                  >
+                    <Image 
+                      src="/davidsson.png" 
+                      alt="Ulrika Davidsson"
+                      width={400}
+                      height={500}
+                      className="w-full h-full object-cover"
+                      priority
+                    />
+                    
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-green-600/20 to-transparent" />
+                  </div>
+
+                  {/* Floating elements */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    whileHover={{ scale: 1.05 }}
+                    className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl p-4 cursor-default"
+                  >
+                    <p className="text-sm font-semibold text-gray-800">Ulrika Davidsson</p>
+                    <p className="text-xs text-gray-600">Functional Foods Expert</p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ rotate: -180, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    transition={{ delay: 1, duration: 0.8 }}
+                    whileHover={{ rotate: 10, scale: 1.1 }}
+                    className="absolute -top-4 -left-4 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg cursor-default"
+                  >
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">25+</div>
+                      <div className="text-xs">års erfarenhet</div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Additional floating decorative elements */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 0.6, scale: 1 }}
+                    transition={{ delay: 1.2, duration: 0.5 }}
+                    className="absolute top-1/2 -right-8 w-16 h-16 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full filter blur-xl"
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 0.6, scale: 1 }}
+                    transition={{ delay: 1.4, duration: 0.5 }}
+                    className="absolute -bottom-8 left-1/3 w-20 h-20 bg-gradient-to-br from-blue-300 to-purple-400 rounded-full filter blur-xl"
+                  />
+                </motion.div>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -470,39 +569,39 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
 
   if (currentStep === 'quiz') {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50 z-50 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          className="w-full h-full flex flex-col bg-white/90 backdrop-blur-sm lg:max-w-6xl lg:h-auto lg:max-h-[95vh] lg:rounded-3xl lg:shadow-2xl lg:my-4"
         >
           {/* Header */}
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-sm text-gray-500">
+          <div className="p-4 sm:p-6 border-b border-gray-100 bg-white lg:rounded-t-3xl">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs sm:text-sm text-gray-500 font-medium">
                 Fråga {currentQuestion + 1} av {quizQuestions.length}
               </div>
               {onClose && (
                 <button
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
                 >
-                  <FiX className="w-6 h-6" />
+                  <FiX className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               )}
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5 }}
-                className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full"
+                className="bg-gradient-to-r from-green-500 to-green-600 h-full rounded-full shadow-sm"
               />
             </div>
           </div>
 
-          {/* Question */}
+          {/* Question Content */}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion}
@@ -510,39 +609,63 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="p-6"
+              className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 overflow-y-auto"
             >
-              <div className="text-center mb-8">
-                <div className="text-4xl mb-4">{question.icon}</div>
-                <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+              {/* Question Header */}
+              <div className="text-center mb-6 sm:mb-8">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", delay: 0.1 }}
+                  className="text-4xl sm:text-5xl mb-3 sm:mb-4"
+                >
+                  {question.icon}
+                </motion.div>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-800 mb-2 px-4">
                   {question.question}
                 </h2>
-                <p className="text-gray-600">{question.subtitle}</p>
+                <p className="text-sm sm:text-base text-gray-600 px-4">
+                  {question.subtitle}
+                </p>
               </div>
 
-              <div className="space-y-3">
+              {/* Options Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-5 flex-1">
                 {question.options.map((option, index) => (
                   <motion.button
                     key={index}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleAnswer(option.value)}
-                    className={`w-full p-4 rounded-xl border-2 transition-all duration-300 text-left hover:border-green-300 hover:bg-green-50 ${
+                    className={`relative p-4 sm:p-5 lg:p-6 rounded-2xl border-2 transition-all duration-300 text-left group ${
                       answers[currentQuestion] === option.value
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 bg-white'
+                        ? 'border-green-500 bg-gradient-to-br from-green-50 to-green-100 shadow-lg'
+                        : 'border-gray-200 bg-white hover:border-green-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:shadow-md'
                     }`}
                   >
-                    <div className="flex items-start space-x-3">
-                      <div className="text-2xl flex-shrink-0">{option.icon}</div>
-                      <div>
-                        <div className="font-medium text-gray-800 mb-1">
+                    {/* Selected indicator */}
+                    {answers[currentQuestion] === option.value && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
+                      >
+                        <FiCheckCircle className="w-5 h-5 text-white" />
+                      </motion.div>
+                    )}
+                    
+                    <div className="flex flex-col h-full">
+                      <div className="text-3xl sm:text-4xl mb-3 group-hover:scale-110 transition-transform">
+                        {option.icon}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base lg:text-lg">
                           {option.label}
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                           {option.description}
                         </div>
                       </div>
@@ -551,21 +674,23 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                 ))}
               </div>
 
-              {/* Navigation */}
-              <div className="flex justify-between items-center mt-8">
+              {/* Navigation - Fixed at bottom on mobile */}
+              <div className="flex justify-between items-center mt-6 sm:mt-8 pt-4 border-t border-gray-100">
                 {currentQuestion > 0 ? (
-                  <button
+                  <motion.button
+                    whileHover={{ x: -5 }}
                     onClick={goToPrevious}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors text-sm sm:text-base"
                   >
                     <FiArrowLeft className="w-4 h-4" />
-                    <span>Föregående</span>
-                  </button>
+                    <span className="hidden sm:inline">Föregående</span>
+                    <span className="sm:hidden">Tillbaka</span>
+                  </motion.button>
                 ) : (
                   <div />
                 )}
-                <div className="text-sm text-gray-500">
-                  {currentQuestion === quizQuestions.length - 1 ? 'Sista frågan!' : 'Välj ett alternativ för att fortsätta'}
+                <div className="text-xs sm:text-sm text-gray-500 text-center px-4">
+                  {currentQuestion === quizQuestions.length - 1 ? 'Sista frågan!' : 'Välj ett alternativ'}
                 </div>
               </div>
             </motion.div>

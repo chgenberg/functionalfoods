@@ -24,6 +24,20 @@ export default function Checkout() {
     }
   }, []);
 
+  const getRedirectPath = () => {
+    // Check if there's a functional-basics course in the cart
+    const hasFunctionalBasics = items.some(item => item.id === 'functional-basics');
+    const hasFunctionalFlow = items.some(item => item.id === 'functional-flow');
+    
+    if (hasFunctionalBasics) {
+      return '/dashboard/courses/functional-basics';
+    } else if (hasFunctionalFlow) {
+      return '/dashboard/courses/functional-flow';
+    } else {
+      return '/dashboard';
+    }
+  };
+
   const handlePayment = async (provider: 'klarna' | 'swish') => {
     if (!user) {
       setError('Du måste vara inloggad för att köpa kurser');
@@ -120,13 +134,13 @@ export default function Checkout() {
               </div>
               <div className="mt-4 flex gap-3">
                 <Link
-                  href="/login"
+                  href={`/login?redirect=${encodeURIComponent(getRedirectPath())}`}
                   className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors"
                 >
                   Logga in
                 </Link>
                 <Link
-                  href="/login"
+                  href={`/login?redirect=${encodeURIComponent(getRedirectPath())}`}
                   className="bg-white border border-yellow-300 text-yellow-700 px-4 py-2 rounded-lg hover:bg-yellow-50 transition-colors"
                 >
                   Skapa konto
