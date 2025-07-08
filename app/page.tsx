@@ -144,7 +144,7 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl md:text-7xl font-light text-gray-800 mb-6 leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-6 leading-tight">
                 UPPTÄCK KRAFTEN I
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600 font-bold">
                   FUNCTIONAL FOODS
