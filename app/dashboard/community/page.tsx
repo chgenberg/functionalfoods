@@ -145,6 +145,12 @@ export default function CommunityPage() {
   const [sortBy, setSortBy] = useState('latest');
   const [loading, setLoading] = useState(true);
   const [showNewThreadModal, setShowNewThreadModal] = useState(false);
+  const [newThreadData, setNewThreadData] = useState({
+    title: '',
+    content: '',
+    categoryId: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -180,6 +186,41 @@ export default function CommunityPage() {
       console.error('Error fetching threads:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateThread = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newThreadData.title || !newThreadData.content || !newThreadData.categoryId) {
+      alert('Vänligen fyll i alla fält');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/forum/threads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newThreadData)
+      });
+
+      if (response.ok) {
+        setShowNewThreadModal(false);
+        setNewThreadData({ title: '', content: '', categoryId: '' });
+        fetchThreads(); // Refresh threads list
+        alert('Diskussion skapad!');
+      } else {
+        alert('Kunde inte skapa diskussion');
+      }
+    } catch (error) {
+      console.error('Error creating thread:', error);
+      alert('Ett fel uppstod');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -321,6 +362,121 @@ export default function CommunityPage() {
           </div>
         </div>
       </div>
+
+      {/* New Thread Modal */}
+      <AnimatePresence>
+        {showNewThreadModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setShowNewThreadModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">Starta ny diskussion</h2>
+                  <button
+                    onClick={() => setShowNewThreadModal(false)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <form onSubmit={handleCreateThread} className="space-y-6">
+                  {/* Category Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Kategori *
+                    </label>
+                    <select
+                      value={newThreadData.categoryId}
+                      onChange={(e) => setNewThreadData(prev => ({ ...prev, categoryId: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      required
+                    >
+                      <option value="">Välj kategori</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Titel *
+                    </label>
+                    <input
+                      type="text"
+                      value={newThreadData.title}
+                      onChange={(e) => setNewThreadData(prev => ({ ...prev, title: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      placeholder="Skriv en beskrivande titel..."
+                      required
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Innehåll *
+                    </label>
+                    <textarea
+                      value={newThreadData.content}
+                      onChange={(e) => setNewThreadData(prev => ({ ...prev, content: e.target.value }))}
+                      rows={6}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                      placeholder="Beskriv din fråga eller diskussion..."
+                      required
+                    />
+                  </div>
+
+                  {/* Submit buttons */}
+                  <div className="flex justify-end gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowNewThreadModal(false)}
+                      className="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      Avbryt
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {submitting ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Skapar...
+                        </>
+                      ) : (
+                        <>
+                          <FiPlus className="w-4 h-4" />
+                          Skapa diskussion
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 } 

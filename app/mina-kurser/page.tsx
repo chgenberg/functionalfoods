@@ -55,7 +55,18 @@ export default function MyCoursesPage() {
       return;
     }
 
-    setUser(JSON.parse(userStr));
+    const user = JSON.parse(userStr);
+    setUser(user);
+    
+    // Redirect test users to their specific course dashboard
+    if (user.email === 'basics@test.se') {
+      router.push('/dashboard/courses/functional-basics');
+      return;
+    } else if (user.email === 'flow@test.se') {
+      router.push('/dashboard/courses/functional-flow');
+      return;
+    }
+
     fetchPurchases(token);
   }, [router]);
 

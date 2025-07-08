@@ -54,7 +54,7 @@ function LoginForm() {
           } else if (email === 'flow@test.se') {
             router.push('/dashboard/courses/functional-flow');
           } else {
-            router.push('/dashboard');
+            router.push('/mina-kurser');
           }
         }
       } else {
@@ -82,7 +82,7 @@ function LoginForm() {
         if (redirect) {
           router.push(redirect);
         } else {
-          router.push('/dashboard');
+          router.push('/mina-kurser');
         }
       }
     } catch (err) {

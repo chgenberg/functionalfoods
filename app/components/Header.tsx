@@ -97,7 +97,7 @@ export default function Header() {
         } else if (loginEmail === 'flow@test.se') {
           window.location.href = '/dashboard/courses/functional-flow';
         } else {
-          window.location.href = '/dashboard';
+          window.location.href = '/mina-kurser';
         }
       }
     } catch (err) {
@@ -134,7 +134,7 @@ export default function Header() {
         if (loginRes.ok) {
           localStorage.setItem('token', loginData.token);
           setShowLogin(false);
-          window.location.href = '/dashboard';
+          window.location.href = '/mina-kurser';
         } else {
           setTab('login');
           setLoginError('Konto skapat! Logga in med dina uppgifter.');
