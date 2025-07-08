@@ -14,7 +14,9 @@ import {
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
 import Image from 'next/image';
-import { GoalsSection, MealPlanSection, ShoppingListSection, KnowledgeSection } from './components';
+import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
+import { CalendarView } from '../components/CalendarView';
+import { GoalsSection } from '../components/GoalsSection';
 
 interface TabProps {
   id: string;
@@ -219,10 +221,7 @@ export default function Week1Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-8"
             >
-              <GoalsSection 
-                completedGoals={completedGoals}
-                setCompletedGoals={setCompletedGoals}
-              />
+              <GoalsSection weekNumber={1} />
             </motion.div>
           )}
 
@@ -235,11 +234,18 @@ export default function Week1Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-8"
             >
+              {/* Calendar View */}
+              <CalendarView mealPlan={mealPlan} weekNumber={1} />
+              
+              {/* Traditional Meal Plan View */}
               <MealPlanSection 
                 mealPlan={mealPlan}
                 expandedDay={expandedDay}
                 setExpandedDay={setExpandedDay}
               />
+
+              {/* Recipe Highlights */}
+              <RecipeHighlights />
             </motion.div>
           )}
 

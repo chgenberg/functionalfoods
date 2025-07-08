@@ -161,6 +161,43 @@ export function GoalsSection({ completedGoals, setCompletedGoals }: {
   );
 }
 
+// Recipe Images with improved design
+export function RecipeHighlights() {
+  const recipes = [
+    { name: 'Omelett med champinjoner', time: 'Måndag - Frukost', image: '/images/omelett-champinjoner.jpg' },
+    { name: 'Torskrygg med ägghack', time: 'Tisdag - Middag', image: '/images/torskrygg.jpg' },
+    { name: 'Lax med fetaost', time: 'Fredag - Middag', image: '/images/lax-feta.jpg' },
+    { name: 'Äppelpaj med vaniljkräm', time: 'Lördag - Efterrätt', image: '/images/appelpaj.jpg' }
+  ];
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg p-8">
+      <h3 className="text-2xl font-bold text-gray-900 mb-6">Veckans höjdpunkter</h3>
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {recipes.map((recipe, index) => (
+          <motion.div
+            key={index}
+            whileHover={{ scale: 1.05 }}
+            className="relative rounded-xl overflow-hidden shadow-lg cursor-pointer group"
+          >
+            <div className="aspect-w-4 aspect-h-3 bg-gradient-to-br from-green-100 to-blue-100">
+              <div className="flex items-center justify-center">
+                <GiMeal className="w-16 h-16 text-gray-400" />
+              </div>
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+              <h4 className="font-bold text-lg mb-1">{recipe.name}</h4>
+              <p className="text-sm opacity-90">{recipe.time}</p>
+            </div>
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Meal Plan Section Component
 export function MealPlanSection({ 
   mealPlan, 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { 
-  FiCalendar, FiShoppingCart, FiBook, FiChevronRight, 
+  FiCalendar, FiShoppingCart, FiChevronRight, 
   FiClock, FiCheckCircle, FiDownload, FiExternalLink
 } from 'react-icons/fi';
 import { 
@@ -15,7 +15,6 @@ import {
 interface MealItem {
   name: string;
   recipeLink?: string;
-  isLocked?: boolean;
 }
 
 interface DayMeals {
@@ -23,6 +22,45 @@ interface DayMeals {
   lunch: MealItem;
   dinner: MealItem;
   snack?: MealItem;
+}
+
+// Recipe Highlights with improved design
+export function RecipeHighlights() {
+  const recipes = [
+    { name: 'Nudelsoppa med grönsaker', time: 'Måndag - Middag', image: '/images/nudelsoppa.jpg' },
+    { name: 'Torskrygg med ägghack', time: 'Tisdag - Middag', image: '/images/torskrygg.jpg' },
+    { name: 'Turkiska lammfärsspett', time: 'Onsdag - Middag', image: '/images/lammfarsspett.jpg' },
+    { name: 'Lax med fetaost', time: 'Fredag - Middag', image: '/images/lax-feta.jpg' },
+    { name: 'Asiatiska köttbullar', time: 'Lördag - Middag', image: '/images/asiatiska-kottbullar.jpg' },
+    { name: 'Jordgubbar med chokladkräm', time: 'Lördag - Efterrätt', image: '/images/chokladkram.jpg' }
+  ];
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg p-8">
+      <h3 className="text-2xl font-bold text-gray-900 mb-6">Veckans höjdpunkter</h3>
+      <div className="grid md:grid-cols-3 gap-6">
+        {recipes.map((recipe, index) => (
+          <motion.div
+            key={index}
+            whileHover={{ scale: 1.05 }}
+            className="relative rounded-xl overflow-hidden shadow-lg cursor-pointer group"
+          >
+            <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-purple-100 to-pink-100">
+              <div className="flex items-center justify-center">
+                <GiMeal className="w-16 h-16 text-gray-400" />
+              </div>
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+              <h4 className="font-bold text-lg mb-1">{recipe.name}</h4>
+              <p className="text-sm opacity-90">{recipe.time}</p>
+            </div>
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // Meal Plan Section Component
@@ -124,38 +162,6 @@ export function MealPlanSection({
                   </div>
                 </motion.div>
               )}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recipe Images Grid */}
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h3 className="text-2xl font-bold text-gray-900 mb-6">Veckans höjdpunkter</h3>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { name: 'Yoghurt med ketomüsli', time: 'Måndag - Frukost', image: '/images/yoghurt-ketomysli.jpg' },
-            { name: 'Ugnsbakad tomat med köttfärs', time: 'Måndag - Lunch', image: '/images/ugnsbakad-tomat.jpg' },
-            { name: 'Nudelsoppa med grönsaker', time: 'Måndag - Middag', image: '/images/nudelsoppa.jpg' },
-            { name: 'Omelett med champinjoner', time: 'Tisdag - Frukost', image: '/images/omelett-champinjoner.jpg' },
-            { name: 'Torskrygg med ägghack och sparris', time: 'Tisdag - Middag', image: '/images/torskrygg.jpg' },
-            { name: 'Turkiska lammfärsspett', time: 'Onsdag - Middag', image: '/images/lammfarsspett.jpg' }
-          ].map((recipe, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              className="relative rounded-xl overflow-hidden shadow-md cursor-pointer"
-            >
-              <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-purple-100 to-pink-100">
-                <div className="flex items-center justify-center">
-                  <GiMeal className="w-16 h-16 text-gray-400" />
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                <h4 className="font-semibold text-lg">{recipe.name}</h4>
-                <p className="text-sm opacity-90">{recipe.time}</p>
-              </div>
             </motion.div>
           ))}
         </div>
@@ -327,8 +333,8 @@ export function ShoppingListSection() {
 
         <div className="mt-8 bg-purple-50 rounded-xl p-6">
           <p className="text-purple-800">
-            <strong>Veckans tips!</strong> Många av ingredienserna från vecka 1 kan du använda även denna vecka. 
-            Kontrollera vad du har hemma innan du handlar för att undvika matsvinn.
+            <strong>Tips!</strong> Planera din vecka och förbered några rätter i förväg. 
+            Följ kostschemat och undvik småätande mellan måltiderna för bästa resultat.
           </p>
         </div>
       </div>

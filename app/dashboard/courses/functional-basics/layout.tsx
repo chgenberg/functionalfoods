@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   FiHome, FiBook, FiSettings, FiMenu, FiX, FiCalendar,
-  FiAward, FiUsers, FiDownload, FiChevronRight
+  FiAward, FiUsers, FiDownload, FiChevronRight, FiTarget
 } from 'react-icons/fi';
 import { GiFruitBowl } from 'react-icons/gi';
 
@@ -38,6 +38,11 @@ export default function FunctionalBasicsLayout({
       label: 'Vecka 3',
       href: '/dashboard/courses/functional-basics/week/3',
       icon: FiCalendar,
+    },
+    {
+      label: 'Målsättning',
+      href: '/dashboard/courses/functional-basics/goals',
+      icon: FiTarget,
     },
     {
       label: 'Kunskapsmaterial',

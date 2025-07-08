@@ -13,8 +13,9 @@ import {
   GiWheat, GiMeat, GiWaterBottle
 } from 'react-icons/gi';
 import { FaLeaf } from 'react-icons/fa';
-import Image from 'next/image';
-import { MealPlanSection, ShoppingListSection } from './components';
+import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
+import { CalendarView } from '../components/CalendarView';
+import { GoalsSection } from '../components/GoalsSection';
 
 interface TabProps {
   id: string;
@@ -29,6 +30,7 @@ export default function Week2Page() {
 
   const tabs: TabProps[] = [
     { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
+    { id: 'goals', label: 'Målsättning', icon: FiTarget, color: 'from-orange-500 to-red-600' },
     { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-purple-500 to-pink-600' },
     { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
   ];
@@ -36,7 +38,7 @@ export default function Week2Page() {
   const mealPlan = {
     Måndag: {
       breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-      lunch: { name: 'Ugnsbakad tomat med köttfärs (Rester)', recipeLink: '/kunskapsbank/recept/ugnsbakad-tomat' },
+      lunch: { name: 'Ugnsbakad tomat med köttfärs (Rester)' },
       dinner: { name: 'Nudelsoppa med grönsaker', recipeLink: '/kunskapsbank/recept/nudelsoppa' }
     },
     Tisdag: {
@@ -45,30 +47,30 @@ export default function Week2Page() {
       dinner: { name: 'Torskrygg med ägghack och sparris', recipeLink: '/kunskapsbank/recept/torskrygg' }
     },
     Onsdag: {
-      breakfast: { name: 'Morotsjuice', recipeLink: '/kunskapsbank/recept/morotsjuice' },
-      lunch: { name: 'Torskrygg med ägghack och sparris (Rester)' },
-      dinner: { name: 'Turkiska lammfärsspett med raita och sallad', recipeLink: '/kunskapsbank/recept/lammfarsspett' }
+      breakfast: { name: 'Grön smoothie', recipeLink: '/kunskapsbank/recept/gron-smoothie' },
+      lunch: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad' },
+      dinner: { name: 'Turkiska lammfärsspett', recipeLink: '/kunskapsbank/recept/lammfarsspett' }
     },
     Torsdag: {
-      breakfast: { name: 'Morotsjuice (Rester)' },
-      lunch: { name: 'Turkiska lammfärsspett med raita och sallad (Rester)' },
-      dinner: { name: 'Kycklingröra med örter och tomat', recipeLink: '/kunskapsbank/recept/kycklingrora' }
+      breakfast: { name: 'Omelett med champinjoner (Rester)' },
+      lunch: { name: 'Torskrygg med ägghack och sparris (Rester)' },
+      dinner: { name: 'Kycklinggryta med bakad spetskål', recipeLink: '/kunskapsbank/recept/kycklinggryta' }
     },
     Fredag: {
       breakfast: { name: 'Havrefralla med morötter och torkade aprikoser', recipeLink: '/kunskapsbank/recept/havrefralla' },
-      lunch: { name: 'Kycklingröra med örter och tomat (Rester)' },
+      lunch: { name: 'Turkiska lammfärsspett (Rester)' },
       dinner: { name: 'Lax med fetaost och rostade rotfrukter', recipeLink: '/kunskapsbank/recept/lax-feta' }
     },
     Lördag: {
-      breakfast: { name: 'Bärsmoothiebowl', recipeLink: '/kunskapsbank/recept/smoothiebowl' },
-      lunch: { name: 'Lax med fetaost och rostade rotfrukter (Rester)' },
-      dinner: { name: 'Asiatiska köttbullar med nudelsallad', recipeLink: '/kunskapsbank/recept/asiatiska-kottbullar' },
-      snack: { name: 'Jordgubbar och mango med vit chokladkräm', recipeLink: '/kunskapsbank/recept/chokladkram' }
+      breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-lax' },
+      lunch: { name: 'Kycklinggryta med bakad spetskål (Rester)' },
+      dinner: { name: 'Asiatiska köttbullar', recipeLink: '/kunskapsbank/recept/asiatiska-kottbullar' },
+      snack: { name: 'Jordgubbar med chokladkräm', recipeLink: '/kunskapsbank/recept/chokladkram' }
     },
     Söndag: {
-      breakfast: { name: 'Bärsmoothiebowl (Rester)' },
-      lunch: { name: 'Asiatiska köttbullar med nudelsallad (Rester)' },
-      dinner: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad' }
+      breakfast: { name: 'Äggröra med lax (Rester)' },
+      lunch: { name: 'Lax med fetaost och rostade rotfrukter (Rester)' },
+      dinner: { name: 'Asiatiska köttbullar (Rester)' }
     }
   };
 
@@ -76,8 +78,8 @@ export default function Week2Page() {
     <div>
       {/* Page Title */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Vecka 2: Bygga hälsosamma vanor</h1>
-        <p className="text-gray-600 mt-2">Fördjupa din kunskap och etablera rutiner</p>
+        <h1 className="text-3xl font-bold text-gray-900">Vecka 2: Bygg starkare vanor</h1>
+        <p className="text-gray-600 mt-2">Fördjupa din kunskap och utforska nya smaker</p>
       </div>
 
       {/* Tab Navigation */}
@@ -124,14 +126,13 @@ export default function Week2Page() {
               <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
                 <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 2!</h2>
                 <p className="text-lg leading-relaxed mb-6">
-                  Nu har du kommit in i din nya livsstil och kroppen börjar ge dig positiv återkoppling. 
-                  Genom att ge den näring i form av antioxidanter, fibrer, probiotika, mineraler och vitaminer 
-                  håller du blodsockret på en jämn nivå, vilket gör det lättare att stå emot socker och snabba 
-                  kolhydrater. Den nya rutinen ger dig mer energi, och du märker säkert redan skillnad.
+                  Nu har du kommit igång med din resa och det är dags att bygga vidare på grunderna. 
+                  Denna vecka introducerar vi nya spännande recept och tekniker som kommer hjälpa dig 
+                  att variera din kost samtidigt som du håller dig till Functional Foods principerna.
                 </p>
                 <p className="text-lg leading-relaxed">
-                  För att fortsätta på bästa sätt, planera veckan noggrant. Den här veckan ska du också läsa 
-                  dokumentet "Functional foods - 3 steg till ett friskare liv" för att ta nästa steg i din utveckling.
+                  Kom ihåg att lyssna på din kropp och anpassa portionsstorlekarna efter dina behov. 
+                  Fokusera på att njuta av maten och känn hur din energi och välmående förbättras dag för dag.
                 </p>
               </div>
 
@@ -142,39 +143,39 @@ export default function Week2Page() {
                     <FiTrendingUp className="w-8 h-8 text-purple-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Din utveckling</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Veckans fokus</h3>
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6">
-                        <h4 className="font-semibold text-gray-900 mb-3">Vad du har uppnått:</h4>
-                        <ul className="space-y-2">
+                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6">
+                        <h4 className="font-semibold text-gray-900 mb-3">Nya smaker</h4>
+                        <p className="text-gray-700 mb-3">
+                          Utforska nya kryddor och smakkombinationer. Prova de asiatiska 
+                          köttbullarna och den turkiska lammfärsen för inspiration.
+                        </p>
+                        <ul className="space-y-2 text-sm text-gray-600">
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">Etablerat nya matrutiner</span>
+                            <FiCheckCircle className="text-purple-600 mt-0.5 flex-shrink-0" />
+                            <span>Experimentera med kryddor</span>
                           </li>
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">Lärt dig grunderna i Functional Foods</span>
-                          </li>
-                          <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">Börjat känna positiva effekter</span>
+                            <FiCheckCircle className="text-purple-600 mt-0.5 flex-shrink-0" />
+                            <span>Våga prova nya grönsaker</span>
                           </li>
                         </ul>
                       </div>
-                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6">
-                        <h4 className="font-semibold text-gray-900 mb-3">Veckans fokus:</h4>
-                        <ul className="space-y-2">
+                      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-6">
+                        <h4 className="font-semibold text-gray-900 mb-3">Meal prep</h4>
+                        <p className="text-gray-700 mb-3">
+                          Börja förbereda måltider i förväg. Många av veckans recept 
+                          lämpar sig utmärkt för att laga i större mängder.
+                        </p>
+                        <ul className="space-y-2 text-sm text-gray-600">
                           <li className="flex items-start space-x-2">
-                            <FiStar className="text-purple-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">Fördjupa kunskapen om mervärdesmat</span>
+                            <FiCheckCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
+                            <span>Spara tid i vardagen</span>
                           </li>
                           <li className="flex items-start space-x-2">
-                            <FiStar className="text-purple-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">Stabilisera blodsockernivåerna</span>
-                          </li>
-                          <li className="flex items-start space-x-2">
-                            <FiStar className="text-purple-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">Öka energinivåerna ytterligare</span>
+                            <FiCheckCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
+                            <span>Minska matsvinn</span>
                           </li>
                         </ul>
                       </div>
@@ -187,25 +188,38 @@ export default function Week2Page() {
               <div className="grid md:grid-cols-4 gap-6">
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <GiMeal className="w-12 h-12 text-purple-600 mx-auto mb-3" />
-                  <h4 className="text-2xl font-bold text-gray-900">21</h4>
+                  <h4 className="text-2xl font-bold text-gray-900">8</h4>
                   <p className="text-gray-600">Nya recept</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <FiCalendar className="w-12 h-12 text-blue-600 mx-auto mb-3" />
-                  <h4 className="text-2xl font-bold text-gray-900">7</h4>
-                  <p className="text-gray-600">Dagar</p>
+                  <h4 className="text-2xl font-bold text-gray-900">2/6</h4>
+                  <p className="text-gray-600">Veckor klara</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <GiFruitBowl className="w-12 h-12 text-green-600 mx-auto mb-3" />
-                  <h4 className="text-2xl font-bold text-gray-900">5+</h4>
-                  <p className="text-gray-600">Nya ingredienser</p>
+                  <h4 className="text-2xl font-bold text-gray-900">30+</h4>
+                  <p className="text-gray-600">Ingredienser</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <FiHeart className="w-12 h-12 text-red-600 mx-auto mb-3" />
                   <h4 className="text-2xl font-bold text-gray-900">100%</h4>
-                  <p className="text-gray-600">Energiboost</p>
+                  <p className="text-gray-600">Hälsosamt</p>
                 </div>
               </div>
+            </motion.div>
+          )}
+
+          {/* Goals Tab */}
+          {activeTab === 'goals' && (
+            <motion.div
+              key="goals"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              <GoalsSection weekNumber={2} />
             </motion.div>
           )}
 
@@ -218,11 +232,18 @@ export default function Week2Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-8"
             >
+              {/* Calendar View */}
+              <CalendarView mealPlan={mealPlan} weekNumber={2} />
+              
+              {/* Traditional Meal Plan View */}
               <MealPlanSection 
                 mealPlan={mealPlan}
                 expandedDay={expandedDay}
                 setExpandedDay={setExpandedDay}
               />
+
+              {/* Recipe Highlights */}
+              <RecipeHighlights />
             </motion.div>
           )}
 
@@ -238,8 +259,6 @@ export default function Week2Page() {
               <ShoppingListSection />
             </motion.div>
           )}
-
-
         </AnimatePresence>
       </div>
 
@@ -248,7 +267,7 @@ export default function Week2Page() {
         <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">Redo för nästa steg?</h3>
           <p className="text-lg mb-6">
-            När du känner dig redo, fortsätt till vecka 3 för att utforska flexibilitet och periodisk fasta.
+            När du känner dig redo, fortsätt till vecka 3 för att utforska flexibilitet och fasta.
           </p>
           <Link
             href="/dashboard/courses/functional-basics/week/3"
