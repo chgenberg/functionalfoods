@@ -5,433 +5,340 @@ import { motion } from 'framer-motion';
 import { 
   FiTarget, FiCheckCircle, FiCalendar, FiTrendingUp,
   FiAward, FiStar, FiClock, FiFlag,
-  FiFilter, FiPlus, FiEdit3
+  FiFilter, FiArrowRight
 } from 'react-icons/fi';
 import { useGoals, Goal } from '@/app/hooks/useGoals';
 import Link from 'next/link';
 
+// Samma fördefinierade mål som i huvudsidan
+const PREDEFINED_GOALS = {
+  1: [
+    { title: "📚 Läs grundmaterialet om Functional Foods", description: "Gå igenom alla artiklar i vecka 1 och ta anteckningar", category: "weekly" as const, priority: "high" as const, icon: "📚" },
+    { title: "🍎 Identifiera 3 functional foods i ditt kök", description: "Hitta minst 3 livsmedel som räknas som functional foods", category: "nutrition" as const, priority: "medium" as const, icon: "🍎" },
+    { title: "📝 Skriv ner dina nuvarande matvanor", description: "Dokumentera vad du äter under 3 dagar", category: "nutrition" as const, priority: "high" as const, icon: "📝" },
+    { title: "🎯 Sätt dina personliga hälsomål", description: "Definiera 3 konkreta mål du vill uppnå med functional foods", category: "health" as const, priority: "high" as const, icon: "🎯" },
+    { title: "💧 Drick 2 liter vatten dagligen", description: "Håll dig hydrerad hela veckan", category: "health" as const, priority: "medium" as const, icon: "💧" },
+    { title: "🥗 Planera 3 functional foods-måltider", description: "Välj frukost, lunch och middag med functional foods", category: "nutrition" as const, priority: "medium" as const, icon: "🥗" },
+    { title: "📖 Läs om antioxidanter", description: "Fördjupa dig i hur antioxidanter påverkar hälsan", category: "weekly" as const, priority: "low" as const, icon: "📖" }
+  ],
+  2: [
+    { title: "🥩 Välj rätt proteinkällor", description: "Identifiera och köp in högkvalitativa proteiner", category: "nutrition" as const, priority: "high" as const, icon: "🥩" },
+    { title: "🐟 Ät fisk minst 2 gånger", description: "Inkludera fisk rik på omega-3 i din kost", category: "nutrition" as const, priority: "high" as const, icon: "🐟" },
+    { title: "🥜 Testa nya vegetabiliska proteiner", description: "Prova linser, quinoa eller andra växtproteiner", category: "nutrition" as const, priority: "medium" as const, icon: "🥜" },
+    { title: "💪 Kombinera protein med träning", description: "Ät protein inom 30 min efter träning", category: "exercise" as const, priority: "medium" as const, icon: "💪" },
+    { title: "📊 Beräkna ditt proteinbehov", description: "Använd formeln för att räkna ut ditt dagliga behov", category: "nutrition" as const, priority: "high" as const, icon: "📊" },
+    { title: "🍳 Laga ägg på 3 olika sätt", description: "Variera hur du tillreder ägg under veckan", category: "nutrition" as const, priority: "low" as const, icon: "🍳" },
+    { title: "📝 Dokumentera proteinintag", description: "Skriv ner proteinmängden i varje måltid", category: "nutrition" as const, priority: "medium" as const, icon: "📝" },
+    { title: "🥛 Testa olika mjölkprodukter", description: "Prova grekisk yoghurt, kefir eller kvarg", category: "nutrition" as const, priority: "low" as const, icon: "🥛" }
+  ],
+  3: [
+    { title: "🌾 Välj komplexa kolhydrater", description: "Byt ut vita kolhydrater mot fullkorn", category: "nutrition" as const, priority: "high" as const, icon: "🌾" },
+    { title: "🍠 Inkludera rotfrukter", description: "Ät sötpotatis, morötter och andra rotfrukter", category: "nutrition" as const, priority: "medium" as const, icon: "🍠" },
+    { title: "🕐 Tajma kolhydratintag", description: "Ät kolhydrater runt träning för bästa effekt", category: "nutrition" as const, priority: "medium" as const, icon: "🕐" },
+    { title: "🥣 Testa olika havregryn", description: "Prova stålskurna havre, overnight oats", category: "nutrition" as const, priority: "low" as const, icon: "🥣" },
+    { title: "📈 Mät blodsockernivåer", description: "Observera hur olika kolhydrater påverkar dig", category: "health" as const, priority: "high" as const, icon: "📈" },
+    { title: "🍌 Ät frukt vid rätt tillfälle", description: "Konsumera frukt på morgonen eller runt träning", category: "nutrition" as const, priority: "medium" as const, icon: "🍌" },
+    { title: "🥖 Undvik processade kolhydrater", description: "Säg nej till vitt bröd, sötsaker en hel vecka", category: "nutrition" as const, priority: "high" as const, icon: "🥖" },
+    { title: "📚 Lär dig om glykemiskt index", description: "Förstå hur olika livsmedel påverkar blodsockret", category: "weekly" as const, priority: "medium" as const, icon: "📚" }
+  ],
+  4: [
+    { title: "🏆 Implementera topplistan", description: "Använd minst 5 functional foods från topplistan", category: "nutrition" as const, priority: "high" as const, icon: "🏆" },
+    { title: "🫐 Ät bär dagligen", description: "Inkludera blåbär, hallon eller andra bär varje dag", category: "nutrition" as const, priority: "high" as const, icon: "🫐" },
+    { title: "🥑 Konsumera avokado", description: "Ät avokado minst 3 gånger under veckan", category: "nutrition" as const, priority: "medium" as const, icon: "🥑" },
+    { title: "🍄 Testa svamp som superfood", description: "Prova shiitake, maitake eller andra hälsosvampar", category: "nutrition" as const, priority: "medium" as const, icon: "🍄" },
+    { title: "🌿 Använd färska örter", description: "Krydda maten med basilika, oregano, rosmarin", category: "nutrition" as const, priority: "low" as const, icon: "🌿" },
+    { title: "🥬 Ät gröna bladgrönsaker", description: "Inkludera spenat, grönkål eller ruccola dagligen", category: "nutrition" as const, priority: "high" as const, icon: "🥬" },
+    { title: "🌰 Snacka nötter och frön", description: "Ät en handfull nötter eller frön varje dag", category: "nutrition" as const, priority: "medium" as const, icon: "🌰" },
+    { title: "🍵 Drick grönt te", description: "Ersätt kaffe med grönt te minst en gång per dag", category: "health" as const, priority: "low" as const, icon: "🍵" },
+    { title: "📋 Skapa din personliga topplista", description: "Välj dina 10 favorit functional foods", category: "weekly" as const, priority: "medium" as const, icon: "📋" }
+  ],
+  5: [
+    { title: "💡 Förstå fördelarna djupare", description: "Läs om vetenskapen bakom functional foods", category: "weekly" as const, priority: "high" as const, icon: "💡" },
+    { title: "🧬 Lär dig om probiotika", description: "Förstå hur tarmbakterier påverkar hälsan", category: "health" as const, priority: "high" as const, icon: "🧬" },
+    { title: "🥛 Inkludera fermenterade produkter", description: "Ät kimchi, kefir, kombucha eller surkål", category: "nutrition" as const, priority: "medium" as const, icon: "🥛" },
+    { title: "🔬 Studera antioxidanter", description: "Lär dig om olika typer och deras effekter", category: "weekly" as const, priority: "medium" as const, icon: "🔬" },
+    { title: "❤️ Fokusera på hjärthälsa", description: "Välj livsmedel som stödjer kardiovaskulär hälsa", category: "health" as const, priority: "high" as const, icon: "❤️" },
+    { title: "🧠 Optimera hjärnfunktion", description: "Ät livsmedel som förbättrar kognitiv funktion", category: "health" as const, priority: "medium" as const, icon: "🧠" },
+    { title: "💤 Förbättra sömnkvalitet", description: "Använd functional foods för bättre sömn", category: "health" as const, priority: "medium" as const, icon: "💤" },
+    { title: "📊 Mät dina framsteg", description: "Dokumentera förbättringar i energi och välmående", category: "weekly" as const, priority: "low" as const, icon: "📊" }
+  ],
+  6: [
+    { title: "🚀 Skapa din långsiktiga plan", description: "Planera hur du ska fortsätta efter kursen", category: "weekly" as const, priority: "high" as const, icon: "🚀" },
+    { title: "🛒 Optimera inköpslistan", description: "Skapa en smart handlingslista med functional foods", category: "nutrition" as const, priority: "high" as const, icon: "🛒" },
+    { title: "👨‍🍳 Utveckla matlagningsrutiner", description: "Etablera hållbara matlagningsvanor", category: "nutrition" as const, priority: "medium" as const, icon: "👨‍🍳" },
+    { title: "📅 Planera veckomenyer", description: "Skapa menyer för kommande veckor", category: "nutrition" as const, priority: "medium" as const, icon: "📅" },
+    { title: "🎯 Sätt nya mål", description: "Definiera mål för nästa fas av din hälsoresa", category: "health" as const, priority: "high" as const, icon: "🎯" },
+    { title: "👥 Dela med dig av erfarenheter", description: "Berätta för familj/vänner om dina lärdomar", category: "general" as const, priority: "low" as const, icon: "👥" },
+    { title: "📈 Utvärdera resultaten", description: "Reflektera över förändringar i hälsa och välmående", category: "weekly" as const, priority: "high" as const, icon: "📈" },
+    { title: "🔄 Skapa hållbara rutiner", description: "Etablera vanor som håller i längden", category: "general" as const, priority: "medium" as const, icon: "🔄" },
+    { title: "🎉 Fira dina framsteg", description: "Erkänn och belöna din resa mot bättre hälsa", category: "general" as const, priority: "low" as const, icon: "🎉" },
+    { title: "📚 Fortsätt lära", description: "Planera fortsatt utbildning inom functional foods", category: "weekly" as const, priority: "medium" as const, icon: "📚" }
+  ]
+};
+
 type FilterType = 'all' | 'active' | 'completed' | 'overdue';
 type CategoryFilter = 'all' | 'weekly' | 'health' | 'nutrition' | 'exercise' | 'general';
 
-export default function GoalsOverviewPage() {
-  const { goals, loading, getGoalStats, getGoalsByCategory } = useGoals();
-  const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
-  const [filterType, setFilterType] = useState<FilterType>('all');
+export default function GoalsPage() {
+  const { goals, loading } = useGoals();
+  const [filter, setFilter] = useState<FilterType>('all');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
 
-  const stats = getGoalStats();
-  const goalsByCategory = getGoalsByCategory();
-
-  // Filter goals based on current filters
-  const filteredGoals = goals.filter(goal => {
-    if (filterType === 'active' && goal.status !== 'active') return false;
-    if (filterType === 'completed' && goal.status !== 'completed') return false;
-    if (filterType === 'overdue' && (goal.status === 'completed' || !goal.targetDate || new Date(goal.targetDate) >= new Date())) return false;
-    if (categoryFilter !== 'all' && goal.category !== categoryFilter) return false;
-    return true;
-  });
-
-  // Group goals by week
-  const weeks = [1, 2, 3, 4, 5, 6];
-  const goalsByWeek = weeks.reduce((acc, week) => {
-    acc[week] = goals.filter(goal => goal.weekNumber === week);
+  // Gruppera mål per vecka
+  const goalsByWeek = goals.reduce((acc, goal) => {
+    if (goal.weekNumber) {
+      if (!acc[goal.weekNumber]) acc[goal.weekNumber] = [];
+      acc[goal.weekNumber].push(goal);
+    }
     return acc;
-  }, {} as Record<number, Goal[]>);
+  }, {} as Record<number, typeof goals>);
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'text-red-600 bg-red-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  };
+  // Beräkna statistik
+  const totalPredefinedGoals = Object.values(PREDEFINED_GOALS).flat().length;
+  const totalActiveGoals = goals.length;
+  const completedGoals = goals.filter(g => g.status === 'completed').length;
+  const completionRate = totalActiveGoals > 0 ? (completedGoals / totalActiveGoals) * 100 : 0;
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'weekly': return <FiCalendar className="w-4 h-4" />;
-      case 'health': return <FiTarget className="w-4 h-4" />;
-      case 'nutrition': return <FiStar className="w-4 h-4" />;
-      case 'exercise': return <FiTrendingUp className="w-4 h-4" />;
-      default: return <FiFlag className="w-4 h-4" />;
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'weekly': return 'from-blue-500 to-blue-600';
-      case 'health': return 'from-green-500 to-green-600';
-      case 'nutrition': return 'from-purple-500 to-purple-600';
-      case 'exercise': return 'from-orange-500 to-orange-600';
-      default: return 'from-gray-500 to-gray-600';
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-1/3 mb-8"></div>
-        <div className="grid grid-cols-4 gap-6 mb-8">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
-          ))}
-        </div>
-        <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-24 bg-gray-200 rounded-xl"></div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const weeks = [
+    { number: 1, title: "Introduktion till Functional Foods", color: "from-purple-500 to-pink-600" },
+    { number: 2, title: "Att välja rätt proteiner", color: "from-blue-500 to-cyan-600" },
+    { number: 3, title: "Att välja rätt kolhydrater", color: "from-green-500 to-teal-600" },
+    { number: 4, title: "Functional Foods Topplista", color: "from-yellow-500 to-orange-600" },
+    { number: 5, title: "Fördelarna med Functional Foods", color: "from-red-500 to-pink-600" },
+    { number: 6, title: "Att komma igång", color: "from-indigo-500 to-purple-600" }
+  ];
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Mina målsättningar</h1>
-          <p className="text-gray-600 mt-1 text-sm">Översikt över alla dina mål genom kursen</p>
+          <h1 className="text-3xl font-bold text-gray-900">Målsättning</h1>
+          <p className="text-gray-600 mt-1">
+            Översikt av alla förbestämda mål för Functional Basics kursen
+          </p>
         </div>
-        <Link 
+        
+        <Link
           href="/dashboard/courses/functional-basics"
           className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
         >
-          <FiPlus className="w-4 h-4" />
-          <span>Nytt mål</span>
+          <FiArrowRight className="w-4 h-4" />
+          <span>Tillbaka till kursen</span>
         </Link>
       </div>
 
-      {/* Overall Progress */}
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">Total framgång</h2>
-            <p className="text-gray-600 text-sm">Din övergripande måluppfyllelse</p>
-          </div>
-          <div className="text-center">
-            <div className="relative w-24 h-24">
-              <svg className="w-24 h-24 transform -rotate-90">
-                <circle
-                  cx="48"
-                  cy="48"
-                  r="40"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  className="text-gray-200"
-                />
-                <circle
-                  cx="48"
-                  cy="48"
-                  r="40"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${2 * Math.PI * 40}`}
-                  strokeDashoffset={`${2 * Math.PI * 40 * (1 - stats.completionRate / 100)}`}
-                  className="text-green-600 transition-all duration-1000"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-bold text-gray-900">{stats.completionRate}%</span>
-              </div>
+      {/* Statistics Cards */}
+      <div className="grid md:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Totalt antal mål</p>
+              <p className="text-2xl font-bold text-gray-900">{totalPredefinedGoals}</p>
+            </div>
+            <div className="bg-blue-100 rounded-lg p-3">
+              <FiTarget className="w-6 h-6 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div className="bg-blue-50 rounded-lg p-3">
-            <FiTarget className="w-6 h-6 text-blue-600 mx-auto mb-1" />
-            <p className="text-xl font-bold text-gray-900">{stats.total}</p>
-            <p className="text-xs text-gray-600">Totala mål</p>
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Aktiva mål</p>
+              <p className="text-2xl font-bold text-gray-900">{totalActiveGoals}</p>
+            </div>
+            <div className="bg-orange-100 rounded-lg p-3">
+              <FiFlag className="w-6 h-6 text-orange-600" />
+            </div>
           </div>
-          <div className="bg-green-50 rounded-lg p-3">
-            <FiCheckCircle className="w-6 h-6 text-green-600 mx-auto mb-1" />
-            <p className="text-xl font-bold text-gray-900">{stats.completed}</p>
-            <p className="text-xs text-gray-600">Avklarade</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Slutförda mål</p>
+              <p className="text-2xl font-bold text-gray-900">{completedGoals}</p>
+            </div>
+            <div className="bg-green-100 rounded-lg p-3">
+              <FiCheckCircle className="w-6 h-6 text-green-600" />
+            </div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-3">
-            <FiClock className="w-6 h-6 text-yellow-600 mx-auto mb-1" />
-            <p className="text-xl font-bold text-gray-900">{stats.active}</p>
-            <p className="text-xs text-gray-600">Aktiva</p>
-          </div>
-          <div className="bg-red-50 rounded-lg p-3">
-            <FiFlag className="w-6 h-6 text-red-600 mx-auto mb-1" />
-            <p className="text-xl font-bold text-gray-900">{stats.overdue}</p>
-            <p className="text-xs text-gray-600">Försenade</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Slutförandegrad</p>
+              <p className="text-2xl font-bold text-gray-900">{Math.round(completionRate)}%</p>
+            </div>
+            <div className="bg-purple-100 rounded-lg p-3">
+              <FiTrendingUp className="w-6 h-6 text-purple-600" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow-md p-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center space-x-2">
-            <FiFilter className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-700">Filter:</span>
-          </div>
-          
-          <div className="flex space-x-1">
-            {[
-              { key: 'all', label: 'Alla' },
-              { key: 'active', label: 'Aktiva' },
-              { key: 'completed', label: 'Klara' },
-              { key: 'overdue', label: 'Försenade' }
-            ].map(filter => (
-              <button
-                key={filter.key}
-                onClick={() => setFilterType(filter.key as FilterType)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  filterType === filter.key
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="border-l pl-3 flex space-x-1">
-            {[
-              { key: 'all', label: 'Alla kategorier' },
-              { key: 'weekly', label: 'Veckomål' },
-              { key: 'health', label: 'Hälsa' },
-              { key: 'nutrition', label: 'Näring' },
-              { key: 'exercise', label: 'Träning' }
-            ].map(category => (
-              <button
-                key={category.key}
-                onClick={() => setCategoryFilter(category.key as CategoryFilter)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  categoryFilter === category.key
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {category.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Goals by Category */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Object.entries(goalsByCategory).map(([category, categoryGoals]) => {
-          const completed = categoryGoals.filter(g => g.status === 'completed').length;
-          const total = categoryGoals.length;
-          
-          return (
-            <motion.div
-              key={category}
-              whileHover={{ scale: 1.02 }}
-              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-all"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <div className={`bg-gradient-to-r ${getCategoryColor(category)} text-white rounded-lg p-1.5`}>
-                    {getCategoryIcon(category)}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-sm capitalize">{category}</h3>
-                    <p className="text-xs text-gray-600">{completed}/{total} klara</p>
-                  </div>
-                </div>
-                {total > 0 && completed === total && (
-                  <FiAward className="w-5 h-5 text-yellow-500" />
-                )}
-              </div>
-
-              {total > 0 && (
-                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(completed / total) * 100}%` }}
-                    className={`h-full bg-gradient-to-r ${getCategoryColor(category)}`}
-                  />
-                </div>
-              )}
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Week by Week Goals */}
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mål per vecka</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Weekly Goals Overview */}
+      <div className="bg-white rounded-2xl shadow-lg p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Mål per vecka</h2>
+        
+        <div className="space-y-6">
           {weeks.map((week) => {
-            const weekGoals = goalsByWeek[week] || [];
-            const weekCompleted = weekGoals.filter(g => g.status === 'completed').length;
-            const weekTotal = weekGoals.length;
+            const weekGoals = goalsByWeek[week.number] || [];
+            const predefinedGoals = PREDEFINED_GOALS[week.number as keyof typeof PREDEFINED_GOALS] || [];
+            const completedWeekGoals = weekGoals.filter(g => g.status === 'completed').length;
+            const totalWeekGoals = weekGoals.length;
+            const weekProgress = totalWeekGoals > 0 ? (completedWeekGoals / totalWeekGoals) * 100 : 0;
             
             return (
               <motion.div
-                key={week}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => setSelectedWeek(selectedWeek === week ? null : week)}
-                className="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-all"
+                key={week.number}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: week.number * 0.1 }}
+                className="border border-gray-200 rounded-xl overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded px-2 py-0.5 text-sm">
-                      <span className="font-semibold">Vecka {week}</span>
-                    </div>
-                    {weekTotal > 0 && weekCompleted === weekTotal && (
-                      <FiAward className="w-5 h-5 text-yellow-500" />
-                    )}
-                  </div>
-                  <span className="text-xs text-gray-600">
-                    {weekCompleted}/{weekTotal}
-                  </span>
-                </div>
-
-                {weekTotal > 0 ? (
-                  <>
-                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mb-3">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(weekCompleted / weekTotal) * 100}%` }}
-                        className="h-full bg-gradient-to-r from-green-500 to-teal-600"
-                      />
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white bg-gradient-to-r ${week.color}`}>
+                        {week.number}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">{week.title}</h3>
+                        <p className="text-sm text-gray-600">
+                          {predefinedGoals.length} förbestämda mål • {totalWeekGoals} aktiva • {completedWeekGoals} slutförda
+                        </p>
+                      </div>
                     </div>
                     
-                    {selectedWeek === week && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        className="space-y-2 mt-3"
+                    <div className="flex items-center space-x-4">
+                      {totalWeekGoals > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-green-500 to-teal-600 transition-all duration-500"
+                              style={{ width: `${weekProgress}%` }}
+                            />
+                          </div>
+                          <span className="text-sm font-medium text-gray-700">
+                            {Math.round(weekProgress)}%
+                          </span>
+                        </div>
+                      )}
+                      
+                      <Link
+                        href={`/dashboard/courses/functional-basics/week/${week.number}`}
+                        className="text-orange-600 hover:text-orange-700 font-medium text-sm flex items-center space-x-1"
                       >
-                        {weekGoals.map((goal) => (
-                          <div
-                            key={goal.id}
-                            className={`flex items-center justify-between p-2 rounded ${
-                              goal.status === 'completed' ? 'bg-green-50' : 'bg-white'
-                            }`}
-                          >
-                            <div className="flex items-center space-x-2">
-                              {goal.status === 'completed' ? (
-                                <FiCheckCircle className="w-3 h-3 text-green-600" />
-                              ) : (
-                                <div className="w-3 h-3 rounded-full border-2 border-gray-300" />
-                              )}
-                              <span className={`text-xs ${
-                                goal.status === 'completed' ? 'text-gray-600 line-through' : 'text-gray-800'
+                        <span>Gå till vecka</span>
+                        <FiArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {predefinedGoals.map((goal, index) => {
+                      const isActive = weekGoals.some(g => g.title === goal.title);
+                      const activeGoal = weekGoals.find(g => g.title === goal.title);
+                      const isCompleted = activeGoal?.status === 'completed';
+                      
+                      return (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.05 }}
+                          className={`p-4 rounded-lg border-2 transition-all ${
+                            isCompleted 
+                              ? 'bg-green-50 border-green-200' 
+                              : isActive 
+                                ? 'bg-orange-50 border-orange-200' 
+                                : 'bg-gray-50 border-gray-200'
+                          }`}
+                        >
+                          <div className="flex items-start space-x-3">
+                            <div className="text-2xl">{goal.icon}</div>
+                            <div className="flex-1">
+                              <h4 className={`font-medium text-sm ${
+                                isCompleted ? 'text-green-800 line-through' : 'text-gray-900'
                               }`}>
-                                {goal.title}
-                              </span>
+                                {goal.title.replace(goal.icon, '').trim()}
+                              </h4>
+                              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                {goal.description}
+                              </p>
+                              <div className="flex items-center justify-between mt-2">
+                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                  goal.priority === 'high' ? 'bg-red-100 text-red-700' :
+                                  goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-green-100 text-green-700'
+                                }`}>
+                                  {goal.priority === 'high' ? 'Hög' : goal.priority === 'medium' ? 'Medel' : 'Låg'}
+                                </span>
+                                
+                                {isCompleted && (
+                                  <div className="flex items-center space-x-1">
+                                    <FiCheckCircle className="w-4 h-4 text-green-600" />
+                                    <span className="text-xs text-green-600">Klar</span>
+                                  </div>
+                                )}
+                                
+                                {isActive && !isCompleted && (
+                                  <div className="flex items-center space-x-1">
+                                    <FiClock className="w-4 h-4 text-orange-600" />
+                                    <span className="text-xs text-orange-600">Aktiv</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        ))}
-                        <Link
-                          href={`/dashboard/courses/functional-basics/week/${week}`}
-                          className="block w-full text-center py-1.5 bg-orange-600 text-white rounded text-xs hover:bg-orange-700 transition-colors"
-                        >
-                          Hantera mål
-                        </Link>
-                      </motion.div>
-                    )}
-                  </>
-                ) : (
-                  <div className="text-center py-3 text-gray-400">
-                    <p className="text-xs">Inga mål satta</p>
-                    <Link
-                      href={`/dashboard/courses/functional-basics/week/${week}`}
-                      className="text-orange-600 hover:text-orange-700 text-xs font-medium"
-                    >
-                      Sätt mål →
-                    </Link>
+                        </motion.div>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
               </motion.div>
             );
           })}
         </div>
       </div>
 
-      {/* Detailed Goals List */}
-      {filteredGoals.length > 0 && (
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Alla mål</h2>
-          
-          <div className="space-y-3">
-            {filteredGoals.map((goal) => (
-              <motion.div
-                key={goal.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-3 rounded-lg border ${
-                  goal.status === 'completed'
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-gray-50 border-gray-200'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    {goal.status === 'completed' ? (
-                      <FiCheckCircle className="w-4 h-4 text-green-600" />
-                    ) : (
-                      <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
-                    )}
-                    <div>
-                      <h4 className={`font-medium text-sm ${
-                        goal.status === 'completed' ? 'text-gray-600 line-through' : 'text-gray-900'
-                      }`}>
-                        {goal.title}
-                      </h4>
-                      {goal.description && (
-                        <p className="text-xs text-gray-600 mt-0.5">{goal.description}</p>
-                      )}
-                      <div className="flex items-center space-x-3 mt-1">
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${getPriorityColor(goal.priority)}`}>
-                          {goal.priority}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {goal.category} • Vecka {goal.weekNumber}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    {goal.status !== 'completed' && goal.progress > 0 && (
-                      <div className="text-right">
-                        <div className="text-xs font-medium text-gray-700">{goal.progress}%</div>
-                        <div className="w-16 h-1.5 bg-gray-200 rounded-full">
-                          <div 
-                            className="h-1.5 bg-orange-600 rounded-full transition-all duration-300"
-                            style={{ width: `${goal.progress}%` }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                    
-                    {goal.weekNumber && (
-                      <Link
-                        href={`/dashboard/courses/functional-basics/week/${goal.weekNumber}`}
-                        className="p-1.5 text-gray-400 hover:text-orange-600 transition-colors"
-                      >
-                        <FiEdit3 className="w-3 h-3" />
-                      </Link>
-                    )}
-                  </div>
+      {/* Category Summary */}
+      <div className="bg-white rounded-2xl shadow-lg p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Mål per kategori</h2>
+        
+        <div className="grid md:grid-cols-5 gap-6">
+          {[
+            { category: 'weekly', label: 'Veckomål', icon: FiCalendar, color: 'blue' },
+            { category: 'nutrition', label: 'Näring', icon: FiTarget, color: 'green' },
+            { category: 'health', label: 'Hälsa', icon: FiStar, color: 'purple' },
+            { category: 'exercise', label: 'Träning', icon: FiTrendingUp, color: 'orange' },
+            { category: 'general', label: 'Allmänt', icon: FiFlag, color: 'gray' }
+          ].map(({ category, label, icon: Icon, color }) => {
+            const categoryGoals = Object.values(PREDEFINED_GOALS).flat().filter(g => g.category === category);
+            const activeCategoryGoals = goals.filter(g => g.category === category);
+            const completedCategoryGoals = activeCategoryGoals.filter(g => g.status === 'completed');
+            
+            return (
+              <div key={category} className="text-center">
+                <div className={`bg-${color}-100 rounded-lg p-4 mb-3`}>
+                  <Icon className={`w-8 h-8 text-${color}-600 mx-auto`} />
                 </div>
-              </motion.div>
-            ))}
-          </div>
+                <h3 className="font-semibold text-gray-900">{label}</h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {categoryGoals.length} totalt
+                </p>
+                <p className="text-xs text-gray-500">
+                  {completedCategoryGoals.length} slutförda
+                </p>
+              </div>
+            );
+          })}
         </div>
-      )}
-
-      {/* Back to course link */}
-      <div className="text-center">
-        <Link
-          href="/dashboard/courses/functional-basics"
-          className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium"
-        >
-          <span>← Tillbaka till kursen</span>
-        </Link>
       </div>
     </div>
   );

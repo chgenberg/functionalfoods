@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       where: { id: userId },
       include: {
         quizResults: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { completedAt: 'desc' },
           take: 1,
           select: {
             healthScore: true,
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
             stressScore: true,
             dietScore: true,
             exerciseScore: true,
-            createdAt: true
+            completedAt: true
           }
         },
         healthProfile: {

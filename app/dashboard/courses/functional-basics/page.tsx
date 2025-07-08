@@ -9,201 +9,75 @@ import {
 import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
 
-// Fördefinierade mål för varje vecka
-const PREDEFINED_GOALS: Record<number, Array<{
-  title: string;
-  description: string;
-  category: 'weekly' | 'nutrition' | 'health' | 'exercise' | 'general';
-  priority: 'high' | 'medium' | 'low';
-  icon: string;
-}>> = {
+// Fördefinierade mål för varje vecka (5-10 mål per vecka)
+const PREDEFINED_GOALS = {
   1: [
-    {
-      title: "📚 Läs grundmaterialet om functional foods",
-      description: "Gå igenom alla artiklar i vecka 1 och ta anteckningar",
-      category: "weekly",
-      priority: "high",
-      icon: "📚"
-    },
-    {
-      title: "🥗 Planera 3 functional foods-måltider",
-      description: "Välj frukost, lunch och middag med functional foods",
-      category: "nutrition",
-      priority: "medium",
-      icon: "🥗"
-    },
-    {
-      title: "🎯 Definiera dina personliga hälsomål",
-      description: "Skriv ned 3 konkreta mål du vill uppnå",
-      category: "health",
-      priority: "high",
-      icon: "🎯"
-    },
-    {
-      title: "💧 Drick 2 liter vatten dagligen",
-      description: "Håll dig hydrerad hela veckan",
-      category: "health",
-      priority: "low",
-      icon: "💧"
-    }
+    { title: "📚 Läs grundmaterialet om Functional Foods", description: "Gå igenom alla artiklar i vecka 1 och ta anteckningar", category: "weekly" as const, priority: "high" as const, icon: "📚" },
+    { title: "🍎 Identifiera 3 functional foods i ditt kök", description: "Hitta minst 3 livsmedel som räknas som functional foods", category: "nutrition" as const, priority: "medium" as const, icon: "🍎" },
+    { title: "📝 Skriv ner dina nuvarande matvanor", description: "Dokumentera vad du äter under 3 dagar", category: "nutrition" as const, priority: "high" as const, icon: "📝" },
+    { title: "🎯 Sätt dina personliga hälsomål", description: "Definiera 3 konkreta mål du vill uppnå med functional foods", category: "health" as const, priority: "high" as const, icon: "🎯" },
+    { title: "💧 Drick 2 liter vatten dagligen", description: "Håll dig hydrerad hela veckan", category: "health" as const, priority: "medium" as const, icon: "💧" },
+    { title: "🥗 Planera 3 functional foods-måltider", description: "Välj frukost, lunch och middag med functional foods", category: "nutrition" as const, priority: "medium" as const, icon: "🥗" },
+    { title: "📖 Läs om antioxidanter", description: "Fördjupa dig i hur antioxidanter påverkar hälsan", category: "weekly" as const, priority: "low" as const, icon: "📖" }
   ],
   2: [
-    {
-      title: "🥩 Testa 3 olika proteinkällor",
-      description: "Prova fisk, baljväxter och nötter denna vecka",
-      category: "nutrition",
-      priority: "high",
-      icon: "🥩"
-    },
-    {
-      title: "👨‍🍳 Laga recepten från vecka 2",
-      description: "Gör minst 2 av veckans proteinrecept",
-      category: "weekly",
-      priority: "medium",
-      icon: "👨‍🍳"
-    },
-    {
-      title: "📊 Beräkna ditt dagliga proteinbehov",
-      description: "Använd guiden för att räkna ut din optimala mängd",
-      category: "nutrition",
-      priority: "medium",
-      icon: "📊"
-    },
-    {
-      title: "🏃‍♀️ Kombinera protein med träning",
-      description: "Ät protein inom 30 min efter träning",
-      category: "exercise",
-      priority: "low",
-      icon: "🏃‍♀️"
-    }
+    { title: "🥩 Välj rätt proteinkällor", description: "Identifiera och köp in högkvalitativa proteiner", category: "nutrition" as const, priority: "high" as const, icon: "🥩" },
+    { title: "🐟 Ät fisk minst 2 gånger", description: "Inkludera fisk rik på omega-3 i din kost", category: "nutrition" as const, priority: "high" as const, icon: "🐟" },
+    { title: "🥜 Testa nya vegetabiliska proteiner", description: "Prova linser, quinoa eller andra växtproteiner", category: "nutrition" as const, priority: "medium" as const, icon: "🥜" },
+    { title: "💪 Kombinera protein med träning", description: "Ät protein inom 30 min efter träning", category: "exercise" as const, priority: "medium" as const, icon: "💪" },
+    { title: "📊 Beräkna ditt proteinbehov", description: "Använd formeln för att räkna ut ditt dagliga behov", category: "nutrition" as const, priority: "high" as const, icon: "📊" },
+    { title: "🍳 Laga ägg på 3 olika sätt", description: "Variera hur du tillreder ägg under veckan", category: "nutrition" as const, priority: "low" as const, icon: "🍳" },
+    { title: "📝 Dokumentera proteinintag", description: "Skriv ner proteinmängden i varje måltid", category: "nutrition" as const, priority: "medium" as const, icon: "📝" },
+    { title: "🥛 Testa olika mjölkprodukter", description: "Prova grekisk yoghurt, kefir eller kvarg", category: "nutrition" as const, priority: "low" as const, icon: "🥛" }
   ],
   3: [
-    {
-      title: "🌾 Byt vita till fullkornsprodukter",
-      description: "Ersätt vitt bröd, pasta och ris med fullkorn",
-      category: "nutrition",
-      priority: "high",
-      icon: "🌾"
-    },
-    {
-      title: "🍎 Ät 5 portioner frukt & grönt dagligen",
-      description: "Inkludera olika färger för maximal näring",
-      category: "nutrition",
-      priority: "medium",
-      icon: "🍎"
-    },
-    {
-      title: "📝 För matdagbok i 3 dagar",
-      description: "Dokumentera allt du äter för att se mönster",
-      category: "weekly",
-      priority: "medium",
-      icon: "📝"
-    },
-    {
-      title: "🧘‍♀️ Reflektera över energinivåer",
-      description: "Notera hur olika kolhydrater påverkar din energi",
-      category: "health",
-      priority: "low",
-      icon: "🧘‍♀️"
-    }
+    { title: "🌾 Välj komplexa kolhydrater", description: "Byt ut vita kolhydrater mot fullkorn", category: "nutrition" as const, priority: "high" as const, icon: "🌾" },
+    { title: "🍠 Inkludera rotfrukter", description: "Ät sötpotatis, morötter och andra rotfrukter", category: "nutrition" as const, priority: "medium" as const, icon: "🍠" },
+    { title: "🕐 Tajma kolhydratintag", description: "Ät kolhydrater runt träning för bästa effekt", category: "nutrition" as const, priority: "medium" as const, icon: "🕐" },
+    { title: "🥣 Testa olika havregryn", description: "Prova stålskurna havre, overnight oats", category: "nutrition" as const, priority: "low" as const, icon: "🥣" },
+    { title: "📈 Mät blodsockernivåer", description: "Observera hur olika kolhydrater påverkar dig", category: "health" as const, priority: "high" as const, icon: "📈" },
+    { title: "🍌 Ät frukt vid rätt tillfälle", description: "Konsumera frukt på morgonen eller runt träning", category: "nutrition" as const, priority: "medium" as const, icon: "🍌" },
+    { title: "🥖 Undvik processade kolhydrater", description: "Säg nej till vitt bröd, sötsaker en hel vecka", category: "nutrition" as const, priority: "high" as const, icon: "🥖" },
+    { title: "📚 Lär dig om glykemiskt index", description: "Förstå hur olika livsmedel påverkar blodsockret", category: "weekly" as const, priority: "medium" as const, icon: "📚" }
   ],
   4: [
-    {
-      title: "🛒 Handla 5 nya superfoods",
-      description: "Köp quinoa, chiafrön, blåbär, grönkål och valnötter",
-      category: "weekly",
-      priority: "high",
-      icon: "🛒"
-    },
-    {
-      title: "🥘 Skapa din egen superfood-bowl",
-      description: "Kombinera minst 5 functional foods i en måltid",
-      category: "nutrition",
-      priority: "medium",
-      icon: "🥘"
-    },
-    {
-      title: "📸 Dokumentera dina måltider",
-      description: "Ta bilder på 3 kreativa functional foods-rätter",
-      category: "general",
-      priority: "low",
-      icon: "📸"
-    },
-    {
-      title: "🌟 Prova en ny functional food varje dag",
-      description: "Utmana dig själv med nya smaker och texturer",
-      category: "nutrition",
-      priority: "medium",
-      icon: "🌟"
-    }
+    { title: "🏆 Implementera topplistan", description: "Använd minst 5 functional foods från topplistan", category: "nutrition" as const, priority: "high" as const, icon: "🏆" },
+    { title: "🫐 Ät bär dagligen", description: "Inkludera blåbär, hallon eller andra bär varje dag", category: "nutrition" as const, priority: "high" as const, icon: "🫐" },
+    { title: "🥑 Konsumera avokado", description: "Ät avokado minst 3 gånger under veckan", category: "nutrition" as const, priority: "medium" as const, icon: "🥑" },
+    { title: "🍄 Testa svamp som superfood", description: "Prova shiitake, maitake eller andra hälsosvampar", category: "nutrition" as const, priority: "medium" as const, icon: "🍄" },
+    { title: "🌿 Använd färska örter", description: "Krydda maten med basilika, oregano, rosmarin", category: "nutrition" as const, priority: "low" as const, icon: "🌿" },
+    { title: "🥬 Ät gröna bladgrönsaker", description: "Inkludera spenat, grönkål eller ruccola dagligen", category: "nutrition" as const, priority: "high" as const, icon: "🥬" },
+    { title: "🌰 Snacka nötter och frön", description: "Ät en handfull nötter eller frön varje dag", category: "nutrition" as const, priority: "medium" as const, icon: "🌰" },
+    { title: "🍵 Drick grönt te", description: "Ersätt kaffe med grönt te minst en gång per dag", category: "health" as const, priority: "low" as const, icon: "🍵" },
+    { title: "📋 Skapa din personliga topplista", description: "Välj dina 10 favorit functional foods", category: "weekly" as const, priority: "medium" as const, icon: "📋" }
   ],
   5: [
-    {
-      title: "📈 Mät dina framsteg",
-      description: "Dokumentera energi, sömn och allmänt välmående",
-      category: "health",
-      priority: "high",
-      icon: "📈"
-    },
-    {
-      title: "🗓️ Planera veckans alla måltider",
-      description: "Förbered en komplett veckomeny med functional foods",
-      category: "weekly",
-      priority: "medium",
-      icon: "🗓️"
-    },
-    {
-      title: "👥 Dela en functional foods-måltid",
-      description: "Bjud någon på middag och berätta om fördelarna",
-      category: "general",
-      priority: "low",
-      icon: "👥"
-    },
-    {
-      title: "💪 Identifiera 3 positiva förändringar",
-      description: "Lista konkreta förbättringar du upplevt",
-      category: "health",
-      priority: "medium",
-      icon: "💪"
-    }
+    { title: "💡 Förstå fördelarna djupare", description: "Läs om vetenskapen bakom functional foods", category: "weekly" as const, priority: "high" as const, icon: "💡" },
+    { title: "🧬 Lär dig om probiotika", description: "Förstå hur tarmbakterier påverkar hälsan", category: "health" as const, priority: "high" as const, icon: "🧬" },
+    { title: "🥛 Inkludera fermenterade produkter", description: "Ät kimchi, kefir, kombucha eller surkål", category: "nutrition" as const, priority: "medium" as const, icon: "🥛" },
+    { title: "🔬 Studera antioxidanter", description: "Lär dig om olika typer och deras effekter", category: "weekly" as const, priority: "medium" as const, icon: "🔬" },
+    { title: "❤️ Fokusera på hjärthälsa", description: "Välj livsmedel som stödjer kardiovaskulär hälsa", category: "health" as const, priority: "high" as const, icon: "❤️" },
+    { title: "🧠 Optimera hjärnfunktion", description: "Ät livsmedel som förbättrar kognitiv funktion", category: "health" as const, priority: "medium" as const, icon: "🧠" },
+    { title: "💤 Förbättra sömnkvalitet", description: "Använd functional foods för bättre sömn", category: "health" as const, priority: "medium" as const, icon: "💤" },
+    { title: "📊 Mät dina framsteg", description: "Dokumentera förbättringar i energi och välmående", category: "weekly" as const, priority: "low" as const, icon: "📊" }
   ],
   6: [
-    {
-      title: "📋 Skapa din 30-dagarsplan",
-      description: "Planera hur du fortsätter efter kursen",
-      category: "weekly",
-      priority: "high",
-      icon: "📋"
-    },
-    {
-      title: "🎉 Fira dina framgångar",
-      description: "Belöna dig själv för genomförd kurs",
-      category: "general",
-      priority: "medium",
-      icon: "🎉"
-    },
-    {
-      title: "🎯 Sätt 3 långsiktiga hälsomål",
-      description: "Definiera mål för kommande 3, 6 och 12 månader",
-      category: "health",
-      priority: "high",
-      icon: "🎯"
-    },
-    {
-      title: "📚 Skapa din egen receptsamling",
-      description: "Samla dina 10 favoritrecept från kursen",
-      category: "nutrition",
-      priority: "medium",
-      icon: "📚"
-    }
+    { title: "🚀 Skapa din långsiktiga plan", description: "Planera hur du ska fortsätta efter kursen", category: "weekly" as const, priority: "high" as const, icon: "🚀" },
+    { title: "🛒 Optimera inköpslistan", description: "Skapa en smart handlingslista med functional foods", category: "nutrition" as const, priority: "high" as const, icon: "🛒" },
+    { title: "👨‍🍳 Utveckla matlagningsrutiner", description: "Etablera hållbara matlagningsvanor", category: "nutrition" as const, priority: "medium" as const, icon: "👨‍🍳" },
+    { title: "📅 Planera veckomenyer", description: "Skapa menyer för kommande veckor", category: "nutrition" as const, priority: "medium" as const, icon: "📅" },
+    { title: "🎯 Sätt nya mål", description: "Definiera mål för nästa fas av din hälsoresa", category: "health" as const, priority: "high" as const, icon: "🎯" },
+    { title: "👥 Dela med dig av erfarenheter", description: "Berätta för familj/vänner om dina lärdomar", category: "general" as const, priority: "low" as const, icon: "👥" },
+    { title: "📈 Utvärdera resultaten", description: "Reflektera över förändringar i hälsa och välmående", category: "weekly" as const, priority: "high" as const, icon: "📈" },
+    { title: "🔄 Skapa hållbara rutiner", description: "Etablera vanor som håller i längden", category: "general" as const, priority: "medium" as const, icon: "🔄" },
+    { title: "🎉 Fira dina framsteg", description: "Erkänn och belöna din resa mot bättre hälsa", category: "general" as const, priority: "low" as const, icon: "🎉" },
+    { title: "📚 Fortsätt lära", description: "Planera fortsatt utbildning inom functional foods", category: "weekly" as const, priority: "medium" as const, icon: "📚" }
   ]
 };
 
 export default function FunctionalBasicsPage() {
   const { goals, createGoal, updateGoal, loading } = useGoals();
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
-  const [showNewGoalModal, setShowNewGoalModal] = useState(false);
-  const [newGoalWeek, setNewGoalWeek] = useState<number>(1);
   const [showVideoModal, setShowVideoModal] = useState(false);
 
   // Gruppera mål per vecka
@@ -233,7 +107,7 @@ export default function FunctionalBasicsPage() {
         courseId: 'functional-basics'
       });
     } catch (error) {
-      console.error(`Error activating goal: ${error}`);
+      console.error('Error activating goal:', error);
     }
   };
 
@@ -243,13 +117,14 @@ export default function FunctionalBasicsPage() {
     const progress = newStatus === 'completed' ? 100 : 0;
     
     try {
-      await updateGoal(goalId, { 
+      await updateGoal({ 
+        id: goalId,
         status: newStatus, 
         progress,
-        completedAt: newStatus === 'completed' ? new Date().toISOString() : null
+        completedAt: newStatus === 'completed' ? new Date().toISOString() : undefined
       });
     } catch (error) {
-      console.error(`Error updating goal: ${error}`);
+      console.error('Error updating goal:', error);
     }
   };
 
@@ -379,20 +254,16 @@ export default function FunctionalBasicsPage() {
       {/* Weekly Progress */}
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Veckans mål</h2>
-          <button
-            onClick={() => setShowNewGoalModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg"
-          >
-            <FiPlus className="w-4 h-4" />
-            <span>Nytt mål</span>
-          </button>
+          <h2 className="text-2xl font-bold text-gray-900">Förbestämda mål per vecka</h2>
+          <div className="text-sm text-gray-600">
+            Alla mål är fördefinierade för optimal progression
+          </div>
         </div>
         
         <div className="space-y-4">
           {weeks.map((week) => {
             const weekGoals = goalsByWeek[week.number] || [];
-            const predefinedGoals = PREDEFINED_GOALS[week.number] || [];
+            const predefinedGoals = PREDEFINED_GOALS[week.number as keyof typeof PREDEFINED_GOALS] || [];
             const completedGoals = weekGoals.filter(g => g.status === 'completed').length;
             const totalGoals = weekGoals.length;
             const isExpanded = expandedWeek === week.number;
@@ -426,7 +297,7 @@ export default function FunctionalBasicsPage() {
                       </div>
                       
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{week.title}</h3>
+                        <h3 className="font-semibold text-gray-900 text-base">{week.title}</h3>
                         <div className="flex items-center space-x-4 mt-1">
                           <p className="text-sm text-gray-600">
                             {totalGoals > 0 ? (
@@ -557,9 +428,13 @@ export default function FunctionalBasicsPage() {
                                 </div>
                                 
                                 <button
-                                  onClick={(e) => {
+                                  onClick={async (e) => {
                                     e.stopPropagation();
-                                    activatePredefinedGoal(week.number, predefinedGoal);
+                                    try {
+                                      await activatePredefinedGoal(week.number, predefinedGoal);
+                                    } catch (error) {
+                                      console.error('Error adding goal:', error);
+                                    }
                                   }}
                                   disabled={loading}
                                   className="ml-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium disabled:opacity-50 whitespace-nowrap"
@@ -590,123 +465,6 @@ export default function FunctionalBasicsPage() {
         </div>
       </div>
 
-      {/* New Goal Modal */}
-      {showNewGoalModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-6 max-w-md w-full"
-          >
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Skapa nytt mål</h3>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                await createGoal({
-                  title: formData.get('title') as string,
-                  description: formData.get('description') as string,
-                  category: formData.get('category') as any,
-                  priority: formData.get('priority') as any,
-                  weekNumber: parseInt(formData.get('weekNumber') as string),
-                  courseId: 'functional-basics'
-                });
-                setShowNewGoalModal(false);
-              }}
-              className="space-y-4"
-            >
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Titel
-                </label>
-                <input
-                  name="title"
-                  type="text"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="Vad vill du uppnå?"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Beskrivning
-                </label>
-                <textarea
-                  name="description"
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="Beskriv ditt mål mer detaljerat..."
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Vecka
-                  </label>
-                  <select
-                    name="weekNumber"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  >
-                    {[1, 2, 3, 4, 5, 6].map(week => (
-                      <option key={week} value={week}>Vecka {week}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Kategori
-                  </label>
-                  <select
-                    name="category"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  >
-                    <option value="weekly">Veckomål</option>
-                    <option value="nutrition">Näring</option>
-                    <option value="health">Hälsa</option>
-                    <option value="exercise">Träning</option>
-                    <option value="general">Allmänt</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Prioritet
-                </label>
-                <select
-                  name="priority"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                >
-                  <option value="low">Låg</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">Hög</option>
-                </select>
-              </div>
-
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
-                >
-                  Skapa mål
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowNewGoalModal(false)}
-                  className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Avbryt
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </div>
-      )}
-
       {/* Video Modal */}
       {showVideoModal && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
@@ -727,7 +485,7 @@ export default function FunctionalBasicsPage() {
             {/* Video Player */}
             <div className="aspect-video">
               <iframe
-                src="https://player.vimeo.com/video/123456789?autoplay=1&title=0&byline=0&portrait=0"
+                src="https://player.vimeo.com/video/1056709544?h=9265a3d6ae&autoplay=1&title=0&byline=0&portrait=0"
                 className="w-full h-full"
                 frameBorder="0"
                 allow="autoplay; fullscreen; picture-in-picture"
@@ -736,11 +494,10 @@ export default function FunctionalBasicsPage() {
               ></iframe>
             </div>
             
-            <div className="p-6 bg-gray-900 text-white">
-              <h3 className="text-xl font-bold mb-2">Välkommen till Functional Basics</h3>
-              <p className="text-gray-300">
-                I denna introduktionsvideo får du en överblick av kursen och vad du kan förvänta dig. 
-                Ulrika guidar dig genom de grundläggande principerna för functional foods.
+            <div className="p-4 bg-gray-900 text-white">
+              <h3 className="text-lg font-bold mb-2">Välkommen till Functional Basics</h3>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                Introduktionsvideo med Ulrika Davidsson om grundläggande principerna för functional foods.
               </p>
             </div>
           </motion.div>

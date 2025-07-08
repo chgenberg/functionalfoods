@@ -233,12 +233,6 @@ export default function Header() {
                 >
                   Mina kurser
                 </Link>
-                <Link
-                  href={user.role === 'admin' ? '/admin' : getDirectDashboardLink(user.email)}
-                  className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-accent transition-colors text-sm font-medium"
-                >
-                  Min sida
-                </Link>
                 <button 
                   onClick={logout} 
                   className="px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors text-sm font-medium"
@@ -335,14 +329,6 @@ export default function Header() {
                   >
                     <span>Mina kurser</span>
                     <FiArrowRight className="w-5 h-5" />
-                  </Link>
-                  <Link
-                    href={user.role === 'admin' ? '/admin' : getDirectDashboardLink(user.email)}
-                    className="flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-primary hover:bg-accent rounded-2xl transition-all duration-200"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <span>Min sida</span>
-                    <FiUser className="w-5 h-5" />
                   </Link>
                   <button
                     onClick={() => {
