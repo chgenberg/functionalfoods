@@ -138,34 +138,34 @@ export default function FunctionalBasicsPage() {
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Intro Video Section */}
-      <div className="relative bg-gradient-to-br from-green-900 via-teal-800 to-green-700 rounded-3xl overflow-hidden shadow-2xl">
+    <div className="space-y-4 md:space-y-8 pb-20 md:pb-8">
+      {/* Intro Video Section - Mobile Optimized */}
+      <div className="relative bg-gradient-to-br from-green-900 via-teal-800 to-green-700 rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative grid md:grid-cols-2 gap-8 p-8 md:p-12">
-          <div className="flex flex-col justify-center space-y-6 z-10">
+        <div className="relative flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-8 p-4 sm:p-6 md:p-12">
+          <div className="flex flex-col justify-center space-y-4 md:space-y-6 z-10 order-2 md:order-1">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4">
                 FUNCTIONAL BASICS
               </h1>
-              <p className="text-xl text-green-100 mb-6">
+              <p className="text-base sm:text-lg md:text-xl text-green-100 mb-4 md:mb-6">
                 6 veckors hälsoprogram med Ulrika Davidsson
               </p>
-              <div className="flex items-center space-x-6">
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
+              <div className="flex flex-wrap gap-3 md:gap-6">
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg md:rounded-xl px-4 py-2 md:px-6 md:py-3">
                   <div className="flex items-center space-x-2">
-                    <FiClock className="w-5 h-5 text-green-100" />
-                    <span className="text-white font-medium">5:32</span>
+                    <FiClock className="w-4 h-4 md:w-5 md:h-5 text-green-100" />
+                    <span className="text-white font-medium text-sm md:text-base">5:32</span>
                   </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg md:rounded-xl px-4 py-2 md:px-6 md:py-3">
                   <div className="flex items-center space-x-2">
-                    <FiTarget className="w-5 h-5 text-green-100" />
-                    <span className="text-white font-medium">0/6 veckor</span>
+                    <FiTarget className="w-4 h-4 md:w-5 md:h-5 text-green-100" />
+                    <span className="text-white font-medium text-sm md:text-base">0/6 veckor</span>
                   </div>
                 </div>
               </div>
@@ -176,14 +176,14 @@ export default function FunctionalBasicsPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative group cursor-pointer"
+            className="relative group cursor-pointer order-1 md:order-2"
             onClick={() => setShowVideoModal(true)}
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl transform transition-transform duration-300 group-hover:scale-105">
+            <div className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-xl md:shadow-2xl transform transition-transform duration-300 group-hover:scale-105">
               <img
                 src="/ulrika3.png"
                 alt="Ulrika Davidsson"
-                className="w-full h-[300px] md:h-[400px] object-cover"
+                className="w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[400px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
               
@@ -192,18 +192,18 @@ export default function FunctionalBasicsPage() {
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-white/90 backdrop-blur-sm rounded-full p-6 shadow-2xl transform transition-all duration-300 group-hover:bg-white"
+                  className="bg-white/90 backdrop-blur-sm rounded-full p-4 md:p-6 shadow-xl md:shadow-2xl transform transition-all duration-300 group-hover:bg-white"
                 >
-                  <FiPlay className="w-8 h-8 text-green-700 ml-1" />
+                  <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-green-700 ml-0.5 md:ml-1" />
                 </motion.div>
               </div>
               
               {/* Video Title Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <h3 className="text-white font-bold text-xl mb-2">
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+                <h3 className="text-white font-bold text-base md:text-xl mb-1 md:mb-2">
                   Introduktionsvideo
                 </h3>
-                <p className="text-green-100">
+                <p className="text-green-100 text-sm md:text-base">
                   Välkommen till Functional Basics
                 </p>
               </div>
@@ -212,55 +212,55 @@ export default function FunctionalBasicsPage() {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <Link href="/dashboard/courses/functional-basics/goals" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all group">
-          <div className="flex items-center space-x-4">
-            <div className="bg-purple-100 rounded-lg p-3 group-hover:bg-purple-200 transition-colors">
-              <FiTarget className="w-6 h-6 text-purple-600" />
+      {/* Quick Actions - Mobile Optimized */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+        <Link href="/dashboard/courses/functional-basics/goals" className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 hover:shadow-lg md:hover:shadow-xl transition-all group">
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-purple-100 rounded-lg p-2.5 md:p-3 group-hover:bg-purple-200 transition-colors">
+              <FiTarget className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 text-base">Målsättning</h3>
-              <p className="text-gray-600 text-sm">Hantera dina mål</p>
+              <h3 className="font-semibold text-gray-900 text-sm md:text-base">Målsättning</h3>
+              <p className="text-gray-600 text-xs md:text-sm">Hantera dina mål</p>
             </div>
           </div>
         </Link>
 
-        <Link href="/dashboard/courses/functional-basics/material" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all group">
-          <div className="flex items-center space-x-4">
-            <div className="bg-blue-100 rounded-lg p-3 group-hover:bg-blue-200 transition-colors">
-              <FiBook className="w-6 h-6 text-blue-600" />
+        <Link href="/dashboard/courses/functional-basics/material" className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 hover:shadow-lg md:hover:shadow-xl transition-all group">
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-blue-100 rounded-lg p-2.5 md:p-3 group-hover:bg-blue-200 transition-colors">
+              <FiBook className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 text-base">Kursmaterial</h3>
-              <p className="text-gray-600 text-sm">Alla resurser</p>
+              <h3 className="font-semibold text-gray-900 text-sm md:text-base">Kursmaterial</h3>
+              <p className="text-gray-600 text-xs md:text-sm">Alla resurser</p>
             </div>
           </div>
         </Link>
 
-        <Link href="/dashboard/courses/functional-basics/downloads" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all group">
-          <div className="flex items-center space-x-4">
-            <div className="bg-orange-100 rounded-lg p-3 group-hover:bg-orange-200 transition-colors">
-              <FiDownload className="w-6 h-6 text-orange-600" />
+        <Link href="/dashboard/courses/functional-basics/downloads" className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 hover:shadow-lg md:hover:shadow-xl transition-all group sm:col-span-2 md:col-span-1">
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-orange-100 rounded-lg p-2.5 md:p-3 group-hover:bg-orange-200 transition-colors">
+              <FiDownload className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 text-base">Nedladdningar</h3>
-              <p className="text-gray-600 text-sm">PDF:er & guider</p>
+              <h3 className="font-semibold text-gray-900 text-sm md:text-base">Nedladdningar</h3>
+              <p className="text-gray-600 text-xs md:text-sm">PDF:er & guider</p>
             </div>
           </div>
         </Link>
       </div>
 
-      {/* Weekly Progress */}
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Förbestämda mål per vecka</h2>
-          <div className="text-sm text-gray-600">
+      {/* Weekly Progress - Mobile Optimized */}
+      <div className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-4 sm:p-6 md:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 md:mb-6">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900">Förbestämda mål per vecka</h2>
+          <div className="text-xs md:text-sm text-gray-600">
             Alla mål är fördefinierade för optimal progression
           </div>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {weeks.map((week) => {
             const weekGoals = goalsByWeek[week.number] || [];
             const predefinedGoals = PREDEFINED_GOALS[week.number as keyof typeof PREDEFINED_GOALS] || [];
@@ -271,21 +271,21 @@ export default function FunctionalBasicsPage() {
             return (
               <motion.div
                 key={week.number}
-                className={`border-2 rounded-xl overflow-hidden transition-all ${
-                  isExpanded ? 'border-orange-500 shadow-lg' : 'border-gray-200'
+                className={`border-2 rounded-lg md:rounded-xl overflow-hidden transition-all ${
+                  isExpanded ? 'border-orange-500 shadow-md md:shadow-lg' : 'border-gray-200'
                 }`}
                 initial={false}
               >
                 <div 
-                  className={`p-6 cursor-pointer transition-colors ${
+                  className={`p-4 md:p-6 cursor-pointer transition-colors ${
                     isExpanded ? 'bg-orange-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setExpandedWeek(isExpanded ? null : week.number)}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-3 md:space-x-4 flex-1">
                       <div className={`
-                        w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white
+                        w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-white text-sm md:text-base
                         ${week.number === 1 ? 'bg-gradient-to-r from-purple-500 to-pink-600' : 
                           week.number === 2 ? 'bg-gradient-to-r from-blue-500 to-cyan-600' :
                           week.number === 3 ? 'bg-gradient-to-r from-green-500 to-teal-600' :
@@ -297,12 +297,12 @@ export default function FunctionalBasicsPage() {
                       </div>
                       
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 text-base">{week.title}</h3>
-                        <div className="flex items-center space-x-4 mt-1">
-                          <p className="text-sm text-gray-600">
+                        <h3 className="font-semibold text-gray-900 text-sm md:text-base">{week.title}</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-1">
+                          <p className="text-xs md:text-sm text-gray-600">
                             {totalGoals > 0 ? (
                               <span className="flex items-center space-x-1">
-                                <FiCheckCircle className="w-4 h-4 text-green-500" />
+                                <FiCheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
                                 <span>{completedGoals}/{totalGoals} mål klara</span>
                               </span>
                             ) : (
@@ -310,8 +310,8 @@ export default function FunctionalBasicsPage() {
                             )}
                           </p>
                           {totalGoals > 0 && (
-                            <div className="flex-1 max-w-xs">
-                              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="flex-1 max-w-full sm:max-w-xs">
+                              <div className="w-full h-1.5 md:h-2 bg-gray-200 rounded-full overflow-hidden">
                                 <motion.div
                                   initial={{ width: 0 }}
                                   animate={{ width: `${(completedGoals / totalGoals) * 100}%` }}
@@ -324,12 +324,12 @@ export default function FunctionalBasicsPage() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center ml-2">
                       <motion.div
                         animate={{ rotate: isExpanded ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <FiChevronDown className="w-5 h-5 text-gray-400" />
+                        <FiChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
                       </motion.div>
                     </div>
                   </div>
@@ -344,29 +344,29 @@ export default function FunctionalBasicsPage() {
                       transition={{ duration: 0.3 }}
                       className="border-t border-gray-200 bg-gray-50"
                     >
-                      <div className="p-6 space-y-4">
+                      <div className="p-4 md:p-6 space-y-4">
                         {/* Active goals */}
                         {weekGoals.length > 0 && (
-                          <div className="space-y-3">
-                            <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">Aktiva mål</h4>
+                          <div className="space-y-2 md:space-y-3">
+                            <h4 className="text-xs md:text-sm font-medium text-gray-700 uppercase tracking-wider">Aktiva mål</h4>
                             {weekGoals.map((goal) => (
                               <motion.div
                                 key={goal.id}
                                 initial={{ x: -20, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
-                                className={`flex items-center justify-between p-4 rounded-lg border ${
+                                className={`flex items-start md:items-center justify-between p-3 md:p-4 rounded-lg border ${
                                   goal.status === 'completed' 
                                     ? 'bg-green-50 border-green-200' 
                                     : 'bg-white border-gray-200 hover:border-gray-300'
                                 } transition-all`}
                               >
-                                <div className="flex items-center space-x-3 flex-1">
+                                <div className="flex items-start md:items-center space-x-2 md:space-x-3 flex-1">
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       toggleGoalCompletion(goal.id, goal.status);
                                     }}
-                                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 md:mt-0 ${
                                       goal.status === 'completed'
                                         ? 'bg-green-600 border-green-600 text-white'
                                         : 'border-gray-300 hover:border-green-500'
@@ -375,19 +375,19 @@ export default function FunctionalBasicsPage() {
                                     {goal.status === 'completed' && <FiCheck className="w-3 h-3" />}
                                   </button>
                                   <div className="flex-1">
-                                    <h5 className={`font-medium ${
+                                    <h5 className={`font-medium text-sm md:text-base ${
                                       goal.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-900'
                                     }`}>
                                       {goal.title}
                                     </h5>
                                     {goal.description && (
-                                      <p className="text-sm text-gray-600 mt-1">{goal.description}</p>
+                                      <p className="text-xs md:text-sm text-gray-600 mt-0.5 md:mt-1">{goal.description}</p>
                                     )}
                                   </div>
                                 </div>
                                 
-                                <div className="flex items-center space-x-2 ml-4">
-                                  <span className={`text-xs px-2 py-1 rounded-full ${
+                                <div className="flex items-center ml-2 md:ml-4">
+                                  <span className={`text-xs px-2 py-0.5 md:py-1 rounded-full ${
                                     goal.priority === 'high' ? 'bg-red-100 text-red-700' :
                                     goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
                                     'bg-green-100 text-green-700'
@@ -401,8 +401,8 @@ export default function FunctionalBasicsPage() {
                         )}
                         
                         {/* Suggested goals */}
-                        <div className="space-y-3">
-                          <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">
+                        <div className="space-y-2 md:space-y-3">
+                          <h4 className="text-xs md:text-sm font-medium text-gray-700 uppercase tracking-wider">
                             {weekGoals.length > 0 ? 'Förslag på fler mål' : 'Förslag på mål för veckan'}
                           </h4>
                           {predefinedGoals.map((predefinedGoal, index) => {
@@ -415,15 +415,15 @@ export default function FunctionalBasicsPage() {
                                 initial={{ x: -20, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
                                 transition={{ delay: index * 0.1 }}
-                                className="flex items-center justify-between p-4 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-orange-400 transition-all group"
+                                className="flex flex-col sm:flex-row sm:items-center justify-between p-3 md:p-4 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-orange-400 transition-all group gap-3"
                               >
-                                <div className="flex items-center space-x-3 flex-1">
-                                  <div className="text-2xl">{predefinedGoal.icon}</div>
+                                <div className="flex items-start sm:items-center space-x-2 md:space-x-3 flex-1">
+                                  <div className="text-xl md:text-2xl flex-shrink-0">{predefinedGoal.icon}</div>
                                   <div className="flex-1">
-                                    <h5 className="font-medium text-gray-800 group-hover:text-gray-900">
+                                    <h5 className="font-medium text-gray-800 group-hover:text-gray-900 text-sm md:text-base">
                                       {predefinedGoal.title.replace(predefinedGoal.icon, '').trim()}
                                     </h5>
-                                    <p className="text-sm text-gray-600 mt-1">{predefinedGoal.description}</p>
+                                    <p className="text-xs md:text-sm text-gray-600 mt-0.5 md:mt-1">{predefinedGoal.description}</p>
                                   </div>
                                 </div>
                                 
@@ -437,7 +437,7 @@ export default function FunctionalBasicsPage() {
                                     }
                                   }}
                                   disabled={loading}
-                                  className="ml-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium disabled:opacity-50 whitespace-nowrap"
+                                  className="w-full sm:w-auto bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-xs md:text-sm font-medium disabled:opacity-50 whitespace-nowrap"
                                 >
                                   Lägg till
                                 </button>
@@ -446,13 +446,13 @@ export default function FunctionalBasicsPage() {
                           })}
                         </div>
                         
-                        <div className="mt-6 pt-4 border-t border-gray-200">
+                        <div className="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-gray-200">
                           <Link
                             href={`/dashboard/courses/functional-basics/week/${week.number}`}
-                            className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium"
+                            className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium text-sm md:text-base"
                           >
                             <span>Gå till vecka {week.number}</span>
-                            <FiArrowRight className="w-4 h-4" />
+                            <FiArrowRight className="w-3 h-3 md:w-4 md:h-4" />
                           </Link>
                         </div>
                       </div>
@@ -465,19 +465,19 @@ export default function FunctionalBasicsPage() {
         </div>
       </div>
 
-      {/* Video Modal */}
+      {/* Video Modal - Mobile Optimized */}
       {showVideoModal && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-2 sm:p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-black rounded-2xl overflow-hidden max-w-4xl w-full max-h-[80vh] relative"
+            className="bg-black rounded-lg md:rounded-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] md:max-h-[80vh] relative"
           >
             <button
               onClick={() => setShowVideoModal(false)}
-              className="absolute top-4 right-4 z-10 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
+              className="absolute top-2 right-2 md:top-4 md:right-4 z-10 bg-black/50 text-white rounded-full p-1.5 md:p-2 hover:bg-black/70 transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -494,9 +494,9 @@ export default function FunctionalBasicsPage() {
               ></iframe>
             </div>
             
-            <div className="p-4 bg-gray-900 text-white">
-              <h3 className="text-lg font-bold mb-2">Välkommen till Functional Basics</h3>
-              <p className="text-sm text-gray-300 leading-relaxed">
+            <div className="p-3 md:p-4 bg-gray-900 text-white">
+              <h3 className="text-base md:text-lg font-bold mb-1 md:mb-2">Välkommen till Functional Basics</h3>
+              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
                 Introduktionsvideo med Ulrika Davidsson om grundläggande principerna för functional foods.
               </p>
             </div>

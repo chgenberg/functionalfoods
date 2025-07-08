@@ -105,7 +105,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
-      {/* Hero Section */}
+      {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0">
@@ -120,7 +120,7 @@ export default function Home() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-green-200 to-blue-200 rounded-full opacity-30 blur-3xl"
+            className="absolute -top-20 md:-top-40 -right-20 md:-right-40 w-48 md:w-96 h-48 md:h-96 bg-gradient-to-br from-green-200 to-blue-200 rounded-full opacity-30 blur-3xl"
           />
           <motion.div
             animate={{
@@ -132,70 +132,71 @@ export default function Home() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full opacity-30 blur-3xl"
+            className="absolute -bottom-20 md:-bottom-40 -left-20 md:-left-40 w-48 md:w-96 h-48 md:h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full opacity-30 blur-3xl"
           />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Left content - Mobile Optimized */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
             >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-4 md:mb-6 leading-tight">
                 UPPTÄCK KRAFTEN I
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600 font-bold">
                   FUNCTIONAL FOODS
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
                 Mat som medicin för kropp och själ
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-8 md:mb-12">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowQuiz(true)}
-                  className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
+                  className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
                 >
                   Starta Hälsoquiz
-                  <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <FiArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
                 <Link
                   href="/utbildning"
-                  className="bg-white border-2 border-gray-300 text-gray-700 px-8 py-5 rounded-full font-semibold text-lg hover:border-green-600 hover:text-green-600 transition-all flex items-center justify-center gap-3"
+                  className="bg-white border-2 border-gray-300 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-600 hover:text-green-600 transition-all flex items-center justify-center gap-3"
                 >
-                  <FiBook className="w-5 h-5" />
+                  <FiBook className="w-4 h-4 md:w-5 md:h-5" />
                   Våra kurser
                 </Link>
               </div>
 
-              {/* Benefits list */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {/* Benefits list - Mobile Optimized */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
                 {benefits.map((benefit, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-2 text-gray-700"
+                    className="flex items-center gap-2 text-gray-700 justify-center lg:justify-start"
                   >
-                    <span className="text-2xl">{benefit.icon}</span>
-                    <span className="text-sm font-medium">{benefit.text}</span>
+                    <span className="text-xl md:text-2xl">{benefit.icon}</span>
+                    <span className="text-xs sm:text-sm font-medium">{benefit.text}</span>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
 
-            {/* Right content - Hero image */}
+            {/* Right content - Hero image - Mobile Optimized */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+              className="relative mt-8 lg:mt-0"
             >
               <div className="relative">
                 <Image
@@ -203,30 +204,30 @@ export default function Home() {
                   alt="Ulrika Davidsson"
                   width={600}
                   height={700}
-                  className="rounded-3xl shadow-2xl"
+                  className="rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl w-full h-auto"
                   priority
                 />
-                {/* Floating card */}
+                {/* Floating card - Mobile Optimized */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1 }}
-                  className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-6 max-w-xs"
+                  className="absolute -bottom-4 md:-bottom-6 -left-4 md:-left-6 bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-xl p-4 md:p-6 max-w-[280px] md:max-w-xs"
                 >
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl">
                       UD
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">Ulrika Davidsson</p>
-                      <p className="text-sm text-gray-600">Functional Foods Expert</p>
+                      <p className="font-semibold text-gray-800 text-sm md:text-base">Ulrika Davidsson</p>
+                      <p className="text-xs md:text-sm text-gray-600">Functional Foods Expert</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 text-yellow-400">
                     {[...Array(5)].map((_, i) => (
-                      <FiStar key={i} className="w-4 h-4 fill-current" />
+                      <FiStar key={i} className="w-3 h-3 md:w-4 md:h-4 fill-current" />
                     ))}
-                    <span className="text-gray-600 text-sm ml-2">25+ års erfarenhet</span>
+                    <span className="text-gray-600 text-xs md:text-sm ml-2">25+ års erfarenhet</span>
                   </div>
                 </motion.div>
               </div>
@@ -234,36 +235,36 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - Mobile Optimized */}
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2"
         >
-          <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-gray-400 rounded-full mt-2" />
+          <div className="w-5 h-8 md:w-6 md:h-10 border-2 border-gray-400 rounded-full flex justify-center">
+            <div className="w-0.5 h-2 md:w-1 md:h-3 bg-gray-400 rounded-full mt-1.5 md:mt-2" />
           </div>
         </motion.div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-gray-50">
+      {/* Features Section - Mobile Optimized */}
+      <section className="py-12 md:py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-8 md:mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-light text-gray-800 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
               Upptäck kraften i <span className="font-bold text-green-600">functional foods</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Få personaliserade rekommendationer baserat på din livsstil och hälsobehov
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-4 md:gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -272,34 +273,34 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all"
+                className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg md:shadow-xl hover:shadow-xl md:hover:shadow-2xl transition-all"
               >
-                <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center text-white mb-6`}>
+                <div className={`w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${feature.color} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-2xl font-semibold mb-4 text-gray-800">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed text-sm md:text-base">{feature.description}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-20 px-4">
+      {/* How it works - Mobile Optimized */}
+      <section className="py-12 md:py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-8 md:mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-light text-gray-800 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
               Så här <span className="font-bold text-green-600">fungerar det</span>
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {[
               { step: "1", title: "Ta quizet", desc: "Besvara några enkla frågor om din hälsa", icon: "📝" },
               { step: "2", title: "Få din analys", desc: "Vi analyserar dina svar med AI", icon: "🔬" },
@@ -315,12 +316,12 @@ export default function Home() {
                 className="relative"
               >
                 <div className="text-center">
-                  <div className="text-5xl mb-4">{item.icon}</div>
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
+                  <div className="text-3xl md:text-5xl mb-3 md:mb-4">{item.icon}</div>
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl mx-auto mb-3 md:mb-4">
                     {item.step}
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
+                  <h3 className="text-base md:text-xl font-semibold mb-1 md:mb-2 text-gray-800">{item.title}</h3>
+                  <p className="text-gray-600 text-xs md:text-base px-2 md:px-0">{item.desc}</p>
                 </div>
                 {index < 3 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
@@ -333,16 +334,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 px-4 bg-gradient-to-br from-green-50 to-blue-50">
+      {/* Testimonials - Mobile Optimized */}
+      <section className="py-12 md:py-20 px-4 bg-gradient-to-br from-green-50 to-blue-50">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-8 md:mb-12"
           >
-            <h2 className="text-4xl md:text-5xl font-light text-gray-800 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
               Vad våra kunder <span className="font-bold text-green-600">säger</span>
             </h2>
           </motion.div>
@@ -354,24 +355,24 @@ export default function Home() {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                className="bg-white rounded-3xl p-8 md:p-12 shadow-xl"
+                className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 lg:p-12 shadow-lg md:shadow-xl"
               >
-                <div className="flex items-center gap-1 mb-6">
+                <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
                   {[...Array(5)].map((_, i) => (
-                    <FiStar key={i} className="w-6 h-6 text-yellow-400 fill-current" />
+                    <FiStar key={i} className="w-5 h-5 md:w-6 md:h-6 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-xl md:text-2xl text-gray-700 mb-6 italic">
+                <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
                   "{testimonials[activeTestimonial].text}"
                 </p>
-                <p className="font-semibold text-gray-800">
+                <p className="font-semibold text-gray-800 text-center md:text-left">
                   — {testimonials[activeTestimonial].name}
                 </p>
               </motion.div>
             </AnimatePresence>
 
             {/* Dots indicator */}
-            <div className="flex justify-center gap-2 mt-8">
+            <div className="flex justify-center gap-2 mt-6 md:mt-8">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
@@ -388,8 +389,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-20 px-4">
+      {/* Newsletter Section - Mobile Optimized */}
+      <section className="py-12 md:py-20 px-4">
         <div className="max-w-4xl mx-auto">
           <NewsletterSignup 
             variant="hero"
@@ -400,28 +401,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-green-600 to-green-700 text-white">
+      {/* CTA Section - Mobile Optimized */}
+      <section className="py-12 md:py-20 px-4 bg-gradient-to-r from-green-600 to-green-700 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-light mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-4 md:mb-6">
               Redo att transformera din hälsa?
             </h2>
-            <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 opacity-90 max-w-2xl mx-auto px-4">
               Starta din resa mot optimal hälsa med vårt personliga hälsoquiz
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuiz(true)}
-              className="bg-white text-green-600 px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-all shadow-2xl inline-flex items-center gap-3"
+              className="bg-white text-green-600 px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-gray-100 transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
               Starta ditt quiz nu
-              <FiArrowRight className="w-6 h-6" />
+              <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </motion.button>
           </motion.div>
         </div>
