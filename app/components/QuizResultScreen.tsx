@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity, FiBookOpen, FiAlertTriangle, FiPhone } from 'react-icons/fi';
+import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity, FiBookOpen, FiAlertTriangle, FiPhone, FiChevronRight } from 'react-icons/fi';
 import LoadingAnalysis from './LoadingAnalysis';
 
 interface QuizResultData {
@@ -104,8 +104,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      // Show loading for at least 12 seconds for better UX
-      const minLoadingTime = 12000;
+      // Show loading for at least 90 seconds for better UX
+      const minLoadingTime = 90000;
       const startTime = Date.now();
 
       // Define fallback data
@@ -268,454 +268,449 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   ];
 
   return (
-    <div className="w-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-16">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold mb-4"
-          >
-            Din Personliga Hälsoanalys
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl opacity-90"
-          >
-            Baserat på dina svar har vi skapat en skräddarsydd plan för dig
-          </motion.p>
-        </div>
-      </div>
-
-      {/* Score Section */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl shadow-2xl p-8 mb-8 -mt-16 relative z-10"
-        >
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Total Score - Larger */}
-            <div className="lg:col-span-1 text-center">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Din totala hälsopoäng</h2>
-              <div className="relative inline-block">
-                <svg className="w-48 h-48">
-                  <circle
-                    cx="96"
-                    cy="96"
-                    r="88"
-                    stroke="#e5e7eb"
-                    strokeWidth="12"
-                    fill="none"
-                  />
-                  <circle
-                    cx="96"
-                    cy="96"
-                    r="88"
-                    stroke="url(#scoreGradient)"
-                    strokeWidth="12"
-                    fill="none"
-                    strokeDasharray={`${(totalScore / 100) * 553} 553`}
-                    transform="rotate(-90 96 96)"
-                    className="transition-all duration-2000"
-                    strokeLinecap="round"
-                  />
-                  <defs>
-                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#22c55e" />
-                      <stop offset="100%" stopColor="#16a34a" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div>
-                    <div className="text-5xl font-bold text-gray-800">{totalScore}</div>
-                    <div className="text-lg text-gray-500">av 100</div>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4">
-                <div className="text-4xl mb-2">{scoreMessage.emoji}</div>
-                <p className={`text-lg font-medium ${scoreMessage.color}`}>{scoreMessage.text}</p>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+      {/* Minimalist Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white border-b border-gray-100"
+      >
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-light text-gray-900">Din Hälsoanalys</h1>
+              <p className="text-sm text-gray-500 mt-1">Personliga rekommendationer baserat på dina svar</p>
             </div>
-
-            {/* Health Areas - Circular indicators */}
-            <div className="lg:col-span-2">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-6">Dina hälsoområden</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {healthAreas.map((area, index) => {
-                  const Icon = area.icon;
-                  const score = healthScores[area.key as keyof HealthScores];
-                  const percentage = (score / 10) * 100;
-                  
-                  return (
-                    <motion.div
-                      key={area.key}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="text-center"
-                    >
-                      <div className="relative inline-block mb-3">
-                        <svg className="w-20 h-20">
-                          <circle
-                            cx="40"
-                            cy="40"
-                            r="36"
-                            stroke="#e5e7eb"
-                            strokeWidth="6"
-                            fill="none"
-                          />
-                          <circle
-                            cx="40"
-                            cy="40"
-                            r="36"
-                            stroke={area.color}
-                            strokeWidth="6"
-                            fill="none"
-                            strokeDasharray={`${(percentage / 100) * 226} 226`}
-                            transform="rotate(-90 40 40)"
-                            className="transition-all duration-1000"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Icon className="w-6 h-6 text-gray-600" />
-                        </div>
-                      </div>
-                      <h4 className="font-medium text-gray-800 mb-1">{area.label}</h4>
-                      <div className="text-2xl font-bold text-gray-800">{score}<span className="text-sm text-gray-500">/10</span></div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Content Tabs */}
-        <div className="max-w-6xl mx-auto">
-          {/* Tab Navigation */}
-          <div className="bg-white rounded-2xl shadow-lg p-2 mb-8">
-            <div className="flex flex-wrap">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 rounded-xl font-medium transition-all duration-200 ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg'
-                      : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-                  }`}
-                >
-                  <span className="text-xl">{tab.icon}</span>
-                  <span className="hidden sm:inline">{tab.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tab Content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onRestart}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
-              {activeTab === 'summary' && recommendations && (
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Din hälsoprofil</h2>
-                  <div 
-                    className="text-lg text-gray-700 leading-relaxed mb-8"
-                    dangerouslySetInnerHTML={{ __html: recommendations.profile }}
-                  />
-                  
-                  {/* Quick Actions */}
-                  <div className="grid md:grid-cols-3 gap-6 mt-8">
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center cursor-pointer"
-                    >
-                      <div className="text-4xl mb-3">💧</div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Hydration</h4>
-                      <p className="text-sm text-gray-600">Drick 2L vatten dagligen</p>
-                    </motion.div>
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center cursor-pointer"
-                    >
-                      <div className="text-4xl mb-3">🥗</div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Nutrition</h4>
-                      <p className="text-sm text-gray-600">Ät varierat och färgglatt</p>
-                    </motion.div>
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center cursor-pointer"
-                    >
-                      <div className="text-4xl mb-3">😴</div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Vila</h4>
-                      <p className="text-sm text-gray-600">7-9 timmars sömn</p>
-                    </motion.div>
-                  </div>
-                </div>
-              )}
+              <FiRefreshCw className="w-4 h-4" />
+              <span className="text-sm">Gör om test</span>
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
 
-              {activeTab === 'recommendations' && recommendations && (
-                <div className="space-y-6">
-                  {recommendations.recommendations.map((rec, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="bg-white rounded-2xl shadow-lg p-8"
-                    >
-                      <div className="flex items-start space-x-4">
-                        <div className="bg-green-100 rounded-full p-4 flex-shrink-0">
-                          <FiCheckCircle className="w-8 h-8 text-green-600" />
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-12 gap-8">
+          
+          {/* Left Sidebar - Score Overview */}
+          <div className="lg:col-span-3">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="sticky top-8"
+            >
+              {/* Total Score Card */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                <div className="text-center">
+                  <div className="relative inline-block mb-4">
+                    <svg className="w-32 h-32">
+                      <circle
+                        cx="64"
+                        cy="64"
+                        r="58"
+                        stroke="#f3f4f6"
+                        strokeWidth="8"
+                        fill="none"
+                      />
+                      <motion.circle
+                        cx="64"
+                        cy="64"
+                        r="58"
+                        stroke="#10b981"
+                        strokeWidth="8"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeDasharray={364}
+                        strokeDashoffset={364 - (totalScore / 100) * 364}
+                        initial={{ strokeDashoffset: 364 }}
+                        animate={{ strokeDashoffset: 364 - (totalScore / 100) * 364 }}
+                        transition={{ duration: 2, ease: "easeOut" }}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div>
+                        <motion.div 
+                          className="text-4xl font-light text-gray-900"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.5, type: "spring" }}
+                        >
+                          {totalScore}
+                        </motion.div>
+                        <div className="text-xs text-gray-500 uppercase tracking-wider">poäng</div>
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900">{scoreMessage.text}</h3>
+                  <p className="text-sm text-gray-500 mt-1">Din övergripande hälsostatus</p>
+                </div>
+              </div>
+
+              {/* Health Areas */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h4 className="text-sm font-medium text-gray-900 mb-4">Hälsoområden</h4>
+                <div className="space-y-4">
+                  {healthAreas.map((area, index) => {
+                    const score = healthScores[area.key as keyof HealthScores];
+                    const percentage = (score / 10) * 100;
+                    const Icon = area.icon;
+                    
+                    return (
+                      <motion.div
+                        key={area.key}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Icon className="w-4 h-4 text-gray-600" />
+                            <span className="text-sm text-gray-700">{area.label}</span>
+                          </div>
+                          <span className="text-sm font-medium text-gray-900">{score}/10</span>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-2xl font-semibold text-gray-800 mb-3">{rec.title}</h3>
-                          <div 
-                            className="text-gray-700 mb-6 text-lg"
-                            dangerouslySetInnerHTML={{ __html: rec.description }}
+                        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: area.color }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${percentage}%` }}
+                            transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
                           />
-                          <div className="bg-green-50 rounded-xl p-4">
-                            <h4 className="font-medium text-green-800 mb-2">Så här använder du det:</h4>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="lg:col-span-9">
+            {/* Tab Navigation - Minimalist Style */}
+            <div className="mb-8">
+              <div className="flex flex-wrap gap-2">
+                {tabs.map((tab) => (
+                  <motion.button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all ${
+                      activeTab === tab.id
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span>{tab.icon}</span>
+                      <span>{tab.label}</span>
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tab Content */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {activeTab === 'summary' && recommendations && (
+                  <div className="space-y-6">
+                    {/* Profile Card */}
+                    <motion.div 
+                      className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
+                      <h2 className="text-2xl font-light text-gray-900 mb-6">Din hälsoprofil</h2>
+                      <div 
+                        className="prose prose-gray max-w-none text-gray-600 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: recommendations.profile }}
+                      />
+                    </motion.div>
+
+                    {/* Quick Actions Grid */}
+                    <div className="grid md:grid-cols-3 gap-4">
+                      {[
+                        { icon: FiActivity, title: "Daglig aktivitet", desc: "30 min rörelse", color: "from-blue-500 to-blue-600" },
+                        { icon: FiHeart, title: "Hjärthälsa", desc: "Omega-3 dagligen", color: "from-red-500 to-red-600" },
+                        { icon: FiZap, title: "Energinivåer", desc: "B-vitaminer", color: "from-yellow-500 to-yellow-600" }
+                      ].map((action, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 cursor-pointer group"
+                        >
+                          <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                            <action.icon className="w-6 h-6 text-white" />
+                          </div>
+                          <h3 className="font-medium text-gray-900 mb-1">{action.title}</h3>
+                          <p className="text-sm text-gray-500">{action.desc}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'recommendations' && recommendations && (
+                  <div className="space-y-4">
+                    {recommendations.recommendations.map((rec, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex gap-6">
+                          <div className="flex-shrink-0">
+                            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                              <FiCheckCircle className="w-6 h-6 text-green-600" />
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-xl font-medium text-gray-900 mb-3">{rec.title}</h3>
                             <div 
-                              className="text-green-700"
-                              dangerouslySetInnerHTML={{ __html: rec.howToUse }}
+                              className="text-gray-600 mb-4 leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: rec.description }}
                             />
+                            <details className="group">
+                              <summary className="cursor-pointer text-green-600 hover:text-green-700 font-medium text-sm flex items-center gap-2">
+                                <span>Hur du använder det</span>
+                                <FiChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform" />
+                              </summary>
+                              <div className="mt-4 pl-6 border-l-2 border-green-100">
+                                <div 
+                                  className="text-gray-600 text-sm leading-relaxed"
+                                  dangerouslySetInnerHTML={{ __html: rec.howToUse }}
+                                />
+                              </div>
+                            </details>
                           </div>
                         </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+
+                {activeTab === 'lifestyle' && recommendations && (
+                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-2xl font-light text-gray-900 mb-6">Livsstilsråd</h2>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {recommendations.lifestyleAdvice.map((advice, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.05 }}
+                          className="border-l-4 border-gray-200 pl-6 py-2 hover:border-green-500 transition-colors"
+                        >
+                          <div 
+                            className="text-gray-700"
+                            dangerouslySetInnerHTML={{ __html: advice }}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'nextsteps' && recommendations && (
+                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-2xl font-light text-gray-900 mb-8">Din handlingsplan</h2>
+                    <div className="relative">
+                      {/* Timeline line */}
+                      <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                      
+                      {/* Timeline items */}
+                      <div className="space-y-8">
+                        {recommendations.nextSteps.map((step, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="relative flex gap-6"
+                          >
+                            <div className="flex-shrink-0 w-12 h-12 bg-white border-4 border-gray-200 rounded-full flex items-center justify-center z-10">
+                              <span className="text-sm font-medium text-gray-600">{index + 1}</span>
+                            </div>
+                            <div className="flex-1 pb-8">
+                              <div 
+                                className="text-gray-700"
+                                dangerouslySetInnerHTML={{ __html: step }}
+                              />
+                            </div>
+                          </motion.div>
+                        ))}
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
+                    </div>
 
-              {activeTab === 'lifestyle' && recommendations && (
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Livsstilsråd för optimal hälsa</h2>
-                  <div className="space-y-6">
-                    {recommendations.lifestyleAdvice.map((advice, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
+                    {/* CTA */}
+                    <div className="mt-12 text-center">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => window.location.href = '/utbildning/functional-flow'}
+                        className="inline-flex items-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors"
                       >
-                        <FiHeart className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
-                        <div 
-                          className="text-gray-700 text-lg"
-                          dangerouslySetInnerHTML={{ __html: advice }}
-                        />
-                      </motion.div>
-                    ))}
+                        <span>Starta Functional Flow</span>
+                        <FiArrowRight className="w-5 h-5" />
+                      </motion.button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {activeTab === 'nextsteps' && recommendations && (
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Dina nästa steg</h2>
-                  <div className="space-y-6">
-                    {recommendations.nextSteps.map((step, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl"
-                      >
-                        <div className="bg-purple-100 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
-                          <span className="text-purple-600 font-semibold">{index + 1}</span>
-                        </div>
-                        <div 
-                          className="text-gray-700 text-lg"
-                          dangerouslySetInnerHTML={{ __html: step }}
-                        />
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* CTA Button */}
-                  <div className="mt-10 text-center">
-                    <button 
-                      onClick={() => window.location.href = '/utbildning/functional-flow'}
-                      className="bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full font-semibold text-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl inline-flex items-center space-x-3 transform hover:scale-105"
-                    >
-                      <span>Kom igång med Functional Flow</span>
-                      <FiArrowRight className="w-6 h-6" />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'course' && recommendations && (
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Vår rekommenderade kurs</h2>
-                  <div 
-                    className="text-lg text-gray-700 leading-relaxed mb-8"
-                    dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation }}
-                  />
-                  
-                  {/* Course CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => window.location.href = '/utbildning/functional-flow'}
-                      className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl inline-flex items-center justify-center space-x-3"
-                    >
-                      <span>Functional Flow - Rekommenderad</span>
-                      <FiArrowRight className="w-5 h-5" />
-                    </motion.button>
+                {activeTab === 'course' && recommendations && (
+                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-2xl font-light text-gray-900 mb-6">Rekommenderad kurs för dig</h2>
+                    <div 
+                      className="prose prose-gray max-w-none text-gray-600 mb-8"
+                      dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation }}
+                    />
                     
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => window.location.href = '/utbildning/functional-basics'}
-                      className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl inline-flex items-center justify-center space-x-3"
-                    >
-                      <span>Functional Basics - Grundkurs</span>
-                      <FiArrowRight className="w-5 h-5" />
-                    </motion.button>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'science' && recommendations && (
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Vetenskapligt stöd</h2>
-                  <div className="space-y-6">
-                    {recommendations.scientificReferences.map((reference, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-start space-x-4 p-6 bg-blue-50 rounded-xl"
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => window.location.href = '/utbildning/functional-flow'}
+                        className="bg-green-600 text-white px-6 py-4 rounded-xl font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
                       >
-                        <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
-                          <FiBookOpen className="w-6 h-6 text-blue-600" />
-                        </div>
-                        <div 
-                          className="text-gray-700 text-lg"
-                          dangerouslySetInnerHTML={{ __html: reference }}
-                        />
-                      </motion.div>
-                    ))}
-                  </div>
-                  <div className="mt-8 p-6 bg-blue-50 rounded-xl">
-                    <p className="text-blue-800 text-sm">
-                      <strong>Observera:</strong> Alla rekommendationer baseras på vetenskaplig forskning, men individuella resultat kan variera. 
-                      Konsultera alltid en läkare innan du gör större förändringar i din kost eller livsstil.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'warnings' && recommendations && (
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Viktiga varningar</h2>
-                  <div className="space-y-6">
-                    {recommendations.warningSignals.map((warning, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-start space-x-4 p-6 bg-orange-50 rounded-xl border-l-4 border-orange-400"
+                        <FiStar className="w-5 h-5" />
+                        <span>Functional Flow</span>
+                      </motion.button>
+                      
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => window.location.href = '/utbildning/functional-basics'}
+                        className="bg-white text-gray-700 border-2 border-gray-200 px-6 py-4 rounded-xl font-medium hover:border-gray-300 transition-colors"
                       >
-                        <div className="bg-orange-100 rounded-full p-3 flex-shrink-0">
-                          <FiAlertTriangle className="w-6 h-6 text-orange-600" />
-                        </div>
-                        <div 
-                          className="text-gray-700 text-lg"
-                          dangerouslySetInnerHTML={{ __html: warning }}
-                        />
-                      </motion.div>
-                    ))}
-                  </div>
-                  <div className="mt-8 p-6 bg-red-50 rounded-xl border border-red-200">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <FiPhone className="w-6 h-6 text-red-600" />
-                      <h3 className="text-xl font-semibold text-red-800">Akut hjälp</h3>
-                    </div>
-                    <p className="text-red-700">
-                      Vid akuta hälsoproblem, ring <strong>1177</strong> för vårdguiden eller <strong>112</strong> vid nödsituationer.
-                      Functional foods ersätter aldrig medicinsk behandling.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'metrics' && recommendations && (
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                  <h2 className="text-3xl font-semibold text-gray-800 mb-6">Mät dina framsteg</h2>
-                  <div className="space-y-6">
-                    {recommendations.successMetrics.map((metric, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-start space-x-4 p-6 bg-green-50 rounded-xl"
-                      >
-                        <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
-                          <FiTrendingUp className="w-6 h-6 text-green-600" />
-                        </div>
-                        <div 
-                          className="text-gray-700 text-lg"
-                          dangerouslySetInnerHTML={{ __html: metric }}
-                        />
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  {/* Tracking Tips */}
-                  <div className="mt-8 grid md:grid-cols-2 gap-6">
-                    <div className="p-6 bg-purple-50 rounded-xl">
-                      <h3 className="text-lg font-semibold text-purple-800 mb-3">📱 Digitala verktyg</h3>
-                      <ul className="text-purple-700 space-y-2">
-                        <li>• Hälsoappar för daglig loggning</li>
-                        <li>• Fitnesstracker för sömn och aktivitet</li>
-                        <li>• Stresshanteringsappar</li>
-                        <li>• Näringsappar för kostanalys</li>
-                      </ul>
-                    </div>
-                    <div className="p-6 bg-blue-50 rounded-xl">
-                      <h3 className="text-lg font-semibold text-blue-800 mb-3">📝 Traditionell loggning</h3>
-                      <ul className="text-blue-700 space-y-2">
-                        <li>• Hälsodagbok på papper</li>
-                        <li>• Veckovis utvärdering</li>
-                        <li>• Foto-dokumentation</li>
-                        <li>• Månadsvis reflektion</li>
-                      </ul>
+                        Functional Basics
+                      </motion.button>
                     </div>
                   </div>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+                )}
 
-          {/* Bottom Actions */}
-          <div className="mt-12 pb-12 text-center">
-            <button
-              onClick={onRestart}
-              className="text-gray-600 hover:text-gray-800 font-medium inline-flex items-center space-x-2 transition-colors text-lg"
-            >
-              <FiRefreshCw className="w-5 h-5" />
-              <span>Gör om testet</span>
-            </button>
+                {activeTab === 'science' && recommendations && (
+                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-2xl font-light text-gray-900 mb-6">Vetenskaplig grund</h2>
+                    <div className="space-y-4">
+                      {recommendations.scientificReferences.map((reference, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex gap-4 p-4 bg-blue-50 rounded-xl"
+                        >
+                          <FiBookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <div 
+                            className="text-gray-700 text-sm"
+                            dangerouslySetInnerHTML={{ __html: reference }}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'warnings' && recommendations && (
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                      <h2 className="text-2xl font-light text-gray-900 mb-6">Viktigt att tänka på</h2>
+                      <div className="space-y-4">
+                        {recommendations.warningSignals.map((warning, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="flex gap-4 p-4 bg-orange-50 rounded-xl border border-orange-100"
+                          >
+                            <FiAlertTriangle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                            <div 
+                              className="text-gray-700"
+                              dangerouslySetInnerHTML={{ __html: warning }}
+                            />
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-red-50 rounded-2xl p-6 border border-red-100">
+                      <div className="flex items-center gap-3 mb-3">
+                        <FiPhone className="w-6 h-6 text-red-600" />
+                        <h3 className="text-lg font-medium text-gray-900">Vid akuta besvär</h3>
+                      </div>
+                      <p className="text-gray-700">
+                        Ring <strong>1177</strong> för vårdguiden eller <strong>112</strong> vid nödsituationer.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'metrics' && recommendations && (
+                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-2xl font-light text-gray-900 mb-6">Följ dina framsteg</h2>
+                    <div className="grid md:grid-cols-2 gap-6 mb-8">
+                      {recommendations.successMetrics.map((metric, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          className="flex gap-4"
+                        >
+                          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <FiTrendingUp className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div 
+                            className="text-gray-700 text-sm"
+                            dangerouslySetInnerHTML={{ __html: metric }}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="bg-purple-50 rounded-xl p-6">
+                        <h3 className="font-medium text-gray-900 mb-3">Digital spårning</h3>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li>• Hälsoappar för daglig loggning</li>
+                          <li>• Automatisk datasynkning</li>
+                          <li>• Visualisering av framsteg</li>
+                        </ul>
+                      </div>
+                      <div className="bg-blue-50 rounded-xl p-6">
+                        <h3 className="font-medium text-gray-900 mb-3">Manuell loggning</h3>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li>• Dagbok för reflektion</li>
+                          <li>• Veckovis utvärdering</li>
+                          <li>• Månatlig översikt</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </div>

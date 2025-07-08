@@ -20,35 +20,35 @@ export default function LoadingAnalysis() {
     { 
       text: "Analyserar dina svar...", 
       icon: GiBrain,
-      duration: 2500,
+      duration: 18000,  // 18 sekunder
       color: "from-purple-400 to-pink-400",
       subtext: "Vi går igenom din hälsoprofil"
     },
     { 
       text: "Identifierar näringsbrister...", 
       icon: FiActivity,
-      duration: 2000,
+      duration: 18000,  // 18 sekunder
       color: "from-blue-400 to-cyan-400",
       subtext: "Matchar symptom med näringsämnen"
     },
     { 
       text: "Skapar personlig hälsoplan...", 
       icon: GiStomach,
-      duration: 2500,
+      duration: 18000,  // 18 sekunder
       color: "from-green-400 to-emerald-400",
       subtext: "Anpassar rekommendationer efter dina behov"
     },
     { 
       text: "Väljer functional foods...", 
       icon: GiFruitBowl,
-      duration: 2000,
+      duration: 18000,  // 18 sekunder
       color: "from-orange-400 to-amber-400",
       subtext: "Hittar rätt livsmedel för dig"
     },
     { 
       text: "Förbereder din rapport...", 
       icon: FiHeart,
-      duration: 1500,
+      duration: 18000,  // 18 sekunder
       color: "from-red-400 to-pink-400",
       subtext: "Sammanställer alla insikter"
     }
