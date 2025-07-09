@@ -60,7 +60,6 @@ out/
 *.webm
 
 # Allow specific optimized video files for web
-!public/ulrika_web.mp4
 !public/introvideo_compressed.mp4
 !public/introvideo_mobile.mp4
 
