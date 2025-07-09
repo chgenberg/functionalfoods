@@ -114,10 +114,28 @@ export default function Home() {
             loop
             muted
             playsInline
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => {
+              console.error('Video failed to load:', e);
+              // Hide video element if it fails to load
+              e.currentTarget.style.display = 'none';
+            }}
+            onLoadStart={() => console.log('Video loading started')}
+            onCanPlay={() => console.log('Video can play')}
           >
+            {/* Mobile version - smaller file for mobile devices */}
+            <source src="/introvideo_mobile.mp4" type="video/mp4" media="(max-width: 768px)" />
+            {/* Desktop version - higher quality for larger screens */}
+            <source src="/introvideo_compressed.mp4" type="video/mp4" media="(min-width: 769px)" />
+            {/* Fallback sources */}
+            <source src="/introvideo_compressed.mp4" type="video/mp4" />
+            <source src="/front.mp4" type="video/mp4" />
             <source src="/introvideo.MP4" type="video/mp4" />
+            Your browser does not support the video tag.
           </video>
+          {/* Fallback background if video fails */}
+          <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-white to-blue-100" />
           {/* Overlay to ensure text readability */}
           <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/40" />
         </div>
