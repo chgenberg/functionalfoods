@@ -394,25 +394,31 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
           {/* Main Content Area */}
           <div className="lg:col-span-9">
-            {/* Tab Navigation - Minimalist Style */}
+            {/* Tab Navigation - Icon Only Style */}
             <div className="mb-8">
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3 justify-center">
                 {tabs.map((tab) => (
                   <motion.button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all ${
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`group relative w-14 h-14 rounded-full text-2xl transition-all ${
                       activeTab === tab.id
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200'
+                        ? 'bg-gray-900 text-white shadow-lg'
+                        : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
                     }`}
+                    title={tab.label}
                   >
-                    <span className="flex items-center gap-2">
-                      <span>{tab.icon}</span>
-                      <span>{tab.label}</span>
+                    <span className="flex items-center justify-center h-full">
+                      {tab.icon}
                     </span>
+                    
+                    {/* Tooltip on hover */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                      {tab.label}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
                   </motion.button>
                 ))}
               </div>
@@ -437,8 +443,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                     >
                       <h2 className="text-2xl font-light text-gray-900 mb-6">Din hälsoprofil</h2>
                       <div 
-                        className="prose prose-gray max-w-none text-gray-600 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: recommendations.profile }}
+                        className="prose prose-gray max-w-none text-gray-600 leading-relaxed space-y-4"
+                        dangerouslySetInnerHTML={{ __html: recommendations.profile.replace(/\. /g, '.<br/><br/>') }}
                       />
                     </motion.div>
 
@@ -455,13 +461,13 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.1 }}
                           whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 cursor-pointer group"
+                          className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 cursor-pointer group"
                         >
-                          <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                            <action.icon className="w-6 h-6 text-white" />
+                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                            <action.icon className="w-5 h-5 text-white" />
                           </div>
-                          <h3 className="font-medium text-gray-900 mb-1">{action.title}</h3>
-                          <p className="text-sm text-gray-500">{action.desc}</p>
+                          <h3 className="text-sm font-medium text-gray-900 mb-1">{action.title}</h3>
+                          <p className="text-xs text-gray-500">{action.desc}</p>
                         </motion.div>
                       ))}
                     </div>
@@ -487,8 +493,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           <div className="flex-1">
                             <h3 className="text-xl font-medium text-gray-900 mb-3">{rec.title}</h3>
                             <div 
-                              className="text-gray-600 mb-4 leading-relaxed"
-                              dangerouslySetInnerHTML={{ __html: rec.description }}
+                              className="text-gray-600 mb-4 leading-relaxed space-y-3"
+                              dangerouslySetInnerHTML={{ __html: rec.description.replace(/\. /g, '.<br/><br/>') }}
                             />
                             <details className="group">
                               <summary className="cursor-pointer text-green-600 hover:text-green-700 font-medium text-sm flex items-center gap-2">
@@ -497,8 +503,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                               </summary>
                               <div className="mt-4 pl-6 border-l-2 border-green-100">
                                 <div 
-                                  className="text-gray-600 text-sm leading-relaxed"
-                                  dangerouslySetInnerHTML={{ __html: rec.howToUse }}
+                                  className="text-gray-600 text-sm leading-relaxed space-y-2"
+                                  dangerouslySetInnerHTML={{ __html: rec.howToUse.replace(/\. /g, '.<br/><br/>') }}
                                 />
                               </div>
                             </details>
@@ -522,8 +528,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           className="border-l-4 border-gray-200 pl-6 py-2 hover:border-green-500 transition-colors"
                         >
                           <div 
-                            className="text-gray-700"
-                            dangerouslySetInnerHTML={{ __html: advice }}
+                            className="text-gray-700 space-y-2"
+                            dangerouslySetInnerHTML={{ __html: advice.replace(/\. /g, '.<br/><br/>') }}
                           />
                         </motion.div>
                       ))}
@@ -553,8 +559,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                             </div>
                             <div className="flex-1 pb-8">
                               <div 
-                                className="text-gray-700"
-                                dangerouslySetInnerHTML={{ __html: step }}
+                                className="text-gray-700 space-y-2"
+                                dangerouslySetInnerHTML={{ __html: step.replace(/\. /g, '.<br/><br/>') }}
                               />
                             </div>
                           </motion.div>
@@ -581,8 +587,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                   <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                     <h2 className="text-2xl font-light text-gray-900 mb-6">Rekommenderad kurs för dig</h2>
                     <div 
-                      className="prose prose-gray max-w-none text-gray-600 mb-8"
-                      dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation }}
+                      className="prose prose-gray max-w-none text-gray-600 mb-8 space-y-4"
+                      dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation.replace(/\. /g, '.<br/><br/>') }}
                     />
                     
                     <div className="grid md:grid-cols-2 gap-4">
@@ -622,8 +628,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         >
                           <FiBookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                           <div 
-                            className="text-gray-700 text-sm"
-                            dangerouslySetInnerHTML={{ __html: reference }}
+                            className="text-gray-700 text-sm space-y-2"
+                            dangerouslySetInnerHTML={{ __html: reference.replace(/\. /g, '.<br/><br/>') }}
                           />
                         </motion.div>
                       ))}
@@ -646,8 +652,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           >
                             <FiAlertTriangle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
                             <div 
-                              className="text-gray-700"
-                              dangerouslySetInnerHTML={{ __html: warning }}
+                              className="text-gray-700 space-y-2"
+                              dangerouslySetInnerHTML={{ __html: warning.replace(/\. /g, '.<br/><br/>') }}
                             />
                           </motion.div>
                         ))}
@@ -682,8 +688,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                             <FiTrendingUp className="w-5 h-5 text-green-600" />
                           </div>
                           <div 
-                            className="text-gray-700 text-sm"
-                            dangerouslySetInnerHTML={{ __html: metric }}
+                            className="text-gray-700 text-sm space-y-2"
+                            dangerouslySetInnerHTML={{ __html: metric.replace(/\. /g, '.<br/><br/>') }}
                           />
                         </motion.div>
                       ))}

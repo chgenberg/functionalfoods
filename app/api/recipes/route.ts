@@ -1,221 +1,315 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verify } from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-import * as fs from 'fs';
-import * as path from 'path';
-import { parse } from 'csv-parse/sync';
+import { promises as fs } from 'fs';
+import path from 'path';
 
-// Force dynamic rendering for this route
-export const dynamic = 'force-dynamic';
+interface CSVRecipe {
+  'Recept-titel': string;
+  'Beskrivning': string;
+  'Kategori': string;
+  'Svårighetsgrad': string;
+  'Förberedelsetid': string;
+  'Tillagningstid': string;
+  'Portioner': string;
+  'Ingredienser': string;
+  'Instruktioner': string;
+  'Näringsvärden': string;
+  'Tips': string;
+  'Taggar': string;
+  'Bild': string;
+  'Slug': string;
+  'Status': string;
+  'Premium': string;
+  'Författare': string;
+  'Datum': string;
+}
 
-const prisma = new PrismaClient();
-
-// Interface for recipe data
 interface Recipe {
-  ID: string;
-  Title: string;
-  Content: string;
-  Excerpt: string;
-  Date: string;
-  'Post Type': string;
-  Permalink: string;
-  'Image URL': string;
-  'Image Title': string;
-  'Image Caption': string;
-  'Image Description': string;
-  'Image Alt Text': string;
-  'Image Featured': string;
-  'Attachment URL': string;
-  Ingredienser: string;
-  Kategorier: string;
-  'Extra kategorier': string;
-  Status: 'publish' | 'draft';
-  'Author ID': string;
-  'Author Username': string;
-  'Author Email': string;
-  'Author First Name': string;
-  'Author Last Name': string;
-  Slug: string;
-  Format: string;
-  Template: string;
-  Parent: string;
-  'Parent Slug': string;
-  Order: string;
-  'Comment Status': string;
-  'Ping Status': string;
-  'Post Modified Date': string;
+  id: string;
+  title: string;
+  excerpt: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  categories: string[];
+  ingredients: string[];
+  slug: string;
+  status: 'publish' | 'draft';
+  isPremium: boolean;
+  date: string;
+  author: {
+    name: string;
+    username: string;
+  };
+  difficulty?: string;
+  prepTime?: string;
+  cookTime?: string;
+  servings?: number;
+  instructions?: string[];
+  nutrition?: any;
+  tips?: string;
+  tags?: string[];
 }
 
-// Read and parse CSV file
-function getRecipesFromCSV(): Recipe[] {
-  try {
-    const csvPath = path.join(process.cwd(), 'Recept', 'Recept_Functional.csv');
-    const csvContent = fs.readFileSync(csvPath, 'utf-8');
+// Funktion för att parsa CSV-data
+function parseCSV(csvData: string): CSVRecipe[] {
+  const lines = csvData.split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  
+  const recipes: CSVRecipe[] = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
     
-    const records = parse(csvContent, {
-      columns: true,
-      skip_empty_lines: true,
-      trim: true
+    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+    const recipe: any = {};
+    
+    headers.forEach((header, index) => {
+      recipe[header] = values[index] || '';
     });
     
-    return records as Recipe[];
-  } catch (error) {
-    console.error('Error reading CSV file:', error);
-    return [];
+    recipes.push(recipe as CSVRecipe);
   }
+  
+  return recipes;
 }
 
-// Check if user has access to premium recipes
-async function checkUserAccess(userId: string): Promise<boolean> {
-  try {
-    // Check if user has purchased any course
-    const purchases = await prisma.purchase.findMany({
-      where: { userId }
-    });
-    
-    return purchases.length > 0;
-  } catch (error) {
-    console.error('Error checking user access:', error);
-    return false;
-  }
+// Funktion för att konvertera CSV-recept till API-format
+function convertCSVToRecipe(csvRecipe: CSVRecipe, index: number): Recipe {
+  const categories = csvRecipe.Kategori ? csvRecipe.Kategori.split(';').map(c => c.trim()) : ['Okategoriserad'];
+  const ingredients = csvRecipe.Ingredienser ? csvRecipe.Ingredienser.split(';').map(i => i.trim()) : [];
+  const instructions = csvRecipe.Instruktioner ? csvRecipe.Instruktioner.split(';').map(i => i.trim()) : [];
+  const tags = csvRecipe.Taggar ? csvRecipe.Taggar.split(';').map(t => t.trim()) : [];
+  
+  // Generera slug från titel om det inte finns
+  const slug = csvRecipe.Slug || csvRecipe['Recept-titel']
+    .toLowerCase()
+    .replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match))
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  return {
+    id: `recipe-${index + 1}`,
+    title: csvRecipe['Recept-titel'] || 'Namnlöst recept',
+    excerpt: csvRecipe.Beskrivning || 'Ingen beskrivning tillgänglig',
+    imageUrl: csvRecipe.Bild || '/images/recipe-placeholder.svg',
+    imageAlt: csvRecipe['Recept-titel'],
+    categories,
+    ingredients,
+    slug,
+    status: csvRecipe.Status?.toLowerCase() === 'publicerad' ? 'publish' : 'draft',
+    isPremium: csvRecipe.Premium?.toLowerCase() === 'ja' || csvRecipe.Premium?.toLowerCase() === 'true',
+    date: csvRecipe.Datum || new Date().toISOString(),
+    author: {
+      name: csvRecipe.Författare || 'Ulrika Davidsson',
+      username: 'ulrika'
+    },
+    difficulty: csvRecipe.Svårighetsgrad || 'Medel',
+    prepTime: csvRecipe.Förberedelsetid || '30 min',
+    cookTime: csvRecipe.Tillagningstid || '30 min',
+    servings: parseInt(csvRecipe.Portioner) || 4,
+    instructions,
+    tips: csvRecipe.Tips || '',
+    tags
+  };
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const category = request.nextUrl.searchParams.get('category');
-    const search = request.nextUrl.searchParams.get('search');
-    const page = parseInt(request.nextUrl.searchParams.get('page') || '1');
-    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '50');
-    
-    // Get user from JWT token (optional)
-    let userId: string | null = null;
-    let hasAccess = false;
-    
-    const authHeader = request.headers.get('authorization');
-    if (authHeader?.startsWith('Bearer ')) {
-      try {
-        const token = authHeader.substring(7);
-        const decoded = verify(token, process.env.JWT_SECRET!) as any;
-        userId = decoded.userId;
-        hasAccess = userId ? await checkUserAccess(userId) : false;
-      } catch (error) {
-        // Token invalid, continue as guest
-      }
-    }
-    
-    // Read all recipes from CSV
-    const allRecipes = getRecipesFromCSV();
-    
-    // Don't filter by access - show all recipes
-    // We'll handle access control in the frontend
-    let filteredRecipes = allRecipes;
-    
-    // Apply category filter
-    if (category && category !== 'all') {
-      filteredRecipes = filteredRecipes.filter(recipe => {
-        const categories = recipe.Kategorier?.toLowerCase() || '';
-        return categories.includes(category.toLowerCase());
-      });
-    }
-    
-    // Apply search filter
-    if (search) {
-      const searchLower = search.toLowerCase();
-      filteredRecipes = filteredRecipes.filter(recipe => {
-        return recipe.Title?.toLowerCase().includes(searchLower) ||
-               recipe.Content?.toLowerCase().includes(searchLower) ||
-               recipe.Excerpt?.toLowerCase().includes(searchLower) ||
-               recipe.Ingredienser?.toLowerCase().includes(searchLower);
-      });
-    }
-    
-    // Sort by date (newest first)
-    filteredRecipes.sort((a, b) => {
-      const dateA = new Date(a.Date || a['Post Modified Date'] || '1970-01-01');
-      const dateB = new Date(b.Date || b['Post Modified Date'] || '1970-01-01');
-      return dateB.getTime() - dateA.getTime();
-    });
-    
-    // Apply pagination
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedRecipes = filteredRecipes.slice(startIndex, endIndex);
-    
-    // Transform data for frontend
-    const transformedRecipes = paginatedRecipes.map(recipe => {
-      // Parse ingredients if available
-      let ingredients: string[] = [];
-      if (recipe.Ingredienser) {
-        // Split by common delimiters and clean up
-        ingredients = recipe.Ingredienser
-          .split(/[,;|\n]/)
-          .map(ing => ing.trim())
-          .filter(ing => ing.length > 0);
-      }
+    const { searchParams } = new URL(request.url);
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const page = parseInt(searchParams.get('page') || '1');
+    const category = searchParams.get('category') || '';
+    const status = searchParams.get('status') || '';
+    const search = searchParams.get('search') || '';
 
-      return {
-        id: recipe.ID,
-        title: recipe.Title,
-        excerpt: recipe.Excerpt || recipe.Content?.substring(0, 150) + '...',
-        imageUrl: recipe['Image URL'],
-        imageAlt: recipe['Image Alt Text'] || recipe['Image Title'],
-        categories: recipe.Kategorier?.split('|').filter(Boolean) || [],
-        ingredients,
-        slug: recipe.Slug,
-        status: recipe.Status,
-        isPremium: recipe.Status === 'draft',
-        date: recipe.Date || recipe['Post Modified Date'],
-        author: {
-          name: `${recipe['Author First Name']} ${recipe['Author Last Name']}`.trim(),
-          username: recipe['Author Username']
-        },
-        permalink: recipe.Permalink
-      };
-    });
+    // Läs CSV-filen
+    const csvPath = path.join(process.cwd(), 'Recept', 'Recept_Functional.csv');
     
-    // Get unique categories for filtering
-    const allCategories = allRecipes.reduce((categories, recipe) => {
-      const recipeCategories = recipe.Kategorier?.split('|').filter(Boolean) || [];
-      recipeCategories.forEach(cat => {
-        if (cat && !categories.includes(cat)) {
-          categories.push(cat);
+    let csvData: string;
+    try {
+      csvData = await fs.readFile(csvPath, 'utf-8');
+    } catch (error) {
+      console.error('Error reading CSV file:', error);
+      // Fallback till dummy data om CSV inte kan läsas
+      return NextResponse.json({
+        recipes: generateDummyRecipes(),
+        pagination: {
+          page: 1,
+          limit: 20,
+          total: 4,
+          totalPages: 1,
+          hasMore: false
+        },
+        categories: ['Frukost', 'Lunch', 'Middag', 'Mellanmål', 'Efterrätt'],
+        statistics: {
+          total: 4,
+          free: 3,
+          premium: 1,
+          visible: 4
         }
       });
-      return categories;
-    }, [] as string[]);
-    
-    // Calculate statistics
-    const totalRecipes = allRecipes.length;
-    const freeRecipes = allRecipes.filter(r => r.Status === 'publish').length;
-    const premiumRecipes = allRecipes.filter(r => r.Status === 'draft').length;
-    
+    }
+
+    // Parsa CSV och konvertera till recept
+    const csvRecipes = parseCSV(csvData);
+    let recipes = csvRecipes.map((csvRecipe, index) => convertCSVToRecipe(csvRecipe, index));
+
+    // Filtrera baserat på sökparametrar
+    if (category) {
+      recipes = recipes.filter(recipe => recipe.categories.includes(category));
+    }
+
+    if (status) {
+      recipes = recipes.filter(recipe => {
+        if (status === 'published') return recipe.status === 'publish' && !recipe.isPremium;
+        if (status === 'draft') return recipe.status === 'draft';
+        if (status === 'premium') return recipe.isPremium;
+        return true;
+      });
+    }
+
+    if (search) {
+      const searchLower = search.toLowerCase();
+      recipes = recipes.filter(recipe => 
+        recipe.title.toLowerCase().includes(searchLower) ||
+        recipe.excerpt.toLowerCase().includes(searchLower) ||
+        recipe.categories.some(cat => cat.toLowerCase().includes(searchLower))
+      );
+    }
+
+    // Paginering
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedRecipes = recipes.slice(startIndex, endIndex);
+
+    // Extrahera unika kategorier
+    const allCategories = [...new Set(recipes.flatMap(recipe => recipe.categories))];
+
+    // Beräkna statistik
+    const statistics = {
+      total: recipes.length,
+      free: recipes.filter(r => r.status === 'publish' && !r.isPremium).length,
+      premium: recipes.filter(r => r.isPremium).length,
+      visible: recipes.filter(r => r.status === 'publish').length
+    };
+
     return NextResponse.json({
-      recipes: transformedRecipes,
+      recipes: paginatedRecipes,
       pagination: {
         page,
         limit,
-        total: filteredRecipes.length,
-        totalPages: Math.ceil(filteredRecipes.length / limit),
-        hasMore: endIndex < filteredRecipes.length
+        total: recipes.length,
+        totalPages: Math.ceil(recipes.length / limit),
+        hasMore: endIndex < recipes.length
       },
       categories: allCategories.sort(),
-      userAccess: {
-        hasAccess,
-        userId: userId || null
-      },
-      statistics: {
-        total: totalRecipes,
-        free: freeRecipes,
-        premium: premiumRecipes,
-        visible: filteredRecipes.length
-      }
+      statistics
     });
-    
+
   } catch (error) {
-    console.error('Error fetching recipes:', error);
+    console.error('Error in recipes API:', error);
     return NextResponse.json(
       { error: 'Failed to fetch recipes' },
       { status: 500 }
     );
   }
+}
+
+// Dummy data som fallback
+function generateDummyRecipes(): Recipe[] {
+  return [
+    {
+      id: 'recipe-1',
+      title: 'Grön super-smoothie',
+      excerpt: 'En näringsrik smoothie full av antioxidanter och vitaminer',
+      imageUrl: '/smoothie.jpg',
+      categories: ['Frukost', 'Mellanmål'],
+      ingredients: ['Spenat', 'Banan', 'Avokado', 'Kokosvatten'],
+      slug: 'gron-super-smoothie',
+      status: 'publish',
+      isPremium: false,
+      date: '2024-01-15T10:00:00Z',
+      author: {
+        name: 'Ulrika Davidsson',
+        username: 'ulrika'
+      },
+      difficulty: 'Lätt',
+      prepTime: '5 min',
+      cookTime: '0 min',
+      servings: 2,
+      instructions: ['Mixa alla ingredienser', 'Servera direkt'],
+      tips: 'Använd frusen banan för extra krämighet',
+      tags: ['Vegan', 'Glutenfri', 'Antioxidanter']
+    },
+    {
+      id: 'recipe-2',
+      title: 'Anti-inflammatorisk laxsallad',
+      excerpt: 'Omega-3-rik laxsallad med anti-inflammatoriska ingredienser',
+      imageUrl: '/salmon_salad.jpg',
+      categories: ['Lunch', 'Middag'],
+      ingredients: ['Laxfilé', 'Spenat', 'Avokado', 'Valnötter'],
+      slug: 'anti-inflammatorisk-laxsallad',
+      status: 'publish',
+      isPremium: false,
+      date: '2024-01-12T14:30:00Z',
+      author: {
+        name: 'Ulrika Davidsson',
+        username: 'ulrika'
+      },
+      difficulty: 'Medel',
+      prepTime: '15 min',
+      cookTime: '10 min',
+      servings: 4,
+      instructions: ['Grilla laxen', 'Blanda salladen', 'Servera med dressing'],
+      tips: 'Välj ekologisk lax för bästa kvalitet',
+      tags: ['Omega-3', 'Anti-inflammatorisk', 'Proteinrik']
+    },
+    {
+      id: 'recipe-3',
+      title: 'Chiapudding med bär',
+      excerpt: 'Näringsrik chiapudding med antioxidantrika bär',
+      imageUrl: '/chia_pudding.jpg',
+      categories: ['Frukost', 'Efterrätt'],
+      ingredients: ['Chiafrön', 'Mandelmjölk', 'Blåbär', 'Honung'],
+      slug: 'chiapudding-med-bar',
+      status: 'draft',
+      isPremium: true,
+      date: '2024-01-10T09:15:00Z',
+      author: {
+        name: 'Ulrika Davidsson',
+        username: 'ulrika'
+      },
+      difficulty: 'Lätt',
+      prepTime: '10 min',
+      cookTime: '0 min',
+      servings: 2,
+      instructions: ['Blanda chiafrön med mjölk', 'Låt svälla över natten', 'Toppa med bär'],
+      tips: 'Rör om efter 30 minuter för att undvika klumpar',
+      tags: ['Superfood', 'Fibrer', 'Antioxidanter']
+    },
+    {
+      id: 'recipe-4',
+      title: 'Värmande linssoppa',
+      excerpt: 'Proteinrik och värmande linssoppa med anti-inflammatoriska kryddor',
+      imageUrl: '/lentil_soup.jpg',
+      categories: ['Middag', 'Lunch'],
+      ingredients: ['Röda linser', 'Kokosgrädde', 'Ingefära', 'Gurkmeja'],
+      slug: 'varmande-linssoppa',
+      status: 'publish',
+      isPremium: false,
+      date: '2024-01-08T16:45:00Z',
+      author: {
+        name: 'Ulrika Davidsson',
+        username: 'ulrika'
+      },
+      difficulty: 'Medel',
+      prepTime: '15 min',
+      cookTime: '30 min',
+      servings: 6,
+      instructions: ['Stek löken', 'Tillsätt linser och buljong', 'Sjud i 25 minuter'],
+      tips: 'Servera med kokosflingor för extra smak',
+      tags: ['Vegan', 'Proteinrik', 'Anti-inflammatorisk']
+    }
+  ];
 } 

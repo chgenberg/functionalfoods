@@ -1,207 +1,278 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verify } from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-import * as fs from 'fs';
-import * as path from 'path';
-import { parse } from 'csv-parse/sync';
+import { promises as fs } from 'fs';
+import path from 'path';
 
-const prisma = new PrismaClient();
-
-// Interface for recipe data
-interface Recipe {
-  ID: string;
-  Title: string;
-  Content: string;
-  Excerpt: string;
-  Date: string;
-  'Post Type': string;
-  Permalink: string;
-  'Image URL': string;
-  'Image Title': string;
-  'Image Caption': string;
-  'Image Description': string;
-  'Image Alt Text': string;
-  'Image Featured': string;
-  'Attachment URL': string;
-  Ingredienser: string;
-  Kategorier: string;
-  'Extra kategorier': string;
-  Status: 'publish' | 'draft';
-  'Author ID': string;
-  'Author Username': string;
-  'Author Email': string;
-  'Author First Name': string;
-  'Author Last Name': string;
-  Slug: string;
-  Format: string;
-  Template: string;
-  Parent: string;
-  'Parent Slug': string;
-  Order: string;
-  'Comment Status': string;
-  'Ping Status': string;
-  'Post Modified Date': string;
+interface CSVRecipe {
+  'Recept-titel': string;
+  'Beskrivning': string;
+  'Kategori': string;
+  'Svårighetsgrad': string;
+  'Förberedelsetid': string;
+  'Tillagningstid': string;
+  'Portioner': string;
+  'Ingredienser': string;
+  'Instruktioner': string;
+  'Näringsvärden': string;
+  'Tips': string;
+  'Taggar': string;
+  'Bild': string;
+  'Slug': string;
+  'Status': string;
+  'Premium': string;
+  'Författare': string;
+  'Datum': string;
 }
 
-// Read and parse CSV file
-function getRecipesFromCSV(): Recipe[] {
+interface UpdateRecipeData {
+  title: string;
+  excerpt: string;
+  category: string;
+  difficulty: string;
+  prepTime: string;
+  cookTime: string;
+  servings: number;
+  ingredients: string[];
+  instructions: string[];
+  tips: string;
+  tags: string[];
+  status: 'publish' | 'draft';
+  isPremium: boolean;
+  imageUrl: string;
+}
+
+// Funktion för att parsa CSV-data
+function parseCSV(csvData: string): CSVRecipe[] {
+  const lines = csvData.split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  
+  const recipes: CSVRecipe[] = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+    const recipe: any = {};
+    
+    headers.forEach((header, index) => {
+      recipe[header] = values[index] || '';
+    });
+    
+    recipes.push(recipe as CSVRecipe);
+  }
+  
+  return recipes;
+}
+
+// Funktion för att konvertera tillbaka till CSV-format
+function convertToCSVRecipe(updateData: UpdateRecipeData, originalRecipe: CSVRecipe): CSVRecipe {
+  return {
+    'Recept-titel': updateData.title,
+    'Beskrivning': updateData.excerpt,
+    'Kategori': updateData.category,
+    'Svårighetsgrad': updateData.difficulty,
+    'Förberedelsetid': updateData.prepTime,
+    'Tillagningstid': updateData.cookTime,
+    'Portioner': updateData.servings.toString(),
+    'Ingredienser': updateData.ingredients.join(';'),
+    'Instruktioner': updateData.instructions.join(';'),
+    'Näringsvärden': originalRecipe['Näringsvärden'] || '', // Behåll befintliga näringsvärden
+    'Tips': updateData.tips,
+    'Taggar': updateData.tags.join(';'),
+    'Bild': updateData.imageUrl,
+    'Slug': originalRecipe.Slug || updateData.title.toLowerCase().replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match)).replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
+    'Status': updateData.status === 'publish' ? 'Publicerad' : 'Utkast',
+    'Premium': updateData.isPremium ? 'Ja' : 'Nej',
+    'Författare': originalRecipe['Författare'] || 'Ulrika Davidsson',
+    'Datum': new Date().toISOString().split('T')[0] // Uppdatera datum
+  };
+}
+
+// Funktion för att skriva CSV-data
+function writeCSV(recipes: CSVRecipe[]): string {
+  if (recipes.length === 0) return '';
+  
+  const headers = Object.keys(recipes[0]);
+  const csvContent = [
+    headers.join(','),
+    ...recipes.map(recipe => 
+      headers.map(header => `"${recipe[header as keyof CSVRecipe] || ''}"`).join(',')
+    )
+  ].join('\n');
+  
+  return csvContent;
+}
+
+// GET - Hämta specifikt recept
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const csvPath = path.join(process.cwd(), 'Recept', 'Recept_Functional.csv');
-    const csvContent = fs.readFileSync(csvPath, 'utf-8');
     
-    const records = parse(csvContent, {
-      columns: true,
-      skip_empty_lines: true,
-      trim: true
-    });
-    
-    return records as Recipe[];
-  } catch (error) {
-    console.error('Error reading CSV file:', error);
-    return [];
-  }
-}
+    let csvData: string;
+    try {
+      csvData = await fs.readFile(csvPath, 'utf-8');
+    } catch (error) {
+      return NextResponse.json({ error: 'Recipe file not found' }, { status: 404 });
+    }
 
-// Check if user has access to premium recipes
-async function checkUserAccess(userId: string): Promise<boolean> {
-  try {
-    // Check if user has purchased any course
-    const purchases = await prisma.purchase.findMany({
-      where: { userId }
-    });
+    const csvRecipes = parseCSV(csvData);
+    const recipeIndex = parseInt(params.id.replace('recipe-', '')) - 1;
     
-    return purchases.length > 0;
-  } catch (error) {
-    console.error('Error checking user access:', error);
-    return false;
-  }
-}
+    if (recipeIndex < 0 || recipeIndex >= csvRecipes.length) {
+      return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
+    }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params;
+    const csvRecipe = csvRecipes[recipeIndex];
     
-    // Get user from JWT token (optional)
-    let userId: string | null = null;
-    let hasAccess = false;
-    
-    const authHeader = request.headers.get('authorization');
-    if (authHeader?.startsWith('Bearer ')) {
-      try {
-        const token = authHeader.substring(7);
-        const decoded = verify(token, process.env.JWT_SECRET!) as any;
-        userId = decoded.userId;
-        hasAccess = userId ? await checkUserAccess(userId) : false;
-      } catch (error) {
-        // Token invalid, continue as guest
-      }
-    }
-    
-    // Read all recipes from CSV
-    const allRecipes = getRecipesFromCSV();
-    
-    // Find recipe by ID or slug
-    const recipe = allRecipes.find(r => r.ID === id || r.Slug === id);
-    
-    if (!recipe) {
-      return NextResponse.json(
-        { error: 'Recipe not found' },
-        { status: 404 }
-      );
-    }
-    
-    // Check access for draft recipes
-    if (recipe.Status === 'draft' && !hasAccess) {
-      return NextResponse.json(
-        { 
-          error: 'Access denied',
-          message: 'This recipe is only available to course members',
-          requiresAccess: true
-        },
-        { status: 403 }
-      );
-    }
-    
-    // Parse ingredients if available
-    let ingredients: string[] = [];
-    if (recipe.Ingredienser) {
-      // Split by common delimiters and clean up
-      ingredients = recipe.Ingredienser
-        .split(/[,;|\n]/)
-        .map(ing => ing.trim())
-        .filter(ing => ing.length > 0);
-    }
-    
-    // Parse instructions from content
-    let instructions: string[] = [];
-    if (recipe.Content) {
-      // Extract text content and split into steps
-      const textContent = recipe.Content
-        .replace(/<[^>]*>/g, '') // Remove HTML tags
-        .replace(/&[^;]+;/g, ' ') // Remove HTML entities
-        .trim();
-      
-      if (textContent) {
-        instructions = textContent
-          .split(/\d+\.|•|-/)
-          .map(step => step.trim())
-          .filter(step => step.length > 10); // Filter out short fragments
-      }
-    }
-    
-    // Transform data for frontend
-    const transformedRecipe = {
-      id: recipe.ID,
-      title: recipe.Title,
-      content: recipe.Content,
-      excerpt: recipe.Excerpt,
-      imageUrl: recipe['Image URL'],
-      imageAlt: recipe['Image Alt Text'] || recipe['Image Title'],
-      imageCaption: recipe['Image Caption'],
-      categories: recipe.Kategorier?.split('|').filter(Boolean) || [],
-      ingredients,
-      instructions,
-      slug: recipe.Slug,
-      status: recipe.Status,
-      isPremium: recipe.Status === 'draft',
-      date: recipe.Date || recipe['Post Modified Date'],
+    // Konvertera till API-format
+    const recipe = {
+      id: params.id,
+      title: csvRecipe['Recept-titel'] || 'Namnlöst recept',
+      excerpt: csvRecipe.Beskrivning || 'Ingen beskrivning tillgänglig',
+      imageUrl: csvRecipe.Bild || '/images/recipe-placeholder.svg',
+      imageAlt: csvRecipe['Recept-titel'],
+      categories: csvRecipe.Kategori ? csvRecipe.Kategori.split(';').map(c => c.trim()) : ['Okategoriserad'],
+      ingredients: csvRecipe.Ingredienser ? csvRecipe.Ingredienser.split(';').map(i => i.trim()) : [],
+      slug: csvRecipe.Slug || csvRecipe['Recept-titel'].toLowerCase().replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match)).replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
+      status: csvRecipe.Status?.toLowerCase() === 'publicerad' ? 'publish' : 'draft',
+      isPremium: csvRecipe.Premium?.toLowerCase() === 'ja' || csvRecipe.Premium?.toLowerCase() === 'true',
+      date: csvRecipe.Datum || new Date().toISOString(),
       author: {
-        name: `${recipe['Author First Name']} ${recipe['Author Last Name']}`.trim(),
-        username: recipe['Author Username'],
-        email: recipe['Author Email']
+        name: csvRecipe.Författare || 'Ulrika Davidsson',
+        username: 'ulrika'
       },
-      permalink: recipe.Permalink,
-      nutritionInfo: {
-        // Extract nutrition info from content if available
-        description: recipe.Excerpt || `En hälsosam och näringsrik rätt från ${recipe['Author First Name']}.`,
-        carbs: '23',
-        fat: '42',
-        protein: '19',
-        calories: '536',
-        fiber: '5'
-      },
-      featuredIngredients: ['Aubergine', 'Ricottaost', 'Bladspenat'],
-      prepTime: '20 min',
-      cookTime: '40 min',
-      servings: '4 portioner'
+      difficulty: csvRecipe.Svårighetsgrad || 'Medel',
+      prepTime: csvRecipe.Förberedelsetid || '30 min',
+      cookTime: csvRecipe.Tillagningstid || '30 min',
+      servings: parseInt(csvRecipe.Portioner) || 4,
+      instructions: csvRecipe.Instruktioner ? csvRecipe.Instruktioner.split(';').map(i => i.trim()) : [],
+      tips: csvRecipe.Tips || '',
+      tags: csvRecipe.Taggar ? csvRecipe.Taggar.split(';').map(t => t.trim()) : []
     };
-    
-    return NextResponse.json({
-      recipe: transformedRecipe,
-      userAccess: {
-        hasAccess,
-        userId: userId || null
-      }
-    });
-    
+
+    return NextResponse.json({ recipe });
+
   } catch (error) {
     console.error('Error fetching recipe:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch recipe' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch recipe' }, { status: 500 });
+  }
+}
+
+// PUT - Uppdatera specifikt recept
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const updateData: UpdateRecipeData = await request.json();
+    const csvPath = path.join(process.cwd(), 'Recept', 'Recept_Functional.csv');
+    
+    // Läs befintlig CSV-fil
+    let csvData: string;
+    try {
+      csvData = await fs.readFile(csvPath, 'utf-8');
+    } catch (error) {
+      return NextResponse.json({ error: 'Recipe file not found' }, { status: 404 });
+    }
+
+    const csvRecipes = parseCSV(csvData);
+    const recipeIndex = parseInt(params.id.replace('recipe-', '')) - 1;
+    
+    if (recipeIndex < 0 || recipeIndex >= csvRecipes.length) {
+      return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
+    }
+
+    // Uppdatera receptet
+    const originalRecipe = csvRecipes[recipeIndex];
+    const updatedRecipe = convertToCSVRecipe(updateData, originalRecipe);
+    csvRecipes[recipeIndex] = updatedRecipe;
+
+    // Skriv tillbaka till CSV-fil
+    const newCSVContent = writeCSV(csvRecipes);
+    
+    // Skapa backup av befintlig fil
+    const backupPath = csvPath + '.backup.' + Date.now();
+    await fs.copyFile(csvPath, backupPath);
+    
+    // Skriv den nya filen
+    await fs.writeFile(csvPath, newCSVContent, 'utf-8');
+
+    // Returnera uppdaterat recept
+    const updatedRecipeResponse = {
+      id: params.id,
+      title: updatedRecipe['Recept-titel'],
+      excerpt: updatedRecipe.Beskrivning,
+      imageUrl: updatedRecipe.Bild || '/images/recipe-placeholder.svg',
+      categories: updatedRecipe.Kategori ? updatedRecipe.Kategori.split(';').map(c => c.trim()) : ['Okategoriserad'],
+      ingredients: updatedRecipe.Ingredienser ? updatedRecipe.Ingredienser.split(';').map(i => i.trim()) : [],
+      slug: updatedRecipe.Slug,
+      status: updatedRecipe.Status?.toLowerCase() === 'publicerad' ? 'publish' : 'draft',
+      isPremium: updatedRecipe.Premium?.toLowerCase() === 'ja',
+      date: updatedRecipe.Datum,
+      author: {
+        name: updatedRecipe.Författare || 'Ulrika Davidsson',
+        username: 'ulrika'
+      },
+      difficulty: updatedRecipe.Svårighetsgrad,
+      prepTime: updatedRecipe.Förberedelsetid,
+      cookTime: updatedRecipe.Tillagningstid,
+      servings: parseInt(updatedRecipe.Portioner) || 4,
+      instructions: updatedRecipe.Instruktioner ? updatedRecipe.Instruktioner.split(';').map(i => i.trim()) : [],
+      tips: updatedRecipe.Tips,
+      tags: updatedRecipe.Taggar ? updatedRecipe.Taggar.split(';').map(t => t.trim()) : []
+    };
+
+    return NextResponse.json({ 
+      message: 'Recipe updated successfully',
+      recipe: updatedRecipeResponse,
+      backupFile: backupPath
+    });
+
+  } catch (error) {
+    console.error('Error updating recipe:', error);
+    return NextResponse.json({ error: 'Failed to update recipe' }, { status: 500 });
+  }
+}
+
+// DELETE - Ta bort specifikt recept
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const csvPath = path.join(process.cwd(), 'Recept', 'Recept_Functional.csv');
+    
+    // Läs befintlig CSV-fil
+    let csvData: string;
+    try {
+      csvData = await fs.readFile(csvPath, 'utf-8');
+    } catch (error) {
+      return NextResponse.json({ error: 'Recipe file not found' }, { status: 404 });
+    }
+
+    const csvRecipes = parseCSV(csvData);
+    const recipeIndex = parseInt(params.id.replace('recipe-', '')) - 1;
+    
+    if (recipeIndex < 0 || recipeIndex >= csvRecipes.length) {
+      return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
+    }
+
+    // Ta bort receptet
+    const deletedRecipe = csvRecipes[recipeIndex];
+    csvRecipes.splice(recipeIndex, 1);
+
+    // Skriv tillbaka till CSV-fil
+    const newCSVContent = writeCSV(csvRecipes);
+    
+    // Skapa backup av befintlig fil
+    const backupPath = csvPath + '.backup.' + Date.now();
+    await fs.copyFile(csvPath, backupPath);
+    
+    // Skriv den nya filen
+    await fs.writeFile(csvPath, newCSVContent, 'utf-8');
+
+    return NextResponse.json({ 
+      message: 'Recipe deleted successfully',
+      deletedRecipe: deletedRecipe['Recept-titel'],
+      backupFile: backupPath
+    });
+
+  } catch (error) {
+    console.error('Error deleting recipe:', error);
+    return NextResponse.json({ error: 'Failed to delete recipe' }, { status: 500 });
   }
 } 
