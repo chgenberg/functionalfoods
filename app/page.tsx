@@ -124,13 +124,11 @@ export default function Home() {
             onLoadStart={() => console.log('Video loading started')}
             onCanPlay={() => console.log('Video can play')}
           >
-            {/* Mobile version - smaller file for mobile devices */}
-            <source src="/introvideo_mobile.mp4" type="video/mp4" media="(max-width: 768px)" />
-            {/* Desktop version - higher quality for larger screens */}
-            <source src="/introvideo_compressed.mp4" type="video/mp4" media="(min-width: 769px)" />
-            {/* Fallback sources */}
+            {/* Primary web-optimized video source */}
+            <source src="/ulrika_web.mp4" type="video/mp4" />
+            {/* Fallback sources for development */}
             <source src="/introvideo_compressed.mp4" type="video/mp4" />
-            <source src="/front.mp4" type="video/mp4" />
+            <source src="/introvideo_mobile.mp4" type="video/mp4" />
             <source src="/introvideo.MP4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>

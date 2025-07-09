@@ -59,6 +59,11 @@ out/
 *.flv
 *.webm
 
+# Allow specific optimized video files for web
+!public/ulrika_web.mp4
+!public/introvideo_compressed.mp4
+!public/introvideo_mobile.mp4
+
 # OS
 .DS_Store
 Thumbs.db
