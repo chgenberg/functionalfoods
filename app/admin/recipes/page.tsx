@@ -76,18 +76,23 @@ export default function AdminRecipesPage() {
       }
 
       const data: RecipeData = await response.json();
-      setRecipes(data.recipes);
-      setCategories(data.categories || []);
+      
+      // Säkerställ att data är korrekt formaterad
+      setRecipes(Array.isArray(data.recipes) ? data.recipes : []);
+      setCategories(Array.isArray(data.categories) ? data.categories : []);
       setStatistics(data.statistics || { total: 0, free: 0, premium: 0, visible: 0 });
     } catch (err) {
+      console.error('Error fetching recipes:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
+      setRecipes([]);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteRecipe = async (recipeId: string) => {
-    if (!confirm('Är du säker på att du vill ta bort detta recept?')) {
+    if (!recipeId || !confirm('Är du säker på att du vill ta bort detta recept?')) {
       return;
     }
 
@@ -103,29 +108,13 @@ export default function AdminRecipesPage() {
       const result = await response.json();
       console.log('Recipe deleted successfully:', result);
       
-      alert(`Receptet "${result.deletedRecipe}" har tagits bort. Backup sparad.`);
+      alert(`Receptet "${result.deletedRecipe || 'Unknown'}" har tagits bort. Backup sparad.`);
       
       // Uppdatera listan
       fetchRecipes();
     } catch (error) {
       console.error('Error deleting recipe:', error);
       alert('Fel vid borttagning av recept: ' + (error instanceof Error ? error.message : 'Okänt fel'));
-    }
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty.toLowerCase()) {
-      case 'lätt':
-      case 'easy':
-        return 'bg-green-100 text-green-800';
-      case 'medel':
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'svår':
-      case 'hard':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -142,12 +131,14 @@ export default function AdminRecipesPage() {
   };
 
   const filteredRecipes = recipes.filter(recipe => {
-    const matchesCategory = selectedCategory === 'all' || recipe.categories.includes(selectedCategory);
+    if (!recipe) return false;
+    
+    const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
     const matchesStatus = selectedStatus === 'all' || 
       (selectedStatus === 'published' && recipe.status === 'publish' && !recipe.isPremium) ||
       (selectedStatus === 'draft' && recipe.status === 'draft') ||
       (selectedStatus === 'premium' && recipe.isPremium);
-    const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = !searchQuery || (recipe.title && recipe.title.toLowerCase().includes(searchQuery.toLowerCase()));
     
     return matchesCategory && matchesStatus && matchesSearch;
   });
@@ -183,7 +174,6 @@ export default function AdminRecipesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -201,7 +191,6 @@ export default function AdminRecipesPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <motion.div
@@ -272,11 +261,9 @@ export default function AdminRecipesPage() {
           </motion.div>
         </div>
 
-        {/* Filters and Search */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              {/* Search */}
               <div className="relative flex-1 max-w-md">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -288,7 +275,6 @@ export default function AdminRecipesPage() {
                 />
               </div>
 
-              {/* Category Filter */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -300,7 +286,6 @@ export default function AdminRecipesPage() {
                 ))}
               </select>
 
-              {/* Status Filter */}
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
@@ -313,7 +298,6 @@ export default function AdminRecipesPage() {
               </select>
             </div>
 
-            {/* View Mode Toggle */}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setViewMode('grid')}
@@ -339,7 +323,6 @@ export default function AdminRecipesPage() {
           </div>
         </div>
 
-        {/* Recipes Grid/List */}
         {filteredRecipes.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <div className="text-6xl mb-4">🍽️</div>
@@ -371,9 +354,13 @@ export default function AdminRecipesPage() {
                 <div className="relative h-48">
                   <Image
                     src={recipe.imageUrl || '/images/recipe-placeholder.svg'}
-                    alt={recipe.imageAlt || recipe.title}
+                    alt={recipe.imageAlt || recipe.title || 'Recipe image'}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/images/recipe-placeholder.svg';
+                    }}
                   />
                   <div className="absolute top-3 right-3">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(recipe.status, recipe.isPremium)}`}>
@@ -384,20 +371,20 @@ export default function AdminRecipesPage() {
 
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                    {recipe.title}
+                    {recipe.title || 'Untitled Recipe'}
                   </h3>
                   
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {recipe.excerpt}
+                    {recipe.excerpt || 'No description available'}
                   </p>
 
                   <div className="flex items-center gap-2 mb-4">
-                    {recipe.categories.slice(0, 2).map((category, i) => (
+                    {recipe.categories && recipe.categories.slice(0, 2).map((category, i) => (
                       <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                         {category}
                       </span>
                     ))}
-                    {recipe.categories.length > 2 && (
+                    {recipe.categories && recipe.categories.length > 2 && (
                       <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                         +{recipe.categories.length - 2}
                       </span>
@@ -406,7 +393,7 @@ export default function AdminRecipesPage() {
 
                   <div className="flex items-center justify-between">
                     <div className="text-xs text-gray-500">
-                      {recipe.author.name}
+                      {recipe.author?.name || 'Unknown Author'}
                     </div>
                     
                     <div className="flex items-center gap-1">
@@ -479,24 +466,28 @@ export default function AdminRecipesPage() {
                             <Image
                               className="h-12 w-12 rounded-lg object-cover"
                               src={recipe.imageUrl || '/images/recipe-placeholder.svg'}
-                              alt={recipe.title}
+                              alt={recipe.title || 'Recipe image'}
                               width={48}
                               height={48}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/images/recipe-placeholder.svg';
+                              }}
                             />
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900 line-clamp-1">
-                              {recipe.title}
+                              {recipe.title || 'Untitled Recipe'}
                             </div>
                             <div className="text-sm text-gray-500 line-clamp-1">
-                              {recipe.excerpt}
+                              {recipe.excerpt || 'No description'}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-wrap gap-1">
-                          {recipe.categories.slice(0, 2).map((category, i) => (
+                          {recipe.categories && recipe.categories.slice(0, 2).map((category, i) => (
                             <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                               {category}
                             </span>
@@ -509,10 +500,10 @@ export default function AdminRecipesPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {recipe.author.name}
+                        {recipe.author?.name || 'Unknown'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(recipe.date).toLocaleDateString('sv-SE')}
+                        {recipe.date ? new Date(recipe.date).toLocaleDateString('sv-SE') : 'Unknown date'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end gap-2">
@@ -537,7 +528,7 @@ export default function AdminRecipesPage() {
                           </button>
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                 </tbody>
               </table>

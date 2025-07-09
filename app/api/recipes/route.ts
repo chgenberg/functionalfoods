@@ -81,7 +81,8 @@ function convertCSVToRecipe(csvRecipe: CSVRecipe, index: number): Recipe {
   const tags = csvRecipe.Taggar ? csvRecipe.Taggar.split(';').map(t => t.trim()) : [];
   
   // Generera slug från titel om det inte finns
-  const slug = csvRecipe.Slug || csvRecipe['Recept-titel']
+  const title = csvRecipe['Recept-titel'] || 'namnlost-recept';
+  const slug = csvRecipe.Slug || title
     .toLowerCase()
     .replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match))
     .replace(/[^a-z0-9]/g, '-')

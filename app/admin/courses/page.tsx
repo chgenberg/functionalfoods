@@ -100,8 +100,10 @@ export default function AdminCoursesPage() {
       }
 
       const data: CourseData = await response.json();
-      setCourses(data.courses);
-      setCategories(data.categories || []);
+      
+      // Säkerställ att data är korrekt formaterad
+      setCourses(Array.isArray(data.courses) ? data.courses : []);
+      setCategories(Array.isArray(data.categories) ? data.categories : []);
       setStatistics(data.statistics || {
         total: 0,
         published: 0,
@@ -111,14 +113,17 @@ export default function AdminCoursesPage() {
         averageRating: 0
       });
     } catch (err) {
+      console.error('Error fetching courses:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
+      setCourses([]);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteCourse = async (courseId: string) => {
-    if (!confirm('Är du säker på att du vill ta bort denna kurs?')) {
+    if (!courseId || !confirm('Är du säker på att du vill ta bort denna kurs?')) {
       return;
     }
 
@@ -132,6 +137,8 @@ export default function AdminCoursesPage() {
   };
 
   const getLevelColor = (level: string) => {
+    if (!level) return 'bg-gray-100 text-gray-800';
+    
     switch (level.toLowerCase()) {
       case 'nybörjare':
         return 'bg-green-100 text-green-800';
@@ -157,6 +164,8 @@ export default function AdminCoursesPage() {
   };
 
   const formatPrice = (price: number) => {
+    if (typeof price !== 'number') return '0 kr';
+    
     return new Intl.NumberFormat('sv-SE', {
       style: 'currency',
       currency: 'SEK',
@@ -165,13 +174,16 @@ export default function AdminCoursesPage() {
   };
 
   const filteredCourses = courses.filter(course => {
+    if (!course) return false;
+    
     const matchesCategory = selectedCategory === 'all' || course.category === selectedCategory;
     const matchesStatus = selectedStatus === 'all' || 
       (selectedStatus === 'published' && course.status === 'published' && !course.isPremium) ||
       (selectedStatus === 'draft' && course.status === 'draft') ||
       (selectedStatus === 'premium' && course.isPremium);
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = !searchQuery || 
+      (course.title && course.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase()));
     
     return matchesCategory && matchesStatus && matchesSearch;
   });
@@ -207,7 +219,6 @@ export default function AdminCoursesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -225,7 +236,6 @@ export default function AdminCoursesPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <motion.div
@@ -296,11 +306,9 @@ export default function AdminCoursesPage() {
           </motion.div>
         </div>
 
-        {/* Filters and Search */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              {/* Search */}
               <div className="relative flex-1 max-w-md">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -312,7 +320,6 @@ export default function AdminCoursesPage() {
                 />
               </div>
 
-              {/* Category Filter */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -324,7 +331,6 @@ export default function AdminCoursesPage() {
                 ))}
               </select>
 
-              {/* Status Filter */}
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
@@ -337,7 +343,6 @@ export default function AdminCoursesPage() {
               </select>
             </div>
 
-            {/* View Mode Toggle */}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setViewMode('grid')}
@@ -363,7 +368,6 @@ export default function AdminCoursesPage() {
           </div>
         </div>
 
-        {/* Courses Grid/List */}
         {filteredCourses.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <div className="text-6xl mb-4">📚</div>
@@ -394,53 +398,57 @@ export default function AdminCoursesPage() {
               >
                 <div className="relative h-48">
                   <Image
-                    src={course.imageUrl}
-                    alt={course.title}
+                    src={course.imageUrl || '/images/course-placeholder.svg'}
+                    alt={course.title || 'Course image'}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/images/course-placeholder.svg';
+                    }}
                   />
                   <div className="absolute top-3 right-3 flex gap-2">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(course.status, course.isPremium)}`}>
                       {getStatusText(course.status, course.isPremium)}
                     </span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getLevelColor(course.level)}`}>
-                      {course.level}
+                      {course.level || 'Unknown'}
                     </span>
                   </div>
                 </div>
 
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">{course.category}</span>
+                    <span className="text-sm font-medium text-gray-600">{course.category || 'Uncategorized'}</span>
                     <span className="text-lg font-bold text-orange-600">{formatPrice(course.price)}</span>
                   </div>
                   
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                    {course.title}
+                    {course.title || 'Untitled Course'}
                   </h3>
                   
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {course.description}
+                    {course.description || 'No description available'}
                   </p>
 
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                     <div className="flex items-center gap-1">
                       <FiClock className="w-4 h-4" />
-                      {course.duration}
+                      {course.duration || 'Unknown'}
                     </div>
                     <div className="flex items-center gap-1">
                       <FiUsers className="w-4 h-4" />
-                      {course.enrollmentCount}
+                      {course.enrollmentCount || 0}
                     </div>
                     <div className="flex items-center gap-1">
                       <FiStar className="w-4 h-4 text-yellow-400" />
-                      {course.rating.toFixed(1)}
+                      {(course.rating || 0).toFixed(1)}
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div className="text-xs text-gray-500">
-                      {course.instructor.name}
+                      {course.instructor?.name || 'Unknown Instructor'}
                     </div>
                     
                     <div className="flex items-center gap-1">
@@ -452,7 +460,7 @@ export default function AdminCoursesPage() {
                         <FiEdit3 className="w-4 h-4" />
                       </Link>
                       <Link
-                        href={`/utbildning/${course.title.toLowerCase().replace(/\s+/g, '-')}`}
+                        href={`/utbildning/${(course.title || 'untitled').toLowerCase().replace(/\s+/g, '-')}`}
                         target="_blank"
                         className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
                         title="Visa"
@@ -515,25 +523,29 @@ export default function AdminCoursesPage() {
                           <div className="flex-shrink-0 h-12 w-12">
                             <Image
                               className="h-12 w-12 rounded-lg object-cover"
-                              src={course.imageUrl}
-                              alt={course.title}
+                              src={course.imageUrl || '/images/course-placeholder.svg'}
+                              alt={course.title || 'Course image'}
                               width={48}
                               height={48}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/images/course-placeholder.svg';
+                              }}
                             />
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900 line-clamp-1">
-                              {course.title}
+                              {course.title || 'Untitled Course'}
                             </div>
                             <div className="text-sm text-gray-500 line-clamp-1">
-                              {course.instructor.name}
+                              {course.instructor?.name || 'Unknown Instructor'}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                          {course.category}
+                          {course.category || 'Uncategorized'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -545,12 +557,12 @@ export default function AdminCoursesPage() {
                         {formatPrice(course.price)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {course.enrollmentCount}
+                        {course.enrollmentCount || 0}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-1">
                           <FiStar className="w-4 h-4 text-yellow-400" />
-                          <span className="text-sm text-gray-900">{course.rating.toFixed(1)}</span>
+                          <span className="text-sm text-gray-900">{(course.rating || 0).toFixed(1)}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -562,7 +574,7 @@ export default function AdminCoursesPage() {
                             <FiEdit3 className="w-4 h-4" />
                           </Link>
                           <Link
-                            href={`/utbildning/${course.title.toLowerCase().replace(/\s+/g, '-')}`}
+                            href={`/utbildning/${(course.title || 'untitled').toLowerCase().replace(/\s+/g, '-')}`}
                             target="_blank"
                             className="text-blue-600 hover:text-blue-900 transition-colors"
                           >

@@ -133,7 +133,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       imageAlt: csvRecipe['Recept-titel'],
       categories: csvRecipe.Kategori ? csvRecipe.Kategori.split(';').map(c => c.trim()) : ['Okategoriserad'],
       ingredients: csvRecipe.Ingredienser ? csvRecipe.Ingredienser.split(';').map(i => i.trim()) : [],
-      slug: csvRecipe.Slug || csvRecipe['Recept-titel'].toLowerCase().replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match)).replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
+      slug: csvRecipe.Slug || (csvRecipe['Recept-titel'] || 'namnlost-recept').toLowerCase().replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match)).replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
       status: csvRecipe.Status?.toLowerCase() === 'publicerad' ? 'publish' : 'draft',
       isPremium: csvRecipe.Premium?.toLowerCase() === 'ja' || csvRecipe.Premium?.toLowerCase() === 'true',
       date: csvRecipe.Datum || new Date().toISOString(),
