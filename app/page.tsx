@@ -107,9 +107,24 @@ export default function Home() {
     <div className="min-h-screen bg-white overflow-hidden">
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50" />
+        {/* Video background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/introvideo.MP4" type="video/mp4" />
+          </video>
+          {/* Overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/40" />
+        </div>
+
+        {/* Animated background - now with lower opacity to blend with video */}
+        <div className="absolute inset-0 z-[1]">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-50/20 via-white/10 to-blue-50/20" />
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
@@ -120,7 +135,7 @@ export default function Home() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -top-20 md:-top-40 -right-20 md:-right-40 w-48 md:w-96 h-48 md:h-96 bg-gradient-to-br from-green-200 to-blue-200 rounded-full opacity-30 blur-3xl"
+            className="absolute -top-20 md:-top-40 -right-20 md:-right-40 w-48 md:w-96 h-48 md:h-96 bg-gradient-to-br from-green-200/20 to-blue-200/20 rounded-full opacity-30 blur-3xl"
           />
           <motion.div
             animate={{
@@ -132,7 +147,7 @@ export default function Home() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -bottom-20 md:-bottom-40 -left-20 md:-left-40 w-48 md:w-96 h-48 md:h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full opacity-30 blur-3xl"
+            className="absolute -bottom-20 md:-bottom-40 -left-20 md:-left-40 w-48 md:w-96 h-48 md:h-96 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full opacity-30 blur-3xl"
           />
         </div>
 
@@ -145,13 +160,13 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               className="text-center lg:text-left"
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-4 md:mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white mb-4 md:mb-6 leading-tight drop-shadow-lg">
                 UPPTÄCK KRAFTEN I
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600 font-bold">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 font-bold drop-shadow-lg">
             FUNCTIONAL FOODS
                 </span>
           </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 md:mb-8 leading-relaxed drop-shadow-lg">
             Mat som medicin för kropp och själ
           </p>
               
@@ -160,14 +175,14 @@ export default function Home() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuiz(true)}
-                  className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
+                  className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
             >
               Starta Hälsoquiz
                   <FiArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
                 <Link
                   href="/utbildning"
-                  className="bg-white border-2 border-gray-300 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-600 hover:text-green-600 transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 backdrop-blur-sm border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-400 hover:text-green-600 hover:bg-white transition-all flex items-center justify-center gap-3"
                 >
                   <FiBook className="w-4 h-4 md:w-5 md:h-5" />
                   Våra kurser
@@ -182,7 +197,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-2 text-gray-700 justify-center lg:justify-start"
+                    className="flex items-center gap-2 text-white/90 justify-center lg:justify-start bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2"
                   >
                     <span className="text-xl md:text-2xl">{benefit.icon}</span>
                     <span className="text-xs sm:text-sm font-medium">{benefit.text}</span>
@@ -212,7 +227,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1 }}
-                  className="absolute -bottom-4 md:-bottom-6 -left-4 md:-left-6 bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-xl p-4 md:p-6 max-w-[280px] md:max-w-xs"
+                  className="absolute -bottom-4 md:-bottom-6 -left-4 md:-left-6 bg-white/95 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-lg md:shadow-xl p-4 md:p-6 max-w-[280px] md:max-w-xs"
                 >
                   <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
                     <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl">
@@ -239,10 +254,10 @@ export default function Home() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-10"
         >
-          <div className="w-5 h-8 md:w-6 md:h-10 border-2 border-gray-400 rounded-full flex justify-center">
-            <div className="w-0.5 h-2 md:w-1 md:h-3 bg-gray-400 rounded-full mt-1.5 md:mt-2" />
+          <div className="w-5 h-8 md:w-6 md:h-10 border-2 border-white/60 rounded-full flex justify-center">
+            <div className="w-0.5 h-2 md:w-1 md:h-3 bg-white/60 rounded-full mt-1.5 md:mt-2" />
           </div>
         </motion.div>
       </section>
