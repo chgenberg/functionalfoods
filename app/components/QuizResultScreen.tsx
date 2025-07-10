@@ -250,10 +250,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
   const tabs = [
     { id: 'summary', label: 'Översikt', icon: '📊' },
+    { id: 'course', label: 'Kursrekommendation', icon: '🎓' },
     { id: 'recommendations', label: 'Functional Foods', icon: '🥗' },
     { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' },
     { id: 'nextsteps', label: 'Handlingsplan', icon: '⭐' },
-    { id: 'course', label: 'Kursrekommendation', icon: '🎓' },
     { id: 'science', label: 'Forskning', icon: '🔬' },
     { id: 'warnings', label: 'Varningar', icon: '⚠️' },
     { id: 'metrics', label: 'Mätning', icon: '📈' }
@@ -394,33 +394,35 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
           {/* Main Content Area */}
           <div className="lg:col-span-9">
-            {/* Tab Navigation - Icon Only Style */}
+            {/* Tab Navigation - Scrollable on Mobile */}
             <div className="mb-8">
-              <div className="flex flex-wrap gap-3 justify-center">
-                {tabs.map((tab) => (
-                  <motion.button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`group relative w-14 h-14 rounded-full text-2xl transition-all ${
-                      activeTab === tab.id
-                        ? 'bg-gray-900 text-white shadow-lg'
-                        : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
-                    }`}
-                    title={tab.label}
-                  >
-                    <span className="flex items-center justify-center h-full">
-                      {tab.icon}
-                    </span>
-                    
-                    {/* Tooltip on hover */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-                      {tab.label}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                    </div>
-                  </motion.button>
-                ))}
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-3 justify-center min-w-max px-4 md:px-0">
+                  {tabs.map((tab) => (
+                    <motion.button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`group relative w-14 h-14 rounded-full text-2xl transition-all flex-shrink-0 ${
+                        activeTab === tab.id
+                          ? 'bg-green-600 text-white shadow-lg'
+                          : 'bg-white text-gray-600 hover:bg-green-100 hover:text-green-700 border border-gray-200 hover:border-green-300 shadow-sm hover:shadow-md'
+                      }`}
+                      title={tab.label}
+                    >
+                      <span className="flex items-center justify-center h-full">
+                        {tab.icon}
+                      </span>
+                      
+                      {/* Tooltip on hover */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                        {tab.label}
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
               </div>
             </div>
 
