@@ -17,15 +17,32 @@ export default function KontaktFormular() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulera API-anrop
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setShowSuccess(true);
-    setFormData({ namn: '', email: '', amne: '', meddelande: '' });
-    
-    // Dölj success-meddelande efter 5 sekunder
-    setTimeout(() => setShowSuccess(false), 5000);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setShowSuccess(true);
+        setFormData({ namn: '', email: '', amne: '', meddelande: '' });
+        
+        // Dölj success-meddelande efter 5 sekunder
+        setTimeout(() => setShowSuccess(false), 5000);
+      } else {
+        alert(result.error || 'Ett fel uppstod. Försök igen senare.');
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      alert('Ett fel uppstod. Försök igen senare.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

@@ -5,6 +5,7 @@ import { FiMail, FiPhone, FiMapPin, FiArrowRight } from 'react-icons/fi';
 import { FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import ContactFormCompact from './ContactFormCompact';
 
 export default function Footer() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -41,6 +42,11 @@ export default function Footer() {
   return (
     <footer className="bg-primary text-white relative">
       <div className="container-custom py-16">
+        {/* Kontaktformulär */}
+        <div className="mb-12 max-w-md mx-auto lg:mx-0">
+          <ContactFormCompact />
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Logo och beskrivning */}
           <div className="lg:col-span-2">

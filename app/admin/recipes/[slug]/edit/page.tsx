@@ -50,7 +50,7 @@ interface EditRecipeForm {
   imageUrl: string;
 }
 
-export default function EditRecipePage({ params }: { params: { id: string } }) {
+export default function EditRecipePage({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
@@ -77,7 +77,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     fetchRecipe();
-  }, [params.id]);
+  }, [params.slug]);
 
   const fetchRecipe = async () => {
     try {
@@ -91,7 +91,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
       }
 
       const data = await response.json();
-      const foundRecipe = data.recipes.find((r: Recipe) => r.id === params.id);
+      const foundRecipe = data.recipes.find((r: Recipe) => r.slug === params.slug);
       
       if (!foundRecipe) {
         throw new Error('Recipe not found');
@@ -146,7 +146,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
         imageUrl: formData.imageUrl
       };
 
-      const response = await fetch(`/api/recipes/${params.id}`, {
+      const response = await fetch(`/api/recipes/${params.slug}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     try {
       setSaving(true);
       
-      const response = await fetch(`/api/recipes/${params.id}`, {
+      const response = await fetch(`/api/recipes/${params.slug}`, {
         method: 'DELETE'
       });
 

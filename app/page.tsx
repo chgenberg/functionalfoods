@@ -14,7 +14,39 @@ export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizResults, setQuizResults] = useState<Record<number, string> | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const router = useRouter();
+
+  // Simple video autoplay attempt
+  useEffect(() => {
+    const attemptVideoPlay = () => {
+      const videos = document.querySelectorAll('video');
+      videos.forEach(video => {
+        video.play().catch(() => {
+          // Silently fail - the fallback image will show
+        });
+      });
+    };
+
+    // Try on mount
+    attemptVideoPlay();
+
+    // Try on first user interaction
+    const handleInteraction = () => {
+      attemptVideoPlay();
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+  }, []);
 
   const handleQuizComplete = (answers: Record<number, string>) => {
     console.log('Quiz completed with answers:', answers);
@@ -107,33 +139,54 @@ export default function Home() {
     <div className="min-h-screen bg-white overflow-hidden">
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Video background */}
+        {/* Video/Image background */}
         <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover"
-            onError={(e) => {
-              console.error('Video failed to load:', e);
-              // Hide video element if it fails to load
-              e.currentTarget.style.display = 'none';
+          {/* Fallback background image - always visible */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: 'url(/ulrika-hero-bg.jpg)',
+              backgroundColor: '#f0fdf4'
             }}
-            onLoadStart={() => console.log('Video loading started')}
-            onCanPlay={() => console.log('Video can play')}
           >
-            {/* Primary video - compressed version works for both mobile and desktop */}
-            <source src="/introvideo_compressed.mp4" type="video/mp4" />
-            {/* Fallback to original if compressed fails */}
-            <source src="/introvideo.MP4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          {/* Fallback background if video fails */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-white to-blue-100" />
-          {/* Overlay to ensure text readability */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/40" />
+            {/* Gradient overlay for better text readability */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
+          </div>
+          
+          {/* Desktop video - simplified approach */}
+          {!videoError && (
+            <video
+              key="desktop-video"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className={`hidden md:block absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onCanPlayThrough={() => setVideoLoaded(true)}
+              onError={() => setVideoError(true)}
+            >
+              <source src="/introvideo_compressed.mp4" type="video/mp4" />
+            </video>
+          )}
+          
+          {/* Mobile video - simplified approach */}
+          {!videoError && (
+            <video
+              key="mobile-video"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className={`block md:hidden absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onCanPlayThrough={() => setVideoLoaded(true)}
+              onError={() => setVideoError(true)}
+            >
+              <source src="/introvideo_mobile.mp4" type="video/mp4" />
+            </video>
+          )}
+          
+          {/* Enhanced overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/50" />
         </div>
 
         {/* Animated background - now with lower opacity to blend with video */}

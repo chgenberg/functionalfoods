@@ -146,11 +146,43 @@ export default function NewBlogPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Här skulle vi skicka data till API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Prepare blog post data
+      const blogPayload = {
+        title: blogData.title,
+        slug: blogData.slug || generateSlug(blogData.title),
+        content: blogData.content,
+        excerpt: blogData.excerpt,
+        coverImage: blogData.coverImage,
+        published: blogData.published,
+        publishedAt: blogData.published ? (blogData.publishedAt || new Date().toISOString()) : null,
+        category: blogData.category,
+        tags: blogData.tags.filter(tag => tag.trim() !== ''),
+        metaDescription: blogData.metaDescription,
+        readTime: blogData.readTime,
+        functionalFoodsFocus: blogData.functionalFoodsFocus,
+        keyTakeaways: blogData.keyTakeaways.filter(takeaway => takeaway.trim() !== ''),
+        references: blogData.references.filter(ref => ref.trim() !== '')
+      };
+
+      const response = await fetch('/api/blog', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(blogPayload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save blog post');
+      }
+
+      const savedPost = await response.json();
+      
+      // Show success message or redirect
       router.push('/admin/blog');
     } catch (error) {
       console.error('Error saving blog post:', error);
+      alert('Ett fel uppstod när artikeln skulle sparas. Försök igen.');
     } finally {
       setSaving(false);
     }

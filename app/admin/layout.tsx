@@ -1,13 +1,11 @@
 "use client";
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   FiHome, FiUsers, FiBookOpen, FiDollarSign, FiSettings, FiLogOut,
-  FiMenu, FiX, FiFileText, FiVideo
+  FiMenu, FiX, FiFileText, FiVideo, FiShoppingBag, FiBarChart
 } from "react-icons/fi";
-import Header from "@/app/components/Header";
-import { useAuth } from "@/app/hooks/useAuth";
 
 const menuItems = [
   { icon: FiHome, label: "Översikt", href: "/admin" },
@@ -15,42 +13,65 @@ const menuItems = [
   { icon: FiBookOpen, label: "Kurser", href: "/admin/courses" },
   { icon: FiFileText, label: "Blogg", href: "/admin/blog" },
   { icon: FiVideo, label: "Recept", href: "/admin/recipes" },
-  { icon: FiDollarSign, label: "Försäljning", href: "/admin/sales" },
+  { icon: FiShoppingBag, label: "Beställningar", href: "/admin/orders" },
+  { icon: FiBarChart, label: "Försäljning", href: "/admin/sales" },
   { icon: FiSettings, label: "Inställningar", href: "/admin/settings" },
 ];
 
 function SidebarContent() {
     const pathname = usePathname();
-    const { logout } = useAuth();
+    const router = useRouter();
+    
+    const handleLogout = () => {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      router.push('/admin/login');
+    };
     
     return (
          <div className="flex flex-col h-full">
-            <nav className="flex-grow px-4 space-y-2 pt-8 pb-4 overflow-y-auto">
+            {/* Logo */}
+            <div className="px-6 py-6 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold text-lg">FF</span>
+                </div>
+                <div>
+                  <h2 className="font-bold text-gray-900">Admin Portal</h2>
+                  <p className="text-xs text-gray-500">Functional Foods</p>
+                </div>
+              </div>
+            </div>
+            
+            <nav className="flex-grow px-4 space-y-1 pt-6 pb-4 overflow-y-auto">
               {menuItems.map((item) => {
-                  const isActive = pathname === item.href;
+                  const isActive = pathname === item.href || 
+                    (item.href !== '/admin' && pathname.startsWith(item.href));
+                  
                   return (
                      <Link
                         key={item.href}
                         href={item.href}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                           isActive
-                            ? 'bg-primary text-white shadow-md'
-                            : 'text-primary hover:bg-primary/10 hover:text-primary'
+                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
+                            : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
                         }`}
                       >
-                        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-primary group-hover:scale-110 transition-transform'}`} />
-                        <span className="font-medium text-sm uppercase tracking-wider">{item.label}</span>
+                        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-orange-600'} transition-colors`} />
+                        <span className="font-medium text-sm">{item.label}</span>
                       </Link>
                   )
               })}
             </nav>
-            <div className="p-4 border-t border-primary/10 mt-auto">
+            
+            <div className="p-4 border-t border-gray-200">
               <button 
-                onClick={logout} 
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 text-white bg-primary hover:bg-secondary rounded-xl transition-all duration-200 group"
+                onClick={handleLogout} 
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all duration-200 group"
               >
                 <FiLogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-sm uppercase tracking-wider">Logga ut</span>
+                <span className="font-medium text-sm">Logga ut</span>
               </button>
             </div>
         </div>
@@ -59,47 +80,64 @@ function SidebarContent() {
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Check if admin is logged in
+  useEffect(() => {
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken && pathname !== '/admin/login') {
+      router.push('/admin/login');
+    }
+  }, [pathname, router]);
+
+  // Don't show layout on login page
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
 
   return (
-    <div className="min-h-screen bg-background">
-        <Header />
-        <div className="flex pt-20">
-            {/* Mobile sidebar */}
-            <div className={`fixed inset-0 flex z-40 lg:hidden transition-opacity ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                <div className="fixed inset-0 bg-black/60" aria-hidden="true" onClick={() => setSidebarOpen(false)}></div>
-                <div className={`relative flex-1 flex flex-col max-w-xs w-full bg-background-secondary transition-transform shadow-2xl ${sidebarOpen ? 'transform-none' : '-translate-x-full'}`}>
-                    <div className="absolute top-0 right-0 -mr-12 pt-2">
-                        <button 
-                            type="button" 
-                            className="ml-1 flex items-center justify-center h-10 w-10 rounded-full bg-primary text-white focus:outline-none focus:ring-2 focus:ring-white" 
-                            onClick={() => setSidebarOpen(false)}
-                        >
-                            <FiX className="h-6 w-6" />
-                        </button>
-                    </div>
-                    <SidebarContent />
-                </div>
-            </div>
+    <div className="min-h-screen bg-gray-50">
+        <div className="flex">
+            {/* Mobile sidebar backdrop */}
+            {sidebarOpen && (
+              <div 
+                className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+                onClick={() => setSidebarOpen(false)}
+              />
+            )}
 
-            {/* Static sidebar for desktop */}
-            <div className="hidden lg:flex lg:flex-shrink-0">
-                <div className="flex flex-col w-64 bg-background-secondary shadow-sm h-[calc(100vh-5rem)] sticky top-20">
-                    <SidebarContent />
-                </div>
+            {/* Sidebar */}
+            <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0 ${
+              sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}>
+                <SidebarContent />
             </div>
             
-            <div className="flex flex-col flex-1">
-                 <div className="lg:hidden p-4 bg-white shadow-sm flex items-center justify-between sticky top-20 z-10">
+            {/* Main content */}
+            <div className="flex-1 flex flex-col">
+                {/* Mobile header */}
+                <div className="lg:hidden bg-white shadow-sm p-4 flex items-center justify-between sticky top-0 z-30">
                     <button 
                         onClick={() => setSidebarOpen(true)} 
-                        className="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors"
+                        className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                     >
                         <FiMenu className="h-6 w-6" />
                     </button>
-                    <span className="text-primary font-bold uppercase tracking-wider">Admin Panel</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">FF</span>
+                      </div>
+                      <span className="font-bold text-gray-900">Admin</span>
+                    </div>
+                    <div className="w-10" /> {/* Spacer for centering */}
                 </div>
-                <main className="flex-1">
-                    {children}
+                
+                {/* Page content */}
+                <main className="flex-1 p-4 lg:p-8">
+                    <div className="max-w-7xl mx-auto">
+                        {children}
+                    </div>
                 </main>
             </div>
         </div>

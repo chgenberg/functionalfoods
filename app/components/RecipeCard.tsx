@@ -7,18 +7,23 @@ import Image from 'next/image';
 interface Recipe {
   id: string;
   title: string;
-  excerpt: string;
+  excerpt?: string;
   imageUrl?: string;
   imageAlt?: string;
   categories: string[];
   ingredients: string[];
   slug: string;
   isPremium: boolean;
+  isFree: boolean;
   date: string;
   author: {
     name: string;
     username: string;
   };
+  difficulty?: string;
+  prepTime?: string;
+  cookTime?: string;
+  servings?: number;
 }
 
 interface RecipeCardProps {
@@ -30,7 +35,7 @@ interface RecipeCardProps {
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
-  const canAccess = !recipe.isPremium || userAccess.hasAccess;
+  const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
   const imageUrl = recipe.imageUrl || '/images/recipe-placeholder.svg';
 
   return (
@@ -67,6 +72,18 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
           </div>
         )}
 
+        {/* Free Badge */}
+        {recipe.isFree && !recipe.isPremium && (
+          <div className="absolute top-4 right-4 z-20">
+            <div className="bg-gradient-to-r from-green-400 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center space-x-1">
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>Gratis</span>
+            </div>
+          </div>
+        )}
+
         {/* Categories on hover */}
         <div className="absolute bottom-4 left-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="flex flex-wrap gap-2">
@@ -94,11 +111,41 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
         {/* Excerpt - Fixed height with line clamp */}
         <div className="h-16 mb-4">
           <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
-            {recipe.excerpt}
+            {recipe.excerpt || 'Upptäck detta läckra recept med funktionella livsmedel.'}
           </p>
         </div>
 
-        {/* Meta info - Fixed height */}
+        {/* Recipe meta info */}
+        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+          <div className="flex items-center space-x-3">
+            {recipe.difficulty && (
+              <span className="flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                {recipe.difficulty}
+              </span>
+            )}
+            {recipe.prepTime && (
+              <span className="flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {recipe.prepTime}
+              </span>
+            )}
+            {recipe.servings && (
+              <span className="flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                {recipe.servings} port.
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Author and ingredient count */}
         <div className="flex items-center justify-between text-xs text-gray-500 mb-4 h-4">
           <span className="flex items-center truncate">
             <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

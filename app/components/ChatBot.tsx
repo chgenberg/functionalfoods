@@ -29,7 +29,12 @@ export default function ChatBot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -172,10 +177,10 @@ export default function ChatBot() {
                   <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                 )}
                 <p className="text-xs opacity-70 mt-1">
-                  {message.timestamp.toLocaleTimeString('sv-SE', {
+                  {isClient ? message.timestamp.toLocaleTimeString('sv-SE', {
                     hour: '2-digit',
                     minute: '2-digit'
-                  })}
+                  }) : ''}
                 </p>
               </div>
             </div>

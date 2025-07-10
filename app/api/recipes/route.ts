@@ -39,9 +39,16 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category') || '';
     const status = searchParams.get('status') || '';
     const search = searchParams.get('search') || '';
+    const slug = searchParams.get('slug') || '';
 
     // Bygg Prisma filter
     const where: any = {};
+
+    // Om slug är angiven, hämta endast det specifika receptet
+    if (slug) {
+      where.slug = slug;
+      where.status = 'PUBLISHED'; // Bara publicerade recept
+    }
 
     // Filtrera baserat på status
     if (status) {
@@ -180,5 +187,48 @@ export async function GET(request: NextRequest) {
     );
   } finally {
     await prisma.$disconnect();
+  }
+} 
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    
+    // Create the recipe
+    const recipe = await prisma.recipe.create({
+      data: {
+        title: body.title,
+        slug: body.title.toLowerCase()
+          .replace(/[åä]/g, 'a')
+          .replace(/ö/g, 'o')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, ''),
+        excerpt: body.excerpt,
+        content: body.description,
+        imageUrl: body.image,
+        categories: [body.category],
+        ingredients: body.ingredients,
+        instructions: body.instructions.join('\n'),
+        difficulty: body.difficulty,
+        prepTime: body.prepTime,
+        cookTime: body.cookTime,
+        totalTime: `${parseInt(body.prepTime || '0') + parseInt(body.cookTime || '0')} min`,
+        servings: body.servings,
+        nutrition: body.nutritionInfo,
+        tips: body.tips,
+        tags: body.tags || [],
+        status: body.published ? 'PUBLISHED' : 'DRAFT',
+        isFree: true,
+        isPremium: false,
+      },
+    });
+
+    return NextResponse.json(recipe);
+  } catch (error) {
+    console.error('Error creating recipe:', error);
+    return NextResponse.json(
+      { error: 'Failed to create recipe' },
+      { status: 500 }
+    );
   }
 } 

@@ -1,641 +1,456 @@
 "use client";
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowLeft, FiArrowRight, FiSave, FiUpload, FiX, FiPlus, FiCheck, FiBook, FiVideo, FiFileText, FiDownload } from 'react-icons/fi';
-import Link from 'next/link';
-
-interface CourseData {
-  title: string;
-  description: string;
-  shortDescription: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
-  duration: string;
-  price: number;
-  category: string;
-  image: string;
-  features: string[];
-  modules: Array<{
-    title: string;
-    description: string;
-    lessons: Array<{
-      title: string;
-      type: 'video' | 'text' | 'quiz' | 'download';
-      content: string;
-      duration?: string;
-    }>;
-  }>;
-  requirements: string[];
-  learningOutcomes: string[];
-}
-
-const steps = [
-  { id: 1, title: 'Grundläggande info', description: 'Titel, beskrivning och kategori' },
-  { id: 2, title: 'Kursdetaljer', description: 'Nivå, pris och funktioner' },
-  { id: 3, title: 'Kursinnehåll', description: 'Moduler och lektioner' },
-  { id: 4, title: 'Krav & Mål', description: 'Förutsättningar och lärandemål' },
-  { id: 5, title: 'Granska & Spara', description: 'Kontrollera och publicera' }
-];
+import { FiArrowLeft, FiArrowRight, FiCheck, FiBook, FiClock, FiUsers, FiTarget, FiImage, FiSave } from 'react-icons/fi';
 
 export default function NewCoursePage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [courseData, setCourseData] = useState<CourseData>({
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [courseData, setCourseData] = useState({
     title: '',
     description: '',
-    shortDescription: '',
-    level: 'beginner',
-    duration: '',
-    price: 0,
-    category: '',
-    image: '',
-    features: [],
-    modules: [],
-    requirements: [],
-    learningOutcomes: []
+    level: 'Beginner',
+    duration: '4 weeks',
+    objectives: [''],
+    targetAudience: '',
+    coverImage: '',
+    modules: [{ title: '', description: '', lessons: [''] }],
   });
-  const [saving, setSaving] = useState(false);
-  const router = useRouter();
 
-  const updateCourseData = (field: keyof CourseData, value: any) => {
-    setCourseData(prev => ({ ...prev, [field]: value }));
-  };
+  const steps = [
+    { number: 1, title: 'Grundinfo', icon: FiBook },
+    { number: 2, title: 'Detaljer', icon: FiTarget },
+    { number: 3, title: 'Moduler', icon: FiUsers },
+    { number: 4, title: 'Media', icon: FiImage },
+    { number: 5, title: 'Granska', icon: FiCheck },
+  ];
 
-  const addFeature = () => {
-    setCourseData(prev => ({
-      ...prev,
-      features: [...prev.features, '']
-    }));
-  };
-
-  const updateFeature = (index: number, value: string) => {
-    setCourseData(prev => ({
-      ...prev,
-      features: prev.features.map((feature, i) => i === index ? value : feature)
-    }));
-  };
-
-  const removeFeature = (index: number) => {
-    setCourseData(prev => ({
-      ...prev,
-      features: prev.features.filter((_, i) => i !== index)
-    }));
-  };
-
-  const addModule = () => {
-    setCourseData(prev => ({
-      ...prev,
-      modules: [...prev.modules, { title: '', description: '', lessons: [] }]
-    }));
-  };
-
-  const updateModule = (index: number, field: string, value: any) => {
-    setCourseData(prev => ({
-      ...prev,
-      modules: prev.modules.map((module, i) => 
-        i === index ? { ...module, [field]: value } : module
-      )
-    }));
-  };
-
-  const addLesson = (moduleIndex: number) => {
-    setCourseData(prev => ({
-      ...prev,
-      modules: prev.modules.map((module, i) => 
-        i === moduleIndex 
-          ? { ...module, lessons: [...module.lessons, { title: '', type: 'video', content: '' }] }
-          : module
-      )
-    }));
-  };
-
-  const nextStep = () => {
+  const handleNext = () => {
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
     }
   };
 
-  const prevStep = () => {
+  const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
-  const handleSave = async () => {
-    setSaving(true);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
     try {
-      // Här skulle vi skicka data till API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      router.push('/admin/courses');
+      const response = await fetch('/api/admin/courses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(courseData),
+      });
+
+      if (response.ok) {
+        router.push('/admin/courses');
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Ett fel uppstod');
+      }
     } catch (error) {
-      console.error('Error saving course:', error);
+      console.error('Error creating course:', error);
+      alert('Ett fel uppstod vid skapande av kurs');
     } finally {
-      setSaving(false);
+      setIsSubmitting(false);
     }
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kurstitel *
-              </label>
-              <input
-                type="text"
-                value={courseData.title}
-                onChange={(e) => updateCourseData('title', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="t.ex. Functional Foods Grundkurs"
-              />
-            </div>
+  const addObjective = () => {
+    setCourseData({
+      ...courseData,
+      objectives: [...courseData.objectives, ''],
+    });
+  };
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kort beskrivning *
-              </label>
-              <textarea
-                value={courseData.shortDescription}
-                onChange={(e) => updateCourseData('shortDescription', e.target.value)}
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="En kort beskrivning som visas i kursöversikten..."
-              />
-            </div>
+  const updateObjective = (index: number, value: string) => {
+    const newObjectives = [...courseData.objectives];
+    newObjectives[index] = value;
+    setCourseData({ ...courseData, objectives: newObjectives });
+  };
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Detaljerad beskrivning *
-              </label>
-              <textarea
-                value={courseData.description}
-                onChange={(e) => updateCourseData('description', e.target.value)}
-                rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Detaljerad beskrivning av kursen, vad deltagarna kommer att lära sig..."
-              />
-            </div>
+  const removeObjective = (index: number) => {
+    setCourseData({
+      ...courseData,
+      objectives: courseData.objectives.filter((_, i) => i !== index),
+    });
+  };
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kategori *
-              </label>
-              <select
-                value={courseData.category}
-                onChange={(e) => updateCourseData('category', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Välj kategori</option>
-                <option value="functional-foods">Functional Foods</option>
-                <option value="nutrition">Näringslära</option>
-                <option value="health">Hälsa & Välmående</option>
-                <option value="lifestyle">Livsstil</option>
-              </select>
-            </div>
-          </div>
-        );
+  const addModule = () => {
+    setCourseData({
+      ...courseData,
+      modules: [...courseData.modules, { title: '', description: '', lessons: [''] }],
+    });
+  };
 
-      case 2:
-        return (
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nivå *
-                </label>
-                <select
-                  value={courseData.level}
-                  onChange={(e) => updateCourseData('level', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="beginner">Nybörjare</option>
-                  <option value="intermediate">Medel</option>
-                  <option value="advanced">Avancerad</option>
-                </select>
-              </div>
+  const updateModule = (index: number, field: string, value: string) => {
+    const newModules = [...courseData.modules];
+    newModules[index] = { ...newModules[index], [field]: value };
+    setCourseData({ ...courseData, modules: newModules });
+  };
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Varaktighet *
-                </label>
-                <input
-                  type="text"
-                  value={courseData.duration}
-                  onChange={(e) => updateCourseData('duration', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="t.ex. 6 veckor"
-                />
-              </div>
-            </div>
+  const addLesson = (moduleIndex: number) => {
+    const newModules = [...courseData.modules];
+    newModules[moduleIndex].lessons.push('');
+    setCourseData({ ...courseData, modules: newModules });
+  };
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pris (SEK) *
-              </label>
-              <input
-                type="number"
-                value={courseData.price}
-                onChange={(e) => updateCourseData('price', parseFloat(e.target.value))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kursbild URL
-              </label>
-              <input
-                type="url"
-                value={courseData.image}
-                onChange={(e) => updateCourseData('image', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="https://example.com/image.jpg"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kursfunktioner
-              </label>
-              <div className="space-y-3">
-                {courseData.features.map((feature, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={feature}
-                      onChange={(e) => updateFeature(index, e.target.value)}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="t.ex. Livstidsåtkomst"
-                    />
-                    <button
-                      onClick={() => removeFeature(index)}
-                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <FiX className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={addFeature}
-                  className="flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-colors"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  Lägg till funktion
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">Kursmoduler</h3>
-              <button
-                onClick={addModule}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <FiPlus className="w-4 h-4" />
-                Ny modul
-              </button>
-            </div>
-
-            {courseData.modules.map((module, moduleIndex) => (
-              <div key={moduleIndex} className="border border-gray-200 rounded-lg p-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Modultitel
-                    </label>
-                    <input
-                      type="text"
-                      value={module.title}
-                      onChange={(e) => updateModule(moduleIndex, 'title', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="t.ex. Vecka 1: Introduktion"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Modulbeskrivning
-                    </label>
-                    <textarea
-                      value={module.description}
-                      onChange={(e) => updateModule(moduleIndex, 'description', e.target.value)}
-                      rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Beskrivning av vad som täcks i denna modul..."
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Lektioner
-                      </label>
-                      <button
-                        onClick={() => addLesson(moduleIndex)}
-                        className="flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-3 py-1 rounded-lg transition-colors"
-                      >
-                        <FiPlus className="w-4 h-4" />
-                        Ny lektion
-                      </button>
-                    </div>
-
-                    {module.lessons.map((lesson, lessonIndex) => (
-                      <div key={lessonIndex} className="border border-gray-100 rounded-lg p-4 mb-3">
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">
-                              Lektionstitel
-                            </label>
-                            <input
-                              type="text"
-                              value={lesson.title}
-                              onChange={(e) => {
-                                const newLessons = [...module.lessons];
-                                newLessons[lessonIndex] = { ...lesson, title: e.target.value };
-                                updateModule(moduleIndex, 'lessons', newLessons);
-                              }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                              placeholder="Lektionstitel"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">
-                              Typ
-                            </label>
-                            <select
-                              value={lesson.type}
-                              onChange={(e) => {
-                                const newLessons = [...module.lessons];
-                                newLessons[lessonIndex] = { ...lesson, type: e.target.value as any };
-                                updateModule(moduleIndex, 'lessons', newLessons);
-                              }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                            >
-                              <option value="video">Video</option>
-                              <option value="text">Text</option>
-                              <option value="quiz">Quiz</option>
-                              <option value="download">Nedladdning</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div className="mt-3">
-                          <label className="block text-xs font-medium text-gray-600 mb-1">
-                            Innehåll/URL
-                          </label>
-                          <input
-                            type="text"
-                            value={lesson.content}
-                            onChange={(e) => {
-                              const newLessons = [...module.lessons];
-                              newLessons[lessonIndex] = { ...lesson, content: e.target.value };
-                              updateModule(moduleIndex, 'lessons', newLessons);
-                            }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                            placeholder="Video URL, text innehåll eller fil URL"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Krav & Förutsättningar
-              </label>
-              <div className="space-y-3">
-                {courseData.requirements.map((req, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={req}
-                      onChange={(e) => {
-                        const newReqs = [...courseData.requirements];
-                        newReqs[index] = e.target.value;
-                        updateCourseData('requirements', newReqs);
-                      }}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="t.ex. Grundläggande kunskaper om näring"
-                    />
-                    <button
-                      onClick={() => {
-                        const newReqs = courseData.requirements.filter((_, i) => i !== index);
-                        updateCourseData('requirements', newReqs);
-                      }}
-                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <FiX className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={() => updateCourseData('requirements', [...courseData.requirements, ''])}
-                  className="flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-colors"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  Lägg till krav
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Lärandemål
-              </label>
-              <div className="space-y-3">
-                {courseData.learningOutcomes.map((outcome, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={outcome}
-                      onChange={(e) => {
-                        const newOutcomes = [...courseData.learningOutcomes];
-                        newOutcomes[index] = e.target.value;
-                        updateCourseData('learningOutcomes', newOutcomes);
-                      }}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="t.ex. Förstå grunderna i functional foods"
-                    />
-                    <button
-                      onClick={() => {
-                        const newOutcomes = courseData.learningOutcomes.filter((_, i) => i !== index);
-                        updateCourseData('learningOutcomes', newOutcomes);
-                      }}
-                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <FiX className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={() => updateCourseData('learningOutcomes', [...courseData.learningOutcomes, ''])}
-                  className="flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-colors"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  Lägg till lärandemål
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 5:
-        return (
-          <div className="space-y-6">
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Kursöversikt</h3>
-              <div className="space-y-3">
-                <div><strong>Titel:</strong> {courseData.title}</div>
-                <div><strong>Kategori:</strong> {courseData.category}</div>
-                <div><strong>Nivå:</strong> {courseData.level}</div>
-                <div><strong>Varaktighet:</strong> {courseData.duration}</div>
-                <div><strong>Pris:</strong> {courseData.price} SEK</div>
-                <div><strong>Moduler:</strong> {courseData.modules.length} st</div>
-                <div><strong>Funktioner:</strong> {courseData.features.length} st</div>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-blue-800">
-                <FiCheck className="w-5 h-5" />
-                <span className="font-medium">Redo att publicera</span>
-              </div>
-              <p className="text-blue-700 text-sm mt-1">
-                Kursen kommer att vara synlig för användare direkt efter publicering.
-              </p>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
+  const updateLesson = (moduleIndex: number, lessonIndex: number, value: string) => {
+    const newModules = [...courseData.modules];
+    newModules[moduleIndex].lessons[lessonIndex] = value;
+    setCourseData({ ...courseData, modules: newModules });
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <Link
-                href="/admin/courses"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <FiArrowLeft className="w-4 h-4" />
-                Tillbaka till kurser
-              </Link>
-            </div>
-            <h1 className="text-xl font-semibold text-gray-900">Skapa ny kurs</h1>
-          </div>
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Header */}
+        <div className="mb-8">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+          >
+            <FiArrowLeft />
+            Tillbaka
+          </button>
+          <h1 className="text-3xl font-bold text-gray-900">Skapa ny kurs</h1>
+          <p className="text-gray-600 mt-2">Fyll i informationen steg för steg</p>
         </div>
-      </div>
 
-      {/* Progress Steps */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {/* Progress Steps */}
+        <div className="mb-8">
           <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    step.id === currentStep 
-                      ? 'bg-blue-600 text-white' 
-                      : step.id < currentStep 
-                        ? 'bg-green-600 text-white' 
-                        : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {step.id < currentStep ? <FiCheck className="w-4 h-4" /> : step.id}
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.number} className="flex items-center">
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all ${
+                      currentStep >= step.number
+                        ? 'bg-orange-500 text-white'
+                        : 'bg-gray-200 text-gray-500'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
                   </div>
-                  <div className="ml-3">
-                    <div className="text-sm font-medium text-gray-900">{step.title}</div>
-                    <div className="text-xs text-gray-500">{step.description}</div>
-                  </div>
+                  {index < steps.length - 1 && (
+                    <div
+                      className={`h-1 w-full mx-2 transition-all ${
+                        currentStep > step.number ? 'bg-orange-500' : 'bg-gray-200'
+                      }`}
+                    />
+                  )}
                 </div>
-                {index < steps.length - 1 && (
-                  <div className={`w-16 h-0.5 mx-4 ${
-                    step.id < currentStep ? 'bg-green-600' : 'bg-gray-200'
-                  }`} />
-                )}
-              </div>
+              );
+            })}
+          </div>
+          <div className="flex justify-between mt-2">
+            {steps.map((step) => (
+              <span
+                key={step.number}
+                className={`text-sm ${
+                  currentStep >= step.number ? 'text-orange-600 font-medium' : 'text-gray-500'
+                }`}
+              >
+                {step.title}
+              </span>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-8"
-          >
-            {renderStep()}
-          </motion.div>
-        </AnimatePresence>
+        {/* Form Content */}
+        <div className="bg-white rounded-xl shadow-sm p-8">
+          {currentStep === 1 && (
+            <div className="space-y-6 animate-fade-in">
+              <h2 className="text-xl font-semibold mb-4">Grundläggande information</h2>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Kursnamn *
+                </label>
+                <input
+                  type="text"
+                  value={courseData.title}
+                  onChange={(e) => setCourseData({ ...courseData, title: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="T.ex. Functional Foods Masterclass"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Beskrivning *
+                </label>
+                <textarea
+                  value={courseData.description}
+                  onChange={(e) => setCourseData({ ...courseData, description: e.target.value })}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Beskriv vad deltagarna kommer lära sig..."
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nivå
+                  </label>
+                  <select
+                    value={courseData.level}
+                    onChange={(e) => setCourseData({ ...courseData, level: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  >
+                    <option value="Beginner">Nybörjare</option>
+                    <option value="Intermediate">Medel</option>
+                    <option value="Advanced">Avancerad</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Längd
+                  </label>
+                  <div className="relative">
+                    <FiClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={courseData.duration}
+                      onChange={(e) => setCourseData({ ...courseData, duration: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      placeholder="T.ex. 6 veckor"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div className="space-y-6 animate-fade-in">
+              <h2 className="text-xl font-semibold mb-4">Kursmål och målgrupp</h2>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Kursmål
+                </label>
+                <p className="text-sm text-gray-500 mb-3">Vad kommer deltagarna kunna efter kursen?</p>
+                {courseData.objectives.map((objective, index) => (
+                  <div key={index} className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={objective}
+                      onChange={(e) => updateObjective(index, e.target.value)}
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      placeholder="T.ex. Förstå grunderna i functional foods"
+                    />
+                    {courseData.objectives.length > 1 && (
+                      <button
+                        onClick={() => removeObjective(index)}
+                        className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  onClick={addObjective}
+                  className="mt-2 text-orange-600 hover:text-orange-700 font-medium"
+                >
+                  + Lägg till mål
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Målgrupp
+                </label>
+                <textarea
+                  value={courseData.targetAudience}
+                  onChange={(e) => setCourseData({ ...courseData, targetAudience: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Beskriv vem kursen är för..."
+                />
+              </div>
+            </div>
+          )}
+
+          {currentStep === 3 && (
+            <div className="space-y-6 animate-fade-in">
+              <h2 className="text-xl font-semibold mb-4">Kursmoduler</h2>
+              
+              {courseData.modules.map((module, moduleIndex) => (
+                <div key={moduleIndex} className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="font-medium mb-3">Modul {moduleIndex + 1}</h3>
+                  
+                  <input
+                    type="text"
+                    value={module.title}
+                    onChange={(e) => updateModule(moduleIndex, 'title', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-2"
+                    placeholder="Modultitel"
+                  />
+                  
+                  <textarea
+                    value={module.description}
+                    onChange={(e) => updateModule(moduleIndex, 'description', e.target.value)}
+                    rows={2}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-3"
+                    placeholder="Modulbeskrivning"
+                  />
+                  
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-700 mb-2">Lektioner:</p>
+                    {module.lessons.map((lesson, lessonIndex) => (
+                      <input
+                        key={lessonIndex}
+                        type="text"
+                        value={lesson}
+                        onChange={(e) => updateLesson(moduleIndex, lessonIndex, e.target.value)}
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 mb-1 text-sm"
+                        placeholder={`Lektion ${lessonIndex + 1}`}
+                      />
+                    ))}
+                    <button
+                      onClick={() => addLesson(moduleIndex)}
+                      className="mt-1 text-sm text-orange-600 hover:text-orange-700"
+                    >
+                      + Lägg till lektion
+                    </button>
+                  </div>
+                </div>
+              ))}
+              
+              <button
+                onClick={addModule}
+                className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-orange-500 hover:text-orange-600"
+              >
+                + Lägg till modul
+              </button>
+            </div>
+          )}
+
+          {currentStep === 4 && (
+            <div className="space-y-6 animate-fade-in">
+              <h2 className="text-xl font-semibold mb-4">Media och bilder</h2>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Omslagsbild URL
+                </label>
+                <input
+                  type="url"
+                  value={courseData.coverImage}
+                  onChange={(e) => setCourseData({ ...courseData, coverImage: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+
+              {courseData.coverImage && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Förhandsvisning:</p>
+                  <img
+                    src={courseData.coverImage}
+                    alt="Course preview"
+                    className="w-full h-48 object-cover rounded-lg"
+                    onError={(e) => {
+                      e.currentTarget.src = '/api/placeholder/400/200';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {currentStep === 5 && (
+            <div className="space-y-6 animate-fade-in">
+              <h2 className="text-xl font-semibold mb-4">Granska och publicera</h2>
+              
+              <div className="bg-gray-50 rounded-lg p-6">
+                <h3 className="font-semibold text-lg mb-4">{courseData.title || 'Ingen titel'}</h3>
+                <p className="text-gray-600 mb-4">{courseData.description || 'Ingen beskrivning'}</p>
+                
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Nivå:</span> {courseData.level}
+                  </div>
+                  <div>
+                    <span className="font-medium">Längd:</span> {courseData.duration}
+                  </div>
+                  <div className="col-span-2">
+                    <span className="font-medium">Antal moduler:</span> {courseData.modules.length}
+                  </div>
+                </div>
+
+                {courseData.objectives.filter(o => o).length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2">Kursmål:</h4>
+                    <ul className="list-disc list-inside space-y-1">
+                      {courseData.objectives.filter(o => o).map((objective, index) => (
+                        <li key={index} className="text-gray-600">{objective}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                <p className="text-sm text-orange-800">
+                  <strong>OBS!</strong> Efter publicering kommer kursen vara synlig för alla användare.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-8">
           <button
-            onClick={prevStep}
+            onClick={handlePrevious}
             disabled={currentStep === 1}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
-              currentStep === 1 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+            className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
+              currentStep === 1
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            <FiArrowLeft className="w-4 h-4" />
+            <FiArrowLeft />
             Föregående
           </button>
 
-          {currentStep === steps.length ? (
+          {currentStep < steps.length ? (
             <button
-              onClick={handleSave}
-              disabled={saving}
-              className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+              onClick={handleNext}
+              className="px-6 py-3 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-all flex items-center gap-2"
             >
-              {saving ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Sparar...
-                </>
-              ) : (
-                <>
-                  <FiSave className="w-4 h-4" />
-                  Publicera kurs
-                </>
-              )}
+              Nästa
+              <FiArrowRight />
             </button>
           ) : (
             <button
-              onClick={nextStep}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all flex items-center gap-2 disabled:opacity-50"
             >
-              Nästa
-              <FiArrowRight className="w-4 h-4" />
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Skapar...
+                </>
+              ) : (
+                <>
+                  <FiSave />
+                  Skapa kurs
+                </>
+              )}
             </button>
           )}
         </div>

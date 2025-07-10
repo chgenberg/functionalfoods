@@ -191,11 +191,50 @@ export default function NewRecipePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Här skulle vi skicka data till API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Format ingredients for the database
+      const formattedIngredients = recipeData.ingredients.map(ing => 
+        `${ing.amount} ${ing.unit} ${ing.name}`
+      );
+
+      // Create the recipe object
+      const recipePayload = {
+        title: recipeData.title,
+        description: recipeData.description,
+        excerpt: recipeData.excerpt,
+        category: recipeData.category,
+        difficulty: recipeData.difficulty,
+        prepTime: recipeData.prepTime,
+        cookTime: recipeData.cookTime,
+        servings: recipeData.servings,
+        image: recipeData.image || '/images/recipe-placeholder.svg',
+        ingredients: formattedIngredients,
+        instructions: recipeData.instructions,
+        nutritionInfo: recipeData.nutritionInfo,
+        tips: recipeData.tips,
+        tags: recipeData.tags.filter(tag => tag.trim() !== ''),
+        functionalBenefits: recipeData.functionalBenefits.filter(benefit => benefit.trim() !== ''),
+        published: true
+      };
+
+      const response = await fetch('/api/recipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipePayload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save recipe');
+      }
+
+      const savedRecipe = await response.json();
+      
+      // Show success message or redirect
       router.push('/admin/recipes');
     } catch (error) {
       console.error('Error saving recipe:', error);
+      alert('Ett fel uppstod när receptet skulle sparas. Försök igen.');
     } finally {
       setSaving(false);
     }

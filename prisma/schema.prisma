@@ -313,7 +313,7 @@ model Recipe {
   imageAlt     String?
   categories   String[] // Array of category names
   ingredients  String[] // Array of ingredients
-  instructions String[] // Array of instruction steps
+  instructions String?  // Cooking instructions as text
   difficulty   String?  // Easy, Medium, Hard
   prepTime     String?  // e.g. "15 min"
   cookTime     String?  // e.g. "30 min"
