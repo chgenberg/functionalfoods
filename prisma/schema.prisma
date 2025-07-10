@@ -31,6 +31,7 @@ model User {
   forumThreads  ForumThread[]
   forumReplies  ForumReply[]
   forumLikes    ForumLike[]
+  recipes       Recipe[]
 }
 
 model Course {
@@ -302,6 +303,39 @@ model ForumLike {
   @@index([userId])
 }
 
+model Recipe {
+  id           String   @id @default(uuid())
+  title        String
+  slug         String   @unique
+  excerpt      String?
+  content      String?  // Full recipe content/instructions
+  imageUrl     String?
+  imageAlt     String?
+  categories   String[] // Array of category names
+  ingredients  String[] // Array of ingredients
+  instructions String[] // Array of instruction steps
+  difficulty   String?  // Easy, Medium, Hard
+  prepTime     String?  // e.g. "15 min"
+  cookTime     String?  // e.g. "30 min"
+  totalTime    String?  // e.g. "45 min"
+  servings     Int?     // Number of servings
+  nutrition    Json?    // Nutritional information
+  tips         String?  // Cooking tips
+  tags         String[] // Array of tags
+  status       RecipeStatus @default(PUBLISHED)
+  isPremium    Boolean  @default(false)
+  isFree       Boolean  @default(true)
+  authorId     String?
+  author       User?    @relation(fields: [authorId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([status])
+  @@index([isPremium])
+  @@index([isFree])
+  @@index([slug])
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED
@@ -318,4 +352,10 @@ enum PaymentStatus {
   FAILED
   CANCELLED
   REFUNDED
+}
+
+enum RecipeStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }

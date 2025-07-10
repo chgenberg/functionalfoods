@@ -1,22 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { parse } from 'csv-parse/sync';
+import { PrismaClient } from '@prisma/client';
 
-// Force dynamic rendering for this route
-export const dynamic = 'force-dynamic';
+const prisma = new PrismaClient();
 
 interface Recipe {
   id: string;
   title: string;
   excerpt: string;
-  imageUrl?: string;
-  imageAlt?: string;
+  imageUrl: string;
+  imageAlt: string;
   categories: string[];
   ingredients: string[];
   slug: string;
-  status: 'publish' | 'draft';
+  status: string;
   isPremium: boolean;
+  isFree: boolean;
   date: string;
   author: {
     name: string;
@@ -25,7 +23,7 @@ interface Recipe {
   };
 }
 
-// Shuffle array function
+// Funktion för att blanda array
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -41,90 +39,101 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(request.nextUrl.searchParams.get('limit') || '3');
     const categories = request.nextUrl.searchParams.get('categories')?.split(',') || [];
 
-    // Read CSV file
-    const csvFilePath = path.join(process.cwd(), 'Recept', 'Recept_Functional.csv');
-    const csvContent = await fs.readFile(csvFilePath, 'utf-8');
-    
-    // Parse CSV
-    const records = parse(csvContent, {
-      columns: true,
-      skip_empty_lines: true,
-      delimiter: ','
-    });
+    // Bygg filter för relaterade recept
+    const where: any = {
+      status: 'PUBLISHED',
+      isFree: true,
+      isPremium: false
+    };
 
-    // Process recipes
-    const recipes: Recipe[] = records.map((record: any) => {
-      const parseIngredients = (ingredientString: string): string[] => {
-        if (!ingredientString) return [];
-        return ingredientString
-          .split(/[,;|\n]/)
-          .map(ingredient => ingredient.trim())
-          .filter(ingredient => ingredient.length > 0);
+    // Exkludera nuvarande recept om slug finns
+    if (currentSlug) {
+      where.slug = {
+        not: currentSlug
       };
-
-      const parseCategories = (categoryString: string): string[] => {
-        if (!categoryString) return [];
-        return categoryString
-          .split('|')
-          .map(cat => cat.trim())
-          .filter(cat => cat.length > 0);
-      };
-
-      const createSlug = (title: string): string => {
-        return title
-          .toLowerCase()
-          .replace(/[åäà]/g, 'a')
-          .replace(/[öø]/g, 'o')
-          .replace(/[ü]/g, 'u')
-          .replace(/[^a-z0-9]/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-|-$/g, '');
-      };
-
-      const isPremium = record.Status === 'draft';
-
-      return {
-        id: record.ID?.toString() || '',
-        title: record.Title || '',
-        excerpt: record.Excerpt || '',
-        imageUrl: record['Image URL'] || '',
-        imageAlt: record['Image Alt Text'] || '',
-        categories: parseCategories(record.Kategorier || ''),
-        ingredients: parseIngredients(record.Ingredienser || ''),
-        slug: createSlug(record.Title || ''),
-        status: record.Status === 'publish' ? 'publish' : 'draft',
-        isPremium,
-        date: record.Date || '',
-        author: {
-          name: record['First Name'] && record['Last Name'] 
-            ? `${record['First Name']} ${record['Last Name']}` 
-            : record.Username || 'Functional Foods',
-          username: record.Username || '',
-          email: record.Email || ''
-        }
-      };
-    });
-
-    // Filter out current recipe and only include free recipes (status: 'publish')
-    let filteredRecipes = recipes.filter(recipe => 
-      recipe.slug !== currentSlug && recipe.status === 'publish' && !recipe.isPremium
-    );
-
-    // If categories are provided, try to find recipes with similar categories first
-    if (categories.length > 0) {
-      const similarRecipes = filteredRecipes.filter(recipe => 
-        recipe.categories.some(cat => categories.includes(cat))
-      );
-      
-      if (similarRecipes.length >= limit) {
-        filteredRecipes = similarRecipes;
-      }
     }
 
-    // Randomize the recipes
-    const shuffledRecipes = shuffleArray(filteredRecipes);
+    let recipes;
 
-    // Return the requested number of recipes
+    // Om kategorier finns, försök hitta recept med liknande kategorier först
+    if (categories.length > 0) {
+      const similarRecipes = await prisma.recipe.findMany({
+        where: {
+          ...where,
+          categories: {
+            hasSome: categories
+          }
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+              email: true
+            }
+          }
+        },
+        take: limit * 2 // Ta fler för att ha mer att blanda
+      });
+
+      if (similarRecipes.length >= limit) {
+        recipes = similarRecipes;
+      } else {
+        // Om inte tillräckligt med liknande recept, hämta alla tillgängliga
+        const allRecipes = await prisma.recipe.findMany({
+          where,
+          include: {
+            author: {
+              select: {
+                name: true,
+                email: true
+              }
+            }
+          },
+          take: limit * 3
+        });
+        recipes = allRecipes;
+      }
+    } else {
+      // Hämta alla tillgängliga recept
+      recipes = await prisma.recipe.findMany({
+        where,
+        include: {
+          author: {
+            select: {
+              name: true,
+              email: true
+            }
+          }
+        },
+        take: limit * 3
+      });
+    }
+
+    // Konvertera till API-format
+    const formattedRecipes: Recipe[] = recipes.map(recipe => ({
+      id: recipe.id,
+      title: recipe.title,
+      excerpt: recipe.excerpt || '',
+      imageUrl: recipe.imageUrl || '/images/recipe-placeholder.svg',
+      imageAlt: recipe.imageAlt || recipe.title,
+      categories: recipe.categories,
+      ingredients: recipe.ingredients,
+      slug: recipe.slug,
+      status: recipe.status,
+      isPremium: recipe.isPremium,
+      isFree: recipe.isFree,
+      date: recipe.createdAt.toISOString(),
+      author: {
+        name: recipe.author?.name || 'Ulrika Davidsson',
+        username: 'ulrika',
+        email: recipe.author?.email || ''
+      }
+    }));
+
+    // Blanda recepten
+    const shuffledRecipes = shuffleArray(formattedRecipes);
+
+    // Returnera det begärda antalet recept
     const relatedRecipes = shuffledRecipes.slice(0, limit);
 
     return NextResponse.json({
@@ -138,5 +147,7 @@ export async function GET(request: NextRequest) {
       { error: 'Failed to fetch related recipes' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 } 

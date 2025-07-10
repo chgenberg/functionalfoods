@@ -1,537 +1,266 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiPlus, FiEdit3, FiTrash2, FiEye, FiSearch, FiFilter, FiGrid, FiList, FiClock, FiUsers, FiStar } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 interface Recipe {
   id: string;
   title: string;
-  excerpt: string;
+  excerpt?: string;
   imageUrl?: string;
-  imageAlt?: string;
   categories: string[];
   ingredients: string[];
   slug: string;
-  status: 'publish' | 'draft';
+  status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
   isPremium: boolean;
+  isFree: boolean;
+  difficulty?: string;
+  prepTime?: string;
+  cookTime?: string;
+  servings?: number;
   date: string;
-  author: {
-    name: string;
-    username: string;
-  };
-}
-
-interface RecipeData {
-  recipes: Recipe[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasMore: boolean;
-  };
-  categories: string[];
-  statistics: {
-    total: number;
-    free: number;
-    premium: number;
-    visible: number;
-  };
 }
 
 export default function AdminRecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-  const [categories, setCategories] = useState<string[]>([]);
-  const [statistics, setStatistics] = useState({ total: 0, free: 0, premium: 0, visible: 0 });
+  const [filter, setFilter] = useState<'all' | 'free' | 'premium'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchRecipes();
-  }, [selectedCategory, selectedStatus, searchQuery]);
+  }, [filter, searchTerm]);
 
   const fetchRecipes = async () => {
     try {
       setLoading(true);
-      setError(null);
-
-      const params = new URLSearchParams({
-        limit: '50',
-        category: selectedCategory !== 'all' ? selectedCategory : '',
-        status: selectedStatus !== 'all' ? selectedStatus : '',
-        search: searchQuery
-      });
+      const params = new URLSearchParams();
+      
+      if (filter === 'free') {
+        params.append('status', 'published');
+      } else if (filter === 'premium') {
+        params.append('status', 'premium');
+      }
+      
+      if (searchTerm) {
+        params.append('search', searchTerm);
+      }
+      
+      params.append('limit', '100'); // Visa många recept i admin
 
       const response = await fetch(`/api/recipes?${params}`);
+      const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch recipes');
+      if (response.ok) {
+        setRecipes(data.recipes);
+      } else {
+        setError(data.error || 'Failed to fetch recipes');
       }
-
-      const data: RecipeData = await response.json();
-      
-      // Säkerställ att data är korrekt formaterad
-      setRecipes(Array.isArray(data.recipes) ? data.recipes : []);
-      setCategories(Array.isArray(data.categories) ? data.categories : []);
-      setStatistics(data.statistics || { total: 0, free: 0, premium: 0, visible: 0 });
     } catch (err) {
+      setError('Failed to fetch recipes');
       console.error('Error fetching recipes:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setRecipes([]);
-      setCategories([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteRecipe = async (recipeId: string) => {
-    if (!recipeId || !confirm('Är du säker på att du vill ta bort detta recept?')) {
+  const handleDeleteRecipe = async (id: string, title: string) => {
+    if (!confirm(`Är du säker på att du vill ta bort receptet "${title}"?`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/recipes/${recipeId}`, {
+      const response = await fetch(`/api/recipes/${id}`, {
         method: 'DELETE'
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to delete recipe');
+      if (response.ok) {
+        setRecipes(recipes.filter(recipe => recipe.id !== id));
+        alert('Receptet har tagits bort');
+      } else {
+        const data = await response.json();
+        alert(`Fel vid borttagning: ${data.error}`);
       }
-
-      const result = await response.json();
-      console.log('Recipe deleted successfully:', result);
-      
-      alert(`Receptet "${result.deletedRecipe || 'Unknown'}" har tagits bort. Backup sparad.`);
-      
-      // Uppdatera listan
-      fetchRecipes();
-    } catch (error) {
-      console.error('Error deleting recipe:', error);
-      alert('Fel vid borttagning av recept: ' + (error instanceof Error ? error.message : 'Okänt fel'));
+    } catch (err) {
+      alert('Fel vid borttagning av recept');
+      console.error('Error deleting recipe:', err);
     }
-  };
-
-  const getStatusColor = (status: string, isPremium: boolean) => {
-    if (isPremium) {
-      return 'bg-purple-100 text-purple-800';
-    }
-    return status === 'publish' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
-  };
-
-  const getStatusText = (status: string, isPremium: boolean) => {
-    if (isPremium) return 'Premium';
-    return status === 'publish' ? 'Publicerad' : 'Utkast';
   };
 
   const filteredRecipes = recipes.filter(recipe => {
-    if (!recipe) return false;
-    
-    const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
-    const matchesStatus = selectedStatus === 'all' || 
-      (selectedStatus === 'published' && recipe.status === 'publish' && !recipe.isPremium) ||
-      (selectedStatus === 'draft' && recipe.status === 'draft') ||
-      (selectedStatus === 'premium' && recipe.isPremium);
-    const matchesSearch = !searchQuery || (recipe.title && recipe.title.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    return matchesCategory && matchesStatus && matchesSearch;
+    if (filter === 'free') return recipe.isFree && !recipe.isPremium;
+    if (filter === 'premium') return recipe.isPremium;
+    return true;
   });
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar recept...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">Fel vid laddning</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button
-            onClick={fetchRecipes}
-            className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"
-          >
-            Försök igen
-          </button>
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">Recepthantering</h1>
-            </div>
-            <Link
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold text-gray-900">Recepthantering</h1>
+            <Link 
               href="/admin/recipes/new"
-              className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
             >
-              <FiPlus className="w-4 h-4" />
-              Nytt recept
+              Lägg till nytt recept
             </Link>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
-          >
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-blue-100">
-                <FiEye className="w-6 h-6 text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Totalt antal</p>
-                <p className="text-2xl font-semibold text-gray-900">{statistics.total}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
-          >
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-green-100">
-                <FiStar className="w-6 h-6 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Publicerade</p>
-                <p className="text-2xl font-semibold text-gray-900">{statistics.free}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
-          >
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-purple-100">
-                <FiStar className="w-6 h-6 text-purple-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Premium</p>
-                <p className="text-2xl font-semibold text-gray-900">{statistics.premium}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
-          >
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-orange-100">
-                <FiEye className="w-6 h-6 text-orange-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Synliga</p>
-                <p className="text-2xl font-semibold text-gray-900">{statistics.visible}</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              <div className="relative flex-1 max-w-md">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Sök recept..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
-              </div>
-
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              >
-                <option value="all">Alla kategorier</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              >
-                <option value="all">Alla status</option>
-                <option value="published">Publicerade</option>
-                <option value="draft">Utkast</option>
-                <option value="premium">Premium</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex gap-2">
               <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'grid' 
-                    ? 'bg-orange-100 text-orange-600' 
-                    : 'text-gray-400 hover:text-gray-600'
+                onClick={() => setFilter('all')}
+                className={`px-4 py-2 rounded-lg transition-colors ${
+                  filter === 'all' 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <FiGrid className="w-5 h-5" />
+                Alla ({recipes.length})
               </button>
               <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'list' 
-                    ? 'bg-orange-100 text-orange-600' 
-                    : 'text-gray-400 hover:text-gray-600'
+                onClick={() => setFilter('free')}
+                className={`px-4 py-2 rounded-lg transition-colors ${
+                  filter === 'free' 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <FiList className="w-5 h-5" />
+                Gratis ({recipes.filter(r => r.isFree && !r.isPremium).length})
               </button>
+              <button
+                onClick={() => setFilter('premium')}
+                className={`px-4 py-2 rounded-lg transition-colors ${
+                  filter === 'premium' 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Premium ({recipes.filter(r => r.isPremium).length})
+              </button>
+            </div>
+
+            <div className="flex-1 max-w-md">
+              <input
+                type="text"
+                placeholder="Sök recept..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
             </div>
           </div>
         </div>
 
-        {filteredRecipes.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-            <div className="text-6xl mb-4">🍽️</div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Inga recept hittades</h3>
-            <p className="text-gray-500 mb-6">
-              {searchQuery || selectedCategory !== 'all' || selectedStatus !== 'all' 
-                ? 'Prova att ändra dina sökfilter'
-                : 'Börja med att skapa ditt första recept'
-              }
-            </p>
-            <Link
-              href="/admin/recipes/new"
-              className="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"
-            >
-              <FiPlus className="w-4 h-4" />
-              Skapa nytt recept
-            </Link>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            {error}
           </div>
-        ) : viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredRecipes.map((recipe, index) => (
-              <motion.div
-                key={recipe.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div className="relative h-48">
-                  <Image
-                    src={recipe.imageUrl || '/images/recipe-placeholder.svg'}
-                    alt={recipe.imageAlt || recipe.title || 'Recipe image'}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/images/recipe-placeholder.svg';
-                    }}
+        )}
+
+        {/* Recipes Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredRecipes.map((recipe) => (
+            <div key={recipe.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              {/* Recipe Image */}
+              <div className="h-48 bg-gray-200 relative">
+                {recipe.imageUrl && recipe.imageUrl !== '/images/recipe-placeholder.svg' ? (
+                  <img
+                    src={recipe.imageUrl}
+                    alt={recipe.title}
+                    className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-3 right-3">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(recipe.status, recipe.isPremium)}`}>
-                      {getStatusText(recipe.status, recipe.isPremium)}
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+                
+                {/* Status badges */}
+                <div className="absolute top-2 left-2 flex gap-1">
+                  {recipe.isPremium && (
+                    <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                      Premium
                     </span>
-                  </div>
+                  )}
+                  {recipe.isFree && (
+                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
+                      Gratis
+                    </span>
+                  )}
                 </div>
+              </div>
 
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                    {recipe.title || 'Untitled Recipe'}
-                  </h3>
-                  
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {recipe.excerpt || 'No description available'}
-                  </p>
+              {/* Recipe Info */}
+              <div className="p-4">
+                <h3 className="font-semibold text-lg mb-2 line-clamp-2">{recipe.title}</h3>
+                
+                {recipe.excerpt && (
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{recipe.excerpt}</p>
+                )}
 
-                  <div className="flex items-center gap-2 mb-4">
-                    {recipe.categories && recipe.categories.slice(0, 2).map((category, i) => (
-                      <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                        {category}
-                      </span>
-                    ))}
-                    {recipe.categories && recipe.categories.length > 2 && (
-                      <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                        +{recipe.categories.length - 2}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs text-gray-500">
-                      {recipe.author?.name || 'Unknown Author'}
-                    </div>
-                    
-                    <div className="flex items-center gap-1">
-                      <Link
-                        href={`/admin/recipes/${recipe.id}/edit`}
-                        className="p-2 text-gray-400 hover:text-orange-600 transition-colors"
-                        title="Redigera"
-                      >
-                        <FiEdit3 className="w-4 h-4" />
-                      </Link>
-                      <Link
-                        href={`/kunskapsbank/recept/${recipe.slug}`}
-                        target="_blank"
-                        className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
-                        title="Visa"
-                      >
-                        <FiEye className="w-4 h-4" />
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteRecipe(recipe.id)}
-                        className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                        title="Ta bort"
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Recept
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Kategori
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Författare
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Datum
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Åtgärder
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredRecipes.map((recipe, index) => (
-                    <motion.tr
-                      key={recipe.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="hover:bg-gray-50"
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {recipe.categories.slice(0, 2).map((category, index) => (
+                    <span 
+                      key={index}
+                      className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-12 w-12">
-                            <Image
-                              className="h-12 w-12 rounded-lg object-cover"
-                              src={recipe.imageUrl || '/images/recipe-placeholder.svg'}
-                              alt={recipe.title || 'Recipe image'}
-                              width={48}
-                              height={48}
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = '/images/recipe-placeholder.svg';
-                              }}
-                            />
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900 line-clamp-1">
-                              {recipe.title || 'Untitled Recipe'}
-                            </div>
-                            <div className="text-sm text-gray-500 line-clamp-1">
-                              {recipe.excerpt || 'No description'}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex flex-wrap gap-1">
-                          {recipe.categories && recipe.categories.slice(0, 2).map((category, i) => (
-                            <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                              {category}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(recipe.status, recipe.isPremium)}`}>
-                          {getStatusText(recipe.status, recipe.isPremium)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {recipe.author?.name || 'Unknown'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {recipe.date ? new Date(recipe.date).toLocaleDateString('sv-SE') : 'Unknown date'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link
-                            href={`/admin/recipes/${recipe.id}/edit`}
-                            className="text-orange-600 hover:text-orange-900 transition-colors"
-                          >
-                            <FiEdit3 className="w-4 h-4" />
-                          </Link>
-                          <Link
-                            href={`/kunskapsbank/recept/${recipe.slug}`}
-                            target="_blank"
-                            className="text-blue-600 hover:text-blue-900 transition-colors"
-                          >
-                            <FiEye className="w-4 h-4" />
-                          </Link>
-                          <button
-                            onClick={() => handleDeleteRecipe(recipe.id)}
-                            className="text-red-600 hover:text-red-900 transition-colors"
-                          >
-                            <FiTrash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </motion.tr>
+                      {category}
+                    </span>
                   ))}
-                </tbody>
-              </table>
+                  {recipe.categories.length > 2 && (
+                    <span className="text-gray-500 text-xs">+{recipe.categories.length - 2}</span>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
+                  <span>{recipe.difficulty || 'Okänd'}</span>
+                  <span>{recipe.servings || 'N/A'} port.</span>
+                  <span>{recipe.prepTime || 'N/A'}</span>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <Link
+                    href={`/admin/recipes/${recipe.id}/edit`}
+                    className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Redigera
+                  </Link>
+                  <button
+                    onClick={() => handleDeleteRecipe(recipe.id, recipe.title)}
+                    className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors text-sm"
+                  >
+                    Ta bort
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredRecipes.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <div className="text-gray-500 text-lg">
+              {searchTerm ? 'Inga recept hittades för din sökning.' : 'Inga recept hittades.'}
             </div>
           </div>
         )}
