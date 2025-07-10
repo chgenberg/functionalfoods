@@ -561,7 +561,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
               {/* Additional Settings */}
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <FiDollarSign className="text-green-500" />
+                  <FiTarget className="text-green-500" />
                   Pris & Inställningar
                 </h3>
 
@@ -570,16 +570,13 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Pris (SEK)
                     </label>
-                    <div className="relative">
-                      <FiDollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="number"
-                        value={formData.price || ''}
-                        onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all hover:bg-gray-100"
-                        placeholder="1497"
-                      />
-                    </div>
+                    <input
+                      type="number"
+                      value={formData.price || ''}
+                      onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all hover:bg-gray-100"
+                      placeholder="1497"
+                    />
                   </div>
 
                   <div>
