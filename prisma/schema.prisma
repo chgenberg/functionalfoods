@@ -35,16 +35,33 @@ model User {
 }
 
 model Course {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  level       String
-  duration    String
-  progress    Int      @default(0)
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id])
+  id                  String   @id @default(uuid())
+  title               String
+  description         String
+  level               String
+  duration            String
+  progress            Int      @default(0)
+  userId              String
+  
+  // Utökade fält för fullständig kursdata
+  price               Float?
+  objectives          String[] // Array av kursmål
+  targetAudience      String?
+  coverImage          String?
+  welcomeMessage      String?
+  introVideoUrl       String?
+  enableCommunity     Boolean  @default(false)
+  communityDescription String?
+  
+  // JSON-fält för komplex data
+  weeks               Json?    // Array av veckodata med måltidsplanering
+  materials           Json?    // Array av kursmaterial
+  downloads           Json?    // Array av nedladdningar
+  metadata            Json?    // Extra metadata
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id])
 }
 
 model Achievement {

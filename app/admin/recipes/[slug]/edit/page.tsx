@@ -108,10 +108,17 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         prepTime: foundRecipe.prepTime || '',
         cookTime: foundRecipe.cookTime || '',
         servings: foundRecipe.servings || 4,
-        ingredients: foundRecipe.ingredients || [],
-        instructions: foundRecipe.instructions || [],
+        ingredients: Array.isArray(foundRecipe.ingredients) ? foundRecipe.ingredients : 
+                    (foundRecipe.ingredients ? [foundRecipe.ingredients] : []),
+        instructions: Array.isArray(foundRecipe.instructions) ? foundRecipe.instructions : 
+                     (foundRecipe.instructions ? 
+                       (typeof foundRecipe.instructions === 'string' ? 
+                         foundRecipe.instructions.split('\n').filter((line: string) => line.trim()) : 
+                         [foundRecipe.instructions.toString()]) : 
+                       []),
         tips: foundRecipe.tips || '',
-        tags: foundRecipe.tags || [],
+        tags: Array.isArray(foundRecipe.tags) ? foundRecipe.tags : 
+              (foundRecipe.tags ? [foundRecipe.tags] : []),
         status: foundRecipe.status,
         isPremium: foundRecipe.isPremium,
         imageUrl: foundRecipe.imageUrl || ''
@@ -372,17 +379,24 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Kategori
                   </label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  >
-                    <option value="Frukost">Frukost</option>
-                    <option value="Lunch">Lunch</option>
-                    <option value="Middag">Middag</option>
-                    <option value="Mellanmål">Mellanmål</option>
-                    <option value="Efterrätt">Efterrätt</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                    >
+                      <option value="Frukost">Frukost</option>
+                      <option value="Lunch">Lunch</option>
+                      <option value="Middag">Middag</option>
+                      <option value="Mellanmål">Mellanmål</option>
+                      <option value="Efterrätt">Efterrätt</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="md:col-span-2">
@@ -408,15 +422,22 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Svårighetsgrad
                   </label>
-                  <select
-                    value={formData.difficulty}
-                    onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  >
-                    <option value="Lätt">Lätt</option>
-                    <option value="Medel">Medel</option>
-                    <option value="Svår">Svår</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={formData.difficulty}
+                      onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
+                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                    >
+                      <option value="Lätt">Lätt</option>
+                      <option value="Medel">Medel</option>
+                      <option value="Svår">Svår</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 
                 <div>

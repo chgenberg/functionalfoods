@@ -35,12 +35,12 @@ interface RecipeData {
 }
 
 const steps = [
-  { id: 1, title: 'Grundläggande info', description: 'Titel, beskrivning och kategori' },
-  { id: 2, title: 'Tidsuppgifter', description: 'Tid, svårighetsgrad och portioner' },
+  { id: 1, title: 'Grundinfo', description: 'Titel, beskrivning och kategori' },
+  { id: 2, title: 'Tid & Portioner', description: 'Tid, svårighetsgrad och portioner' },
   { id: 3, title: 'Ingredienser', description: 'Lägg till alla ingredienser' },
   { id: 4, title: 'Instruktioner', description: 'Steg-för-steg tillagning' },
   { id: 5, title: 'Näring & Tips', description: 'Näringsvärden och tips' },
-  { id: 6, title: 'Granska & Spara', description: 'Kontrollera och publicera' }
+  { id: 6, title: 'Granska', description: 'Kontrollera och publicera' }
 ];
 
 const categories = [
@@ -253,7 +253,7 @@ export default function NewRecipePage() {
                 type="text"
                 value={recipeData.title}
                 onChange={(e) => updateRecipeData('title', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="t.ex. Lax med fetaost och spenat"
               />
             </div>
@@ -266,7 +266,7 @@ export default function NewRecipePage() {
                 value={recipeData.excerpt}
                 onChange={(e) => updateRecipeData('excerpt', e.target.value)}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 resize-none"
                 placeholder="En kort beskrivning som visas i receptöversikten..."
               />
             </div>
@@ -279,7 +279,7 @@ export default function NewRecipePage() {
                 value={recipeData.description}
                 onChange={(e) => updateRecipeData('description', e.target.value)}
                 rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 resize-none"
                 placeholder="Detaljerad beskrivning av receptet, dess ursprung, functional food-fördelar..."
               />
             </div>
@@ -288,16 +288,23 @@ export default function NewRecipePage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Kategori *
               </label>
-              <select
-                value={recipeData.category}
-                onChange={(e) => updateRecipeData('category', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              >
-                <option value="">Välj kategori</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={recipeData.category}
+                  onChange={(e) => updateRecipeData('category', e.target.value)}
+                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                >
+                  <option value="">Välj kategori</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <div>
@@ -308,7 +315,7 @@ export default function NewRecipePage() {
                 type="url"
                 value={recipeData.image}
                 onChange={(e) => updateRecipeData('image', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="https://example.com/recipe-image.jpg"
               />
             </div>
@@ -327,7 +334,7 @@ export default function NewRecipePage() {
                   type="text"
                   value={recipeData.prepTime}
                   onChange={(e) => updateRecipeData('prepTime', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                   placeholder="t.ex. 15 min"
                 />
               </div>
@@ -340,7 +347,7 @@ export default function NewRecipePage() {
                   type="text"
                   value={recipeData.cookTime}
                   onChange={(e) => updateRecipeData('cookTime', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                   placeholder="t.ex. 25 min"
                 />
               </div>
@@ -355,7 +362,7 @@ export default function NewRecipePage() {
                   type="number"
                   value={recipeData.servings}
                   onChange={(e) => updateRecipeData('servings', parseInt(e.target.value))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                   min="1"
                 />
               </div>
@@ -364,15 +371,22 @@ export default function NewRecipePage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Svårighetsgrad *
                 </label>
-                <select
-                  value={recipeData.difficulty}
-                  onChange={(e) => updateRecipeData('difficulty', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                >
-                  <option value="easy">Lätt</option>
-                  <option value="medium">Medel</option>
-                  <option value="hard">Svår</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={recipeData.difficulty}
+                    onChange={(e) => updateRecipeData('difficulty', e.target.value)}
+                    className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                  >
+                    <option value="easy">Lätt</option>
+                    <option value="medium">Medel</option>
+                    <option value="hard">Svår</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -399,11 +413,11 @@ export default function NewRecipePage() {
       case 3:
         return (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <h3 className="text-lg font-medium text-gray-900">Ingredienser</h3>
               <button
                 onClick={addIngredient}
-                className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 hover:shadow-lg transition-all duration-200 font-medium"
               >
                 <FiPlus className="w-4 h-4" />
                 Lägg till ingrediens
@@ -411,9 +425,9 @@ export default function NewRecipePage() {
             </div>
 
             {recipeData.ingredients.map((ingredient, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4">
-                <div className="grid md:grid-cols-4 gap-4">
-                  <div className="md:col-span-2">
+              <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Ingrediens
                     </label>
@@ -421,7 +435,7 @@ export default function NewRecipePage() {
                       type="text"
                       value={ingredient.name}
                       onChange={(e) => updateIngredient(index, 'name', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                       placeholder="t.ex. Laxfilé"
                     />
                   </div>
@@ -434,7 +448,7 @@ export default function NewRecipePage() {
                       type="text"
                       value={ingredient.amount}
                       onChange={(e) => updateIngredient(index, 'amount', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                       placeholder="400"
                     />
                   </div>
@@ -444,18 +458,25 @@ export default function NewRecipePage() {
                       Enhet
                     </label>
                     <div className="flex gap-2">
-                      <select
-                        value={ingredient.unit}
-                        onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      >
-                        {units.map(unit => (
-                          <option key={unit} value={unit}>{unit}</option>
-                        ))}
-                      </select>
+                      <div className="relative flex-1">
+                        <select
+                          value={ingredient.unit}
+                          onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
+                          className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                        >
+                          {units.map(unit => (
+                            <option key={unit} value={unit}>{unit}</option>
+                          ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </div>
                       <button
                         onClick={() => removeIngredient(index)}
-                        className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
                       >
                         <FiX className="w-4 h-4" />
                       </button>
@@ -477,11 +498,11 @@ export default function NewRecipePage() {
       case 4:
         return (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <h3 className="text-lg font-medium text-gray-900">Tillagningsinstruktioner</h3>
               <button
                 onClick={addInstruction}
-                className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 hover:shadow-lg transition-all duration-200 font-medium"
               >
                 <FiPlus className="w-4 h-4" />
                 Lägg till steg
@@ -490,7 +511,7 @@ export default function NewRecipePage() {
 
             {recipeData.instructions.map((instruction, index) => (
               <div key={index} className="border border-gray-200 rounded-lg p-4">
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   <div className="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
                     <span className="text-sm font-medium text-orange-600">{index + 1}</span>
                   </div>
@@ -717,111 +738,120 @@ export default function NewRecipePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <Link
-                href="/admin/recipes"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <FiArrowLeft className="w-4 h-4" />
-                Tillbaka till recept
-              </Link>
-            </div>
-            <h1 className="text-xl font-semibold text-gray-900">Skapa nytt recept</h1>
-          </div>
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <Link
+            href="/admin/recipes"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+          >
+            <FiArrowLeft />
+            Tillbaka till receptlistan
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Skapa nytt recept</h1>
+          <p className="text-gray-600 mt-2">Följ stegen för att publicera ett nytt recept</p>
         </div>
-      </div>
 
-      {/* Progress Steps */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+        {/* Progress Steps - Improved for mobile */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between overflow-x-auto pb-2">
             {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    step.id === currentStep 
-                      ? 'bg-orange-600 text-white' 
-                      : step.id < currentStep 
-                        ? 'bg-green-600 text-white' 
-                        : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {step.id < currentStep ? <FiCheck className="w-4 h-4" /> : step.id}
-                  </div>
-                  <div className="ml-3">
-                    <div className="text-sm font-medium text-gray-900">{step.title}</div>
-                    <div className="text-xs text-gray-500">{step.description}</div>
-                  </div>
-                </div>
+              <div key={step.id} className="flex items-center flex-shrink-0">
+                <motion.div
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: currentStep >= step.id ? 1 : 0.8 }}
+                  className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-all ${
+                    currentStep >= step.id
+                      ? 'bg-orange-500 text-white shadow-lg'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {currentStep > step.id ? (
+                    <FiCheck className="w-5 h-5 sm:w-6 sm:h-6" />
+                  ) : (
+                    <span className="text-sm sm:text-base font-medium">{step.id}</span>
+                  )}
+                </motion.div>
                 {index < steps.length - 1 && (
-                  <div className={`w-16 h-0.5 mx-4 ${
-                    step.id < currentStep ? 'bg-green-600' : 'bg-gray-200'
-                  }`} />
+                  <div
+                    className={`h-1 w-12 sm:w-16 lg:w-24 mx-2 transition-all ${
+                      currentStep > step.id ? 'bg-orange-500' : 'bg-gray-200'
+                    }`}
+                  />
                 )}
               </div>
             ))}
           </div>
+          <div className="hidden sm:grid grid-cols-6 gap-2 mt-3">
+            {steps.map((step) => (
+              <div
+                key={step.id}
+                className={`text-center ${
+                  currentStep >= step.id ? 'text-orange-600 font-medium' : 'text-gray-500'
+                }`}
+              >
+                <div className="text-xs font-medium">{step.title}</div>
+                <div className="text-xs mt-1 hidden lg:block">{step.description}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-8"
-          >
-            {renderStep()}
-          </motion.div>
-        </AnimatePresence>
+        {/* Form Content */}
+        <div className="bg-white rounded-xl shadow-sm p-6 sm:p-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {renderStep()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-        {/* Navigation Buttons */}
-        <div className="flex justify-between mt-8">
+        {/* Navigation Buttons - Improved */}
+        <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8">
           <button
             onClick={prevStep}
             disabled={currentStep === 1}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
-              currentStep === 1 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+              currentStep === 1
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
             }`}
           >
-            <FiArrowLeft className="w-4 h-4" />
+            <FiArrowLeft />
             Föregående
           </button>
 
-          {currentStep === steps.length ? (
+          {currentStep < steps.length ? (
+            <button
+              onClick={nextStep}
+              className="px-6 py-3 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            >
+              Nästa steg
+              <FiArrowRight />
+            </button>
+          ) : (
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Sparar...
                 </>
               ) : (
                 <>
-                  <FiSave className="w-4 h-4" />
+                  <FiSave />
                   Publicera recept
                 </>
               )}
-            </button>
-          ) : (
-            <button
-              onClick={nextStep}
-              className="flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"
-            >
-              Nästa
-              <FiArrowRight className="w-4 h-4" />
             </button>
           )}
         </div>

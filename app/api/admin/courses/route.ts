@@ -92,6 +92,18 @@ export async function POST(request: Request) {
         duration: data.duration || '4 weeks',
         progress: 0,
         userId: adminUser.id,
+        // Nya fält
+        price: data.price || 0,
+        objectives: data.objectives || [],
+        targetAudience: data.targetAudience,
+        coverImage: data.coverImage,
+        welcomeMessage: data.welcomeMessage,
+        introVideoUrl: data.introVideoUrl,
+        enableCommunity: data.enableCommunity || false,
+        communityDescription: data.communityDescription,
+        weeks: data.weeks || [],
+        materials: data.materials || [],
+        downloads: data.downloads || []
       },
     });
 

@@ -30,9 +30,12 @@ export default function AdminLoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Spara admin-token
+        // Spara admin-token i localStorage
         localStorage.setItem('adminToken', data.token);
         localStorage.setItem('adminUser', JSON.stringify(data.user));
+        
+        // Sätt också cookie för API-anrop
+        document.cookie = `adminToken=admin-authenticated; path=/; max-age=86400`; // 24 timmar
         
         // Redirect till admin dashboard
         router.push('/admin');

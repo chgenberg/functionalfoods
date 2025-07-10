@@ -89,6 +89,23 @@ const UserAvatar = ({ user }: { user: User }) => {
   );
 };
 
+// Funktion för att konvertera markdown till HTML
+const formatToHtml = (text: string): string => {
+  // Normalisera radbrytningar
+  let formattedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  
+  // Konvertera **text** till <strong>text</strong>
+  formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // Konvertera *text* till <em>text</em>
+  formattedText = formattedText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  
+  // Konvertera radbrytningar till <br>
+  formattedText = formattedText.replace(/\n/g, '<br>');
+  
+  return formattedText;
+};
+
 export default function FunctionalBasicsThreadPage() {
   const params = useParams();
   const router = useRouter();
@@ -286,9 +303,7 @@ export default function FunctionalBasicsThreadPage() {
           {/* Thread Content */}
           <div className="p-4 md:p-6 lg:p-8">
             <div className="prose prose-gray max-w-none">
-              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm md:text-base">
-                {thread.content}
-              </div>
+              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm md:text-base" dangerouslySetInnerHTML={{ __html: formatToHtml(thread.content) }} />
             </div>
           </div>
         </motion.div>
@@ -332,9 +347,7 @@ export default function FunctionalBasicsThreadPage() {
                       </div>
                     </div>
                     
-                    <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm md:text-base">
-                      {reply.content}
-                    </div>
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm md:text-base" dangerouslySetInnerHTML={{ __html: formatToHtml(reply.content) }} />
                   </div>
                 </div>
               </motion.div>

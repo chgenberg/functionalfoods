@@ -69,6 +69,18 @@ export async function PUT(
         description: data.description,
         level: data.level,
         duration: data.duration,
+        // Nya fält för uppdatering
+        price: data.price,
+        objectives: data.objectives,
+        targetAudience: data.targetAudience,
+        coverImage: data.coverImage,
+        welcomeMessage: data.welcomeMessage,
+        introVideoUrl: data.introVideoUrl,
+        enableCommunity: data.enableCommunity,
+        communityDescription: data.communityDescription,
+        weeks: data.weeks,
+        materials: data.materials,
+        downloads: data.downloads
       },
     });
 

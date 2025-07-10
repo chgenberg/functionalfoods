@@ -27,7 +27,7 @@ export default function EditBlogPostPage() {
 
   useEffect(() => {
     if (slug) {
-      fetch(`/api/blog/${slug}`)
+      fetch(`/api/blog/slug/${slug}`)
         .then(res => {
           if (!res.ok) {
             throw new Error('Kunde inte hämta inlägget.');
@@ -52,7 +52,7 @@ export default function EditBlogPostPage() {
     setSuccess('');
 
     try {
-      const response = await fetch(`/api/blog/${slug}`, {
+      const response = await fetch(`/api/blog/slug/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

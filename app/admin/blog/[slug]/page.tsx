@@ -47,7 +47,7 @@ export default function ViewBlogPostPage() {
 
   useEffect(() => {
     if (slug) {
-      fetch(`/api/blog/${slug}`)
+      fetch(`/api/blog/slug/${slug}`)
         .then(res => res.ok ? res.json() : Promise.reject('Kunde inte hämta inlägget.'))
         .then(setPost)
         .catch(setError)
