@@ -629,8 +629,8 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                 </p>
               </div>
 
-              {/* Options Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-5 flex-1">
+              {/* Options Grid - Mobile optimized */}
+              <div className="grid grid-cols-1 gap-3 max-h-[50vh] overflow-y-auto pb-4 px-2 -mx-2">
                 {question.options.map((option, index) => (
                   <motion.button
                     key={index}
@@ -640,7 +640,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleAnswer(option.value)}
-                    className={`relative p-4 sm:p-5 lg:p-6 rounded-2xl border-2 transition-all duration-300 text-left group ${
+                    className={`relative p-4 rounded-2xl border-2 transition-all duration-300 text-left group ${
                       answers[currentQuestion] === option.value
                         ? 'border-green-500 bg-gradient-to-br from-green-50 to-green-100 shadow-lg'
                         : 'border-gray-200 bg-white hover:border-green-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:shadow-md'
@@ -658,14 +658,14 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     )}
                     
                     <div className="flex flex-col h-full">
-                      <div className="text-3xl sm:text-4xl mb-3 group-hover:scale-110 transition-transform">
+                      <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">
                         {option.icon}
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base lg:text-lg">
+                        <div className="font-semibold text-gray-800 mb-1 text-base">
                           {option.label}
                         </div>
-                        <div className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                        <div className="text-sm text-gray-600 leading-relaxed">
                           {option.description}
                         </div>
                       </div>

@@ -275,11 +275,11 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
         animate={{ opacity: 1, y: 0 }}
         className="bg-white border-b border-gray-100"
       >
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-light text-gray-900">Din Hälsoanalys</h1>
-              <p className="text-sm text-gray-500 mt-1">Personliga rekommendationer baserat på dina svar</p>
+              <h1 className="text-xl md:text-2xl font-light text-gray-900">Din Hälsoanalys</h1>
+              <p className="text-xs md:text-sm text-gray-500 mt-1">Personliga rekommendationer baserat på dina svar</p>
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -288,167 +288,186 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <FiRefreshCw className="w-4 h-4" />
-              <span className="text-sm">Gör om test</span>
+              <span className="text-xs md:text-sm hidden sm:inline">Gör om test</span>
             </motion.button>
           </div>
         </div>
       </motion.div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-12 gap-8">
-          
-          {/* Left Sidebar - Score Overview */}
-          <div className="lg:col-span-3">
+      <div className="w-full px-4 py-4 md:py-8 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto">
+          {/* Mobile Score Summary */}
+          <div className="lg:hidden mb-6">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="sticky top-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100"
             >
-              {/* Total Score Card */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-                <div className="text-center">
-                  <div className="relative inline-block mb-4">
-                    <svg className="w-32 h-32">
-                      <circle
-                        cx="64"
-                        cy="64"
-                        r="58"
-                        stroke="#f3f4f6"
-                        strokeWidth="8"
-                        fill="none"
-                      />
-                      <motion.circle
-                        cx="64"
-                        cy="64"
-                        r="58"
-                        stroke="#10b981"
-                        strokeWidth="8"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeDasharray={364}
-                        strokeDashoffset={364 - (totalScore / 100) * 364}
-                        initial={{ strokeDashoffset: 364 }}
-                        animate={{ strokeDashoffset: 364 - (totalScore / 100) * 364 }}
-                        transition={{ duration: 2, ease: "easeOut" }}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div>
-                        <motion.div 
-                          className="text-4xl font-light text-gray-900"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.5, type: "spring" }}
-                        >
-                          {totalScore}
-                        </motion.div>
-                        <div className="text-xs text-gray-500 uppercase tracking-wider">poäng</div>
-                      </div>
-                    </div>
-                  </div>
+              <div className="flex items-center justify-between">
+                <div>
                   <h3 className="text-lg font-medium text-gray-900">{scoreMessage.text}</h3>
-                  <p className="text-sm text-gray-500 mt-1">Din övergripande hälsostatus</p>
+                  <p className="text-sm text-gray-500">Total poäng: {totalScore}/100</p>
                 </div>
-              </div>
-
-              {/* Health Areas */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h4 className="text-sm font-medium text-gray-900 mb-4">Hälsoområden</h4>
-                <div className="space-y-4">
-                  {healthAreas.map((area, index) => {
-                    const score = healthScores[area.key as keyof HealthScores];
-                    const percentage = (score / 10) * 100;
-                    const Icon = area.icon;
-                    
-                    return (
-                      <motion.div
-                        key={area.key}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <Icon className="w-4 h-4 text-gray-600" />
-                            <span className="text-sm text-gray-700">{area.label}</span>
-                          </div>
-                          <span className="text-sm font-medium text-gray-900">{score}/10</span>
-                        </div>
-                        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                          <motion.div
-                            className="h-full rounded-full"
-                            style={{ backgroundColor: area.color }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${percentage}%` }}
-                            transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-                          />
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                <div className="text-3xl">{scoreMessage.emoji}</div>
               </div>
             </motion.div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="lg:col-span-9">
-            {/* Tab Navigation - Scrollable on Mobile */}
-            <div className="mb-8">
-              <div className="overflow-x-auto scrollbar-hide">
-                <div className="flex gap-3 justify-center min-w-max px-4 md:px-0">
-                  {tabs.map((tab) => (
-                    <motion.button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`group relative w-14 h-14 rounded-full text-2xl transition-all flex-shrink-0 ${
-                        activeTab === tab.id
-                          ? 'bg-green-600 text-white shadow-lg'
-                          : 'bg-white text-gray-600 hover:bg-green-100 hover:text-green-700 border border-gray-200 hover:border-green-300 shadow-sm hover:shadow-md'
-                      }`}
-                      title={tab.label}
-                    >
-                      <span className="flex items-center justify-center h-full">
-                        {tab.icon}
-                      </span>
-                      
-                      {/* Tooltip on hover */}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-                        {tab.label}
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+          <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+            
+            {/* Left Sidebar - Score Overview - Hidden on mobile */}
+            <div className="hidden lg:block lg:col-span-3">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="sticky top-8"
+              >
+                {/* Total Score Card */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                  <div className="text-center">
+                    <div className="relative inline-block mb-4">
+                      <svg className="w-32 h-32">
+                        <circle
+                          cx="64"
+                          cy="64"
+                          r="58"
+                          stroke="#f3f4f6"
+                          strokeWidth="8"
+                          fill="none"
+                        />
+                        <motion.circle
+                          cx="64"
+                          cy="64"
+                          r="58"
+                          stroke="#10b981"
+                          strokeWidth="8"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeDasharray={364}
+                          strokeDashoffset={364 - (totalScore / 100) * 364}
+                          initial={{ strokeDashoffset: 364 }}
+                          animate={{ strokeDashoffset: 364 - (totalScore / 100) * 364 }}
+                          transition={{ duration: 2, ease: "easeOut" }}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div>
+                          <motion.div 
+                            className="text-4xl font-light text-gray-900"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.5, type: "spring" }}
+                          >
+                            {totalScore}
+                          </motion.div>
+                          <div className="text-xs text-gray-500 uppercase tracking-wider">poäng</div>
+                        </div>
                       </div>
-                    </motion.button>
-                  ))}
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900">{scoreMessage.text}</h3>
+                    <p className="text-sm text-gray-500 mt-1">Din övergripande hälsostatus</p>
+                  </div>
                 </div>
-              </div>
+
+                {/* Health Areas */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <h4 className="text-sm font-medium text-gray-900 mb-4">Hälsoområden</h4>
+                  <div className="space-y-4">
+                    {healthAreas.map((area, index) => {
+                      const score = healthScores[area.key as keyof HealthScores];
+                      const percentage = (score / 10) * 100;
+                      const Icon = area.icon;
+                      
+                      return (
+                        <motion.div
+                          key={area.key}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <Icon className="w-4 h-4 text-gray-600" />
+                              <span className="text-sm text-gray-700">{area.label}</span>
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">{score}/10</span>
+                          </div>
+                          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: area.color }}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${percentage}%` }}
+                              transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
+                            />
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
-            {/* Tab Content */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                {activeTab === 'summary' && recommendations && (
-                  <div className="space-y-6">
-                    {/* Profile Card */}
-                    <motion.div 
-                      className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                    >
-                      <h2 className="text-2xl font-light text-gray-900 mb-6">Din hälsoprofil</h2>
-                      <div 
-                        className="prose prose-gray max-w-none text-gray-600 leading-relaxed space-y-4"
-                        dangerouslySetInnerHTML={{ __html: recommendations.profile.replace(/\. /g, '.<br/><br/>') }}
-                      />
-                    </motion.div>
+            {/* Main Content Area */}
+            <div className="lg:col-span-9">
+              {/* Tab Navigation - Scrollable on Mobile */}
+              <div className="mb-6">
+                <div className="overflow-x-auto scrollbar-hide">
+                  <div className="flex gap-3 min-w-max pb-2">
+                    {tabs.map((tab) => (
+                      <motion.button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`group relative w-14 h-14 rounded-full text-2xl transition-all flex-shrink-0 ${
+                          activeTab === tab.id
+                            ? 'bg-green-600 text-white shadow-lg'
+                            : 'bg-white text-gray-600 hover:bg-green-100 hover:text-green-700 border border-gray-200 hover:border-green-300 shadow-sm hover:shadow-md'
+                        }`}
+                        title={tab.label}
+                      >
+                        <span className="flex items-center justify-center h-full">
+                          {tab.icon}
+                        </span>
+                        
+                        {/* Tooltip on hover - hidden on mobile */}
+                        <div className="hidden md:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                          {tab.label}
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tab Content */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full"
+                >
+                  {activeTab === 'summary' && recommendations && (
+                    <div className="space-y-6">
+                      {/* Profile Card */}
+                      <motion.div 
+                        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                      >
+                        <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Din hälsoprofil</h2>
+                        <div 
+                          className="prose prose-gray max-w-none text-sm md:text-base text-gray-600 leading-relaxed space-y-4"
+                          dangerouslySetInnerHTML={{ __html: recommendations.profile.replace(/\. /g, '.<br/><br/>') }}
+                        />
+                      </motion.div>
 
                     {/* Quick Actions Grid */}
                     <div className="grid md:grid-cols-3 gap-4">
@@ -484,7 +503,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                        className="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                       >
                         <div className="flex gap-6">
                           <div className="flex-shrink-0">
@@ -518,8 +537,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 )}
 
                 {activeTab === 'lifestyle' && recommendations && (
-                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-2xl font-light text-gray-900 mb-6">Livsstilsråd</h2>
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Livsstilsråd</h2>
                     <div className="grid md:grid-cols-2 gap-6">
                       {recommendations.lifestyleAdvice.map((advice, index) => (
                         <motion.div
@@ -540,8 +559,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 )}
 
                 {activeTab === 'nextsteps' && recommendations && (
-                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-2xl font-light text-gray-900 mb-8">Din handlingsplan</h2>
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-6 md:mb-8">Din handlingsplan</h2>
                     <div className="relative">
                       {/* Timeline line */}
                       <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
@@ -586,8 +605,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 )}
 
                 {activeTab === 'course' && recommendations && (
-                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-2xl font-light text-gray-900 mb-6">Rekommenderad kurs för dig</h2>
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Rekommenderad kurs för dig</h2>
                     <div 
                       className="prose prose-gray max-w-none text-gray-600 mb-8 space-y-4"
                       dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation.replace(/\. /g, '.<br/><br/>') }}
@@ -617,8 +636,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 )}
 
                 {activeTab === 'science' && recommendations && (
-                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-2xl font-light text-gray-900 mb-6">Vetenskaplig grund</h2>
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Vetenskaplig grund</h2>
                     <div className="space-y-4">
                       {recommendations.scientificReferences.map((reference, index) => (
                         <motion.div
@@ -641,8 +660,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                 {activeTab === 'warnings' && recommendations && (
                   <div className="space-y-4">
-                    <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                      <h2 className="text-2xl font-light text-gray-900 mb-6">Viktigt att tänka på</h2>
+                    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                      <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Viktigt att tänka på</h2>
                       <div className="space-y-4">
                         {recommendations.warningSignals.map((warning, index) => (
                           <motion.div
@@ -675,8 +694,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 )}
 
                 {activeTab === 'metrics' && recommendations && (
-                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-2xl font-light text-gray-900 mb-6">Följ dina framsteg</h2>
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Följ dina framsteg</h2>
                     <div className="grid md:grid-cols-2 gap-6 mb-8">
                       {recommendations.successMetrics.map((metric, index) => (
                         <motion.div
@@ -717,8 +736,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                     </div>
                   </div>
                 )}
-              </motion.div>
-            </AnimatePresence>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
