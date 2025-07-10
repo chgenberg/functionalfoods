@@ -167,22 +167,22 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
 
       {/* Stats */}
       {totalGoals > 0 && (
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div className="bg-blue-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{predefinedGoals.length}</div>
-            <div className="text-sm text-blue-600">Tillgängliga</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+          <div className="bg-blue-50 rounded-lg p-3 sm:p-4 text-center">
+            <div className="text-lg sm:text-2xl font-bold text-blue-600">{predefinedGoals.length}</div>
+            <div className="text-xs sm:text-sm text-blue-600">Tillgängliga</div>
           </div>
-          <div className="bg-orange-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{totalGoals}</div>
-            <div className="text-sm text-orange-600">Aktiva</div>
+          <div className="bg-orange-50 rounded-lg p-3 sm:p-4 text-center">
+            <div className="text-lg sm:text-2xl font-bold text-orange-600">{totalGoals}</div>
+            <div className="text-xs sm:text-sm text-orange-600">Aktiva</div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{completedGoals}</div>
-            <div className="text-sm text-green-600">Klara</div>
+          <div className="bg-green-50 rounded-lg p-3 sm:p-4 text-center">
+            <div className="text-lg sm:text-2xl font-bold text-green-600">{completedGoals}</div>
+            <div className="text-xs sm:text-sm text-green-600">Klara</div>
           </div>
-          <div className="bg-purple-50 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">{completionRate}%</div>
-            <div className="text-sm text-purple-600">Genomfört</div>
+          <div className="bg-purple-50 rounded-lg p-3 sm:p-4 text-center">
+            <div className="text-lg sm:text-2xl font-bold text-purple-600">{completionRate}%</div>
+            <div className="text-xs sm:text-sm text-purple-600">Genomfört</div>
           </div>
         </div>
       )}
@@ -198,16 +198,16 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                 key={goal.id}
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className={`flex items-center justify-between p-4 rounded-lg border ${
+                className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-lg border ${
                   goal.status === 'completed' 
                     ? 'bg-green-50 border-green-200' 
                     : 'bg-white border-gray-200 hover:border-gray-300'
-                } transition-all`}
+                } transition-all gap-3`}
               >
-                <div className="flex items-center space-x-3 flex-1">
+                <div className="flex items-start sm:items-center space-x-3 flex-1">
                   <button
                     onClick={() => toggleGoalCompletion(goal.id, goal.status)}
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 sm:mt-0 ${
                       goal.status === 'completed'
                         ? 'bg-green-600 border-green-600 text-white'
                         : 'border-gray-300 hover:border-green-500'
@@ -215,20 +215,20 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                   >
                     {goal.status === 'completed' && <FiCheck className="w-3 h-3" />}
                   </button>
-                  <div className="flex-1">
-                    <h5 className={`font-medium ${
+                  <div className="flex-1 min-w-0">
+                    <h5 className={`font-medium text-sm sm:text-base break-words ${
                       goal.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-900'
                     }`}>
                       {goal.title}
                     </h5>
                     {goal.description && (
-                      <p className="text-sm text-gray-600 mt-1">{goal.description}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1 break-words">{goal.description}</p>
                     )}
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2 ml-4">
-                  <span className={`text-xs px-2 py-1 rounded-full ${
+                <div className="flex items-center justify-end sm:justify-start space-x-2 sm:ml-4">
+                  <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
                     goal.priority === 'high' ? 'bg-red-100 text-red-700' :
                     goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
                     'bg-green-100 text-green-700'
@@ -246,7 +246,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
           <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">
             {weekGoals.length > 0 ? 'Förslag på fler mål' : 'Förslag på mål för veckan'}
           </h4>
-          {predefinedGoals.map((predefinedGoal, index) => {
+                      {predefinedGoals.map((predefinedGoal, index) => {
             const isAlreadyActive = weekGoals.some(g => g.title === predefinedGoal.title);
             if (isAlreadyActive) return null;
             
@@ -256,22 +256,22 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-center justify-between p-4 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-orange-400 transition-all group"
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-orange-400 transition-all group gap-3"
               >
-                <div className="flex items-center space-x-3 flex-1">
-                  <div className="text-2xl">{predefinedGoal.icon}</div>
-                  <div className="flex-1">
-                    <h5 className="font-medium text-gray-800 group-hover:text-gray-900">
+                <div className="flex items-start sm:items-center space-x-3 flex-1">
+                  <div className="text-xl sm:text-2xl flex-shrink-0">{predefinedGoal.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <h5 className="font-medium text-gray-800 group-hover:text-gray-900 text-sm sm:text-base break-words">
                       {predefinedGoal.title.replace(predefinedGoal.icon, '').trim()}
                     </h5>
-                    <p className="text-sm text-gray-600 mt-1">{predefinedGoal.description}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1 break-words">{predefinedGoal.description}</p>
                   </div>
                 </div>
                 
                 <button
                   onClick={() => activatePredefinedGoal(predefinedGoal)}
                   disabled={loading}
-                  className="ml-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium disabled:opacity-50 whitespace-nowrap"
+                  className="sm:ml-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium disabled:opacity-50 whitespace-nowrap self-end sm:self-auto"
                 >
                   Lägg till
                 </button>

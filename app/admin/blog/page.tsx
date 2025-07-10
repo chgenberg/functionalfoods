@@ -103,13 +103,22 @@ export default function AdminBlogPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Blogghantering</h1>
             <p className="text-gray-600">Hantera artiklar och innehåll</p>
           </div>
-          <Link 
-            href="/admin/blog/new" 
-            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg"
-          >
-            <FiPlus className="w-5 h-5" />
-            Skapa ny artikel
-          </Link>
+          <div className="flex gap-3">
+            <Link 
+              href="/admin/blog/auto-generator" 
+              className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg"
+            >
+              <FiClock className="w-5 h-5" />
+              AI Generator
+            </Link>
+            <Link 
+              href="/admin/blog/new" 
+              className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg"
+            >
+              <FiPlus className="w-5 h-5" />
+              Skapa ny artikel
+            </Link>
+          </div>
         </div>
 
         {/* Stats */}

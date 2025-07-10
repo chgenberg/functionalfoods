@@ -38,48 +38,48 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-200"
+      className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 hover:shadow-md transition-all duration-200"
     >
-      <div className="flex items-center gap-3 mb-3">
-        <div className={`w-10 h-10 bg-gradient-to-br ${typeColors[type]} rounded-full flex items-center justify-center text-white`}>
-          <Icon className="w-5 h-5" />
+      <div className="flex items-center gap-2 sm:gap-3 mb-3">
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br ${typeColors[type]} rounded-full flex items-center justify-center text-white flex-shrink-0`}>
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
-        <div>
-          <h4 className="font-semibold text-gray-900">{typeNames[type]}</h4>
-          <p className="text-sm text-gray-500">{typeTimes[type]}</p>
+        <div className="min-w-0 flex-1">
+          <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{typeNames[type]}</h4>
+          <p className="text-xs sm:text-sm text-gray-500">{typeTimes[type]}</p>
         </div>
       </div>
       
-      <h5 className="font-medium text-gray-900 mb-2">{meal.name}</h5>
+      <h5 className="font-medium text-gray-900 mb-2 text-sm sm:text-base break-words">{meal.name}</h5>
       {meal.note && (
-        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mb-2">
+        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mb-2 break-words">
           {meal.note}
         </span>
       )}
       
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         {meal.recipeLink && (
           <a 
             href={meal.recipeLink}
-            className="text-sm text-green-600 hover:text-green-700 font-medium"
+            className="text-xs sm:text-sm text-green-600 hover:text-green-700 font-medium truncate"
           >
             Se recept →
           </a>
         )}
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2 justify-end sm:ml-auto">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <FiHeart className="w-4 h-4 text-gray-400 hover:text-red-500" />
+            <FiHeart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-red-500" />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <FiShoppingCart className="w-4 h-4 text-gray-400 hover:text-green-500" />
+            <FiShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-green-500" />
           </motion.button>
         </div>
       </div>

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       `;
 
       const tocCompletion = await openai.chat.completions.create({
-        model: "gpt-4-1106-preview",
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: tocPrompt }],
         max_tokens: 1000,
         temperature: 0.7,
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     `;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview",
+                  model: "gpt-4o-mini",
       messages: [{ role: "user", content: chapterPrompt }],
       max_tokens: 3000,
       temperature: 0.7,

@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     `;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview",
+              model: "gpt-4o-mini",
       messages: [{ role: "user", content: articlePrompt }],
       response_format: { type: "json_object" },
       max_tokens: 2500,

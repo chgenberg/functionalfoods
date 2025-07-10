@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowLeft, FiClock, FiUsers, FiHeart, FiShare2, FiBookmark, FiCheck, FiPlus, FiMinus, FiPrinter, FiShoppingCart } from 'react-icons/fi';
 import { useAuth } from '../../../hooks/useAuth';
+import RandomRecipes from '../../../components/RandomRecipes';
 
 interface Recipe {
   id: string;
@@ -48,12 +49,21 @@ export default function RecipePage() {
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [nutrition, setNutrition] = useState<any>(null);
+  const [nutritionLoading, setNutritionLoading] = useState(false);
 
   useEffect(() => {
     if (slug) {
       fetchRecipe();
     }
   }, [slug, user]);
+
+  useEffect(() => {
+    if (recipe) {
+      // Beräkna näringsvärden automatiskt
+      calculateNutrition();
+    }
+  }, [recipe]);
 
   const getToken = () => {
     return localStorage.getItem('token');
@@ -99,6 +109,42 @@ export default function RecipePage() {
       setLoading(false);
     }
   };
+
+  const calculateNutrition = async () => {
+    if (!recipe?.ingredients || recipe.ingredients.length === 0) return;
+    
+    // Kontrollera om vi redan har näringsvärden
+    if (recipe.nutrition) {
+      setNutrition(recipe.nutrition);
+      return;
+    }
+
+    try {
+      setNutritionLoading(true);
+      
+      const response = await fetch('/api/recipes/calculate-nutrition', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ingredients: recipe.ingredients,
+          servings: recipe.servings || 4
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setNutrition(data.nutrition);
+      }
+    } catch (error) {
+      console.error('Error calculating nutrition:', error);
+    } finally {
+      setNutritionLoading(false);
+    }
+  };
+
+
 
   const toggleIngredient = (index: number) => {
     setCheckedIngredients(prev => 
@@ -512,64 +558,67 @@ export default function RecipePage() {
           className="bg-white rounded-2xl shadow-lg p-6 mb-12"
         >
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Näringsvärde per portion</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-orange-50 rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-orange-600">-</p>
-              <p className="text-sm text-gray-600">Kalorier</p>
+          
+          {nutritionLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="w-8 h-8 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+              <span className="ml-3 text-gray-600">Beräknar näringsvärden...</span>
             </div>
-            <div className="bg-orange-50 rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-orange-600">-</p>
-              <p className="text-sm text-gray-600">Protein</p>
+          ) : nutrition ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">
+                  {Math.round(nutrition.perServing?.calories || 0)}
+                </p>
+                <p className="text-sm text-gray-600">Kalorier</p>
+              </div>
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">
+                  {Math.round(nutrition.perServing?.protein || 0)}g
+                </p>
+                <p className="text-sm text-gray-600">Protein</p>
+              </div>
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">
+                  {Math.round(nutrition.perServing?.carbs || 0)}g
+                </p>
+                <p className="text-sm text-gray-600">Kolhydrater</p>
+              </div>
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">
+                  {Math.round(nutrition.perServing?.fat || 0)}g
+                </p>
+                <p className="text-sm text-gray-600">Fett</p>
+              </div>
             </div>
-            <div className="bg-orange-50 rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-orange-600">-</p>
-              <p className="text-sm text-gray-600">Kolhydrater</p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">-</p>
+                <p className="text-sm text-gray-600">Kalorier</p>
+              </div>
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">-</p>
+                <p className="text-sm text-gray-600">Protein</p>
+              </div>
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">-</p>
+                <p className="text-sm text-gray-600">Kolhydrater</p>
+              </div>
+              <div className="bg-orange-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-orange-600">-</p>
+                <p className="text-sm text-gray-600">Fett</p>
+              </div>
             </div>
-            <div className="bg-orange-50 rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-orange-600">-</p>
-              <p className="text-sm text-gray-600">Fett</p>
-            </div>
-          </div>
-          <p className="text-sm text-gray-500 mt-4 text-center">Näringsinformation kommer snart</p>
+          )}
+          
+          <p className="text-sm text-gray-500 mt-4 text-center">
+            {nutrition ? 'Näringsvärden är beräknade uppskattningar' : 'Näringsvärden beräknas automatiskt'}
+          </p>
         </motion.div>
 
-        {/* More Recipes */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Fler recept</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden group cursor-pointer">
-                <div className="h-48 bg-gradient-to-br from-orange-100 to-orange-200 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-6xl opacity-50">🍽️</span>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
-                    Kommer snart...
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Fler läckra recept på väg
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link
-              href="/kunskapsbank/recept"
-              className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors"
-            >
-              Se alla recept
-              <FiArrowLeft className="w-4 h-4 rotate-180" />
-            </Link>
-          </div>
-        </motion.div>
+        {/* Random Recipes */}
+        <RandomRecipes excludeId={recipe?.id} />
       </div>
     </main>
   );

@@ -66,16 +66,16 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all group"
+      className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all group"
     >
-      <div className="flex items-start gap-4">
+      <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
         {/* Avatar placeholder */}
-        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
           {thread.author.name?.charAt(0) || thread.author.email.charAt(0)}
         </div>
         
-        <div className="flex-grow">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="flex-grow min-w-0 w-full">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${getCategoryStyle(thread.category.color)}`}>
               {thread.category.name}
             </span>
@@ -88,43 +88,45 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
           </div>
           
           <Link href={`/dashboard/courses/functional-basics/community/thread/${thread.id}`}>
-            <h3 className="text-lg font-semibold text-gray-900 hover:text-green-600 transition-colors group-hover:text-green-600 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 hover:text-green-600 transition-colors group-hover:text-green-600 mb-2 break-words">
               {thread.title}
             </h3>
           </Link>
           
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+          <p className="text-gray-600 text-sm mb-3 line-clamp-2 break-words">
             {thread.content.substring(0, 150)}...
           </p>
           
-          <div className="flex items-center gap-4 text-sm text-gray-500">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-0">
             <div className="flex items-center gap-1">
-              <FiUser className="w-4 h-4" />
-              <span>{thread.author.name || thread.author.email.split('@')[0]}</span>
+              <FiUser className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="truncate max-w-[120px] sm:max-w-none">{thread.author.name || thread.author.email.split('@')[0]}</span>
             </div>
             <div className="flex items-center gap-1">
-              <FiClock className="w-4 h-4" />
+              <FiClock className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{timeAgo}</span>
             </div>
           </div>
         </div>
         
-        <div className="flex-shrink-0 flex items-center gap-6 text-sm text-gray-600">
-          <div className="flex items-center gap-2" title="Svar">
-            <FiMessageSquare className="w-4 h-4 text-gray-400"/>
-            <span className="font-medium">{thread._count.replies}</span>
-          </div>
-          <div className="flex items-center gap-2" title="Gillningar">
-            <FiThumbsUp className="w-4 h-4 text-gray-400"/>
-            <span className="font-medium">{thread._count.likes}</span>
-          </div>
-          <div className="flex items-center gap-2" title="Visningar">
-            <FiEye className="w-4 h-4 text-gray-400"/>
-            <span className="font-medium">{thread.views}</span>
+        <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-2 text-xs sm:text-sm text-gray-600 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-end">
+          <div className="flex items-center gap-4 sm:gap-2 sm:flex-col sm:text-right">
+            <div className="flex items-center gap-1 sm:gap-2" title="Svar">
+              <FiMessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <span className="font-medium">{thread._count.replies}</span>
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2" title="Gillningar">
+              <FiThumbsUp className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <span className="font-medium">{thread._count.likes}</span>
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2" title="Visningar">
+              <FiEye className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <span className="font-medium">{thread.views}</span>
+            </div>
           </div>
           
           {lastReply && (
-            <div className="text-right">
+            <div className="text-right hidden sm:block">
               <p className="text-xs text-gray-500">Senaste svar</p>
               <p className="font-medium text-xs">
                 {new Date(lastReply.createdAt).toLocaleDateString('sv-SE')}
@@ -229,22 +231,22 @@ export default function FunctionalBasicsCommunityPage() {
   return (
     <div className="space-y-8">
       {/* Header with gradient background */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-teal-600 to-emerald-700 p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-teal-600 to-emerald-700 p-4 sm:p-6 lg:p-8 text-white shadow-xl">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 flex flex-col md:flex-row justify-between md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Functional Basics Community</h1>
-            <p className="text-green-100 text-lg">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">Functional Basics Community</h1>
+            <p className="text-green-100 text-base sm:text-lg break-words">
               Diskutera kursen och dela erfarenheter med andra deltagare
             </p>
-            <div className="flex items-center gap-6 mt-4">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-4">
               <div className="flex items-center gap-2">
-                <FiMessageSquare className="w-5 h-5" />
-                <span className="font-semibold">{totalThreads} diskussioner</span>
+                <FiMessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-semibold text-sm sm:text-base">{totalThreads} diskussioner</span>
               </div>
               <div className="flex items-center gap-2">
-                <FiUser className="w-5 h-5" />
-                <span className="font-semibold">{threads.length} aktiva</span>
+                <FiUser className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-semibold text-sm sm:text-base">{threads.length} aktiva</span>
               </div>
             </div>
           </div>
@@ -252,10 +254,11 @@ export default function FunctionalBasicsCommunityPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowNewThreadModal(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-white text-green-700 rounded-xl hover:bg-green-50 transition-all duration-200 shadow-lg font-semibold"
+            className="flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-white text-green-700 rounded-xl hover:bg-green-50 transition-all duration-200 shadow-lg font-semibold text-sm sm:text-base whitespace-nowrap flex-shrink-0"
           >
-            <FiPlus className="w-5 h-5" />
-            <span>Starta diskussion</span>
+            <FiPlus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Starta diskussion</span>
+            <span className="sm:hidden">Ny diskussion</span>
           </motion.button>
         </div>
         
@@ -279,13 +282,14 @@ export default function FunctionalBasicsCommunityPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setSelectedCategory('all')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+            className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
               selectedCategory === 'all'
                 ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Alla kategorier ({totalThreads})
+            <span className="hidden sm:inline">Alla kategorier</span>
+            <span className="sm:hidden">Alla</span> ({totalThreads})
           </motion.button>
           {categories.map((category) => (
             <motion.button
@@ -293,13 +297,13 @@ export default function FunctionalBasicsCommunityPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                 selectedCategory === category.id
                   ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
                   : `${getCategoryStyle(category.color)} hover:opacity-80`
               }`}
             >
-              {category.name} ({category._count.threads})
+              <span className="truncate max-w-[80px] sm:max-w-none inline-block">{category.name}</span> ({category._count.threads})
             </motion.button>
           ))}
         </div>

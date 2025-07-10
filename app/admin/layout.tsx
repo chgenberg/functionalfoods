@@ -39,7 +39,7 @@ function SidebarContent() {
                   <span className="text-white font-bold text-lg">FF</span>
                 </div>
                 <div>
-                  <h2 className="font-bold text-gray-900">Admin Portal</h2>
+                  <h2 className="text-sm font-bold text-gray-900">ADMIN PORTAL</h2>
                   <p className="text-xs text-gray-500">Functional Foods</p>
                 </div>
               </div>

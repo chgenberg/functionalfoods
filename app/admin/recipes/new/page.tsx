@@ -752,15 +752,26 @@ export default function NewRecipePage() {
           <p className="text-gray-600 mt-2">Följ stegen för att publicera ett nytt recept</p>
         </div>
 
-        {/* Progress Steps - Improved for mobile */}
+        {/* Progress Steps - Improved layout */}
         <div className="mb-8">
-          <div className="flex items-center justify-between overflow-x-auto pb-2">
+          <div className="grid grid-cols-6 gap-2 overflow-x-auto">
             {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center flex-shrink-0">
+              <div key={step.id} className="flex flex-col items-center text-center relative">
+                {/* Connecting line before circle (except first) */}
+                {index > 0 && (
+                  <div className="absolute top-5 sm:top-6 -left-1/2 w-full">
+                    <div
+                      className={`h-1 transition-all ${
+                        currentStep > step.id ? 'bg-orange-500' : 'bg-gray-200'
+                      }`}
+                    />
+                  </div>
+                )}
+                
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: currentStep >= step.id ? 1 : 0.8 }}
-                  className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-all ${
+                  className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-all mb-2 relative z-10 ${
                     currentStep >= step.id
                       ? 'bg-orange-500 text-white shadow-lg'
                       : 'bg-gray-200 text-gray-500'
@@ -772,26 +783,14 @@ export default function NewRecipePage() {
                     <span className="text-sm sm:text-base font-medium">{step.id}</span>
                   )}
                 </motion.div>
-                {index < steps.length - 1 && (
-                  <div
-                    className={`h-1 w-12 sm:w-16 lg:w-24 mx-2 transition-all ${
-                      currentStep > step.id ? 'bg-orange-500' : 'bg-gray-200'
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="hidden sm:grid grid-cols-6 gap-2 mt-3">
-            {steps.map((step) => (
-              <div
-                key={step.id}
-                className={`text-center ${
+                
+                {/* Step text under the circle */}
+                <div className={`text-center ${
                   currentStep >= step.id ? 'text-orange-600 font-medium' : 'text-gray-500'
-                }`}
-              >
-                <div className="text-xs font-medium">{step.title}</div>
-                <div className="text-xs mt-1 hidden lg:block">{step.description}</div>
+                }`}>
+                  <div className="text-xs font-medium leading-tight">{step.title}</div>
+                  <div className="text-xs mt-1 leading-tight hidden sm:block">{step.description}</div>
+                </div>
               </div>
             ))}
           </div>
