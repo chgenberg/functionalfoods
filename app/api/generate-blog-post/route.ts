@@ -4,9 +4,14 @@ import OpenAI from 'openai';
 
 const prisma = new PrismaClient();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const getOpenAIClient = () => {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY environment variable is not set');
+  }
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+};
 
 // Lista över ämnen för blogginlägg
 const blogTopics = [
@@ -100,6 +105,7 @@ export async function POST(req: NextRequest) {
     const randomTopic = blogTopics[Math.floor(Math.random() * blogTopics.length)];
 
     // Generera blogginlägg med OpenAI
+    const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
