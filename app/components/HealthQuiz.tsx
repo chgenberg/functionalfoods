@@ -570,28 +570,35 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   if (currentStep === 'quiz') {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50 z-50 flex items-center justify-center">
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="w-full h-full flex flex-col bg-white/90 backdrop-blur-sm lg:max-w-6xl lg:h-auto lg:max-h-[95vh] lg:rounded-3xl lg:shadow-2xl lg:my-4"
+          className="w-full h-full flex flex-col bg-white/80 backdrop-blur-xl lg:max-w-7xl lg:h-auto lg:max-h-[98vh] lg:rounded-3xl lg:shadow-2xl lg:my-2 lg:border lg:border-white/50 relative"
         >
-          {/* Header */}
-          <div className="p-4 sm:p-6 border-b border-gray-100 bg-white lg:rounded-t-3xl">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-xs sm:text-sm text-gray-500 font-medium">
+          {/* Header - Smaller and more compact */}
+          <div className="p-3 sm:p-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm lg:rounded-t-3xl">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-xs sm:text-sm text-gray-600 font-medium">
                 Fråga {currentQuestion + 1} av {quizQuestions.length}
               </div>
               {onClose && (
                 <button
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 hover:bg-gray-100 rounded-full"
                 >
-                  <FiX className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <FiX className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               )}
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
+            <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
@@ -601,7 +608,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
             </div>
           </div>
 
-          {/* Question Content */}
+          {/* Question Content - Optimized for mobile */}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion}
@@ -609,87 +616,102 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 overflow-y-auto"
+              className="flex-1 flex flex-col p-3 sm:p-4 lg:p-6 overflow-hidden"
             >
-              {/* Question Header */}
-              <div className="text-center mb-6 sm:mb-8">
+              {/* Question Header - More compact */}
+              <div className="text-center mb-4 sm:mb-6">
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", delay: 0.1 }}
-                  className="text-4xl sm:text-5xl mb-3 sm:mb-4"
+                  className="text-3xl sm:text-4xl mb-2 sm:mb-3"
                 >
                   {question.icon}
                 </motion.div>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-800 mb-2 px-4">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-1 px-2">
                   {question.question}
                 </h2>
-                <p className="text-sm sm:text-base text-gray-600 px-4">
+                <p className="text-xs sm:text-sm text-gray-600 px-2">
                   {question.subtitle}
                 </p>
               </div>
 
-              {/* Options Grid - Mobile optimized */}
-              <div className="grid grid-cols-1 gap-3 max-h-[50vh] overflow-y-auto pb-4 px-2 -mx-2">
-                {question.options.map((option, index) => (
-                  <motion.button
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleAnswer(option.value)}
-                    className={`relative p-4 rounded-2xl border-2 transition-all duration-300 text-left group ${
-                      answers[currentQuestion] === option.value
-                        ? 'border-green-500 bg-gradient-to-br from-green-50 to-green-100 shadow-lg'
-                        : 'border-gray-200 bg-white hover:border-green-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:shadow-md'
-                    }`}
-                  >
-                    {/* Selected indicator */}
-                    {answers[currentQuestion] === option.value && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
-                      >
-                        <FiCheckCircle className="w-5 h-5 text-white" />
-                      </motion.div>
-                    )}
-                    
-                    <div className="flex flex-col h-full">
-                      <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        {option.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-800 mb-1 text-base">
-                          {option.label}
+              {/* Options Grid - Responsive layout without scrolling */}
+              <div className="flex-1 flex items-center justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full max-w-4xl">
+                  {question.options.map((option, index) => (
+                    <motion.button
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleAnswer(option.value)}
+                      className={`relative p-2.5 sm:p-4 rounded-xl border-2 transition-all duration-200 text-left group overflow-hidden ${
+                        answers[currentQuestion] === option.value
+                          ? 'border-green-500 bg-gradient-to-br from-green-50 via-green-50 to-green-100 shadow-lg transform scale-[1.02]'
+                          : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-green-400 hover:shadow-md'
+                      }`}
+                    >
+                      {/* Hover gradient effect */}
+                      <div className={`absolute inset-0 bg-gradient-to-br from-green-50/0 via-green-100/0 to-green-200/0 group-hover:from-green-50/40 group-hover:via-green-100/40 group-hover:to-green-200/40 transition-all duration-300 ${
+                        answers[currentQuestion] === option.value ? 'opacity-0' : ''
+                      }`} />
+                      
+                      {/* Selected indicator */}
+                      {answers[currentQuestion] === option.value && (
+                        <motion.div
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ type: "spring", stiffness: 200 }}
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg"
+                        >
+                          <FiCheckCircle className="w-3.5 h-3.5 text-white" />
+                        </motion.div>
+                      )}
+                      
+                      <div className="flex items-start space-x-2.5 relative z-10">
+                        <motion.div 
+                          whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                          transition={{ duration: 0.5 }}
+                          className="text-lg sm:text-2xl flex-shrink-0"
+                        >
+                          {option.icon}
+                        </motion.div>
+                        <div className="flex-1 min-w-0">
+                          <div className={`font-medium text-sm sm:text-base leading-tight transition-colors ${
+                            answers[currentQuestion] === option.value ? 'text-green-800' : 'text-gray-800'
+                          }`}>
+                            {option.label}
+                          </div>
+                          <div className={`text-xs leading-relaxed hidden sm:block mt-0.5 transition-colors ${
+                            answers[currentQuestion] === option.value ? 'text-green-700' : 'text-gray-600'
+                          }`}>
+                            {option.description}
+                          </div>
                         </div>
-                        <div className="text-sm text-gray-600 leading-relaxed">
-                          {option.description}
-                        </div>
                       </div>
-                    </div>
-                  </motion.button>
-                ))}
+                    </motion.button>
+                  ))}
+                </div>
               </div>
 
-              {/* Navigation - Fixed at bottom on mobile */}
-              <div className="flex justify-between items-center mt-6 sm:mt-8 pt-4 border-t border-gray-100">
+              {/* Navigation - Compact and fixed at bottom */}
+              <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-100">
                 {currentQuestion > 0 ? (
                   <motion.button
-                    whileHover={{ x: -5 }}
+                    whileHover={{ x: -3 }}
                     onClick={goToPrevious}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors text-sm sm:text-base"
+                    className="flex items-center space-x-1.5 text-gray-600 hover:text-gray-800 transition-colors text-sm"
                   >
-                    <FiArrowLeft className="w-4 h-4" />
-                    <span className="hidden sm:inline">Föregående</span>
-                    <span className="sm:hidden">Tillbaka</span>
+                    <FiArrowLeft className="w-3.5 h-3.5" />
+                    <span>Tillbaka</span>
                   </motion.button>
                 ) : (
                   <div />
                 )}
-                <div className="text-xs sm:text-sm text-gray-500 text-center px-4">
+                <div className="text-xs text-gray-500 text-center">
                   {currentQuestion === quizQuestions.length - 1 ? 'Sista frågan!' : 'Välj ett alternativ'}
                 </div>
               </div>
