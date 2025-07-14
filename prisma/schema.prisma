@@ -162,6 +162,7 @@ model CourseProduct {
   features    Json     // List of features included
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  shoppingLists WeeklyShoppingList[]
   purchases   Purchase[]
   orderItems  OrderItem[]
 }
@@ -375,4 +376,26 @@ enum RecipeStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+model WeeklyShoppingList {
+  id        String            @id @default(uuid())
+  courseId  String
+  week      Int
+  items     ShoppingListItem[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  course    CourseProduct?    @relation(fields: [courseId], references: [id])
+
+  @@unique([courseId, week])
+}
+
+model ShoppingListItem {
+  id        String   @id @default(uuid())
+  listId    String
+  ingredient String
+  isChecked Boolean @default(false)
+  list      WeeklyShoppingList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@index([listId])
 }
