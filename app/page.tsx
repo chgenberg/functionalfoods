@@ -9,6 +9,7 @@ import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
 import QuizResultScreen from "./components/QuizResultScreen";
 import NewsletterSignup from "./components/NewsletterSignup";
+import ArticleQuickAccess from "./components/ArticleQuickAccess";
 
 export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
@@ -137,6 +138,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
+      {/* Article Quick Access Button */}
+      <ArticleQuickAccess />
+      
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video/Image background */}
