@@ -3,7 +3,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
-import ChatBot from './components/ChatBot'
+import ChatBot from './components/ChatBot';
 
 export const metadata: Metadata = {
   title: "Ulrika Functional Foods",

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiX, FiExternalLink, FiClock, FiTrendingUp } from 'react-icons/fi';
@@ -18,7 +17,8 @@ interface Article {
 export default function ArticleQuickAccess() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Populära artiklar
+  // VIKTIGT: Uppdatera denna lista när nya artiklar läggs till på hemsidan
+  // Välj de mest populära/relevanta artiklarna för snabb åtkomst
   const articles: Article[] = [
     {
       id: '1',
@@ -73,29 +73,16 @@ export default function ArticleQuickAccess() {
   return (
     <>
       {/* Floating Button */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40"
-      >
-        <motion.button
+      <div className="fixed top-24 left-1/2 -translate-x-1/2 z-40">
+        <button
           onClick={() => setIsOpen(true)}
-          className="bg-background-secondary hover:bg-background border-2 border-accent rounded-full px-6 py-3 shadow-lg flex items-center gap-3 group transition-all duration-300 hover:shadow-xl"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="relative bg-background-secondary hover:bg-background border-2 border-accent rounded-full px-6 py-3 shadow-lg flex items-center gap-3 group transition-all duration-300 hover:shadow-xl"
         >
-          {/* Pulsating ring effect */}
-          <motion.div
-            className="absolute inset-0 rounded-full border-2 border-accent"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0, 0.5],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
+          {/* Pulsating ring effect - properly positioned */}
+          <div
+            className="absolute -inset-1 rounded-full border-2 border-accent opacity-75"
+            style={{ 
+              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             }}
           />
           
@@ -114,120 +101,115 @@ export default function ArticleQuickAccess() {
           
           {/* Trending icon */}
           <FiTrendingUp className="w-4 h-4 text-accent group-hover:animate-bounce" />
-        </motion.button>
-      </motion.div>
+        </button>
+      </div>
 
       {/* Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-              onClick={() => setIsOpen(false)}
-            />
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            onClick={() => setIsOpen(false)}
+          />
 
-            {/* Modal Content */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed inset-x-4 top-[50%] -translate-y-1/2 max-w-4xl mx-auto bg-background-secondary rounded-2xl shadow-2xl z-50 max-h-[80vh] overflow-hidden"
+          {/* Modal Content */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+              className="w-full max-w-5xl bg-background rounded-3xl shadow-2xl max-h-[85vh] overflow-hidden animate-fade-in flex flex-col"
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
-              <div className="bg-primary text-white p-6 relative">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-white">
+              {/* Header with gradient */}
+              <div className="bg-gradient-to-r from-primary to-secondary text-white p-8 relative overflow-hidden">
+                {/* Background pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)`
+                  }} />
+                </div>
+                
+                <div className="relative flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg">
                       <Image
                         src="/davidsson.png"
                         alt="Ulrika Davidsson"
-                        width={64}
-                        height={64}
+                        width={80}
+                        height={80}
                         className="object-cover"
                       />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold">Ulrikas artikeltips</h2>
-                      <p className="text-white/80">Handplockade artiklar för din hälsoresa</p>
+                      <h2 className="text-3xl font-bold mb-1">Ulrikas artikeltips</h2>
+                      <p className="text-white/90 text-lg">Handplockade artiklar för din hälsoresa</p>
                     </div>
                   </div>
-                  <motion.button
+                  <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-white/20 rounded-full transition-colors"
-                    whileHover={{ rotate: 90 }}
+                    className="p-3 hover:bg-white/20 rounded-full transition-all duration-200 hover:rotate-90"
                   >
-                    <FiX className="w-6 h-6" />
-                  </motion.button>
+                    <FiX className="w-7 h-7" />
+                  </button>
                 </div>
               </div>
 
               {/* Articles Grid */}
-              <div className="p-6 overflow-y-auto max-h-[calc(80vh-120px)]">
-                <div className="grid gap-4 md:grid-cols-2">
-                  {articles.map((article, index) => (
-                    <motion.div
-                      key={article.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
+              <div className="p-8 overflow-y-auto custom-scrollbar">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {articles.map((article) => (
+                    <div key={article.id} className="group">
                       <Link
                         href={article.href}
                         onClick={() => setIsOpen(false)}
-                        className="block bg-background rounded-xl p-5 hover:shadow-lg transition-all duration-300 group border border-border hover:border-accent"
+                        className="block bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-accent h-full flex flex-col"
                       >
-                        <div className="flex items-start justify-between mb-3">
-                          <span className="text-xs font-semibold text-accent bg-accent/10 px-3 py-1 rounded-full">
+                        {/* Category and time */}
+                        <div className="flex items-start justify-between mb-4">
+                          <span className="text-xs font-bold text-white bg-accent px-3 py-1.5 rounded-full uppercase tracking-wide">
                             {article.category}
                           </span>
-                          <span className="text-xs text-text-secondary flex items-center gap-1">
-                            <FiClock className="w-3 h-3" />
+                          <span className="text-xs text-text-secondary flex items-center gap-1 font-medium">
+                            <FiClock className="w-3.5 h-3.5" />
                             {article.readTime}
                           </span>
                         </div>
                         
-                        <h3 className="font-semibold text-text-primary mb-2 group-hover:text-primary transition-colors">
+                        {/* Title */}
+                        <h3 className="font-bold text-lg text-text-primary mb-3 group-hover:text-primary transition-colors line-clamp-2">
                           {article.title}
                         </h3>
                         
-                        <p className="text-sm text-text-secondary line-clamp-2 mb-3">
+                        {/* Excerpt */}
+                        <p className="text-sm text-text-secondary line-clamp-3 mb-4 flex-grow">
                           {article.excerpt}
                         </p>
                         
-                        <div className="flex items-center text-primary text-sm font-medium">
-                          Läs mer
-                          <FiExternalLink className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        {/* Read more link */}
+                        <div className="flex items-center text-primary font-semibold group-hover:gap-3 transition-all">
+                          <span>Läs artikel</span>
+                          <FiExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                         </div>
                       </Link>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
 
                 {/* View All Button */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="mt-8 text-center"
-                >
+                <div className="mt-8 text-center pb-4">
                   <Link
                     href="/kunskapsbank/blogg"
                     onClick={() => setIsOpen(false)}
-                    className="inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-full font-semibold hover:bg-primary-light transition-colors"
+                    className="inline-flex items-center gap-3 bg-gradient-to-r from-accent to-primary-light text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
                   >
-                    Se alla artiklar
-                    <FiExternalLink className="w-4 h-4" />
+                    Utforska alla artiklar
+                    <FiExternalLink className="w-5 h-5" />
                   </Link>
-                </motion.div>
+                </div>
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 } 
