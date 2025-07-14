@@ -23,42 +23,40 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     title: "Vecka 1: Introduktion till Functional Foods",
     days: {
       Måndag: {
-        breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-        lunch: { name: 'Tonfisksallad med äpple', recipeLink: '/kunskapsbank/recept/tonfisksallad' },
-        dinner: { name: 'Squashspagetti med köttfärssås', recipeLink: '/kunskapsbank/recept/squashspagetti' },
-        snack: { name: 'Ketomüsli', recipeLink: '/kunskapsbank/recept/ketomysli' }
-      },
-      Tisdag: {
-        breakfast: { name: 'Stekt ägg med lax', recipeLink: '/kunskapsbank/recept/stekt-agg-lax' },
-        lunch: { name: 'Squashspagetti med köttfärssås (Rester)' },
-        dinner: { name: 'Het ratatouille', recipeLink: '/kunskapsbank/recept/het-ratatouille' }
-      },
-      Onsdag: {
-        breakfast: { name: 'Grön smoothie', recipeLink: '/kunskapsbank/recept/gron-smoothie' },
-        lunch: { name: 'Pokebowl med kyckling', recipeLink: '/kunskapsbank/recept/pokebowl' },
-        dinner: { name: 'Köttfärsbiffar med stekt blomkål', recipeLink: '/kunskapsbank/recept/kottfarsbiffar' }
-      },
-      Torsdag: {
-        breakfast: { name: 'Omelett med tomat', recipeLink: '/kunskapsbank/recept/omelett-tomat' },
-        lunch: { name: 'Het ratatouille (Rester)' },
-        dinner: { name: 'Pokebowl med kyckling (Rester)' },
-        snack: { name: 'Havrefrallor med morötter och aprikoser', recipeLink: '/kunskapsbank/recept/havrefrallor' }
-      },
-      Fredag: {
-        breakfast: { name: 'Havrefralla med morötter och torkade aprikoser', recipeLink: '/kunskapsbank/recept/havrefralla' },
-        lunch: { name: 'Köttfärsbiffar med stekt blomkål (Rester)' },
+        breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/ketomysli' },
+        lunch: { name: 'Het ratatouille', recipeLink: '/kunskapsbank/recept/het-ratatouille' },
         dinner: { name: 'Kycklinggryta med bakad spetskål', recipeLink: '/kunskapsbank/recept/kycklinggryta' }
       },
-      Lördag: {
-        breakfast: { name: 'Tropisk Smoothiebowl', recipeLink: '/kunskapsbank/recept/smoothiebowl' },
+      Tisdag: {
+        breakfast: { name: 'Tropisk smoothiebowl', recipeLink: '/kunskapsbank/recept/tropisk-smoothiebowl' },
         lunch: { name: 'Kycklinggryta med bakad spetskål (Rester)' },
-        dinner: { name: 'Laxburgare med krämig grönsaksröra', recipeLink: '/kunskapsbank/recept/laxburgare' },
-        snack: { name: 'Mangoglass', recipeLink: '/kunskapsbank/recept/mangoglass' }
+        dinner: { name: 'Laxburgare med krämig grönsaksröra', recipeLink: '/kunskapsbank/recept/laxburgare' }
+      },
+      Onsdag: {
+        breakfast: { name: 'Stekt ägg med lax', recipeLink: '/kunskapsbank/recept/stekt-agg-lax' },
+        lunch: { name: 'Laxburgare med krämig grönsaksröra (Rester)' },
+        dinner: { name: 'Poké bowl med kyckling', recipeLink: '/kunskapsbank/recept/poke-bowl-kyckling' }
+      },
+      Torsdag: {
+        breakfast: { name: 'Havrefrallor med morötter och aprikoser', recipeLink: '/kunskapsbank/recept/havrefrallor' },
+        lunch: { name: 'Poké bowl med kyckling (Rester)' },
+        dinner: { name: 'Tonfisksallad med äpple', recipeLink: '/kunskapsbank/recept/tonfisksallad-apple' }
+      },
+      Fredag: {
+        breakfast: { name: 'Omelett med tomat', recipeLink: '/kunskapsbank/recept/omelett-tomat' },
+        lunch: { name: 'Tonfisksallad med äpple (Rester)' },
+        dinner: { name: 'Squashspagetti med köttfärssås', recipeLink: '/kunskapsbank/recept/squashspagetti-kottfarssas' }
+      },
+      Lördag: {
+        breakfast: { name: 'Bärmoothiebowl', recipeLink: '/kunskapsbank/recept/barmoothiebowl' },
+        lunch: { name: 'Squashspagetti med köttfärssås (Rester)' },
+        dinner: { name: 'Ugnsbakad tomat med köttfärs', recipeLink: '/kunskapsbank/recept/ugnsbakad-tomat-kottfars' },
+        dessert: { name: 'Mangoglass', recipeLink: '/kunskapsbank/recept/mangoglass' }
       },
       Söndag: {
-        breakfast: { name: 'Tropisk Smoothiebowl (Rester)' },
-        lunch: { name: 'Laxburgare med krämig grönsaksröra (Rester)' },
-        dinner: { name: 'Ugnsbakad tomat med köttfärs', recipeLink: '/kunskapsbank/recept/ugnsbakad-tomat' }
+        breakfast: { name: 'Grön smoothie', recipeLink: '/kunskapsbank/recept/gron-smoothie' },
+        lunch: { name: 'Ugnsbakad tomat med köttfärs (Rester)' },
+        dinner: { name: 'Köttfärsbiffar med stekt blomkål', recipeLink: '/kunskapsbank/recept/kottfarsbiffar-blomkal' }
       }
     }
   },
