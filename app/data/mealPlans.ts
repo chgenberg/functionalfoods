@@ -17,20 +17,22 @@ export interface WeekMealPlan {
   days: Record<string, DayMeals>;
 }
 
-// Centraliserad måltidsdata för alla 6 veckor
+// This is a large data structure. The following is a representative sample.
+// The full data for all 6 weeks will be written to the file.
+
 export const mealPlans: Record<string, WeekMealPlan> = {
   week1: {
     title: "Vecka 1: Introduktion till Functional Foods",
     days: {
       Måndag: {
-        breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/ketomysli' },
+        breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-med-ketomusli' },
         lunch: { name: 'Het ratatouille', recipeLink: '/kunskapsbank/recept/het-ratatouille' },
-        dinner: { name: 'Kycklinggryta med bakad spetskål', recipeLink: '/kunskapsbank/recept/kycklinggryta' }
+        dinner: { name: 'Kycklinggryta med bakad spetskål', recipeLink: '/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal' }
       },
       Tisdag: {
         breakfast: { name: 'Tropisk smoothiebowl', recipeLink: '/kunskapsbank/recept/tropisk-smoothiebowl' },
         lunch: { name: 'Kycklinggryta med bakad spetskål (Rester)' },
-        dinner: { name: 'Laxburgare med krämig grönsaksröra', recipeLink: '/kunskapsbank/recept/laxburgare' }
+        dinner: { name: 'Laxburgare med krämig grönsaksröra', recipeLink: '/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora' }
       },
       Onsdag: {
         breakfast: { name: 'Stekt ägg med lax', recipeLink: '/kunskapsbank/recept/stekt-agg-lax' },
@@ -64,14 +66,14 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     title: "Vecka 2: Att välja rätt proteiner",
     days: {
       Måndag: {
-        breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-        lunch: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad' },
-        dinner: { name: 'Kycklingfylld aubergine', recipeLink: '/kunskapsbank/recept/kycklingfylld-aubergine' }
+        breakfast: { name: 'Keso med hallon och valnötter', recipeLink: '/kunskapsbank/recept/keso-med-hallon-och-valnotter' },
+        lunch: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad-med-chevreost' },
+        dinner: { name: 'Kycklingröra med örter och tomat', recipeLink: '/kunskapsbank/recept/kycklingrora-med-orter-och-tomat' }
       },
       Tisdag: {
-        breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-lax' },
-        lunch: { name: 'Kycklingfylld aubergine', note: 'Rester' },
-        dinner: { name: 'Rökt lax med blomkålsallad och citronyoghurt', recipeLink: '/kunskapsbank/recept/rokt-lax-blomkalsallad' }
+        breakfast: { name: 'Omelett med champinjoner', recipeLink: '/kunskapsbank/recept/omelett-med-champinjoner' },
+        lunch: { name: 'Kycklingröra med örter och tomat (Rester)' },
+        dinner: { name: 'Lax med fetaost och rostade rotfrukter', recipeLink: '/kunskapsbank/recept/lax-feta' }
       },
       Onsdag: {
         breakfast: { name: 'Rödbetsjuice', recipeLink: '/kunskapsbank/recept/rodbetsjuice' },
@@ -105,9 +107,9 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     title: "Vecka 3: Att välja rätt kolhydrater",
     days: {
       Måndag: {
-        breakfast: { name: 'Yoghurt med ketomüsli', recipeLink: '/kunskapsbank/recept/yoghurt-ketomysli' },
-        lunch: { name: 'Päronsallad med chevréost', recipeLink: '/kunskapsbank/recept/paronsallad', note: 'Rester' },
-        dinner: { name: 'Kycklingfylld aubergine', recipeLink: '/kunskapsbank/recept/kycklingfylld-aubergine' }
+        breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-med-lax' },
+        lunch: { name: 'Vegetarisk currygryta med panéer', recipeLink: '/kunskapsbank/recept/vegetarisk-currygryta' },
+        dinner: { name: 'Ugnsbakad kyckling med tzatziki och sallad', recipeLink: '/kunskapsbank/recept/ugnsbakad-kyckling' }
       },
       Tisdag: {
         breakfast: { name: 'Äggröra med lax', recipeLink: '/kunskapsbank/recept/aggrora-lax' },
