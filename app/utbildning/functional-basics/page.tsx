@@ -144,9 +144,7 @@ export default function FunctionalBasicsPage() {
 
   return (
     <main className="min-h-screen pt-20" style={{ 
-      background: 'linear-gradient(135deg, #fffdf3 0%, #f8f5e8 50%, #fffdf3 100%)',
-      backgroundSize: '200% 200%',
-      animation: 'gradient 15s ease infinite'
+                      background: 'var(--background-secondary)'
     }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Back Link */}
@@ -232,7 +230,7 @@ export default function FunctionalBasicsPage() {
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 tracking-tight"
             >
-              Functional <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Basics</span>
+                              Functional <span className="text-accent font-bold">Basics</span>
             </motion.h1>
             
             <motion.div 
@@ -345,7 +343,7 @@ export default function FunctionalBasicsPage() {
               {/* Course Description */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
-                  En perfekt start för <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">bättre hälsa</span>
+                  En perfekt start för <span className="text-accent font-bold">bättre hälsa</span>
                 </h2>
                 <p className="text-lg text-text-secondary mb-6 leading-relaxed">
                   Ulrika har skapat näringsrika och goda recept för hela familjen, och måltidsplanerna säkerställer en varierad kost med alla viktiga näringsämnen. 

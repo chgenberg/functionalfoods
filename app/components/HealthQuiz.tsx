@@ -398,20 +398,20 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
 
   if (currentStep === 'welcome') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4 overflow-hidden">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 0.1, scale: 1 }}
             transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-            className="absolute top-20 left-20 w-96 h-96 bg-green-300 rounded-full filter blur-3xl"
+            className="absolute top-20 left-20 w-96 h-96 bg-accent/20 rounded-full filter blur-3xl"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 0.1, scale: 1 }}
             transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", delay: 1 }}
-            className="absolute bottom-20 right-20 w-96 h-96 bg-blue-300 rounded-full filter blur-3xl"
+            className="absolute bottom-20 right-20 w-96 h-96 bg-primary/20 rounded-full filter blur-3xl"
           />
         </div>
         
@@ -433,10 +433,10 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                 >
                   <h1 className="text-3xl md:text-5xl font-light mb-4 text-gray-800 leading-tight">
                     UPPTÄCK DIN PERFEKTA
-                    <span className="text-green-600 font-bold block">FUNCTIONAL FOOD</span>
+                    <span className="text-primary font-bold block">FUNCTIONAL FOOD</span>
                   </h1>
                   <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                    Få personaliserade rekommendationer baserat på din livsstil och hälsobehov enligt <strong className="text-green-700">Ulrika Davidssons</strong> beprövade metod.
+                    Få personaliserade rekommendationer baserat på din livsstil och hälsobehov enligt <strong className="text-secondary">Ulrika Davidssons</strong> beprövade metod.
                   </p>
                 </motion.div>
 
@@ -446,15 +446,15 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   transition={{ delay: 0.4, duration: 0.5 }}
                   className="space-y-4 mb-8"
                 >
-                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-2xl hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-3 p-4 bg-background-secondary rounded-2xl hover:shadow-md transition-shadow">
                     <div className="text-2xl">🎯</div>
                     <span className="text-gray-700 font-medium">Personaliserade rekommendationer</span>
                   </div>
-                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-3 p-4 bg-background-secondary rounded-2xl hover:shadow-md transition-shadow">
                     <div className="text-2xl">🧬</div>
                     <span className="text-gray-700 font-medium">Vetenskapligt baserade råd</span>
                   </div>
-                  <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl hover:shadow-md transition-shadow">
+                  <div className="flex items-center space-x-3 p-4 bg-background-secondary rounded-2xl hover:shadow-md transition-shadow">
                     <div className="text-2xl">⚡</div>
                     <span className="text-gray-700 font-medium">Snabb analys på 2 minuter</span>
                   </div>
@@ -467,7 +467,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
                   whileTap={{ scale: 0.95 }}
                   onClick={startQuiz}
-                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-10 py-5 rounded-full font-semibold text-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-xl flex items-center space-x-3 group"
+                  className="bg-primary text-white px-10 py-5 rounded-full font-semibold text-lg hover:bg-secondary transition-all duration-300 shadow-xl flex items-center space-x-3 group"
                 >
                   <span>Starta Ditt Personliga Quiz</span>
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

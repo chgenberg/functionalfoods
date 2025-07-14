@@ -371,7 +371,7 @@ export default function Header() {
             </button>
             
             <div className="pt-10 pb-4 px-8 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl mb-4 shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                              <div className="inline-flex items-center justify-center w-16 h-16 bg-accent rounded-2xl mb-4 shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
                 <span className="text-white text-xl font-bold">FF</span>
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-1">

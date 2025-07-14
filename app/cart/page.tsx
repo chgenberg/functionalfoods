@@ -181,7 +181,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-text-secondary">
                     <span>Frakt</span>
-                    <span className="text-green-600 font-medium">Gratis</span>
+                    <span className="text-success font-medium">Gratis</span>
                   </div>
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
@@ -212,20 +212,20 @@ export default function CartPage() {
                 {/* Benefits */}
                 <div className="mt-6 pt-6 border-t space-y-3">
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-green-600">✓</span>
+                    <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-accent">✓</span>
                     </div>
                     <span className="text-text-secondary">30 dagars öppet köp</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-green-600">✓</span>
+                    <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-accent">✓</span>
                     </div>
                     <span className="text-text-secondary">Livstids tillgång till kurser</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-green-600">✓</span>
+                    <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-accent">✓</span>
                     </div>
                     <span className="text-text-secondary">Personlig support</span>
                   </div>
