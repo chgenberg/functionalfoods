@@ -70,7 +70,7 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
     >
       <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
         {/* Avatar placeholder */}
-        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
           {thread.author.name?.charAt(0) || thread.author.email.charAt(0)}
         </div>
         
@@ -230,13 +230,12 @@ export default function FunctionalBasicsCommunityPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header with gradient background */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-teal-600 to-emerald-700 p-4 sm:p-6 lg:p-8 text-white shadow-xl">
-        <div className="absolute inset-0 bg-black/10"></div>
+      {/* Header with brand colors */}
+      <div className="relative overflow-hidden rounded-2xl bg-primary p-4 sm:p-6 lg:p-8 text-white shadow-xl">
         <div className="relative z-10 flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div className="min-w-0">
             <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">Functional Basics Community</h1>
-            <p className="text-green-100 text-base sm:text-lg break-words">
+            <p className="text-white/90 text-base sm:text-lg break-words">
               Diskutera kursen och dela erfarenheter med andra deltagare
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-4">
@@ -254,7 +253,7 @@ export default function FunctionalBasicsCommunityPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowNewThreadModal(true)}
-            className="flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-white text-green-700 rounded-xl hover:bg-green-50 transition-all duration-200 shadow-lg font-semibold text-sm sm:text-base whitespace-nowrap flex-shrink-0"
+            className="flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-accent text-white rounded-xl hover:bg-primary-light transition-all duration-200 shadow-lg font-semibold text-sm sm:text-base whitespace-nowrap flex-shrink-0"
           >
             <FiPlus className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="hidden sm:inline">Starta diskussion</span>
@@ -271,39 +270,63 @@ export default function FunctionalBasicsCommunityPage() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
+        className="bg-background-secondary rounded-2xl shadow-sm border border-border p-6"
       >
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <FiTag className="w-5 h-5 text-green-600" />
+        <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+          <FiTag className="w-5 h-5 text-accent" />
           Kategorier
         </h2>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          {/* All categories button */}
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+            className={`relative p-4 rounded-xl transition-all duration-200 text-left group ${
               selectedCategory === 'all'
-                ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-accent text-white shadow-lg'
+                : 'bg-background hover:bg-background/70 hover:shadow-md'
             }`}
           >
-            <span className="hidden sm:inline">Alla kategorier</span>
-            <span className="sm:hidden">Alla</span> ({totalThreads})
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Alla kategorier</span>
+              <span className={`text-2xl font-bold ${
+                selectedCategory === 'all' ? 'text-white' : 'text-accent'
+              }`}>{totalThreads}</span>
+            </div>
+            <div className={`text-sm mt-1 ${
+              selectedCategory === 'all' ? 'text-white/80' : 'text-text-secondary'
+            }`}>
+              diskussioner totalt
+            </div>
           </motion.button>
+          
+          {/* Category buttons */}
           {categories.map((category) => (
             <motion.button
               key={category.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+              className={`relative p-4 rounded-xl transition-all duration-200 text-left group ${
                 selectedCategory === category.id
-                  ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
-                  : `${getCategoryStyle(category.color)} hover:opacity-80`
+                  ? 'bg-accent text-white shadow-lg'
+                  : 'bg-background hover:bg-background/70 hover:shadow-md'
               }`}
             >
-              <span className="truncate max-w-[80px] sm:max-w-none inline-block">{category.name}</span> ({category._count.threads})
+              <div className="flex items-center justify-between">
+                <span className="font-medium">{category.name}</span>
+                <span className={`text-2xl font-bold ${
+                  selectedCategory === category.id ? 'text-white' : 'text-accent'
+                }`}>{category._count.threads}</span>
+              </div>
+              <div className={`text-sm mt-1 ${
+                selectedCategory === category.id ? 'text-white/80' : 'text-text-secondary'
+              }`}>
+                {category._count.threads === 1 ? 'diskussion' : 'diskussioner'}
+              </div>
+              {/* Category color indicator */}
+              <div className={`absolute bottom-0 left-0 right-0 h-1 rounded-b-xl ${getCategoryStyle(category.color).split(' ')[0]}`}></div>
             </motion.button>
           ))}
         </div>
@@ -410,22 +433,22 @@ export default function FunctionalBasicsCommunityPage() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-8 border border-green-100"
+        className="bg-background-secondary rounded-2xl p-8 border border-border"
       >
         <div className="grid md:grid-cols-3 gap-6 text-center">
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="text-3xl font-bold text-green-700 mb-1">{totalThreads}</div>
-            <div className="text-gray-600">Diskussioner</div>
+          <div className="bg-background rounded-xl p-6 shadow-sm">
+            <div className="text-3xl font-bold text-primary mb-1">{totalThreads}</div>
+            <div className="text-text-secondary">Diskussioner</div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="text-3xl font-bold text-teal-700 mb-1">
+          <div className="bg-background rounded-xl p-6 shadow-sm">
+            <div className="text-3xl font-bold text-accent mb-1">
               {threads.reduce((sum, t) => sum + t._count.replies, 0)}
             </div>
-            <div className="text-gray-600">Svar</div>
+            <div className="text-text-secondary">Svar</div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="text-3xl font-bold text-emerald-700 mb-1">{categories.length}</div>
-            <div className="text-gray-600">Kategorier</div>
+          <div className="bg-background rounded-xl p-6 shadow-sm">
+            <div className="text-3xl font-bold text-secondary mb-1">{categories.length}</div>
+            <div className="text-text-secondary">Kategorier</div>
           </div>
         </div>
       </motion.div>
@@ -452,8 +475,7 @@ export default function FunctionalBasicsCommunityPage() {
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Modal Header */}
-                <div className="relative bg-gradient-to-r from-green-600 to-teal-600 p-6 text-white">
-                  <div className="absolute inset-0 bg-black/10"></div>
+                <div className="relative bg-primary p-6 text-white">
                   <div className="relative z-10">
                     <div className="flex items-center justify-between">
                       <h2 className="text-2xl font-bold">Starta ny diskussion</h2>
@@ -468,7 +490,7 @@ export default function FunctionalBasicsCommunityPage() {
                         </svg>
                       </motion.button>
                     </div>
-                    <p className="text-green-100 mt-2">Dela dina tankar och frågor med gruppen</p>
+                    <p className="text-white/90 mt-2">Dela dina tankar och frågor med gruppen</p>
                   </div>
                 </div>
 
