@@ -88,30 +88,30 @@ export default function FunctionalBasicsLayout({
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-purple-50">
+    <div className="min-h-screen bg-background">
       {/* Top Header - Desktop & Mobile */}
-      <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40">
+      <header className="bg-background-secondary shadow-sm border-b border-border sticky top-0 z-40">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Course Title */}
             <div className="flex items-center space-x-3">
               <Link href="/dashboard/courses" className="lg:hidden">
-                <FiChevronLeft className="w-6 h-6 text-gray-600" />
+                <FiChevronLeft className="w-6 h-6 text-text-secondary" />
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="bg-gradient-to-r from-green-500 to-teal-600 rounded-full p-2">
+                <div className="bg-accent rounded-full p-2">
                   <GiFruitBowl className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg sm:text-xl font-bold text-gray-900">Functional Basics</h1>
-                  <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">6 veckors hälsoprogram</p>
+                  <h1 className="text-lg sm:text-xl font-bold text-text-primary">Functional Basics</h1>
+                  <p className="text-xs sm:text-sm text-text-secondary hidden sm:block">6 veckors hälsoprogram</p>
                 </div>
               </div>
             </div>
 
             {/* User Menu */}
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
                 U
               </div>
             </div>
@@ -121,11 +121,11 @@ export default function FunctionalBasicsLayout({
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-64 bg-white shadow-lg">
+        <aside className="hidden lg:block w-64 bg-background-secondary shadow-lg">
           <div className="flex flex-col h-full pt-5">
             {/* Course Navigation */}
             <nav className="flex-1 px-4 pb-4 space-y-1">
-              <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              <h3 className="px-3 text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">
                 Kursinnehåll
               </h3>
               {navigationItems.map((item) => {
@@ -137,12 +137,12 @@ export default function FunctionalBasicsLayout({
                     className={`
                       group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200
                       ${isActive 
-                        ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-md' 
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-accent text-white shadow-md' 
+                        : 'text-text-primary hover:bg-background hover:text-primary'
                       }
                     `}
                   >
-                    <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                    <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-text-secondary'}`} />
                     {item.label}
                     {isActive && (
                       <FiChevronRight className="ml-auto h-4 w-4" />
@@ -165,7 +165,7 @@ export default function FunctionalBasicsLayout({
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background-secondary border-t border-border z-50">
         {/* Scrollable navigation */}
         <div className="flex overflow-x-auto scrollbar-hide py-2 px-2 gap-2">
           {navigationItems.map((item) => {
@@ -177,12 +177,12 @@ export default function FunctionalBasicsLayout({
                 className={`
                   flex flex-col items-center justify-center px-3 py-2 rounded-lg transition-all flex-shrink-0
                   ${isActive 
-                    ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-md' 
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-accent text-white shadow-md' 
+                    : 'text-text-secondary hover:bg-background'
                   }
                 `}
               >
-                <item.icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                <item.icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-text-secondary'}`} />
                 <span className={`text-xs mt-1 ${isActive ? 'font-medium' : ''}`}>
                   {item.label}
                 </span>
@@ -194,9 +194,9 @@ export default function FunctionalBasicsLayout({
         {/* Toggle button for full menu */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="absolute -top-12 right-4 bg-white shadow-lg rounded-full p-2 border border-gray-200"
+          className="absolute -top-12 right-4 bg-background-secondary shadow-lg rounded-full p-2 border border-border"
         >
-          <FiChevronUp className={`w-5 h-5 text-gray-600 transition-transform ${mobileMenuOpen ? 'rotate-180' : ''}`} />
+          <FiChevronUp className={`w-5 h-5 text-text-secondary transition-transform ${mobileMenuOpen ? 'rotate-180' : ''}`} />
         </button>
       </div>
 
@@ -216,16 +216,16 @@ export default function FunctionalBasicsLayout({
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 max-h-[80vh] overflow-y-auto"
+              className="lg:hidden fixed bottom-0 left-0 right-0 bg-background-secondary rounded-t-2xl shadow-2xl z-50 max-h-[80vh] overflow-y-auto"
             >
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Kursnavigation</h3>
+                  <h3 className="text-lg font-semibold text-text-primary">Kursnavigation</h3>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-background rounded-lg transition-colors"
                   >
-                    <FiX className="w-5 h-5 text-gray-600" />
+                    <FiX className="w-5 h-5 text-text-secondary" />
                   </button>
                 </div>
                 
@@ -240,12 +240,12 @@ export default function FunctionalBasicsLayout({
                         className={`
                           flex items-center px-4 py-3 rounded-lg transition-all
                           ${isActive 
-                            ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-md' 
-                            : 'text-gray-700 hover:bg-gray-100'
+                            ? 'bg-accent text-white shadow-md' 
+                            : 'text-text-primary hover:bg-background'
                           }
                         `}
                       >
-                        <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                        <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-text-secondary'}`} />
                         <span className="font-medium">{item.label}</span>
                         {isActive && (
                           <FiChevronRight className="ml-auto h-4 w-4" />
