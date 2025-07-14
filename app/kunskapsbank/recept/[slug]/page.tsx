@@ -16,6 +16,7 @@ interface Recipe {
   excerpt?: string;
   content?: string;
   imageUrl?: string;
+  imageAlt?: string;
   categories: string[];
   ingredients: string[];
   instructions?: string;
@@ -277,349 +278,293 @@ export default function RecipePage() {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-orange-50 px-4">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md"
-        >
-          <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-            Premium Recept
-          </h1>
-          <p className="text-gray-600 mb-6">
-            Detta recept är endast tillgängligt för kursdeltagare.
-          </p>
-          <div className="space-y-3">
-            <Link
-              href="/utbildning"
-              className="block bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors"
-            >
-              Köp en kurs
-            </Link>
-            <Link
-              href="/kunskapsbank/recept"
-              className="block text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Tillbaka till recept
-            </Link>
-          </div>
-        </motion.div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="text-center bg-white p-10 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Tillgång nekad</h2>
+          <p className="text-gray-600 mb-6">Detta är ett premiumrecept. Vänligen logga in för att se innehållet.</p>
+          <Link href="/login" className="px-6 py-2 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors">
+            Logga in
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50">
-      {/* Hero Image */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="relative h-[40vh] md:h-[50vh]"
-      >
-        <Image
-          src={recipe.imageUrl || '/images/recipe-placeholder.svg'}
-          alt={recipe.title || 'Recept'}
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        
-        {/* Navigation */}
-        <div className="absolute top-0 left-0 right-0 p-4 md:p-8">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <Link 
-              href="/kunskapsbank/recept" 
-              className="inline-flex items-center gap-2 text-white bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/30 transition-colors"
-            >
-              <FiArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Tillbaka</span>
-            </Link>
-            
-            <div className="flex gap-2">
-              <button 
-                onClick={() => setIsLiked(!isLiked)}
-                className={`p-3 rounded-full backdrop-blur-sm transition-all ${
-                  isLiked ? 'bg-red-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                <FiHeart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-              </button>
-              <button 
-                onClick={() => setIsBookmarked(!isBookmarked)}
-                className={`p-3 rounded-full backdrop-blur-sm transition-all ${
-                  isBookmarked ? 'bg-orange-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                <FiBookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
-              </button>
-              <button className="p-3 bg-white/20 backdrop-blur-sm text-white rounded-full hover:bg-white/30 transition-colors">
-                <FiShare2 className="w-5 h-5" />
-              </button>
+    <>
+      <div className="bg-white min-h-screen">
+        <div className="container mx-auto px-4 py-8 md:py-12">
+
+          {/* Bildsektion */}
+          {recipe.imageUrl && (
+            <div className="mb-8 rounded-lg overflow-hidden shadow-lg h-64 md:h-96 relative">
+              <Image
+                src={recipe.imageUrl}
+                alt={recipe.imageAlt || recipe.title}
+                layout="fill"
+                objectFit="cover"
+                className="transition-transform duration-500 hover:scale-105"
+              />
             </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 md:px-8 -mt-20 relative z-10">
-        {/* Title Card */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl shadow-xl p-6 md:p-10 mb-8"
-        >
-          <div className="flex flex-wrap gap-2 mb-4">
-            {(recipe.categories || []).map((category, index) => (
-              <span key={index} className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
-                {category}
-              </span>
-            ))}
-          </div>
-          
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {recipe.title}
-          </h1>
-          
-          {recipe.excerpt && (
-            <p className="text-lg text-gray-600 mb-6">
-              {recipe.excerpt}
-            </p>
           )}
-          
-          <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
-            {recipe.prepTime && (
-              <span className="flex items-center gap-2">
-                <FiClock className="w-4 h-4 text-orange-500" />
-                {recipe.prepTime}
-              </span>
-            )}
-            <span className="flex items-center gap-2">
-              <FiUsers className="w-4 h-4 text-orange-500" />
-              {servings} portioner
-            </span>
-            {recipe.difficulty && (
-              <span className="flex items-center gap-2">
-                <span className="text-orange-500">★</span>
-                {recipe.difficulty}
-              </span>
-            )}
-          </div>
-        </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8 mb-12">
-          {/* Ingredients */}
+          {/* Header-sektion */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="lg:col-span-1"
+            className="bg-white rounded-3xl shadow-xl p-6 md:p-10 mb-8"
           >
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Ingredienser</h2>
-              
-              {/* Portion Selector */}
-              <div className="bg-orange-50 rounded-xl p-4 mb-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Antal portioner</span>
-                  <div className="flex items-center gap-3">
-                    <button 
-                      onClick={() => setServings(Math.max(1, servings - 1))}
-                      className="w-8 h-8 rounded-full bg-white border border-orange-200 hover:border-orange-400 hover:text-orange-600 transition-colors flex items-center justify-center"
-                    >
-                      <FiMinus className="w-4 h-4" />
-                    </button>
-                    <span className="font-bold text-lg w-8 text-center text-orange-600">{servings}</span>
-                    <button 
-                      onClick={() => setServings(servings + 1)}
-                      className="w-8 h-8 rounded-full bg-white border border-orange-200 hover:border-orange-400 hover:text-orange-600 transition-colors flex items-center justify-center"
-                    >
-                      <FiPlus className="w-4 h-4" />
-                    </button>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {(recipe.categories || []).map((category, index) => (
+                <span key={index} className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
+                  {category}
+                </span>
+              ))}
+            </div>
+            
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              {recipe.title}
+            </h1>
+            
+            {recipe.excerpt && (
+              <p className="text-lg text-gray-600 mb-6">
+                {recipe.excerpt}
+              </p>
+            )}
+            
+            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
+              {recipe.prepTime && (
+                <span className="flex items-center gap-2">
+                  <FiClock className="w-4 h-4 text-orange-500" />
+                  {recipe.prepTime}
+                </span>
+              )}
+              <span className="flex items-center gap-2">
+                <FiUsers className="w-4 h-4 text-orange-500" />
+                {servings} portioner
+              </span>
+              {recipe.difficulty && (
+                <span className="flex items-center gap-2">
+                  <span className="text-orange-500">★</span>
+                  {recipe.difficulty}
+                </span>
+              )}
+            </div>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-3 gap-8 mb-12">
+            {/* Ingredients */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Ingredienser</h2>
+                
+                {/* Portion Selector */}
+                <div className="bg-orange-50 rounded-xl p-4 mb-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Antal portioner</span>
+                    <div className="flex items-center gap-3">
+                      <button 
+                        onClick={() => setServings(Math.max(1, servings - 1))}
+                        className="w-8 h-8 rounded-full bg-white border border-orange-200 hover:border-orange-400 hover:text-orange-600 transition-colors flex items-center justify-center"
+                      >
+                        <FiMinus className="w-4 h-4" />
+                      </button>
+                      <span className="font-bold text-lg w-8 text-center text-orange-600">{servings}</span>
+                      <button 
+                        onClick={() => setServings(servings + 1)}
+                        className="w-8 h-8 rounded-full bg-white border border-orange-200 hover:border-orange-400 hover:text-orange-600 transition-colors flex items-center justify-center"
+                      >
+                        <FiPlus className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  {scaledIngredients.map((ingredient, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => toggleIngredient(index)}
+                      className={`flex items-center p-3 rounded-lg cursor-pointer transition-all ${
+                        checkedIngredients.includes(index) 
+                          ? 'bg-green-50 text-green-800' 
+                          : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-all ${
+                        checkedIngredients.includes(index) 
+                          ? 'bg-green-500 border-green-500' 
+                          : 'border-gray-300'
+                      }`}>
+                        {checkedIngredients.includes(index) && (
+                          <FiCheck className="w-3 h-3 text-white" />
+                        )}
+                      </div>
+                      <span className={`text-sm ${checkedIngredients.includes(index) ? 'line-through' : ''}`}>
+                        {ingredient}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <button className="mt-6 w-full flex items-center justify-center gap-2 bg-orange-100 text-orange-700 px-4 py-3 rounded-lg hover:bg-orange-200 transition-colors">
+                  <FiShoppingCart className="w-4 h-4" />
+                  <span className="text-sm font-medium">Lägg till i inköpslista</span>
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Instructions */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-2"
+            >
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Tillagning</h2>
+                
+                <div className="space-y-4">
+                  {instructionSteps.map((step, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => toggleStep(index)}
+                      className={`flex gap-4 p-4 rounded-lg cursor-pointer transition-all ${
+                        checkedSteps.includes(index) 
+                          ? 'bg-green-50' 
+                          : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold transition-all ${
+                        checkedSteps.includes(index) 
+                          ? 'bg-green-500 text-white' 
+                          : 'bg-orange-100 text-orange-600'
+                      }`}>
+                        {checkedSteps.includes(index) ? <FiCheck className="w-5 h-5" /> : index + 1}
+                      </div>
+                      <p className={`text-gray-700 pt-2 ${checkedSteps.includes(index) ? 'line-through opacity-60' : ''}`}>
+                        {step}
+                      </p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
 
-              <div className="space-y-2">
-                {scaledIngredients.map((ingredient, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => toggleIngredient(index)}
-                    className={`flex items-center p-3 rounded-lg cursor-pointer transition-all ${
-                      checkedIngredients.includes(index) 
-                        ? 'bg-green-50 text-green-800' 
-                        : 'hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-all ${
-                      checkedIngredients.includes(index) 
-                        ? 'bg-green-500 border-green-500' 
-                        : 'border-gray-300'
-                    }`}>
-                      {checkedIngredients.includes(index) && (
-                        <FiCheck className="w-3 h-3 text-white" />
-                      )}
-                    </div>
-                    <span className={`text-sm ${checkedIngredients.includes(index) ? 'line-through' : ''}`}>
-                      {ingredient}
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
+              {/* Tips */}
+              {recipe.tips && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-6 bg-yellow-50 rounded-2xl p-6"
+                >
+                  <h3 className="font-bold text-yellow-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">💡</span>
+                    Tips
+                  </h3>
+                  <p className="text-yellow-800 text-sm leading-relaxed">
+                    {recipe.tips}
+                  </p>
+                </motion.div>
+              )}
 
-              <button className="mt-6 w-full flex items-center justify-center gap-2 bg-orange-100 text-orange-700 px-4 py-3 rounded-lg hover:bg-orange-200 transition-colors">
-                <FiShoppingCart className="w-4 h-4" />
-                <span className="text-sm font-medium">Lägg till i inköpslista</span>
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Instructions */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-2"
-          >
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tillagning</h2>
-              
-              <div className="space-y-4">
-                {instructionSteps.map((step, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => toggleStep(index)}
-                    className={`flex gap-4 p-4 rounded-lg cursor-pointer transition-all ${
-                      checkedSteps.includes(index) 
-                        ? 'bg-green-50' 
-                        : 'hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold transition-all ${
-                      checkedSteps.includes(index) 
-                        ? 'bg-green-500 text-white' 
-                        : 'bg-orange-100 text-orange-600'
-                    }`}>
-                      {checkedSteps.includes(index) ? <FiCheck className="w-5 h-5" /> : index + 1}
-                    </div>
-                    <p className={`text-gray-700 pt-2 ${checkedSteps.includes(index) ? 'line-through opacity-60' : ''}`}>
-                      {step}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Tips */}
-            {recipe.tips && (
+              {/* Action Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-6 bg-yellow-50 rounded-2xl p-6"
+                transition={{ delay: 0.4 }}
+                className="mt-6 flex gap-3"
               >
-                <h3 className="font-bold text-yellow-900 mb-3 flex items-center gap-2">
-                  <span className="text-2xl">💡</span>
-                  Tips
-                </h3>
-                <p className="text-yellow-800 text-sm leading-relaxed">
-                  {recipe.tips}
-                </p>
+                <button className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors">
+                  <FiPrinter className="w-4 h-4" />
+                  <span className="text-sm font-medium">Skriv ut</span>
+                </button>
               </motion.div>
-            )}
-
-            {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mt-6 flex gap-3"
-            >
-              <button className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors">
-                <FiPrinter className="w-4 h-4" />
-                <span className="text-sm font-medium">Skriv ut</span>
-              </button>
             </motion.div>
+          </div>
+
+          {/* Nutrition */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="bg-white rounded-2xl shadow-lg p-6 mb-12"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Näringsvärde per portion</h2>
+            
+            {nutritionLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-8 h-8 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+                <span className="ml-3 text-gray-600">Beräknar näringsvärden...</span>
+              </div>
+            ) : nutrition ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">
+                    {Math.round(nutrition.perServing?.calories || 0)}
+                  </p>
+                  <p className="text-sm text-gray-600">Kalorier</p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">
+                    {Math.round(nutrition.perServing?.protein || 0)}g
+                  </p>
+                  <p className="text-sm text-gray-600">Protein</p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">
+                    {Math.round(nutrition.perServing?.carbs || 0)}g
+                  </p>
+                  <p className="text-sm text-gray-600">Kolhydrater</p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">
+                    {Math.round(nutrition.perServing?.fat || 0)}g
+                  </p>
+                  <p className="text-sm text-gray-600">Fett</p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">-</p>
+                  <p className="text-sm text-gray-600">Kalorier</p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">-</p>
+                  <p className="text-sm text-gray-600">Protein</p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">-</p>
+                  <p className="text-sm text-gray-600">Kolhydrater</p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4 text-center">
+                  <p className="text-2xl font-bold text-orange-600">-</p>
+                  <p className="text-sm text-gray-600">Fett</p>
+                </div>
+              </div>
+            )}
+            
+            <p className="text-sm text-gray-500 mt-4 text-center">
+              {nutrition ? 'Näringsvärden är beräknade uppskattningar' : 'Näringsvärden beräknas automatiskt'}
+            </p>
           </motion.div>
+
+          {/* Random Recipes */}
+          <RandomRecipes excludeId={recipe?.id} />
         </div>
-
-        {/* Nutrition */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl shadow-lg p-6 mb-12"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Näringsvärde per portion</h2>
-          
-          {nutritionLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="w-8 h-8 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
-              <span className="ml-3 text-gray-600">Beräknar näringsvärden...</span>
-            </div>
-          ) : nutrition ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">
-                  {Math.round(nutrition.perServing?.calories || 0)}
-                </p>
-                <p className="text-sm text-gray-600">Kalorier</p>
-              </div>
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">
-                  {Math.round(nutrition.perServing?.protein || 0)}g
-                </p>
-                <p className="text-sm text-gray-600">Protein</p>
-              </div>
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">
-                  {Math.round(nutrition.perServing?.carbs || 0)}g
-                </p>
-                <p className="text-sm text-gray-600">Kolhydrater</p>
-              </div>
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">
-                  {Math.round(nutrition.perServing?.fat || 0)}g
-                </p>
-                <p className="text-sm text-gray-600">Fett</p>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">-</p>
-                <p className="text-sm text-gray-600">Kalorier</p>
-              </div>
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">-</p>
-                <p className="text-sm text-gray-600">Protein</p>
-              </div>
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">-</p>
-                <p className="text-sm text-gray-600">Kolhydrater</p>
-              </div>
-              <div className="bg-orange-50 rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold text-orange-600">-</p>
-                <p className="text-sm text-gray-600">Fett</p>
-              </div>
-            </div>
-          )}
-          
-          <p className="text-sm text-gray-500 mt-4 text-center">
-            {nutrition ? 'Näringsvärden är beräknade uppskattningar' : 'Näringsvärden beräknas automatiskt'}
-          </p>
-        </motion.div>
-
-        {/* Random Recipes */}
-        <RandomRecipes excludeId={recipe?.id} />
       </div>
-    </main>
+    </>
   );
 } 
