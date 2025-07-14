@@ -53,8 +53,17 @@ export async function GET(request: Request) {
     }
 
     // Returnera köpdatumet som kursstartdatum
+    // Beräkna kursstartdatum som nästkommande måndag efter köpdatumet
+    const purchaseDate = new Date(purchase.createdAt);
+    const dayOfWeek = purchaseDate.getDay(); // 0=Sun, 1=Mon, ...
+
+    // Antal dagar att lägga till för att nå nästa måndag (0 om redan måndag)
+    const daysUntilMonday = (dayOfWeek === 1) ? 0 : (8 - dayOfWeek) % 7;
+    const nextMonday = new Date(purchaseDate);
+    nextMonday.setDate(purchaseDate.getDate() + daysUntilMonday);
+
     return NextResponse.json({
-      courseStartDate: purchase.createdAt,
+      courseStartDate: nextMonday,
       courseName: purchase.course.name,
       purchaseId: purchase.id
     });
