@@ -229,7 +229,7 @@ export default function Home() {
             >
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white mb-4 md:mb-6 leading-tight drop-shadow-lg">
                 UPPTÄCK KRAFTEN I
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 font-bold drop-shadow-lg">
+                <span className="block text-accent font-bold drop-shadow-lg">
             FUNCTIONAL FOODS
                 </span>
           </h1>
@@ -242,7 +242,7 @@ export default function Home() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuiz(true)}
-                  className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
+                  className="group bg-primary text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl hover:bg-secondary transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
             >
               Starta Hälsoquiz
                   <FiArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
@@ -297,7 +297,7 @@ export default function Home() {
                   className="absolute -bottom-4 md:-bottom-6 -left-4 md:-left-6 bg-white/95 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-lg md:shadow-xl p-4 md:p-6 max-w-[280px] md:max-w-xs"
                 >
                   <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
-                    <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl">
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-accent rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl">
                       UD
                     </div>
                     <div>
@@ -399,7 +399,7 @@ export default function Home() {
               >
                 <div className="text-center">
                   <div className="text-3xl md:text-5xl mb-3 md:mb-4">{item.icon}</div>
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl mx-auto mb-3 md:mb-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl mx-auto mb-3 md:mb-4">
                     {item.step}
                   </div>
                   <h3 className="text-base md:text-xl font-semibold mb-1 md:mb-2 text-gray-800">{item.title}</h3>
@@ -417,7 +417,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials - Mobile Optimized */}
-      <section className="py-12 md:py-20 px-4 bg-gradient-to-br from-green-50 to-blue-50">
+      <section className="py-12 md:py-20 px-4 bg-background-secondary">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -484,7 +484,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section - Mobile Optimized */}
-      <section className="py-12 md:py-20 px-4 bg-gradient-to-r from-green-600 to-green-700 text-white">
+      <section className="py-12 md:py-20 px-4 bg-primary text-white">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
