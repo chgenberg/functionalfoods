@@ -164,7 +164,7 @@ export default function RecipePage() {
 
   // Parse instructions into steps
   const instructionSteps = recipe?.instructions && typeof recipe.instructions === 'string'
-    ? recipe.instructions.split('\n').filter(step => step.trim())
+    ? recipe.instructions.split('\\n').filter(step => step.trim())
     : [];
 
   // Function to scale ingredient amounts
