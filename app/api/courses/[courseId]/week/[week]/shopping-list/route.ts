@@ -1,75 +1,53 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
-// GET shopping list for a specific week
-export async function GET(
-  request: Request,
-  { params }: { params: { courseId: string; week: string } }
-) {
+interface RouteParams {
+  params: {
+    courseId: string;
+    week: string;
+  };
+}
+
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { courseId, week } = params;
+
+  if (!courseId || !week) {
+    return NextResponse.json({ error: 'Course ID and week are required' }, { status: 400 });
+  }
+
+  const weekNumber = parseInt(week, 10);
+  if (isNaN(weekNumber)) {
+    return NextResponse.json({ error: 'Week must be a number' }, { status: 400 });
+  }
+
   try {
-    const weekNumber = parseInt(params.week);
-    
-    // Find or create shopping list
-    let shoppingList = await prisma.weeklyShoppingList.findUnique({
+    const shoppingList = await prisma.weeklyShoppingList.findFirst({
       where: {
-        courseId_week: {
-          courseId: params.courseId,
-          week: weekNumber
-        }
+        courseId,
+        weekNumber,
       },
-      include: {
-        items: {
-          orderBy: {
-            ingredient: 'asc'
-          }
-        }
-      }
     });
 
-    // If no list exists, trigger sync for this week
     if (!shoppingList) {
-      // Run sync logic inline for this specific week
-      const course = await prisma.courseProduct.findUnique({
-        where: { id: params.courseId }
-      });
-      
-      if (!course) {
-        return NextResponse.json({ error: 'Course not found' }, { status: 404 });
-      }
-
-      // Create empty list for now
-      shoppingList = await prisma.weeklyShoppingList.create({
-        data: {
-          courseId: params.courseId,
-          week: weekNumber,
-          items: {
-            create: []
-          }
-        },
-        include: {
-          items: true
-        }
-      });
+      return NextResponse.json({ error: 'Shopping list not found' }, { status: 404 });
     }
 
-    return NextResponse.json({
-      shoppingList,
-      weekNumber,
-      itemCount: shoppingList.items.length,
-      checkedCount: shoppingList.items.filter(item => item.isChecked).length
-    });
+    const items = typeof shoppingList.items === 'string'
+      ? JSON.parse(shoppingList.items)
+      : shoppingList.items;
 
+    return NextResponse.json({
+      shoppingList: {
+        items,
+      },
+      weekNumber,
+      itemCount: items.length,
+    });
   } catch (error) {
     console.error('Error fetching shopping list:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch shopping list' },
-      { status: 500 }
-    );
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
