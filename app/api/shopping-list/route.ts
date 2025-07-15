@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // @ts-expect-error prisma type not yet updated
     const shoppingList = await prisma.weeklyShoppingList.findFirst({
       where: {
         courseId,
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!shoppingList) {
-      return NextResponse.json({ error: 'Shopping list not found' }, { status: 404 });
+      return NextResponse.json({ items: [] });
     }
 
     const items = (shoppingList.items as any[]).map((item) => ({
