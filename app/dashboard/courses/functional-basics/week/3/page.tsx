@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -16,6 +16,7 @@ import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
+import ShoppingList from '../[week]/ShoppingList';
 
 interface TabProps {
   id: string;
@@ -39,6 +40,20 @@ interface DayMeals {
 
 export default function Week3Page() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [courseId, setCourseId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Hämta course ID för Functional Basics
+    fetch('/api/courses')
+      .then(res => res.json())
+      .then(data => {
+        const functionalBasics = data.courses?.find((c: any) => c.name === 'Functional Basics');
+        if (functionalBasics) {
+          setCourseId(functionalBasics.id);
+        }
+      })
+      .catch(err => console.error('Error fetching course:', err));
+  }, []);
 
   const tabs: TabProps[] = [
     { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
@@ -221,19 +236,19 @@ export default function Week3Page() {
             </motion.div>
           )}
 
-          {/* Shopping List Tab */}
+          {/* Shopping Tab */}
           {activeTab === 'shopping' && (
             <motion.div
               key="shopping"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
             >
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Inköpslista</h3>
-                <p className="text-gray-600">Planera dina inköp för vecka 3.</p>
-              </div>
+              {/* För nu, anta att courseId är hårdkodat eller hämtat från en context/API */}
+              <ShoppingList 
+                weekNumber={3} 
+                courseId={courseId || ''} 
+              />
             </motion.div>
           )}
         </AnimatePresence>

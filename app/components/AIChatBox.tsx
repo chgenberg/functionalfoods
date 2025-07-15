@@ -28,8 +28,10 @@ export default function AIChatBox({ analysis }: { analysis: any }) {
     });
     const data = await res.json();
 
-    // Ta bort fetstil (**)
-    const cleanReply = (data.reply || "").replace(/\*\*/g, "");
+    // Ta bort fetstil (**) och markdown-rubriker (###, ##, #)
+    const cleanReply = (data.reply || "")
+      .replace(/\*\*/g, "")
+      .replace(/^\s*#{1,6}\s*/gm, "");
 
     setMessages([...newMessages, { role: "assistant", text: cleanReply }]);
     setInput("");
