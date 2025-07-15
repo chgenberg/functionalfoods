@@ -35,7 +35,7 @@ export default function InkopslistaPage() {
     fetch('/api/courses')
       .then(res => res.json())
       .then(data => {
-        const functionalBasics = data.courses?.find((c: any) => c.name === 'Functional Basics');
+        const functionalBasics = data.courses?.find((c: any) => (c.title || c.name) === 'Functional Basics');
         if (functionalBasics) {
           setCourseId(functionalBasics.id);
         }
