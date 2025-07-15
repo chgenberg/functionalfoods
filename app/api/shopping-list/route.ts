@@ -20,8 +20,11 @@ export async function GET(request: NextRequest) {
   try {
     const shoppingList = await prisma.weeklyShoppingList.findFirst({
       where: {
-        courseId: courseId,
-        weekNumber: weekNumber,
+        courseId,
+        week: weekNumber,
+      },
+      include: {
+        items: true,
       },
     });
 
@@ -29,11 +32,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Shopping list not found' }, { status: 404 });
     }
 
-    // The 'items' field is expected to be a JSON string, so we parse it.
-    // If it's already an object (JSONB), this might not be necessary, but it's safer.
-    const items = typeof shoppingList.items === 'string' 
-      ? JSON.parse(shoppingList.items) 
-      : shoppingList.items;
+    const items = (shoppingList.items as any[]).map((item) => ({
+      id: item.id,
+      name: item.ingredient,
+      quantity: '',
+      category: 'Övrigt',
+    }));
 
     return NextResponse.json({ items });
 

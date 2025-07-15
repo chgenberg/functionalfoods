@@ -26,7 +26,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const shoppingList = await prisma.weeklyShoppingList.findFirst({
       where: {
         courseId,
-        weekNumber,
+        week: weekNumber,
+      },
+      include: {
+        items: true,
       },
     });
 
@@ -34,9 +37,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Shopping list not found' }, { status: 404 });
     }
 
-    const items = typeof shoppingList.items === 'string'
-      ? JSON.parse(shoppingList.items)
-      : shoppingList.items;
+    const items = (shoppingList.items as any[]).map((item) => ({
+      id: item.id,
+      name: item.ingredient,
+      quantity: '',
+      category: 'Övrigt',
+    }));
 
     return NextResponse.json({
       shoppingList: {
