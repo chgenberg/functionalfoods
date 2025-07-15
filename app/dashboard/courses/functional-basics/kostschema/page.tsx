@@ -9,6 +9,7 @@ import {
 } from 'react-icons/fi';
 import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
 import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
+import Link from 'next/link';
 
 const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: any }) => {
   const typeColors: Record<string, string> = {
@@ -296,14 +297,13 @@ export default function KostschemaPage() {
                   <FiDownload className="w-4 h-4" />
                   <span className="hidden sm:inline">Ladda ner</span>
                 </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <Link
+                  href="/dashboard/courses/functional-basics/inkopslista"
                   className="flex items-center gap-2 px-4 py-2 bg-white text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200 font-semibold"
                 >
                   <FiShoppingCart className="w-4 h-4" />
                   <span className="hidden sm:inline">Inköpslista</span>
-                </motion.button>
+                </Link>
               </div>
             </div>
           </div>

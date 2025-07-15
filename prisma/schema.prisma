@@ -92,6 +92,7 @@ model BlogPost {
   slug         String   @unique
   content      String
   excerpt      String?
+  searchText   String? // New field for full-text search
   coverImage   String?
   published    Boolean  @default(false)
   publishedAt  DateTime?
@@ -99,6 +100,8 @@ model BlogPost {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   author       User     @relation(fields: [authorId], references: [id])
+
+  @@index([searchText])
 }
 
 model QuizResult {
@@ -327,6 +330,7 @@ model Recipe {
   slug         String   @unique
   excerpt      String?
   content      String?  // Full recipe content/instructions
+  searchText   String?  // New field for full-text search
   imageUrl     String?
   imageAlt     String?
   categories   String[] // Array of category names
@@ -352,6 +356,7 @@ model Recipe {
   @@index([isPremium])
   @@index([isFree])
   @@index([slug])
+  @@index([searchText])
 }
 
 enum OrderStatus {

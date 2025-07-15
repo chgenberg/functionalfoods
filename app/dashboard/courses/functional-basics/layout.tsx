@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiHome, FiBook, FiSettings, FiMenu, FiX, FiCalendar,
   FiAward, FiUsers, FiDownload, FiChevronRight, FiTarget,
-  FiChevronLeft, FiChevronUp
+  FiChevronLeft, FiChevronUp, FiShoppingCart
 } from 'react-icons/fi';
 import { GiFruitBowl, GiMeal } from 'react-icons/gi';
 
@@ -29,6 +29,11 @@ export default function FunctionalBasicsLayout({
       label: 'Kostschema',
       href: '/dashboard/courses/functional-basics/kostschema',
       icon: GiMeal,
+    },
+    {
+      label: 'Inköpslistor',
+      href: '/dashboard/courses/functional-basics/inkopslista',
+      icon: FiShoppingCart,
     },
     {
       label: 'Vecka 1',
