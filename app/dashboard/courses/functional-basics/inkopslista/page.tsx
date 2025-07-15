@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fi';
 import { GiFruitBowl } from 'react-icons/gi';
 import Link from 'next/link';
-import ShoppingList from '../week/[week]/ShoppingList';
+import ShoppingList from './ShoppingList';
 
 interface WeekSection {
   week: number;

@@ -256,283 +256,129 @@ export default function KostschemaPage() {
     return count;
   };
 
+  const currentTotalCalories = calculateTotalCalories();
+  const currentMealCount = countMeals();
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+      {/* Header */}
+      <div className="bg-white sticky top-0 z-20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+              Mitt Kostschema
+            </h1>
+            <Link
+              href="/dashboard/courses/functional-basics/inkopslista"
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm"
+            >
+              <FiShoppingCart className="w-5 h-5" />
+              <span className="hidden sm:inline">Visa Inköpslistor</span>
+            </Link>
+          </div>
+          <div className="flex items-center justify-between pb-4">
+            <button
+              onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+              className="p-2 rounded-full hover:bg-gray-100"
+            >
+              <FiChevronLeft />
+            </button>
+            <h2 className="font-semibold text-lg">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h2>
+            <button
+              onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+              className="p-2 rounded-full hover:bg-gray-100"
+            >
+              <FiChevronRight />
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Calendar */}
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 my-4">
+          {dayNames.map(name => (
+            <div key={name} className="text-center text-xs font-medium text-gray-500">{name}</div>
+          ))}
+          {days.map((day, index) => {
+            const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
+            const today = new Date();
+            const isToday = day.getDate() === today.getDate() && day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
+            const dayNumber = isDateInCourse(day) ? getCurrentDayOfCourse(day) + 1 : 0;
+            const isSelected = selectedDate && day.toDateString() === selectedDate.toDateString();
+
+            return (
+              <CalendarDay
+                key={index}
+                day={day.toLocaleDateString('sv-SE', { weekday: 'short' })}
+                date={day.getDate()}
+                isToday={isToday}
+                isSelected={isSelected}
+                onClick={() => {
+                  if (isDateInCourse(day)) {
+                    setSelectedDate(day);
+                    setSelectedDay(dayNumber);
+                  }
+                }}
+                hasMealPlan={isDateInCourse(day)}
+                dayNumber={dayNumber}
+                isCurrentWeek={isCurrentMonth}
+              />
+            );
+          })}
+        </div>
+
+        {/* Week content */}
+        <div className="mt-8">
+          <motion.div
+            key={selectedDay}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-6"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {currentDayMeals ? (
+                <>
+                  {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
+                  {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
+                  {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
+                  {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
+                  {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
+                </>
+              ) : (
+                <p>Inget kostschema för denna dag.</p>
+              )}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Floating summary */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-teal-600 to-emerald-700 p-6 md:p-8 text-white shadow-xl mb-6 md:mb-8"
+          transition={{ delay: 0.3 }}
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-lg bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-gray-200"
         >
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative z-10">
-            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-800">
+                Vecka <span className="text-green-600 font-bold">{currentWeekNumber}</span>, Dag <span className="text-green-600 font-bold">{selectedDay}</span>
+              </p>
+              <p className="text-xs text-gray-500">Översikt för den valda dagen</p>
+            </div>
+            <div className="flex items-center gap-4 text-center">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold mb-2">Kostschema</h1>
-                <p className="text-green-100 text-base md:text-lg">
-                  Din personliga måltidsplanering för Functional Basics
-                </p>
-                <div className="flex flex-wrap items-center gap-4 mt-4">
-                  <div className="flex items-center gap-2">
-                    <FiCalendar className="w-5 h-5" />
-                    <span className="font-semibold">6 veckor</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <GiMeal className="w-5 h-5" />
-                    <span className="font-semibold">168 måltider</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <GiHealthNormal className="w-5 h-5" />
-                    <span className="font-semibold">Functional Foods</span>
-                  </div>
-                </div>
+                <p className="font-bold text-lg text-gray-900">{currentMealCount}</p>
+                <p className="text-xs text-gray-500">Måltider</p>
               </div>
-              <div className="flex gap-2">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-all duration-200"
-                >
-                  <FiDownload className="w-4 h-4" />
-                  <span className="hidden sm:inline">Ladda ner</span>
-                </motion.button>
-                <Link
-                  href="/dashboard/courses/functional-basics/inkopslista"
-                  className="flex items-center gap-2 px-4 py-2 bg-white text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200 font-semibold"
-                >
-                  <FiShoppingCart className="w-4 h-4" />
-                  <span className="hidden sm:inline">Inköpslista</span>
-                </Link>
+              <div>
+                <p className="font-bold text-lg text-gray-900">~{currentTotalCalories}</p>
+                <p className="text-xs text-gray-500">Kalorier</p>
               </div>
             </div>
           </div>
-          
-          {/* Decorative elements */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
         </motion.div>
-
-        <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
-          {/* Kalender */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-2"
-          >
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6">
-              {/* Kalender header */}
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
-                  {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                </h2>
-                <div className="flex items-center gap-2">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => {
-                      const newMonth = new Date(currentMonth);
-                      newMonth.setMonth(newMonth.getMonth() - 1);
-                      setCurrentMonth(newMonth);
-                    }}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <FiChevronLeft className="w-5 h-5" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => {
-                      const newMonth = new Date(currentMonth);
-                      newMonth.setMonth(newMonth.getMonth() + 1);
-                      setCurrentMonth(newMonth);
-                    }}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <FiChevronRight className="w-5 h-5" />
-                  </motion.button>
-                </div>
-              </div>
-
-              {/* Veckodagar */}
-              <div className="grid grid-cols-7 gap-1 mb-2">
-                {dayNames.map((day) => (
-                  <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
-                    {day}
-                  </div>
-                ))}
-              </div>
-
-              {/* Kalenderdagar */}
-              <div className="grid grid-cols-7 gap-1">
-                {days.map((day, index) => {
-                  const isToday = day.toDateString() === new Date().toDateString();
-                  const isSelected = day.toDateString() === selectedDate.toDateString();
-                  const isInCourse = isDateInCourse(day);
-                  const dayOfCourse = getCurrentDayOfCourse(day);
-                  const isCurrentWeek = dayOfCourse && Math.ceil(dayOfCourse / 7) === currentWeekNumber;
-                  
-                  return (
-                    <CalendarDay
-                      key={index}
-                      day={dayNames[day.getDay()]}
-                      date={day.getDate()}
-                      isToday={isToday}
-                      isSelected={isSelected}
-                      hasMealPlan={isInCourse}
-                      dayNumber={isInCourse ? dayOfCourse : null}
-                      isCurrentWeek={isCurrentWeek}
-                      onClick={() => {
-                        if (isInCourse) {
-                          setSelectedDate(day);
-                          setSelectedDay(dayOfCourse);
-                        }
-                      }}
-                    />
-                  );
-                })}
-              </div>
-
-              {/* Kursinfo */}
-              <div className="mt-6 p-4 bg-green-50 rounded-xl border border-green-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <FiCalendar className="w-5 h-5 text-green-600" />
-                  <span className="font-semibold text-green-800">Kursinformation</span>
-                </div>
-                <p className="text-sm text-green-700">
-                  Kursen pågår i 6 veckor med dagliga måltidsförslag. Klicka på en dag för att se dagens kostschema.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                    Dag {selectedDay} av 42
-                  </span>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                    {currentWeekData?.title || `Vecka ${currentWeekNumber}`}
-                  </span>
-                </div>
-                
-                {/* Snabbnavigering veckor */}
-                <div className="mt-4 pt-3 border-t border-green-200">
-                  <p className="text-xs text-green-700 mb-2 font-medium">Snabbnavigering:</p>
-                  <div className="grid grid-cols-3 gap-1">
-                    {[1, 2, 3, 4, 5, 6].map((week) => (
-                      <motion.button
-                        key={week}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => {
-                          const firstDayOfWeek = (week - 1) * 7 + 1;
-                          setSelectedDay(firstDayOfWeek);
-                          const newDate = new Date(courseStartDate);
-                          newDate.setDate(newDate.getDate() + firstDayOfWeek - 1);
-                          setSelectedDate(newDate);
-                          
-                          // Uppdatera kalendermånaden om nödvändigt
-                          if (newDate.getMonth() !== currentMonth.getMonth() || 
-                              newDate.getFullYear() !== currentMonth.getFullYear()) {
-                            setCurrentMonth(new Date(newDate.getFullYear(), newDate.getMonth(), 1));
-                          }
-                        }}
-                        className={`text-xs px-2 py-1.5 rounded-lg transition-all ${
-                          currentWeekNumber === week
-                            ? 'bg-green-600 text-white font-semibold'
-                            : 'bg-green-100 text-green-700 hover:bg-green-200'
-                        }`}
-                      >
-                        V{week}
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Dagens måltider */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-4"
-          >
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">
-                  Dag {selectedDay}
-                </h3>
-                <span className="text-sm text-gray-500">
-                  {selectedDate.toLocaleDateString('sv-SE', { 
-                    weekday: 'long', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </span>
-              </div>
-
-              {currentDayMeals ? (
-                <div className="space-y-4">
-                  <MealCard 
-                    meal={currentDayMeals.breakfast} 
-                    type="breakfast" 
-                    icon={FiSun} 
-                  />
-                  <MealCard 
-                    meal={currentDayMeals.lunch} 
-                    type="lunch" 
-                    icon={FiCoffee} 
-                  />
-                  <MealCard 
-                    meal={currentDayMeals.dinner} 
-                    type="dinner" 
-                    icon={FiMoon} 
-                  />
-                  {currentDayMeals.snack && (
-                    <MealCard 
-                      meal={currentDayMeals.snack} 
-                      type="snack" 
-                      icon={FiStar} 
-                    />
-                  )}
-                  {currentDayMeals.dessert && (
-                    <MealCard 
-                      meal={currentDayMeals.dessert} 
-                      type="dessert" 
-                      icon={GiFruitBowl} 
-                    />
-                  )}
-
-                  {/* Dagens totaler */}
-                  <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-                    <h4 className="font-semibold text-gray-900 mb-2">Dagens totaler</h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-600">Kalorier:</span>
-                        <span className="font-medium text-gray-900 ml-2">
-                          {calculateTotalCalories()} kcal
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Måltider:</span>
-                        <span className="font-medium text-gray-900 ml-2">{countMeals()}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <GiMeal className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">
-                    Inget kostschema tillgängligt
-                  </h4>
-                  <p className="text-gray-600">
-                    Välj en dag inom kursperioden för att se måltidsförslag.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Veckoöversikt removed */}
-          </motion.div>
-        </div>
       </div>
     </div>
   );
