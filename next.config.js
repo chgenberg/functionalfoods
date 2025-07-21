@@ -35,6 +35,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'functionalfoods.se',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
     ],
   },
 

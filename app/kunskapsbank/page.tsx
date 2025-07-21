@@ -28,6 +28,15 @@ export default function KunskapsbankPage() {
       color: "text-green-600"
     },
     {
+      id: 'raw-materials',
+      title: "Råvaror",
+      description: "Läs om våra funktionella råvaror och deras hälsofördelar",
+      image: "/kunskapsbank-ravaror.png", // Placeholder image, replace if available
+      href: "/kunskapsbank/ravaror",
+      icon: GiCookingPot,
+      color: "text-red-600"
+    },
+    {
       id: 'search',
       title: "Sök",
       description: "Hitta specifik information i vår kunskapsbank",

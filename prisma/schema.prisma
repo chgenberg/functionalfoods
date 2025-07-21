@@ -404,3 +404,13 @@ model ShoppingListItem {
 
   @@index([listId])
 }
+
+model RawMaterial {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  imageUrl    String?
+  imageAlt    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
