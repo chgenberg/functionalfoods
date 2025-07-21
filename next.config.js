@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Force new build by adding generateBuildId
+  generateBuildId: async () => {
+    return `build-${Date.now()}`
+  },
+  
   // Behåll dina befintliga inställningar
   reactStrictMode: true,
   swcMinify: true,
