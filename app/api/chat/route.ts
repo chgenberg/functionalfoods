@@ -77,6 +77,20 @@ function formatToHtml(text: string): string {
   // Normalisera radbrytningar och dela upp i stycken
   let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   
+  // Ta bort markdown-rubriker (###, ##, #) och ersätt med fetstil
+  normalizedText = normalizedText.replace(/^#{1,6}\s*(.+)/gm, '**$1**');
+  
+  // Fixa felaktiga länkar från AI:n - ta bort markdown-länkar som pekar på fel domän
+  normalizedText = normalizedText.replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, '$1');
+  
+  // Ersätt rätt länkformat för våra recept
+  normalizedText = normalizedText.replace(/\/kunskapsbank\/recept\/([a-zA-Z0-9-]+)/g, 
+    '<a href="/kunskapsbank/recept/$1" class="text-accent hover:text-accent-hover underline">$1-receptet</a>');
+  
+  // Ersätt länkformat för råvaror
+  normalizedText = normalizedText.replace(/\/kunskapsbank\/ingredienser/g, 
+    '<a href="/kunskapsbank/ingredienser" class="text-accent hover:text-accent-hover underline">vår råvarudatabas</a>');
+  
   // Dela upp i stycken baserat på dubbla radbrytningar ELLER enkla radbrytningar följt av stor bokstav
   const paragraphs = normalizedText.split(/\n\s*\n|\n(?=[A-ZÅÄÖ])/);
   
@@ -182,16 +196,17 @@ VIKTIGA REGLER:
 5. VIKTIGT: AVSLUTA ALDRIG MITT I EN MENING - se till att alla meningar är kompletta och avslutas korrekt
 6. Använd TYDLIG styckeindelning - dela upp svaret i korta stycken (2-3 meningar per stycke)
 7. Separera olika ämnen och koncept med dubbla radbrytningar
-8. Använd fetstil för viktiga begrepp och rubriker genom att skriva **text** (detta konverteras automatiskt)
+8. Använd **fetstil** för viktiga begrepp och rubriker - ALDRIG ###, ##, # för rubriker
 9. Skapa listor med - för punkter när det är lämpligt
 10. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
 11. Håll svaren koncisa men kompletta (max 250 ord)
 12. Rekommendera gärna våra kurser när det är relevant
 13. Använd emojis sparsamt men effektivt för att göra konversationen mer personlig
-14. När användare frågar om recept, hänvisa till specifika recept från vår databas med länk: /kunskapsbank/recept/[slug]
-15. När användare frågar om råvaror/ingredienser, ge information från vår råvarudatabas och hänvisa till: /kunskapsbank/ingredienser
+14. När du nämner recept, skriv bara receptnamnet - SKAPA ALDRIG markdown-länkar [text](url)
+15. När du nämner råvaror, hänvisa till "vår råvarudatabas" - SKAPA ALDRIG markdown-länkar
 16. Matcha användarens behov med passande recept och råvaror från våra databaser
-17. Ge konkreta förslag på functional foods från vår råvarudatabas`;
+17. Ge konkreta förslag på functional foods från vår råvarudatabas
+18. VIKTIGT: Använd ALDRIG markdown-länkar som [text](http://...) - skriv bara texten`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
