@@ -61,7 +61,7 @@ export default function Header() {
       submenu: [
         { label: "Blogg", href: "/kunskapsbank/blogg" },
         { label: "Recept", href: "/kunskapsbank/recept" },
-        { label: "Ingredienser", href: "/kunskapsbank/ingredienser" },
+        { label: "Råvaror", href: "/kunskapsbank/ingredienser" },
         { label: "Sök", href: "/kunskapsbank/sok" },
       ],
     },
