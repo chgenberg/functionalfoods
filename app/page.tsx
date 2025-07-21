@@ -285,14 +285,28 @@ export default function Home() {
               className="relative mt-8 lg:mt-0"
             >
               <div className="relative">
-                <Image
-                  src="/ulrika.png"
-                  alt="Ulrika Davidsson"
-                  width={600}
-                  height={700}
-                  className="rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl w-full h-auto"
-                  priority
-                />
+                {/* Desktop Image */}
+                <div className="hidden md:block">
+                  <Image
+                    src="/udavidsson.PNG"
+                    alt="Ulrika Davidsson"
+                    width={600}
+                    height={700}
+                    className="rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl w-full h-auto"
+                    priority
+                  />
+                </div>
+                {/* Mobile Image */}
+                <div className="block md:hidden">
+                  <Image
+                    src="/udavidsson_mobile.PNG"
+                    alt="Ulrika Davidsson"
+                    width={600}
+                    height={700}
+                    className="rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl w-full h-auto"
+                    priority
+                  />
+                </div>
                 {/* Floating card - Mobile Optimized */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
