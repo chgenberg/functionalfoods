@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiGrid, FiList, FiFilter, FiX, FiChevronRight, FiLeaf } from 'react-icons/fi';
-import { GiWheat, GiFruitBowl, GiMeat, GiFish, GiMilkCarton, GiHerbsBundle } from 'react-icons/gi';
+import { FiSearch, FiGrid, FiList, FiFilter, FiX, FiChevronRight } from 'react-icons/fi';
+import { GiWheat, GiFruitBowl, GiMeat, GiHerbsBundle } from 'react-icons/gi';
+import { FaCheese, FaFish, FaLeaf } from 'react-icons/fa';
 
 interface RawMaterial {
   id: string;
@@ -18,10 +19,10 @@ const categoryIcons: Record<string, React.ElementType> = {
   'Spannmål': GiWheat,
   'Frukt & Bär': GiFruitBowl,
   'Kött': GiMeat,
-  'Fisk & Skaldjur': GiFish,
-  'Mejeri': GiMilkCarton,
+  'Fisk & Skaldjur': FaFish,
+  'Mejeri': FaCheese,
   'Örter & Kryddor': GiHerbsBundle,
-  'Övrigt': FiLeaf,
+  'Övrigt': FaLeaf,
 };
 
 function getCategoryFromName(name: string): string {
@@ -203,7 +204,7 @@ export default function IngrediensPage() {
               >
                 <div className="flex flex-wrap gap-2 p-4 bg-white rounded-2xl shadow-sm">
                   {categories.map((category) => {
-                    const Icon = categoryIcons[category] || FiLeaf;
+                    const Icon = categoryIcons[category] || FaLeaf;
                     return (
                       <button
                         key={category}
@@ -245,7 +246,7 @@ export default function IngrediensPage() {
           >
             {filteredMaterials.map((mat) => {
               const category = getCategoryFromName(mat.name);
-              const Icon = categoryIcons[category] || FiLeaf;
+              const Icon = categoryIcons[category] || FaLeaf;
               const isExpanded = expandedItems.has(mat.id);
               
               return (
@@ -303,7 +304,7 @@ export default function IngrediensPage() {
           >
             {filteredMaterials.map((mat) => {
               const category = getCategoryFromName(mat.name);
-              const Icon = categoryIcons[category] || FiLeaf;
+              const Icon = categoryIcons[category] || FaLeaf;
               
               return (
                 <motion.div
