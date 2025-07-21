@@ -8,60 +8,55 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  name          String?
-  password      String
-  role          String         @default("customer")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  lastLogin     DateTime?
-  isActive      Boolean        @default(true)
-  achievements  Achievement[]
-  blogPosts     BlogPost[]
-  courses       Course[]
-  healthMetrics HealthMetric[]
-  quizResults   QuizResult[]
-  chatMessages  ChatMessage[]
-  healthProfile HealthProfile?
+  id              String            @id @default(uuid())
+  email           String            @unique
+  name            String?
+  role            String            @default("customer")
+  createdAt       DateTime          @default(now())
+  password        String
+  updatedAt       DateTime          @updatedAt
+  lastLogin       DateTime?
+  isActive        Boolean           @default(true)
+  achievements    Achievement[]
+  blogPosts       BlogPost[]
+  chatMessages    ChatMessage[]
+  courses         Course[]
+  forumLikes      ForumLike[]
+  forumReplies    ForumReply[]
+  forumThreads    ForumThread[]
+  goals           Goal[]
+  healthMetrics   HealthMetric[]
+  healthProfile   HealthProfile?
+  orders          Order[]
+  purchases       Purchase[]
+  quizResults     QuizResult[]
+  recipes         Recipe[]
   symptomAnalyses SymptomAnalysis[]
-  purchases     Purchase[]
-  orders        Order[]
-  goals         Goal[]
-  forumThreads  ForumThread[]
-  forumReplies  ForumReply[]
-  forumLikes    ForumLike[]
-  recipes       Recipe[]
 }
 
 model Course {
-  id                  String   @id @default(uuid())
-  title               String
-  description         String
-  level               String
-  duration            String
-  progress            Int      @default(0)
-  userId              String
-  
-  // Utökade fält för fullständig kursdata
-  price               Float?
-  objectives          String[] // Array av kursmål
-  targetAudience      String?
-  coverImage          String?
-  welcomeMessage      String?
-  introVideoUrl       String?
-  enableCommunity     Boolean  @default(false)
+  id                   String   @id @default(uuid())
+  title                String
+  description          String
+  level                String
+  duration             String
+  progress             Int      @default(0)
+  userId               String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   communityDescription String?
-  
-  // JSON-fält för komplex data
-  weeks               Json?    // Array av veckodata med måltidsplanering
-  materials           Json?    // Array av kursmaterial
-  downloads           Json?    // Array av nedladdningar
-  metadata            Json?    // Extra metadata
-  
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  user                User     @relation(fields: [userId], references: [id])
+  coverImage           String?
+  downloads            Json?
+  enableCommunity      Boolean  @default(false)
+  introVideoUrl        String?
+  materials            Json?
+  metadata             Json?
+  objectives           String[]
+  price                Float?
+  targetAudience       String?
+  weeks                Json?
+  welcomeMessage       String?
+  user                 User     @relation(fields: [userId], references: [id])
 }
 
 model Achievement {
@@ -87,150 +82,150 @@ model HealthMetric {
 }
 
 model BlogPost {
-  id           String   @id @default(uuid())
-  title        String
-  slug         String   @unique
-  content      String
-  excerpt      String?
-  searchText   String? // New field for full-text search
-  coverImage   String?
-  published    Boolean  @default(false)
-  publishedAt  DateTime?
-  authorId     String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  author       User     @relation(fields: [authorId], references: [id])
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  content     String
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    String
+  coverImage  String?
+  excerpt     String?
+  published   Boolean   @default(false)
+  searchText  String?
+  author      User      @relation(fields: [authorId], references: [id])
 
   @@index([searchText])
 }
 
 model QuizResult {
   id              String   @id @default(uuid())
-  userId          String
   healthScore     Int
   energyScore     Int
   sleepScore      Int
   stressScore     Int
   dietScore       Int
   exerciseScore   Int
-  recommendations Json     // Array av rekommendationer
+  userId          String
   completedAt     DateTime @default(now())
+  recommendations Json
   user            User     @relation(fields: [userId], references: [id])
 }
 
 model ChatMessage {
   id        String   @id @default(uuid())
-  userId    String
   message   String
   response  String?
+  userId    String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
 }
 
 model HealthProfile {
-  id                String   @id @default(uuid())
-  age               Int?
-  gender            String?
-  weight            Float?
-  height            Float?
-  activityLevel     String?
+  id                  String   @id @default(uuid())
+  age                 Int?
+  gender              String?
+  weight              Float?
+  height              Float?
+  activityLevel       String?
   dietaryRestrictions String?
-  healthGoals       Json?    // Array av hälsomål
-  currentSymptoms   Json?    // Array av nuvarande symptom
-  medications       Json?    // Array av mediciner
-  supplements       Json?    // Array av kosttillskott
-  allergies         Json?    // Array av allergier
-  userId            String   @unique
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  user              User     @relation(fields: [userId], references: [id])
+  healthGoals         Json?
+  currentSymptoms     Json?
+  medications         Json?
+  supplements         Json?
+  allergies           Json?
+  userId              String   @unique
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id])
 }
 
 model SymptomAnalysis {
   id          String   @id @default(uuid())
   bodyPart    String
   description String
-  analysis    Json     // AI-genererad analys
+  analysis    Json
   userId      String
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id])
 }
 
 model CourseProduct {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String
-  price       Float
-  content     Json     // Stores videos, pdfs, etc.
-  features    Json     // List of features included
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String               @id @default(uuid())
+  name          String               @unique
+  description   String
+  price         Float
+  content       Json
+  features      Json
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  orderItems    OrderItem[]
+  purchases     Purchase[]
   shoppingLists WeeklyShoppingList[]
-  purchases   Purchase[]
-  orderItems  OrderItem[]
 }
 
 model Order {
-  id            String      @id @default(uuid())
-  orderNumber   String      @unique // Human readable order number
-  userId        String
-  user          User        @relation(fields: [userId], references: [id])
-  status        OrderStatus @default(PENDING)
-  totalAmount   Float
-  currency      String      @default("SEK")
-  items         OrderItem[]
-  payment       Payment?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  
+  id          String      @id @default(uuid())
+  orderNumber String      @unique
+  userId      String
+  status      OrderStatus @default(PENDING)
+  totalAmount Float
+  currency    String      @default("SEK")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+  payment     Payment?
+
   @@index([userId])
   @@index([orderNumber])
 }
 
 model OrderItem {
-  id          String        @id @default(uuid())
-  orderId     String
-  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  courseId    String?
-  course      CourseProduct? @relation(fields: [courseId], references: [id])
-  name        String        // Store name for historical purposes
-  price       Float         // Store price at time of purchase
-  quantity    Int
-  type        String        // 'course', 'book', etc.
-  createdAt   DateTime      @default(now())
+  id        String         @id @default(uuid())
+  orderId   String
+  courseId  String?
+  name      String
+  price     Float
+  quantity  Int
+  type      String
+  createdAt DateTime       @default(now())
+  course    CourseProduct? @relation(fields: [courseId], references: [id])
+  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model Payment {
   id              String        @id @default(uuid())
   orderId         String        @unique
-  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  paymentMethod   String        // 'klarna', 'swish', 'stripe', etc.
+  paymentMethod   String
   status          PaymentStatus @default(PENDING)
   amount          Float
   currency        String        @default("SEK")
-  externalId      String?       // Payment provider's transaction ID
-  gatewayResponse Json?         // Store full response from payment gateway
-  failureReason   String?       // If payment failed
-  processedAt     DateTime?     // When payment was completed
+  externalId      String?
+  gatewayResponse Json?
+  failureReason   String?
+  processedAt     DateTime?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
   @@index([externalId])
   @@index([status])
 }
 
 model Purchase {
-  id         String   @id @default(uuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  courseId   String
-  course     CourseProduct @relation(fields: [courseId], references: [id])
-  amount     Float
-  status     String   @default("completed") // completed, pending, refunded
-  orderId    String?  // Link to new Order system
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  
+  id        String        @id @default(uuid())
+  userId    String
+  courseId  String
+  amount    Float
+  status    String        @default("completed")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  orderId   String?
+  course    CourseProduct @relation(fields: [courseId], references: [id])
+  user      User          @relation(fields: [userId], references: [id])
+
   @@unique([userId, courseId])
 }
 
@@ -238,125 +233,157 @@ model Goal {
   id          String    @id @default(uuid())
   title       String
   description String?
-  category    String    // 'weekly', 'health', 'nutrition', 'exercise', 'general'
-  priority    String    @default("medium") // 'low', 'medium', 'high'
-  status      String    @default("active") // 'active', 'completed', 'paused', 'cancelled'
-  progress    Int       @default(0) // 0-100
+  category    String
+  priority    String    @default("medium")
+  status      String    @default("active")
+  progress    Int       @default(0)
   targetDate  DateTime?
   completedAt DateTime?
-  weekNumber  Int?      // For course-specific weekly goals
-  courseId    String?   // Link to specific course
+  weekNumber  Int?
+  courseId    String?
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([status])
   @@index([weekNumber])
 }
 
 model ForumCategory {
-  id          String      @id @default(uuid())
-  name        String      @unique
+  id          String        @id @default(uuid())
+  name        String        @unique
   description String?
-  color       String      @default("gray") // For UI theming
-  icon        String?     // Icon name
-  order       Int         @default(0) // For sorting
-  isActive    Boolean     @default(true)
+  color       String        @default("gray")
+  icon        String?
+  order       Int           @default(0)
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   threads     ForumThread[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
 }
 
 model ForumThread {
-  id          String        @id @default(uuid())
-  title       String
-  content     String
-  isSticky    Boolean       @default(false) // Sticky threads appear at top
-  isLocked    Boolean       @default(false) // Locked threads can't receive replies
-  views       Int           @default(0)
-  authorId    String
-  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  categoryId  String
-  category    ForumCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  replies     ForumReply[]
-  likes       ForumLike[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  
+  id         String        @id @default(uuid())
+  title      String
+  content    String
+  isSticky   Boolean       @default(false)
+  isLocked   Boolean       @default(false)
+  views      Int           @default(0)
+  authorId   String
+  categoryId String
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  likes      ForumLike[]
+  replies    ForumReply[]
+  author     User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category   ForumCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
   @@index([categoryId])
   @@index([authorId])
   @@index([createdAt])
 }
 
 model ForumReply {
-  id        String      @id @default(uuid())
+  id        String       @id @default(uuid())
   content   String
   authorId  String
-  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
   threadId  String
-  thread    ForumThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  parentId  String?     // For nested replies
-  parent    ForumReply? @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: Cascade)
-  children  ForumReply[] @relation("ReplyToReply")
+  parentId  String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   likes     ForumLike[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  
+  author    User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent    ForumReply?  @relation("ReplyToReply", fields: [parentId], references: [id], onDelete: Cascade)
+  children  ForumReply[] @relation("ReplyToReply")
+  thread    ForumThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
   @@index([threadId])
   @@index([authorId])
   @@index([parentId])
 }
 
 model ForumLike {
-  id       String      @id @default(uuid())
-  userId   String
-  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  threadId String?
-  thread   ForumThread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  replyId  String?
-  reply    ForumReply? @relation(fields: [replyId], references: [id], onDelete: Cascade)
-  createdAt DateTime   @default(now())
-  
+  id        String       @id @default(uuid())
+  userId    String
+  threadId  String?
+  replyId   String?
+  createdAt DateTime     @default(now())
+  reply     ForumReply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  thread    ForumThread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, threadId])
   @@unique([userId, replyId])
   @@index([userId])
 }
 
 model Recipe {
-  id           String   @id @default(uuid())
+  id           String       @id @default(uuid())
   title        String
-  slug         String   @unique
+  slug         String       @unique
   excerpt      String?
-  content      String?  // Full recipe content/instructions
-  searchText   String?  // New field for full-text search
+  content      String?
   imageUrl     String?
   imageAlt     String?
-  categories   String[] // Array of category names
-  ingredients  String[] // Array of ingredients
-  instructions String?  // Cooking instructions as text
-  difficulty   String?  // Easy, Medium, Hard
-  prepTime     String?  // e.g. "15 min"
-  cookTime     String?  // e.g. "30 min"
-  totalTime    String?  // e.g. "45 min"
-  servings     Int?     // Number of servings
-  nutrition    Json?    // Nutritional information
-  tips         String?  // Cooking tips
-  tags         String[] // Array of tags
+  categories   String[]
+  ingredients  String[]
+  instructions String?
+  difficulty   String?
+  prepTime     String?
+  cookTime     String?
+  totalTime    String?
+  servings     Int?
+  nutrition    Json?
+  tips         String?
+  tags         String[]
   status       RecipeStatus @default(PUBLISHED)
-  isPremium    Boolean  @default(false)
-  isFree       Boolean  @default(true)
+  isPremium    Boolean      @default(false)
+  isFree       Boolean      @default(true)
   authorId     String?
-  author       User?    @relation(fields: [authorId], references: [id])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  searchText   String?
+  author       User?        @relation(fields: [authorId], references: [id])
+
   @@index([status])
   @@index([isPremium])
   @@index([isFree])
   @@index([slug])
   @@index([searchText])
+}
+
+model WeeklyShoppingList {
+  id        String             @id @default(uuid())
+  courseId  String
+  week      Int
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  items     ShoppingListItem[]
+  course    CourseProduct      @relation(fields: [courseId], references: [id])
+
+  @@unique([courseId, week])
+}
+
+model ShoppingListItem {
+  id         String             @id @default(uuid())
+  listId     String
+  ingredient String
+  isChecked  Boolean            @default(false)
+  list       WeeklyShoppingList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@index([listId])
+}
+
+model RawMaterial {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  imageUrl    String?
+  imageAlt    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum OrderStatus {
@@ -381,36 +408,4 @@ enum RecipeStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
-}
-
-model WeeklyShoppingList {
-  id        String            @id @default(uuid())
-  courseId  String
-  week      Int
-  items     ShoppingListItem[]
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-  course    CourseProduct?    @relation(fields: [courseId], references: [id])
-
-  @@unique([courseId, week])
-}
-
-model ShoppingListItem {
-  id        String   @id @default(uuid())
-  listId    String
-  ingredient String
-  isChecked Boolean @default(false)
-  list      WeeklyShoppingList @relation(fields: [listId], references: [id], onDelete: Cascade)
-
-  @@index([listId])
-}
-
-model RawMaterial {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  imageUrl    String?
-  imageAlt    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
