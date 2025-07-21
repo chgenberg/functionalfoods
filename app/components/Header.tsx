@@ -61,7 +61,7 @@ export default function Header() {
       dropdown: [
         { label: "Blogg", href: "/kunskapsbank/blogg" },
         { label: "Recept", href: "/kunskapsbank/recept" },
-        { label: "Råvaror", href: "/kunskapsbank/ravaror" },
+        { label: "Ingredienser", href: "/kunskapsbank/ingredienser" },
         { label: "Sök", href: "/kunskapsbank/sok" },
       ],
     },

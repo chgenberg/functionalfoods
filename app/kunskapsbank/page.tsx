@@ -29,10 +29,10 @@ export default function KunskapsbankPage() {
     },
     {
       id: 'raw-materials',
-      title: "Råvaror",
-      description: "Läs om våra funktionella råvaror och deras hälsofördelar",
+      title: "Ingredienser",
+      description: "Läs om våra funktionella ingredienser och deras hälsofördelar",
       image: "/functionalfoods_ravaror.png",
-      href: "/kunskapsbank/ravaror",
+      href: "/kunskapsbank/ingredienser",
       icon: GiCookingPot,
       color: "text-red-600"
     },

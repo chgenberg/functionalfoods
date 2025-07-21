@@ -35,7 +35,7 @@ function getCategoryFromName(name: string): string {
   return 'Övrigt';
 }
 
-export default function RavarorPage() {
+export default function IngrediensPage() {
   const [materials, setMaterials] = useState<RawMaterial[]>([]);
   const [filteredMaterials, setFilteredMaterials] = useState<RawMaterial[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,7 +130,7 @@ export default function RavarorPage() {
         >
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
             <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">
-              Funktionella Råvaror
+              Funktionella Ingredienser
             </span>
           </h1>
           <p className="text-lg text-text-secondary">
@@ -147,7 +147,7 @@ export default function RavarorPage() {
                 <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Sök efter råvara eller näringsämne..."
+                  placeholder="Sök efter ingrediens eller näringsämne..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-accent/20 focus:border-accent focus:outline-none transition-colors"
@@ -228,7 +228,7 @@ export default function RavarorPage() {
         {/* Results Count */}
         <div className="mb-6 text-text-secondary">
           Visar <span className="font-medium text-text-primary">{filteredMaterials.length}</span> av{' '}
-          <span className="font-medium text-text-primary">{materials.length}</span> råvaror
+          <span className="font-medium text-text-primary">{materials.length}</span> ingredienser
         </div>
 
         {/* Content */}
@@ -330,7 +330,7 @@ export default function RavarorPage() {
         {/* No Results */}
         {!loading && filteredMaterials.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-text-secondary text-lg">Inga råvaror hittades som matchar din sökning.</p>
+            <p className="text-text-secondary text-lg">Inga ingredienser hittades som matchar din sökning.</p>
           </div>
         )}
       </div>
