@@ -58,12 +58,11 @@ export default function Header() {
     {
       label: "KUNSKAPSBANK",
       href: "/kunskapsbank",
-      submenu: [
-        { label: "Blogginlägg", href: "/kunskapsbank/blogg" },
+      dropdown: [
+        { label: "Blogg", href: "/kunskapsbank/blogg" },
         { label: "Recept", href: "/kunskapsbank/recept" },
+        { label: "Råvaror", href: "/kunskapsbank/ravaror" },
         { label: "Sök", href: "/kunskapsbank/sok" },
-        { label: "FAQ", href: "/kontakt/faq" },
-        { label: "Generera bok", href: "/genererabok" },
       ],
     },
     {
