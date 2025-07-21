@@ -10,7 +10,7 @@ interface SearchResult {
   id: string;
   title: string;
   excerpt: string;
-  type: 'recipe' | 'article';
+  type: 'recipe' | 'article' | 'raw-material';
   href: string;
   imageUrl?: string | null;
   isPremium?: boolean;
@@ -45,6 +45,8 @@ function calculateRelevance(
 export async function GET(request: NextRequest) {
   try {
     const query = request.nextUrl.searchParams.get('q');
+    const type = request.nextUrl.searchParams.get('type') || 'all';
+    
     if (!query || query.length < 2) {
       return NextResponse.json(
         { results: [], message: 'Sökterm måste vara minst 2 tecken' },
@@ -83,8 +85,30 @@ export async function GET(request: NextRequest) {
       },
     };
 
-    const [recipes, articles] = await prisma.$transaction([
-      prisma.recipe.findMany({ 
+    const rawMaterialFilter = {
+      OR: [
+        {
+          name: {
+            contains: query,
+            mode: 'insensitive' as const,
+          },
+        },
+        {
+          description: {
+            contains: query,
+            mode: 'insensitive' as const,
+          },
+        },
+      ],
+    };
+
+    // Conditionally fetch based on type filter
+    const shouldFetchRecipes = type === 'all' || type === 'recipe';
+    const shouldFetchArticles = type === 'all' || type === 'article';
+    const shouldFetchRawMaterials = type === 'all' || type === 'raw-material';
+
+    const [recipes, articles, rawMaterials] = await prisma.$transaction([
+      shouldFetchRecipes ? prisma.recipe.findMany({ 
         where: searchFilter,
         select: {
           id: true,
@@ -96,8 +120,8 @@ export async function GET(request: NextRequest) {
           searchText: true,
         },
         take: 50 // Limit initial fetch to prevent overload
-      }),
-      prisma.blogPost.findMany({
+      }) : Promise.resolve([]),
+      shouldFetchArticles ? prisma.blogPost.findMany({
         where: articleFilter,
         select: {
             id: true,
@@ -111,10 +135,20 @@ export async function GET(request: NextRequest) {
             }
         },
         take: 50
-      })
+      }) : Promise.resolve([]),
+      // @ts-expect-error rawMaterial model exists after prisma generate
+      shouldFetchRawMaterials ? prisma.rawMaterial.findMany({
+        where: rawMaterialFilter,
+        select: {
+          id: true,
+          name: true,
+          description: true,
+        },
+        take: 50
+      }) : Promise.resolve([])
     ]);
 
-    const recipeResults: SearchResult[] = recipes.map(recipe => ({
+    const recipeResults: SearchResult[] = recipes.map((recipe: any) => ({
       id: recipe.id,
       title: recipe.title,
       excerpt: recipe.excerpt || '',
@@ -128,7 +162,7 @@ export async function GET(request: NextRequest) {
       }),
     }));
 
-    const articleResults: SearchResult[] = articles.map(article => ({
+    const articleResults: SearchResult[] = articles.map((article: any) => ({
         id: article.id,
         title: article.title,
         excerpt: article.excerpt || '',
@@ -141,7 +175,19 @@ export async function GET(request: NextRequest) {
         })
     }));
 
-    const allResults = [...recipeResults, ...articleResults];
+    const rawMaterialResults: SearchResult[] = rawMaterials.map((material: any) => ({
+      id: material.id,
+      title: material.name,
+      excerpt: material.description || '',
+      type: 'raw-material',
+      href: `/kunskapsbank/ingredienser#${material.id}`,
+      relevanceScore: calculateRelevance(query, {
+          title: material.name,
+          searchText: material.description,
+      }),
+    }));
+
+    const allResults = [...recipeResults, ...articleResults, ...rawMaterialResults];
     allResults.sort((a, b) => b.relevanceScore - a.relevanceScore);
     
     const limitedResults = allResults.slice(0, 20);

@@ -9,7 +9,7 @@ interface SearchResult {
   id: string;
   title: string;
   excerpt: string;
-  type: 'recipe' | 'ingredient' | 'category' | 'article';
+  type: 'recipe' | 'ingredient' | 'category' | 'article' | 'raw-material';
   href: string;
   imageUrl?: string;
   isPremium?: boolean;
@@ -93,6 +93,7 @@ export default function Sok() {
   const filters = [
     { value: 'all', label: 'Alla', icon: FiSearch },
     { value: 'recipe', label: 'Recept', icon: FiBookOpen },
+    { value: 'raw-material', label: 'Råvaror', icon: FiPackage },
     { value: 'ingredient', label: 'Ingredienser', icon: FiPackage },
     { value: 'category', label: 'Kategorier', icon: FiTag },
     { value: 'article', label: 'Artiklar', icon: FiUser }
@@ -106,6 +107,7 @@ export default function Sok() {
   const getResultIcon = (type: string) => {
     switch (type) {
       case 'recipe': return FiBookOpen;
+      case 'raw-material': return FiPackage;
       case 'ingredient': return FiPackage;
       case 'category': return FiTag;
       case 'article': return FiUser;
@@ -116,6 +118,7 @@ export default function Sok() {
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'recipe': return 'Recept';
+      case 'raw-material': return 'Råvara';
       case 'ingredient': return 'Ingrediens';
       case 'category': return 'Kategori';
       case 'article': return 'Artikel';
@@ -133,7 +136,11 @@ export default function Sok() {
     'Avokado',
     'Blåbär',
     'Nötter',
-    'Gröna bladgrönsaker'
+    'Gröna bladgrönsaker',
+    'Gurkmeja',
+    'Ingefära',
+    'Gojibär',
+    'Matcha'
   ];
 
   return (
@@ -151,7 +158,7 @@ export default function Sok() {
             Sök i <span className="text-accent">kunskapsbanken</span>
           </h1>
           <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-            Hitta recept, ingredienser, kategorier och artiklar om functional foods
+            Hitta recept, råvaror, ingredienser och artiklar om functional foods
           </p>
         </div>
 
@@ -163,7 +170,7 @@ export default function Sok() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Sök efter recept, ingredienser, kategorier..."
+                placeholder="Sök efter recept, råvaror, ingredienser..."
                 className="w-full px-6 py-4 pl-14 rounded-2xl bg-background-secondary shadow-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:shadow-xl transition-all duration-200 border-2 border-border"
               />
               <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
@@ -295,10 +302,14 @@ export default function Sok() {
                     Försök med andra sökord eller välj en annan kategori
                   </p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
                     <Link href="/kunskapsbank/recept" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
                       <FiBookOpen className="w-8 h-8 text-accent mx-auto mb-3" />
                       <h4 className="font-semibold text-text-primary group-hover:text-primary">Recept</h4>
+                    </Link>
+                    <Link href="/kunskapsbank/ingredienser" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
+                      <FiPackage className="w-8 h-8 text-accent mx-auto mb-3" />
+                      <h4 className="font-semibold text-text-primary group-hover:text-primary">Råvaror</h4>
                     </Link>
                     <Link href="/kunskapsbank/blogg" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
                       <FiUser className="w-8 h-8 text-accent mx-auto mb-3" />
