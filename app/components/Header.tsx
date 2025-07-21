@@ -58,7 +58,7 @@ export default function Header() {
     {
       label: "KUNSKAPSBANK",
       href: "/kunskapsbank",
-      dropdown: [
+      submenu: [
         { label: "Blogg", href: "/kunskapsbank/blogg" },
         { label: "Recept", href: "/kunskapsbank/recept" },
         { label: "Ingredienser", href: "/kunskapsbank/ingredienser" },
