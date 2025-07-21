@@ -31,7 +31,7 @@ export default function KunskapsbankPage() {
       id: 'raw-materials',
       title: "Råvaror",
       description: "Läs om våra funktionella råvaror och deras hälsofördelar",
-      image: "/recept.png", // Reverted to use an existing image
+      image: "/functionalfoods_ravaror.png",
       href: "/kunskapsbank/ravaror",
       icon: GiCookingPot,
       color: "text-red-600"
