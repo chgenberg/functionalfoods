@@ -50,6 +50,43 @@ async function getCourseInfo() {
   }
 }
 
+// Hämta populära recept och råvaror för AI-kontexten
+async function getRecipesAndRawMaterials() {
+  try {
+    const [recipes, rawMaterials] = await prisma.$transaction([
+      prisma.recipe.findMany({
+        where: { 
+          status: 'PUBLISHED',
+          isPremium: false // Endast gratis recept för allmän chattbot
+        },
+                  select: {
+            id: true,
+            title: true,
+            excerpt: true,
+            ingredients: true,
+            difficulty: true,
+            slug: true
+          },
+        take: 20 // Top 20 populära recept
+      }),
+      // @ts-expect-error rawMaterial model exists after prisma generate
+      prisma.rawMaterial.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: true
+        },
+        take: 50 // Top 50 råvaror
+      })
+    ]);
+
+    return { recipes, rawMaterials };
+  } catch (error) {
+    console.error('Error loading recipes and raw materials:', error);
+    return { recipes: [], rawMaterials: [] };
+  }
+}
+
 // Konvertera text till HTML med korrekt formatering och styckeindelning
 function formatToHtml(text: string): string {
   // Normalisera radbrytningar och dela upp i stycken
@@ -238,8 +275,9 @@ ${user.chatMessages.map(chat =>
       }
     }
     
-    // Hämta kursinformation
+    // Hämta kursinformation och databas-data
     const { basicsText, flowText } = await getCourseInfo();
+    const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
     
     const systemPrompt = `Du är Ulrika AI:sson, en vänlig och kunnig AI-assistent för Functional Foods.${userContext ? ` Du chattar nu med en registrerad användare.` : ' Du chattar med en gäst.'}
 
@@ -251,10 +289,21 @@ Du har djup kunskap om:
 - Recept och matlagning för optimal hälsa
 - Longevity och livsstilsfaktorer
 - Våra kurser: Functional Basics och Functional Flow
+- Funktionella råvaror och deras hälsofördelar
 
 Kursinformation:
 Functional Basics: ${basicsText.substring(0, 500)}...
 Functional Flow: ${flowText.substring(0, 500)}...
+
+VÅRA RECEPT (${recipes.length} tillgängliga):
+${recipes.slice(0, 10).map((recipe: any) => 
+  `- ${recipe.title}: ${recipe.excerpt || 'Hälsosam och näringsrik'} (Svårighet: ${recipe.difficulty || 'Medium'})`
+).join('\n')}
+
+FUNKTIONELLA RÅVAROR (${rawMaterials.length} tillgängliga):
+${rawMaterials.slice(0, 20).map((material: any) => 
+  `- ${material.name}: ${material.description ? material.description.substring(0, 100) + '...' : 'Näringsrik råvara'}`
+).join('\n')}
 
 VIKTIGA REGLER:
 1. Svara ALLTID på svenska
@@ -271,7 +320,11 @@ VIKTIGA REGLER:
 12. Håll svaren koncisa men kompletta (max 300 ord)
 13. Rekommendera gärna våra kurser när det är relevant
 14. Använd emojis sparsamt men effektivt
-${userContext ? '13. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
+15. När användare frågar om recept, hänvisa till specifika recept från vår databas med länk: /kunskapsbank/recept/[slug]
+16. När användare frågar om råvaror/ingredienser, ge information från vår råvarudatabas och hänvisa till: /kunskapsbank/ingredienser
+17. Matcha användarens behov med passande recept och råvaror från våra databaser
+18. Ge konkreta förslag på functional foods från vår råvarudatabas
+${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",

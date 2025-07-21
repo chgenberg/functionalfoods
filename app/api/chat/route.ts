@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { PrismaClient } from '@prisma/client';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 }) : null;
+
+const prisma = new PrismaClient();
 
 // Läs in kursinformation
 async function getCourseInfo() {
@@ -29,6 +32,43 @@ async function getCourseInfo() {
   } catch (error) {
     console.error('Error loading course info:', error);
     return { basicsText: '', flowText: '' };
+  }
+}
+
+// Hämta populära recept och råvaror för AI-kontexten
+async function getRecipesAndRawMaterials() {
+  try {
+    const [recipes, rawMaterials] = await prisma.$transaction([
+      prisma.recipe.findMany({
+        where: { 
+          status: 'PUBLISHED',
+          isPremium: false // Endast gratis recept för allmän chattbot
+        },
+        select: {
+          id: true,
+          title: true,
+          excerpt: true,
+          ingredients: true,
+          difficulty: true,
+          slug: true
+        },
+        take: 20 // Top 20 populära recept
+      }),
+      // @ts-expect-error rawMaterial model exists after prisma generate
+      prisma.rawMaterial.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: true
+        },
+        take: 50 // Top 50 råvaror
+      })
+    ]);
+
+    return { recipes, rawMaterials };
+  } catch (error) {
+    console.error('Error loading recipes and raw materials:', error);
+    return { recipes: [], rawMaterials: [] };
   }
 }
 
@@ -104,8 +144,11 @@ export async function POST(request: Request) {
       );
     }
     
-    // Hämta kursinformation
+    // Hämta kursinformation och databas-data
     const { basicsText, flowText } = await getCourseInfo();
+    
+    // Hämta recept och råvaror för AI-kontexten
+    const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
     
     const systemPrompt = `Du är Ulrika AI:sson, en vänlig och kunnig AI-assistent för Functional Foods. 
     
@@ -115,10 +158,21 @@ Du har djup kunskap om:
 - Recept och matlagning för optimal hälsa
 - Longevity och livsstilsfaktorer
 - Våra kurser: Functional Basics och Functional Flow
+- Funktionella råvaror och deras hälsofördelar
 
 Kursinformation:
 Functional Basics: ${basicsText.substring(0, 500)}...
-Functional Flow: ${flowText.substring(0, 500)}...
+Functional Flow: ${flowText.substring(0, 500)}
+
+VÅRA RECEPT (${recipes.length} tillgängliga):
+${recipes.slice(0, 10).map((recipe: any) => 
+  `- ${recipe.title}: ${recipe.excerpt || 'Hälsosam och näringsrik'} (Svårighet: ${recipe.difficulty || 'Medium'})`
+).join('\n')}
+
+FUNKTIONELLA RÅVAROR (${rawMaterials.length} tillgängliga):
+${rawMaterials.slice(0, 20).map((material: any) => 
+  `- ${material.name}: ${material.description ? material.description.substring(0, 100) + '...' : 'Näringsrik råvara'}`
+).join('\n')}...
 
 VIKTIGA REGLER:
 1. Svara ALLTID på svenska
@@ -133,7 +187,11 @@ VIKTIGA REGLER:
 10. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
 11. Håll svaren koncisa men kompletta (max 250 ord)
 12. Rekommendera gärna våra kurser när det är relevant
-13. Använd emojis sparsamt men effektivt för att göra konversationen mer personlig`;
+13. Använd emojis sparsamt men effektivt för att göra konversationen mer personlig
+14. När användare frågar om recept, hänvisa till specifika recept från vår databas med länk: /kunskapsbank/recept/[slug]
+15. När användare frågar om råvaror/ingredienser, ge information från vår råvarudatabas och hänvisa till: /kunskapsbank/ingredienser
+16. Matcha användarens behov med passande recept och råvaror från våra databaser
+17. Ge konkreta förslag på functional foods från vår råvarudatabas`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -165,5 +223,7 @@ VIKTIGA REGLER:
       { message: "<p>Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se</p>" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 } 
