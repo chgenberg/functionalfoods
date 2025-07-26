@@ -1,0 +1,19 @@
+# FLOW RECEPT - Choklad- och kokoschiapudding
+# Källa: Functional Flow recept v. 5.pptx
+# Slide: 9
+# Matchtyp: term_match: choklad
+# Extraherat: 2025-07-24 23:25:44
+
+RUBRIK: Choklad- och kokoschiapudding
+
+INFO: Portioner: 2 | Kalorier: 325 kcal
+
+BESKRIVNING: Beach 2022 325kcal
+
+INGREDIENSER:
+- 10 jordgubbar
+- 2 dl amerikanska blåbär
+- 50 g vit choklad
+
+TILLAGNING:
+1. Sätt ugnen på grill, 225 grader. Skiva bananerna. Skala och skär kiwi i bitar. Skiva jordgubbarna. Lägg alla frukter och bär i en ugnsfast form. Riv choklad grovt och strö över. Gratinera i ugnen ca: 5 minuter.

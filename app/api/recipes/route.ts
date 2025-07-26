@@ -1,7 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { verify } from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
+
+// Funktion för att hämta användarens kursåtkomst
+async function getUserCourseAccess(userId: string): Promise<string[]> {
+  const purchases = await prisma.purchase.findMany({
+    where: {
+      userId,
+      status: 'completed'
+    },
+    include: {
+      course: true
+    }
+  });
+  
+  return purchases.map(purchase => purchase.course.id);
+}
 
 interface Recipe {
   id: string;
@@ -40,6 +56,25 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status') || '';
     const search = searchParams.get('search') || '';
     const slug = searchParams.get('slug') || '';
+
+    // Kontrollera användarens autentisering och kursåtkomst
+    let userId: string | null = null;
+    let userCourseIds: string[] = [];
+    
+    const authHeader = request.headers.get('authorization');
+    if (authHeader?.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.substring(7);
+        const decoded = verify(token, process.env.JWT_SECRET!) as any;
+        if (decoded.userId) {
+          userId = decoded.userId;
+          userCourseIds = await getUserCourseAccess(decoded.userId);
+        }
+      } catch (error) {
+        // Invalid token, proceed as guest
+        console.log('Invalid token, proceeding as guest');
+      }
+    }
 
     // Bygg Prisma filter
     const where: any = {};
@@ -119,11 +154,26 @@ export async function GET(request: NextRequest) {
       take: limit
     });
 
-    // Räkna totalt antal recept
+    // Filtrera recept baserat på kursåtkomst
+    const filteredRecipes = recipes.filter(recipe => {
+      if (!recipe.isPremium || recipe.isFree) return true; // Gratis recept är alltid tillgängliga
+      if (!userId) return false; // Premium recept kräver autentisering
+      
+      // Kontrollera om användaren har åtkomst till kursen detta recept tillhör
+      const recipeNutrition = recipe.nutrition as any;
+      if (recipeNutrition?.courseId) {
+        return userCourseIds.includes(recipeNutrition.courseId);
+      }
+      
+      // Om inget specifik kurs, använd allmän premiumåtkomst
+      return userCourseIds.length > 0;
+    });
+
+    // Räkna totalt antal recept (före filtrering)
     const totalRecipes = await prisma.recipe.count({ where });
 
     // Konvertera till API-format
-    const formattedRecipes: Recipe[] = recipes.map(recipe => ({
+    const formattedRecipes: Recipe[] = filteredRecipes.map(recipe => ({
       id: recipe.id,
       title: recipe.title,
       excerpt: recipe.excerpt || '',
@@ -140,14 +190,14 @@ export async function GET(request: NextRequest) {
         name: recipe.author?.name || 'Ulrika Davidsson',
         username: 'ulrika'
       },
-      difficulty: recipe.difficulty,
-      prepTime: recipe.prepTime,
-      cookTime: recipe.cookTime,
-      totalTime: recipe.totalTime,
-      servings: recipe.servings,
-      instructions: recipe.instructions,
-      tips: recipe.tips,
-      tags: recipe.tags
+      difficulty: recipe.difficulty || undefined,
+      prepTime: recipe.prepTime || undefined,
+      cookTime: recipe.cookTime || undefined,
+      totalTime: recipe.totalTime || undefined,
+      servings: recipe.servings || undefined,
+      instructions: recipe.instructions || undefined,
+      tips: recipe.tips || undefined,
+      tags: recipe.tags || undefined
     }));
 
     // Hämta alla unika kategorier för filter

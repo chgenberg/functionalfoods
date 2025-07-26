@@ -25,6 +25,20 @@ async function checkUserAccess(userId: string): Promise<boolean> {
   return purchaseCount > 0;
 }
 
+async function getUserCourseAccess(userId: string): Promise<string[]> {
+  const purchases = await prisma.purchase.findMany({
+    where: {
+      userId,
+      status: 'completed'
+    },
+    include: {
+      course: true
+    }
+  });
+  
+  return purchases.map(purchase => purchase.course.id);
+}
+
 function calculateRelevance(
   term: string,
   fields: { title: string; searchText: string | null }
@@ -55,12 +69,14 @@ export async function GET(request: NextRequest) {
     }
 
     let hasAccess = false;
+    let userId: string | null = null;
     const authHeader = request.headers.get('authorization');
     if (authHeader?.startsWith('Bearer ')) {
       try {
         const token = authHeader.substring(7);
         const decoded = verify(token, process.env.JWT_SECRET!) as any;
         if (decoded.userId) {
+          userId = decoded.userId;
           hasAccess = await checkUserAccess(decoded.userId);
         }
       } catch (error) {
@@ -107,48 +123,70 @@ export async function GET(request: NextRequest) {
     const shouldFetchArticles = type === 'all' || type === 'article';
     const shouldFetchRawMaterials = type === 'all' || type === 'raw-material';
 
-    const [recipes, articles, rawMaterials] = await prisma.$transaction([
-      shouldFetchRecipes ? prisma.recipe.findMany({ 
-        where: searchFilter,
-        select: {
+    // Get user's course access if authenticated
+    let userCourseIds: string[] = [];
+    if (userId) {
+      userCourseIds = await getUserCourseAccess(userId);
+    }
+
+    // Execute searches
+    const recipes = shouldFetchRecipes ? await prisma.recipe.findMany({ 
+      where: searchFilter,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        imageUrl: true,
+        isPremium: true,
+        searchText: true,
+        nutrition: true,
+      },
+      take: 50 // Limit initial fetch to prevent overload
+    }) : [];
+    
+    const articles = shouldFetchArticles ? await prisma.blogPost.findMany({
+      where: articleFilter,
+      select: {
           id: true,
           title: true,
           slug: true,
           excerpt: true,
-          imageUrl: true,
-          isPremium: true,
+          content: true,
           searchText: true,
-        },
-        take: 50 // Limit initial fetch to prevent overload
-      }) : Promise.resolve([]),
-      shouldFetchArticles ? prisma.blogPost.findMany({
-        where: articleFilter,
-        select: {
-            id: true,
-            title: true,
-            slug: true,
-            excerpt: true,
-            content: true,
-            searchText: true,
-            author: {
-                select: { name: true }
-            }
-        },
-        take: 50
-      }) : Promise.resolve([]),
-      // @ts-expect-error rawMaterial model exists after prisma generate
-      shouldFetchRawMaterials ? prisma.rawMaterial.findMany({
-        where: rawMaterialFilter,
-        select: {
-          id: true,
-          name: true,
-          description: true,
-        },
-        take: 50
-      }) : Promise.resolve([])
-    ]);
+          author: {
+              select: { name: true }
+          }
+      },
+      take: 50
+    }) : [];
+    
+    const rawMaterials = shouldFetchRawMaterials ? await prisma.rawMaterial.findMany({
+      where: rawMaterialFilter,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
+      take: 50
+    }) : [];
 
-    const recipeResults: SearchResult[] = recipes.map((recipe: any) => ({
+    // Filter recipes based on course access
+    const filteredRecipes = recipes.filter((recipe: any) => {
+      if (!recipe.isPremium) return true; // Free recipes are always accessible
+      if (!userId) return false; // Premium recipes need authentication
+      
+      // Check if user has access to the course this recipe belongs to
+      const recipeNutrition = recipe.nutrition as any;
+      if (recipeNutrition?.courseId) {
+        return userCourseIds.includes(recipeNutrition.courseId);
+      }
+      
+      // If no specific course, use general premium access
+      return hasAccess;
+    });
+
+    const recipeResults: SearchResult[] = filteredRecipes.map((recipe: any) => ({
       id: recipe.id,
       title: recipe.title,
       excerpt: recipe.excerpt || '',
