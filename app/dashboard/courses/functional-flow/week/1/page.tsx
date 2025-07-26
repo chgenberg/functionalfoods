@@ -1,42 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FiArrowLeft, FiCalendar, FiShoppingCart, FiBook, FiTarget,
-  FiChevronRight, FiClock, FiUsers, FiCheckCircle, FiDownload,
-  FiStar, FiHeart, FiAward, FiTrendingUp
+  FiTarget, FiCalendar, FiBook, FiShoppingCart, FiChevronRight, FiClock, 
+  FiUsers, FiAward, FiTrendingUp
 } from 'react-icons/fi';
-import { 
-  GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal,
-  GiWheat, GiMeat, GiWaterBottle
-} from 'react-icons/gi';
-import { FaLeaf } from 'react-icons/fa';
-import Image from 'next/image';
-// import { MealPlanSection, ShoppingListSection, RecipeHighlights } from './components';
-import { CalendarView } from '../components/CalendarView';
+import Link from 'next/link';
 import { GoalsSection } from '../components/GoalsSection';
-import { getWeekData } from '@/app/data/mealPlans';
+import { CalendarView } from '../components/CalendarView';
+import { 
+  KnowledgeSection, 
+  MotivationSection, 
+  RecipeHighlights,
+  WeekSummary
+} from './components';
+import { getFlowWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
   label: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<any>;
   color: string;
-}
-
-interface MealItem {
-  name: string;
-  recipeLink?: string;
-  isLocked?: boolean;
-}
-
-interface DayMeals {
-  breakfast: MealItem;
-  lunch: MealItem;
-  dinner: MealItem;
-  snack?: MealItem;
 }
 
 export default function Week1Page() {
@@ -52,49 +37,91 @@ export default function Week1Page() {
   ];
 
   // Get meal plan from centralized data
-  const weekData = getWeekData(1);
+  const weekData = getFlowWeekData(1);
   const mealPlan = weekData?.days || {};
 
   return (
-    <div className="pb-20 md:pb-8">
-      {/* Page Title - Mobile Optimized */}
-      <div className="mb-4 md:mb-8">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">Vecka 1: Introduktion till Functional Foods</h1>
-        <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Lär dig grunderna och kom igång med din hälsoresa</p>
-      </div>
+    <div className="space-y-6 md:space-y-8 pb-20 md:pb-8">
+      {/* Hero Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-teal-600 via-cyan-600 to-teal-700 p-6 md:p-8 text-white shadow-xl md:shadow-2xl"
+      >
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative z-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3 md:mb-4">
+                <div className="bg-white/20 rounded-full p-2 md:p-3">
+                  <FiBook className="w-5 h-5 md:w-6 md:h-6" />
+                </div>
+                <div>
+                  <h1 className="text-xl md:text-3xl font-bold">Flow Vecka 1</h1>
+                  <p className="text-sm md:text-base text-teal-100">Avancerad grund i Functional Foods</p>
+                </div>
+              </div>
+              
+              <p className="text-sm md:text-base text-teal-100 mb-4 md:mb-6 leading-relaxed">
+                Välkommen till din Flow-resa! Denna vecka introducerar vi avancerade koncept inom functional foods 
+                och sätter grunden för optimal näringsoptimering.
+              </p>
+              
+              <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm">
+                <div className="flex items-center gap-1 md:gap-2 text-white/90">
+                  <FiClock className="w-3 h-3 md:w-4 md:h-4" />
+                  <span>7 dagar</span>
+                </div>
+                <div className="flex items-center gap-1 md:gap-2 text-white/90">
+                  <FiUsers className="w-3 h-3 md:w-4 md:h-4" />
+                  <span>Expert-nivå</span>
+                </div>
+                <div className="flex items-center gap-1 md:gap-2 text-white/90">
+                  <FiAward className="w-3 h-3 md:w-4 md:h-4" />
+                  <span>Avancerade recept</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 md:p-4 text-center">
+                <div className="text-lg md:text-xl font-bold">85%</div>
+                <div className="text-xs md:text-sm text-teal-100">Slutförd</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
-      {/* Tab Navigation - Mobile Optimized */}
-      <div className="mb-4 md:mb-8">
-        <div className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
-            {tabs.map((tab) => (
+      {/* Navigation Tabs */}
+      <div className="bg-white rounded-xl md:rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="flex overflow-x-auto scrollbar-hide">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            
+            return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r text-white shadow-md md:shadow-lg transform scale-105'
-                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                } ${activeTab === tab.id ? tab.color : ''}`}
+                className={`flex items-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-4 font-medium text-sm md:text-base transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white'
+                    : 'text-gray-600 hover:text-teal-600 hover:bg-teal-50'
+                }`}
               >
-                <tab.icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2 ${
-                  activeTab === tab.id ? 'text-white' : 'text-gray-600'
-                }`} />
-                <span className={`text-xs md:text-sm font-medium ${
-                  activeTab === tab.id ? 'text-white' : 'text-gray-700'
-                }`}>
-                  {tab.label}
-                </span>
+                <Icon className="w-4 h-4 md:w-5 md:h-5" />
+                <span>{tab.label}</span>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Content Area */}
-      <div className="pb-8 md:pb-16">
+      {/* Tab Content */}
+      <div className="min-h-[500px]">
         <AnimatePresence mode="wait">
-          {/* Overview Tab - Mobile Optimized */}
+          {/* Overview Tab */}
           {activeTab === 'overview' && (
             <motion.div
               key="overview"
@@ -103,76 +130,10 @@ export default function Week1Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-4 md:space-y-8"
             >
-              {/* Welcome Message - Mobile Optimized */}
-              <div className="bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 text-white shadow-lg md:shadow-xl">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 md:mb-4">Välkommen till Functional Basics!</h2>
-                <p className="text-sm sm:text-base md:text-lg leading-relaxed mb-4 md:mb-6">
-                  Nu har du en spännande resa framför dig under dessa 6 veckor med näringsrika och hälsobringade recept 
-                  och du kommer att få lära dig grunderna i Functional Foods. Du får praktiska kostscheman att följa, 
-                  recept för alla måltider och inköpslistor för varje vecka.
-                </p>
-                <p className="text-sm sm:text-base md:text-lg leading-relaxed mb-4 md:mb-6">
-                  Efter dessa 6 veckor har du dels lärt dig mycket om matlagning och hur du får in alla näringsämnen 
-                  i din kost samt fördelarna som kommer: ökad näringsnivå, förbättrad matsmältning, bättre hjärthälsa, 
-                  minskad inflammation i kroppen, ökade energinivåer och ett bättre immunförsvar.
-                </p>
-                <p className="text-sm sm:text-base md:text-lg italic">
-                  Varmt välkommen till framtidens kost för en god hälsa och ett friskare liv!<br />
-                  /Ulrika
-                </p>
-              </div>
-
-              {/* Week 1 Introduction - Mobile Optimized */}
-              <div className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-4 sm:p-6 md:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4">
-                  <div className="bg-orange-100 rounded-full p-2.5 md:p-3 mb-3 sm:mb-0 w-fit">
-                    <FiCalendar className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-3 md:mb-4">Välkommen till vecka 1</h3>
-                    <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-3 md:mb-4">
-                      För att skapa nya vanor är planering och förberedelse avgörande. Handla allt du behöver inför 
-                      veckan och gör dig redo för kursen. Laga gärna några rätter i förväg och förvara dem i kylen 
-                      eller frysen. Följ kostschemat under kursens gång och undvik småätande mellan måltiderna.
-                    </p>
-                    <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-3 md:mb-4">
-                      Kom ihåg att dricka mycket vatten och njut av en kopp kaffe eller te. Fokusera på vila och 
-                      god sömn under första veckan för att ge din kropp bästa möjliga förutsättningar.
-                    </p>
-                    <div className="bg-blue-50 rounded-lg md:rounded-xl p-3 md:p-4 mt-4 md:mt-6">
-                      <p className="text-blue-800 font-medium text-sm md:text-base">
-                        💡 Den här veckan vill jag att du tittar på kunskapsdokumenten "Dags att komma igång" 
-                        och "Motivation och reflektion" – läs igenom dem för att ta dig an kursen på bästa sätt. 
-                        Nu kör vi igång!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Stats - Mobile Optimized */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-                <div className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 text-center">
-                  <GiMeal className="w-8 h-8 md:w-12 md:h-12 text-purple-600 mx-auto mb-2 md:mb-3" />
-                  <h4 className="text-xl md:text-2xl font-bold text-gray-900">21</h4>
-                  <p className="text-gray-600 text-xs md:text-base">Recept</p>
-                </div>
-                <div className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 text-center">
-                  <FiCalendar className="w-8 h-8 md:w-12 md:h-12 text-blue-600 mx-auto mb-2 md:mb-3" />
-                  <h4 className="text-xl md:text-2xl font-bold text-gray-900">7</h4>
-                  <p className="text-gray-600 text-xs md:text-base">Dagar</p>
-                </div>
-                <div className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 text-center">
-                  <GiFruitBowl className="w-8 h-8 md:w-12 md:h-12 text-green-600 mx-auto mb-2 md:mb-3" />
-                  <h4 className="text-xl md:text-2xl font-bold text-gray-900">10</h4>
-                  <p className="text-gray-600 text-xs md:text-base">Kategorier</p>
-                </div>
-                <div className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 text-center">
-                  <FiHeart className="w-8 h-8 md:w-12 md:h-12 text-red-600 mx-auto mb-2 md:mb-3" />
-                  <h4 className="text-xl md:text-2xl font-bold text-gray-900">∞</h4>
-                  <p className="text-gray-600 text-xs md:text-base">Hälsofördelar</p>
-                </div>
-              </div>
+              <WeekSummary />
+              <KnowledgeSection />
+              <MotivationSection />
+              <RecipeHighlights mealPlan={mealPlan} />
             </motion.div>
           )}
 
@@ -203,8 +164,8 @@ export default function Week1Page() {
               
               {/* Recipe Highlights */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans recept</h3>
-                <p className="text-gray-600">Upptäck nya smaker och tekniker med veckans utvalda recept.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans Flow-recept</h3>
+                <p className="text-gray-600">Avancerade recept för optimal näringsoptimering och smakupplevelse.</p>
               </div>
             </motion.div>
           )}
@@ -219,8 +180,8 @@ export default function Week1Page() {
               className="space-y-4 md:space-y-8"
             >
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Inköpslista</h3>
-                <p className="text-gray-600">Planera dina inköp för vecka 1.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Flow Inköpslista</h3>
+                <p className="text-gray-600">Optimerade ingredienser för vecka 1 av ditt Flow-program.</p>
               </div>
             </motion.div>
           )}
@@ -228,21 +189,20 @@ export default function Week1Page() {
       </div>
 
       {/* Next Week Button - Mobile Optimized */}
-      <div className="pb-8 md:pb-16">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 text-white text-center">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 md:mb-4">Redo för nästa steg?</h3>
-          <p className="text-sm sm:text-base md:text-lg mb-4 md:mb-6">
-            När du känner dig redo, fortsätt till vecka 2 för att fördjupa din kunskap och bygga starkare vanor.
-          </p>
-          <Link
-            href="/dashboard/courses/functional-basics/week/2"
-            className="inline-flex items-center px-4 sm:px-5 md:px-6 py-2.5 md:py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm md:text-base"
-          >
-            Fortsätt till vecka 2
-            <FiChevronRight className="ml-2" />
-          </Link>
-        </div>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="flex justify-center"
+      >
+        <Link 
+          href="/dashboard/courses/functional-flow/week/2"
+          className="group bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-semibold text-sm md:text-base shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 md:gap-3"
+        >
+          <span>Nästa vecka</span>
+          <FiChevronRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </motion.div>
     </div>
   );
 }
