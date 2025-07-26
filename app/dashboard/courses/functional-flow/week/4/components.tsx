@@ -1,0 +1,1 @@
+export { GoalsSection } from '../components/GoalsSection'; 

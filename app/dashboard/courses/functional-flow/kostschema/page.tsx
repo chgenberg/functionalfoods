@@ -1,0 +1,385 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  FiChevronLeft, FiChevronRight, FiCalendar, FiClock, 
+  FiStar, FiHeart, FiShoppingCart, FiDownload, FiPrinter,
+  FiSun, FiMoon, FiCoffee, FiCheck, FiPlus
+} from 'react-icons/fi';
+import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
+import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
+import Link from 'next/link';
+
+const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: any }) => {
+  const typeColors: Record<string, string> = {
+    breakfast: 'from-yellow-400 to-orange-500',
+    lunch: 'from-green-400 to-teal-500',
+    dinner: 'from-blue-400 to-purple-500',
+    snack: 'from-pink-400 to-rose-500',
+    dessert: 'from-purple-400 to-pink-500'
+  };
+
+  const typeNames: Record<string, string> = {
+    breakfast: 'Frukost',
+    lunch: 'Lunch',
+    dinner: 'Middag',
+    snack: 'Mellanmål',
+    dessert: 'Efterrätt'
+  };
+
+  const typeTimes: Record<string, string> = {
+    breakfast: '07:00',
+    lunch: '12:00',
+    dinner: '18:00',
+    snack: '15:00',
+    dessert: '20:00'
+  };
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 hover:shadow-md transition-all duration-200"
+    >
+      <div className="flex items-center gap-2 sm:gap-3 mb-3">
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br ${typeColors[type]} rounded-full flex items-center justify-center text-white flex-shrink-0`}>
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{typeNames[type]}</h4>
+          <p className="text-xs sm:text-sm text-gray-500">{typeTimes[type]}</p>
+        </div>
+      </div>
+      
+      <h5 className="font-medium text-gray-900 mb-2 text-sm sm:text-base break-words">{meal.name}</h5>
+      {meal.note && (
+        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mb-2 break-words">
+          {meal.note}
+        </span>
+      )}
+      
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        {meal.recipeLink && (
+          <a 
+            href={meal.recipeLink}
+            className="text-xs sm:text-sm text-green-600 hover:text-green-700 font-medium truncate"
+          >
+            Se recept →
+          </a>
+        )}
+        <div className="flex items-center gap-2 justify-end sm:ml-auto">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <FiHeart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-red-500" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <FiShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-green-500" />
+          </motion.button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, dayNumber, isCurrentWeek }: any) => {
+  const weekNumber = Math.ceil(dayNumber / 7);
+  const weekColors = [
+    'bg-purple-500', 'bg-blue-500', 'bg-green-500', 
+    'bg-yellow-500', 'bg-red-500', 'bg-indigo-500'
+  ];
+  
+  return (
+    <motion.button
+      whileHover={{ scale: hasMealPlan ? 1.05 : 1 }}
+      whileTap={{ scale: hasMealPlan ? 0.95 : 1 }}
+      onClick={onClick}
+      className={`
+        relative w-full h-12 sm:h-14 rounded-lg border-2 transition-all duration-200 text-sm font-medium
+        ${isToday 
+          ? 'border-green-500 bg-green-50 text-green-700 shadow-md' 
+          : isSelected 
+            ? 'border-green-600 bg-green-600 text-white shadow-lg' 
+            : hasMealPlan
+              ? isCurrentWeek
+                ? 'border-green-300 bg-green-50 text-gray-900 hover:border-green-400'
+                : 'border-gray-200 bg-white text-gray-900 hover:border-green-300 hover:bg-green-50'
+              : 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
+        }
+      `}
+      disabled={!hasMealPlan}
+    >
+      <div className="flex flex-col items-center justify-center h-full">
+        <span className="text-xs opacity-70">{day}</span>
+        <span className={isSelected ? 'font-bold' : ''}>{date}</span>
+      </div>
+      {hasMealPlan && (
+        <div className={`absolute -top-1 -right-1 w-5 h-5 ${weekColors[(weekNumber - 1) % 6]} rounded-full flex items-center justify-center shadow-sm`}>
+          <span className="text-xs text-white font-bold">{dayNumber}</span>
+        </div>
+      )}
+      {isToday && (
+        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+      )}
+    </motion.button>
+  );
+};
+
+export default function KostschemaPage() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState(1);
+  const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Hämta användarens kursstartdatum
+  useEffect(() => {
+    const fetchCourseStartDate = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          // Fallback till dagens datum om ingen token
+          const today = new Date();
+          setCourseStartDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch('/api/user/course-start-date', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCourseStartDate(new Date(data.courseStartDate));
+        } else {
+          // Fallback till dagens datum om API-anrop misslyckas
+          const today = new Date();
+          setCourseStartDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+        }
+      } catch (error) {
+        console.error('Error fetching course start date:', error);
+        // Fallback till dagens datum
+        const today = new Date();
+        setCourseStartDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourseStartDate();
+  }, []);
+
+  // Visa loading state medan vi hämtar kursstartdatum
+  if (loading || !courseStartDate) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Laddar kostschema...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const courseEndDate = new Date(courseStartDate);
+  courseEndDate.setDate(courseEndDate.getDate() + 42); // 6 veckor
+
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    
+    const days = [];
+    for (let i = 0; i < 42; i++) {
+      const day = new Date(startDate);
+      day.setDate(startDate.getDate() + i);
+      days.push(day);
+    }
+    return days;
+  };
+
+  const isDateInCourse = (date: Date) => {
+    return date >= courseStartDate && date <= courseEndDate;
+  };
+
+  const getCurrentDayOfCourse = (date: Date) => {
+    const diffTime = date.getTime() - courseStartDate.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(1, Math.min(diffDays, 42));
+  };
+
+  const days = getDaysInMonth(currentMonth);
+  const monthNames = [
+    'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
+    'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'
+  ];
+  const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
+
+  // Get current day's meals from centralized data
+  const currentDayMeals = getMealForDay(selectedDay);
+  const currentWeekNumber = Math.ceil(selectedDay / 7);
+  const currentWeekData = getWeekData(currentWeekNumber);
+
+  // Calculate meal totals
+  const calculateTotalCalories = () => {
+    if (!currentDayMeals) return 0;
+    let total = 0;
+    // These are approximate values - you can adjust them
+    if (currentDayMeals.breakfast) total += 380;
+    if (currentDayMeals.lunch) total += 520;
+    if (currentDayMeals.dinner) total += 580;
+    if (currentDayMeals.snack) total += 200;
+    if (currentDayMeals.dessert) total += 250;
+    return total;
+  };
+
+  const countMeals = () => {
+    if (!currentDayMeals) return 0;
+    let count = 0;
+    if (currentDayMeals.breakfast) count++;
+    if (currentDayMeals.lunch) count++;
+    if (currentDayMeals.dinner) count++;
+    if (currentDayMeals.snack) count++;
+    if (currentDayMeals.dessert) count++;
+    return count;
+  };
+
+  const currentTotalCalories = calculateTotalCalories();
+  const currentMealCount = countMeals();
+
+  return (
+    <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
+      {/* Header */}
+      <div className="bg-white sticky top-0 z-20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+              Mitt Kostschema
+            </h1>
+            <Link
+              href="/dashboard/courses/functional-basics/inkopslista"
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm"
+            >
+              <FiShoppingCart className="w-5 h-5" />
+              <span className="hidden sm:inline">Visa Inköpslistor</span>
+            </Link>
+          </div>
+          <div className="flex items-center justify-between pb-4">
+            <button
+              onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+              className="p-2 rounded-full hover:bg-gray-100"
+            >
+              <FiChevronLeft />
+            </button>
+            <h2 className="font-semibold text-lg">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h2>
+            <button
+              onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+              className="p-2 rounded-full hover:bg-gray-100"
+            >
+              <FiChevronRight />
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Calendar */}
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 my-4">
+          {dayNames.map(name => (
+            <div key={name} className="text-center text-xs font-medium text-gray-500">{name}</div>
+          ))}
+          {days.map((day, index) => {
+            const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
+            const today = new Date();
+            const isToday = day.getDate() === today.getDate() && day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
+            const dayNumber = isDateInCourse(day) ? getCurrentDayOfCourse(day) + 1 : 0;
+            const isSelected = selectedDate && day.toDateString() === selectedDate.toDateString();
+
+            return (
+              <CalendarDay
+                key={index}
+                day={day.toLocaleDateString('sv-SE', { weekday: 'short' })}
+                date={day.getDate()}
+                isToday={isToday}
+                isSelected={isSelected}
+                onClick={() => {
+                  if (isDateInCourse(day)) {
+                    setSelectedDate(day);
+                    setSelectedDay(dayNumber);
+                  }
+                }}
+                hasMealPlan={isDateInCourse(day)}
+                dayNumber={dayNumber}
+                isCurrentWeek={isCurrentMonth}
+              />
+            );
+          })}
+        </div>
+
+        {/* Week content */}
+        <div className="mt-8">
+          <motion.div
+            key={selectedDay}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-6"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {currentDayMeals ? (
+                <>
+                  {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
+                  {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
+                  {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
+                  {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
+                  {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
+                </>
+              ) : (
+                <p>Inget kostschema för denna dag.</p>
+              )}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Floating summary */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-lg bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-gray-200"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-800">
+                Vecka <span className="text-green-600 font-bold">{currentWeekNumber}</span>, Dag <span className="text-green-600 font-bold">{selectedDay}</span>
+              </p>
+              <p className="text-xs text-gray-500">Översikt för den valda dagen</p>
+            </div>
+            <div className="flex items-center gap-4 text-center">
+              <div>
+                <p className="font-bold text-lg text-gray-900">{currentMealCount}</p>
+                <p className="text-xs text-gray-500">Måltider</p>
+              </div>
+              <div>
+                <p className="font-bold text-lg text-gray-900">~{currentTotalCalories}</p>
+                <p className="text-xs text-gray-500">Kalorier</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+} 
