@@ -293,3 +293,115 @@
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+/* Print Styles for Recipes */
+@media print {
+  /* Hide non-essential elements */
+  header,
+  footer,
+  nav,
+  .no-print,
+  .print\:hidden,
+  button,
+  [role="button"] {
+    display: none !important;
+  }
+
+  /* Reset page styling */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+
+  /* Ensure content fits properly */
+  .container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Recipe specific styling */
+  #printable-recipe {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Headers */
+  h1 {
+    font-size: 20pt;
+    margin-bottom: 10pt;
+  }
+
+  h2 {
+    font-size: 14pt;
+    margin-top: 15pt;
+    margin-bottom: 10pt;
+  }
+
+  h3 {
+    font-size: 12pt;
+    margin-top: 10pt;
+    margin-bottom: 5pt;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin-left: 15pt;
+  }
+
+  /* Images */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Page breaks */
+  .print-break {
+    page-break-inside: avoid;
+  }
+
+  /* Colors */
+  .bg-orange-50,
+  .bg-green-50,
+  .bg-yellow-50,
+  .bg-gray-50 {
+    background-color: #f5f5f5 !important;
+  }
+
+  /* Borders and shadows */
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: none !important;
+  }
+
+  .rounded-lg,
+  .rounded-xl,
+  .rounded-2xl,
+  .rounded-3xl {
+    border-radius: 8pt !important;
+  }
+
+  /* Hide interactive states */
+  .hover\:bg-gray-50:hover,
+  .hover\:shadow-lg:hover {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* Ensure black text */
+  p, span, div, li {
+    color: #000 !important;
+  }
+
+  /* Special print-only visibility */
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+}

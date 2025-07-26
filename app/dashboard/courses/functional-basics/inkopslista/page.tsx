@@ -27,22 +27,8 @@ const weekSections: WeekSection[] = [
 
 export default function InkopslistaPage() {
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1]));
-  const [courseId, setCourseId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Hämta course ID för Functional Basics
-    fetch('/api/courses')
-      .then(res => res.json())
-      .then(data => {
-        const functionalBasics = data.courses?.find((c: any) => (c.title || c.name) === 'Functional Basics');
-        if (functionalBasics) {
-          setCourseId(functionalBasics.id);
-        }
-      })
-      .catch(err => console.error('Error fetching course:', err))
-      .finally(() => setLoading(false));
-  }, []);
+  const courseId = '851b830e-9f81-4e92-9b2d-3bcfdac86c9e'; // Functional Basics course ID
+  const [loading, setLoading] = useState(false);
 
   const toggleWeek = (week: number) => {
     const newExpanded = new Set(expandedWeeks);
@@ -71,7 +57,7 @@ export default function InkopslistaPage() {
     window.print();
   };
 
-  if (loading || !courseId) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

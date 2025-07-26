@@ -22,22 +22,8 @@ const weekSections: WeekSection[] = [
 
 export default function InkopslistaPage() {
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1]));
-  const [courseId, setCourseId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Hämta course ID för Functional Flow
-    fetch('/api/courses')
-      .then(res => res.json())
-      .then(data => {
-        const functionalFlow = data.courses?.find((c: any) => (c.title || c.name) === 'Functional Flow');
-        if (functionalFlow) {
-          setCourseId(functionalFlow.id);
-        }
-      })
-      .catch(err => console.error('Error fetching course:', err))
-      .finally(() => setLoading(false));
-  }, []);
+  const courseId = 'a9662c22-3ae1-48d7-9cda-7bcefe4e16b5'; // Functional Flow course ID
+  const [loading, setLoading] = useState(false);
 
   const toggleWeek = (week: number) => {
     const newExpanded = new Set(expandedWeeks);
@@ -165,18 +151,10 @@ export default function InkopslistaPage() {
                   className="border-t border-gray-100"
                 >
                   <div className="p-4 md:p-6 bg-gray-50">
-                    {courseId ? (
-                      <ShoppingList 
-                        courseId={courseId} 
-                        week={weekSection.week}
-                        courseName="Functional Flow"
-                      />
-                    ) : (
-                      <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto"></div>
-                        <p className="text-gray-600 mt-2">Laddar inköpslista...</p>
-                      </div>
-                    )}
+                    <ShoppingList 
+                      weekNumber={weekSection.week} 
+                      courseId={courseId}
+                    />
                   </div>
                 </motion.div>
               )}

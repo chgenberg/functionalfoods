@@ -4,10 +4,15 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiArrowLeft, FiClock, FiUsers, FiHeart, FiShare2, FiBookmark, FiCheck, FiPlus, FiMinus, FiPrinter, FiShoppingCart } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FiArrowLeft, FiClock, FiUsers, FiHeart, FiShare2, FiBookmark, 
+  FiCheck, FiPlus, FiMinus, FiPrinter, FiShoppingCart, FiX,
+  FiChevronDown, FiChevronUp, FiStar, FiCamera
+} from 'react-icons/fi';
 import { useAuth } from '../../../hooks/useAuth';
 import RandomRecipes from '../../../components/RandomRecipes';
+import { GiCookingPot } from 'react-icons/gi';
 
 interface Recipe {
   id: string;
@@ -52,6 +57,8 @@ export default function RecipePage() {
   const [isLiked, setIsLiked] = useState(false);
   const [nutrition, setNutrition] = useState<any>(null);
   const [nutritionLoading, setNutritionLoading] = useState(false);
+  const [showNutrition, setShowNutrition] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (slug) {
@@ -61,7 +68,6 @@ export default function RecipePage() {
 
   useEffect(() => {
     if (recipe) {
-      // Beräkna näringsvärden automatiskt
       calculateNutrition();
     }
   }, [recipe]);
@@ -114,7 +120,6 @@ export default function RecipePage() {
   const calculateNutrition = async () => {
     if (!recipe?.ingredients || recipe.ingredients.length === 0) return;
     
-    // Kontrollera om vi redan har näringsvärden
     if (recipe.nutrition) {
       setNutrition(recipe.nutrition);
       return;
@@ -145,8 +150,6 @@ export default function RecipePage() {
     }
   };
 
-
-
   const toggleIngredient = (index: number) => {
     setCheckedIngredients(prev => 
       prev.includes(index) 
@@ -163,243 +166,302 @@ export default function RecipePage() {
     );
   };
 
-  // Parse instructions into steps
-  const instructionSteps = recipe?.instructions && typeof recipe.instructions === 'string'
-    ? recipe.instructions.split('\\n').filter(step => step.trim())
-    : [];
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: recipe?.title,
+          text: recipe?.excerpt,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Länk kopierad!');
+    }
+  };
 
-  // Function to scale ingredient amounts
-  const scaleIngredient = (ingredient: string, originalServings: number, newServings: number) => {
-    if (!ingredient || originalServings === 0) return ingredient;
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const scaleIngredient = (ingredient: string, originalServings: number = 4) => {
+    if (!ingredient || servings === originalServings) return ingredient;
+
+    const ratio = servings / originalServings;
+    const regex = /(\d+(?:[.,]\d+)?)\s*(dl|ml|l|kg|g|mg|msk|tsk|krm|st|stk)?/gi;
     
-    const ratio = newServings / originalServings;
-    const numberPattern = /(\d+(?:\/\d+)?(?:[.,]\d+)?)\s*([a-zA-ZåäöÅÄÖ]*)/g;
-    
-    return ingredient.replace(numberPattern, (match, numberStr, unit) => {
-      let num: number;
+    return ingredient.replace(regex, (match, amount, unit) => {
+      const num = parseFloat(amount.replace(',', '.'));
+      const scaled = num * ratio;
       
-      if (numberStr.includes('/')) {
-        const [numerator, denominator] = numberStr.split('/').map((n: string) => parseInt(n.trim()));
-        if (isNaN(numerator) || isNaN(denominator) || denominator === 0) return match;
-        num = numerator / denominator;
+      let formatted: string;
+      if (scaled < 1 && unit && ['dl', 'l', 'kg'].includes(unit.toLowerCase())) {
+        if (unit.toLowerCase() === 'dl') {
+          formatted = `${Math.round(scaled * 100)} ml`;
+        } else if (unit.toLowerCase() === 'l') {
+          formatted = `${Math.round(scaled * 10)} dl`;
+        } else if (unit.toLowerCase() === 'kg') {
+          formatted = `${Math.round(scaled * 1000)} g`;
+        } else {
+          formatted = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1).replace('.', ',');
+          if (unit) formatted += ` ${unit}`;
+        }
       } else {
-        num = parseFloat(numberStr.replace(',', '.'));
-        if (isNaN(num)) return match;
+        formatted = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1).replace('.', ',');
+        if (unit) formatted += ` ${unit}`;
       }
       
-      const scaledNum = num * ratio;
-      const formattedNum = formatScaledNumber(scaledNum);
-      
-      return `${formattedNum}${unit ? ' ' + unit : ''}`;
+      return formatted;
     });
   };
 
-  const formatScaledNumber = (num: number): string => {
-    const commonFractions = [
-      { decimal: 0.125, fraction: '1/8' },
-      { decimal: 0.25, fraction: '1/4' },
-      { decimal: 0.333, fraction: '1/3' },
-      { decimal: 0.5, fraction: '1/2' },
-      { decimal: 0.667, fraction: '2/3' },
-      { decimal: 0.75, fraction: '3/4' },
-      { decimal: 1.25, fraction: '1 1/4' },
-      { decimal: 1.333, fraction: '1 1/3' },
-      { decimal: 1.5, fraction: '1 1/2' },
-      { decimal: 1.667, fraction: '1 2/3' },
-      { decimal: 1.75, fraction: '1 3/4' },
-      { decimal: 2.5, fraction: '2 1/2' },
-      { decimal: 3.5, fraction: '3 1/2' }
-    ];
-    
-    for (const frac of commonFractions) {
-      if (Math.abs(num - frac.decimal) < 0.01) {
-        return frac.fraction;
-      }
-    }
-    
-    if (Math.abs(num - Math.round(num)) < 0.01) {
-      return Math.round(num).toString();
-    }
-    
-    if (num < 1) {
-      return num.toFixed(2).replace(/\.?0+$/, '');
-    } else {
-      return num.toFixed(1).replace(/\.0$/, '');
-    }
-  };
-
-  const scaledIngredients = recipe?.ingredients?.map(ingredient => 
-    scaleIngredient(ingredient, recipe.servings || 1, servings)
-  ) || [];
-
-  const hasAccess = recipe && (recipe.isFree || !recipe.isPremium || (user && getToken()));
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-orange-50">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center"
-        >
-          <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-orange-800">Laddar recept...</p>
-        </motion.div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Laddar recept...</p>
+        </div>
       </div>
     );
   }
 
   if (error || !recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-orange-50 px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-md"
-        >
-          <div className="text-6xl mb-4">😔</div>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-            Receptet kunde inte hittas
-          </h1>
-          <p className="text-gray-600 mb-6">
-            {error || 'Det receptet du letar efter existerar inte.'}
-          </p>
-          <Link
-            href="/kunskapsbank/recept"
-            className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors"
-          >
-            <FiArrowLeft className="w-4 h-4" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+            <FiX className="w-10 h-10 text-red-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Receptet hittades inte</h1>
+          <p className="text-gray-600 mb-6">{error || 'Det verkar som att receptet du letar efter inte finns.'}</p>
+          <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors">
+            <FiArrowLeft />
             Tillbaka till recept
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (!hasAccess) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center bg-white p-10 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Tillgång nekad</h2>
-          <p className="text-gray-600 mb-6">Detta är ett premiumrecept. Vänligen logga in för att se innehållet.</p>
-          <Link href="/login" className="px-6 py-2 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors">
-            Logga in
           </Link>
         </div>
       </div>
     );
   }
 
+  const scaledIngredients = recipe.ingredients.map(ing => 
+    scaleIngredient(ing, recipe.servings)
+  );
+
+  const instructionSteps = recipe.instructions?.split(/\d+\./).filter(step => step.trim()).map(step => step.trim()) || [];
+
   return (
     <>
-      <div className="bg-white min-h-screen">
-        <div className="container mx-auto px-4 py-8 md:py-12">
+      {/* Print Styles */}
+      <style jsx global>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          #printable-recipe, #printable-recipe * {
+            visibility: visible;
+          }
+          #printable-recipe {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            padding: 20px;
+            background: white;
+          }
+          .no-print {
+            display: none !important;
+          }
+          .print-break {
+            page-break-inside: avoid;
+          }
+          h1 { font-size: 24pt; }
+          h2 { font-size: 16pt; }
+          p, li { font-size: 11pt; }
+          @page {
+            margin: 2cm;
+          }
+        }
+      `}</style>
 
-          {/* Bildsektion */}
-          {recipe.imageUrl && (
-            <div className="mb-8 rounded-lg overflow-hidden shadow-lg h-64 md:h-96 relative">
-              <Image
-                src={recipe.imageUrl}
-                alt={recipe.imageAlt || recipe.title}
-                layout="fill"
-                objectFit="cover"
-                className="transition-transform duration-500 hover:scale-105"
-              />
-            </div>
-          )}
+      <div id="printable-recipe" className="bg-gray-50 min-h-screen">
+        {/* Back Button - No Print */}
+        <div className="container mx-auto px-4 py-4 no-print">
+          <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-500 transition-colors">
+            <FiArrowLeft />
+            <span>Tillbaka till recept</span>
+          </Link>
+        </div>
 
-          {/* Header-sektion */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl shadow-xl p-6 md:p-10 mb-8"
-          >
-            <div className="flex flex-wrap gap-2 mb-4">
-              {(recipe.categories || []).map((category, index) => (
-                <span key={index} className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
-                  {category}
-                </span>
-              ))}
-            </div>
-            
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {recipe.title}
-            </h1>
-            
-            {recipe.excerpt && (
-              <p className="text-lg text-gray-600 mb-6">
-                {recipe.excerpt}
-              </p>
-            )}
-            
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
-              {recipe.prepTime && (
-                <span className="flex items-center gap-2">
-                  <FiClock className="w-4 h-4 text-orange-500" />
-                  {recipe.prepTime}
-                </span>
+        <div className="container mx-auto px-4 pb-12">
+          {/* Hero Section with Image */}
+          <div className="bg-white rounded-t-3xl shadow-xl overflow-hidden">
+            {/* Image Container - Responsive and Better Handling */}
+            <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] bg-gray-100">
+              {recipe.imageUrl && !imageError ? (
+                <Image
+                  src={recipe.imageUrl}
+                  alt={recipe.imageAlt || recipe.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">
+                  <FiCamera className="w-20 h-20 text-orange-300" />
+                </div>
               )}
-              <span className="flex items-center gap-2">
-                <FiUsers className="w-4 h-4 text-orange-500" />
-                {servings} portioner
-              </span>
-              {recipe.difficulty && (
-                <span className="flex items-center gap-2">
-                  <span className="text-orange-500">★</span>
-                  {recipe.difficulty}
-                </span>
-              )}
-            </div>
-          </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            {/* Ingredients */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="lg:col-span-1"
-            >
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Ingredienser</h2>
-                
-                {/* Portion Selector */}
-                <div className="bg-orange-50 rounded-xl p-4 mb-6">
+              {/* Gradient Overlay for Better Text Readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+              {/* Recipe Title Overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {recipe.categories.map((category, index) => (
+                    <span key={index} className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                      {category}
+                    </span>
+                  ))}
+                </div>
+                <h1 className="text-3xl md:text-5xl font-bold mb-3">{recipe.title}</h1>
+                {recipe.excerpt && (
+                  <p className="text-lg opacity-90 max-w-3xl">{recipe.excerpt}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Recipe Info Bar */}
+            <div className="bg-white border-t border-gray-100 px-6 md:px-10 py-4">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-6 text-sm">
+                  {recipe.prepTime && (
+                    <div className="flex items-center gap-2">
+                      <FiClock className="text-orange-500" />
+                      <span className="text-gray-600">Förberedelse: {recipe.prepTime}</span>
+                    </div>
+                  )}
+                  {recipe.cookTime && (
+                    <div className="flex items-center gap-2">
+                      <FiClock className="text-orange-500" />
+                      <span className="text-gray-600">Tillagning: {recipe.cookTime}</span>
+                    </div>
+                  )}
+                  {recipe.difficulty && (
+                    <div className="flex items-center gap-2">
+                      <FiStar className="text-orange-500" />
+                      <span className="text-gray-600">{recipe.difficulty}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons - No Print */}
+                <div className="flex items-center gap-2 no-print">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsLiked(!isLiked)}
+                    className={`p-3 rounded-full transition-colors ${
+                      isLiked ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-500'
+                    }`}
+                  >
+                    <FiHeart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsBookmarked(!isBookmarked)}
+                    className={`p-3 rounded-full transition-colors ${
+                      isBookmarked ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-500'
+                    }`}
+                  >
+                    <FiBookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleShare}
+                    className="p-3 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-500 transition-colors"
+                  >
+                    <FiShare2 className="w-5 h-5" />
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePrint}
+                    className="p-3 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+                  >
+                    <FiPrinter className="w-5 h-5" />
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="bg-white rounded-b-3xl shadow-xl px-6 md:px-10 py-8">
+            <div className="grid lg:grid-cols-3 gap-8">
+              {/* Ingredients Column */}
+              <div className="lg:col-span-1 print-break">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span className="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center text-orange-600">
+                    <FiShoppingCart className="w-5 h-5" />
+                  </span>
+                  Ingredienser
+                </h2>
+
+                {/* Servings Selector - No Print */}
+                <div className="bg-orange-50 rounded-xl p-4 mb-6 no-print">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Antal portioner</span>
+                    <span className="font-medium text-gray-700">Portioner</span>
                     <div className="flex items-center gap-3">
-                      <button 
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => setServings(Math.max(1, servings - 1))}
-                        className="w-8 h-8 rounded-full bg-white border border-orange-200 hover:border-orange-400 hover:text-orange-600 transition-colors flex items-center justify-center"
+                        className="w-10 h-10 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-orange-600"
                       >
-                        <FiMinus className="w-4 h-4" />
-                      </button>
-                      <span className="font-bold text-lg w-8 text-center text-orange-600">{servings}</span>
-                      <button 
+                        <FiMinus />
+                      </motion.button>
+                      <span className="text-2xl font-bold text-orange-600 w-12 text-center">{servings}</span>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => setServings(servings + 1)}
-                        className="w-8 h-8 rounded-full bg-white border border-orange-200 hover:border-orange-400 hover:text-orange-600 transition-colors flex items-center justify-center"
+                        className="w-10 h-10 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-orange-600"
                       >
-                        <FiPlus className="w-4 h-4" />
-                      </button>
+                        <FiPlus />
+                      </motion.button>
                     </div>
                   </div>
                 </div>
 
+                {/* Print Servings Info */}
+                <div className="hidden print:block mb-4">
+                  <p className="font-medium">För {servings} portioner</p>
+                </div>
+
+                {/* Ingredients List */}
                 <div className="space-y-2">
                   {scaledIngredients.map((ingredient, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{ delay: index * 0.03 }}
                       onClick={() => toggleIngredient(index)}
-                      className={`flex items-center p-3 rounded-lg cursor-pointer transition-all ${
+                      className={`flex items-center p-3 rounded-lg cursor-pointer transition-all no-print ${
                         checkedIngredients.includes(index) 
                           ? 'bg-green-50 text-green-800' 
                           : 'hover:bg-gray-50'
                       }`}
                     >
-                      <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-all ${
+                      <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-all no-print ${
                         checkedIngredients.includes(index) 
                           ? 'bg-green-500 border-green-500' 
                           : 'border-gray-300'
@@ -408,39 +470,42 @@ export default function RecipePage() {
                           <FiCheck className="w-3 h-3 text-white" />
                         )}
                       </div>
-                      <span className={`text-sm ${checkedIngredients.includes(index) ? 'line-through' : ''}`}>
+                      <span className={`${checkedIngredients.includes(index) ? 'line-through' : ''}`}>
                         {ingredient}
                       </span>
                     </motion.div>
                   ))}
                 </div>
 
-                <button className="mt-6 w-full flex items-center justify-center gap-2 bg-orange-100 text-orange-700 px-4 py-3 rounded-lg hover:bg-orange-200 transition-colors">
-                  <FiShoppingCart className="w-4 h-4" />
-                  <span className="text-sm font-medium">Lägg till i inköpslista</span>
-                </button>
+                {/* Add to Shopping List Button - No Print */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="mt-6 w-full flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-3 rounded-lg hover:bg-orange-600 transition-colors no-print"
+                >
+                  <FiShoppingCart />
+                  <span className="font-medium">Lägg till i inköpslista</span>
+                </motion.button>
               </div>
-            </motion.div>
 
-            {/* Instructions */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="lg:col-span-2"
-            >
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Tillagning</h2>
-                
+              {/* Instructions Column */}
+              <div className="lg:col-span-2 print-break">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span className="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center text-orange-600">
+                    <GiCookingPot className="w-5 h-5" />
+                  </span>
+                  Gör så här
+                </h2>
+
                 <div className="space-y-4">
                   {instructionSteps.map((step, index) => (
                     <motion.div
                       key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
                       onClick={() => toggleStep(index)}
-                      className={`flex gap-4 p-4 rounded-lg cursor-pointer transition-all ${
+                      className={`flex gap-4 p-4 rounded-xl cursor-pointer transition-all ${
                         checkedSteps.includes(index) 
                           ? 'bg-green-50' 
                           : 'hover:bg-gray-50'
@@ -451,7 +516,7 @@ export default function RecipePage() {
                           ? 'bg-green-500 text-white' 
                           : 'bg-orange-100 text-orange-600'
                       }`}>
-                        {checkedSteps.includes(index) ? <FiCheck className="w-5 h-5" /> : index + 1}
+                        {checkedSteps.includes(index) ? <FiCheck /> : index + 1}
                       </div>
                       <p className={`text-gray-700 pt-2 ${checkedSteps.includes(index) ? 'line-through opacity-60' : ''}`}>
                         {step}
@@ -459,112 +524,92 @@ export default function RecipePage() {
                     </motion.div>
                   ))}
                 </div>
+
+                {/* Tips Section */}
+                {recipe.tips && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-8 bg-yellow-50 rounded-xl p-6 print-break"
+                  >
+                    <h3 className="font-bold text-yellow-900 mb-3 flex items-center gap-2">
+                      <span className="text-2xl">💡</span>
+                      Tips & tricks
+                    </h3>
+                    <p className="text-yellow-800 leading-relaxed">
+                      {recipe.tips}
+                    </p>
+                  </motion.div>
+                )}
               </div>
+            </div>
 
-              {/* Tips */}
-              {recipe.tips && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-6 bg-yellow-50 rounded-2xl p-6"
-                >
-                  <h3 className="font-bold text-yellow-900 mb-3 flex items-center gap-2">
-                    <span className="text-2xl">💡</span>
-                    Tips
-                  </h3>
-                  <p className="text-yellow-800 text-sm leading-relaxed">
-                    {recipe.tips}
-                  </p>
-                </motion.div>
-              )}
-
-              {/* Action Buttons */}
+            {/* Nutrition Information */}
+            {(nutrition || nutritionLoading) && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6 flex gap-3"
+                className="mt-8 print-break"
               >
-                <button className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors">
-                  <FiPrinter className="w-4 h-4" />
-                  <span className="text-sm font-medium">Skriv ut</span>
+                <button
+                  onClick={() => setShowNutrition(!showNutrition)}
+                  className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors no-print"
+                >
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <span className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center text-green-600">
+                      <FiHeart className="w-5 h-5" />
+                    </span>
+                    Näringsvärden
+                  </h3>
+                  {showNutrition ? <FiChevronUp /> : <FiChevronDown />}
                 </button>
+
+                <AnimatePresence>
+                  {showNutrition && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      {nutritionLoading ? (
+                        <div className="p-8 text-center">
+                          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mx-auto"></div>
+                          <p className="text-gray-600 mt-2">Beräknar näringsvärden...</p>
+                        </div>
+                      ) : nutrition ? (
+                        <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="bg-white rounded-lg p-4 text-center">
+                            <p className="text-sm text-gray-600">Kalorier</p>
+                            <p className="text-2xl font-bold text-gray-900">{nutrition.calories || '-'}</p>
+                          </div>
+                          <div className="bg-white rounded-lg p-4 text-center">
+                            <p className="text-sm text-gray-600">Protein</p>
+                            <p className="text-2xl font-bold text-gray-900">{nutrition.protein || '-'}g</p>
+                          </div>
+                          <div className="bg-white rounded-lg p-4 text-center">
+                            <p className="text-sm text-gray-600">Kolhydrater</p>
+                            <p className="text-2xl font-bold text-gray-900">{nutrition.carbs || '-'}g</p>
+                          </div>
+                          <div className="bg-white rounded-lg p-4 text-center">
+                            <p className="text-sm text-gray-600">Fett</p>
+                            <p className="text-2xl font-bold text-gray-900">{nutrition.fat || '-'}g</p>
+                          </div>
+                        </div>
+                      ) : null}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
-            </motion.div>
+            )}
           </div>
 
-          {/* Nutrition */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-white rounded-2xl shadow-lg p-6 mb-12"
-          >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Näringsvärde per portion</h2>
-            
-            {nutritionLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="w-8 h-8 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
-                <span className="ml-3 text-gray-600">Beräknar näringsvärden...</span>
-              </div>
-            ) : nutrition ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">
-                    {Math.round(nutrition.perServing?.calories || 0)}
-                  </p>
-                  <p className="text-sm text-gray-600">Kalorier</p>
-                </div>
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">
-                    {Math.round(nutrition.perServing?.protein || 0)}g
-                  </p>
-                  <p className="text-sm text-gray-600">Protein</p>
-                </div>
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">
-                    {Math.round(nutrition.perServing?.carbs || 0)}g
-                  </p>
-                  <p className="text-sm text-gray-600">Kolhydrater</p>
-                </div>
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">
-                    {Math.round(nutrition.perServing?.fat || 0)}g
-                  </p>
-                  <p className="text-sm text-gray-600">Fett</p>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">-</p>
-                  <p className="text-sm text-gray-600">Kalorier</p>
-                </div>
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">-</p>
-                  <p className="text-sm text-gray-600">Protein</p>
-                </div>
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">-</p>
-                  <p className="text-sm text-gray-600">Kolhydrater</p>
-                </div>
-                <div className="bg-orange-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600">-</p>
-                  <p className="text-sm text-gray-600">Fett</p>
-                </div>
-              </div>
-            )}
-            
-            <p className="text-sm text-gray-500 mt-4 text-center">
-              {nutrition ? 'Näringsvärden är beräknade uppskattningar' : 'Näringsvärden beräknas automatiskt'}
-            </p>
-          </motion.div>
-
-          {/* Random Recipes */}
-          <RandomRecipes excludeId={recipe?.id} />
+          {/* Related Recipes - No Print */}
+          <div className="mt-12 no-print">
+            <RandomRecipes excludeId={recipe.id} />
+          </div>
         </div>
       </div>
     </>
   );
-} 
+}

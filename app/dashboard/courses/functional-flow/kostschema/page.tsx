@@ -8,7 +8,7 @@ import {
   FiSun, FiMoon, FiCoffee, FiCheck, FiPlus
 } from 'react-icons/fi';
 import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
-import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
+import { getMealForDay, getFlowWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
 
 const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: any }) => {
@@ -132,11 +132,12 @@ const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, day
 };
 
 export default function KostschemaPage() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(1);
-  const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
+  const [selectedWeek, setSelectedWeek] = useState(1);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [courseStartDate, setCourseStartDate] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
   // Hämta användarens kursstartdatum
   useEffect(() => {
@@ -230,7 +231,7 @@ export default function KostschemaPage() {
   // Get current day's meals from centralized data
   const currentDayMeals = getMealForDay(selectedDay);
   const currentWeekNumber = Math.ceil(selectedDay / 7);
-  const currentWeekData = getWeekData(currentWeekNumber);
+  const currentWeekData = getFlowWeekData(currentWeekNumber);
 
   // Calculate meal totals
   const calculateTotalCalories = () => {
@@ -305,7 +306,7 @@ export default function KostschemaPage() {
             const today = new Date();
             const isToday = day.getDate() === today.getDate() && day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
             const dayNumber = isDateInCourse(day) ? getCurrentDayOfCourse(day) + 1 : 0;
-            const isSelected = selectedDate && day.toDateString() === selectedDate.toDateString();
+            const isSelected = selectedDay === dayNumber;
 
             return (
               <CalendarDay
@@ -316,7 +317,6 @@ export default function KostschemaPage() {
                 isSelected={isSelected}
                 onClick={() => {
                   if (isDateInCourse(day)) {
-                    setSelectedDate(day);
                     setSelectedDay(dayNumber);
                   }
                 }}

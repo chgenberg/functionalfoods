@@ -10,6 +10,7 @@ import {
   FiChevronLeft, FiChevronUp, FiShoppingCart
 } from 'react-icons/fi';
 import { GiFruitBowl, GiMeal } from 'react-icons/gi';
+import CourseSwitcher from '@/app/components/CourseSwitcher';
 
 export default function FunctionalFlowLayout({
   children,
@@ -81,84 +82,85 @@ export default function FunctionalFlowLayout({
       icon: FiUsers,
     },
     {
-      label: 'Downloads',
+      label: 'Ladda ner',
       href: '/dashboard/courses/functional-flow/downloads',
       icon: FiDownload,
     },
   ];
 
-  // Stäng mobilmenyn när användaren navigerar
+  // Close mobile menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:block fixed left-0 top-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-40">
-        <div className="p-6 border-b border-gray-200">
-          <Link href="/dashboard" className="flex items-center gap-3 mb-4 text-gray-600 hover:text-orange-600 transition-colors">
-            <FiChevronLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">Tillbaka till Dashboard</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-teal-500 to-green-600 rounded-xl">
-              <GiFruitBowl className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Functional Flow</h1>
-              <p className="text-sm text-gray-600">Avancerad näringslära</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="p-4 space-y-2 h-[calc(100vh-140px)] overflow-y-auto">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-teal-500 to-green-600 text-white shadow-lg'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-teal-600'
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span>{item.label}</span>
-                {isActive && <FiChevronRight className="w-4 h-4 ml-auto" />}
+    <div className="min-h-screen bg-background">
+      {/* Top Header - Desktop & Mobile */}
+      <header className="shadow-lg sticky top-0 z-40" style={{ backgroundColor: '#1a4324' }}>
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo and Course Title */}
+            <div className="flex items-center space-x-3">
+              <Link href="/dashboard/courses" className="lg:hidden">
+                <FiChevronLeft className="w-6 h-6 text-white/80 hover:text-white" />
               </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
-      {/* Mobile Header */}
-      <header className="lg:hidden bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="flex items-center justify-between p-4">
-          <Link href="/dashboard" className="flex items-center gap-2 text-gray-600">
-            <FiChevronLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">Dashboard</span>
-          </Link>
-          
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-teal-500 to-green-600 rounded-lg">
-              <GiFruitBowl className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-3">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                  <GiFruitBowl className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-lg sm:text-xl font-bold text-white">Functional Flow</h1>
+                  <p className="text-xs sm:text-sm text-white/80 hidden sm:block">Avancerat hälsoprogram</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-gray-900">Functional Flow</h1>
+
+            {/* Desktop Navigation - Hidden on mobile */}
+            <div className="hidden lg:flex items-center space-x-1">
+              {navigationItems.slice(0, 6).map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    pathname === item.href
+                      ? 'bg-white/20 text-white'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+              
+              {/* Mobile menu button for desktop overflow */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <FiMenu className="w-4 h-4" />
+                <span>Mer</span>
+              </button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="lg:hidden flex items-center space-x-4">
+              <CourseSwitcher />
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 text-white/80 hover:text-white transition-colors"
+              >
+                {mobileMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
+              </button>
+            </div>
+
+            {/* Course Switcher and User Menu - Desktop */}
+            <div className="hidden lg:flex items-center space-x-4">
+              <CourseSwitcher />
+              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-semibold">
+                U
+              </div>
             </div>
           </div>
-
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-gray-600 hover:text-teal-600 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            {mobileMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
-          </button>
         </div>
       </header>
 
@@ -170,7 +172,7 @@ export default function FunctionalFlowLayout({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="lg:hidden fixed inset-0 bg-black/50 z-40"
+              className="fixed inset-0 bg-black/50 z-40"
               onClick={() => setMobileMenuOpen(false)}
             />
             <motion.nav
@@ -178,22 +180,22 @@ export default function FunctionalFlowLayout({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed right-0 top-0 h-full w-80 bg-white shadow-xl z-50"
+              className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl z-50"
             >
-              <div className="p-6 border-b border-gray-200">
+              <div className="p-6 border-b border-gray-200" style={{ backgroundColor: '#1a4324' }}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-br from-teal-500 to-green-600 rounded-xl">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
                       <GiFruitBowl className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h1 className="text-xl font-bold text-gray-900">Functional Flow</h1>
-                      <p className="text-sm text-gray-600">Avancerad näringslära</p>
+                      <h1 className="text-xl font-bold text-white">Functional Flow</h1>
+                      <p className="text-sm text-white/80">Avancerat hälsoprogram</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 text-gray-600 hover:text-teal-600 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <FiX className="w-5 h-5" />
                   </button>
@@ -212,9 +214,24 @@ export default function FunctionalFlowLayout({
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                         isActive
-                          ? 'bg-gradient-to-r from-teal-500 to-green-600 text-white shadow-lg'
-                          : 'text-gray-700 hover:bg-gray-100 hover:text-teal-600'
+                          ? 'text-white shadow-lg'
+                          : 'text-gray-700 hover:text-white'
                       }`}
+                      style={{
+                        backgroundColor: isActive ? '#1a4324' : 'transparent'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = '#1a4324';
+                          e.currentTarget.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#374151';
+                        }
+                      }}
                     >
                       <Icon className="w-5 h-5" />
                       <span>{item.label}</span>
@@ -229,7 +246,7 @@ export default function FunctionalFlowLayout({
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="lg:ml-80 min-h-screen">
+      <main className="min-h-screen">
         <div className="p-4 lg:p-8">
           {children}
         </div>

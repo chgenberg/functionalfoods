@@ -10,6 +10,7 @@ import {
   FiChevronLeft, FiChevronUp, FiShoppingCart
 } from 'react-icons/fi';
 import { GiFruitBowl, GiMeal } from 'react-icons/gi';
+import CourseSwitcher from '@/app/components/CourseSwitcher';
 
 export default function FunctionalBasicsLayout({
   children,
@@ -114,8 +115,9 @@ export default function FunctionalBasicsLayout({
               </div>
             </div>
 
-            {/* User Menu */}
+            {/* Course Switcher and User Menu */}
             <div className="flex items-center space-x-4">
+              <CourseSwitcher />
               <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
                 U
               </div>

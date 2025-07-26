@@ -514,6 +514,7 @@ const RecipesPage = () => {
 // Recipe Card Component
 const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
+  const [imageError, setImageError] = useState(false);
 
   return (
     <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -522,24 +523,25 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
         className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full flex flex-col"
       >
         {/* Image */}
-        <div className="relative h-56 overflow-hidden bg-gray-100">
-          {recipe.imageUrl ? (
+        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+          {recipe.imageUrl && !imageError ? (
             <Image
               src={recipe.imageUrl}
               alt={recipe.imageAlt || recipe.title}
               fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover group-hover:scale-110 transition-transform duration-700"
-              style={{ objectFit: 'cover', objectPosition: 'center' }}
-              unoptimized
+              onError={() => setImageError(true)}
+              priority={false}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">
-              <span className="text-5xl opacity-50">🍽️</span>
+              <span className="text-6xl opacity-50">🍽️</span>
             </div>
           )}
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Badges */}
           {recipe.isPremium && (
