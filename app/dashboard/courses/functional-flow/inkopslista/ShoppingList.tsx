@@ -40,11 +40,18 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
       setError(null);
 
       try {
-        const response = await fetch(`/api/shopping-list?courseId=${courseId}&week=${weekNumber}`);
+        const url = `/api/shopping-list?courseId=${courseId}&week=${weekNumber}`;
+        console.log('🛒 Fetching shopping list from:', url);
+        
+        const response = await fetch(url);
+        console.log('🛒 Response status:', response.status);
+        
         if (!response.ok) {
           throw new Error('Inköpslistan kunde inte hämtas.');
         }
         const data = await response.json();
+        console.log('🛒 Shopping list data:', data);
+        
         const items: ShoppingListItem[] = data.items || [];
         setList(items);
 
