@@ -270,7 +270,7 @@ export default function KostschemaPage() {
               Mitt Kostschema
             </h1>
             <Link
-              href="/dashboard/courses/functional-basics/inkopslista"
+              href="/dashboard/courses/functional-flow/inkopslista"
               className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm"
             >
               <FiShoppingCart className="w-5 h-5" />

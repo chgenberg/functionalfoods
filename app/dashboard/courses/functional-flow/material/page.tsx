@@ -319,7 +319,7 @@ export default function KnowledgeMaterialPage() {
               transition={{ delay: 0.1 * index }}
               className="group"
             >
-              <Link href={`/dashboard/courses/functional-basics/material/${module.id}`}>
+              <Link href={`/dashboard/courses/functional-flow/material/${module.id}`}>
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 h-full">
                   {/* Header with gradient */}
                   <div className={`bg-gradient-to-r ${module.color} p-6 text-white relative overflow-hidden`}>
@@ -384,7 +384,7 @@ export default function KnowledgeMaterialPage() {
           className="text-center mt-12"
         >
           <Link
-            href="/dashboard/courses/functional-basics"
+            href="/dashboard/courses/functional-flow"
             className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105"
           >
             <FiArrowRight className="w-5 h-5 mr-2 rotate-180" />

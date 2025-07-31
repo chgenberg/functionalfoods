@@ -262,7 +262,7 @@ export default function Week3Page() {
             Du har klarat halva kursen! Fortsätt med samma energi in i vecka 4.
           </p>
           <Link
-            href="/dashboard/courses/functional-basics/week/4"
+            href="/dashboard/courses/functional-flow/week/4"
             className="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
           >
             Fortsätt till vecka 4

@@ -143,7 +143,7 @@ export default function VadArFunctionalFoodsPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
+          <Link href="/dashboard/courses/functional-flow/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
             <FiArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
@@ -348,7 +348,7 @@ export default function VadArFunctionalFoodsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 mb-2">Nu när du förstår grunderna, är det dags att upptäcka alla fördelar!</p>
-              <Link href="/dashboard/courses/functional-basics/material/fordelarna-med-functional-foods" 
+              <Link href="/dashboard/courses/functional-flow/material/fordelarna-med-functional-foods" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till nästa modul
                 <FiChevronRight className="ml-1" />

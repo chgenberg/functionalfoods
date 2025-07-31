@@ -111,7 +111,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
         category: predefinedGoal.category,
         priority: predefinedGoal.priority,
         weekNumber: weekNumber,
-        courseId: 'functional-basics'
+        courseId: 'functional-flow'
       });
     } catch (error) {
       console.error('Error activating goal:', error);

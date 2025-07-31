@@ -574,7 +574,7 @@ export default function Week4Page() {
             Du har gjort fantastiska framsteg. Fortsätt till vecka 5 för att lära dig om flexibilitet och anpassning.
           </p>
           <Link
-            href="/dashboard/courses/functional-basics/week/5"
+            href="/dashboard/courses/functional-flow/week/5"
             className="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
           >
             Fortsätt till vecka 5

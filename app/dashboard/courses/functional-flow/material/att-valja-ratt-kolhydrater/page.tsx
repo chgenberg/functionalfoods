@@ -120,7 +120,7 @@ export default function AttValjaRattKolhydraterPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
+          <Link href="/dashboard/courses/functional-flow/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
             <FiArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
@@ -437,7 +437,7 @@ export default function AttValjaRattKolhydraterPage() {
             <div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Vill du lära dig mer?</h3>
               <p className="text-gray-600 mb-4">Se vår ersättningsguide för smarta kolhydratalternativ</p>
-              <Link href="/dashboard/courses/functional-basics/material/ersattningsguide-for-kolhydrater" 
+              <Link href="/dashboard/courses/functional-flow/material/ersattningsguide-for-kolhydrater" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till ersättningsguiden
                 <FiChevronRight className="ml-1" />

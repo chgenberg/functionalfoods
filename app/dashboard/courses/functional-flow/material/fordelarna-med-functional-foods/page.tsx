@@ -123,7 +123,7 @@ export default function FordelarnaPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
+          <Link href="/dashboard/courses/functional-flow/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
             <FiArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
@@ -296,7 +296,7 @@ export default function FordelarnaPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 mb-2">Redo för nästa steg?</p>
-              <Link href="/dashboard/courses/functional-basics/material/dags-att-komma-igang" 
+              <Link href="/dashboard/courses/functional-flow/material/dags-att-komma-igang" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till "Dags att komma igång"
                 <FiChevronRight className="ml-1" />

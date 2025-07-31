@@ -213,7 +213,7 @@ export default function FunctionalBasicsThreadPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
           <div className="flex items-center gap-4 mb-6">
             <Link
-              href="/dashboard/courses/functional-basics/community"
+              href="/dashboard/courses/functional-flow/community"
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <FiArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
@@ -232,7 +232,7 @@ export default function FunctionalBasicsThreadPage() {
               Den här diskussionen finns inte längre eller så har ett fel uppstått.
             </p>
             <Link
-              href="/dashboard/courses/functional-basics/community"
+              href="/dashboard/courses/functional-flow/community"
               className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
             >
               <FiArrowLeft className="w-4 h-4" />
@@ -250,7 +250,7 @@ export default function FunctionalBasicsThreadPage() {
         {/* Navigation */}
         <div className="flex items-center gap-4 mb-4 md:mb-6">
           <Link
-            href="/dashboard/courses/functional-basics/community"
+            href="/dashboard/courses/functional-flow/community"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <FiArrowLeft className="w-4 h-4 md:w-5 md:h-5" />

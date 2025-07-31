@@ -120,7 +120,7 @@ export default function DagsAttKommaIgangPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
+          <Link href="/dashboard/courses/functional-flow/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
             <FiArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
@@ -321,7 +321,7 @@ export default function DagsAttKommaIgangPage() {
             <div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Redo att lära dig mer?</h3>
               <p className="text-gray-600 mb-4">Fortsätt din resa med att lära dig välja rätt proteiner</p>
-              <Link href="/dashboard/courses/functional-basics/material/att-valja-ratt-proteiner" 
+              <Link href="/dashboard/courses/functional-flow/material/att-valja-ratt-proteiner" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Nästa modul: Att välja rätt proteiner
                 <FiChevronRight className="ml-1" />

@@ -311,7 +311,7 @@ export default function ArticlePage() {
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-pink-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Artikel hittades inte</h1>
-          <Link href="/dashboard/courses/functional-basics/material" 
+          <Link href="/dashboard/courses/functional-flow/material" 
                 className="text-blue-600 hover:text-blue-800">
             Tillbaka till kunskapsmaterial
           </Link>
@@ -335,7 +335,7 @@ export default function ArticlePage() {
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link 
-              href="/dashboard/courses/functional-basics/material"
+              href="/dashboard/courses/functional-flow/material"
               className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
             >
               <FiArrowLeft className="w-5 h-5 mr-2" />
@@ -443,14 +443,14 @@ export default function ArticlePage() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/dashboard/courses/functional-basics/material"
+              href="/dashboard/courses/functional-flow/material"
               className="px-6 py-3 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-colors"
             >
               Alla artiklar
             </Link>
             
             <Link
-              href="/dashboard/courses/functional-basics"
+              href="/dashboard/courses/functional-flow"
               className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-full font-semibold hover:shadow-lg transition-all"
             >
               Tillbaka till kursen

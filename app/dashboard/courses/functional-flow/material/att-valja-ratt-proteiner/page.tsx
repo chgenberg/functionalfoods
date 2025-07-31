@@ -134,7 +134,7 @@ export default function AttValjaRattProteinerPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
+          <Link href="/dashboard/courses/functional-flow/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
             <FiArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
@@ -410,7 +410,7 @@ export default function AttValjaRattProteinerPage() {
             <div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Nästa steg</h3>
               <p className="text-gray-600 mb-4">Lär dig välja rätt kolhydrater för stabil energi</p>
-              <Link href="/dashboard/courses/functional-basics/material/att-valja-ratt-kolhydrater" 
+              <Link href="/dashboard/courses/functional-flow/material/att-valja-ratt-kolhydrater" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till nästa modul
                 <FiChevronRight className="ml-1" />

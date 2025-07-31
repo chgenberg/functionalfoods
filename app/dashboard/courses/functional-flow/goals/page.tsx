@@ -120,7 +120,7 @@ export default function GoalsPage() {
         </div>
         
         <Link
-          href="/dashboard/courses/functional-basics"
+          href="/dashboard/courses/functional-flow"
           className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
         >
           <FiArrowRight className="w-4 h-4" />
@@ -229,7 +229,7 @@ export default function GoalsPage() {
                       )}
                       
                       <Link
-                        href={`/dashboard/courses/functional-basics/week/${week.number}`}
+                        href={`/dashboard/courses/functional-flow/week/${week.number}`}
                         className="text-orange-600 hover:text-orange-700 font-medium text-sm flex items-center space-x-1"
                       >
                         <span>Gå till vecka</span>

@@ -246,7 +246,7 @@ export default function Week2Page() {
             När du känner dig redo, fortsätt till vecka 3 för att utforska flexibilitet och fasta.
           </p>
           <Link
-            href="/dashboard/courses/functional-basics/week/3"
+            href="/dashboard/courses/functional-flow/week/3"
             className="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
           >
             Fortsätt till vecka 3

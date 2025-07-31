@@ -389,7 +389,7 @@ export function KnowledgeSection() {
       icon: GiFruitBowl,
       color: 'from-purple-500 to-pink-600',
       content: `Upptäck de tre grundläggande stegen för att integrera functional foods i din vardag och skapa en hållbar livsstilsförändring.`,
-      link: '/dashboard/courses/functional-basics/material/functional-foods-3-steg'
+      link: '/dashboard/courses/functional-flow/material/functional-foods-3-steg'
     },
     {
       id: 'att-ata-ute',
@@ -397,7 +397,7 @@ export function KnowledgeSection() {
       icon: GiMeal,
       color: 'from-green-500 to-teal-600',
       content: `Praktiska tips för hur du kan göra hälsosamma val på restaurang och hålla dig till dina nya matvanor även när du äter ute.`,
-      link: '/dashboard/courses/functional-basics/material/att-ata-ute'
+      link: '/dashboard/courses/functional-flow/material/att-ata-ute'
     },
     {
       id: 'naturens-halsobomber',
@@ -405,7 +405,7 @@ export function KnowledgeSection() {
       icon: GiCookingPot,
       color: 'from-orange-500 to-red-600',
       content: `Lär dig mer om de mest kraftfulla functional foods-ingredienserna och hur de kan boosta din hälsa på naturlig väg.`,
-      link: '/dashboard/courses/functional-basics/material/naturens-halsobomber'
+      link: '/dashboard/courses/functional-flow/material/naturens-halsobomber'
     },
     {
       id: 'ersattningsguide',
@@ -413,7 +413,7 @@ export function KnowledgeSection() {
       icon: GiWheat,
       color: 'from-blue-500 to-indigo-600',
       content: `En praktisk guide för hur du kan ersätta snabba kolhydrater med näringsrika alternativ som håller blodsockret stabilt.`,
-      link: '/dashboard/courses/functional-basics/material/ersattningsguide-kolhydrater'
+      link: '/dashboard/courses/functional-flow/material/ersattningsguide-kolhydrater'
     }
   ];
 

@@ -49,454 +49,393 @@ const PREDEFINED_GOALS = {
     { title: "🔥 Fördjupa energioptimering", description: "Avancerade tekniker för energibalans", category: "health" as const, priority: "medium" as const, icon: "🔥" }
   ],
   6: [
-    { title: "🏆 Skapa din långsiktiga plan", description: "Utveckla en hållbar strategi för framtiden", category: "weekly" as const, priority: "high" as const, icon: "🏆" },
-    { title: "🌟 Bli en Flow-expert", description: "Integrera alla lärdomar till en helhet", category: "weekly" as const, priority: "high" as const, icon: "🌟" },
-    { title: "📚 Dela dina erfarenheter", description: "Hjälp andra i Flow-communityn", category: "weekly" as const, priority: "medium" as const, icon: "📚" },
-    { title: "🚀 Sätt nya utmaningar", description: "Definiera nästa steg i din hälsoresa", category: "health" as const, priority: "medium" as const, icon: "🚀" }
+    { title: "🏆 Slutför ditt Flow-program", description: "Genomför slutbedömningen och reflektera över din resa", category: "weekly" as const, priority: "high" as const, icon: "🏆" },
+    { title: "🚀 Planera nästa steg", description: "Skapa en långsiktig hälsoplan för framtiden", category: "weekly" as const, priority: "high" as const, icon: "🚀" },
+    { title: "📊 Utvärdera dina resultat", description: "Analysera dina framsteg och dokumentera insikter", category: "health" as const, priority: "medium" as const, icon: "📊" },
+    { title: "🌟 Dela din framgång", description: "Inspirera andra genom att dela din transformation", category: "weekly" as const, priority: "low" as const, icon: "🌟" }
   ]
 };
 
 export default function FunctionalFlowPage() {
-  const { goals, createGoal, updateGoal, loading } = useGoals();
+  const [currentWeek, setCurrentWeek] = useState(4);
+  const { goals, loading, createGoal, toggleGoalStatus } = useGoals();
+  const [showAllGoals, setShowAllGoals] = useState(false);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
-  const [showVideoModal, setShowVideoModal] = useState(false);
 
-  // Gruppera mål per vecka
+  // Group goals by week
   const goalsByWeek = goals.reduce((acc, goal) => {
-    if (goal.weekNumber) {
-      if (!acc[goal.weekNumber]) acc[goal.weekNumber] = [];
-      acc[goal.weekNumber].push(goal);
-    }
+    const week = goal.weekNumber || 1;
+    if (!acc[week]) acc[week] = [];
+    acc[week].push(goal);
     return acc;
   }, {} as Record<number, typeof goals>);
 
-  // Funktion för att aktivera fördefinierat mål
-  const activatePredefinedGoal = async (weekNumber: number, predefinedGoal: {
-    title: string;
-    description: string;
-    category: 'weekly' | 'nutrition' | 'health' | 'exercise' | 'general';
-    priority: 'high' | 'medium' | 'low';
-    icon?: string;
-  }) => {
-    try {
-      await createGoal({
-        title: predefinedGoal.title,
-        description: predefinedGoal.description,
-        category: predefinedGoal.category,
-        priority: predefinedGoal.priority,
-        weekNumber: weekNumber,
-        courseId: 'functional-flow'
-      });
-    } catch (error) {
-      console.error('Error activating goal:', error);
-    }
-  };
-
-  // Funktion för att toggle mål som klart
-  const toggleGoalCompletion = async (goalId: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'completed' ? 'active' : 'completed';
-    const progress = newStatus === 'completed' ? 100 : 0;
-    
-    try {
-      await updateGoal({ 
-        id: goalId,
-        status: newStatus, 
-        progress,
-        completedAt: newStatus === 'completed' ? new Date().toISOString() : undefined
-      });
-    } catch (error) {
-      console.error('Error updating goal:', error);
-    }
-  };
-
   const weeks = [
-    { number: 1, title: "Avancerad grund i Functional Foods", status: "current" },
-    { number: 2, title: "Proteinoptimering och synergier", status: "upcoming" },
-    { number: 3, title: "Kolhydratperiodisering och metabolism", status: "upcoming" },
-    { number: 4, title: "Maximal näringsabsorption", status: "upcoming" },
-    { number: 5, title: "Avancerade Flow-tekniker", status: "upcoming" },
-    { number: 6, title: "Mästerskap och framtidsplanering", status: "upcoming" }
+    { number: 1, title: 'Vecka 1: Flow Foundation', status: 'completed' },
+    { number: 2, title: 'Vecka 2: Avancerad optimering', status: 'completed' },
+    { number: 3, title: 'Vecka 3: Biohacking', status: 'completed' },
+    { number: 4, title: 'Vecka 4: Personalisering', status: 'current' },
+    { number: 5, title: 'Vecka 5: Masterclass', status: 'upcoming' },
+    { number: 6, title: 'Vecka 6: Integration', status: 'upcoming' },
   ];
 
+  const handleActivateGoal = async (predefinedGoal: any, weekNumber: number) => {
+    await createGoal({
+      title: predefinedGoal.title,
+      description: predefinedGoal.description,
+      category: predefinedGoal.category,
+      priority: predefinedGoal.priority,
+      weekNumber: weekNumber,
+      courseId: 'functional-flow'
+    });
+  };
+
+  const handleCompleteGoal = async (goalId: string) => {
+    await toggleGoalStatus(goalId);
+  };
+
+  const activePredefinedGoals = Object.entries(PREDEFINED_GOALS).flatMap(([week, goals]) => 
+    goals.map(goal => ({ ...goal, week: parseInt(week) }))
+  );
+
+  // Calculate overall progress
+  const totalGoals = goals.length;
+  const completedGoals = goals.filter(g => g.status === 'completed').length;
+  const progress = totalGoals > 0 ? (completedGoals / totalGoals) * 100 : 0;
+
   return (
-    <div className="space-y-4 md:space-y-8 pb-20 md:pb-8">
-      {/* Intro Video Section - Mobile Optimized */}
-      <div className="relative bg-gradient-to-br from-teal-900 via-cyan-800 to-teal-700 rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative z-10 p-4 md:p-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                <div className="bg-white/20 rounded-full p-2 md:p-3">
-                  <FiZap className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl md:text-3xl font-bold text-white">Functional Flow</h1>
-                  <p className="text-sm md:text-base text-teal-100">Avancerad näringslära för optimal hälsa</p>
-                </div>
-              </div>
-              
-              <p className="text-sm md:text-base text-teal-100 mb-4 md:mb-6 leading-relaxed">
-                Ta din hälsa till nästa nivå med avancerade tekniker inom functional foods. 
-                Lär dig optimera din nutrition för maximal energi, prestation och välmående.
+    <div className="min-h-screen bg-gray-50 py-6 md:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 md:space-y-8">
+        {/* Welcome Section - Mobile Optimized */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-teal-600 to-cyan-700 rounded-xl md:rounded-2xl shadow-xl p-6 md:p-8 text-white"
+        >
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="space-y-2">
+              <h1 className="text-2xl md:text-3xl font-bold">Välkommen till Functional Flow!</h1>
+              <p className="text-base md:text-lg text-white/90">
+                Du är nu på vecka {currentWeek} av ditt avancerade hälsoprogram
               </p>
-              
-              <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm">
-                <div className="flex items-center gap-1 md:gap-2 text-white/90">
-                  <FiClock className="w-3 h-3 md:w-4 md:h-4" />
-                  <span>6 veckor</span>
-                </div>
-                <div className="flex items-center gap-1 md:gap-2 text-white/90">
-                  <FiUsers className="w-3 h-3 md:w-4 md:h-4" />
-                  <span>Avancerad nivå</span>
-                </div>
-                <div className="flex items-center gap-1 md:gap-2 text-white/90">
-                  <FiTarget className="w-3 h-3 md:w-4 md:h-4" />
-                  <span>78 premium recept</span>
-                </div>
-              </div>
             </div>
-            
-            <button
-              onClick={() => setShowVideoModal(true)}
-              className="flex items-center gap-2 md:gap-3 bg-white/20 backdrop-blur-sm hover:bg-white/30 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl text-white font-medium transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20"
-            >
-              <FiPlay className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="text-sm md:text-base">Se introduktion</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions - Mobile First */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <Link href="/dashboard/courses/functional-flow/kostschema" 
-              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border border-gray-100">
-          <div className="flex flex-col items-center text-center gap-2 md:gap-3">
-            <div className="bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg md:rounded-xl p-2 md:p-3">
-              <GiMeal className="w-5 h-5 md:w-6 md:h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-sm md:text-base">Kostschema</h3>
-              <p className="text-xs md:text-sm text-gray-600">Avancerade måltider</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link href="/dashboard/courses/functional-flow/inkopslista" 
-              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border border-gray-100">
-          <div className="flex flex-col items-center text-center gap-2 md:gap-3">
-            <div className="bg-gradient-to-br from-green-500 to-teal-600 rounded-lg md:rounded-xl p-2 md:p-3">
-              <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-sm md:text-base">Inköpslistor</h3>
-              <p className="text-xs md:text-sm text-gray-600">Smarta listor</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link href="/dashboard/courses/functional-flow/goals" 
-              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border border-gray-100">
-          <div className="flex flex-col items-center text-center gap-2 md:gap-3">
-            <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-lg md:rounded-xl p-2 md:p-3">
-              <FiTarget className="w-5 h-5 md:w-6 md:h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-sm md:text-base">Mål</h3>
-              <p className="text-xs md:text-sm text-gray-600">Spåra framsteg</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link href="/dashboard/courses/functional-flow/material" 
-              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 border border-gray-100">
-          <div className="flex flex-col items-center text-center gap-2 md:gap-3">
-            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg md:rounded-xl p-2 md:p-3">
-              <FiBook className="w-5 h-5 md:w-6 md:h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-sm md:text-base">Material</h3>
-              <p className="text-xs md:text-sm text-gray-600">Avancerat innehåll</p>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* Course Progress */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl p-4 md:p-8 border border-gray-100"
-      >
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Ditt Flow-program</h2>
-            <p className="text-sm md:text-base text-gray-600">6 veckor av avancerad näringslära och optimization</p>
-          </div>
-          <div className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white px-4 md:px-6 py-2 md:py-3 rounded-full text-sm md:text-base font-medium">
-            Vecka 1 av 6
-          </div>
-        </div>
-
-        <div className="space-y-3 md:space-y-4">
-          {weeks.map((week) => {
-            const weekGoals = goalsByWeek[week.number] || [];
-            const completedGoals = weekGoals.filter(goal => goal.status === 'completed').length;
-            const totalGoals = weekGoals.length;
-            const predefinedGoals = PREDEFINED_GOALS[week.number as keyof typeof PREDEFINED_GOALS] || [];
-            const availableGoals = predefinedGoals.filter(predefined => 
-              !weekGoals.some(existing => existing.title === predefined.title)
-            );
-            
-            return (
-              <motion.div
-                key={week.number}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: week.number * 0.1 }}
-                className={`border rounded-xl md:rounded-2xl p-4 md:p-6 transition-all duration-300 ${
-                  week.status === 'current' 
-                    ? 'border-teal-200 bg-teal-50' 
-                    : week.status === 'completed'
-                    ? 'border-green-200 bg-green-50'
-                    : 'border-gray-200 bg-white hover:border-teal-200 hover:bg-teal-50/30'
-                }`}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link 
+                href="/dashboard/courses/functional-flow/week/4"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
               >
-                <div 
-                  className="flex items-center justify-between cursor-pointer"
-                  onClick={() => setExpandedWeek(expandedWeek === week.number ? null : week.number)}
-                >
-                  <div className="flex items-center gap-3 md:gap-4">
-                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-sm md:text-base ${
-                      week.status === 'current' 
-                        ? 'bg-teal-500 text-white' 
-                        : week.status === 'completed'
-                        ? 'bg-green-500 text-white'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}>
-                      {week.status === 'completed' ? <FiCheck className="w-4 h-4 md:w-5 md:h-5" /> : week.number}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 text-sm md:text-lg">{week.title}</h3>
-                      <p className="text-xs md:text-sm text-gray-600">
-                        {totalGoals > 0 ? `${completedGoals}/${totalGoals} mål klara` : 'Inga mål satta ännu'}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 md:gap-3">
-                    {week.status === 'current' && (
-                      <Link 
-                        href={`/dashboard/courses/functional-flow/week/${week.number}`}
-                        className="bg-teal-500 hover:bg-teal-600 text-white px-3 md:px-4 py-1 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors"
-                      >
-                        Fortsätt
-                      </Link>
-                    )}
-                    <FiChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-gray-400 transition-transform ${
-                      expandedWeek === week.number ? 'rotate-180' : ''
-                    }`} />
-                  </div>
-                </div>
+                <FiPlay className="w-5 h-5" />
+                Fortsätt vecka {currentWeek}
+              </Link>
+              <Link 
+                href="/dashboard/courses/functional-flow/kostschema"
+                className="bg-white text-teal-700 hover:bg-white/90 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+              >
+                <GiMeal className="w-5 h-5" />
+                Mitt kostschema
+              </Link>
+            </div>
+          </div>
 
-                <AnimatePresence>
-                  {expandedWeek === week.number && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-200"
-                    >
-                      {/* Aktiva mål */}
-                      {weekGoals.length > 0 && (
-                        <div className="mb-4 md:mb-6">
-                          <h4 className="font-semibold text-gray-900 mb-3 text-sm md:text-base">Dina aktiva mål</h4>
-                          <div className="space-y-2 md:space-y-3">
-                            {weekGoals.map((goal) => (
-                              <div
-                                key={goal.id}
-                                className={`flex items-start gap-3 p-3 md:p-4 rounded-lg transition-all ${
-                                  goal.status === 'completed' 
-                                    ? 'bg-green-100 border border-green-200' 
-                                    : 'bg-white border border-gray-200 hover:border-teal-200'
-                                }`}
-                              >
-                                <button
-                                  onClick={() => toggleGoalCompletion(goal.id, goal.status)}
-                                  className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                                    goal.status === 'completed'
-                                      ? 'bg-green-500 border-green-500 text-white'
-                                      : 'border-gray-300 hover:border-teal-500'
-                                  }`}
-                                >
-                                  {goal.status === 'completed' && <FiCheck className="w-3 h-3 md:w-4 md:h-4" />}
-                                </button>
-                                <div className="flex-1">
-                                  <h5 className={`font-medium text-sm md:text-base ${
-                                    goal.status === 'completed' ? 'text-green-800 line-through' : 'text-gray-900'
-                                  }`}>
-                                    {goal.title}
-                                  </h5>
-                                  <p className={`text-xs md:text-sm ${
-                                    goal.status === 'completed' ? 'text-green-600' : 'text-gray-600'
-                                  }`}>
-                                    {goal.description}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+          {/* Progress bar */}
+          <div className="mt-6">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-white/80">Framsteg</span>
+              <span className="font-medium">{completedGoals} av {totalGoals} mål klara</span>
+            </div>
+            <div className="w-full bg-white/20 rounded-full h-3 overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="h-full bg-gradient-to-r from-white to-yellow-300 rounded-full"
+              />
+            </div>
+          </div>
+        </motion.div>
 
-                      {/* Fördefinierade mål */}
-                      {availableGoals.length > 0 && (
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-3 text-sm md:text-base">Föreslagna mål för veckan</h4>
-                          <div className="grid gap-2 md:gap-3">
-                            {availableGoals.map((predefinedGoal, index) => (
-                              <div
-                                key={index}
-                                className="flex items-start gap-3 p-3 md:p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-teal-200 hover:bg-teal-50/50 transition-all"
-                              >
-                                <div className="text-lg md:text-xl">{predefinedGoal.icon}</div>
-                                <div className="flex-1">
-                                  <h5 className="font-medium text-gray-900 text-sm md:text-base">{predefinedGoal.title}</h5>
-                                  <p className="text-gray-600 text-xs md:text-sm">{predefinedGoal.description}</p>
-                                </div>
-                                <button
-                                  onClick={() => activatePredefinedGoal(week.number, predefinedGoal)}
-                                  disabled={loading}
-                                  className="bg-teal-500 hover:bg-teal-600 disabled:bg-gray-300 text-white p-1 md:p-2 rounded-lg transition-colors"
-                                >
-                                  <FiPlus className="w-3 h-3 md:w-4 md:h-4" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+        {/* Quick Actions Grid - Mobile Optimized */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+          <Link 
+            href="/dashboard/courses/functional-flow/goals"
+            className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all duration-300 group"
+          >
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FiTarget className="w-6 h-6 text-teal-600" />
+              </div>
+              <h3 className="font-medium text-gray-900 text-sm md:text-base">Mina mål</h3>
+              <p className="text-xs text-gray-600">{goals.filter(g => g.status === 'active').length} aktiva</p>
+            </div>
+          </Link>
+
+          <Link 
+            href="/dashboard/courses/functional-flow/material"
+            className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all duration-300 group"
+          >
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FiBook className="w-6 h-6 text-blue-600" />
+              </div>
+              <h3 className="font-medium text-gray-900 text-sm md:text-base">Kursmaterial</h3>
+              <p className="text-xs text-gray-600">Flow-guider</p>
+            </div>
+          </Link>
+
+          <Link 
+            href="/dashboard/courses/functional-flow/community"
+            className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all duration-300 group"
+          >
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FiUsers className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="font-medium text-gray-900 text-sm md:text-base">Community</h3>
+              <p className="text-xs text-gray-600">Flow-gruppen</p>
+            </div>
+          </Link>
+
+          <Link 
+            href="/dashboard/courses/functional-flow/downloads"
+            className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all duration-300 group"
+          >
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FiDownload className="w-6 h-6 text-green-600" />
+              </div>
+              <h3 className="font-medium text-gray-900 text-sm md:text-base">Nedladdningar</h3>
+              <p className="text-xs text-gray-600">PDF & mer</p>
+            </div>
+          </Link>
         </div>
-      </motion.div>
 
-      {/* Stats Cards - Mobile Optimized */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-gray-100"
+        {/* Shopping List Banner */}
+        <Link 
+          href="/dashboard/courses/functional-flow/inkopslista"
+          className="block bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg md:rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all duration-300 group"
         >
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg p-2 md:p-3">
-              <FiTrendingUp className="w-4 h-4 md:w-5 md:h-5 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 group-hover:scale-110 transition-transform">
+                <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-base md:text-lg">Veckans inköpslista</h3>
+                <p className="text-white/80 text-sm">Optimerade ingredienser för Flow-vecka {currentWeek}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs md:text-sm text-gray-600">Framsteg</p>
-              <p className="text-lg md:text-xl font-bold text-gray-900">16%</p>
+            <FiArrowRight className="w-5 h-5 text-white/80 group-hover:translate-x-2 transition-transform" />
+          </div>
+        </Link>
+
+        {/* Weekly Progress - Mobile Optimized */}
+        <div className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-4 sm:p-6 md:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">Förbestämda mål per vecka</h2>
+            <div className="text-xs md:text-sm text-gray-600">
+              Avancerade mål för optimal Flow-progression
             </div>
           </div>
-        </motion.div>
+          
+          <div className="space-y-3 md:space-y-4">
+            {weeks.map((week) => {
+              const weekGoals = goalsByWeek[week.number] || [];
+              const predefinedGoals = PREDEFINED_GOALS[week.number as keyof typeof PREDEFINED_GOALS] || [];
+              const completedGoals = weekGoals.filter(g => g.status === 'completed').length;
+              const totalGoals = weekGoals.length;
+              const isExpanded = expandedWeek === week.number;
+              
+              return (
+                <motion.div
+                  key={week.number}
+                  className={`border-2 rounded-lg md:rounded-xl overflow-hidden transition-all ${
+                    isExpanded ? 'border-teal-500 shadow-md md:shadow-lg' : 'border-gray-200'
+                  }`}
+                  initial={false}
+                >
+                  <div 
+                    className={`p-4 md:p-6 cursor-pointer transition-colors ${
+                      isExpanded ? 'bg-teal-50' : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => setExpandedWeek(isExpanded ? null : week.number)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3 md:space-x-4 flex-1">
+                        <div className={`
+                          w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-white text-sm md:text-base
+                          ${week.number === 1 ? 'bg-gradient-to-r from-teal-500 to-cyan-600' : 
+                            week.number === 2 ? 'bg-gradient-to-r from-blue-500 to-indigo-600' :
+                            week.number === 3 ? 'bg-gradient-to-r from-purple-500 to-pink-600' :
+                            week.number === 4 ? 'bg-gradient-to-r from-green-500 to-teal-600' :
+                            week.number === 5 ? 'bg-gradient-to-r from-yellow-500 to-orange-600' :
+                            'bg-gradient-to-r from-red-500 to-pink-600'}
+                        `}>
+                          {week.number}
+                        </div>
+                        
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 text-sm md:text-base">{week.title}</h3>
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-1">
+                            <p className="text-xs md:text-sm text-gray-600">
+                              {totalGoals > 0 ? (
+                                <span className="flex items-center space-x-1">
+                                  <FiCheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+                                  <span>{completedGoals}/{totalGoals} mål klara</span>
+                                </span>
+                              ) : (
+                                <span className="text-teal-600">Klicka för att se avancerade mål</span>
+                              )}
+                            </p>
+                            {totalGoals > 0 && (
+                              <div className="flex-1 max-w-full sm:max-w-xs">
+                                <div className="w-full h-1.5 md:h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${(completedGoals / totalGoals) * 100}%` }}
+                                    className="h-full bg-gradient-to-r from-green-500 to-teal-600"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 ml-2">
+                        {week.status === 'current' && (
+                          <Link 
+                            href={`/dashboard/courses/functional-flow/week/${week.number}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-teal-500 hover:bg-teal-600 text-white px-3 md:px-4 py-1 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors"
+                          >
+                            Fortsätt
+                          </Link>
+                        )}
+                        <motion.div
+                          animate={{ rotate: isExpanded ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <FiChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-green-500 to-teal-500 rounded-lg p-2 md:p-3">
-              <FiTarget className="w-4 h-4 md:w-5 md:h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs md:text-sm text-gray-600">Klara mål</p>
-              <p className="text-lg md:text-xl font-bold text-gray-900">
-                {Object.values(goalsByWeek).flat().filter(goal => goal.status === 'completed').length}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="border-t border-gray-200 bg-gray-50"
+                      >
+                        <div className="p-4 md:p-6 space-y-4">
+                          {/* Active goals */}
+                          {weekGoals.length > 0 && (
+                            <div className="space-y-2 md:space-y-3">
+                              <h4 className="font-medium text-gray-900 text-sm md:text-base">Dina aktiva mål:</h4>
+                              {weekGoals.map((goal) => (
+                                <div 
+                                  key={goal.id}
+                                  className={`flex items-start gap-3 p-3 md:p-4 rounded-lg ${
+                                    goal.status === 'completed' ? 'bg-green-50' : 'bg-white'
+                                  } border border-gray-200`}
+                                >
+                                  <button
+                                    onClick={() => goal.status !== 'completed' && handleCompleteGoal(goal.id)}
+                                    className={`mt-0.5 ${
+                                      goal.status === 'completed' 
+                                        ? 'text-green-500 cursor-default' 
+                                        : 'text-gray-400 hover:text-green-500'
+                                    }`}
+                                    disabled={goal.status === 'completed'}
+                                  >
+                                    {goal.status === 'completed' ? (
+                                      <FiCheckCircle className="w-4 h-4 md:w-5 md:h-5" />
+                                    ) : (
+                                      <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-current rounded-full" />
+                                    )}
+                                  </button>
+                                  <div className="flex-1">
+                                    <p className={`font-medium text-sm md:text-base ${
+                                      goal.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-900'
+                                    }`}>
+                                      {goal.title}
+                                    </p>
+                                    {goal.description && (
+                                      <p className="text-xs md:text-sm text-gray-600 mt-1">{goal.description}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-lg p-2 md:p-3">
-              <FiActivity className="w-4 h-4 md:w-5 md:h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs md:text-sm text-gray-600">Aktiva dagar</p>
-              <p className="text-lg md:text-xl font-bold text-gray-900">12</p>
-            </div>
-          </div>
-        </motion.div>
+                          {/* Predefined goals suggestions */}
+                          {predefinedGoals.length > 0 && (
+                            <div className="space-y-2 md:space-y-3">
+                              <h4 className="font-medium text-gray-900 text-sm md:text-base">
+                                {weekGoals.length > 0 ? 'Fler förslag:' : 'Föreslagna Flow-mål:'}
+                              </h4>
+                              {predefinedGoals
+                                .filter(pg => !weekGoals.some(g => g.title === pg.title))
+                                .map((goal, index) => (
+                                  <div 
+                                    key={index}
+                                    className="flex items-start gap-3 p-3 md:p-4 bg-white rounded-lg border border-gray-200 hover:border-teal-300 transition-colors"
+                                  >
+                                    <span className="text-xl md:text-2xl">{goal.icon}</span>
+                                    <div className="flex-1">
+                                      <p className="font-medium text-gray-900 text-sm md:text-base">{goal.title}</p>
+                                      <p className="text-xs md:text-sm text-gray-600 mt-1">{goal.description}</p>
+                                      <button
+                                        onClick={() => handleActivateGoal(goal, week.number)}
+                                        className="mt-2 text-xs md:text-sm text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1"
+                                      >
+                                        <FiPlus className="w-3 h-3 md:w-4 md:h-4" />
+                                        Aktivera detta mål
+                                      </button>
+                                    </div>
+                                  </div>
+                              ))}
+                            </div>
+                          )}
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg p-2 md:p-3">
-              <FiAward className="w-4 h-4 md:w-5 md:h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs md:text-sm text-gray-600">Nivå</p>
-              <p className="text-lg md:text-xl font-bold text-gray-900">Expert</p>
-            </div>
+                          {/* Week navigation button */}
+                          {(week.status === 'current' || week.status === 'completed') && (
+                            <div className="pt-2 md:pt-4 border-t border-gray-200">
+                              <Link
+                                href={`/dashboard/courses/functional-flow/week/${week.number}`}
+                                className="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 md:py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                              >
+                                Gå till vecka {week.number}
+                                <FiArrowRight className="w-4 h-4" />
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
+        </div>
+
+        {/* Motivational section */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-center py-6 md:py-8"
+        >
+          <p className="text-gray-600 text-sm md:text-base">
+            Du har gjort fantastiska framsteg! 🎉 Fortsätt med ditt Flow-program för att nå nya höjder.
+          </p>
         </motion.div>
       </div>
-
-      {/* Video Modal */}
-      <AnimatePresence>
-        {showVideoModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowVideoModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 max-w-4xl w-full max-h-[90vh] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between items-center mb-4 md:mb-6">
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Välkommen till Functional Flow</h3>
-                <button
-                  onClick={() => setShowVideoModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <FiX className="w-5 h-5 md:w-6 md:h-6 text-gray-600" />
-                </button>
-              </div>
-              
-              <div className="aspect-video bg-gray-900 rounded-xl md:rounded-2xl flex items-center justify-center">
-                <div className="text-center text-white">
-                  <FiPlay className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-sm md:text-base opacity-75">Introduktionsvideo kommer snart</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 } 

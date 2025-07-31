@@ -272,7 +272,7 @@ export default function Week5Page() {
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Veckans resurser</h3>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <Link href="/dashboard/courses/functional-basics/downloads" className="block">
+                  <Link href="/dashboard/courses/functional-flow/downloads" className="block">
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
                       className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 text-center cursor-pointer h-full"
@@ -285,7 +285,7 @@ export default function Week5Page() {
                     </motion.div>
                   </Link>
                   
-                  <Link href="/dashboard/courses/functional-basics/downloads" className="block">
+                  <Link href="/dashboard/courses/functional-flow/downloads" className="block">
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
                       className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 text-center cursor-pointer h-full"
@@ -298,7 +298,7 @@ export default function Week5Page() {
                     </motion.div>
                   </Link>
                   
-                  <Link href="/dashboard/courses/functional-basics/downloads" className="block">
+                  <Link href="/dashboard/courses/functional-flow/downloads" className="block">
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
                       className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 text-center cursor-pointer h-full"
@@ -675,7 +675,7 @@ export default function Week5Page() {
             Du har kommit långt på din resa. Sista veckan väntar med sammanfattning och nästa steg.
           </p>
           <Link
-            href="/dashboard/courses/functional-basics/week/6"
+            href="/dashboard/courses/functional-flow/week/6"
             className="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
           >
             Fortsätt till vecka 6

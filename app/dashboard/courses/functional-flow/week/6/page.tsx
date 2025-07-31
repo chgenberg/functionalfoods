@@ -256,7 +256,7 @@ export default function Week6Page() {
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Link 
-                    href="/dashboard/courses/functional-basics/downloads"
+                    href="/dashboard/courses/functional-flow/downloads"
                     className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors"
                   >
                     <FiDownload className="w-5 h-5" />
@@ -374,7 +374,7 @@ export default function Week6Page() {
                 </div>
                 
                 <Link 
-                  href="/dashboard/courses/functional-basics/week/5"
+                  href="/dashboard/courses/functional-flow/week/5"
                   className="text-gray-600 hover:text-gray-900 mr-4"
                 >
                   ← Tillbaka till vecka 5
