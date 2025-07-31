@@ -15,7 +15,7 @@ import {
 import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
-import { getWeekData } from '@/app/data/mealPlans';
+import { getFlowWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
@@ -48,7 +48,7 @@ export default function Week2Page() {
   ];
 
   // Hämta centraliserad måltidsdata för vecka 2
-  const weekData = getWeekData(2);
+  const weekData = getFlowWeekData(2);
   const mealPlan = weekData?.days || {};
 
   return (

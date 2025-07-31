@@ -9,7 +9,7 @@ import {
 import Link from 'next/link';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
-import { getWeekData } from '@/app/data/mealPlans';
+import { getFlowWeekData } from '@/app/data/mealPlans';
 
 interface MealItem {
   name: string;
@@ -26,7 +26,7 @@ interface DayMeals {
 }
 
 // Hämta centraliserad måltidsdata för vecka 6
-const weekData = getWeekData(6);
+const weekData = getFlowWeekData(6);
 const mealPlan = weekData?.days || {};
 
 const shoppingList = {

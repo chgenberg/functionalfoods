@@ -15,7 +15,7 @@ import {
 import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
-import { getWeekData } from '@/app/data/mealPlans';
+import { getFlowWeekData } from '@/app/data/mealPlans';
 import ShoppingList from '../[week]/ShoppingList';
 
 interface TabProps {
@@ -63,7 +63,7 @@ export default function Week3Page() {
   ];
 
   // Hämta centraliserad måltidsdata för vecka 3
-  const weekData = getWeekData(3);
+  const weekData = getFlowWeekData(3);
   const mealPlan = weekData?.days || {};
 
   return (

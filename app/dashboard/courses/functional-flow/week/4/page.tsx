@@ -14,7 +14,7 @@ import {
 } from 'react-icons/gi';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
-import { getWeekData } from '@/app/data/mealPlans';
+import { getFlowWeekData } from '@/app/data/mealPlans';
 
 interface TabProps {
   id: string;
@@ -37,7 +37,7 @@ interface DayMeals {
 }
 
 // Hämta centraliserad måltidsdata för vecka 4
-const weekData = getWeekData(4);
+const weekData = getFlowWeekData(4);
 const mealPlan = weekData?.days || {};
 
 const shoppingList = {
