@@ -57,16 +57,16 @@ export default function UtbildningPage() {
             transition={{ delay: 0.3 }}
             className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow"
           >
-            <div className="h-64 relative overflow-hidden">
+            <Link href="/utbildning/functional-basics" className="h-64 relative overflow-hidden block cursor-pointer">
               <Image
                 src="/basic.JPG"
                 alt="Functional Basics kurs"
                 fill
-                className="object-cover"
+                className="object-cover hover:scale-105 transition-transform duration-300"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
-            </div>
+            </Link>
             <div className="p-8">
               <h3 className="text-2xl font-bold text-gray-800 mb-3">Functional Basics</h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
@@ -121,16 +121,16 @@ export default function UtbildningPage() {
             transition={{ delay: 0.4 }}
             className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow"
           >
-            <div className="h-64 relative overflow-hidden">
+            <Link href="/utbildning/functional-flow" className="h-64 relative overflow-hidden block cursor-pointer">
               <Image
                 src="/flow.JPG"
                 alt="Functional Flow kurs"
                 fill
-                className="object-cover"
+                className="object-cover hover:scale-105 transition-transform duration-300"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
-            </div>
+            </Link>
             <div className="p-8">
               <h3 className="text-2xl font-bold text-gray-800 mb-3">Functional Flow</h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
