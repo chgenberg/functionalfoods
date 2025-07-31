@@ -484,7 +484,7 @@ export default function Home() {
       </section>
 
       {/* Newsletter Section - Mobile Optimized */}
-      <section className="py-12 md:py-20 px-4">
+      <section className="py-12 md:py-20 px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           <NewsletterSignup 
             variant="hero"

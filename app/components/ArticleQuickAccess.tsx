@@ -97,7 +97,7 @@ export default function ArticleQuickAccess() {
   return (
     <>
       {/* Floating Button */}
-      <div className="fixed bottom-6 left-6 md:top-24 md:left-1/2 md:-translate-x-1/2 z-40">
+      <div className="fixed bottom-6 left-6 md:top-24 md:left-1/2 md:-translate-x-1/2 z-30">
         <button
           onClick={() => setIsOpen(true)}
           className="relative bg-background-secondary hover:bg-background border-2 border-accent rounded-full p-3 md:px-6 md:py-3 shadow-lg flex items-center gap-3 group transition-all duration-300 hover:shadow-xl"
@@ -129,7 +129,7 @@ export default function ArticleQuickAccess() {
 
       {/* Modal Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" style={{ pointerEvents: 'auto' }}>
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
             {/* Header */}
             <div className="bg-gradient-to-r from-accent to-accent-hover p-6 text-white">
