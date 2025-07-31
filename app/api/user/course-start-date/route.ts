@@ -54,7 +54,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // Returnera köpdatumet som kursstartdatum
     // Beräkna kursstartdatum som nästkommande måndag efter köpdatumet
     const purchaseDate = new Date(purchase.createdAt);
     const dayOfWeek = purchaseDate.getDay(); // 0=Sun, 1=Mon, ...

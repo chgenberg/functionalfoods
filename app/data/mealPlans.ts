@@ -256,7 +256,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Torsdag": {
         "breakfast": {
           "name": "Havregrynsgröt med valnötter och bär",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
           "name": "Kött i mustig tomatsås (Rester)"
@@ -295,7 +295,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Söndag": {
         "breakfast": {
           "name": "Havregrynsgröt med valnötter och bär",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
           "name": "Linssoppa med curry och spiskummin (Rester)"
@@ -339,7 +339,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Onsdag": {
         "breakfast": {
           "name": "Havregrynsgröt med valnötter och bär",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
           "name": "Äggröra med paprika (Rester)"
@@ -408,7 +408,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Havregrynsgröt med valnötter och bär",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
           "name": "Wokad lövbiff med nudlar (Rester)"
@@ -459,7 +459,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Fredag": {
         "breakfast": {
           "name": "Havregrynsgröt med valnötter och bär",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
           "name": "Lammgryta med plommon och bulgur (Rester)"
@@ -503,7 +503,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Havregrynsgröt med valnötter och bär",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
           "name": "Asiatisk tonfisksallad (Rester)"
@@ -555,7 +555,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Fredag": {
         "breakfast": {
           "name": "Havregrynsgröt med valnötter och bär",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
           "name": "Grillade köttspett med grekisk sallad (Rester)"
