@@ -44,14 +44,22 @@ img {
   object-position: center;
 }
 
-/* Functional Flow layout styling */
-.functional-flow-layout {
-  background-color: #0f2c1a !important;
-  min-height: 100vh !important;
+/* Functional Flow specific colors - matching Basic design structure */
+.functional-flow .bg-accent,
+.functional-flow .bg-primary {
+  background-color: #1a4d78 !important;
 }
 
-.functional-flow-header {
-  background-color: #1a4324 !important;
+.functional-flow .text-primary {
+  color: #1a4d78 !important;
+}
+
+.functional-flow .hover\:text-primary:hover {
+  color: #1a4d78 !important;
+}
+
+.functional-flow .hover\:bg-primary:hover {
+  background-color: #1a4d78 !important;
 }
 
 @layer base {
