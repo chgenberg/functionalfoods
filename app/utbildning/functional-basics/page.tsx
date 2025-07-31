@@ -173,11 +173,11 @@ export default function FunctionalBasicsPage() {
               {/* Mobile image */}
               <div className={`block lg:hidden transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/ulrika_mobile.png" 
-                  alt="Functional Basics Mobile" 
+                  src="/basic.JPG" 
+                  alt="Functional Basics" 
                   width={350}
                   height={350}
-                  className="rounded-2xl shadow-2xl"
+                  className="rounded-2xl shadow-2xl object-cover"
                   onLoad={() => setImageLoaded(true)}
                   priority
                 />
@@ -185,11 +185,11 @@ export default function FunctionalBasicsPage() {
               {/* Desktop image */}
               <div className={`hidden lg:block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/functional_basics.png" 
+                  src="/basic.JPG" 
                   alt="Functional Basics" 
                   width={450}
                   height={450}
-                  className="rounded-2xl shadow-2xl"
+                  className="rounded-2xl shadow-2xl object-cover"
                   onLoad={() => setImageLoaded(true)}
                   priority
                 />

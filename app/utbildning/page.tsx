@@ -57,8 +57,15 @@ export default function UtbildningPage() {
             transition={{ delay: 0.3 }}
             className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow"
           >
-            <div className="h-64 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-              <GiFruitBowl className="w-32 h-32 text-white opacity-20" />
+            <div className="h-64 relative overflow-hidden">
+              <Image
+                src="/basic.JPG"
+                alt="Functional Basics kurs"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
             </div>
             <div className="p-8">
               <h3 className="text-2xl font-bold text-gray-800 mb-3">Functional Basics</h3>
@@ -114,8 +121,15 @@ export default function UtbildningPage() {
             transition={{ delay: 0.4 }}
             className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow"
           >
-            <div className="h-64 flex items-center justify-center" style={{ backgroundColor: '#1a4324' }}>
-              <GiHealthNormal className="w-32 h-32 text-white opacity-20" />
+            <div className="h-64 relative overflow-hidden">
+              <Image
+                src="/flow.JPG"
+                alt="Functional Flow kurs"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
             </div>
             <div className="p-8">
               <h3 className="text-2xl font-bold text-gray-800 mb-3">Functional Flow</h3>

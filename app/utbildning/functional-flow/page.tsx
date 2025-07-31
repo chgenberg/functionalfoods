@@ -131,11 +131,11 @@ export default function FunctionalFlowPage() {
             <div className="relative group">
               <div className={`transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/functional_flow.png" 
+                  src="/flow.JPG" 
                   alt="Functional Flow" 
                   width={450}
                   height={450}
-                  className="rounded-2xl shadow-2xl"
+                  className="rounded-2xl shadow-2xl object-cover"
                   onLoad={() => setImageLoaded(true)}
                   priority
                 />
