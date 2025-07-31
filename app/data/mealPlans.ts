@@ -1172,6 +1172,12 @@ export function getMealPlan(weekNumber: number, dayInWeek: number): DayMeals | n
   return weekPlan.days[dayName] || null;
 }
 
+// Helper function to get meal for a specific day (legacy function for backwards compatibility)
+export function getMealForDay(dayNumber: number): DayMeals | null {
+  // This is a simplified version - assumes current week 1 for backwards compatibility
+  return getMealPlan(1, dayNumber);
+}
+
 // Helper function to get week data for Functional Basics
 export function getWeekData(weekNumber: number): WeekMealPlan | null {
   const weekKey = `week${weekNumber}` as keyof typeof mealPlans;
