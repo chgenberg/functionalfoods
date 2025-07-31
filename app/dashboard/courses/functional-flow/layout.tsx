@@ -1,5 +1,7 @@
 'use client';
 
+// Force cache invalidation v2
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -94,7 +96,7 @@ export default function FunctionalFlowLayout({
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: '#0f2c1a' }}>
       {/* Top Header - Desktop & Mobile */}
       <header className="shadow-lg sticky top-0 z-40" style={{ backgroundColor: '#1a4324' }}>
         <div className="px-4 sm:px-6 lg:px-8">
