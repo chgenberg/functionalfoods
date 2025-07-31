@@ -1,293 +1,147 @@
+const { PrismaClient } = require('@prisma/client');
 const mammoth = require('mammoth');
 const fs = require('fs');
 const path = require('path');
-const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
-
-async function extractTextFromDocx(filePath) {
-  try {
-    const result = await mammoth.extractRawText({ path: filePath });
-    return result.value;
-  } catch (error) {
-    console.error(`Error reading ${filePath}:`, error);
-    return null;
+// Levenshtein distance function for fuzzy matching
+function levenshtein(a, b) {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  const matrix = Array.from(Array(a.length + 1), () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost,
+      );
+    }
   }
+  return matrix[a.length][b.length];
 }
 
-function parseMealPlan(text) {
-  const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+// Normalize recipe titles for comparison
+const normalize = (str) =>
+  str
+    .toLowerCase()
+    .replace(/å/g, 'a')
+    .replace(/ä/g, 'a')
+    .replace(/ö/g, 'o')
+    .replace(/[^a-z0-9\s]/g, '') // remove special chars
+    .trim();
+
+// Main function to sync meal plans
+async function syncMealPlans() {
+  const prisma = new PrismaClient();
+  console.log('🔄 Starting meal plan sync...');
+
+  // 1. Fetch all existing recipes from DB for matching
+  const allDbRecipes = await prisma.recipe.findMany({
+    select: { title: true, slug: true },
+  });
+  const normalizedDbRecipes = allDbRecipes.map(r => ({ ...r, normalized: normalize(r.title) }));
+  console.log(`📚 Found ${allDbRecipes.length} recipes in the database.`);
+
+  // 2. Define DOCX files to process
+  const docxFiles = [
+    'Functionalbasic_1.docx', 'Functionalbasic_2.docx', 'Functionalbasic_3.docx',
+    'Functionalbasic_4.docx', 'Functionalbasic_5.docx', 'Functionalbasic_6.docx',
+  ];
+  const docxDir = path.resolve(__dirname, '../public/kurser');
   
-  const mealPlan = {};
-  const days = ['Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör', 'Sön'];
-  const fullDays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-  
-  let currentDayIndex = -1;
-  let currentMealIndex = 0;
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    
-    const dayIndex = days.indexOf(line);
-    if (dayIndex !== -1) {
-      currentDayIndex = dayIndex;
-      currentMealIndex = 0;
-      mealPlan[fullDays[dayIndex]] = {
-        breakfast: { name: '', recipeLink: '' },
-        lunch: { name: '', recipeLink: '' },
-        dinner: { name: '', recipeLink: '' }
-      };
+  const generatedMealPlans = {};
+  const missingRecipes = new Set();
+
+  // 3. Process each DOCX file
+  for (let i = 0; i < docxFiles.length; i++) {
+    const weekNum = i + 1;
+    const fileName = docxFiles[i];
+    const filePath = path.join(docxDir, fileName);
+
+    if (!fs.existsSync(filePath)) {
+      console.error(`❌ File not found: ${fileName}. Skipping.`);
       continue;
     }
+
+    console.log(`\n--- Processing Week ${weekNum} (${fileName}) ---`);
+    const { value: text } = await mammoth.extractRawText({ path: filePath });
     
-    if (currentDayIndex !== -1 && line.includes('kcal') && !line.includes('rester')) {
-      const mealName = line.replace(/\s*\(\d+\s*kcal\).*$/, '').trim();
-      
-      if (mealName.length > 3) {
-        const dayName = fullDays[currentDayIndex];
-        
-        if (currentMealIndex === 0) {
-          mealPlan[dayName].breakfast.name = mealName;
-        } else if (currentMealIndex === 1) {
-          mealPlan[dayName].lunch.name = mealName;
-        } else if (currentMealIndex === 2) {
-          mealPlan[dayName].dinner.name = mealName;
+    // Simple parser, assumes structure: Day, Breakfast, Lunch, Dinner
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    const dayNames = { Mån: 'Måndag', Tis: 'Tisdag', Ons: 'Onsdag', Tors: 'Torsdag', Fre: 'Fredag', Lör: 'Lördag', Sön: 'Söndag' };
+    
+    const weekPlan = {
+      title: `Vecka ${weekNum}: Synkroniserad från DOCX`,
+      days: {},
+    };
+    
+    let currentDayAbbr = null;
+    let mealIndex = 0; // 0: Breakfast, 1: Lunch, 2: Dinner
+    const slots = ['breakfast', 'lunch', 'dinner'];
+
+    for (const line of lines) {
+      if (dayNames[line]) {
+        currentDayAbbr = line;
+        mealIndex = 0;
+        weekPlan.days[dayNames[currentDayAbbr]] = {};
+        continue;
+      }
+
+      if (currentDayAbbr && mealIndex < 3) {
+        let mealName = line.replace(/\s*\([\d\s,]+kcal\)/i, '').trim();
+        const isLeftover = mealName.toLowerCase().includes('rester');
+
+        if (isLeftover) {
+           weekPlan.days[dayNames[currentDayAbbr]][slots[mealIndex]] = { name: mealName.replace('rester','(Rester)') };
+        } else {
+          // Find best match in DB
+          let bestMatch = null;
+          let minDistance = 4; // Max Levenshtein distance to consider a match
+          
+          const normalizedMealName = normalize(mealName);
+          
+          for (const dbRecipe of normalizedDbRecipes) {
+            const dist = levenshtein(normalizedMealName, dbRecipe.normalized);
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestMatch = dbRecipe;
+            }
+          }
+
+          if (bestMatch) {
+            weekPlan.days[dayNames[currentDayAbbr]][slots[mealIndex]] = {
+              name: mealName,
+              recipeLink: `/kunskapsbank/recept/${bestMatch.slug}`,
+            };
+          } else {
+             weekPlan.days[dayNames[currentDayAbbr]][slots[mealIndex]] = { name: mealName };
+             missingRecipes.add(mealName);
+          }
         }
-        
-        currentMealIndex++;
+        mealIndex++;
       }
     }
-  }
-  
-  return mealPlan;
-}
-
-async function getRecipeMap() {
-  const recipes = await prisma.recipe.findMany({
-    select: {
-      title: true,
-      slug: true
-    }
-  });
-  
-  // Create a map for quick lookup
-  const recipeMap = {};
-  recipes.forEach(recipe => {
-    recipeMap[recipe.title.toLowerCase()] = recipe.slug;
-  });
-  
-  return recipeMap;
-}
-
-function findBestRecipeMatch(mealName, recipeMap) {
-  const cleanMealName = mealName.toLowerCase();
-  
-  // Exact match
-  if (recipeMap[cleanMealName]) {
-    return `/kunskapsbank/recept/${recipeMap[cleanMealName]}`;
-  }
-  
-  // Partial matches
-  for (const recipeTitle in recipeMap) {
-    if (recipeTitle.includes(cleanMealName) || cleanMealName.includes(recipeTitle)) {
-      return `/kunskapsbank/recept/${recipeMap[recipeTitle]}`;
-    }
-  }
-  
-  // No match found
-  return '';
-}
-
-async function syncMealPlans() {
-  console.log('🔄 Syncing meal plans with DOCX documents and database...\n');
-  
-  const recipeMap = await getRecipeMap();
-  console.log(`📋 Found ${Object.keys(recipeMap).length} recipes in database\n`);
-  
-  // Basic course documents
-  const basicFiles = [
-    'Functionalbasic_1.docx',
-    'Functionalbasic_2.docx', 
-    'Functionalbasic_3.docx',
-    'Functionalbasic_4.docx',
-    'Functionalbasic_5.docx',
-    'Functionalbasic_6.docx'
-  ];
-
-  // Flow course documents  
-  const flowFiles = [
-    'Functionalflow_1.docx',
-    'Functionalflow_2.docx',
-    'Functionalflow_3.docx', 
-    'Functionalflow_4.docx',
-    'Functionalflow _5.docx',
-    'Functionalflow_6.docx'
-  ];
-
-  const basicMealPlans = {};
-  const flowMealPlans = {};
-
-  console.log('📋 Processing FUNCTIONAL BASICS...\n');
-
-  for (let i = 0; i < basicFiles.length; i++) {
-    const fileName = basicFiles[i];
-    const filePath = path.join('public/kurser', fileName);
-    
-    if (fs.existsSync(filePath)) {
-      console.log(`Processing Basic Week ${i + 1}: ${fileName}`);
-      const text = await extractTextFromDocx(filePath);
-      
-      if (text) {
-        const mealPlan = parseMealPlan(text);
-        
-        // Add recipe links
-        Object.keys(mealPlan).forEach(day => {
-          ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
-            const meal = mealPlan[day][mealType];
-            if (meal.name && !meal.name.includes('(Rester)') && !meal.name.includes('rester')) {
-              meal.recipeLink = findBestRecipeMatch(meal.name, recipeMap);
-              if (!meal.recipeLink) {
-                console.log(`  ⚠️  No recipe found for: "${meal.name}"`);
-              }
-            }
-          });
-        });
-        
-        basicMealPlans[`week${i + 1}`] = {
-          title: `Vecka ${i + 1}: ${getWeekTitle(i + 1, 'basic')}`,
-          days: mealPlan
-        };
-      }
-    }
+    generatedMealPlans[`week${weekNum}`] = weekPlan;
   }
 
-  console.log('\n🔄 Processing FUNCTIONAL FLOW...\n');
-
-  for (let i = 0; i < flowFiles.length; i++) {
-    const fileName = flowFiles[i];
-    const filePath = path.join('public/kurser/flow', fileName);
-    
-    if (fs.existsSync(filePath)) {
-      console.log(`Processing Flow Week ${i + 1}: ${fileName}`);
-      const text = await extractTextFromDocx(filePath);
-      
-      if (text) {
-        const mealPlan = parseMealPlan(text);
-        
-        // Add recipe links
-        Object.keys(mealPlan).forEach(day => {
-          ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
-            const meal = mealPlan[day][mealType];
-            if (meal.name && !meal.name.includes('(Rester)') && !meal.name.includes('rester')) {
-              meal.recipeLink = findBestRecipeMatch(meal.name, recipeMap);
-              if (!meal.recipeLink) {
-                console.log(`  ⚠️  No recipe found for: "${meal.name}"`);
-              }
-            }
-          });
-        });
-        
-        flowMealPlans[`week${i + 1}`] = {
-          title: `Vecka ${i + 1}: ${getWeekTitle(i + 1, 'flow')}`,
-          days: mealPlan
-        };
-      }
-    }
+  // 4. Save the output
+  const outputPath = path.resolve(__dirname, 'generatedMealPlans.json');
+  fs.writeFileSync(outputPath, JSON.stringify(generatedMealPlans, null, 2));
+  console.log(`\n\n✅ Meal plan data successfully generated and saved to ${outputPath}`);
+  
+  // 5. Report missing recipes
+  if (missingRecipes.size > 0) {
+    console.log('\n\n⚠️ The following recipes from DOCX were not found in the database:');
+    missingRecipes.forEach(r => console.log(`  - ${r}`));
+    console.log('\nThese have been added to the meal plan as text-only (no link).');
+  } else {
+    console.log('\n\n✅ All recipes from DOCX were successfully matched in the database!');
   }
 
-  // Generate the updated mealPlans.ts file content
-  console.log('\n📝 Generating updated mealPlans.ts...\n');
-  
-  const mealPlansContent = generateMealPlansFile(basicMealPlans, flowMealPlans);
-  
-  // Write to a new file for review
-  fs.writeFileSync('scripts/updated_mealPlans.ts', mealPlansContent);
-  console.log('✅ Updated meal plans written to scripts/updated_mealPlans.ts');
-  console.log('📋 Review the file and then manually replace app/data/mealPlans.ts');
-  
   await prisma.$disconnect();
-}
-
-function getWeekTitle(weekNum, course) {
-  const basicTitles = [
-    'Introduktion till Functional Foods',
-    'Bygg starkare vanor', 
-    'Att välja rätt kolhydrater',
-    'Functional Foods Topplista',
-    'Maximal energi och vitalitet',
-    'Integration och framtiden'
-  ];
-  
-  const flowTitles = [
-    'Avancerad grund i Functional Foods',
-    'Bygg avancerade vanor',
-    'Flexibilitet & Fasta', 
-    'Maximal näringsabsorption',
-    'Avancerad optimering',
-    'Mastery och framtiden'
-  ];
-  
-  return course === 'basic' ? basicTitles[weekNum - 1] : flowTitles[weekNum - 1];
-}
-
-function generateMealPlansFile(basicMealPlans, flowMealPlans) {
-  const header = `export interface MealItem {
-  name: string;
-  recipeLink?: string;
-  note?: string;
-}
-
-export interface DayMeals {
-  breakfast: MealItem;
-  lunch: MealItem;
-  dinner: MealItem;
-  snack?: MealItem;
-  dessert?: MealItem;
-}
-
-export interface WeekMealPlan {
-  title: string;
-  days: Record<string, DayMeals>;
-}
-
-// Functional Basics meal plans (updated from DOCX documents)
-export const mealPlans: Record<string, WeekMealPlan> = `;
-  
-  const basicJSON = JSON.stringify(basicMealPlans, null, 2);
-  
-  const flowHeader = `
-
-// Functional Flow meal plans (updated from DOCX documents)
-export const flowMealPlans: Record<string, WeekMealPlan> = `;
-  
-  const flowJSON = JSON.stringify(flowMealPlans, null, 2);
-  
-  const footer = `
-
-// Helper function to get meal plan for a specific day in a week
-export function getMealPlan(weekNumber: number, dayInWeek: number): DayMeals | null {
-  const weekPlan = mealPlans[\`week\${weekNumber}\`];
-  if (!weekPlan) return null;
-  
-  const weekDays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-  const dayName = weekDays[dayInWeek - 1];
-  
-  return weekPlan.days[dayName] || null;
-}
-
-// Helper function to get week data for Functional Basics
-export function getWeekData(weekNumber: number): WeekMealPlan | null {
-  const weekKey = \`week\${weekNumber}\` as keyof typeof mealPlans;
-  return mealPlans[weekKey] || null;
-}
-
-// Helper function to get week data for Functional Flow
-export function getFlowWeekData(weekNumber: number): WeekMealPlan | null {
-  const weekKey = \`week\${weekNumber}\` as keyof typeof flowMealPlans;
-  return flowMealPlans[weekKey] || null;
-}`;
-
-  return header + basicJSON + ';' + flowHeader + flowJSON + ';' + footer;
 }
 
 syncMealPlans().catch(console.error); 
