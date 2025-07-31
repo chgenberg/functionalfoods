@@ -78,7 +78,8 @@ export default function CourseSwitcher() {
 
       if (response.ok) {
         const data = await response.json();
-        const courseNames = data.purchases.map((p: any) => {
+        const purchases = Array.isArray(data) ? data : (data.purchases || []);
+        const courseNames = purchases.map((p: any) => {
           if (p.course.name === 'Functional Basics') return 'functional-basics';
           if (p.course.name === 'Functional Flow') return 'functional-flow';
           return null;

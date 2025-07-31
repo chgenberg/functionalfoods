@@ -49,7 +49,8 @@ export default function CoursesPage() {
 
       if (response.ok) {
         const data = await response.json();
-        const purchasedCourseNames = data.purchases.map((p: any) => p.course.name);
+        const purchases = Array.isArray(data) ? data : (data.purchases || []);
+        const purchasedCourseNames = purchases.map((p: any) => p.course.name);
         
         const allCourses: Course[] = [
           {

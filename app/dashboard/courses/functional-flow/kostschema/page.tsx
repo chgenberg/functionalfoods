@@ -11,13 +11,25 @@ import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/g
 import { getMealForDay, getFlowWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
 
+// Helper function to generate recipe slug from name
+const generateRecipeSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/[åäÅÄ]/g, 'a')
+    .replace(/[öÖ]/g, 'o')
+    .replace(/[éÉ]/g, 'e')
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .trim();
+};
+
 const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: any }) => {
   const typeColors: Record<string, string> = {
     breakfast: 'from-yellow-400 to-orange-500',
-    lunch: 'from-green-400 to-teal-500',
-    dinner: 'from-blue-400 to-purple-500',
-    snack: 'from-pink-400 to-rose-500',
-    dessert: 'from-purple-400 to-pink-500'
+    lunch: 'from-emerald-400 to-teal-500',
+    dinner: 'from-purple-400 to-pink-500',
+    snack: 'from-blue-400 to-indigo-500'
   };
 
   const typeNames: Record<string, string> = {
@@ -35,6 +47,9 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
     snack: '15:00',
     dessert: '20:00'
   };
+
+  // Generate recipe link from meal name if not provided
+  const recipeLink = meal.recipeLink || `/kunskapsbank/recept/${generateRecipeSlug(meal.name)}`;
 
   return (
     <motion.div
@@ -59,14 +74,12 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
       )}
       
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        {meal.recipeLink && (
-          <a 
-            href={meal.recipeLink}
-            className="text-xs sm:text-sm text-green-600 hover:text-green-700 font-medium truncate"
-          >
-            Se recept →
-          </a>
-        )}
+        <Link 
+          href={recipeLink}
+          className="text-xs sm:text-sm text-green-600 hover:text-green-700 font-medium truncate"
+        >
+          Se recept →
+        </Link>
         <div className="flex items-center gap-2 justify-end sm:ml-auto">
           <motion.button
             whileHover={{ scale: 1.1 }}
