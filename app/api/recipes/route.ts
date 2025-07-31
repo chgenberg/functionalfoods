@@ -85,22 +85,23 @@ export async function GET(request: NextRequest) {
     if (slug) {
       where.slug = slug;
       where.status = 'PUBLISHED'; // Bara publicerade recept
-    }
-
-    // Filtrera baserat på status
-    if (status) {
-      if (status === 'published') {
-        where.status = 'PUBLISHED';
-        where.isPremium = false;
-      } else if (status === 'draft') {
-        where.status = 'DRAFT';
-      } else if (status === 'premium') {
-        where.isPremium = true;
-      }
+      // När slug är angiven, hoppa över default-filtreringen nedan
     } else {
-      // Default: visa bara publicerade, gratis recept
-      where.status = 'PUBLISHED';
-      where.isFree = true;
+      // Filtrera baserat på status endast när ingen slug är angiven
+      if (status) {
+        if (status === 'published') {
+          where.status = 'PUBLISHED';
+          where.isPremium = false;
+        } else if (status === 'draft') {
+          where.status = 'DRAFT';
+        } else if (status === 'premium') {
+          where.isPremium = true;
+        }
+      } else {
+        // Default: visa bara publicerade, gratis recept (endast för listnings-anrop)
+        where.status = 'PUBLISHED';
+        where.isFree = true;
+      }
     }
 
     // Filtrera baserat på kategori
@@ -156,18 +157,45 @@ export async function GET(request: NextRequest) {
       take: limit
     });
 
+    // Hämta användarens kurs-namn för jämförelse
+    let userCourseNames: string[] = [];
+    if (userId && userCourseIds.length > 0) {
+      const userCourses = await prisma.courseProduct.findMany({
+        where: {
+          id: { in: userCourseIds }
+        },
+        select: {
+          name: true
+        }
+      });
+      userCourseNames = userCourses.map(course => course.name);
+    }
+
     // Filtrera recept baserat på kursåtkomst
     const filteredRecipes = recipes.filter(recipe => {
       if (!recipe.isPremium || recipe.isFree) return true; // Gratis recept är alltid tillgängliga
       if (!userId) return false; // Premium recept kräver autentisering
       
-      // Kontrollera om användaren har åtkomst till kursen detta recept tillhör
-      const recipeNutrition = recipe.nutrition as any;
-      if (recipeNutrition?.courseId) {
-        return userCourseIds.includes(recipeNutrition.courseId);
+      // Kontrollera om användaren har åtkomst baserat på recipe tags
+      if (recipe.tags && recipe.tags.length > 0) {
+        // Kolla om receptet är taggat med "Basic" eller "Flow"
+        const hasBasicTag = recipe.tags.includes('Basic');
+        const hasFlowTag = recipe.tags.includes('Flow');
+        
+        if (hasBasicTag || hasFlowTag) {
+          // Kontrollera om användaren har tillgång till rätt kurs
+          if (hasBasicTag && userCourseNames.includes('Functional Basics')) {
+            return true;
+          }
+          if (hasFlowTag && userCourseNames.includes('Functional Flow')) {
+            return true;
+          }
+          
+          return false; // Har inte tillgång till denna specifika kurs
+        }
       }
       
-      // Om inget specifik kurs, använd allmän premiumåtkomst
+      // Fallback: Om inget specifik kurs-tag, använd allmän premiumåtkomst
       return userCourseIds.length > 0;
     });
 
