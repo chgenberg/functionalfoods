@@ -100,7 +100,12 @@ export default function RandomRecipes({ excludeId, count = 3, title = "Fler rece
                       src={recipe.imageUrl}
                       alt={recipe.title}
                       fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="object-cover group-hover:scale-110 transition-transform duration-700 recipe-image"
+                      style={{ 
+                        objectFit: 'cover', 
+                        objectPosition: 'center',
+                        imageOrientation: 'from-image'
+                      }}
                       unoptimized
                     />
                   ) : (

@@ -530,7 +530,12 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
               alt={recipe.imageAlt || recipe.title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover group-hover:scale-110 transition-transform duration-700"
+              className="object-cover group-hover:scale-110 transition-transform duration-700 recipe-image"
+              style={{ 
+                objectFit: 'cover', 
+                objectPosition: 'center',
+                imageOrientation: 'from-image'
+              }}
               onError={() => setImageError(true)}
               priority={false}
             />
@@ -621,8 +626,12 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
                 src={recipe.imageUrl}
                 alt={recipe.imageAlt || recipe.title}
                 fill
-                className="object-cover"
-                style={{ objectFit: 'cover', objectPosition: 'center' }}
+                className="object-cover recipe-image"
+                style={{ 
+                  objectFit: 'cover', 
+                  objectPosition: 'center',
+                  imageOrientation: 'from-image'
+                }}
                 unoptimized
               />
             ) : (

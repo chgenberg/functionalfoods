@@ -27,6 +27,23 @@
   -webkit-line-clamp: 3;
 }
 
+/* Fix image orientation issues - respect EXIF data */
+img {
+  image-orientation: from-image;
+}
+
+/* Ensure Next.js Image components respect EXIF orientation */
+.next-image {
+  image-orientation: from-image;
+}
+
+/* Recipe image specific fixes */
+.recipe-image {
+  image-orientation: from-image;
+  object-fit: cover;
+  object-position: center;
+}
+
 @layer base {
   :root {
     /* Primary Colors */

@@ -314,7 +314,12 @@ export default function RecipePage() {
                   src={recipe.imageUrl}
                   alt={recipe.imageAlt || recipe.title}
                   fill
-                  className="object-cover"
+                  className="object-cover recipe-image"
+                  style={{ 
+                    objectFit: 'cover', 
+                    objectPosition: 'center',
+                    imageOrientation: 'from-image'
+                  }}
                   priority
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                   onError={() => setImageError(true)}

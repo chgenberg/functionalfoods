@@ -49,7 +49,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
             src={imageUrl}
             alt={recipe.imageAlt || recipe.title}
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
+            className="object-cover group-hover:scale-110 transition-transform duration-500 recipe-image"
+            style={{ 
+              objectFit: 'cover', 
+              objectPosition: 'center',
+              imageOrientation: 'from-image'
+            }}
             unoptimized
           />
         ) : (
