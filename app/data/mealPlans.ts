@@ -116,70 +116,71 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     }
   },
   "week2": {
-    "title": "Vecka 2: Bygg starkare vanor",
+    "title": "Vecka 2: Antiinflammatoriska livsmedel",
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Yoghurt med ketomüsli",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketom-sli"
+          "name": "Keso med granola och fruktsallad",
+          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
         },
         "lunch": {
-          "name": "Nudelsoppa med grönsaker",
-          "recipeLink": "/kunskapsbank/recept/nudelsoppa-med-gronsaker"
+          "name": "Ugnsbakad tomat med köttfärs (Rester)"
         },
         "dinner": {
-          "name": "Torskrygg med ägghack och sparris (Rester)"
+          "name": "Lax med waldorfsallad",
+          "recipeLink": "/kunskapsbank/recept/w-1752509279611"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Omelett med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-champinjoner"
+          "name": "Morotsjuice",
+          "recipeLink": "/kunskapsbank/recept/morotsjuice"
         },
         "lunch": {
-          "name": "Torskrygg med ägghack och sparris",
-          "recipeLink": "/kunskapsbank/recept/torskrygg-med-agghack-och-sparris"
+          "name": "Lax med waldorfsallad (Rester)"
         },
         "dinner": {
-          "name": "Turkiska lammfärsspett med raita och sallad (Rester)"
+          "name": "Asiatiska köttbullar med nudelsallad",
+          "recipeLink": "/kunskapsbank/recept/asiatiska-kottbullar-med-nudelsallad"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Grön smoothie",
-          "recipeLink": "/kunskapsbank/recept/gron-smoothie"
+          "name": "Hallon- och blåbärssmoothie",
+          "recipeLink": "/kunskapsbank/recept/hallon-och-blabarssmoothie"
         },
         "lunch": {
-          "name": "Torskrygg med ägghack och sparris (Rester)"
+          "name": "Asiatiska köttbullar med nudelsallad (Rester)"
         },
         "dinner": {
-          "name": "Turkiska lammfärsspett med raita och sallad",
-          "recipeLink": "/kunskapsbank/recept/turkiska-lammfarsspett-med-raita-och-sallad"
+          "name": "Torsk teriyaki med grönsaker",
+          "recipeLink": "/kunskapsbank/recept/torsk-teriyaki-med-gronsaker"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Grön smoothie (Rester)"
+          "name": "Morotsjuice",
+          "recipeLink": "/kunskapsbank/recept/morotsjuice"
         },
         "lunch": {
-          "name": "Turkiska lammfärsspett med raita och sallad (Rester)"
+          "name": "Torsk teriyaki med grönsaker (Rester)"
         },
         "dinner": {
-          "name": "Kycklingröra med örter och tomat",
-          "recipeLink": "/kunskapsbank/recept/kycklingrora-med-orter-och-tomat"
+          "name": "Kyckling i curry med kokosmjölk",
+          "recipeLink": "/kunskapsbank/recept/kyckling-i-curry-med-kokosmjolk"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Havrefrallor med morötter och aprikoser",
-          "recipeLink": "/kunskapsbank/recept/havrefrallor-med-morotter-och-aprikoser"
+          "name": "Blåbärs smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
         },
         "lunch": {
-          "name": "Lax med fetaost och rostade rotfrukter",
-          "recipeLink": "/kunskapsbank/recept/lax-med-fetaost-och-rostade-rotfrukter"
+          "name": "Kyckling i curry med kokosmjölk (Rester)"
         },
         "dinner": {
-          "name": "Asiatiska köttbullar med nudelsallad (Rester)"
+          "name": "Havrefrallor med morötter och aprikoser",
+          "recipeLink": "/kunskapsbank/recept/havrefrallor-med-morotter-och-aprikoser"
         }
       },
       "Lördag": {
@@ -188,596 +189,24 @@ export const mealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/w-1752508499726"
         },
         "lunch": {
-          "name": "Lax med fetaost och rostade rotfrukter (Rester)"
+          "name": "Havrefrallor med morötter och aprikoser (Rester)"
         },
         "dinner": {
-          "name": "Asiatiska köttbullar med nudelsallad",
-          "recipeLink": "/kunskapsbank/recept/asiatiska-kottbullar-med-nudelsallad"
-        }
-      },
-      "Söndag": {
-        "breakfast": {
-          "name": "Asiatiska köttbullar med nudelsallad (Rester)"
-        },
-        "lunch": {
-          "name": "Päronsallad med chevréost",
-          "recipeLink": "/kunskapsbank/recept/paronsallad-med-chevr-ost"
-        },
-        "dinner": {
-          "name": "Kycklingröra med örter och tomat (Rester)"
-        }
-      }
-    }
-  },
-  "week3": {
-    "title": "Vecka 3: Att välja rätt kolhydrater",
-    "days": {
-      "Måndag": {
-        "breakfast": {
-          "name": "Yoghurt med ketomüsli",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketom-sli"
-        },
-        "lunch": {
-          "name": "Päronsallad med chevréost",
-          "recipeLink": "/kunskapsbank/recept/paronsallad-med-chevr-ost"
-        },
-        "dinner": {
-          "name": "Kycklingfylld aubergine",
-          "recipeLink": "/kunskapsbank/recept/kycklingfylld-aubergine"
-        }
-      },
-      "Tisdag": {
-        "breakfast": {
-          "name": "Äggröra med lax",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-lax"
-        },
-        "lunch": {
-          "name": "Rökt lax med blomkålsallad och citronyoghurt",
-          "recipeLink": "/kunskapsbank/recept/rokt-lax-med-blomkalsallad-och-citronyoghurt"
-        },
-        "dinner": {
-          "name": "Vegetarisk currygryta med panéer (Rester)"
-        }
-      },
-      "Onsdag": {
-        "breakfast": {
-          "name": "Grön smoothie",
-          "recipeLink": "/kunskapsbank/recept/gron-smoothie"
-        },
-        "lunch": {
-          "name": "Vegetarisk currygryta med panéer",
-          "recipeLink": "/kunskapsbank/recept/vegetarisk-currygryta-med-pan-er"
-        },
-        "dinner": {
-          "name": "Ugnsbakad kyckling med tzatziki och sallad (Rester)"
-        }
-      },
-      "Torsdag": {
-        "breakfast": {
-          "name": "Grön smoothie (Rester)"
-        },
-        "lunch": {
-          "name": "Vegetarisk currygryta med panéer (Rester)"
-        },
-        "dinner": {
-          "name": "Kycklinggryta med bakad spetskål",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal"
-        }
-      },
-      "Fredag": {
-        "breakfast": {
-          "name": "Havrefrallor med morötter och aprikoser",
-          "recipeLink": "/kunskapsbank/recept/havrefrallor-med-morotter-och-aprikoser"
-        },
-        "lunch": {
-          "name": "Lax med fetaost och rostade rotfrukter",
-          "recipeLink": "/kunskapsbank/recept/lax-med-fetaost-och-rostade-rotfrukter"
-        },
-        "dinner": {
-          "name": "Hamburgare med hummus",
-          "recipeLink": "/kunskapsbank/recept/hamburgare-med-hummus"
-        }
-      },
-      "Lördag": {
-        "breakfast": {
-          "name": "Keso med granola och fruktsallad",
-          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
-        },
-        "lunch": {
-          "name": "Hamburgare med hummus (Rester)"
-        },
-        "dinner": {
-          "name": "Mandel och citronpaj",
-          "recipeLink": "/kunskapsbank/recept/mandel-och-citronpaj"
-        }
-      },
-      "Söndag": {
-        "breakfast": {
-          "name": "Lax med waldorfsallad",
-          "recipeLink": "/kunskapsbank/recept/w-1752509279611"
-        },
-        "lunch": {
-          "name": "Mandel och citronpaj (Rester)"
-        },
-        "dinner": {
-          "name": "Ugnsbakad kyckling med tzatziki och sallad",
-          "recipeLink": "/kunskapsbank/recept/ugnsbakad-kyckling-med-tzatziki-och-sallad"
-        }
-      }
-    }
-  },
-  "week4": {
-    "title": "Vecka 4: Functional Foods Topplista",
-    "days": {
-      "Måndag": {
-        "breakfast": {
-          "name": "Lax med waldorfsallad (Rester)",
-          "recipeLink": "/kunskapsbank/recept/w-1752509279611"
-        },
-        "lunch": {
-          "name": "Kycklinggryta med röda linser",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-roda-linser"
-        },
-        "dinner": {
-          "name": "Asiatiska köttbullar med nudelsallad (Rester)"
-        }
-      },
-      "Tisdag": {
-        "breakfast": {
-          "name": "Ägghack med kalkon",
-          "recipeLink": "/kunskapsbank/recept/agghack-med-kalkon"
-        },
-        "lunch": {
-          "name": "Kycklinggryta med röda linser (Rester)"
-        },
-        "dinner": {
-          "name": "Vegetarisk currygryta med panéer (Rester)"
-        }
-      },
-      "Onsdag": {
-        "breakfast": {
-          "name": "Laxsallad med vindruvor",
-          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
-        },
-        "lunch": {
-          "name": "Asiatiska köttbullar med nudelsallad",
-          "recipeLink": "/kunskapsbank/recept/asiatiska-kottbullar-med-nudelsallad"
-        },
-        "dinner": {
-          "name": "Grillspett med grekisk sallad och morotstzatziki (Rester)"
-        }
-      },
-      "Torsdag": {
-        "breakfast": {
-          "name": "Laxsallad med vindruvor (Rester)"
-        },
-        "lunch": {
-          "name": "Asiatiska köttbullar med nudelsallad (Rester)"
-        },
-        "dinner": {
-          "name": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
-          "recipeLink": "/kunskapsbank/recept/ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas"
-        }
-      },
-      "Fredag": {
-        "breakfast": {
-          "name": "Bananplättar med mango och granatäpple",
-          "recipeLink": "/kunskapsbank/recept/bananplattar-med-mango-och-granatapple"
-        },
-        "lunch": {
-          "name": "Vegetarisk currygryta med panéer",
-          "recipeLink": "/kunskapsbank/recept/vegetarisk-currygryta-med-pan-er"
-        },
-        "dinner": {
-          "name": "Grillspett med grekisk sallad och morotstzatziki",
-          "recipeLink": "/kunskapsbank/recept/grillspett-med-grekisk-sallad-och-morotstzaziki"
-        }
-      },
-      "Lördag": {
-        "breakfast": {
-          "name": "Keso med hallon och granatäpple",
-          "recipeLink": "/kunskapsbank/recept/keso-med-hallon-och-granatapple"
-        },
-        "lunch": {
-          "name": "Grillspett med grekisk sallad och morotstzatziki (Rester)"
-        },
-        "dinner": {
-          "name": "Ugnsbakad kyckling med quinoasallad och chilimajonäs (Rester)"
-        }
-      },
-      "Söndag": {
-        "breakfast": {
-          "name": "Havregrynsgröt med torkad frukt och äpple",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
-        },
-        "lunch": {
-          "name": "Torsk från mellanöstern",
-          "recipeLink": "/kunskapsbank/recept/torsk-fran-mellanostern"
-        },
-        "dinner": {
-          "name": "Kycklinggryta med röda linser (Rester)"
-        }
-      }
-    }
-  },
-  "week5": {
-    "title": "Vecka 5: Maximal energi och vitalitet",
-    "days": {
-      "Måndag": {
-        "breakfast": {
-          "name": "Yoghurt med ketomüsli",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketom-sli"
-        },
-        "lunch": {
           "name": "Japansk kycklingfärswok med groddar",
-          "recipeLink": "/kunskapsbank/recept/w-1752509299887"
-        },
-        "dinner": {
-          "name": "Köttfärslimpa med ajvar och rostad sötpotatis (Rester)"
-        }
-      },
-      "Tisdag": {
-        "breakfast": {
-          "name": "Äggröra med paprika",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-paprika"
-        },
-        "lunch": {
-          "name": "Grekisk sallad",
-          "recipeLink": "/kunskapsbank/recept/grekisk-sallad"
-        },
-        "dinner": {
-          "name": "Vegetarisk currygryta med panéer (Rester)"
-        }
-      },
-      "Onsdag": {
-        "breakfast": {
-          "name": "Chiafrögröt",
-          "recipeLink": "/kunskapsbank/recept/chiafrogrot"
-        },
-        "lunch": {
-          "name": "Lax med fetaost och rostade rotfrukter",
-          "recipeLink": "/kunskapsbank/recept/lax-med-fetaost-och-rostade-rotfrukter"
-        },
-        "dinner": {
-          "name": "Köttfärslimpa med ajvar och rostad sötpotatis",
-          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-ajvar-och-rostad-sotpotatis"
-        }
-      },
-      "Torsdag": {
-        "breakfast": {
-          "name": "Bananplättar med jordgubbar och kokos",
-          "recipeLink": "/kunskapsbank/recept/bananplattar-med-jordgubbar-och-kokos"
-        },
-        "lunch": {
-          "name": "Köttfärslimpa med ajvar och rostad sötpotatis (Rester)"
-        },
-        "dinner": {
-          "name": "Vegetarisk currygryta med panéer",
-          "recipeLink": "/kunskapsbank/recept/vegetarisk-currygryta-med-pan-er"
-        }
-      },
-      "Fredag": {
-        "breakfast": {
-          "name": "Skaldjursgryta med torsk i gul curry",
-          "recipeLink": "/kunskapsbank/recept/skaldjursgryta-med-torsk-i-gul-curry"
-        },
-        "lunch": {
-          "name": "Skaldjursgryta med torsk i gul curry (Rester)"
-        },
-        "dinner": {
-          "name": "Kycklingjärpar med linssallad (Rester)"
-        }
-      },
-      "Lördag": {
-        "breakfast": {
-          "name": "Mangosmoothie med spenat",
-          "recipeLink": "/kunskapsbank/recept/mangosmoothie-med-spenat"
-        },
-        "lunch": {
-          "name": "Skaldjursgryta med torsk i gul curry (Rester)"
-        },
-        "dinner": {
-          "name": "Kycklingjärpar med linssallad",
-          "recipeLink": "/kunskapsbank/recept/kycklingjarpar-med-linssallad"
+          "recipeLink": "/kunskapsbank/recept/japansk-kycklingfarswok-med-groddar"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Kycklingjärpar med linssallad (Rester)"
+          "name": "Päronmüsli med mandlar",
+          "recipeLink": "/kunskapsbank/recept/paronmusli-med-mandlar"
         },
         "lunch": {
-          "name": "Laxfilé med ratatouille",
-          "recipeLink": "/kunskapsbank/recept/laxfil-med-ratatouille"
-        },
-        "dinner": {
           "name": "Japansk kycklingfärswok med groddar (Rester)"
-        }
-      }
-    }
-  },
-  "week6": {
-    "title": "Vecka 6: Integration och framtiden",
-    "days": {
-      "Måndag": {
-        "breakfast": {
-          "name": "Havrefrallor med morötter och aprikoser",
-          "recipeLink": "/kunskapsbank/recept/havrefrallor-med-morotter-och-aprikoser"
-        },
-        "lunch": {
-          "name": "Grönsakswok med kyckling",
-          "recipeLink": "/kunskapsbank/recept/w-1752509311269"
         },
         "dinner": {
-          "name": "Indisk laxgryta med röda linser (Rester)"
-        }
-      },
-      "Tisdag": {
-        "breakfast": {
-          "name": "Kokt ägg med majonnäs",
-          "recipeLink": "/kunskapsbank/recept/kokt-agg-med-majonnas"
-        },
-        "lunch": {
-          "name": "Grönsakswok med kyckling (Rester)"
-        },
-        "dinner": {
-          "name": "Quinoasallad med stekt halloumi (Rester)"
-        }
-      },
-      "Onsdag": {
-        "breakfast": {
-          "name": "Mango med keso och nötter",
-          "recipeLink": "/kunskapsbank/recept/mango-med-keso-och-notter"
-        },
-        "lunch": {
-          "name": "Indisk laxgryta med röda linser",
-          "recipeLink": "/kunskapsbank/recept/indisk-laxgryta-med-roda-linser"
-        },
-        "dinner": {
-          "name": "Lammgryta med plommon och bulgur (Rester)"
-        }
-      },
-      "Torsdag": {
-        "breakfast": {
-          "name": "Äggröra med granatäpple och kiwi",
-          "recipeLink": "/kunskapsbank/recept/w-1752509305366"
-        },
-        "lunch": {
-          "name": "Indisk laxgryta med röda linser (Rester)"
-        },
-        "dinner": {
-          "name": "Quinoasallad med stekt halloumi",
-          "recipeLink": "/kunskapsbank/recept/quinoasallad-med-stekt-halloumi"
-        }
-      },
-      "Fredag": {
-        "breakfast": {
-          "name": "Torsk teriyaki med grönsaker",
-          "recipeLink": "/kunskapsbank/recept/torsk-teriyaki-med-gronsaker"
-        },
-        "lunch": {
-          "name": "Lammgryta med plommon och bulgur",
-          "recipeLink": "/kunskapsbank/recept/lammgryta-med-plommon-och-bulgur"
-        },
-        "dinner": {
-          "name": "Köttfärspytt med italienska smaker (Rester)"
-        }
-      },
-      "Lördag": {
-        "breakfast": {
-          "name": "Torsk teriyaki med grönsaker (Rester)"
-        },
-        "lunch": {
-          "name": "Lammgryta med plommon och bulgur (Rester)"
-        },
-        "dinner": {
-          "name": "Mango med keso och nötter (Rester)"
-        }
-      },
-      "Söndag": {
-        "breakfast": {
-          "name": "Lammgryta med plommon och bulgur (Rester)"
-        },
-        "lunch": {
-          "name": "Kycklinggryta med bakad spetskål",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal"
-        },
-        "dinner": {
-          "name": "Indisk laxgryta med röda linser (Rester)"
-        }
-      }
-    }
-  }
-};
-
-// Functional Flow meal plans (new)
-export const flowMealPlans: Record<string, WeekMealPlan> = {
-  "week1": {
-    "title": "Vecka 1: Avancerad grund i Functional Foods",
-    "days": {
-      "Måndag": {
-        "breakfast": {
-          "name": "Färskostmacka med tomat",
-          "recipeLink": "/kunskapsbank/recept/farskostmacka-med-tomat"
-        },
-        "lunch": {
-          "name": "Linssoppa från medelhavet",
-          "recipeLink": "/kunskapsbank/recept/linssoppa-fran-medelhavet"
-        },
-        "dinner": {
-          "name": "Kycklingburgare med papayasallad",
-          "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-papayasallad"
-        }
-      },
-      "Tisdag": {
-        "breakfast": {
-          "name": "Äggröra med asiatisk avokadosallad",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-asiatisk-avokadosallad"
-        },
-        "lunch": {
-          "name": "Kycklingburgare med papayasallad (Rester)"
-        },
-        "dinner": {
-          "name": "Köttfärsbiffar med tomatsallad",
-          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-tomatsallad"
-        }
-      },
-      "Onsdag": {
-        "breakfast": {
-          "name": "Choklad- och kokoschiapudding",
-          "recipeLink": "/kunskapsbank/recept/choklad-och-kokoschiapudding"
-        },
-        "lunch": {
-          "name": "Köttfärsbiffar med tomatsallad (Rester)"
-        },
-        "dinner": {
-          "name": "Laxgratäng med broccoli och scampi",
-          "recipeLink": "/kunskapsbank/recept/laxgratang-med-broccoli-och-scampi"
-        }
-      },
-      "Torsdag": {
-        "breakfast": {
-          "name": "Keso med bovetegranola",
-          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola"
-        },
-        "lunch": {
-          "name": "Laxgratäng med broccoli och scampi (Rester)"
-        },
-        "dinner": {
-          "name": "Kycklinggryta från medelhavet",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-fran-medelhavet"
-        }
-      },
-      "Fredag": {
-        "breakfast": {
-          "name": "Omelett med ost och spenat",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-ost-och-spenat"
-        },
-        "lunch": {
-          "name": "Kycklinggryta från medelhavet (Rester)"
-        },
-        "dinner": {
-          "name": "Fänkålssallad med grapefrukt och burrata",
-          "recipeLink": "/kunskapsbank/recept/fankalssallad-med-grapefrukt-och-burrata"
-        }
-      },
-      "Lördag": {
-        "breakfast": {
-          "name": "Ugnsomelett med keso och bär",
-          "recipeLink": "/kunskapsbank/recept/ugnsomelett-med-keso-och-bar"
-        },
-        "lunch": {
-          "name": "Fänkålssallad med grapefrukt och burrata (Rester)"
-        },
-        "dinner": {
-          "name": "Entrecote med haricot verts och bearnaisesås",
-          "recipeLink": "/kunskapsbank/recept/entrecote-med-haricot-verts-och-bearnaisesas"
-        }
-      },
-      "Söndag": {
-        "breakfast": {
-          "name": "Citronkaka med äpple och kardemumma",
-          "recipeLink": "/kunskapsbank/recept/citronkaka-med-apple-och-kardemumma"
-        },
-        "lunch": {
-          "name": "Entrecote med haricot verts och bearnaisesås (Rester)"
-        },
-        "dinner": {
-          "name": "Grönsakswok med tonfisk och ägg",
-          "recipeLink": "/kunskapsbank/recept/w-1752509227229"
-        }
-      }
-    }
-  },
-  "week2": {
-    "title": "Vecka 2: Bygg avancerade vanor",
-    "days": {
-      "Måndag": {
-        "breakfast": {
-          "name": "Grön smoothie",
-          "recipeLink": "/kunskapsbank/recept/gron-smoothie"
-        },
-        "lunch": {
-          "name": "Ägghack i salladsblad",
-          "recipeLink": "/kunskapsbank/recept/agghack-med-kalkon"
-        },
-        "dinner": {
-          "name": "Lax med rödbetssallad",
-          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
-        }
-      },
-      "Tisdag": {
-        "breakfast": {
-          "name": "Ägghack i salladsblad (Rester)"
-        },
-        "lunch": {
-          "name": "Lax med rödbetssallad (Rester)"
-        },
-        "dinner": {
-          "name": "Kycklingpizza",
-          "recipeLink": "/kunskapsbank/recept/kycklingfylld-aubergine"
-        }
-      },
-      "Onsdag": {
-        "breakfast": {
-          "name": "Overnight oats med morot",
-          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
-        },
-        "lunch": {
-          "name": "Kycklingpizza (Rester)"
-        },
-        "dinner": {
-          "name": "Fisktaco med mangosalsa och sesamsås",
-          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
-        }
-      },
-      "Torsdag": {
-        "breakfast": {
-          "name": "Yoghurt med bovetegranola och frukt",
-          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola"
-        },
-        "lunch": {
-          "name": "Fisktaco med mangosalsa och sesamsås (Rester)"
-        },
-        "dinner": {
-          "name": "Stekt ägg med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-champinjoner"
-        }
-      },
-      "Fredag": {
-        "breakfast": {
-          "name": "Stekt ägg med champinjoner (Rester)"
-        },
-        "lunch": {
-          "name": "Fisktaco med mangosalsa och sesamsås",
-          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
-        },
-        "dinner": {
-          "name": "Smoothiebowl med mango och pistagenötter",
-          "recipeLink": "/kunskapsbank/recept/mangosmoothie-med-spenat"
-        }
-      },
-      "Lördag": {
-        "breakfast": {
-          "name": "Smoothiebowl med mango och pistagenötter (Rester)"
-        },
-        "lunch": {
-          "name": "Fisktaco med mangosalsa och sesamsås (Rester)"
-        },
-        "dinner": {
-          "name": "Zucchinikaka med kardemumma",
-          "recipeLink": "/kunskapsbank/recept/mandel-och-citronpaj"
-        }
-      },
-      "Söndag": {
-        "breakfast": {
-          "name": "Grön smoothie",
-          "recipeLink": "/kunskapsbank/recept/gron-smoothie"
-        },
-        "lunch": {
-          "name": "Zucchinikaka med kardemumma (Rester)"
-        },
-        "dinner": {
-          "name": "Overnight oats med morot (Rester)"
+          "name": "Pärons allad med chèvreost",
+          "recipeLink": "/kunskapsbank/recept/paronsallad-med-chevreost"
         }
       }
     }
@@ -787,296 +216,876 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Grön smoothie",
-          "recipeLink": "/kunskapsbank/recept/gron-smoothie"
+          "name": "Rödbetsjuice",
+          "recipeLink": "/kunskapsbank/recept/rodbetsjuice"
         },
         "lunch": {
-          "name": "Färgstark fetaostsallad",
-          "recipeLink": "/kunskapsbank/recept/grekisk-sallad"
+          "name": "Pärons allad med chèvreost (Rester)"
         },
         "dinner": {
-          "name": "Bananmuffin",
-          "recipeLink": "/kunskapsbank/recept/bananplattar-med-jordgubbar-och-kokos"
+          "name": "Äggröra med rökt lax",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-lax"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Bananmuffin (Rester)"
+          "name": "Rödbetsjuice",
+          "recipeLink": "/kunskapsbank/recept/rodbetsjuice"
         },
         "lunch": {
-          "name": "Nötfärstimbaler med chévreost och soltorkad tomat",
-          "recipeLink": "/kunskapsbank/recept/asiatiska-kottbullar-med-nudelsallad"
+          "name": "Äggröra med rökt lax (Rester)"
         },
         "dinner": {
-          "name": "Laxsallad med fetaost",
-          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
+          "name": "Högrevsburgare med hummus",
+          "recipeLink": "/kunskapsbank/recept/hogrevsburgare-med-hummus"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Laxsallad med fetaost (Rester)"
+          "name": "Bärmoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508499726"
         },
         "lunch": {
-          "name": "Nötfärstimbaler med chévreost och soltorkad tomat (Rester)"
+          "name": "Hamburgare med hummus (Rester)"
         },
         "dinner": {
-          "name": "Keso med bovetegranola och frukt",
-          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola"
+          "name": "Kött i mustig tomatsås",
+          "recipeLink": "/kunskapsbank/recept/kott-i-mustig-tomatsas"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Keso med bovetegranola och frukt (Rester)"
+          "name": "Havregrynsgröt med valnötter och bär",
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
         },
         "lunch": {
-          "name": "Chiapudding med jordgubbar och hallon",
-          "recipeLink": "/kunskapsbank/recept/choklad-och-kokoschiapudding"
+          "name": "Kött i mustig tomatsås (Rester)"
         },
         "dinner": {
-          "name": "Torsk med guacamole och sötpotatis",
-          "recipeLink": "/kunskapsbank/recept/torsk-fran-mellanostern"
+          "name": "Högrevsburgare med hummus",
+          "recipeLink": "/kunskapsbank/recept/hogrevsburgare-med-hummus"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Chiapudding med jordgubbar och hallon (Rester)"
+          "name": "Keso med granola och fruktsallad",
+          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
         },
         "lunch": {
-          "name": "Torsk med guacamole och sötpotatis (Rester)"
+          "name": "Hamburgare med hummus (Rester)"
         },
         "dinner": {
-          "name": "Biff med nudelsallad och jordnötssås",
-          "recipeLink": "/kunskapsbank/recept/asiatiska-kottbullar-med-nudelsallad"
+          "name": "Nudelsoppa med grönsaker",
+          "recipeLink": "/kunskapsbank/recept/nudelsoppa-med-gronsaker"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Biff med nudelsallad och jordnötssås (Rester)"
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508498584"
         },
         "lunch": {
-          "name": "Chokladbar med majskakor",
-          "recipeLink": "/kunskapsbank/recept/mandel-och-citronpaj"
+          "name": "Nudelsoppa med grönsaker (Rester)"
         },
         "dinner": {
-          "name": "Omelettrulle",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-ost-och-spenat"
+          "name": "Linssoppa med curry och spiskummin",
+          "recipeLink": "/kunskapsbank/recept/linssoppa-med-curry-och-spiskummin"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Omelettrulle (Rester)"
+          "name": "Havregrynsgröt med valnötter och bär",
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
         },
         "lunch": {
-          "name": "Morotssoppa med ingefära och rostade kikärtor",
-          "recipeLink": "/kunskapsbank/recept/nudelsoppa-med-gronsaker"
+          "name": "Linssoppa med curry och spiskummin (Rester)"
         },
         "dinner": {
-          "name": "Färgstark fetaostsallad (Rester)"
+          "name": "Nötgryta med sötpotatis",
+          "recipeLink": "/kunskapsbank/recept/notgryta-med-sotpotatis"
         }
       }
     }
   },
   "week4": {
-    "title": "Vecka 4: Maximal näringsabsorption",
+    "title": "Vecka 4: Hormoner & metabolism",
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Morotssoppa med ingefära och rostade kikärtor (Rester)"
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508498584"
         },
         "lunch": {
-          "name": "Grönsakswok med kycklingfärs",
-          "recipeLink": "/kunskapsbank/recept/w-1752509311269"
+          "name": "Nötgryta med sötpotatis (Rester)"
         },
         "dinner": {
-          "name": "Yoghurt med bovetegranola",
-          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola"
+          "name": "Ugnsbakad kyckling med tzatziki och sallad",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakad-kyckling-med-tzatziki-och-sallad"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Yoghurt med bovetegranola (Rester)"
+          "name": "Bärmoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508499726"
         },
         "lunch": {
-          "name": "Grönsakswok med kycklingfärs (Rester)"
+          "name": "Ugnsbakad kyckling med tzatziki och sallad (Rester)"
         },
         "dinner": {
-          "name": "Ugnsbakad blomkål med ratatouille",
-          "recipeLink": "/kunskapsbank/recept/het-ratatouille"
+          "name": "Äggröra med paprika",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-paprika"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Lövbiffsrullader med brie, pesto och rödbetor",
-          "recipeLink": "/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora"
+          "name": "Havregrynsgröt med valnötter och bär",
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
         },
         "lunch": {
-          "name": "Ugnsbakad blomkål med ratatouille (Rester)"
+          "name": "Äggröra med paprika (Rester)"
         },
         "dinner": {
-          "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-lax"
+          "name": "Glasnudelsallad med grönsaker",
+          "recipeLink": "/kunskapsbank/recept/glasnudelsallad-med-gronsaker"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Äggröra med fetaost och spenat (Rester)"
+          "name": "Keso med granola och fruktsallad",
+          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
         },
         "lunch": {
-          "name": "Torsk med saffranssås",
-          "recipeLink": "/kunskapsbank/recept/torsk-fran-mellanostern"
+          "name": "Glasnudelsallad med grönsaker (Rester)"
         },
         "dinner": {
-          "name": "Bananmuffin",
-          "recipeLink": "/kunskapsbank/recept/bananplattar-med-jordgubbar-och-kokos"
+          "name": "Köttfärslimpa med ajvar och rostad sötpotatis",
+          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-ajvar-och-rostad-sotpotatis"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Bananmuffin (Rester)"
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508498584"
         },
         "lunch": {
-          "name": "Kycklingrullader med gorgonzola",
-          "recipeLink": "/kunskapsbank/recept/kycklingfylld-aubergine"
+          "name": "Köttfärslimpa med ajvar och rostad sötpotatis (Rester)"
         },
         "dinner": {
-          "name": "Omelett med keso och bär",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-hallon"
+          "name": "Halloumiburgare med rödbetor",
+          "recipeLink": "/kunskapsbank/recept/halloumiburgare-med-rodbetor"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Omelett med keso och bär (Rester)"
+          "name": "Köttfärslimpa med ajvar och rostad sötpotatis",
+          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-ajvar-och-rostad-sotpotatis"
         },
         "lunch": {
-          "name": "Valnötslax med fetaostcrème",
-          "recipeLink": "/kunskapsbank/recept/rokt-lax-med-blomkalsallad-och-citronyoghurt"
+          "name": "Köttfärslimpa med ajvar och rostad sötpotatis (Rester)"
         },
         "dinner": {
-          "name": "Stekta äpplen med vit chokladkräm",
-          "recipeLink": "/kunskapsbank/recept/jordgubbar-och-mango-med-vit-chokladkram"
+          "name": "Halloumiburgare med rödbetor (Rester)"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Valnötslax med fetaostcrème (Rester)"
+          "name": "Bärmoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508499726"
         },
         "lunch": {
-          "name": "Zucchiniplättar med yoghurtsås",
-          "recipeLink": "/kunskapsbank/recept/bananplattar-med-jordgubbar-och-kokos"
+          "name": "Halloumiburgare med rödbetor"
         },
         "dinner": {
-          "name": "Stekta äpplen med vit chokladkräm (Rester)"
+          "name": "Wokad lövbiff med nudlar",
+          "recipeLink": "/kunskapsbank/recept/wokad-lovbiff-med-nudlar"
         }
       }
     }
   },
   "week5": {
-    "title": "Vecka 5: Avancerad optimering",
+    "title": "Vecka 5: Integrering & Balans",
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Zucchiniplättar med yoghurtsås (Rester)"
+          "name": "Havregrynsgröt med valnötter och bär",
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
         },
         "lunch": {
-          "name": "Köttfärslimpa med tomat",
-          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-ajvar-och-rostad-sotpotatis"
+          "name": "Wokad lövbiff med nudlar (Rester)"
         },
         "dinner": {
-          "name": "Linssoppa från medelhavet",
-          "recipeLink": "/kunskapsbank/recept/linssoppa-fran-medelhavet"
+          "name": "Äggröra med granatäpple och kiwi",
+          "recipeLink": "/kunskapsbank/recept/w-1752509305366"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Linssoppa från medelhavet (Rester)"
+          "name": "Keso med granola och fruktsallad",
+          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
         },
         "lunch": {
-          "name": "Köttfärslimpa med tomat (Rester)"
+          "name": "Äggröra med granatäpple och kiwi (Rester)"
         },
         "dinner": {
-          "name": "Yoghurt med mango och apelsin",
-          "recipeLink": "/kunskapsbank/recept/mangosmoothie-med-spenat"
+          "name": "Lammgryta med plommon och bulgur",
+          "recipeLink": "/kunskapsbank/recept/lammgryta-med-plommon-och-bulgur"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Yoghurt med mango och apelsin (Rester)"
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508498584"
         },
         "lunch": {
-          "name": "Pestotorsk med capresesallad",
-          "recipeLink": "/kunskapsbank/recept/torskrygg-med-agghack-och-sparris"
+          "name": "Lammgryta med plommon och bulgur (Rester)"
         },
         "dinner": {
-          "name": "Stekt ägg med parmaskinka",
-          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-lax"
+          "name": "Rotfruktssoppa",
+          "recipeLink": "/kunskapsbank/recept/rotfruktssoppa"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Stekt ägg med parmaskinka (Rester)"
+          "name": "Bärmoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508499726"
         },
         "lunch": {
-          "name": "Pestotorsk med capresesallad (Rester)"
+          "name": "Rotfruktssoppa (Rester)"
         },
         "dinner": {
-          "name": "Bananmuffin",
-          "recipeLink": "/kunskapsbank/recept/bananplattar-med-jordgubbar-och-kokos"
+          "name": "Lammgryta med plommon och bulgur (Rester)"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Bananmuffin (Rester)"
+          "name": "Havregrynsgröt med valnötter och bär",
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
         },
         "lunch": {
-          "name": "Nötgryta med rotfrukter",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-roda-linser"
+          "name": "Lammgryta med plommon och bulgur (Rester)"
         },
         "dinner": {
-          "name": "Äggröra med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-champinjoner"
+          "name": "Köttfärssås med konjaksnudlar",
+          "recipeLink": "/kunskapsbank/recept/kottfarssas-med-konjaksnudlar"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Äggröra med champinjoner (Rester)"
+          "name": "Keso med granola och fruktsallad",
+          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
         },
         "lunch": {
-          "name": "Gino",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-fran-medelhavet"
+          "name": "Köttfärssås med konjaksnudlar (Rester)"
         },
         "dinner": {
-          "name": "Grönkålspaj med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/kycklingfylld-aubergine"
+          "name": "Äggröra med asiatisk avokadosallad",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-asiatisk-avokadosallad"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Grönkålspaj med champinjoner (Rester)"
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508498584"
         },
         "lunch": {
-          "name": "Nötgryta med rotfrukter (Rester)"
+          "name": "Äggröra med asiatisk avokadosallad (Rester)"
         },
         "dinner": {
-          "name": "Gino (Rester)"
+          "name": "Asiatisk tonfisksallad",
+          "recipeLink": "/kunskapsbank/recept/asiatisk-tonfisksallad"
         }
       }
     }
   },
   "week6": {
-    "title": "Vecka 6: Mastery och framtiden",
+    "title": "Vecka 6: Framtid & Hållbarhet",
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Grön smoothie",
-          "recipeLink": "/kunskapsbank/recept/gron-smoothie"
+          "name": "Havregrynsgröt med valnötter och bär",
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
         },
         "lunch": {
-          "name": "Kokta ägg med kaviar",
-          "recipeLink": "/kunskapsbank/recept/kokt-agg-med-majonnas"
+          "name": "Asiatisk tonfisksallad (Rester)"
         },
         "dinner": {
-          "name": "Stekt torsk med bearnaisesås och haricot verts",
-          "recipeLink": "/kunskapsbank/recept/torsk-fran-mellanostern"
+          "name": "Kycklingburgare med papayasallad",
+          "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-papayasallad"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Keso med granola och fruktsallad",
+          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
+        },
+        "lunch": {
+          "name": "Kycklingburgare med papayasallad (Rester)"
+        },
+        "dinner": {
+          "name": "Squashspagetti med grönsakssås",
+          "recipeLink": "/kunskapsbank/recept/squashspagetti-med-gronsakssos"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508498584"
+        },
+        "lunch": {
+          "name": "Squashspagetti med grönsakssås (Rester)"
+        },
+        "dinner": {
+          "name": "Morot- och kesolimpa",
+          "recipeLink": "/kunskapsbank/recept/morot-och-kesolimpa"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Bärmoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508499726"
+        },
+        "lunch": {
+          "name": "Morot- och kesolimpa (Rester)"
+        },
+        "dinner": {
+          "name": "Grillade köttspett med grekisk sallad",
+          "recipeLink": "/kunskapsbank/recept/grillade-kottspett-med-grekisk-sallad"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Havregrynsgröt med valnötter och bär",
+          "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-valnotter-och-bar"
+        },
+        "lunch": {
+          "name": "Grillade köttspett med grekisk sallad (Rester)"
+        },
+        "dinner": {
+          "name": "Laxburgare med krämig grönsaksröra",
+          "recipeLink": "/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Keso med granola och fruktsallad",
+          "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
+        },
+        "lunch": {
+          "name": "Laxburgare med krämig grönsaksröra (Rester)"
+        },
+        "dinner": {
+          "name": "Morotssoppa med ingefära och rostade kikärtor",
+          "recipeLink": "/kunskapsbank/recept/morotssoppa-med-ingefara-och-rostade-kikartor"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/w-1752508498584"
+        },
+        "lunch": {
+          "name": "Morotssoppa med ingefära och rostade kikärtor (Rester)"
+        },
+        "dinner": {
+          "name": "Lammgryta med plommon och bulgur",
+          "recipeLink": "/kunskapsbank/recept/lammgryta-med-plommon-och-bulgur"
+        }
+      }
+    }
+  }
+};
+
+// Functional Flow meal plans
+export const flowMealPlans: Record<string, WeekMealPlan> = {
+  "week1": {
+    "title": "Vecka 1: Introduktion till Flow",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Omelett med keso och bär",
+          "recipeLink": "/kunskapsbank/recept/omelett-med-keso-och-bar"
+        },
+        "lunch": {
+          "name": "Kött och hemmagjord hummus",
+          "recipeLink": "/kunskapsbank/recept/kott-och-hemmagjord-hummus"
+        },
+        "dinner": {
+          "name": "Köttfärsbiffar med tomatsallad",
+          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-tomatsallad"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Äggröra med fetaost och spenat",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+        },
+        "lunch": {
+          "name": "Köttfärsbiffar med tomatsallad (Rester)"
+        },
+        "dinner": {
+          "name": "Entrecote med haricot verts och bearnaisesås",
+          "recipeLink": "/kunskapsbank/recept/entrecote-med-haricot-verts-och-bearnaisesas"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Stekt ägg med champinjoner",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-champinjoner"
+        },
+        "lunch": {
+          "name": "Entrecote med haricot verts och bearnaisesås (Rester)"
+        },
+        "dinner": {
+          "name": "Lax med rödbetssallad",
+          "recipeLink": "/kunskapsbank/recept/lax-med-rodbetssallad"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Yoghurt med bovetegranola",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola"
+        },
+        "lunch": {
+          "name": "Lax med rödbetssallad (Rester)"
+        },
+        "dinner": {
+          "name": "Torrfisk med sötpotatis och spenat",
+          "recipeLink": "/kunskapsbank/recept/torrfisk-med-sotpotatis-och-spenat"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Overnight oats med morot",
+          "recipeLink": "/kunskapsbank/recept/overnightoats-med-morot"
+        },
+        "lunch": {
+          "name": "Torrfisk med sötpotatis och spenat (Rester)"
+        },
+        "dinner": {
+          "name": "Kycklingburgare med papayasallad",
+          "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-papayasallad"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Overnight oats med morot (Rester)"
+        },
+        "lunch": {
+          "name": "Kycklingburgare med papayasallad (Rester)"
+        },
+        "dinner": {
+          "name": "Torsk med saffranssås",
+          "recipeLink": "/kunskapsbank/recept/torsk-med-saffranssos"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Keso med bovetegranola och frukt",
+          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola-och-frukt"
+        },
+        "lunch": {
+          "name": "Torsk med saffranssås (Rester)"
+        },
+        "dinner": {
+          "name": "Bananpannkaka",
+          "recipeLink": "/kunskapsbank/recept/bananpannkaka"
+        }
+      }
+    }
+  },
+  "week2": {
+    "title": "Vecka 2: Fördjupning i Flow",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Chiapudding med jordgubbar och hallon",
+          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+        },
+        "lunch": {
+          "name": "Bananpannkaka (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med asiatisk avokadosallad",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-asiatisk-avokadosallad"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Blåbärssmoothie",
+          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
+        },
+        "lunch": {
+          "name": "Äggröra med asiatisk avokadosallad (Rester)"
+        },
+        "dinner": {
+          "name": "Nötfärstimbaler med chévreost och soltorkad tomat",
+          "recipeLink": "/kunskapsbank/recept/notfarstimbaler-med-chevreost-och-soltorkad-tomat"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Äggröra med champinjoner",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+        },
+        "lunch": {
+          "name": "Nötfärstimbaler med chévreost och soltorkad tomat (Rester)"
+        },
+        "dinner": {
+          "name": "Chokladbar med majskakor",
+          "recipeLink": "/kunskapsbank/recept/chokladbars-med-majskakor"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Varm chiagröt med äpple",
+          "recipeLink": "/kunskapsbank/recept/varm-chiagrot-med-apple"
+        },
+        "lunch": {
+          "name": "Chokladbar med majskakor (Rester)"
+        },
+        "dinner": {
+          "name": "Rökt lax med blomkålsallad och citronyoghurt",
+          "recipeLink": "/kunskapsbank/recept/rokt-lax-med-blomkalssallad-och-citronyoghurt"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Smoothiebowl med blåbär och granola",
+          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
+        },
+        "lunch": {
+          "name": "Rökt lax med blomkålsallad och citronyoghurt (Rester)"
+        },
+        "dinner": {
+          "name": "Choklad- och kokoschiapudding",
+          "recipeLink": "/kunskapsbank/recept/choklad-och-kokoschiapudding"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Bovetegranola",
+          "recipeLink": "/kunskapsbank/recept/bovetegranola"
+        },
+        "lunch": {
+          "name": "Choklad- och kokoschiapudding (Rester)"
+        },
+        "dinner": {
+          "name": "Morotssoppa med ingefära och rostade kikärtor",
+          "recipeLink": "/kunskapsbank/recept/morotssoppa-med-ingefara-och-rostade-kikartor"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Bovetegranola (Rester)"
+        },
+        "lunch": {
+          "name": "Morotssoppa med ingefära och rostade kikärtor (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med fetaost och spenat",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+        }
+      }
+    }
+  },
+  "week3": {
+    "title": "Vecka 3: Optimering av Flow",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Bananmuffin",
+          "recipeLink": "/kunskapsbank/recept/bananmuffin"
+        },
+        "lunch": {
+          "name": "Äggröra med fetaost och spenat (Rester)"
+        },
+        "dinner": {
+          "name": "Torrfisk med sötpotatis",
+          "recipeLink": "/kunskapsbank/recept/torrfisk-med-sotpotatis"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Omelett med avokado",
+          "recipeLink": "/kunskapsbank/recept/omelett-med-avokado"
+        },
+        "lunch": {
+          "name": "Torrfisk med sötpotatis (Rester)"
+        },
+        "dinner": {
+          "name": "Lövbiffsrullader med brie, pesto och rödbetor",
+          "recipeLink": "/kunskapsbank/recept/lovbiffsrullader-med-brie-pesto-och-rodbetor"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Äggröra med fetaost och spenat",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+        },
+        "lunch": {
+          "name": "Lövbiffsrullader med brie, pesto och rödbetor (Rester)"
+        },
+        "dinner": {
+          "name": "Valnötslax med fetaostcrème",
+          "recipeLink": "/kunskapsbank/recept/valnotslax-med-fetaostcreme"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Stekt ägg med avokado",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-avokado"
+        },
+        "lunch": {
+          "name": "Valnötslax med fetaostcrème (Rester)"
+        },
+        "dinner": {
+          "name": "Köttfärslimpa med tomat",
+          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-tomat"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Choklad- och kokoschiapudding",
+          "recipeLink": "/kunskapsbank/recept/choklad-och-kokoschiapudding"
+        },
+        "lunch": {
+          "name": "Köttfärslimpa med tomat (Rester)"
+        },
+        "dinner": {
+          "name": "Valnötslax med fetaostcrème",
+          "recipeLink": "/kunskapsbank/recept/valnotslax-med-fetaostcreme"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Choklad- och kokoschiapudding (Rester)"
+        },
+        "lunch": {
+          "name": "Valnötslax med fetaostcrème (Rester)"
+        },
+        "dinner": {
+          "name": "Köttfärslimpa med tomat (Rester)"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Bananmuffin",
+          "recipeLink": "/kunskapsbank/recept/bananmuffin"
+        },
+        "lunch": {
+          "name": "Köttfärslimpa med tomat"
+        },
+        "dinner": {
+          "name": "Torrfisk med sötpotatis",
+          "recipeLink": "/kunskapsbank/recept/torrfisk-med-sotpotatis"
+        }
+      }
+    }
+  },
+  "week4": {
+    "title": "Vecka 4: Avancerad Flow",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Stekt ägg med avokado",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-avokado"
+        },
+        "lunch": {
+          "name": "Torrfisk med sötpotatis (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med fetaost och spenat",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Omelett med avokado",
+          "recipeLink": "/kunskapsbank/recept/omelett-med-avokado"
+        },
+        "lunch": {
+          "name": "Äggröra med fetaost och spenat (Rester)"
+        },
+        "dinner": {
+          "name": "Torsk med saffranssås",
+          "recipeLink": "/kunskapsbank/recept/torsk-med-saffranssos"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Chiapudding med jordgubbar och hallon",
+          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+        },
+        "lunch": {
+          "name": "Torsk med saffranssås (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med champinjoner",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Varm chiagröt med äpple",
+          "recipeLink": "/kunskapsbank/recept/varm-chiagrot-med-apple"
+        },
+        "lunch": {
+          "name": "Äggröra med champinjoner (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med fetaost och spenat",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Blåbärssmoothie",
+          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
+        },
+        "lunch": {
+          "name": "Äggröra med fetaost och spenat (Rester)"
+        },
+        "dinner": {
+          "name": "Lax med rödbetssallad",
+          "recipeLink": "/kunskapsbank/recept/lax-med-rodbetssallad"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Smoothiebowl med blåbär och granola",
+          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
+        },
+        "lunch": {
+          "name": "Lax med rödbetssallad (Rester)"
+        },
+        "dinner": {
+          "name": "Omelett med keso och bär",
+          "recipeLink": "/kunskapsbank/recept/omelett-med-keso-och-bar"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Omelett med keso och bär (Rester)"
+        },
+        "lunch": {
+          "name": "Omelett med keso och bär"
+        },
+        "dinner": {
+          "name": "Chiapudding med jordgubbar och hallon",
+          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+        }
+      }
+    }
+  },
+  "week5": {
+    "title": "Vecka 5: Mästerskap i Flow",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Stekt ägg med champinjoner",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-champinjoner"
+        },
+        "lunch": {
+          "name": "Chiapudding med jordgubbar och hallon (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med asiatisk avokadosallad",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-asiatisk-avokadosallad"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Yoghurt med bovetegranola",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola"
+        },
+        "lunch": {
+          "name": "Äggröra med asiatisk avokadosallad (Rester)"
+        },
+        "dinner": {
+          "name": "Torrfisk med sötpotatis och spenat",
+          "recipeLink": "/kunskapsbank/recept/torrfisk-med-sotpotatis-och-spenat"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Keso med bovetegranola och frukt",
+          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola-och-frukt"
+        },
+        "lunch": {
+          "name": "Torrfisk med sötpotatis och spenat (Rester)"
+        },
+        "dinner": {
+          "name": "Kycklingburgare med papayasallad",
+          "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-papayasallad"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Overnight oats med morot",
+          "recipeLink": "/kunskapsbank/recept/overnightoats-med-morot"
+        },
+        "lunch": {
+          "name": "Kycklingburgare med papayasallad (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med fetaost och spenat",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Overnight oats med morot (Rester)"
+        },
+        "lunch": {
+          "name": "Äggröra med fetaost och spenat (Rester)"
+        },
+        "dinner": {
+          "name": "Torsk med saffranssås",
+          "recipeLink": "/kunskapsbank/recept/torsk-med-saffranssos"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Blåbärssmoothie",
+          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
+        },
+        "lunch": {
+          "name": "Torsk med saffranssås (Rester)"
+        },
+        "dinner": {
+          "name": "Bananpannkaka",
+          "recipeLink": "/kunskapsbank/recept/bananpannkaka"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Bovetegranola",
+          "recipeLink": "/kunskapsbank/recept/bovetegranola"
+        },
+        "lunch": {
+          "name": "Bananpannkaka (Rester)"
+        },
+        "dinner": {
+          "name": "Stekt ägg med champinjoner",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-champinjoner"
+        }
+      }
+    }
+  },
+  "week6": {
+    "title": "Vecka 6: Fullständig Flow",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Kokta ägg med kaviar",
+          "recipeLink": "/kunskapsbank/recept/kokt-agg-med-kaviar"
+        },
+        "lunch": {
+          "name": "Stekt ägg med champinjoner (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med champinjoner",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
         }
       },
       "Tisdag": {
@@ -1084,73 +1093,75 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
           "name": "Kokta ägg med kaviar (Rester)"
         },
         "lunch": {
-          "name": "Stekt torsk med bearnaisesås och haricot verts (Rester)"
+          "name": "Äggröra med champinjoner (Rester)"
         },
         "dinner": {
-          "name": "Yoghurt med bovetegranola och bär",
-          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola"
+          "name": "Hamburgare med grekisk sallad",
+          "recipeLink": "/kunskapsbank/recept/hamburgare-med-grekisk-sallad"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Yoghurt med bovetegranola och bär (Rester)"
+          "name": "Äggröra med asiatisk avokadosallad",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-asiatisk-avokadosallad"
         },
         "lunch": {
-          "name": "Stekt torsk med bearnaisesås och haricot verts (Rester)"
+          "name": "Hamburgare med grekisk sallad (Rester)"
         },
         "dinner": {
-          "name": "Kycklingfärsbiffar med vitlöksost",
-          "recipeLink": "/kunskapsbank/recept/kycklingfylld-aubergine"
+          "name": "Asiatisk köttfärswok med grönkål",
+          "recipeLink": "/kunskapsbank/recept/asiatisk-kottfarswok-med-gronkal"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Varm chiagröt med äpple",
-          "recipeLink": "/kunskapsbank/recept/chiafrogrot"
-        },
-        "lunch": {
-          "name": "Varma grönsaker med halloumi",
-          "recipeLink": "/kunskapsbank/recept/quinoasallad-med-stekt-halloumi"
-        },
-        "dinner": {
-          "name": "Kycklingfärsbiffar med vitlöksost (Rester)"
-        }
-      },
-      "Fredag": {
-        "breakfast": {
-          "name": "Ägghack med kallrökt lax",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-lax"
-        },
-        "lunch": {
-          "name": "Varma grönsaker med halloumi (Rester)"
-        },
-        "dinner": {
-          "name": "Lax med quinoasallad och grapefrukt",
-          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
-        }
-      },
-      "Lördag": {
-        "breakfast": {
-          "name": "Lax med quinoasallad och grapefrukt (Rester)"
-        },
-        "lunch": {
-          "name": "Hamburgare med grekisk sallad",
-          "recipeLink": "/kunskapsbank/recept/hamburgare-med-hummus"
-        },
-        "dinner": {
-          "name": "Asiatisk köttfärswok med grönkål",
-          "recipeLink": "/kunskapsbank/recept/w-1752509311269"
-        }
-      },
-      "Söndag": {
-        "breakfast": {
-          "name": "Hamburgare med grekisk sallad (Rester)"
+          "name": "Äggröra med asiatisk avokadosallad (Rester)"
         },
         "lunch": {
           "name": "Asiatisk köttfärswok med grönkål (Rester)"
         },
         "dinner": {
-          "name": "Lax med quinoasallad och grapefrukt (Rester)"
+          "name": "Äggröra med fetaost och spenat",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Stekt ägg med avokado",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-avokado"
+        },
+        "lunch": {
+          "name": "Äggröra med fetaost och spenat (Rester)"
+        },
+        "dinner": {
+          "name": "Äggröra med champinjoner",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Omelett med avokado",
+          "recipeLink": "/kunskapsbank/recept/omelett-med-avokado"
+        },
+        "lunch": {
+          "name": "Äggröra med champinjoner (Rester)"
+        },
+        "dinner": {
+          "name": "Lax med rödbetssallad",
+          "recipeLink": "/kunskapsbank/recept/lax-med-rodbetssallad"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Chiapudding med jordgubbar och hallon",
+          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+        },
+        "lunch": {
+          "name": "Lax med rödbetssallad (Rester)"
+        },
+        "dinner": {
+          "name": "Omelett med keso och bär",
+          "recipeLink": "/kunskapsbank/recept/omelett-med-keso-och-bar"
         }
       }
     }
