@@ -303,6 +303,32 @@ export default function FunctionalBasicsPage() {
           </motion.div>
         </div>
 
+        {/* Course Video Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="mb-16 max-w-4xl mx-auto"
+        >
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
+            <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
+              Se en förhandstitt på <span className="text-accent font-bold">kursen</span>
+            </h2>
+            <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+              <iframe
+                src="https://player.vimeo.com/video/1058943393"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <p className="text-center text-text-secondary mt-4 text-sm">
+              Få en känsla för kursen och se hur Ulrika guidar dig genom varje vecka
+            </p>
+          </div>
+        </motion.div>
+
         {/* Tab Navigation */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

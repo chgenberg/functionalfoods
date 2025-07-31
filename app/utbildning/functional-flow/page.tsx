@@ -17,6 +17,7 @@ export default function FunctionalFlowPage() {
     id: 'functional-flow',
     name: 'Functional Flow',
     price: 1836,
+    originalPrice: 2295,
     type: 'course' as const,
     image: '/functional_flow.png',
     quantity: 1
@@ -223,7 +224,10 @@ export default function FunctionalFlowPage() {
               </div>
               <div className="text-2xl font-bold text-primary">1,836 kr</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
-              <button className="bg-primary text-white px-6 py-2 rounded-full text-sm hover:bg-primary/90 transition-colors w-full">
+              <button 
+                onClick={handleAddToCart}
+                className="bg-primary text-white px-6 py-2 rounded-full text-sm hover:bg-primary/90 transition-colors w-full"
+              >
                 Lägg i varukorg
               </button>
               <div className="w-full border-t border-gray-200 my-2"></div>
@@ -248,6 +252,32 @@ export default function FunctionalFlowPage() {
             </motion.div>
           </motion.div>
         </div>
+
+        {/* Course Video Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mb-16 max-w-4xl mx-auto"
+        >
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-primary/10">
+            <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
+              Upptäck <span className="text-primary font-bold">Functional Flow</span>
+            </h2>
+            <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+              <iframe
+                src="https://player.vimeo.com/video/1084929149"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <p className="text-center text-text-secondary mt-4 text-sm">
+              Se hur kursen hjälper dig skapa balans och flöde i din vardag
+            </p>
+          </div>
+        </motion.div>
 
         {/* Tab Navigation */}
         <motion.div 
