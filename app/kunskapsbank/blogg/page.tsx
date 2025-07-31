@@ -142,6 +142,10 @@ export default function BlogPage() {
                       alt={post.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/images/blog-placeholder.jpg';
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     <div className="absolute bottom-4 left-4">

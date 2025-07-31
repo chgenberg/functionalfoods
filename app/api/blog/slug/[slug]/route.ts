@@ -26,7 +26,7 @@ export async function GET(
       return NextResponse.json({ error: "Inlägget hittades inte" }, { status: 404 });
     }
 
-    return NextResponse.json(post);
+    return NextResponse.json({ post });
   } catch (error) {
     console.error("Fel vid hämtning av blogginlägg:", error);
     return NextResponse.json({ error: "Internt serverfel" }, { status: 500 });
@@ -41,10 +41,10 @@ export async function PUT(
   try {
     const { slug } = params;
     const body = await request.json();
-    const { title, content, status } = body;
+    const { title, content, published } = body;
 
-    if (!title || !content || !status) {
-      return NextResponse.json({ error: "Titel, innehåll och status krävs" }, { status: 400 });
+    if (!title || !content) {
+      return NextResponse.json({ error: "Titel och innehåll krävs" }, { status: 400 });
     }
 
     const updatedPost = await prisma.blogPost.update({
@@ -52,7 +52,7 @@ export async function PUT(
       data: {
         title,
         content,
-        status,
+        published: published !== undefined ? published : true,
         // Optional: create a new slug if title changes
         // slug: title.toLowerCase().replace(/\s+/g, '-').replace(/[åä]/g, 'a').replace(/ö/g, 'o')
       },
