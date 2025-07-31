@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import OpenAI from 'openai';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 // Create OpenAI client only if API key is available

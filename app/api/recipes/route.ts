@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { verify } from 'jsonwebtoken';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 // Funktion för att hämta användarens kursåtkomst
@@ -195,7 +197,7 @@ export async function GET(request: NextRequest) {
       cookTime: recipe.cookTime || undefined,
       totalTime: recipe.totalTime || undefined,
       servings: recipe.servings || undefined,
-      instructions: recipe.instructions || undefined,
+      instructions: recipe.instructions ? recipe.instructions.split('\n').filter(step => step.trim()) : undefined,
       tips: recipe.tips || undefined,
       tags: recipe.tags || undefined
     }));
