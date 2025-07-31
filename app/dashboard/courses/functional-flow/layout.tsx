@@ -69,6 +69,26 @@ export default function FunctionalFlowLayout({
       icon: FiCalendar,
     },
     {
+      label: 'Mål',
+      href: '/dashboard/courses/functional-flow/goals',
+      icon: FiTarget,
+    },
+    {
+      label: 'Material',
+      href: '/dashboard/courses/functional-flow/material',
+      icon: FiBook,
+    },
+    {
+      label: 'Community',
+      href: '/dashboard/courses/functional-flow/community',
+      icon: FiUsers,
+    },
+    {
+      label: 'Ladda ner',
+      href: '/dashboard/courses/functional-flow/downloads',
+      icon: FiDownload,
+    },
+    {
       label: 'Inställningar',
       href: '/dashboard/settings',
       icon: FiSettings,

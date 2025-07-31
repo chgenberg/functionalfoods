@@ -1,230 +1,143 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { 
-  FiDownload, FiFileText, FiBook, FiList,
-  FiCheckCircle, FiInfo, FiAward
-} from 'react-icons/fi';
-import { GiFruitBowl, GiMeal, GiHealthNormal } from 'react-icons/gi';
-import { useState } from 'react';
+import { FiDownload, FiFileText, FiBook, FiCheckCircle } from 'react-icons/fi';
 
-interface Download {
-  id: string;
-  title: string;
-  description: string;
-  category: 'guide' | 'recipe' | 'shopping' | 'knowledge';
-  size: string;
-  icon: React.ElementType;
-  popular?: boolean;
-}
+const downloads = [
+  {
+    id: 1,
+    title: 'Functional Flow - Komplett kursguide',
+    description: 'Hela kursen i PDF-format med alla veckor och recept',
+    size: '15.2 MB',
+    type: 'PDF',
+    icon: FiBook,
+  },
+  {
+    id: 2,
+    title: 'Veckoscheman',
+    description: 'Alla 6 veckors kostscheman i utskriftsvänligt format',
+    size: '3.8 MB',
+    type: 'PDF',
+    icon: FiFileText,
+  },
+  {
+    id: 3,
+    title: 'Inköpslistor',
+    description: 'Kompletta inköpslistor för alla veckor',
+    size: '1.2 MB',
+    type: 'PDF',
+    icon: FiFileText,
+  },
+  {
+    id: 4,
+    title: 'Receptsamling',
+    description: 'Alla 85 recept i ett dokument',
+    size: '8.5 MB',
+    type: 'PDF',
+    icon: FiBook,
+  },
+  {
+    id: 5,
+    title: 'Råvaruguide',
+    description: 'Fördjupad information om funktionella råvaror',
+    size: '4.3 MB',
+    type: 'PDF',
+    icon: FiFileText,
+  },
+];
 
-export default function DownloadsPage() {
-  const downloads: Download[] = [
-    {
-      id: 'functional-foods-topplista',
-      title: 'Topplistan Functional Foods',
-      description: 'Komplett guide över de 10 viktigaste livsmedelskategorierna',
-      category: 'guide',
-      size: '2.4 MB',
-      icon: GiFruitBowl,
-      popular: true
-    },
-    {
-      id: 'vecka-1-inkopslista',
-      title: 'Vecka 1 - Inköpslista',
-      description: 'Komplett inköpslista för första veckan',
-      category: 'shopping',
-      size: '245 KB',
-      icon: FiList
-    },
-    {
-      id: 'vecka-2-inkopslista',
-      title: 'Vecka 2 - Inköpslista',
-      description: 'Komplett inköpslista för andra veckan',
-      category: 'shopping',
-      size: '248 KB',
-      icon: FiList
-    },
-    {
-      id: 'vecka-3-inkopslista',
-      title: 'Vecka 3 - Inköpslista',
-      description: 'Komplett inköpslista för tredje veckan',
-      category: 'shopping',
-      size: '251 KB',
-      icon: FiList
-    },
-    {
-      id: 'drycker-guide',
-      title: 'Drycker & Smoothies',
-      description: 'Recept på hälsosamma drycker och smoothies',
-      category: 'recipe',
-      size: '1.8 MB',
-      icon: GiMeal
-    },
-    {
-      id: 'benbuljong-guide',
-      title: 'Benbuljong Guide',
-      description: 'Lär dig göra näringsrik benbuljong hemma',
-      category: 'recipe',
-      size: '1.2 MB',
-      icon: GiHealthNormal
-    },
-    {
-      id: 'superpulver-guide',
-      title: 'Superpulver Guide',
-      description: 'Allt om spirulina, chlorella och andra superpulver',
-      category: 'knowledge',
-      size: '3.1 MB',
-      icon: FiAward,
-      popular: true
-    },
-    {
-      id: 'motivation-reflektion',
-      title: 'Motivation & Reflektion',
-      description: 'Arbetsmaterial för personlig utveckling',
-      category: 'knowledge',
-      size: '892 KB',
-      icon: FiBook
-    },
-    {
-      id: 'ersattningsguide-kolhydrater',
-      title: 'Ersättningsguide Kolhydrater',
-      description: 'Smarta alternativ till vanliga kolhydrater',
-      category: 'guide',
-      size: '1.5 MB',
-      icon: FiFileText
-    },
-    {
-      id: 'periodisk-fasta-guide',
-      title: 'Periodisk Fasta Guide',
-      description: 'Introduktion till 16:8 metoden',
-      category: 'knowledge',
-      size: '2.2 MB',
-      icon: FiInfo
-    }
-  ];
-
-  const categories = [
-    { id: 'all', label: 'Alla', icon: FiFileText },
-    { id: 'guide', label: 'Guider', icon: GiFruitBowl },
-    { id: 'recipe', label: 'Recept', icon: GiMeal },
-    { id: 'shopping', label: 'Inköpslistor', icon: FiList },
-    { id: 'knowledge', label: 'Kunskap', icon: FiBook }
-  ];
-
-  const [selectedCategory, setSelectedCategory] = useState('all');
-
-  const filteredDownloads = selectedCategory === 'all' 
-    ? downloads 
-    : downloads.filter(d => d.category === selectedCategory);
-
-  const handleDownload = (download: Download) => {
-    // Simulate download
-    console.log('Downloading:', download.title);
-    // In real implementation, this would trigger actual file download
+export default function FlowDownloadsPage() {
+  const handleDownload = (fileName: string) => {
+    // In a real app, this would trigger a file download
+    console.log(`Downloading ${fileName}...`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Nedladdningar</h1>
-          <p className="text-lg text-gray-600">Ladda ner guider, recept och arbetsmaterial</p>
-        </motion.div>
-
-        {/* Category Filter */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`px-4 py-2 rounded-full font-medium transition-all ${
-                  selectedCategory === category.id
-                    ? 'bg-green-600 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <category.icon className="inline-block w-4 h-4 mr-2" />
-                {category.label}
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Downloads Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDownloads.map((download, index) => (
-            <motion.div
-              key={download.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + index * 0.05 }}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
-            >
-              {download.popular && (
-                <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-1 text-sm font-semibold">
-                  Populär
-                </div>
-              )}
-              
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                    download.category === 'guide' ? 'bg-purple-100 text-purple-600' :
-                    download.category === 'recipe' ? 'bg-green-100 text-green-600' :
-                    download.category === 'shopping' ? 'bg-blue-100 text-blue-600' :
-                    'bg-orange-100 text-orange-600'
-                  }`}>
-                    <download.icon className="w-6 h-6" />
-                  </div>
-                  <span className="text-sm text-gray-500">{download.size}</span>
-                </div>
-
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{download.title}</h3>
-                <p className="text-gray-600 mb-4">{download.description}</p>
-
-                <button
-                  onClick={() => handleDownload(download)}
-                  className="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
-                >
-                  <FiDownload className="w-5 h-5" />
-                  Ladda ner
-                </button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Info Box */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8"
-        >
-          <div className="flex items-start gap-4">
-            <FiInfo className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Tips för nedladdningar</h3>
-              <p className="text-gray-600">
-                Alla dokument är i PDF-format och kan skrivas ut eller sparas på din enhet. 
-                Vi rekommenderar att du skapar en mapp för kursmaterialet så du enkelt hittar allt du behöver.
-              </p>
-            </div>
-          </div>
-        </motion.div>
+    <div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Nedladdningar</h1>
+        <p className="text-gray-600">
+          Ladda ner kursmaterial för offline-användning
+        </p>
       </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+        <div className="flex items-start gap-3">
+          <FiCheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+          <div>
+            <p className="text-sm text-blue-800">
+              <strong>Tips:</strong> Ladda ner allt material för att ha tillgång till kursen även offline. 
+              Perfekt för resor eller när du inte har internetuppkoppling.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {downloads.map((download, index) => (
+          <motion.div
+            key={download.id}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-start gap-4">
+                <div className="bg-[#1a4d78]/10 p-3 rounded-lg">
+                  <download.icon className="w-6 h-6 text-[#1a4d78]" />
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {download.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-2">
+                    {download.description}
+                  </p>
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <span>{download.type}</span>
+                    <span>•</span>
+                    <span>{download.size}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => handleDownload(download.title)}
+                className="flex items-center gap-2 bg-[#1a4d78] text-white px-4 py-2 rounded-lg hover:bg-[#2563a8] transition-colors"
+              >
+                <FiDownload className="w-4 h-4" />
+                Ladda ner
+              </button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Download All */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="mt-8 bg-gradient-to-r from-[#1a4d78] to-[#2563a8] rounded-xl p-6 text-white"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Ladda ner allt material</h3>
+            <p className="text-white/80">
+              Få alla filer i ett ZIP-arkiv (32.5 MB)
+            </p>
+          </div>
+          <button
+            onClick={() => handleDownload('Functional Flow - Allt material')}
+            className="flex items-center gap-2 bg-white text-[#1a4d78] px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+          >
+            <FiDownload className="w-5 h-5" />
+            Ladda ner allt
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 } 
