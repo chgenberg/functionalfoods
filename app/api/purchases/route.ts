@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { PaymentService, PaymentRequest } from '../../lib/payment';
+import { emailService } from '../../lib/email';
 
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
@@ -204,6 +205,22 @@ export async function POST(request: Request) {
       }
 
       // TODO: Skicka bekräftelse-email
+      try {
+        await emailService.sendOrderConfirmation({
+          customerEmail: user.email,
+          customerName: user.name || user.email,
+          orderNumber: order.orderNumber,
+          totalAmount,
+          courses: courses.map(c => ({
+            name: c.name,
+            price: c.price
+          }))
+        });
+        console.log('Order confirmation email sent to:', user.email);
+      } catch (emailError) {
+        console.error('Failed to send order confirmation email:', emailError);
+        // Don't fail the order if email fails
+      }
 
       return NextResponse.json({
         success: true,

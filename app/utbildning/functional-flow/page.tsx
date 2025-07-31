@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap, FiShoppingCart, FiUsers, FiBook, FiStar, FiPlay, FiVideo, FiUser } from 'react-icons/fi';
+import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap, FiShoppingCart, FiUsers, FiBook, FiStar, FiPlay, FiVideo, FiUser, FiChevronRight } from 'react-icons/fi';
 import { GiBrain, GiStomach, GiWheat, GiHeartBeats } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
+import AddToCart from '@/app/components/AddToCart';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -422,33 +423,28 @@ export default function FunctionalFlowPage() {
           )}
         </AnimatePresence>
 
-        {/* CTA Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-center"
-        >
-          <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-8 shadow-xl max-w-3xl mx-auto border border-primary/20">
-            <h2 className="text-3xl font-light text-primary mb-4">Redo att börja din resa?</h2>
-            <p className="text-lg text-text-secondary mb-6 leading-relaxed">
-              Magen är som en kompass för hur resten av kroppen mår, och när den är i balans 
-              känner du ett lugn och har en energi som sprider sig i kroppen.
-            </p>
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleAddToCart}
-              className="bg-primary text-white px-10 py-4 rounded-lg hover:bg-primary/90 transition-all duration-300 font-medium shadow-lg inline-flex items-center gap-3"
+        {/* CTA Section - Updated with Flow branding */}
+        <div className="rounded-2xl p-8 text-white text-center" style={{ backgroundColor: '#1a4324' }}>
+          <h3 className="text-2xl font-bold mb-4">Redo för nästa nivå?</h3>
+          <p className="text-lg mb-6 text-white/90">
+            Ta din hälsa till nya höjder med avancerad functional foods
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <AddToCart 
+              id="functional-flow"
+              name="Functional Flow"
+              price={1497}
+              type="course"
+            />
+            <Link
+              href="#kostschema"
+              className="px-8 py-3 bg-white/20 backdrop-blur-sm text-white rounded-full font-medium hover:bg-white/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
             >
-              <FiShoppingCart className="w-5 h-5" />
-              Investera i din hälsa - 1,836 kr
-            </motion.button>
-            <p className="text-sm text-text-secondary mt-4">
-              💚 Ge din mage kärlek genom mat som läker och en livsstil som ger lugn
-            </p>
+              Se kostschema
+              <FiChevronRight />
+            </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </main>
   );

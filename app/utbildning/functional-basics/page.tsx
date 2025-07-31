@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap, FiShoppingCart, FiUsers, FiBook, FiStar, FiPlay, FiTarget, FiVideo, FiUser } from 'react-icons/fi';
+import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap, FiShoppingCart, FiUsers, FiBook, FiStar, FiPlay, FiTarget, FiVideo, FiUser, FiChevronRight } from 'react-icons/fi';
 import { GiBrain, GiStomach, GiWheat, GiHeartBeats, GiMuscleUp } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
+import AddToCart from '@/app/components/AddToCart';
 
 export default function FunctionalBasicsPage() {
   // Add CSS for gradient animation
@@ -517,34 +518,27 @@ export default function FunctionalBasicsPage() {
         </AnimatePresence>
 
         {/* CTA Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="text-center"
-        >
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-3xl mx-auto border border-white/50">
-            <h2 className="text-2xl md:text-3xl font-light text-primary mb-4">
-              Redo att börja din <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">hälsoresa?</span>
-            </h2>
-            <p className="text-text-secondary mb-8 text-lg leading-relaxed">
-              Investera i din hälsa idag och känn skillnaden redan inom några veckor. 
-              Med 75 recept, personlig coaching och livstidsåtkomst får du alla verktyg du behöver.
+        <div className="bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl p-8 text-white text-center">
+            <h3 className="text-2xl font-bold mb-4">Redo att börja din hälsoresa?</h3>
+            <p className="text-lg mb-6 text-white/90">
+              Få tillgång till hela kursen och börja din transformation redan idag
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button 
-                onClick={handleAddToCart}
-                className="bg-primary text-white px-8 py-4 rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 transform"
+              <AddToCart 
+                id="functional-basics"
+                name="Functional Basics"
+                price={997}
+                type="course"
+              />
+              <Link
+                href="#kostschema"
+                className="px-8 py-3 bg-white/20 backdrop-blur-sm text-white rounded-full font-medium hover:bg-white/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
               >
-                <FiShoppingCart className="w-5 h-5" />
-                Lägg i varukorg - 2,295 kr
-              </button>
-              <div className="text-sm text-text-secondary">
-                6 veckors komplett kurs
-              </div>
+                Se kostschema
+                <FiChevronRight />
+              </Link>
             </div>
           </div>
-        </motion.div>
       </div>
     </main>
   );
