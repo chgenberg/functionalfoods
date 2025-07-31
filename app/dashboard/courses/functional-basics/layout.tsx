@@ -86,6 +86,11 @@ export default function FunctionalBasicsLayout({
       href: '/dashboard/courses/functional-basics/downloads',
       icon: FiDownload,
     },
+    {
+      label: 'Inställningar',
+      href: '/dashboard/settings',
+      icon: FiSettings,
+    },
   ];
 
   // Close mobile menu when route changes

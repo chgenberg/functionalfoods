@@ -68,6 +68,11 @@ export default function FunctionalFlowLayout({
       href: '/dashboard/courses/functional-flow/week/6',
       icon: FiCalendar,
     },
+    {
+      label: 'Inställningar',
+      href: '/dashboard/settings',
+      icon: FiSettings,
+    },
   ];
 
   useEffect(() => {
