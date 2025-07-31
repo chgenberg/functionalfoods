@@ -43,16 +43,89 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ items: [] });
     }
 
-    // Transform the data to include categories
-    const categorizedItems = shoppingList.items.map(item => ({
-      id: item.id,
-      name: item.ingredient,
-      quantity: '',
-      isChecked: item.isChecked,
-      category: categorizeIngredient(item.ingredient)
-    }));
+    // ---------- Aggregate identical ingredients ----------
+    // Helper: convert common unicode fractions and "1/2" etc. to decimal
+    const fractionMap: Record<string, number> = {
+      '½': 0.5,
+      '¼': 0.25,
+      '¾': 0.75,
+      '⅓': 0.333,
+      '⅔': 0.666,
+    };
 
-    return NextResponse.json({ items: categorizedItems });
+    const toNumber = (str: string): number => {
+      str = str.trim();
+      if (fractionMap[str]) return fractionMap[str];
+      if (/^\d+\/\d+$/.test(str)) {
+        const [num, den] = str.split('/').map(Number);
+        return num / den;
+      }
+      // Replace comma with dot for decimals
+      str = str.replace(',', '.');
+      const val = parseFloat(str);
+      return isNaN(val) ? 1 : val; // fallback 1 if no number
+    };
+
+    interface AggItem {
+      ids: string[];
+      quantity: number;
+      unit: string;
+      name: string;
+    }
+
+    const aggMap: Record<string, AggItem> = {};
+
+    const ingredientRegex = /^([\d¼½¾⅓⅔\d\/.,]+)?\s*([a-zA-ZåäöÅÄÖ]+)?\s*(.+)$/u;
+
+    for (const item of shoppingList.items) {
+      let ingredientStr = item.ingredient.trim();
+
+      const match = ingredientRegex.exec(ingredientStr);
+      if (!match) continue;
+
+      const rawQty = match[1] || '';
+      const unit = (match[2] || '').toLowerCase();
+      let name = match[3].trim();
+
+      // Remove trailing punctuation/units from name
+      name = name.replace(/[,.;]+$/, '').trim();
+
+      const qty = rawQty ? toNumber(rawQty) : 1;
+
+      const key = `${name.toLowerCase()}|${unit}`;
+      if (!aggMap[key]) {
+        aggMap[key] = { ids: [item.id], quantity: qty, unit, name };
+      } else {
+        aggMap[key].quantity += qty;
+        aggMap[key].ids.push(item.id);
+      }
+    }
+
+    const aggregatedItems = Object.values(aggMap).map(group => {
+      let displayQty = group.quantity;
+      let displayStr = '';
+
+      if (!group.unit || ['st', ''].includes(group.unit)) {
+        // Treat as pieces – round up
+        displayQty = Math.ceil(displayQty);
+        displayStr = `${displayQty}`;
+      } else {
+        // Round to sensible precision
+        displayQty = Math.round(displayQty * 100) / 100;
+        displayStr = `${displayQty} ${group.unit}`;
+      }
+
+      return {
+        id: group.ids[0],
+        name: group.name,
+        quantity: displayStr,
+        category: categorizeIngredient(group.name),
+        isChecked: false,
+      };
+    });
+
+    // Sort alphabetically within categories in the frontend; just send aggregated list
+    return NextResponse.json({ items: aggregatedItems });
 
   } catch (error) {
     console.error('Error fetching shopping list:', error);
