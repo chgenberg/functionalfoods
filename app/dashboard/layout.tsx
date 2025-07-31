@@ -10,11 +10,6 @@ import Header from '@/app/components/Header';
 const menuItems = [
   { href: '/dashboard', icon: FiHome, label: 'Översikt' },
   { href: '/dashboard/courses', icon: FiBookOpen, label: 'Mina kurser' },
-  { href: '/dashboard/health', icon: FiActivity, label: 'Hälsospårning' },
-  { href: '/dashboard/my-health', icon: FiHeart, label: 'Min Hälsa' },
-  { href: '/dashboard/community', icon: FiUsers, label: 'Community' },
-  { href: '/dashboard/coaching', icon: FiCalendar, label: 'Coaching' },
-  { href: '/dashboard/downloads', icon: FiDownload, label: 'Nerladdningar' },
   { href: '/dashboard/settings', icon: FiSettings, label: 'Inställningar' },
 ];
 
@@ -77,11 +72,13 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   
-  // Check if we're in the functional-basics course
+  // Check if we're in any course-specific dashboard
   const isInFunctionalBasics = pathname?.includes('/dashboard/courses/functional-basics');
+  const isInFunctionalFlow = pathname?.includes('/dashboard/courses/functional-flow');
+  const isInCourseSpecificDashboard = isInFunctionalBasics || isInFunctionalFlow;
 
-  // If in Functional Basics, just render children without the sidebar
-  if (isInFunctionalBasics) {
+  // If in a course-specific dashboard, just render children without the general sidebar
+  if (isInCourseSpecificDashboard) {
     return <>{children}</>;
   }
 
