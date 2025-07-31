@@ -110,7 +110,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Ugnsbakad tomat med köttfärs",
-          "recipeLink": "/kunskapsbank/recept/ugnsbakad-tomat-med-kottfars"
+          "recipeLink": "/kunskapsbank/recept/forbattrad-extraktion-ugnsbakad-tomat-med-kottfars"
         }
       }
     }
@@ -173,7 +173,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
       "Fredag": {
         "breakfast": {
           "name": "Blåbärs smoothiebowl",
-          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-smoothiebowl-med-blabar-och-granola"
         },
         "lunch": {
           "name": "Kyckling i curry med kokosmjölk (Rester)"
@@ -193,7 +193,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Japansk kycklingfärswok med groddar",
-          "recipeLink": "/kunskapsbank/recept/japansk-kycklingfarswok-med-groddar"
+          "recipeLink": "/kunskapsbank/recept/forbattrad-extraktion-japansk-kycklingfarswok-med-groddar"
         }
       },
       "Söndag": {
@@ -206,7 +206,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Pärons allad med chèvreost",
-          "recipeLink": "/kunskapsbank/recept/paronsallad-med-chevreost"
+          "recipeLink": "/kunskapsbank/recept/final-extraktion-paronsallad-med-chevreost"
         }
       }
     }
@@ -575,7 +575,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Morotssoppa med ingefära och rostade kikärtor",
-          "recipeLink": "/kunskapsbank/recept/morotssoppa-med-ingefara-och-rostade-kikartor"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-morotssoppa-med-ingefara-och-rostade-kikartor"
         }
       },
       "Söndag": {
@@ -603,7 +603,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Omelett med keso och bär",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-keso-och-bar"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-omelett-med-keso-och-bar"
         },
         "lunch": {
           "name": "Kött och hemmagjord hummus",
@@ -617,33 +617,33 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Tisdag": {
         "breakfast": {
           "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-aggrora-med-fetaost-och-spenat"
         },
         "lunch": {
           "name": "Köttfärsbiffar med tomatsallad (Rester)"
         },
         "dinner": {
           "name": "Entrecote med haricot verts och bearnaisesås",
-          "recipeLink": "/kunskapsbank/recept/entrecote-med-haricot-verts-och-bearnaisesas"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-entrecote-med-haricots-verts-och-bearnaisesas"
         }
       },
       "Onsdag": {
         "breakfast": {
           "name": "Stekt ägg med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-champinjoner"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-aggrora-med-champinjoner"
         },
         "lunch": {
           "name": "Entrecote med haricot verts och bearnaisesås (Rester)"
         },
         "dinner": {
           "name": "Lax med rödbetssallad",
-          "recipeLink": "/kunskapsbank/recept/lax-med-rodbetssallad"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-lax-med-rodbetssallad"
         }
       },
       "Torsdag": {
         "breakfast": {
           "name": "Yoghurt med bovetegranola",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-yoghurt-med-bovetegranola-och-frukt"
         },
         "lunch": {
           "name": "Lax med rödbetssallad (Rester)"
@@ -656,7 +656,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Fredag": {
         "breakfast": {
           "name": "Overnight oats med morot",
-          "recipeLink": "/kunskapsbank/recept/overnightoats-med-morot"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-morotssoppa-med-ingefara-och-rostade-kikartor"
         },
         "lunch": {
           "name": "Torrfisk med sötpotatis och spenat (Rester)"
@@ -681,14 +681,14 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Söndag": {
         "breakfast": {
           "name": "Keso med bovetegranola och frukt",
-          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola-och-frukt"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-yoghurt-med-bovetegranola-och-frukt"
         },
         "lunch": {
           "name": "Torsk med saffranssås (Rester)"
         },
         "dinner": {
           "name": "Bananpannkaka",
-          "recipeLink": "/kunskapsbank/recept/bananpannkaka"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-bananpannkaka"
         }
       }
     }
@@ -699,7 +699,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Chiapudding med jordgubbar och hallon",
-          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-chiapudding-med-jordgubbar-och-hallon"
         },
         "lunch": {
           "name": "Bananpannkaka (Rester)"
@@ -712,46 +712,46 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Tisdag": {
         "breakfast": {
           "name": "Blåbärssmoothie",
-          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-blabarssmoothie"
         },
         "lunch": {
           "name": "Äggröra med asiatisk avokadosallad (Rester)"
         },
         "dinner": {
           "name": "Nötfärstimbaler med chévreost och soltorkad tomat",
-          "recipeLink": "/kunskapsbank/recept/notfarstimbaler-med-chevreost-och-soltorkad-tomat"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-notfarstimbaler-med-chevreost-och-soltorkad-tomat"
         }
       },
       "Onsdag": {
         "breakfast": {
           "name": "Äggröra med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-aggrora-med-champinjoner"
         },
         "lunch": {
           "name": "Nötfärstimbaler med chévreost och soltorkad tomat (Rester)"
         },
         "dinner": {
           "name": "Chokladbar med majskakor",
-          "recipeLink": "/kunskapsbank/recept/chokladbars-med-majskakor"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-chokladbars-med-majskakor"
         }
       },
       "Torsdag": {
         "breakfast": {
           "name": "Varm chiagröt med äpple",
-          "recipeLink": "/kunskapsbank/recept/varm-chiagrot-med-apple"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-varm-chiagrot-med-apple"
         },
         "lunch": {
           "name": "Chokladbar med majskakor (Rester)"
         },
         "dinner": {
           "name": "Rökt lax med blomkålsallad och citronyoghurt",
-          "recipeLink": "/kunskapsbank/recept/rokt-lax-med-blomkalssallad-och-citronyoghurt"
+          "recipeLink": "/kunskapsbank/recept/rokt-lax-med-blomkalsallad-och-citronyoghurt"
         }
       },
       "Fredag": {
         "breakfast": {
           "name": "Smoothiebowl med blåbär och granola",
-          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-smoothiebowl-med-blabar-och-granola"
         },
         "lunch": {
           "name": "Rökt lax med blomkålsallad och citronyoghurt (Rester)"
@@ -771,7 +771,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Morotssoppa med ingefära och rostade kikärtor",
-          "recipeLink": "/kunskapsbank/recept/morotssoppa-med-ingefara-och-rostade-kikartor"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-morotssoppa-med-ingefara-och-rostade-kikartor"
         }
       },
       "Söndag": {
@@ -783,7 +783,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-aggrora-med-fetaost-och-spenat"
         }
       }
     }
@@ -794,7 +794,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Bananmuffin",
-          "recipeLink": "/kunskapsbank/recept/bananmuffin"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-bananmuffin"
         },
         "lunch": {
           "name": "Äggröra med fetaost och spenat (Rester)"
@@ -814,20 +814,20 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Lövbiffsrullader med brie, pesto och rödbetor",
-          "recipeLink": "/kunskapsbank/recept/lovbiffsrullader-med-brie-pesto-och-rodbetor"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-lovbiffsrullader-med-brie-presto-och-rodbetor"
         }
       },
       "Onsdag": {
         "breakfast": {
           "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-aggrora-med-fetaost-och-spenat"
         },
         "lunch": {
           "name": "Lövbiffsrullader med brie, pesto och rödbetor (Rester)"
         },
         "dinner": {
           "name": "Valnötslax med fetaostcrème",
-          "recipeLink": "/kunskapsbank/recept/valnotslax-med-fetaostcreme"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-valnotslax-med-fetaostcreme"
         }
       },
       "Torsdag": {
@@ -840,7 +840,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Köttfärslimpa med tomat",
-          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-tomat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-kottfarslimpa-med-tomat"
         }
       },
       "Fredag": {
@@ -853,7 +853,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Valnötslax med fetaostcrème",
-          "recipeLink": "/kunskapsbank/recept/valnotslax-med-fetaostcreme"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-valnotslax-med-fetaostcreme"
         }
       },
       "Lördag": {
@@ -870,7 +870,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Söndag": {
         "breakfast": {
           "name": "Bananmuffin",
-          "recipeLink": "/kunskapsbank/recept/bananmuffin"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-bananmuffin"
         },
         "lunch": {
           "name": "Köttfärslimpa med tomat"
@@ -895,7 +895,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-aggrora-med-fetaost-och-spenat"
         }
       },
       "Tisdag": {
@@ -914,53 +914,53 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Onsdag": {
         "breakfast": {
           "name": "Chiapudding med jordgubbar och hallon",
-          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-chiapudding-med-jordgubbar-och-hallon"
         },
         "lunch": {
           "name": "Torsk med saffranssås (Rester)"
         },
         "dinner": {
           "name": "Äggröra med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-aggrora-med-champinjoner"
         }
       },
       "Torsdag": {
         "breakfast": {
           "name": "Varm chiagröt med äpple",
-          "recipeLink": "/kunskapsbank/recept/varm-chiagrot-med-apple"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-varm-chiagrot-med-apple"
         },
         "lunch": {
           "name": "Äggröra med champinjoner (Rester)"
         },
         "dinner": {
           "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-aggrora-med-fetaost-och-spenat"
         }
       },
       "Fredag": {
         "breakfast": {
           "name": "Blåbärssmoothie",
-          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-blabarssmoothie"
         },
         "lunch": {
           "name": "Äggröra med fetaost och spenat (Rester)"
         },
         "dinner": {
           "name": "Lax med rödbetssallad",
-          "recipeLink": "/kunskapsbank/recept/lax-med-rodbetssallad"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-lax-med-rodbetssallad"
         }
       },
       "Lördag": {
         "breakfast": {
           "name": "Smoothiebowl med blåbär och granola",
-          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-smoothiebowl-med-blabar-och-granola"
         },
         "lunch": {
           "name": "Lax med rödbetssallad (Rester)"
         },
         "dinner": {
           "name": "Omelett med keso och bär",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-keso-och-bar"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-omelett-med-keso-och-bar"
         }
       },
       "Söndag": {
@@ -972,7 +972,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Chiapudding med jordgubbar och hallon",
-          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-chiapudding-med-jordgubbar-och-hallon"
         }
       }
     }
@@ -983,7 +983,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Stekt ägg med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-champinjoner"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-aggrora-med-champinjoner"
         },
         "lunch": {
           "name": "Chiapudding med jordgubbar och hallon (Rester)"
@@ -996,7 +996,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Tisdag": {
         "breakfast": {
           "name": "Yoghurt med bovetegranola",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-yoghurt-med-bovetegranola-och-frukt"
         },
         "lunch": {
           "name": "Äggröra med asiatisk avokadosallad (Rester)"
@@ -1009,7 +1009,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Onsdag": {
         "breakfast": {
           "name": "Keso med bovetegranola och frukt",
-          "recipeLink": "/kunskapsbank/recept/keso-med-bovetegranola-och-frukt"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-yoghurt-med-bovetegranola-och-frukt"
         },
         "lunch": {
           "name": "Torrfisk med sötpotatis och spenat (Rester)"
@@ -1022,14 +1022,14 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Torsdag": {
         "breakfast": {
           "name": "Overnight oats med morot",
-          "recipeLink": "/kunskapsbank/recept/overnightoats-med-morot"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-morotssoppa-med-ingefara-och-rostade-kikartor"
         },
         "lunch": {
           "name": "Kycklingburgare med papayasallad (Rester)"
         },
         "dinner": {
           "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-aggrora-med-fetaost-och-spenat"
         }
       },
       "Fredag": {
@@ -1047,14 +1047,14 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Lördag": {
         "breakfast": {
           "name": "Blåbärssmoothie",
-          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-blabarssmoothie"
         },
         "lunch": {
           "name": "Torsk med saffranssås (Rester)"
         },
         "dinner": {
           "name": "Bananpannkaka",
-          "recipeLink": "/kunskapsbank/recept/bananpannkaka"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-bananpannkaka"
         }
       },
       "Söndag": {
@@ -1067,7 +1067,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Stekt ägg med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-champinjoner"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-aggrora-med-champinjoner"
         }
       }
     }
@@ -1078,14 +1078,14 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Kokta ägg med kaviar",
-          "recipeLink": "/kunskapsbank/recept/kokt-agg-med-kaviar"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-kokt-agg-med-kaviar"
         },
         "lunch": {
           "name": "Stekt ägg med champinjoner (Rester)"
         },
         "dinner": {
           "name": "Äggröra med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-aggrora-med-champinjoner"
         }
       },
       "Tisdag": {
@@ -1097,7 +1097,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Hamburgare med grekisk sallad",
-          "recipeLink": "/kunskapsbank/recept/hamburgare-med-grekisk-sallad"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-hamburgare-med-grekisk-sallad"
         }
       },
       "Onsdag": {
@@ -1122,7 +1122,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Äggröra med fetaost och spenat",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-fetaost-och-spenat"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-aggrora-med-fetaost-och-spenat"
         }
       },
       "Fredag": {
@@ -1135,7 +1135,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Äggröra med champinjoner",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+          "recipeLink": "/kunskapsbank/recept/improved-flow-recept-aggrora-med-champinjoner"
         }
       },
       "Lördag": {
@@ -1148,20 +1148,20 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Lax med rödbetssallad",
-          "recipeLink": "/kunskapsbank/recept/lax-med-rodbetssallad"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-lax-med-rodbetssallad"
         }
       },
       "Söndag": {
         "breakfast": {
           "name": "Chiapudding med jordgubbar och hallon",
-          "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbar-och-hallon"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-chiapudding-med-jordgubbar-och-hallon"
         },
         "lunch": {
           "name": "Lax med rödbetssallad (Rester)"
         },
         "dinner": {
           "name": "Omelett med keso och bär",
-          "recipeLink": "/kunskapsbank/recept/omelett-med-keso-och-bar"
+          "recipeLink": "/kunskapsbank/recept/flow-recept-omelett-med-keso-och-bar"
         }
       }
     }
