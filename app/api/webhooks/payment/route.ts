@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { PaymentService } from '../../../lib/payment';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
 

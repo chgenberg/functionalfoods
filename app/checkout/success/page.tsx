@@ -1,12 +1,12 @@
 "use client";
 import { useCart } from '../../context/CartContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FiCheckCircle, FiBook, FiPlay, FiMail } from 'react-icons/fi';
 import { GiSparkles } from 'react-icons/gi';
 import Link from 'next/link';
 
-export default function CheckoutSuccess() {
+function CheckoutSuccessContent() {
   const { clearCart } = useCart();
   const [user, setUser] = useState<any>(null);
   const [isNewUser, setIsNewUser] = useState(false);
@@ -147,5 +147,13 @@ export default function CheckoutSuccess() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccess() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 } 

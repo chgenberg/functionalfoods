@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 import { PaymentService, PaymentRequest } from '../../lib/payment';
 import { emailService } from '../../lib/email';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
 
