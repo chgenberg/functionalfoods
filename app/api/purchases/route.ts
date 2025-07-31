@@ -1,37 +1,27 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { PaymentService, PaymentRequest } from '../../lib/payment';
 import { emailService } from '../../lib/email';
 
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
 
+// Helper function to generate a random password
+function generateRandomPassword(length: number = 8): string {
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return password;
+}
+
 export async function POST(request: Request) {
   try {
-    // Hämta token från headers
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Ingen giltig token' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split(' ')[1];
-    
-    // Verifiera token
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Ogiltig token' },
-        { status: 401 }
-      );
-    }
-
-    const { items, paymentMethod } = await request.json();
+    const body = await request.json();
+    const { items, paymentMethod, customerInfo, createAccount = false } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -47,19 +37,64 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hämta användare
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId }
-    });
+    let user: any = null;
+    let isNewUser = false;
+    let generatedPassword: string | null = null;
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Användaren hittades inte' },
-        { status: 404 }
-      );
+    // Check if user is logged in
+    const authHeader = request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        user = await prisma.user.findUnique({
+          where: { id: decoded.userId }
+        });
+      } catch (error) {
+        // Invalid token, continue as guest
+      }
     }
 
-    // Validera och hämta kurser
+    // If no logged in user, handle guest checkout
+    if (!user) {
+      if (!customerInfo || !customerInfo.email || !customerInfo.name) {
+        return NextResponse.json(
+          { error: 'Kunduppgifter (email och namn) krävs för gästköp' },
+          { status: 400 }
+        );
+      }
+
+      // Check if user already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: customerInfo.email }
+      });
+
+      if (existingUser) {
+        user = existingUser;
+      } else if (createAccount) {
+        // Create new user account
+        generatedPassword = generateRandomPassword();
+        const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+        
+        user = await prisma.user.create({
+          data: {
+            email: customerInfo.email,
+            name: customerInfo.name,
+            password: hashedPassword,
+            role: 'customer',
+            isActive: true
+          }
+        });
+        isNewUser = true;
+      } else {
+        return NextResponse.json(
+          { error: 'Användaren existerar redan. Vänligen logga in eller välj "Skapa konto".' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate and fetch courses
     const courseIds = items
       .filter(item => item.type === 'course')
       .map(item => item.name);
@@ -77,10 +112,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Kontrollera om användaren redan äger någon av kurserna
+    // Check if user already owns any of the courses
     const existingPurchases = await prisma.purchase.findMany({
       where: {
-        userId: decoded.userId,
+        userId: user.id,
         courseId: { in: courses.map(c => c.id) },
         status: 'completed'
       }
@@ -97,20 +132,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Beräkna totalsumma
+    // Calculate total amount
     const totalAmount = items.reduce((sum, item) => {
       const course = courses.find(c => c.name === item.name);
       return sum + (course ? course.price * item.quantity : 0);
     }, 0);
 
-    // Generera unikt ordernummer
+    // Generate unique order number
     const orderNumber = `UFF-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
 
-    // Skapa order
+    // Create order
     const order = await prisma.order.create({
       data: {
         orderNumber,
-        userId: decoded.userId,
+        userId: user.id,
         status: 'PENDING',
         totalAmount,
         currency: 'SEK',
@@ -132,7 +167,7 @@ export async function POST(request: Request) {
       }
     });
 
-    // Skapa payment record
+    // Create payment record
     const payment = await prisma.payment.create({
       data: {
         orderId: order.id,
@@ -143,13 +178,13 @@ export async function POST(request: Request) {
       }
     });
 
-    // Processera betalning
+    // Process payment
     const paymentRequest: PaymentRequest = {
       amount: totalAmount,
       currency: 'SEK',
       items: items,
       customer: {
-        userId: decoded.userId,
+        userId: user.id,
         email: user.email,
         name: user.name || undefined
       },
@@ -160,7 +195,7 @@ export async function POST(request: Request) {
 
     const paymentResult = await paymentService.processPayment(paymentRequest);
 
-    // Uppdatera payment med resultat
+    // Update payment with result
     await prisma.payment.update({
       where: { id: payment.id },
       data: {
@@ -168,20 +203,19 @@ export async function POST(request: Request) {
                 paymentResult.status === 'failed' ? 'FAILED' :
                 paymentResult.status === 'cancelled' ? 'CANCELLED' : 'PROCESSING',
         externalId: paymentResult.paymentId,
-        gatewayResponse: paymentResult,
+        gatewayResponse: paymentResult as any,
         processedAt: paymentResult.success ? new Date() : null,
-        failureReason: paymentResult.error
       }
     });
 
     if (paymentResult.success && paymentResult.status === 'completed') {
-      // Uppdatera order status
+      // Update order status
       await prisma.order.update({
         where: { id: order.id },
         data: { status: 'COMPLETED' }
       });
 
-      // Skapa Purchase records för backward compatibility
+      // Create Purchase records for backward compatibility
       const purchases = [];
       for (const item of items) {
         if (item.type === 'course') {
@@ -189,7 +223,7 @@ export async function POST(request: Request) {
           if (course) {
             const purchase = await prisma.purchase.create({
               data: {
-                userId: decoded.userId,
+                userId: user.id,
                 courseId: course.id,
                 amount: course.price * item.quantity,
                 status: 'completed',
@@ -204,9 +238,9 @@ export async function POST(request: Request) {
         }
       }
 
-      // TODO: Skicka bekräftelse-email
+      // Send order confirmation email with optional login credentials
       try {
-        await emailService.sendOrderConfirmation({
+        const emailData: any = {
           customerEmail: user.email,
           customerName: user.name || user.email,
           orderNumber: order.orderNumber,
@@ -215,11 +249,32 @@ export async function POST(request: Request) {
             name: c.name,
             price: c.price
           }))
-        });
+        };
+
+        // Include login credentials for new users
+        if (isNewUser && generatedPassword) {
+          emailData.loginCredentials = {
+            email: user.email,
+            password: generatedPassword,
+            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/login`
+          };
+        }
+
+        await emailService.sendOrderConfirmation(emailData);
         console.log('Order confirmation email sent to:', user.email);
       } catch (emailError) {
         console.error('Failed to send order confirmation email:', emailError);
         // Don't fail the order if email fails
+      }
+
+      // Generate JWT token for automatic login (for new users)
+      let token = null;
+      if (isNewUser) {
+        token = jwt.sign(
+          { userId: user.id, email: user.email },
+          process.env.JWT_SECRET || 'your-secret-key',
+          { expiresIn: '7d' }
+        );
       }
 
       return NextResponse.json({
@@ -236,11 +291,20 @@ export async function POST(request: Request) {
           paymentId: paymentResult.paymentId
         },
         purchases,
-        message: 'Köp genomfört framgångsrikt!'
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          isNewUser
+        },
+        token, // JWT token for new users
+        message: isNewUser 
+          ? 'Köp genomfört framgångsrikt! Ett konto har skapats åt dig.' 
+          : 'Köp genomfört framgångsrikt!'
       });
 
     } else if (paymentResult.redirectUrl) {
-      // För betalningar som kräver redirect (Klarna, Stripe checkout etc.)
+      // For payments that require redirect (Klarna, Stripe checkout etc.)
       return NextResponse.json({
         success: false,
         requiresRedirect: true,
@@ -257,7 +321,7 @@ export async function POST(request: Request) {
       });
 
     } else {
-      // Betalning misslyckades
+      // Payment failed
       await prisma.order.update({
         where: { id: order.id },
         data: { status: 'CANCELLED' }

@@ -30,6 +30,7 @@ export interface OrderConfirmationData {
   loginCredentials?: {
     email: string;
     password: string;
+    loginUrl: string;
   };
 }
 
