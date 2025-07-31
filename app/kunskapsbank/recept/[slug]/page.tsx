@@ -257,7 +257,27 @@ export default function RecipePage() {
     if (Array.isArray(recipe.instructions)) {
       instructionSteps = recipe.instructions;
     } else if (typeof recipe.instructions === 'string') {
-      instructionSteps = recipe.instructions.split(/\d+\./).filter(step => step.trim()).map(step => step.trim());
+      // First try to split by numbered steps (1., 2., etc.)
+      const numberedSteps = recipe.instructions.split(/\d+\./).filter(step => step.trim()).map(step => step.trim());
+      
+      if (numberedSteps.length > 1) {
+        // Has numbered steps
+        instructionSteps = numberedSteps;
+      } else {
+        // No numbered steps, split by sentences for better readability
+        instructionSteps = recipe.instructions
+          .split(/(?<=[.!?])\s+(?=[A-ZÅÄÖ])/) // Split on sentence boundaries
+          .filter(step => step.trim().length > 10) // Filter out very short fragments
+          .map(step => step.trim());
+        
+        // If still only one long step, split on common cooking verbs
+        if (instructionSteps.length === 1) {
+          instructionSteps = recipe.instructions
+            .split(/(?<=\.)\s*(?=(?:Blanda|Forma|Hetta|Stek|Dela|Krydda|Servera|Tillsätt|Värm|Koka|Rör|Hacka)\s)/i)
+            .filter(step => step.trim().length > 5)
+            .map(step => step.trim());
+        }
+      }
     }
   }
 
