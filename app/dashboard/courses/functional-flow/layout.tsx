@@ -1,6 +1,6 @@
 'use client';
 
-// Force cache invalidation v2
+// Force cache invalidation v3 - Update for flowonly fix
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -96,9 +96,9 @@ export default function FunctionalFlowLayout({
   }, [pathname]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0f2c1a' }}>
+    <div className="min-h-screen functional-flow-layout" style={{ backgroundColor: '#0f2c1a', minHeight: '100vh' }}>
       {/* Top Header - Desktop & Mobile */}
-      <header className="shadow-lg sticky top-0 z-40" style={{ backgroundColor: '#1a4324' }}>
+      <header className="shadow-lg sticky top-0 z-40 functional-flow-header" style={{ backgroundColor: '#1a4324' }}>
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Course Title */}

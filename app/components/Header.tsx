@@ -25,9 +25,9 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   const getDirectDashboardLink = (email: string) => {
-    if (email === 'basics@test.se') {
+    if (email === 'basics@test.se' || email === 'basiconly@test.se') {
       return '/dashboard/courses/functional-basics';
-    } else if (email === 'flow@test.se') {
+    } else if (email === 'flow@test.se' || email === 'flowonly@test.se') {
       return '/dashboard/courses/functional-flow';
     } else {
       return '/dashboard';
@@ -91,9 +91,9 @@ export default function Header() {
         const payload = JSON.parse(atob(data.token.split('.')[1]));
         if (payload.role === 'admin') {
           window.location.href = '/admin';
-        } else if (loginEmail === 'basics@test.se') {
+        } else if (loginEmail === 'basics@test.se' || loginEmail === 'basiconly@test.se') {
           window.location.href = '/dashboard/courses/functional-basics';
-        } else if (loginEmail === 'flow@test.se') {
+        } else if (loginEmail === 'flow@test.se' || loginEmail === 'flowonly@test.se') {
           window.location.href = '/dashboard/courses/functional-flow';
         } else {
           window.location.href = '/mina-kurser';

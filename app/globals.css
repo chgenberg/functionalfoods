@@ -44,6 +44,16 @@ img {
   object-position: center;
 }
 
+/* Functional Flow layout styling */
+.functional-flow-layout {
+  background-color: #0f2c1a !important;
+  min-height: 100vh !important;
+}
+
+.functional-flow-header {
+  background-color: #1a4324 !important;
+}
+
 @layer base {
   :root {
     /* Primary Colors */
