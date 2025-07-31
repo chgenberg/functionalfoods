@@ -1,304 +1,229 @@
+// Load environment variables from .env.local
+require('dotenv').config({ path: '.env.local' });
+
 const { PrismaClient } = require('@prisma/client');
-const fs = require('fs');
-const path = require('path');
 
 const prisma = new PrismaClient();
 
-// Konfiguration för olika API:er
-const API_CONFIG = {
-  unsplash: {
-    accessKey: 'UNSPLASH_ACCESS_KEY', // Ersätt med din Unsplash Access Key
-    baseUrl: 'https://api.unsplash.com/search/photos',
-    rateLimit: 50, // requests per hour för demo-nycklar
-  },
-  pixabay: {
-    apiKey: 'PIXABAY_API_KEY', // Ersätt med din Pixabay API Key
-    baseUrl: 'https://pixabay.com/api/',
-    rateLimit: 100, // requests per hour
-  }
-};
-
-// Översättning från svenska till engelska för bättre sökresultat
+// Svenska till engelska översättningar för bättre sökresultat
 const swedishToEnglish = {
-  'Apelsin': 'orange citrus',
-  'Äpple': 'apple',
+  'Apelsin': 'orange citrus fruit',
+  'Äpple': 'apple fruit',
   'Aroniabär': 'aronia berry chokeberry',
-  'Ashwagandha': 'ashwagandha herb',
-  'Astaxantin': 'astaxanthin algae',
-  'Avokado': 'avocado',
-  'Basilika': 'basil herb',
-  'Blåbär': 'blueberry',
-  'Broccoli': 'broccoli',
-  'Chiafrön': 'chia seeds',
-  'Gurkmeja': 'turmeric',
-  'Ingefära': 'ginger root',
-  'Kanel': 'cinnamon',
+  'Ashwagandha': 'ashwagandha herb root',
+  'Astaxantin': 'astaxanthin algae supplement',
+  'Avokado': 'avocado fruit',
+  'Basilika': 'basil herb leaves',
+  'Blåbär': 'blueberry berry fruit',
+  'Broccoli': 'broccoli vegetable green',
+  'Chiafrön': 'chia seeds superfood',
+  'Gurkmeja': 'turmeric root spice',
+  'Ingefära': 'ginger root spice',
+  'Kanel': 'cinnamon spice bark',
   'Kokosolja': 'coconut oil',
   'Lax': 'salmon fish',
-  'Mandel': 'almond',
-  'Nötter': 'nuts',
-  'Olivolja': 'olive oil',
+  'Mandel': 'almond nuts',
+  'Spirulina': 'spirulina algae powder',
   'Quinoa': 'quinoa grain',
-  'Rödbeta': 'beetroot',
-  'Sallad': 'lettuce salad',
-  'Spenat': 'spinach',
-  'Spirulina': 'spirulina algae',
-  'Tomater': 'tomatoes',
-  'Valnötter': 'walnuts',
-  'Örter': 'herbs',
-  // Lägg till fler översättningar efter behov
+  'Linfrön': 'flax seeds linseed',
+  'Havre': 'oats grain',
+  'Valnöt': 'walnut nuts',
+  'Rödbetor': 'beetroot vegetable',
+  'Spenat': 'spinach leafy greens',
+  'Kål': 'kale leafy greens',
+  'Tomater': 'tomatoes vegetables',
+  'Morötter': 'carrots vegetables orange',
+  'Citron': 'lemon citrus fruit',
+  'Lime': 'lime citrus fruit',
+  'Banan': 'banana fruit yellow',
+  'Jordgubbar': 'strawberry berries fruit',
+  'Hallon': 'raspberry berries fruit',
+  'Björnbär': 'blackberry berries fruit',
+  'Vinbär': 'currant berries',
+  'Persika': 'peach fruit',
+  'Plommon': 'plum fruit',
+  'Körsbär': 'cherry fruit',
+  'Vindruvor': 'grapes fruit',
+  'Kiwi': 'kiwi fruit green',
+  'Ananas': 'pineapple tropical fruit',
+  'Mango': 'mango tropical fruit',
+  'Papaya': 'papaya tropical fruit',
+  'Passion': 'passion fruit',
+  'Fikon': 'fig fruit',
+  'Dadlar': 'dates dried fruit',
+  'Russin': 'raisins dried grapes'
 };
 
-// Förbättra söktermer för specifika råvaror
-function createSearchTerms(materialName) {
-  const cleanName = materialName.replace(/[\(\)]/g, '').trim();
-  const englishTerm = swedishToEnglish[cleanName] || cleanName;
+// Funktion för att översätta svenska namn till engelska söktermer
+function getSearchTerm(swedishName) {
+  const cleanName = swedishName.replace(/[\(\)]/g, '').trim();
   
-  // Skapa flera söktermer för bättre träffar
-  const searchTerms = [
-    `${englishTerm} food ingredient`,
-    `fresh ${englishTerm}`,
-    `organic ${englishTerm}`,
-    englishTerm
-  ];
+  // Kolla om vi har en direkt översättning
+  if (swedishToEnglish[cleanName]) {
+    return swedishToEnglish[cleanName];
+  }
   
-  return searchTerms;
+  // Om inte, försök hitta delvis matchning
+  for (const [swedish, english] of Object.entries(swedishToEnglish)) {
+    if (cleanName.toLowerCase().includes(swedish.toLowerCase())) {
+      return english;
+    }
+  }
+  
+  // Fallback: använd ursprungsnamnet
+  return cleanName;
 }
 
-// Hämta bilder från Unsplash
-async function searchUnsplash(query, accessKey) {
-  const url = `${API_CONFIG.unsplash.baseUrl}?query=${encodeURIComponent(query)}&per_page=3&orientation=landscape`;
+// Funktion för att söka bilder via Unsplash API
+async function searchUnsplashImage(searchTerm) {
+  const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+  
+  if (!accessKey) {
+    throw new Error('UNSPLASH_ACCESS_KEY environment variable is required');
+  }
   
   try {
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Client-ID ${accessKey}`
+    const response = await fetch(
+      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&per_page=1&orientation=landscape`,
+      {
+        headers: {
+          'Authorization': `Client-ID ${accessKey}`
+        }
       }
-    });
+    );
     
     if (!response.ok) {
       throw new Error(`Unsplash API error: ${response.status}`);
     }
     
     const data = await response.json();
-    return data.results || [];
-  } catch (error) {
-    console.error(`Error searching Unsplash for "${query}":`, error.message);
-    return [];
-  }
-}
-
-// Hämta bilder från Pixabay
-async function searchPixabay(query, apiKey) {
-  const url = `${API_CONFIG.pixabay.baseUrl}?key=${apiKey}&q=${encodeURIComponent(query)}&image_type=photo&category=food&per_page=3&min_width=640`;
-  
-  try {
-    const response = await fetch(url);
     
-    if (!response.ok) {
-      throw new Error(`Pixabay API error: ${response.status}`);
+    if (data.results && data.results.length > 0) {
+      return {
+        imageUrl: data.results[0].urls.small,
+        imageAlt: data.results[0].alt_description || searchTerm,
+        photographer: data.results[0].user.name,
+        unsplashUrl: data.results[0].links.html
+      };
     }
     
-    const data = await response.json();
-    return data.hits || [];
+    return null;
   } catch (error) {
-    console.error(`Error searching Pixabay for "${query}":`, error.message);
-    return [];
-  }
-}
-
-// Ladda ner bild
-async function downloadImage(imageUrl, filename) {
-  try {
-    const response = await fetch(imageUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to download image: ${response.status}`);
-    }
-    
-    const buffer = await response.arrayBuffer();
-    const outputPath = path.join(__dirname, '..', 'public', 'images', 'raw-materials', filename);
-    
-    // Skapa mapp om den inte finns
-    const dir = path.dirname(outputPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    
-    fs.writeFileSync(outputPath, Buffer.from(buffer));
-    return `/images/raw-materials/${filename}`;
-  } catch (error) {
-    console.error(`Error downloading image ${imageUrl}:`, error.message);
+    console.error(`Error searching for "${searchTerm}":`, error.message);
     return null;
   }
 }
 
-// Huvudfunktion för att hitta bilder
-async function findImagesForRawMaterials() {
-  console.log('🔍 Starting image search for raw materials...\n');
-  
-  // Kontrollera API-nycklar
-  const unsplashKey = process.env.UNSPLASH_ACCESS_KEY || API_CONFIG.unsplash.accessKey;
-  const pixabayKey = process.env.PIXABAY_API_KEY || API_CONFIG.pixabay.apiKey;
-  
-  if (unsplashKey === 'UNSPLASH_ACCESS_KEY' && pixabayKey === 'PIXABAY_API_KEY') {
-    console.error('❌ Please set your API keys in environment variables or in the script');
-    console.log('🔑 Get free API keys from:');
-    console.log('   - Unsplash: https://unsplash.com/developers');
-    console.log('   - Pixabay: https://pixabay.com/api/docs/');
-    return;
-  }
+// Huvudfunktion för att uppdatera bilder
+async function updateRawMaterialImages() {
+  console.log('🔍 Searching for images for raw materials...\n');
   
   try {
-    // Hämta alla råvaror
-    const rawMaterials = await prisma.rawMaterial.findMany({
-      select: {
-        id: true,
-        name: true,
-        imageUrl: true
+    // Hämta alla råvaror som saknar bilder eller har placeholder
+    const materialsNeedingImages = await prisma.rawMaterial.findMany({
+      where: {
+        OR: [
+          { imageUrl: null },
+          { imageUrl: '' },
+          { imageUrl: '/images/placeholder-ingredient.jpg' }
+        ]
       },
-      orderBy: {
-        name: 'asc'
-      }
+      orderBy: { name: 'asc' }
     });
     
-    console.log(`Found ${rawMaterials.length} raw materials to process\n`);
+    console.log(`Found ${materialsNeedingImages.length} materials that need images\n`);
     
-    const results = {
-      processed: 0,
-      imagesFound: 0,
-      imagesSaved: 0,
-      skipped: 0,
-      errors: []
-    };
-    
-    // Skapa resultatfil för att spara bildlänkar
-    const imageResults = [];
-    
-    for (const material of rawMaterials) {
-      console.log(`\n🔍 Processing: ${material.name}`);
-      
-      // Hoppa över om bild redan finns
-      if (material.imageUrl && material.imageUrl !== '/images/placeholder-ingredient.jpg') {
-        console.log(`   ⏭️  Already has image: ${material.imageUrl}`);
-        results.skipped++;
-        continue;
-      }
-      
-      const searchTerms = createSearchTerms(material.name);
-      let imageFound = false;
-      
-      // Prova olika söktermer
-      for (const searchTerm of searchTerms) {
-        if (imageFound) break;
-        
-        console.log(`   🔎 Searching for: "${searchTerm}"`);
-        
-        // Prova Unsplash först
-        if (unsplashKey !== 'UNSPLASH_ACCESS_KEY') {
-          const unsplashResults = await searchUnsplash(searchTerm, unsplashKey);
-          
-          if (unsplashResults.length > 0) {
-            const bestImage = unsplashResults[0];
-            console.log(`   ✅ Found Unsplash image: ${bestImage.description || 'No description'}`);
-            
-            imageResults.push({
-              materialId: material.id,
-              materialName: material.name,
-              searchTerm: searchTerm,
-              source: 'Unsplash',
-              imageUrl: bestImage.urls.regular,
-              downloadUrl: bestImage.urls.small,
-              description: bestImage.description,
-              photographer: bestImage.user.name,
-              photographerUrl: bestImage.user.links.html
-            });
-            
-            results.imagesFound++;
-            imageFound = true;
-            
-            // Vänta lite mellan requests för att respektera rate limits
-            await new Promise(resolve => setTimeout(resolve, 100));
-            continue;
-          }
-        }
-        
-        // Prova Pixabay om Unsplash inte fungerade
-        if (!imageFound && pixabayKey !== 'PIXABAY_API_KEY') {
-          const pixabayResults = await searchPixabay(searchTerm, pixabayKey);
-          
-          if (pixabayResults.length > 0) {
-            const bestImage = pixabayResults[0];
-            console.log(`   ✅ Found Pixabay image: ${bestImage.tags}`);
-            
-            imageResults.push({
-              materialId: material.id,
-              materialName: material.name,
-              searchTerm: searchTerm,
-              source: 'Pixabay',
-              imageUrl: bestImage.webformatURL,
-              downloadUrl: bestImage.webformatURL,
-              tags: bestImage.tags,
-              photographer: bestImage.user
-            });
-            
-            results.imagesFound++;
-            imageFound = true;
-            
-            // Vänta lite mellan requests
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
-        }
-        
-        // Vänta mellan olika söktermer
-        await new Promise(resolve => setTimeout(resolve, 50));
-      }
-      
-      if (!imageFound) {
-        console.log(`   ❌ No suitable image found for: ${material.name}`);
-        results.errors.push(material.name);
-      }
-      
-      results.processed++;
-      
-      // Paus varje 10:e material för att respektera rate limits
-      if (results.processed % 10 === 0) {
-        console.log(`\n⏸️  Taking a break after ${results.processed} materials...`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
+    if (materialsNeedingImages.length === 0) {
+      console.log('✅ All raw materials already have images!');
+      return;
     }
     
-    // Spara resultaten
-    const resultsFilePath = path.join(__dirname, 'raw-material-images-results.json');
-    fs.writeFileSync(resultsFilePath, JSON.stringify(imageResults, null, 2));
+    let successCount = 0;
+    let skipCount = 0;
     
-    console.log('\n✅ Image search completed!');
-    console.log(`\n📊 Results:`);
-    console.log(`   - Processed: ${results.processed} materials`);
-    console.log(`   - Images found: ${results.imagesFound}`);
-    console.log(`   - Skipped (already had images): ${results.skipped}`);
-    console.log(`   - No images found: ${results.errors.length}`);
-    
-    if (results.errors.length > 0) {
-      console.log(`\n❌ Materials without images:`);
-      results.errors.forEach(name => console.log(`   - ${name}`));
+    for (const material of materialsNeedingImages) {
+      console.log(`Processing: ${material.name}`);
+      
+      const searchTerm = getSearchTerm(material.name);
+      console.log(`  Search term: "${searchTerm}"`);
+      
+      const imageData = await searchUnsplashImage(searchTerm);
+      
+      if (imageData) {
+        try {
+          await prisma.rawMaterial.update({
+            where: { id: material.id },
+            data: {
+              imageUrl: imageData.imageUrl,
+              imageAlt: imageData.imageAlt
+            }
+          });
+          
+          console.log(`  ✅ Updated with image from ${imageData.photographer}`);
+          successCount++;
+          
+          // Vänta lite mellan requests för att respektera API-gränser
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+        } catch (dbError) {
+          console.log(`  ❌ Database error: ${dbError.message}`);
+          skipCount++;
+        }
+      } else {
+        console.log(`  ⚠️  No image found`);
+        skipCount++;
+      }
+      
+      console.log('');
     }
     
-    console.log(`\n💾 Results saved to: ${resultsFilePath}`);
-    console.log(`\n🎯 Next steps:`);
-    console.log(`   1. Review the results file`);
-    console.log(`   2. Run the download script to save images`);
-    console.log(`   3. Update database with image URLs`);
+    console.log('\n📊 Summary:');
+    console.log(`✅ Successfully updated: ${successCount} materials`);
+    console.log(`⚠️  Skipped: ${skipCount} materials`);
+    console.log(`🔍 Total processed: ${materialsNeedingImages.length} materials`);
     
   } catch (error) {
-    console.error('❌ Error during image search:', error);
+    console.error('Error updating raw material images:', error);
   } finally {
     await prisma.$disconnect();
   }
 }
 
-// Kör scriptet
-if (require.main === module) {
-  findImagesForRawMaterials();
+// Funktion för att testa en enskild sökning
+async function testSingleSearch(materialName) {
+  console.log(`🧪 Testing search for: ${materialName}\n`);
+  
+  const searchTerm = getSearchTerm(materialName);
+  console.log(`Search term: "${searchTerm}"`);
+  
+  const imageData = await searchUnsplashImage(searchTerm);
+  
+  if (imageData) {
+    console.log(`✅ Found image:`);
+    console.log(`   URL: ${imageData.imageUrl}`);
+    console.log(`   Alt text: ${imageData.imageAlt}`);
+    console.log(`   Photographer: ${imageData.photographer}`);
+    console.log(`   Unsplash link: ${imageData.unsplashUrl}`);
+  } else {
+    console.log(`❌ No image found for "${searchTerm}"`);
+  }
+  
+  await prisma.$disconnect();
 }
 
-module.exports = { findImagesForRawMaterials, createSearchTerms }; 
+// Kontrollera kommandoradsargument
+const args = process.argv.slice(2);
+
+if (args.length > 0) {
+  if (args[0] === '--test' && args[1]) {
+    // Testa en enskild sökning
+    testSingleSearch(args[1]);
+  } else {
+    console.log('Usage:');
+    console.log('  node scripts/findRawMaterialImages.js           # Update all materials');
+    console.log('  node scripts/findRawMaterialImages.js --test "Blåbär"  # Test single search');
+  }
+} else {
+  // Kör huvudfunktionen
+  updateRawMaterialImages();
+} 
