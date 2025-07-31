@@ -67,74 +67,178 @@ export default function BlogPostPage({ params }: Props) {
 
   // Format content for display (convert markdown to proper HTML)
   const formatContent = (content: string) => {
-    // Split content into sections
-    const sections = content.split('\n\n').filter(section => section.trim());
-    
-    return sections.map((section, index) => {
-      const trimmed = section.trim();
+    // Clean up content first
+    let cleanContent = content
+      .replace(/\r\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/\s+$/gm, '') // Remove trailing spaces
+      .trim();
+
+    // Split into lines and process them intelligently
+    const lines = cleanContent.split('\n');
+    const elements: JSX.Element[] = [];
+    let currentParagraph: string[] = [];
+    let currentList: string[] = [];
+    let listType: 'ul' | 'ol' | null = null;
+
+    const pushCurrentParagraph = () => {
+      if (currentParagraph.length > 0) {
+        const paragraphText = currentParagraph.join(' ').trim();
+        if (paragraphText) {
+          elements.push(
+            <p key={elements.length} className="mb-6 leading-relaxed text-gray-700 text-lg">
+              {formatInlineElements(paragraphText)}
+            </p>
+          );
+        }
+        currentParagraph = [];
+      }
+    };
+
+    const pushCurrentList = () => {
+      if (currentList.length > 0 && listType) {
+        const ListTag = listType === 'ul' ? 'ul' : 'ol';
+        const listClass = listType === 'ul' ? 'list-disc' : 'list-decimal';
+        elements.push(
+          <ListTag key={elements.length} className={`${listClass} pl-8 mb-6 space-y-3`}>
+            {currentList.map((item, i) => (
+              <li key={i} className="leading-relaxed text-gray-700 text-lg pl-2">
+                {formatInlineElements(item)}
+              </li>
+            ))}
+          </ListTag>
+        );
+        currentList = [];
+        listType = null;
+      }
+    };
+
+    // Process each line
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
       
+      // Skip empty lines
+      if (!line) {
+        continue;
+      }
+
+      // Handle main title (# )
+      if (line.startsWith('# ')) {
+        pushCurrentParagraph();
+        pushCurrentList();
+        elements.push(
+          <h1 key={elements.length} className="text-3xl md:text-4xl font-bold text-primary mt-10 mb-8 leading-tight">
+            {formatInlineElements(line.replace('# ', ''))}
+          </h1>
+        );
+        continue;
+      }
+
       // Handle h2 headers (## )
-      if (trimmed.startsWith('## ')) {
-        return (
-          <h2 key={index} className="text-2xl font-bold text-primary mt-8 mb-4">
-            {trimmed.replace('## ', '')}
+      if (line.startsWith('## ')) {
+        pushCurrentParagraph();
+        pushCurrentList();
+        elements.push(
+          <h2 key={elements.length} className="text-2xl md:text-3xl font-bold text-primary mt-12 mb-6 leading-tight border-b-2 border-orange-100 pb-3">
+            {formatInlineElements(line.replace('## ', ''))}
           </h2>
         );
+        continue;
       }
       
       // Handle h3 headers (### )
-      if (trimmed.startsWith('### ')) {
-        return (
-          <h3 key={index} className="text-xl font-semibold text-primary mt-6 mb-3">
-            {trimmed.replace('### ', '')}
+      if (line.startsWith('### ')) {
+        pushCurrentParagraph();
+        pushCurrentList();
+        elements.push(
+          <h3 key={elements.length} className="text-xl md:text-2xl font-bold text-primary mt-10 mb-5 leading-tight">
+            {formatInlineElements(line.replace('### ', ''))}
           </h3>
         );
+        continue;
       }
-      
-      // Handle bullet points (- or * )
-      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-        const listItems = trimmed.split('\n').filter(item => item.trim().startsWith('- ') || item.trim().startsWith('* '));
-        return (
-          <ul key={index} className="list-disc pl-6 mb-4 space-y-2">
-            {listItems.map((item, i) => (
-              <li key={i} className="leading-relaxed">
-                {item.replace(/^[-*]\s+/, '')}
-              </li>
-            ))}
-          </ul>
+
+      // Handle h4 headers (#### )
+      if (line.startsWith('#### ')) {
+        pushCurrentParagraph();
+        pushCurrentList();
+        elements.push(
+          <h4 key={elements.length} className="text-lg md:text-xl font-semibold text-primary mt-8 mb-4 leading-tight">
+            {formatInlineElements(line.replace('#### ', ''))}
+          </h4>
         );
+        continue;
       }
       
-      // Handle numbered lists (1. )
-      if (/^\d+\.\s/.test(trimmed)) {
-        const listItems = trimmed.split('\n').filter(item => /^\d+\.\s/.test(item.trim()));
-        return (
-          <ol key={index} className="list-decimal pl-6 mb-4 space-y-2">
-            {listItems.map((item, i) => (
-              <li key={i} className="leading-relaxed">
-                {item.replace(/^\d+\.\s+/, '')}
-              </li>
-            ))}
-          </ol>
+      // Handle unordered list items (- or * )
+      if (line.startsWith('- ') || line.startsWith('* ')) {
+        pushCurrentParagraph();
+        if (listType !== 'ul') {
+          pushCurrentList();
+          listType = 'ul';
+        }
+        currentList.push(line.replace(/^[-*]\s+/, ''));
+        continue;
+      }
+      
+      // Handle ordered list items (1. , 2. , etc.)
+      if (/^\d+\.\s/.test(line)) {
+        pushCurrentParagraph();
+        if (listType !== 'ol') {
+          pushCurrentList();
+          listType = 'ol';
+        }
+        currentList.push(line.replace(/^\d+\.\s+/, ''));
+        continue;
+      }
+
+      // Handle blockquotes (> )
+      if (line.startsWith('> ')) {
+        pushCurrentParagraph();
+        pushCurrentList();
+        elements.push(
+          <blockquote key={elements.length} className="border-l-4 border-orange-300 pl-6 py-4 mb-6 bg-orange-50 italic text-gray-700 text-lg">
+            {formatInlineElements(line.replace('> ', ''))}
+          </blockquote>
         );
+        continue;
+      }
+
+      // Regular text - add to current paragraph
+      if (line.length > 0) {
+        pushCurrentList(); // Close any open list
+        currentParagraph.push(line);
+      }
+    }
+
+    // Push any remaining content
+    pushCurrentParagraph();
+    pushCurrentList();
+
+    return elements;
+  };
+
+  // Format inline elements like bold, italic, links
+  const formatInlineElements = (text: string): (string | JSX.Element)[] => {
+    // Handle bold text (**text** or __text__)
+    let parts = text.split(/(\*\*.*?\*\*|__.*?__)/);
+    
+    return parts.map((part, i) => {
+      // Bold text
+      if ((part.startsWith('**') && part.endsWith('**')) || 
+          (part.startsWith('__') && part.endsWith('__'))) {
+        const boldText = part.startsWith('**') ? part.slice(2, -2) : part.slice(2, -2);
+        return <strong key={i} className="font-bold text-gray-900">{boldText}</strong>;
       }
       
-      // Handle bold text (**text**)
-      const formatBoldText = (text: string) => {
-        return text.split(/(\*\*.*?\*\*)/).map((part, i) => {
-          if (part.startsWith('**') && part.endsWith('**')) {
-            return <strong key={i}>{part.slice(2, -2)}</strong>;
-          }
-          return part;
-        });
-      };
+      // Handle italic text (*text* or _text_)
+      if ((part.startsWith('*') && part.endsWith('*') && !part.startsWith('**')) ||
+          (part.startsWith('_') && part.endsWith('_') && !part.startsWith('__'))) {
+        const italicText = part.slice(1, -1);
+        return <em key={i} className="italic">{italicText}</em>;
+      }
       
-      // Regular paragraph
-      return (
-        <p key={index} className="mb-4 leading-relaxed text-gray-700">
-          {formatBoldText(trimmed)}
-        </p>
-      );
+      return part;
     });
   };
 
@@ -253,7 +357,7 @@ export default function BlogPostPage({ params }: Props) {
           {/* Article Body */}
           <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
             <div className="prose prose-lg max-w-none">
-              <div className="text-text-primary leading-relaxed">
+              <div className="text-gray-800 leading-relaxed">
                 {formatContent(post.content)}
               </div>
             </div>
