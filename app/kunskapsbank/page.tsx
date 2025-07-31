@@ -47,10 +47,10 @@ export default function KunskapsbankPage() {
     },
     {
       id: 'faq',
-      title: "FAQ",
-      description: "Svar på vanliga frågor om kost och hälsa",
+      title: "Q&A",
+      description: "Vanliga frågor och svar om Functional Foods, kurser och mer",
       image: "/faq.png",
-      href: "/kontakt/faq",
+      href: "/kunskapsbank/qa",
       icon: FiMessageCircle,
       color: "text-orange-600"
     }
