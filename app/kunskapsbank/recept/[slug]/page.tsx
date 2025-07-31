@@ -270,12 +270,14 @@ export default function RecipePage() {
           .filter(step => step.trim().length > 10) // Filter out very short fragments
           .map(step => step.trim());
         
-        // If still only one long step, split on common cooking verbs
-        if (instructionSteps.length === 1) {
+        // If still only one long step, try splitting on common cooking verbs.
+        // This handles cases where instructions are a single run-on sentence.
+        if (instructionSteps.length <= 1) {
+          // Regex looks for a verb at the beginning of a phrase (case-insensitive)
           instructionSteps = recipe.instructions
-            .split(/(?<=\.)\s*(?=(?:Blanda|Forma|Hetta|Stek|Dela|Krydda|Servera|Tillsätt|Värm|Koka|Rör|Hacka)\s)/i)
-            .filter(step => step.trim().length > 5)
-            .map(step => step.trim());
+            .split(/\s*(?=(Blanda|Forma|Hetta|Stek|Dela|Krydda|Servera|Tillsätt|Värm|Koka|Rör|Hacka|Skiva|Lägg|Placera)\b)/i)
+            .filter(step => step && step.trim().length > 5) // Ensure step is not empty
+            .map(step => step.trim().replace(/\.$/, '') + '.'); // Ensure each step ends with a period
         }
       }
     }

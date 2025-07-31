@@ -46,7 +46,8 @@ export async function GET(request: NextRequest) {
     // Transform the data to include categories
     const categorizedItems = shoppingList.items.map(item => ({
       id: item.id,
-      ingredient: item.ingredient,
+      name: item.ingredient,
+      quantity: '',
       isChecked: item.isChecked,
       category: categorizeIngredient(item.ingredient)
     }));

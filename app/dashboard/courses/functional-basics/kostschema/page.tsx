@@ -365,33 +365,6 @@ export default function KostschemaPage() {
             </div>
           </motion.div>
         </div>
-
-        {/* Floating summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-lg bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-gray-200"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-800">
-                Vecka <span className="text-green-600 font-bold">{currentWeekNumber}</span>, Dag <span className="text-green-600 font-bold">{selectedDay}</span>
-              </p>
-              <p className="text-xs text-gray-500">Översikt för den valda dagen</p>
-            </div>
-            <div className="flex items-center gap-4 text-center">
-              <div>
-                <p className="font-bold text-lg text-gray-900">{currentMealCount}</p>
-                <p className="text-xs text-gray-500">Måltider</p>
-              </div>
-              <div>
-                <p className="font-bold text-lg text-gray-900">~{currentTotalCalories}</p>
-                <p className="text-xs text-gray-500">Kalorier</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </div>
   );
