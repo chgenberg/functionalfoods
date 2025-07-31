@@ -36,6 +36,26 @@ function getCategoryFromName(name: string): string {
   return 'Övrigt';
 }
 
+// Function to render description with paragraph breaks
+const renderDescription = (description: string | undefined, isExpanded: boolean = true) => {
+  if (!description) return null;
+  
+  const paragraphs = description.split('\n\n').filter(p => p.trim());
+  
+  if (!isExpanded) {
+    // For collapsed view, show only first paragraph truncated
+    return <p className="text-text-secondary text-sm line-clamp-2">{paragraphs[0]}</p>;
+  }
+  
+  return (
+    <div className="text-text-secondary text-sm leading-relaxed space-y-3">
+      {paragraphs.map((paragraph, index) => (
+        <p key={index}>{paragraph.trim()}</p>
+      ))}
+    </div>
+  );
+};
+
 export default function IngrediensPage() {
   const [materials, setMaterials] = useState<RawMaterial[]>([]);
   const [filteredMaterials, setFilteredMaterials] = useState<RawMaterial[]>([]);
@@ -276,18 +296,16 @@ export default function IngrediensPage() {
                     
                     <AnimatePresence>
                       {isExpanded ? (
-                        <motion.p
+                        <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="text-text-secondary text-sm leading-relaxed"
+                          className="overflow-hidden"
                         >
-                          {mat.description}
-                        </motion.p>
+                          {renderDescription(mat.description, true)}
+                        </motion.div>
                       ) : (
-                        <p className="text-text-secondary text-sm line-clamp-2">
-                          {mat.description}
-                        </p>
+                        renderDescription(mat.description, false)
                       )}
                     </AnimatePresence>
                   </div>
@@ -320,7 +338,7 @@ export default function IngrediensPage() {
                     <h3 className="text-xl font-semibold text-primary mb-2 group-hover:text-accent transition-colors">
                       {mat.name}
                     </h3>
-                    <p className="text-text-secondary leading-relaxed">{mat.description}</p>
+                    {renderDescription(mat.description, true)}
                   </div>
                 </motion.div>
               );
