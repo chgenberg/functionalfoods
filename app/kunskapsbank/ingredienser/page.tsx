@@ -277,14 +277,34 @@ export default function IngrediensPage() {
                   className="bg-white rounded-2xl shadow-lg overflow-hidden group cursor-pointer"
                   onClick={() => toggleExpanded(mat.id)}
                 >
+                  {/* Image Header */}
+                  {mat.imageUrl && mat.imageUrl !== '/images/placeholder-ingredient.jpg' ? (
+                    <div className="relative h-48 w-full mb-4">
+                      <Image
+                        src={mat.imageUrl}
+                        alt={mat.imageAlt || mat.name}
+                        fill
+                        className="object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      />
+                      <div className="absolute top-2 right-2">
+                        <div className="p-2 bg-white/80 backdrop-blur-sm rounded-full">
+                          <Icon className="w-4 h-4 text-accent" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="h-48 w-full mb-4 bg-gradient-to-br from-accent/10 to-accent/20 rounded-t-2xl flex items-center justify-center">
+                      <Icon className="w-16 h-16 text-accent opacity-60" />
+                    </div>
+                  )}
+
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <div className="p-3 bg-accent/10 rounded-full group-hover:bg-accent/20 transition-colors">
-                        <Icon className="w-6 h-6 text-accent" />
-                      </div>
                       <motion.div
                         animate={{ rotate: isExpanded ? 90 : 0 }}
                         transition={{ duration: 0.2 }}
+                        className="ml-auto"
                       >
                         <FiChevronRight className="w-5 h-5 text-text-secondary" />
                       </motion.div>
@@ -329,12 +349,31 @@ export default function IngrediensPage() {
                   key={mat.id}
                   variants={itemVariants}
                   whileHover={{ x: 5 }}
-                  className="bg-white rounded-2xl shadow-lg p-6 flex items-start gap-4 group"
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden flex group"
                 >
-                  <div className="p-3 bg-accent/10 rounded-full group-hover:bg-accent/20 transition-colors shrink-0">
-                    <Icon className="w-6 h-6 text-accent" />
-                  </div>
-                  <div className="flex-1">
+                  {/* Image */}
+                  {mat.imageUrl && mat.imageUrl !== '/images/placeholder-ingredient.jpg' ? (
+                    <div className="relative w-24 h-24 shrink-0">
+                      <Image
+                        src={mat.imageUrl}
+                        alt={mat.imageAlt || mat.name}
+                        fill
+                        className="object-cover"
+                        sizes="96px"
+                      />
+                      <div className="absolute bottom-1 right-1">
+                        <div className="p-1 bg-white/80 backdrop-blur-sm rounded-full">
+                          <Icon className="w-3 h-3 text-accent" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 shrink-0 bg-gradient-to-br from-accent/10 to-accent/20 flex items-center justify-center">
+                      <Icon className="w-8 h-8 text-accent opacity-60" />
+                    </div>
+                  )}
+                  
+                  <div className="flex-1 p-6">
                     <h3 className="text-xl font-semibold text-primary mb-2 group-hover:text-accent transition-colors">
                       {mat.name}
                     </h3>

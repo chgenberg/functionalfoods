@@ -24,19 +24,20 @@ export default function ArticleQuickAccess() {
   useEffect(() => {
     async function fetchArticles() {
       try {
-        const response = await fetch('/api/blog?limit=6');
+        const response = await fetch('/api/blog?limit=6&published=true');
         if (response.ok) {
-          const blogPosts = await response.json();
+          const data = await response.json();
+          const blogPosts = data.posts || []; // Extract posts from the response
           
           // Transform blog posts to article format
           const transformedArticles: Article[] = blogPosts.map((post: any) => ({
             id: post.id,
             title: post.title,
-            excerpt: post.excerpt || 'Läs mer om detta ämne...',
+            excerpt: post.excerpt || extractExcerptFromContent(post.content) || 'Upptäck värdefull information om functional foods och hälsa...',
             category: getCategoryFromTitle(post.title),
             readTime: calculateReadTime(post.content),
             href: `/kunskapsbank/blogg/${post.slug}`,
-            coverImage: post.coverImage
+            coverImage: post.coverImage || '/images/blog-placeholder.jpg'
           }));
           
           setArticles(transformedArticles);
@@ -45,11 +46,21 @@ export default function ArticleQuickAccess() {
           setArticles([
             {
               id: '1',
-              title: 'Vad är Functional Foods?',
-              excerpt: 'En introduktion till funktionella livsmedel och deras hälsofördelar',
-              category: 'Grunderna',
+              title: 'Utforska våra blogginlägg',
+              excerpt: 'Upptäck värdefull information om functional foods, näring och hälsa',
+              category: 'Kunskapsbas',
               readTime: '5 min',
-              href: '/kunskapsbank/blogg'
+              href: '/kunskapsbank/blogg',
+              coverImage: '/images/blog-placeholder.jpg'
+            },
+            {
+              id: '2',
+              title: 'Functional Foods - Grunderna',
+              excerpt: 'Lär dig mer om funktionella livsmedel och deras hälsofördelar',
+              category: 'Grunderna',
+              readTime: '4 min',
+              href: '/kunskapsbank/blogg',
+              coverImage: '/images/blog-placeholder.jpg'
             }
           ]);
         }
@@ -63,7 +74,8 @@ export default function ArticleQuickAccess() {
             excerpt: 'Upptäck värdefull information om functional foods och hälsa',
             category: 'Kunskapsbas',
             readTime: '5 min',
-            href: '/kunskapsbank/blogg'
+            href: '/kunskapsbank/blogg',
+            coverImage: '/images/blog-placeholder.jpg'
           }
         ]);
       } finally {
@@ -76,14 +88,41 @@ export default function ArticleQuickAccess() {
 
   // Helper function to extract category from title
   function getCategoryFromTitle(title: string): string {
-    if (title.toLowerCase().includes('protein')) return 'Näring';
-    if (title.toLowerCase().includes('probiotika')) return 'Maghälsa';
-    if (title.toLowerCase().includes('blue zones') || title.toLowerCase().includes('longevity')) return 'Longevity';
-    if (title.toLowerCase().includes('3d') || title.toLowerCase().includes('framtid')) return 'Innovation';
-    if (title.toLowerCase().includes('functional')) return 'Grunderna';
-    if (title.toLowerCase().includes('bcaa') || title.toLowerCase().includes('eaa') || title.toLowerCase().includes('kollagen')) return 'Tillskott';
-    if (title.toLowerCase().includes('polyfenoler')) return 'Antioxidanter';
-    return 'Hälsa';
+    const titleLower = title.toLowerCase();
+    
+    // Check for specific keywords in order of specificity
+    if (titleLower.includes('protein') || titleLower.includes('bcaa') || titleLower.includes('eaa') || titleLower.includes('kollagen')) return 'Näring & Tillskott';
+    if (titleLower.includes('3d') || titleLower.includes('printad') || titleLower.includes('framtid')) return 'Innovation';
+    if (titleLower.includes('blue zones') || titleLower.includes('longevity') || titleLower.includes('långt liv')) return 'Longevity';
+    if (titleLower.includes('probiotika') || titleLower.includes('maghälsa') || titleLower.includes('tarm')) return 'Maghälsa';
+    if (titleLower.includes('polyfenoler') || titleLower.includes('antioxidant')) return 'Antioxidanter';
+    if (titleLower.includes('functional') || titleLower.includes('grunderna')) return 'Grunderna';
+    if (titleLower.includes('mataffär') || titleLower.includes('inköp') || titleLower.includes('råvaror')) return 'Praktiska tips';
+    if (titleLower.includes('miljö') || titleLower.includes('hållbarhet')) return 'Hållbarhet';
+    
+    return 'Hälsa & Wellness';
+  }
+
+  // Helper function to extract excerpt from content
+  function extractExcerptFromContent(content: string): string {
+    if (!content) return '';
+    
+    // Remove markdown headers and formatting
+    const cleanContent = content
+      .replace(/^#+\s/gm, '') // Remove headers
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold formatting
+      .replace(/\n+/g, ' ') // Replace line breaks with spaces
+      .trim();
+    
+    // Take first 150 characters and end at a word boundary
+    if (cleanContent.length <= 150) return cleanContent;
+    
+    const truncated = cleanContent.substring(0, 150);
+    const lastSpaceIndex = truncated.lastIndexOf(' ');
+    
+    return lastSpaceIndex > 100 
+      ? truncated.substring(0, lastSpaceIndex) + '...'
+      : truncated + '...';
   }
 
   // Helper function to calculate read time
