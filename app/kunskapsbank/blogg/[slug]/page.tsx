@@ -65,13 +65,77 @@ export default function BlogPostPage({ params }: Props) {
     return `${minutes} min`;
   };
 
-  // Format content for display (convert line breaks to paragraphs)
+  // Format content for display (convert markdown to proper HTML)
   const formatContent = (content: string) => {
-    return content.split('\n\n').map((paragraph, index) => (
-      <p key={index} className="mb-4 leading-relaxed">
-        {paragraph.trim()}
-      </p>
-    ));
+    // Split content into sections
+    const sections = content.split('\n\n').filter(section => section.trim());
+    
+    return sections.map((section, index) => {
+      const trimmed = section.trim();
+      
+      // Handle h2 headers (## )
+      if (trimmed.startsWith('## ')) {
+        return (
+          <h2 key={index} className="text-2xl font-bold text-primary mt-8 mb-4">
+            {trimmed.replace('## ', '')}
+          </h2>
+        );
+      }
+      
+      // Handle h3 headers (### )
+      if (trimmed.startsWith('### ')) {
+        return (
+          <h3 key={index} className="text-xl font-semibold text-primary mt-6 mb-3">
+            {trimmed.replace('### ', '')}
+          </h3>
+        );
+      }
+      
+      // Handle bullet points (- or * )
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        const listItems = trimmed.split('\n').filter(item => item.trim().startsWith('- ') || item.trim().startsWith('* '));
+        return (
+          <ul key={index} className="list-disc pl-6 mb-4 space-y-2">
+            {listItems.map((item, i) => (
+              <li key={i} className="leading-relaxed">
+                {item.replace(/^[-*]\s+/, '')}
+              </li>
+            ))}
+          </ul>
+        );
+      }
+      
+      // Handle numbered lists (1. )
+      if (/^\d+\.\s/.test(trimmed)) {
+        const listItems = trimmed.split('\n').filter(item => /^\d+\.\s/.test(item.trim()));
+        return (
+          <ol key={index} className="list-decimal pl-6 mb-4 space-y-2">
+            {listItems.map((item, i) => (
+              <li key={i} className="leading-relaxed">
+                {item.replace(/^\d+\.\s+/, '')}
+              </li>
+            ))}
+          </ol>
+        );
+      }
+      
+      // Handle bold text (**text**)
+      const formatBoldText = (text: string) => {
+        return text.split(/(\*\*.*?\*\*)/).map((part, i) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={i}>{part.slice(2, -2)}</strong>;
+          }
+          return part;
+        });
+      };
+      
+      // Regular paragraph
+      return (
+        <p key={index} className="mb-4 leading-relaxed text-gray-700">
+          {formatBoldText(trimmed)}
+        </p>
+      );
+    });
   };
 
   if (loading) {
