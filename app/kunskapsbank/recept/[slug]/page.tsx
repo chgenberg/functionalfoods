@@ -24,7 +24,7 @@ interface Recipe {
   imageAlt?: string;
   categories: string[];
   ingredients: string[];
-  instructions?: string;
+  instructions?: string | string[];
   difficulty?: string;
   prepTime?: string;
   cookTime?: string;
@@ -251,7 +251,15 @@ export default function RecipePage() {
     scaleIngredient(ing, recipe.servings)
   );
 
-  const instructionSteps = recipe.instructions?.split(/\d+\./).filter(step => step.trim()).map(step => step.trim()) || [];
+  // Handle instructions - could be string or array from API
+  let instructionSteps: string[] = [];
+  if (recipe.instructions) {
+    if (Array.isArray(recipe.instructions)) {
+      instructionSteps = recipe.instructions;
+    } else if (typeof recipe.instructions === 'string') {
+      instructionSteps = recipe.instructions.split(/\d+\./).filter(step => step.trim()).map(step => step.trim());
+    }
+  }
 
   return (
     <>
