@@ -48,12 +48,48 @@ function LoginForm() {
         if (redirect) {
           router.push(redirect);
         } else {
-          // Check if user has specific course access and redirect accordingly
-          if (email === 'basics@test.se') {
-            router.push('/dashboard/courses/functional-basics');
-          } else if (email === 'flow@test.se') {
-            router.push('/dashboard/courses/functional-flow');
-          } else {
+          // Check user's actual course purchases for smart redirect
+          try {
+            const purchasesRes = await fetch('/api/user/purchases', {
+              headers: {
+                'Authorization': `Bearer ${data.token}`
+              }
+            });
+            
+            if (purchasesRes.ok) {
+              const purchasesData = await purchasesRes.json();
+              const purchases = purchasesData.purchases || purchasesData;
+              
+              if (purchases.length > 0) {
+                // Find which courses the user owns
+                const ownedCourses = purchases.map((p: any) => p.course.name);
+                
+                if (ownedCourses.includes('Functional Flow') && !ownedCourses.includes('Functional Basics')) {
+                  // Only Flow course
+                  router.push('/dashboard/courses/functional-flow');
+                } else if (ownedCourses.includes('Functional Basics') && !ownedCourses.includes('Functional Flow')) {
+                  // Only Basic course
+                  router.push('/dashboard/courses/functional-basics');
+                } else if (ownedCourses.includes('Functional Flow')) {
+                  // If they have both, prioritize Flow (advanced course)
+                  router.push('/dashboard/courses/functional-flow');
+                } else if (ownedCourses.includes('Functional Basics')) {
+                  // Fallback to Basic
+                  router.push('/dashboard/courses/functional-basics');
+                } else {
+                  // Has purchases but not these specific courses
+                  router.push('/mina-kurser');
+                }
+              } else {
+                // No courses purchased
+                router.push('/mina-kurser');
+              }
+            } else {
+              // Fallback if API call fails
+              router.push('/mina-kurser');
+            }
+          } catch (error) {
+            console.error('Error checking purchases for redirect:', error);
             router.push('/mina-kurser');
           }
         }

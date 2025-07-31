@@ -58,19 +58,11 @@ export default function MyCoursesPage() {
     const user = JSON.parse(userStr);
     setUser(user);
     
-    // Redirect test users to their specific course dashboard
-    if (user.email === 'basics@test.se') {
-      router.push('/dashboard/courses/functional-basics');
-      return;
-    } else if (user.email === 'flow@test.se') {
-      router.push('/dashboard/courses/functional-flow');
-      return;
-    }
-
-    fetchPurchases(token);
+    // Fetch purchases first to determine smart redirect
+    fetchPurchases(token, user);
   }, [router]);
 
-  const fetchPurchases = async (token: string) => {
+  const fetchPurchases = async (token: string, user: any) => {
     try {
       const res = await fetch('/api/user/purchases', {
         headers: {
@@ -89,11 +81,29 @@ export default function MyCoursesPage() {
       }
 
       const data = await res.json();
-      setPurchases(data);
+      const purchases = data.purchases || data;
+      setPurchases(purchases);
       
-      // Om användaren har köpt kurser, visa den första som standard
-      if (data.length > 0) {
-        setSelectedCourse(data[0].course);
+      // Smart redirect logic based on actual purchases
+      if (purchases.length > 0) {
+        const ownedCourses = purchases.map((p: any) => p.course.name);
+        
+        if (ownedCourses.includes('Functional Flow') && !ownedCourses.includes('Functional Basics')) {
+          // Only Flow course - redirect to Flow dashboard
+          router.push('/dashboard/courses/functional-flow');
+          return;
+        } else if (ownedCourses.includes('Functional Basics') && !ownedCourses.includes('Functional Flow')) {
+          // Only Basic course - redirect to Basic dashboard
+          router.push('/dashboard/courses/functional-basics');
+          return;
+        } else if (ownedCourses.includes('Functional Flow') && ownedCourses.includes('Functional Basics')) {
+          // Has both courses - prioritize Flow (advanced course)
+          router.push('/dashboard/courses/functional-flow');
+          return;
+        }
+        
+        // If they have other courses or multiple, stay on this page
+        setSelectedCourse(purchases[0].course);
       }
     } catch (error) {
       console.error('Error fetching purchases:', error);
