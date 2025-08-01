@@ -67,16 +67,11 @@ export default function BlogPostPage({ params }: Props) {
 
   // Format content for display (convert markdown to proper HTML)
   const formatContent = (content: string) => {
-    // Clean up content first - fix broken text formatting
+    // Clean up content gently - avoid aggressive text manipulation
     let cleanContent = content
       .replace(/\r\n/g, '\n')
       .replace(/\n{3,}/g, '\n\n')
-      .replace(/\s+$/gm, '') // Remove trailing spaces
-      .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
-      .replace(/([a-zåäöé])\s*\n\s*([a-zåäöé])/g, '$1 $2') // Fix broken words across lines
-      .replace(/([.!?])\s*\n\s*([A-ZÅÄÖ])/g, '$1\n\n$2') // Proper sentence breaks
-      .replace(/:\s*([A-ZÅÄÖ][^.!?]*[.!?])/g, ':\n\n$1') // Break after colons when followed by sentences
-      .replace(/([a-zåäöé])\s*([A-ZÅÄÖ][a-zåäöé]*:)/g, '$1\n\n$2') // Break before category labels
+      .replace(/\s+$/gm, '') // Remove trailing spaces only
       .trim();
 
     // Split into lines and process them intelligently
@@ -103,9 +98,19 @@ export default function BlogPostPage({ params }: Props) {
       return indicators.some(pattern => pattern.test(text));
     };
 
+    const cleanParagraphText = (text: string) => {
+      // Clean up paragraph text to fix common issues
+      return text
+        .replace(/([a-zåäöé])\s*-\s*([a-zåäöé])/g, '$1 $2') // Fix broken words with hyphens
+        .replace(/\s+/g, ' ') // Normalize spaces
+        .replace(/\s*([.!?])\s*([A-ZÅÄÖ])/g, '$1 $2') // Fix spacing around punctuation
+        .trim();
+    };
+
     const pushCurrentParagraph = () => {
       if (currentParagraph.length > 0) {
-        const paragraphText = currentParagraph.join(' ').trim();
+        const rawText = currentParagraph.join(' ');
+        const paragraphText = cleanParagraphText(rawText);
         if (paragraphText && paragraphText.length > 10) {
           elements.push(
             <p key={elements.length} className="mb-6 leading-relaxed text-gray-700 text-lg">
