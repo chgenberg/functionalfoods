@@ -67,11 +67,16 @@ export default function BlogPostPage({ params }: Props) {
 
   // Format content for display (convert markdown to proper HTML)
   const formatContent = (content: string) => {
-    // Clean up content first
+    // Clean up content first - fix broken text formatting
     let cleanContent = content
       .replace(/\r\n/g, '\n')
       .replace(/\n{3,}/g, '\n\n')
       .replace(/\s+$/gm, '') // Remove trailing spaces
+      .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
+      .replace(/([a-zåäöé])\s*\n\s*([a-zåäöé])/g, '$1 $2') // Fix broken words across lines
+      .replace(/([.!?])\s*\n\s*([A-ZÅÄÖ])/g, '$1\n\n$2') // Proper sentence breaks
+      .replace(/:\s*([A-ZÅÄÖ][^.!?]*[.!?])/g, ':\n\n$1') // Break after colons when followed by sentences
+      .replace(/([a-zåäöé])\s*([A-ZÅÄÖ][a-zåäöé]*:)/g, '$1\n\n$2') // Break before category labels
       .trim();
 
     // Split into lines and process them intelligently
@@ -81,10 +86,27 @@ export default function BlogPostPage({ params }: Props) {
     let currentList: string[] = [];
     let listType: 'ul' | 'ol' | null = null;
 
+    const smartParagraphBreak = (text: string) => {
+      // Check if text should start a new paragraph
+      const indicators = [
+        /^[A-ZÅÄÖ][a-zåäöé]+:/,  // Category labels like "Flavonoider:"
+        /^Det finns/,              // Common paragraph starters
+        /^Till exempel/,
+        /^Dessa/,
+        /^Studier/,
+        /^Forskning/,
+        /^I tillägg/,
+        /^Däremot/,
+        /^Samtidigt/,
+        /^Därför/
+      ];
+      return indicators.some(pattern => pattern.test(text));
+    };
+
     const pushCurrentParagraph = () => {
       if (currentParagraph.length > 0) {
         const paragraphText = currentParagraph.join(' ').trim();
-        if (paragraphText) {
+        if (paragraphText && paragraphText.length > 10) {
           elements.push(
             <p key={elements.length} className="mb-6 leading-relaxed text-gray-700 text-lg">
               {formatInlineElements(paragraphText)}
@@ -204,9 +226,15 @@ export default function BlogPostPage({ params }: Props) {
         continue;
       }
 
-      // Regular text - add to current paragraph
+      // Regular text - add to current paragraph with smart breaking
       if (line.length > 0) {
         pushCurrentList(); // Close any open list
+        
+        // Check if this line should start a new paragraph
+        if (currentParagraph.length > 0 && smartParagraphBreak(line)) {
+          pushCurrentParagraph();
+        }
+        
         currentParagraph.push(line);
       }
     }
@@ -220,8 +248,14 @@ export default function BlogPostPage({ params }: Props) {
 
   // Format inline elements like bold, italic, links
   const formatInlineElements = (text: string): (string | JSX.Element)[] => {
+    // First, handle category labels and make them bold
+    let processedText = text
+      .replace(/([A-ZÅÄÖ][a-zåäöé]+):/g, '**$1:**') // Make category labels bold
+      .replace(/\s{2,}/g, ' ') // Remove extra spaces
+      .replace(/([a-zåäöé])\s*\.\s*([A-ZÅÄÖ])/g, '$1. $2'); // Fix spacing after periods
+
     // Handle bold text (**text** or __text__)
-    let parts = text.split(/(\*\*.*?\*\*|__.*?__)/);
+    let parts = processedText.split(/(\*\*.*?\*\*|__.*?__)/);
     
     return parts.map((part, i) => {
       // Bold text
