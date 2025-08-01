@@ -91,7 +91,7 @@ export default function UtbildningPage() {
 
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-3xl font-bold text-gray-800">997 kr</p>
+                  <p className="text-3xl font-bold text-gray-800">2 295 kr</p>
                   <p className="text-sm text-gray-500">Engångsbetalning</p>
                 </div>
               </div>
@@ -100,7 +100,7 @@ export default function UtbildningPage() {
                 <AddToCart 
                   id="functional-basics"
                   name="Functional Basics"
-                  price={997}
+                  price={2295}
                   type="course"
                 />
                 <Link
@@ -155,7 +155,11 @@ export default function UtbildningPage() {
 
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-3xl font-bold text-gray-800">1497 kr</p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-3xl font-bold text-gray-800">1 836 kr</p>
+                    <span className="text-lg text-gray-500 line-through">2 295 kr</span>
+                    <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">-20%</span>
+                  </div>
                   <p className="text-sm text-gray-500">Engångsbetalning</p>
                 </div>
               </div>
@@ -164,7 +168,7 @@ export default function UtbildningPage() {
                 <AddToCart 
                   id="functional-flow"
                   name="Functional Flow"
-                  price={1497}
+                  price={1836}
                   type="course"
                 />
                 <Link
