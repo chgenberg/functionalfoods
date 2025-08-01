@@ -17,35 +17,52 @@ export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [forceShowVideo, setForceShowVideo] = useState(false);
   const router = useRouter();
 
-  // Simple video autoplay attempt
+  // Enhanced video autoplay and loading
   useEffect(() => {
     const attemptVideoPlay = () => {
       const videos = document.querySelectorAll('video');
       videos.forEach(video => {
-        video.play().catch(() => {
-          // Silently fail - the fallback image will show
+        // Reset video to start
+        video.currentTime = 0;
+        
+        video.play().then(() => {
+          console.log('Video started playing successfully');
+          setVideoLoaded(true);
+          setForceShowVideo(true);
+        }).catch((error) => {
+          console.log('Video autoplay failed:', error);
+          // Try to load the video anyway, it might play on user interaction
+          setVideoLoaded(true);
+          setForceShowVideo(true);
         });
       });
     };
 
-    // Try on mount
-    attemptVideoPlay();
+    // Try immediately
+    const timer = setTimeout(() => {
+      attemptVideoPlay();
+    }, 100);
 
     // Try on first user interaction
     const handleInteraction = () => {
       attemptVideoPlay();
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
+      document.removeEventListener('scroll', handleInteraction);
     };
 
     document.addEventListener('click', handleInteraction);
     document.addEventListener('touchstart', handleInteraction);
+    document.addEventListener('scroll', handleInteraction);
 
     return () => {
+      clearTimeout(timer);
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
+      document.removeEventListener('scroll', handleInteraction);
     };
   }, []);
 
@@ -157,37 +174,61 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
           </div>
           
-          {/* Desktop video - simplified approach */}
-          {!videoError && (
-            <video
-              key="desktop-video"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className={`hidden md:block absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-              onCanPlayThrough={() => setVideoLoaded(true)}
-              onError={() => setVideoError(true)}
-            >
-              <source src="/introvideo_compressed.mp4" type="video/mp4" />
-            </video>
-          )}
+          {/* Desktop video - enhanced visibility */}
+          <video
+            key="desktop-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className={`hidden md:block absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${(videoLoaded || forceShowVideo) ? 'opacity-80' : 'opacity-0'}`}
+            onLoadedData={() => {
+              console.log('Desktop video loaded');
+              setVideoLoaded(true);
+              setForceShowVideo(true);
+            }}
+            onCanPlay={() => {
+              console.log('Desktop video can play');
+              setVideoLoaded(true);
+              setForceShowVideo(true);
+            }}
+            onError={(e) => {
+              console.log('Desktop video error:', e);
+              setVideoError(true);
+            }}
+          >
+            <source src="/introvideo_compressed.mp4" type="video/mp4" />
+            <p>Your browser does not support the video tag.</p>
+          </video>
           
-          {/* Mobile video - simplified approach */}
-          {!videoError && (
-            <video
-              key="mobile-video"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className={`block md:hidden absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-              onCanPlayThrough={() => setVideoLoaded(true)}
-              onError={() => setVideoError(true)}
-            >
-              <source src="/introvideo_mobile.mp4" type="video/mp4" />
-            </video>
-          )}
+          {/* Mobile video - enhanced visibility */}
+          <video
+            key="mobile-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className={`block md:hidden absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${(videoLoaded || forceShowVideo) ? 'opacity-80' : 'opacity-0'}`}
+            onLoadedData={() => {
+              console.log('Mobile video loaded');
+              setVideoLoaded(true);
+              setForceShowVideo(true);
+            }}
+            onCanPlay={() => {
+              console.log('Mobile video can play');
+              setVideoLoaded(true);
+              setForceShowVideo(true);
+            }}
+            onError={(e) => {
+              console.log('Mobile video error:', e);
+              setVideoError(true);
+            }}
+          >
+            <source src="/introvideo_mobile.mp4" type="video/mp4" />
+            <p>Your browser does not support the video tag.</p>
+          </video>
           
           {/* Enhanced overlay for text readability */}
           <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/50" />
