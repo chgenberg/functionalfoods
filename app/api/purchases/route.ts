@@ -72,27 +72,33 @@ export async function POST(request: Request) {
       });
 
       if (existingUser) {
+        // User already exists - use existing user regardless of createAccount setting
         user = existingUser;
-      } else if (createAccount) {
-        // Create new user account
-        generatedPassword = generateRandomPassword();
-        const hashedPassword = await bcrypt.hash(generatedPassword, 10);
-        
-        user = await prisma.user.create({
-          data: {
-            email: customerInfo.email,
-            name: customerInfo.name,
-            password: hashedPassword,
-            role: 'customer',
-            isActive: true
-          }
-        });
-        isNewUser = true;
+        console.log(`Using existing user: ${existingUser.email}`);
       } else {
-        return NextResponse.json(
-          { error: 'Användaren existerar redan. Vänligen logga in eller välj "Skapa konto".' },
-          { status: 400 }
-        );
+        // User doesn't exist - create new user if createAccount is true
+        if (createAccount) {
+          generatedPassword = generateRandomPassword();
+          const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+          
+          user = await prisma.user.create({
+            data: {
+              email: customerInfo.email,
+              name: customerInfo.name,
+              password: hashedPassword,
+              role: 'customer',
+              isActive: true
+            }
+          });
+          isNewUser = true;
+          console.log(`Created new user: ${user.email}`);
+        } else {
+          // User doesn't exist and doesn't want to create account
+          return NextResponse.json(
+            { error: 'Du måste skapa ett konto för att genomföra köpet. Markera "Skapa ett konto åt mig" eller logga in om du redan har ett konto.' },
+            { status: 400 }
+          );
+        }
       }
     }
 
