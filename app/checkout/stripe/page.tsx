@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -78,7 +78,7 @@ function CheckoutForm() {
   );
 }
 
-export default function StripePage() {
+function StripePageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const clientSecret = searchParams.get('client_secret');
@@ -132,5 +132,17 @@ export default function StripePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function StripePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <StripePageContent />
+    </Suspense>
   );
 } 
