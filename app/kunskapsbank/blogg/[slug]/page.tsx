@@ -72,6 +72,8 @@ export default function BlogPostPage({ params }: Props) {
       .replace(/\r\n/g, '\n')
       .replace(/\n{3,}/g, '\n\n')
       .replace(/\s+$/gm, '') // Remove trailing spaces only
+      // Fix broken dashes that appear at start of lines (not real list items)
+      .replace(/\n-\s+([a-zåäöé])/g, ' – $1') // Convert line-starting dashes to em-dashes in text
       .trim();
 
     // Check if content has very few line breaks (likely one big text block)
@@ -259,8 +261,14 @@ export default function BlogPostPage({ params }: Props) {
         continue;
       }
       
-      // Handle unordered list items (- or * )
-      if (line.startsWith('- ') || line.startsWith('* ')) {
+      // Handle unordered list items (- or * ) - but be more selective
+      if (line.startsWith('* ') || 
+          (line.startsWith('- ') && 
+           // Only treat as list if it looks like an actual list item
+           (line.match(/^-\s+[A-ZÅÄÖ]/) || // Starts with capital letter
+            line.match(/^-\s+\d/) || // Starts with number
+            line.match(/^-\s+[a-zåäö]{1,15}\s/) || // Short word followed by space (real list items)
+            line.length < 100))) { // Or it's short (likely a list item)
         pushCurrentParagraph();
         if (listType !== 'ul') {
           pushCurrentList();
