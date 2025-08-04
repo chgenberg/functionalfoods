@@ -96,19 +96,20 @@ export default function NewsletterSignup({
             </button>
           </div>
           
-          <label className="flex items-start gap-2 text-sm">
+          <div className="flex items-start gap-3 text-sm">
             <input
               type="checkbox"
+              id="privacy-checkbox-compact"
               checked={privacyAccepted}
               onChange={(e) => setPrivacyAccepted(e.target.checked)}
-              className="mt-0.5"
+              className="w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
               required
             />
-            <span className="text-gray-600">
+            <label htmlFor="privacy-checkbox-compact" className="text-gray-600 cursor-pointer">
               Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
               <a href="/integritetspolicy" className="text-primary hover:underline ml-1">läs mer</a>
-            </span>
-          </label>
+            </label>
+          </div>
 
           <AnimatePresence>
             {message && (
@@ -182,19 +183,20 @@ export default function NewsletterSignup({
               </button>
             </div>
             
-            <label className="flex items-center justify-center gap-2 text-sm">
+            <div className="flex items-center justify-center gap-3 text-sm">
               <input
                 type="checkbox"
+                id="privacy-checkbox-hero"
                 checked={privacyAccepted}
                 onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                className="w-4 h-4"
+                className="w-5 h-5 text-white rounded border-2 border-white/30 bg-transparent focus:ring-2 focus:ring-white focus:ring-offset-0 cursor-pointer"
                 required
               />
-              <span className="opacity-90">
+              <label htmlFor="privacy-checkbox-hero" className="opacity-90 cursor-pointer">
                 Jag accepterar 
-                <a href="/integritetspolicy" className="underline ml-1">integritetspolicyn</a>
-              </span>
-            </label>
+                <a href="/integritetspolicy" className="underline ml-1 hover:text-white/80">integritetspolicyn</a>
+              </label>
+            </div>
 
             <AnimatePresence>
               {message && (
@@ -270,19 +272,20 @@ export default function NewsletterSignup({
           </button>
         </div>
         
-        <label className="flex items-start gap-2 text-sm">
+        <div className="flex items-start gap-3 text-sm">
           <input
             type="checkbox"
+            id="privacy-checkbox-default"
             checked={privacyAccepted}
             onChange={(e) => setPrivacyAccepted(e.target.checked)}
-            className="mt-0.5"
+            className="w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
             required
           />
-          <span className="text-gray-600">
+          <label htmlFor="privacy-checkbox-default" className="text-gray-600 cursor-pointer">
             Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
             <a href="/integritetspolicy" className="text-primary hover:underline ml-1">läs mer</a>
-          </span>
-        </label>
+          </label>
+        </div>
 
         <AnimatePresence>
           {message && (
