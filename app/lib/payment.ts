@@ -60,7 +60,7 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
     type: 'stripe',
     description: 'Betala med kort via Stripe',
     icon: '💳',
-    enabled: false // Enable when Stripe is integrated
+    enabled: true // Aktiverar Stripe
   }
 ];
 
@@ -171,35 +171,72 @@ export class PaymentService {
     throw new Error('Swish integration not yet implemented');
   }
 
-  // Ready for Stripe integration
+  // Implementerar riktig Stripe-integration
   private async processStripePayment(request: PaymentRequest): Promise<PaymentResponse> {
     if (!this.stripeApiKey) {
       throw new Error('Stripe API key not configured');
     }
 
-    // TODO: Implement real Stripe integration
-    // Example structure:
-    /*
-    const stripe = require('stripe')(this.stripeApiKey);
-    
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: request.amount * 100, // Stripe uses öre
-      currency: request.currency.toLowerCase(),
-      metadata: {
-        userId: request.customer.userId,
-        items: JSON.stringify(request.items)
-      }
-    });
+    try {
+      const stripe = require('stripe')(this.stripeApiKey);
+      
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(request.amount * 100), // Stripe använder öre
+        currency: request.currency.toLowerCase(),
+        automatic_payment_methods: {
+          enabled: true,
+        },
+        metadata: {
+          userId: request.customer.userId,
+          customerEmail: request.customer.email,
+          items: JSON.stringify(request.items),
+          orderType: 'course_purchase',
+          website: 'ulrika-functional-foods', // Identifierar nya sajten
+          platform: 'new-site' // För att särskilja från gamla sajten
+        },
+        receipt_email: request.customer.email,
+        description: `Ulrika Functional Foods - ${request.items.map(item => item.name).join(', ')}` // Uppdaterad beskrivning
+      });
 
-    return {
-      success: true,
-      status: 'pending',
-      paymentId: paymentIntent.id,
-      redirectUrl: paymentIntent.next_action?.redirect_to_url?.url
-    };
-    */
+      return {
+        success: true,
+        status: 'pending',
+        paymentId: paymentIntent.id,
+        redirectUrl: paymentIntent.client_secret ? `/checkout/stripe?client_secret=${paymentIntent.client_secret}` : undefined
+      };
 
-    throw new Error('Stripe integration not yet implemented');
+    } catch (error) {
+      console.error('Stripe payment error:', error);
+      throw new Error(`Stripe payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Verifierar Stripe-betalning
+  private async verifyStripePayment(paymentId: string): Promise<PaymentResponse> {
+    if (!this.stripeApiKey) {
+      throw new Error('Stripe API key not configured');
+    }
+
+    try {
+      const stripe = require('stripe')(this.stripeApiKey);
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
+
+      return {
+        success: paymentIntent.status === 'succeeded',
+        status: paymentIntent.status === 'succeeded' ? 'completed' : 
+                paymentIntent.status === 'canceled' ? 'cancelled' : 'pending',
+        paymentId: paymentIntent.id,
+        transactionId: paymentIntent.id
+      };
+
+    } catch (error) {
+      console.error('Stripe verification error:', error);
+      return {
+        success: false,
+        status: 'failed',
+        error: error instanceof Error ? error.message : 'Verification failed'
+      };
+    }
   }
 
   // Verify payment status - useful for webhooks
@@ -213,14 +250,16 @@ export class PaymentService {
       };
     }
 
-    // TODO: Implement real payment verification for each method
+    // Implementerar riktig payment verification för varje metod
     switch (paymentMethod) {
       case 'klarna':
         // return this.verifyKlarnaPayment(paymentId);
+        throw new Error('Klarna verification not yet implemented');
       case 'swish':
         // return this.verifySwishPayment(paymentId);
+        throw new Error('Swish verification not yet implemented');
       case 'stripe':
-        // return this.verifyStripePayment(paymentId);
+        return this.verifyStripePayment(paymentId);
       default:
         throw new Error(`Unsupported payment method: ${paymentMethod}`);
     }

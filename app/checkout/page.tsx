@@ -2,15 +2,17 @@
 import { useCart } from '../context/CartContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiArrowLeft, FiCreditCard, FiLock, FiUser, FiMail } from 'react-icons/fi';
+import { FiArrowLeft, FiCreditCard, FiLock, FiUser, FiMail, FiCheck } from 'react-icons/fi';
 import { GiSparkles } from 'react-icons/gi';
+
+import { FaCreditCard } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function Checkout() {
   const { items, total, clearCart, isLoaded } = useCart();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<'klarna' | 'swish' | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<'klarna' | 'swish' | 'stripe' | null>(null);
   const [user, setUser] = useState<any>(null);
   const [error, setError] = useState('');
   
@@ -67,37 +69,41 @@ export default function Checkout() {
     return true;
   };
 
-  const handlePayment = async (provider: 'klarna' | 'swish') => {
+
+
+  const paymentMethods = [
+    {
+      id: 'stripe',
+      name: 'Kortbetalning',
+      description: 'Betala säkert med Visa, Mastercard eller American Express',
+      icon: <FaCreditCard className="text-2xl" />,
+      enabled: true,
+      badge: 'Säker betalning'
+    }
+  ];
+
+  const handleCheckout = async () => {
     setIsProcessing(true);
-    setSelectedPayment(provider);
     setError('');
 
-    // Validate guest form if in guest mode
     if (guestMode && !validateGuestForm()) {
       setIsProcessing(false);
-      setSelectedPayment(null);
       return;
     }
 
     try {
       const token = localStorage.getItem('token');
       
-      // Prepare request body
       const requestBody: any = {
         items: items,
-        paymentMethod: provider
-      };
-
-      // Add customer info for guest checkout
-      if (guestMode) {
-        requestBody.customerInfo = {
+        paymentMethod: selectedPayment,
+        customerInfo: guestMode ? {
           name: customerInfo.name.trim(),
           email: customerInfo.email.trim().toLowerCase()
-        };
-        requestBody.createAccount = customerInfo.createAccount;
-      }
+        } : null,
+        createAccount: guestMode ? customerInfo.createAccount : null
+      };
 
-      // Send purchase to API
       const response = await fetch('/api/purchases', {
         method: 'POST',
         headers: {
@@ -113,22 +119,28 @@ export default function Checkout() {
         throw new Error(data.error || 'Något gick fel med betalningen');
       }
 
-      // If we got a JWT token (new user), store it for automatic login
-      if (data.token && data.user) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+      // Handle different response types
+      if (data.requiresRedirect && data.redirectUrl) {
+        // For Stripe, redirect to payment page
+        if (selectedPayment === 'stripe') {
+          window.location.href = data.redirectUrl;
+        } else {
+          // For other payment methods that need external redirect
+          window.location.href = data.redirectUrl;
+        }
+      } else if (data.success) {
+        // Payment completed immediately
+        if (data.token && data.user) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+        clearCart();
+        router.push('/checkout/success?new=' + (data.user?.isNewUser ? 'true' : 'false'));
       }
-
-      // Clear cart
-      clearCart();
-      
-      // Redirect to success page
-      router.push('/checkout/success?new=' + (data.user?.isNewUser ? 'true' : 'false'));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Något gick fel med betalningen');
     } finally {
       setIsProcessing(false);
-      setSelectedPayment(null);
     }
   };
 
@@ -154,194 +166,220 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container-custom">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12 animate-fade-in">
-            <h1 className="text-3xl md:text-4xl font-light mb-4">
-              Kassa
-            </h1>
-            <p className="text-text-secondary">
-              Nästan klar! Fyll i dina uppgifter och välj betalningsmetod för att slutföra din beställning.
-            </p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 lg:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Back button */}
+        <Link href="/cart" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors group">
+          <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
+          Tillbaka till varukorg
+        </Link>
 
-          {/* Guest Checkout Form */}
-          {guestMode && (
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6 animate-fade-in">
-              <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-                <FiUser className="w-5 h-5 text-primary" />
-                Dina uppgifter
-              </h3>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Column - Customer Info & Payment */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            {/* Customer Information Card */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+                <h2 className="text-2xl font-bold flex items-center">
+                  <FiUser className="mr-3" />
+                  Dina uppgifter
+                </h2>
+              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Namn *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    value={customerInfo.name}
-                    onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="Ditt fullständiga namn"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    E-post *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={customerInfo.email}
-                    onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="din@email.se"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 mb-4">
-                <input
-                  type="checkbox"
-                  id="createAccount"
-                  checked={customerInfo.createAccount}
-                  onChange={(e) => setCustomerInfo({...customerInfo, createAccount: e.target.checked})}
-                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                />
-                <label htmlFor="createAccount" className="text-sm text-gray-700">
-                  Skapa ett konto åt mig så jag slipper fylla i detta igen (rekommenderas)
-                </label>
-              </div>
-
-              <div className="text-center">
-                <p className="text-xs text-gray-500">
-                  Har du redan ett konto?{' '}
-                  <Link 
-                    href={`/login?redirect=${encodeURIComponent('/checkout')}`}
-                    className="text-primary hover:underline"
-                  >
-                    Logga in här
-                  </Link>
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Show error message */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 animate-fade-in">
-              <p className="text-red-800 font-medium">{error}</p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Order Summary */}
-            <div className="bg-white rounded-lg shadow-sm p-6 animate-fade-in">
-              <h3 className="text-lg font-medium mb-4">Din beställning</h3>
-              
-              <div className="space-y-4 mb-6">
-                {items.map((item) => (
-                  <div key={item.id} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+              <div className="p-6 space-y-4">
+                {guestMode ? (
+                  <>
                     <div>
-                      <h4 className="font-medium">{item.name}</h4>
-                      <p className="text-sm text-gray-600">Antal: {item.quantity}</p>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Namn *
+                      </label>
+                      <input
+                        type="text"
+                        value={customerInfo.name}
+                        onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="Christopher Genberg"
+                        required
+                      />
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium">{(item.price * item.quantity).toLocaleString()} kr</p>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        E-post *
+                      </label>
+                      <input
+                        type="email"
+                        value={customerInfo.email}
+                        onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="ch.genberg@gmail.com"
+                        required
+                      />
                     </div>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={customerInfo.createAccount}
+                          onChange={(e) => setCustomerInfo({ ...customerInfo, createAccount: e.target.checked })}
+                          className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                        />
+                        <span className="ml-3 text-gray-700">
+                          Skapa ett konto åt mig så jag slipper fylla i detta igen (rekommenderas)
+                        </span>
+                      </label>
+                    </div>
+                    
+                    <p className="text-sm text-gray-500 flex items-center">
+                      Har du redan ett konto? <Link href="/login" className="text-blue-600 hover:underline ml-1">Logga in här</Link>
+                    </p>
+                  </>
+                ) : (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <p className="text-green-800 flex items-center">
+                      <FiCheck className="mr-2" />
+                      Inloggad som <span className="font-semibold ml-1">{user?.email}</span>
+                    </p>
                   </div>
-                ))}
-              </div>
-              
-              <div className="border-t border-gray-200 pt-4">
-                <div className="flex justify-between items-center text-lg font-bold">
-                  <span>Totalt</span>
-                  <span>{total.toLocaleString()} kr</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-1">Inklusive moms</p>
+                )}
               </div>
             </div>
 
-            {/* Payment Methods */}
-            <div className="bg-white rounded-lg shadow-sm p-6 animate-fade-in">
-              <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-                <FiCreditCard className="w-5 h-5 text-primary" />
-                Betalningsmetod
-              </h3>
-              
-              <div className="space-y-3">
-                <button
-                  onClick={() => handlePayment('klarna')}
-                  disabled={isProcessing || (guestMode && (!customerInfo.name || !customerInfo.email))}
-                  className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative"
-                >
-                  {isProcessing && selectedPayment === 'klarna' && (
-                    <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
-                        <FiCreditCard className="w-4 h-4 text-pink-600" />
-                      </div>
-                      <div className="text-left">
-                        <p className="font-medium">Klarna</p>
-                        <p className="text-sm text-gray-600">Betala senare eller dela upp</p>
-                      </div>
-                    </div>
-                    <GiSparkles className="w-5 h-5 text-pink-500" />
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => handlePayment('swish')}
-                  disabled={isProcessing || (guestMode && (!customerInfo.name || !customerInfo.email))}
-                  className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative"
-                >
-                  {isProcessing && selectedPayment === 'swish' && (
-                    <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <FiCreditCard className="w-4 h-4 text-blue-600" />
-                      </div>
-                      <div className="text-left">
-                        <p className="font-medium">Swish</p>
-                        <p className="text-sm text-gray-600">Betala med din telefon</p>
-                      </div>
-                    </div>
-                    <span className="text-blue-600 font-bold text-sm">SWISH</span>
-                  </div>
-                </button>
+            {/* Payment Method Card */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+                <h2 className="text-2xl font-bold flex items-center">
+                  <FiCreditCard className="mr-3" />
+                  Betalningsmetod
+                </h2>
               </div>
-
-              <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <FiLock className="w-4 h-4" />
-                  <span>Säker betalning med 256-bit SSL-kryptering</span>
+              
+              <div className="p-6">
+                <div className="grid gap-4">
+                  {paymentMethods.map((method) => (
+                    <button
+                      key={method.id}
+                      onClick={() => setSelectedPayment(method.id as any)}
+                      disabled={!method.enabled}
+                      className={`relative p-5 rounded-xl border-2 transition-all transform hover:scale-[1.02] ${
+                        selectedPayment === method.id
+                          ? 'border-blue-500 bg-blue-50 shadow-lg'
+                          : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                      } ${!method.enabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className={`p-3 rounded-lg ${
+                            selectedPayment === method.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
+                          }`}>
+                            {method.icon}
+                          </div>
+                          <div className="text-left">
+                            <h3 className="font-semibold text-lg flex items-center gap-2">
+                              {method.name}
+                              {method.badge && (
+                                <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                                  {method.badge}
+                                </span>
+                              )}
+                            </h3>
+                            <p className="text-sm text-gray-600">{method.description}</p>
+                          </div>
+                        </div>
+                        {selectedPayment === method.id && (
+                          <div className="absolute top-3 right-3">
+                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                              <FiCheck className="text-white text-sm" />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
+
           </div>
 
-          <div className="mt-8 text-center animate-fade-in">
-            <Link 
-              href="/cart" 
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              <FiArrowLeft className="w-4 h-4" />
-              Tillbaka till varukorg
-            </Link>
+          {/* Right Column - Order Summary */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden sticky top-8">
+              <div className="bg-gradient-to-r from-pink-600 to-orange-600 p-6 text-white">
+                <h2 className="text-2xl font-bold">Din beställning</h2>
+              </div>
+              
+              <div className="p-6">
+                {/* Order items */}
+                <div className="space-y-4 mb-6">
+                  {items.map((item) => (
+                    <div key={item.id} className="flex justify-between items-start pb-4 border-b border-gray-100 last:border-0">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800">{item.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {item.type === 'course' ? 'Kurs' : 'Bok'} • Antal: {item.quantity}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-800">{item.price * item.quantity} kr</p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-gray-500">{item.price} kr/st</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Total */}
+                <div className="border-t-2 border-gray-200 pt-4">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-xl font-bold text-gray-800">Totalt</span>
+                    <span className="text-2xl font-bold text-blue-600">{total} kr</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-6">Inklusive moms</p>
+
+                  {/* Security badges */}
+                  <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+                      <FiLock className="text-green-600" />
+                      <span>Säker betalning med 256-bit SSL-kryptering</span>
+                    </div>
+                  </div>
+
+                  {/* Checkout button */}
+                  <button
+                    onClick={handleCheckout}
+                    disabled={isProcessing || !selectedPayment || (guestMode && (!customerInfo.name || !customerInfo.email))}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all transform ${
+                      isProcessing || !selectedPayment || (guestMode && (!customerInfo.name || !customerInfo.email))
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
+                    }`}
+                  >
+                    {isProcessing ? (
+                      <span className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>
+                        Bearbetar...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center">
+                        <GiSparkles className="mr-2" />
+                        Slutför beställning
+                      </span>
+                    )}
+                  </button>
+                  
+                  {error && (
+                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-800 text-sm">{error}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

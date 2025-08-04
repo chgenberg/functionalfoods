@@ -121,29 +121,48 @@ async function handleKlarnaWebhook(payload: any): Promise<NextResponse> {
 
 async function handleStripeWebhook(payload: any): Promise<NextResponse> {
   try {
-    const { id, type, data } = payload;
+    const sig = payload.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (type === 'payment_intent.succeeded') {
-      const paymentIntent = data.object;
-      
-      const payment = await prisma.payment.findFirst({
-        where: { externalId: paymentIntent.id },
-        include: { order: { include: { items: true } } }
-      });
+    if (!webhookSecret) {
+      console.error('Stripe webhook secret not configured');
+      return NextResponse.json(
+        { error: 'Webhook secret not configured' },
+        { status: 500 }
+      );
+    }
 
-      if (payment) {
-        await completePayment(payment.id, payload);
-      }
-    } else if (type === 'payment_intent.payment_failed') {
-      const paymentIntent = data.object;
-      
-      const payment = await prisma.payment.findFirst({
-        where: { externalId: paymentIntent.id }
-      });
+    let event;
 
-      if (payment) {
-        await failPayment(payment.id, payload);
-      }
+    try {
+      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      event = stripe.webhooks.constructEvent(payload.body, sig, webhookSecret);
+    } catch (err) {
+      console.error('Webhook signature verification failed:', err);
+      return NextResponse.json(
+        { error: 'Invalid signature' },
+        { status: 400 }
+      );
+    }
+
+    console.log('Stripe webhook event received:', event.type);
+
+    // Hantera olika typer av Stripe-events
+    switch (event.type) {
+      case 'payment_intent.succeeded':
+        await handlePaymentSuccess(event.data.object);
+        break;
+      case 'payment_intent.payment_failed':
+        await handlePaymentFailure(event.data.object);
+        break;
+      case 'payment_intent.canceled':
+        await handlePaymentCanceled(event.data.object);
+        break;
+      case 'payment_intent.processing':
+        await handlePaymentProcessing(event.data.object);
+        break;
+      default:
+        console.log(`Unhandled Stripe event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
@@ -154,6 +173,70 @@ async function handleStripeWebhook(payload: any): Promise<NextResponse> {
       { error: 'Stripe webhook processing failed' },
       { status: 500 }
     );
+  }
+}
+
+async function handlePaymentSuccess(paymentIntent: any) {
+  console.log('Payment succeeded:', paymentIntent.id);
+  
+  const payment = await prisma.payment.findFirst({
+    where: { externalId: paymentIntent.id },
+    include: { order: { include: { items: true } } }
+  });
+
+  if (payment) {
+    await completePayment(payment.id, paymentIntent);
+  } else {
+    console.error('Payment not found for PaymentIntent:', paymentIntent.id);
+  }
+}
+
+async function handlePaymentFailure(paymentIntent: any) {
+  console.log('Payment failed:', paymentIntent.id);
+  
+  const payment = await prisma.payment.findFirst({
+    where: { externalId: paymentIntent.id }
+  });
+
+  if (payment) {
+    await failPayment(payment.id, paymentIntent);
+  }
+}
+
+async function handlePaymentCanceled(paymentIntent: any) {
+  console.log('Payment canceled:', paymentIntent.id);
+  
+  const payment = await prisma.payment.findFirst({
+    where: { externalId: paymentIntent.id }
+  });
+
+  if (payment) {
+    await prisma.payment.update({
+      where: { id: payment.id },
+      data: {
+        status: 'CANCELLED',
+        gatewayResponse: paymentIntent,
+        processedAt: new Date()
+      }
+    });
+  }
+}
+
+async function handlePaymentProcessing(paymentIntent: any) {
+  console.log('Payment processing:', paymentIntent.id);
+  
+  const payment = await prisma.payment.findFirst({
+    where: { externalId: paymentIntent.id }
+  });
+
+  if (payment && payment.status !== 'PROCESSING') {
+    await prisma.payment.update({
+      where: { id: payment.id },
+      data: {
+        status: 'PROCESSING',
+        gatewayResponse: paymentIntent
+      }
+    });
   }
 }
 

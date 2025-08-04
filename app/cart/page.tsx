@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { FiArrowLeft, FiTrash2, FiShoppingBag, FiMinus, FiPlus, FiCreditCard } from 'react-icons/fi';
+import { FiArrowLeft, FiTrash2, FiShoppingBag, FiMinus, FiPlus, FiCreditCard, FiTruck, FiShield, FiClock, FiBook, FiLock } from 'react-icons/fi';
 import { GiSparkles } from 'react-icons/gi';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -19,12 +19,12 @@ export default function CartPage() {
 
   if (!isLoaded) {
     return (
-      <main className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
+      <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container-custom section-padding">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-text-secondary">Laddar varukorg...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Laddar varukorg...</p>
             </div>
           </div>
         </div>
@@ -34,31 +34,33 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
-        <div className="container-custom section-padding">
+      <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="max-w-2xl mx-auto text-center">
             <div className="mb-8 animate-fade-in">
-              <div className="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FiShoppingBag className="w-12 h-12 text-accent" />
+              <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <FiShoppingBag className="w-12 h-12 text-blue-600" />
               </div>
-              <h2 className="text-3xl font-bold text-primary mb-4">Din varukorg är tom</h2>
-              <p className="text-lg text-text-secondary mb-8">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                Din varukorg är tom
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
                 Upptäck våra kurser och börja din resa mot bättre hälsa
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/utbildning" 
-                  className="btn-primary inline-flex items-center justify-center group"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all"
                 >
-                  <FiShoppingBag className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  <GiSparkles className="w-5 h-5" />
                   Utforska kurser
                 </Link>
                 <Link 
                   href="/" 
-                  className="btn-secondary inline-flex items-center justify-center"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-xl font-semibold border-2 border-gray-200 hover:border-gray-300 hover:shadow-md transition-all"
                 >
-                  <FiArrowLeft className="w-5 h-5 mr-2" />
-                  Tillbaka till start
+                  <FiArrowLeft className="w-5 h-5" />
+                  Tillbaka till startsidan
                 </Link>
               </div>
             </div>
@@ -69,165 +71,190 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
-      <div className="container-custom section-padding">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="mb-8 animate-fade-in">
-            <Link 
-              href="/utbildning" 
-              className="inline-flex items-center text-text-secondary hover:text-primary mb-4 transition-colors"
-            >
-              <FiArrowLeft className="w-4 h-4 mr-2" />
-              Fortsätt handla
-            </Link>
-            <h1 className="text-3xl md:text-4xl font-bold text-primary">
-              Din varukorg
-              <span className="ml-3 text-lg font-normal text-text-secondary">
-                ({items.length} {items.length === 1 ? 'produkt' : 'produkter'})
-              </span>
-            </h1>
-          </div>
+    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        
+        {/* Header */}
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4 transition-colors group">
+            <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
+            Fortsätt handla
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Din varukorg
+          </h1>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-4">
-              {items.map((item, index) => (
-                <div 
-                  key={item.id} 
-                  className={`bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 animate-fade-in ${
-                    removingItem === item.id ? 'opacity-0 transform scale-95' : ''
-                  }`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Product Image */}
-                    <div className="relative w-full sm:w-32 h-32 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl overflow-hidden flex-shrink-0">
-                      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-4">
+            {items.map((item) => (
+              <div 
+                key={item.id} 
+                className={`bg-white rounded-xl shadow-md overflow-hidden transform transition-all duration-300 ${
+                  removingItem === item.id ? 'scale-95 opacity-50' : 'hover:shadow-lg'
+                }`}
+              >
+                <div className="p-6">
+                  <div className="flex flex-col sm:flex-row gap-6">
+                    {/* Course/Product Image */}
+                    <div className="flex-shrink-0">
+                      <div className="w-full sm:w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center shadow-inner">
                         {item.type === 'course' ? (
-                          <FiShoppingBag className="w-12 h-12 text-accent" />
+                          <GiSparkles className="w-16 h-16 text-white" />
                         ) : (
-                          <FiShoppingBag className="w-12 h-12 text-accent" />
+                          <FiBook className="w-16 h-16 text-white" />
                         )}
                       </div>
                     </div>
 
-                    {/* Product Info */}
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="text-lg font-medium text-primary mb-1">{item.name}</h3>
-                          <p className="text-sm text-text-secondary">
-                            {item.type === 'course' ? 'Digital kurs' : 'Fysisk bok'}
-                          </p>
-                        </div>
-                        <button 
-                          onClick={() => handleRemove(item.id)}
-                          className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors group"
-                          aria-label="Ta bort produkt"
-                        >
-                          <FiTrash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        </button>
+                    {/* Product Details */}
+                    <div className="flex-1 space-y-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800">{item.name}</h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {item.type === 'course' ? 'Online-kurs' : 'Digital bok'}
+                        </p>
                       </div>
 
-                      <div className="flex items-center justify-between mt-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         {/* Quantity Controls */}
-                        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="p-2 hover:bg-white rounded-md transition-colors"
-                            aria-label="Minska antal"
-                          >
-                            <FiMinus className="w-4 h-4" />
-                          </button>
-                          <span className="w-12 text-center font-medium">{item.quantity}</span>
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="p-2 hover:bg-white rounded-md transition-colors"
-                            aria-label="Öka antal"
-                          >
-                            <FiPlus className="w-4 h-4" />
-                          </button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-gray-600">Antal:</span>
+                          <div className="flex items-center rounded-lg border-2 border-gray-200 overflow-hidden">
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              disabled={item.quantity <= 1}
+                              className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                              <FiMinus className="w-4 h-4" />
+                            </button>
+                            <span className="px-4 py-2 font-medium min-w-[50px] text-center">
+                              {item.quantity}
+                            </span>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="p-2 hover:bg-gray-100 transition-colors"
+                            >
+                              <FiPlus className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
 
-                        {/* Price */}
-                        <div className="text-right">
-                          <p className="text-sm text-text-secondary">
-                            {item.price} kr/st
-                          </p>
-                          <p className="text-xl font-bold text-primary">
-                            {item.price * item.quantity} kr
-                          </p>
+                        {/* Price and Remove */}
+                        <div className="flex items-center justify-between sm:justify-end gap-4">
+                          <div className="text-right">
+                            <p className="text-2xl font-bold text-gray-800">
+                              {(item.price * item.quantity).toLocaleString()} kr
+                            </p>
+                            {item.quantity > 1 && (
+                              <p className="text-sm text-gray-500">{item.price} kr/st</p>
+                            )}
+                          </div>
+                          <button 
+                            onClick={() => handleRemove(item.id)}
+                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                            title="Ta bort"
+                          >
+                            <FiTrash2 className="w-5 h-5" />
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
+
+            {/* Trust badges */}
+            <div className="bg-white rounded-xl shadow-md p-6 mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-green-100 rounded-lg">
+                    <FiTruck className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">Omedelbar tillgång</p>
+                    <p className="text-sm text-gray-600">Direkt efter köp</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-blue-100 rounded-lg">
+                    <FiShield className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">Säker betalning</p>
+                    <p className="text-sm text-gray-600">256-bit SSL</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-purple-100 rounded-lg">
+                    <FiClock className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">Livstids tillgång</p>
+                    <p className="text-sm text-gray-600">Ingen tidsbegränsning</p>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
 
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                <h2 className="text-xl font-bold text-primary mb-6 flex items-center">
-                  <GiSparkles className="w-5 h-5 mr-2 text-accent" />
-                  Ordersammanfattning
-                </h2>
-
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-text-secondary">
+          {/* Order Summary */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-8">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+                <h2 className="text-2xl font-bold">Sammanfattning</h2>
+              </div>
+              
+              <div className="p-6">
+                {/* Summary items */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-gray-600">
                     <span>Delsumma</span>
-                    <span>{total} kr</span>
+                    <span>{total.toLocaleString()} kr</span>
                   </div>
-                  <div className="flex justify-between text-text-secondary">
-                    <span>Frakt</span>
-                    <span className="text-success font-medium">Gratis</span>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Moms (25%)</span>
+                    <span>Ingår</span>
                   </div>
-                  <div className="border-t pt-4">
+                  <div className="border-t pt-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-medium text-primary">Totalt</span>
-                      <span className="text-2xl font-bold text-primary">{total} kr</span>
+                      <span className="text-lg font-bold text-gray-800">Totalt att betala</span>
+                      <span className="text-2xl font-bold text-blue-600">{total.toLocaleString()} kr</span>
                     </div>
-                    <p className="text-xs text-text-secondary mt-1">Inkl. moms</p>
                   </div>
                 </div>
 
+                {/* Checkout button */}
                 <Link 
-                  href="/checkout" 
-                  className="btn-primary w-full flex items-center justify-center group mb-4"
+                  href="/checkout"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
-                  <FiCreditCard className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  <FiCreditCard className="w-5 h-5" />
                   Gå till kassan
                 </Link>
 
-                <div className="text-center">
-                  <p className="text-sm text-text-secondary mb-2">
-                    🔒 Säker betalning med SSL-kryptering
-                  </p>
-                  <p className="text-xs text-text-secondary">
-                    Vi accepterar alla vanliga betalsätt
-                  </p>
-                </div>
-
-                {/* Benefits */}
-                <div className="mt-6 pt-6 border-t space-y-3">
-                  <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-accent">✓</span>
+                {/* Payment methods */}
+                <div className="mt-6 pt-6 border-t">
+                  <p className="text-sm text-gray-600 mb-3">Säker betalning</p>
+                  <div className="flex items-center gap-3 justify-center flex-wrap">
+                    <div className="px-3 py-2 bg-gray-100 rounded-lg text-sm font-medium flex items-center gap-2">
+                      <FiCreditCard className="w-4 h-4" />
+                      Visa
                     </div>
-                    <span className="text-text-secondary">30 dagars öppet köp</span>
+                    <div className="px-3 py-2 bg-gray-100 rounded-lg text-sm font-medium flex items-center gap-2">
+                      <FiCreditCard className="w-4 h-4" />
+                      Mastercard
+                    </div>
+                    <div className="px-3 py-2 bg-gray-100 rounded-lg text-sm font-medium flex items-center gap-2">
+                      <FiCreditCard className="w-4 h-4" />
+                      Amex
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-accent">✓</span>
-                    </div>
-                    <span className="text-text-secondary">Livstids tillgång till kurser</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-accent">✓</span>
-                    </div>
-                    <span className="text-text-secondary">Personlig support</span>
+                  <div className="mt-3 flex items-center justify-center text-xs text-gray-500">
+                    <FiLock className="w-3 h-3 mr-1" />
+                    256-bit SSL-kryptering
                   </div>
                 </div>
               </div>
