@@ -63,7 +63,7 @@ function CheckoutForm() {
 
       <button
         disabled={isLoading || !stripe || !elements}
-        className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-[#1a4324] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#9dc46d] hover:text-[#1a4324] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isLoading ? (
           <div className="flex items-center justify-center">
@@ -92,7 +92,7 @@ function StripePageContent() {
   if (!clientSecret) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1a4324]"></div>
       </div>
     );
   }
@@ -102,7 +102,7 @@ function StripePageContent() {
     appearance: {
       theme: 'stripe' as const,
       variables: {
-        colorPrimary: '#2563eb',
+        colorPrimary: '#1a4324',
         colorBackground: '#ffffff',
         colorText: '#1f2937',
         colorDanger: '#ef4444',
@@ -117,7 +117,7 @@ function StripePageContent() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Slutför din beställning</h1>
+          <h1 className="text-2xl font-bold text-[#1a4324]">Slutför din beställning</h1>
           <p className="text-gray-600 mt-2">Betala säkert med kort via Stripe</p>
         </div>
 
@@ -139,7 +139,7 @@ export default function StripePage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1a4324]"></div>
       </div>
     }>
       <StripePageContent />

@@ -181,7 +181,7 @@ export default function Checkout() {
             
             {/* Customer Information Card */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+              <div className="bg-[#1a4324] p-6 text-white">
                 <h2 className="text-2xl font-bold flex items-center">
                   <FiUser className="mr-3" />
                   Dina uppgifter
@@ -199,7 +199,7 @@ export default function Checkout() {
                         type="text"
                         value={customerInfo.name}
                         onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent transition-all"
                         placeholder="Christopher Genberg"
                         required
                       />
@@ -213,19 +213,19 @@ export default function Checkout() {
                         type="email"
                         value={customerInfo.email}
                         onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent transition-all"
                         placeholder="ch.genberg@gmail.com"
                         required
                       />
                     </div>
                     
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="bg-[#9dc46d]/10 border border-[#9dc46d]/30 rounded-lg p-4">
                       <label className="flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           checked={customerInfo.createAccount}
                           onChange={(e) => setCustomerInfo({ ...customerInfo, createAccount: e.target.checked })}
-                          className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                          className="w-5 h-5 text-[#1a4324] rounded focus:ring-[#9dc46d]"
                         />
                         <span className="ml-3 text-gray-700">
                           Skapa ett konto åt mig så jag slipper fylla i detta igen (rekommenderas)
@@ -234,12 +234,12 @@ export default function Checkout() {
                     </div>
                     
                     <p className="text-sm text-gray-500 flex items-center">
-                      Har du redan ett konto? <Link href="/login" className="text-blue-600 hover:underline ml-1">Logga in här</Link>
+                      Har du redan ett konto? <Link href="/login" className="text-[#1a4324] hover:underline ml-1">Logga in här</Link>
                     </p>
                   </>
                 ) : (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <p className="text-green-800 flex items-center">
+                  <div className="bg-[#9dc46d]/10 border border-[#9dc46d]/30 rounded-lg p-4">
+                    <p className="text-[#1a4324] flex items-center">
                       <FiCheck className="mr-2" />
                       Inloggad som <span className="font-semibold ml-1">{user?.email}</span>
                     </p>
@@ -250,7 +250,7 @@ export default function Checkout() {
 
             {/* Payment Method Card */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+              <div className="bg-[#1a4324] p-6 text-white">
                 <h2 className="text-2xl font-bold flex items-center">
                   <FiCreditCard className="mr-3" />
                   Betalningsmetod
@@ -266,14 +266,14 @@ export default function Checkout() {
                       disabled={!method.enabled}
                       className={`relative p-5 rounded-xl border-2 transition-all transform hover:scale-[1.02] ${
                         selectedPayment === method.id
-                          ? 'border-blue-500 bg-blue-50 shadow-lg'
-                          : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                          ? 'border-[#1a4324] bg-[#9dc46d]/10 shadow-lg'
+                          : 'border-gray-200 hover:border-[#9dc46d] hover:shadow-md'
                       } ${!method.enabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <div className={`p-3 rounded-lg ${
-                            selectedPayment === method.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
+                            selectedPayment === method.id ? 'bg-[#9dc46d]/20 text-[#1a4324]' : 'bg-gray-100'
                           }`}>
                             {method.icon}
                           </div>
@@ -281,7 +281,7 @@ export default function Checkout() {
                             <h3 className="font-semibold text-lg flex items-center gap-2">
                               {method.name}
                               {method.badge && (
-                                <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                                <span className="px-2 py-1 bg-[#9dc46d] text-[#1a4324] text-xs rounded-full font-medium">
                                   {method.badge}
                                 </span>
                               )}
@@ -291,7 +291,7 @@ export default function Checkout() {
                         </div>
                         {selectedPayment === method.id && (
                           <div className="absolute top-3 right-3">
-                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                            <div className="w-6 h-6 bg-[#1a4324] rounded-full flex items-center justify-center">
                               <FiCheck className="text-white text-sm" />
                             </div>
                           </div>
@@ -308,7 +308,7 @@ export default function Checkout() {
           {/* Right Column - Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden sticky top-8">
-              <div className="bg-gradient-to-r from-pink-600 to-orange-600 p-6 text-white">
+              <div className="bg-[#1a4324] p-6 text-white">
                 <h2 className="text-2xl font-bold">Din beställning</h2>
               </div>
               
@@ -337,14 +337,14 @@ export default function Checkout() {
                 <div className="border-t-2 border-gray-200 pt-4">
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-xl font-bold text-gray-800">Totalt</span>
-                    <span className="text-2xl font-bold text-blue-600">{total} kr</span>
+                    <span className="text-2xl font-bold text-[#1a4324]">{total} kr</span>
                   </div>
                   <p className="text-sm text-gray-600 mb-6">Inklusive moms</p>
 
                   {/* Security badges */}
-                  <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                    <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
-                      <FiLock className="text-green-600" />
+                  <div className="bg-[#9dc46d]/10 rounded-lg p-4 mb-6">
+                    <div className="flex items-center justify-center space-x-2 text-sm text-[#1a4324]">
+                      <FiLock className="text-[#1a4324]" />
                       <span>Säker betalning med 256-bit SSL-kryptering</span>
                     </div>
                   </div>
@@ -356,7 +356,7 @@ export default function Checkout() {
                     className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all transform ${
                       isProcessing || !selectedPayment || (guestMode && (!customerInfo.name || !customerInfo.email))
                         ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
+                        : 'bg-[#1a4324] hover:bg-[#9dc46d] hover:text-[#1a4324] hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
                     }`}
                   >
                     {isProcessing ? (
