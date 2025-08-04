@@ -6,7 +6,7 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/hooks/useAuth';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe("pk_live_51QiFDdRuyBZ0rbp2CBhIBktFUmB9I5jU0rfucntPEgFjz68jxIyaH1uWY0su4uMU812wH7cZO6ZIzGAd5u7NpcLR00IBd7C8io");
 
 function CheckoutForm() {
   const stripe = useStripe();
@@ -28,7 +28,7 @@ function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,
+        return_url: `${window.location.origin}/checkout/success`,
         receipt_email: user?.email,
       },
     });
