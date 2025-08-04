@@ -5,6 +5,12 @@ const nextConfig = {
     return `build-${Date.now()}`
   },
   
+  // Explicit env vars for Railway compatibility
+  env: {
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+  
   // Behåll dina befintliga inställningar
   reactStrictMode: true,
   swcMinify: true,
@@ -27,7 +33,7 @@ const nextConfig = {
 
   // Lägg till Python-stöd för API-routes
   experimental: {
-    serverComponentsExternalPackages: ['python-shell']
+    serverComponentsExternalPackages: ['python-shell', '@prisma/client']
   },
 
   images: {
