@@ -80,13 +80,13 @@ export default function NewsletterSignup({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="din@email.se"
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
               required
             />
             <button
               type="submit"
               disabled={status === 'loading' || !email}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-[#1a4324] text-white rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'loading' ? (
                 <FiLoader className="w-5 h-5 animate-spin" />
@@ -107,7 +107,7 @@ export default function NewsletterSignup({
             />
             <label htmlFor="privacy-checkbox-compact" className="text-gray-600 cursor-pointer">
               Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
-              <a href="/integritetspolicy" className="text-primary hover:underline ml-1">läs mer</a>
+              <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1">läs mer</a>
             </label>
           </div>
 
@@ -130,7 +130,7 @@ export default function NewsletterSignup({
 
   if (variant === 'hero') {
     return (
-      <div className="bg-gradient-to-r from-primary to-accent text-white rounded-2xl shadow-2xl p-8 md:p-12">
+      <div className="bg-[#1a4324] text-white rounded-2xl shadow-2xl p-8 md:p-12">
         <div className="max-w-2xl mx-auto text-center">
           <FiMail className="w-16 h-16 mx-auto mb-6 opacity-90" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
@@ -168,7 +168,7 @@ export default function NewsletterSignup({
               <button
                 type="submit"
                 disabled={status === 'loading' || !email || !privacyAccepted}
-                className="px-8 py-3 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="px-8 py-3 bg-white text-[#1a4324] font-semibold rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {status === 'loading' ? (
                   <FiLoader className="w-5 h-5 animate-spin" />
@@ -230,14 +230,14 @@ export default function NewsletterSignup({
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Förnamn"
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
             />
             <input
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Efternamn"
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
             />
           </div>
         )}
@@ -248,13 +248,13 @@ export default function NewsletterSignup({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="din@email.se"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
             required
           />
           <button
             type="submit"
             disabled={status === 'loading' || !email || !privacyAccepted}
-            className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="px-6 py-2 bg-[#1a4324] text-white font-medium rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {status === 'loading' ? (
               <FiLoader className="w-5 h-5 animate-spin" />
@@ -283,7 +283,7 @@ export default function NewsletterSignup({
           />
           <label htmlFor="privacy-checkbox-default" className="text-gray-600 cursor-pointer">
             Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
-            <a href="/integritetspolicy" className="text-primary hover:underline ml-1">läs mer</a>
+            <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1">läs mer</a>
           </label>
         </div>
 
