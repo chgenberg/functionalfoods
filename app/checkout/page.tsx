@@ -200,7 +200,7 @@ export default function Checkout() {
                         value={customerInfo.name}
                         onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent transition-all"
-                        placeholder="Christopher Genberg"
+                        placeholder="Anna Andersson"
                         required
                       />
                     </div>
@@ -214,7 +214,7 @@ export default function Checkout() {
                         value={customerInfo.email}
                         onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent transition-all"
-                        placeholder="ch.genberg@gmail.com"
+                        placeholder="anna@andersson.com"
                         required
                       />
                     </div>
