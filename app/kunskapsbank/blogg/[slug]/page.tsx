@@ -74,6 +74,21 @@ export default function BlogPostPage({ params }: Props) {
       .replace(/\s+$/gm, '') // Remove trailing spaces only
       .trim();
 
+    // Check if content has very few line breaks (likely one big text block)
+    const lineBreakCount = (cleanContent.match(/\n/g) || []).length;
+    const hasMinimalBreaks = lineBreakCount < 3 && cleanContent.length > 1000;
+
+    if (hasMinimalBreaks) {
+      // Auto-split long text blocks at sentence boundaries
+      cleanContent = cleanContent
+        .replace(/([.!?])\s+([A-ZÅÄÖ])/g, '$1\n\n$2') // Add line breaks after sentences
+        .replace(/([a-zåäöé]:\s*)([A-ZÅÄÖ])/g, '$1\n\n$2') // Break after category labels
+        .replace(/(Livsmedelsverket noterar att)/g, '\n\n$1') // Break before specific phrases
+        .replace(/(Det är dock viktigt att)/g, '\n\n$1')
+        .replace(/(En spännande aspekt är)/g, '\n\n$1')
+        .replace(/(Forskning tyder på att)/g, '\n\n$1');
+    }
+
     // Split into lines and process them intelligently
     const lines = cleanContent.split('\n');
     const elements: JSX.Element[] = [];
@@ -84,8 +99,8 @@ export default function BlogPostPage({ params }: Props) {
     const smartParagraphBreak = (text: string) => {
       // Check if text should start a new paragraph
       const indicators = [
-        /^[A-ZÅÄÖ][a-zåäöé]+:/,  // Category labels like "Flavonoider:"
-        /^Det finns/,              // Common paragraph starters
+        /^[A-ZÅÄÖ][a-zåäöé]+:/,           // Category labels like "Flavonoider:"
+        /^Det finns/,                     // Common paragraph starters
         /^Till exempel/,
         /^Dessa/,
         /^Studier/,
@@ -93,7 +108,18 @@ export default function BlogPostPage({ params }: Props) {
         /^I tillägg/,
         /^Däremot/,
         /^Samtidigt/,
-        /^Därför/
+        /^Därför/,
+        /^En annan/,
+        /^Enligt/,
+        /^Livsmedelsverket/,
+        /^Nordiska näringsrekommendationerna/,
+        /^Att få sig/,
+        /^En spännande aspekt/,
+        /^Effekten kan/,
+        /^Polyfenolerna/,
+        /^Summan av kardemumman/,
+        /^De flesta polyfenroller/,
+        /^Grönta polyfenroller/
       ];
       return indicators.some(pattern => pattern.test(text));
     };
@@ -107,16 +133,52 @@ export default function BlogPostPage({ params }: Props) {
         .trim();
     };
 
+    const splitLongParagraph = (text: string): string[] => {
+      // If paragraph is shorter than 600 characters, keep as is
+      if (text.length <= 600) {
+        return [text];
+      }
+
+      // Split into sentences
+      const sentences = text.split(/([.!?]+\s+)/);
+      const paragraphs: string[] = [];
+      let currentChunk = '';
+
+      for (let i = 0; i < sentences.length; i++) {
+        const sentence = sentences[i];
+        
+        // If adding this sentence would make the chunk too long, start a new paragraph
+        if (currentChunk.length > 0 && (currentChunk + sentence).length > 500) {
+          paragraphs.push(currentChunk.trim());
+          currentChunk = sentence;
+        } else {
+          currentChunk += sentence;
+        }
+      }
+
+      // Add the last chunk if it exists
+      if (currentChunk.trim()) {
+        paragraphs.push(currentChunk.trim());
+      }
+
+      return paragraphs.filter(p => p.length > 10);
+    };
+
     const pushCurrentParagraph = () => {
       if (currentParagraph.length > 0) {
         const rawText = currentParagraph.join(' ');
         const paragraphText = cleanParagraphText(rawText);
         if (paragraphText && paragraphText.length > 10) {
-          elements.push(
-            <p key={elements.length} className="mb-6 leading-relaxed text-gray-700 text-lg">
-              {formatInlineElements(paragraphText)}
-            </p>
-          );
+          // Split long paragraphs into smaller ones
+          const paragraphs = splitLongParagraph(paragraphText);
+          
+          paragraphs.forEach(para => {
+            elements.push(
+              <p key={elements.length} className="mb-8 leading-loose text-gray-700 text-lg max-w-none">
+                {formatInlineElements(para)}
+              </p>
+            );
+          });
         }
         currentParagraph = [];
       }
@@ -127,9 +189,9 @@ export default function BlogPostPage({ params }: Props) {
         const ListTag = listType === 'ul' ? 'ul' : 'ol';
         const listClass = listType === 'ul' ? 'list-disc' : 'list-decimal';
         elements.push(
-          <ListTag key={elements.length} className={`${listClass} pl-8 mb-6 space-y-3`}>
+          <ListTag key={elements.length} className={`${listClass} pl-8 mb-8 space-y-4`}>
             {currentList.map((item, i) => (
-              <li key={i} className="leading-relaxed text-gray-700 text-lg pl-2">
+              <li key={i} className="leading-loose text-gray-700 text-lg pl-2">
                 {formatInlineElements(item)}
               </li>
             ))}
@@ -224,7 +286,7 @@ export default function BlogPostPage({ params }: Props) {
         pushCurrentParagraph();
         pushCurrentList();
         elements.push(
-          <blockquote key={elements.length} className="border-l-4 border-orange-300 pl-6 py-4 mb-6 bg-orange-50 italic text-gray-700 text-lg">
+          <blockquote key={elements.length} className="border-l-4 border-orange-300 pl-6 py-4 mb-8 bg-orange-50 italic text-gray-700 text-lg leading-loose">
             {formatInlineElements(line.replace('> ', ''))}
           </blockquote>
         );
@@ -396,7 +458,7 @@ export default function BlogPostPage({ params }: Props) {
           {/* Article Body */}
           <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
             <div className="prose prose-lg max-w-none">
-              <div className="text-gray-800 leading-relaxed">
+              <div className="text-gray-800 leading-loose space-y-6">
                 {formatContent(post.content)}
               </div>
             </div>

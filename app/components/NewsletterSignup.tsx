@@ -102,12 +102,13 @@ export default function NewsletterSignup({
               id="privacy-checkbox-compact"
               checked={privacyAccepted}
               onChange={(e) => setPrivacyAccepted(e.target.checked)}
-              className="w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              className="w-4 h-4 mt-0.5 text-[#1a4324] border-gray-300 rounded focus:ring-2 focus:ring-[#9dc46d] cursor-pointer hover:border-[#9dc46d] transition-colors relative z-10"
+              style={{ accentColor: '#1a4324' }}
               required
             />
-            <label htmlFor="privacy-checkbox-compact" className="text-gray-600 cursor-pointer">
+            <label htmlFor="privacy-checkbox-compact" className="text-gray-600 cursor-pointer select-none flex-1">
               Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
-              <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1">läs mer</a>
+              <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1 relative z-10">läs mer</a>
             </label>
           </div>
 
@@ -183,18 +184,19 @@ export default function NewsletterSignup({
               </button>
             </div>
             
-            <div className="flex items-center justify-center gap-3 text-sm">
+            <div className="flex items-start justify-center gap-3 text-sm">
               <input
                 type="checkbox"
                 id="privacy-checkbox-hero"
                 checked={privacyAccepted}
                 onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                className="w-5 h-5 text-white rounded border-2 border-white/30 bg-transparent focus:ring-2 focus:ring-white focus:ring-offset-0 cursor-pointer"
+                className="w-5 h-5 mt-0.5 text-white rounded border-2 border-white/50 bg-white/10 focus:ring-2 focus:ring-white focus:ring-offset-0 cursor-pointer hover:bg-white/20 transition-colors relative z-10"
+                style={{ accentColor: 'white' }}
                 required
               />
-              <label htmlFor="privacy-checkbox-hero" className="opacity-90 cursor-pointer">
+              <label htmlFor="privacy-checkbox-hero" className="opacity-90 cursor-pointer select-none flex-1">
                 Jag accepterar 
-                <a href="/integritetspolicy" className="underline ml-1 hover:text-white/80">integritetspolicyn</a>
+                <a href="/integritetspolicy" className="underline ml-1 hover:text-white/80 relative z-10">integritetspolicyn</a>
               </label>
             </div>
 
@@ -278,12 +280,13 @@ export default function NewsletterSignup({
             id="privacy-checkbox-default"
             checked={privacyAccepted}
             onChange={(e) => setPrivacyAccepted(e.target.checked)}
-            className="w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            className="w-4 h-4 mt-0.5 text-[#1a4324] border-gray-300 rounded focus:ring-2 focus:ring-[#9dc46d] cursor-pointer hover:border-[#9dc46d] transition-colors relative z-10"
+            style={{ accentColor: '#1a4324' }}
             required
           />
-          <label htmlFor="privacy-checkbox-default" className="text-gray-600 cursor-pointer">
+          <label htmlFor="privacy-checkbox-default" className="text-gray-600 cursor-pointer select-none flex-1">
             Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
-            <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1">läs mer</a>
+            <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1 relative z-10">läs mer</a>
           </label>
         </div>
 
