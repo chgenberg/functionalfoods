@@ -10,6 +10,7 @@ import HealthQuiz from "./components/HealthQuiz";
 import QuizResultScreen from "./components/QuizResultScreen";
 import NewsletterSignup from "./components/NewsletterSignup";
 import ArticleQuickAccess from "./components/ArticleQuickAccess";
+import FeaturePopup from "./components/FeaturePopup";
 
 export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
@@ -18,6 +19,7 @@ export default function Home() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [forceShowVideo, setForceShowVideo] = useState(false);
+  const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const router = useRouter();
 
   // Enhanced video autoplay and loading
@@ -408,13 +410,18 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg md:shadow-xl hover:shadow-xl md:hover:shadow-2xl transition-all"
+                onClick={() => setSelectedFeature(feature)}
+                className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg md:shadow-xl hover:shadow-xl md:hover:shadow-2xl transition-all cursor-pointer group"
               >
-                <div className={`w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${feature.color} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6`}>
+                <div className={`w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${feature.color} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 transition-transform`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800">{feature.title}</h3>
+                <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800 group-hover:text-[#1a4324] transition-colors">{feature.title}</h3>
                 <p className="text-gray-600 leading-relaxed text-sm md:text-base">{feature.description}</p>
+                <div className="mt-4 text-[#9dc46d] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-sm">
+                  <span>Läs mer</span>
+                  <FiArrowRight className="w-4 h-4" />
+                </div>
               </motion.div>
             ))}
           </div>
@@ -562,6 +569,15 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Feature Popup */}
+      {selectedFeature && (
+        <FeaturePopup
+          isOpen={!!selectedFeature}
+          onClose={() => setSelectedFeature(null)}
+          feature={selectedFeature}
+        />
+      )}
     </div>
   );
 }
