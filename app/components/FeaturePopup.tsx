@@ -87,7 +87,7 @@ export default function FeaturePopup({ isOpen, onClose, feature }: FeaturePopupP
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999]"
           />
 
           {/* Popup */}
@@ -96,8 +96,8 @@ export default function FeaturePopup({ isOpen, onClose, feature }: FeaturePopupP
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 
-                       md:max-w-2xl md:w-full bg-white rounded-2xl md:rounded-3xl shadow-2xl z-50 
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                       w-[95vw] max-w-2xl bg-white rounded-2xl md:rounded-3xl shadow-2xl z-[9999] 
                        overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Header with gradient */}
