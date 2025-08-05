@@ -137,8 +137,7 @@ export default function NewsletterSignup({
         transition={{ delay: 0.2 }}
         className="relative overflow-hidden bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-10 max-w-xl mx-auto border border-white/20 shadow-2xl"
       >
-        {/* Animated background effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a4324]/20 via-transparent to-[#9dc46d]/20 animate-gradient" />
+
         
         <div className="relative z-10">
           <motion.div
@@ -165,8 +164,7 @@ export default function NewsletterSignup({
                          transition-all duration-300 outline-none shadow-lg group-hover:shadow-xl"
                 required
               />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#1a4324] to-[#9dc46d] opacity-0 
-                            group-hover:opacity-20 transition-opacity duration-300 pointer-events-none" />
+
             </div>
             
             <label 
@@ -201,8 +199,8 @@ export default function NewsletterSignup({
               disabled={status === 'loading' || !email || !privacyAccepted}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full px-8 py-4 bg-gradient-to-r from-[#1a4324] to-[#9dc46d] text-white font-semibold 
-                       rounded-2xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed 
+              className="w-full px-8 py-4 bg-[#1a4324] text-white font-semibold 
+                       rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#9dc46d] disabled:opacity-50 disabled:cursor-not-allowed 
                        transition-all duration-300 flex items-center justify-center gap-3 group"
             >
               {status === 'loading' ? (
