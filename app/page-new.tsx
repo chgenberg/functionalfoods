@@ -21,159 +21,132 @@ export default function Home() {
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const router = useRouter();
 
-  // Enhanced video management with Safari compatibility
+  // Safari-compatible video autoplay with aggressive retry strategy
   useEffect(() => {
-    let observer: IntersectionObserver | null = null;
+    let playAttempts = 0;
+    const maxAttempts = 10;
     
-    const setupVideos = () => {
+    const forceVideoPlay = async () => {
       const videos = document.querySelectorAll('video');
-      console.log(`🎬 Found ${videos.length} video elements`);
-      
-      videos.forEach((video, index) => {
-        const videoType = video.getAttribute('data-video-type') || 'unknown';
-        console.log(`🔧 Setting up ${videoType} video`);
-        
-        // Clear any existing event listeners
-        video.removeEventListener('canplay', handleCanPlay);
-        video.removeEventListener('loadeddata', handleLoadedData);
-        video.removeEventListener('error', handleError);
-        
-        // Force set properties multiple times for Safari
-        video.muted = true;
-        video.loop = true;
-        video.playsInline = true;
-        video.autoplay = true;
-        video.preload = 'metadata';
-        video.defaultMuted = true;
-        
-        // Set attributes explicitly for Safari - multiple approaches
-        video.setAttribute('muted', 'true');
-        video.setAttribute('playsinline', 'true');
-        video.setAttribute('autoplay', 'true');
-        video.setAttribute('loop', 'true');
-        video.setAttribute('webkit-playsinline', 'true');
-        
-        // Event listeners
-        function handleCanPlay() {
-          console.log(`✅ ${videoType} video can play`);
-          setVideosLoaded(prev => prev + 1);
-          
-          // Immediate play attempt
-          video.play().then(() => {
-            console.log(`▶️ ${videoType} video playing successfully`);
-            setVideoError(false);
-          }).catch(err => {
-            console.log(`❌ ${videoType} autoplay blocked:`, err.message);
-            // Try again after a short delay
-            setTimeout(() => {
-              video.play().catch(() => {
-                console.log(`❌ ${videoType} delayed play also failed`);
-              });
-            }, 100);
-          });
-        }
-        
-        function handleError(e: any) {
-          console.log(`❌ ${videoType} video error:`, e);
-          setVideoError(true);
-        }
-        
-        function handleLoadedData() {
-          console.log(`📊 ${videoType} video data loaded`);
-          // Multiple play attempts for Safari
-          video.play().catch(err => {
-            console.log(`⚠️ ${videoType} loadeddata play failed:`, err.message);
-            // Try once more
-            setTimeout(() => {
-              video.play().catch(() => {
-                console.log(`❌ ${videoType} second attempt failed`);
-              });
-            }, 50);
-          });
-        }
-        
-        function handleLoadedMetadata() {
-          console.log(`📋 ${videoType} metadata loaded`);
-          video.play().catch(err => {
-            console.log(`⚠️ ${videoType} metadata play failed:`, err.message);
-          });
-        }
-        
-        video.addEventListener('canplay', handleCanPlay);
-        video.addEventListener('loadeddata', handleLoadedData);
-        video.addEventListener('loadedmetadata', handleLoadedMetadata);
-        video.addEventListener('error', handleError);
-        
-        // Force load and immediate play attempt
-        video.load();
-        
-        // Safari-specific: Try to play immediately if already loaded
-        if (video.readyState >= 3) {
-          video.play().catch(err => {
-            console.log(`⚠️ ${videoType} immediate play failed:`, err.message);
-          });
-        }
-      });
-      
-      // Setup intersection observer for when videos come into view
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const video = entry.target as HTMLVideoElement;
-            const videoType = video.getAttribute('data-video-type') || 'unknown';
-            
-            if (video.paused) {
-              video.play().then(() => {
-                console.log(`🎯 ${videoType} video playing (intersection)`);
-                setVideoError(false);
-              }).catch(err => {
-                console.log(`❌ ${videoType} intersection play failed:`, err.message);
-              });
-            }
-          }
-        });
-      }, { threshold: 0.1 });
-      
-      videos.forEach(video => observer?.observe(video));
-    };
-
-    // Setup videos when DOM is ready - try multiple times
-    const timer1 = setTimeout(setupVideos, 100);
-    const timer2 = setTimeout(setupVideos, 500);
-    const timer3 = setTimeout(setupVideos, 1000);
-
-    // Enhanced user interaction handler
-    const handleUserInteraction = async () => {
-      console.log('👆 User interaction detected, attempting video play');
-      const videos = document.querySelectorAll('video');
+      console.log(`🎬 Force play attempt ${playAttempts + 1}/${maxAttempts}`);
       
       for (const video of videos) {
         const videoType = video.getAttribute('data-video-type') || 'unknown';
         
-        if (video.paused) {
-          try {
-            await video.play();
-            console.log(`▶️ ${videoType} video started after user interaction`);
+        try {
+          // Ensure video is muted (critical for autoplay)
+          video.muted = true;
+          video.defaultMuted = true;
+          video.setAttribute('muted', '');
+          
+          // Check if video is already playing
+          if (!video.paused) {
+            console.log(`✅ ${videoType} video already playing`);
+            setVideosLoaded(prev => Math.max(prev, videos.length));
             setVideoError(false);
-          } catch (err: any) {
-            console.log(`❌ ${videoType} still failed after interaction:`, err.message);
+            continue;
+          }
+          
+          // Force play with promise
+          const playPromise = video.play();
+          
+          if (playPromise !== undefined) {
+            await playPromise;
+            console.log(`✅ ${videoType} video started playing`);
+            setVideosLoaded(prev => prev + 1);
+            setVideoError(false);
+          }
+        } catch (err: any) {
+          console.log(`⚠️ ${videoType} play attempt ${playAttempts + 1} failed:`, err.message);
+          
+          // If we've reached max attempts, show error
+          if (playAttempts >= maxAttempts - 1) {
+            console.log(`❌ ${videoType} video failed after ${maxAttempts} attempts`);
             setVideoError(true);
           }
         }
       }
+      
+      // Count this attempt
+      playAttempts++;
+      
+      // Keep trying if not all videos are playing and we haven't hit max attempts
+      const allPlaying = Array.from(videos).every(v => !v.paused);
+      if (!allPlaying && playAttempts < maxAttempts) {
+        setTimeout(forceVideoPlay, 200 * playAttempts); // Exponential backoff
+      }
     };
-
-    // Listen for multiple types of user interaction
-    const events = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
+    
+    // Start trying immediately when component mounts
+    const startVideoPlayback = () => {
+      const videos = document.querySelectorAll('video');
+      
+      videos.forEach((video) => {
+        const videoType = video.getAttribute('data-video-type') || 'unknown';
+        console.log(`🔧 Initializing ${videoType} video`);
+        
+        // Set all necessary properties for Safari autoplay
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.loop = true;
+        video.autoplay = true;
+        
+        // Force attributes
+        video.setAttribute('muted', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('autoplay', '');
+        
+        // Add event listener for when video can play
+        video.addEventListener('canplaythrough', () => {
+          console.log(`📹 ${videoType} video can play through`);
+          if (video.paused) {
+            video.play().catch(err => {
+              console.log(`⚠️ ${videoType} canplaythrough play failed:`, err);
+            });
+          }
+        });
+        
+        // Add playing event listener
+        video.addEventListener('playing', () => {
+          console.log(`▶️ ${videoType} video is now playing`);
+          setVideosLoaded(prev => Math.max(prev, videos.length));
+          setVideoError(false);
+        });
+        
+        // Force load
+        video.load();
+      });
+      
+      // Start aggressive play attempts
+      forceVideoPlay();
+    };
+    
+    // Try multiple initialization times
+    startVideoPlayback();
+    const timer1 = setTimeout(startVideoPlayback, 100);
+    const timer2 = setTimeout(startVideoPlayback, 300);
+    const timer3 = setTimeout(forceVideoPlay, 500);
+    const timer4 = setTimeout(forceVideoPlay, 1000);
+    
+    // Also try on any user interaction
+    const handleUserInteraction = () => {
+      console.log('👆 User interaction - forcing video play');
+      forceVideoPlay();
+    };
+    
+    // Add interaction listeners
+    const events = ['click', 'touchstart', 'scroll'];
     events.forEach(event => {
       document.addEventListener(event, handleUserInteraction, { once: true });
     });
-
+    
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
-      observer?.disconnect();
+      clearTimeout(timer4);
       events.forEach(event => {
         document.removeEventListener(event, handleUserInteraction);
       });
@@ -278,7 +251,6 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           {/* Desktop video */}
           <video
-            src="/introvideo_compressed.mp4"
             className="hidden md:block absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 10,
@@ -288,13 +260,17 @@ export default function Home() {
             autoPlay
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
             data-video-type="desktop"
-          />
+            dangerouslySetInnerHTML={{
+              __html: ''
+            }}
+          >
+            <source src="/introvideo_compressed.mp4" type="video/mp4" />
+          </video>
           
           {/* Mobile video */}
           <video
-            src="/introvideo_mobile.mp4"
             className="block md:hidden absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 10,
@@ -304,9 +280,14 @@ export default function Home() {
             autoPlay
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
             data-video-type="mobile"
-          />
+            dangerouslySetInnerHTML={{
+              __html: ''
+            }}
+          >
+            <source src="/introvideo_mobile.mp4" type="video/mp4" />
+          </video>
           
           {/* Fallback background image - only if error */}
           <div 
@@ -325,8 +306,40 @@ export default function Home() {
           {/* Video overlay for better text readability */}
           <div className="absolute inset-0 bg-black/30" style={{ zIndex: 20 }} />
           
+          {/* Play button overlay - only show if videos haven't started after 2 seconds */}
+          {videosLoaded === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2 }}
+              className="absolute inset-0 flex items-center justify-center" 
+              style={{ zIndex: 25 }}
+            >
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={async () => {
+                  const videos = document.querySelectorAll('video');
+                  for (const video of videos) {
+                    try {
+                      video.muted = true;
+                      await video.play();
+                      setVideosLoaded(videos.length);
+                      setVideoError(false);
+                    } catch (err) {
+                      console.error('Manual play failed:', err);
+                    }
+                  }
+                }}
+                className="bg-white/90 backdrop-blur-sm rounded-full p-6 shadow-2xl hover:bg-white transition-all group"
+              >
+                <FiPlay className="w-12 h-12 text-green-600 ml-1" />
+              </motion.button>
+            </motion.div>
+          )}
+          
           {/* Debug info and manual controls */}
-          {(process.env.NODE_ENV === 'development' || (videosLoaded === 0 && videoError)) && (
+          {(process.env.NODE_ENV === 'development') && (
             <div className="absolute top-4 left-4 bg-black/90 text-white p-4 rounded-lg text-sm font-mono" style={{ zIndex: 50 }}>
               <div>Video Status: {videosLoaded > 0 ? '✅ Playing' : '⏳ Loading'}</div>
               <div>Error: {videoError ? '❌ Yes' : '✅ No'}</div>

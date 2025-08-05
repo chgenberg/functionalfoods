@@ -442,3 +442,24 @@ img {
     display: none !important;
   }
 }
+
+/* Safari video autoplay helper */
+video[autoplay] {
+  pointer-events: none;
+}
+
+video[autoplay]::-webkit-media-controls {
+  display: none !important;
+}
+
+video[autoplay]::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+/* Force hardware acceleration for videos */
+video {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+}
