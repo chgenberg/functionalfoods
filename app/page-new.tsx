@@ -133,7 +133,7 @@ export default function Home() {
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-6xl font-light text-white mb-6 leading-tight drop-shadow-lg">
                 UPPTÄCK KRAFTEN I
-                <span className="block text-accent font-bold drop-shadow-lg">
+                <span className="block text-white font-bold drop-shadow-lg">
                   FUNCTIONAL FOODS
                 </span>
               </h1>

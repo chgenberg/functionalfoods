@@ -807,7 +807,7 @@ export default function KallorPage() {
                       <motion.div
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.5 }}
-                        className="w-16 h-16 bg-gradient-to-br from-[#1a4324] to-[#9dc46d] rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg"
+                        className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg"
                       >
                         <CategoryIcon className="w-8 h-8" />
                       </motion.div>

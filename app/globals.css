@@ -136,7 +136,7 @@ img {
   }
   
   .btn-secondary {
-    @apply bg-accent text-secondary border border-accent px-6 py-3 rounded-full font-medium transition-all duration-200 hover:bg-primary-light hover:text-white hover:border-primary-light;
+    @apply bg-accent text-white border border-accent px-6 py-3 rounded-full font-medium transition-all duration-200 hover:bg-primary-light hover:text-white hover:border-primary-light;
   }
   
   .card {
