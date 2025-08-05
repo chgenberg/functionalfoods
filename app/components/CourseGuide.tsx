@@ -81,8 +81,10 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
     if (isOpen && guideSteps[currentStep]) {
       const updatePosition = () => {
         const element = document.querySelector(guideSteps[currentStep].targetElement);
+        console.log('Looking for element:', guideSteps[currentStep].targetElement, 'Found:', element);
         if (element) {
           const rect = element.getBoundingClientRect();
+          console.log('Element rect:', rect);
           setHighlightPosition({
             top: rect.top + window.scrollY,
             left: rect.left + window.scrollX,
@@ -92,11 +94,20 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
           
           // Scrolla till elementet om det är utanför viewport
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          console.warn('Element not found:', guideSteps[currentStep].targetElement);
+          // Fallback position - center av skärmen
+          setHighlightPosition({
+            top: window.innerHeight / 2,
+            left: window.innerWidth / 2,
+            width: 200,
+            height: 200
+          });
         }
       };
 
       // Vänta lite så att DOM hinner uppdateras
-      setTimeout(updatePosition, 100);
+      setTimeout(updatePosition, 500);
       
       // Uppdatera vid resize
       window.addEventListener('resize', updatePosition);
