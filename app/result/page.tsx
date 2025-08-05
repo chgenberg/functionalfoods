@@ -277,7 +277,7 @@ function ResultPageContent() {
             className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 shadow-xl hover:shadow-2xl transition-shadow duration-300"
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
                 <FiCheckCircle className="w-5 h-5 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white">Rekommendationer</h3>
@@ -382,7 +382,7 @@ function ResultPageContent() {
           <h2 className="text-2xl font-bold text-white mb-6">Din Hälsoresa - Tidslinje</h2>
           <div className="space-y-6">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold">1</span>
               </div>
               <div className="flex-1">
@@ -436,7 +436,7 @@ function ResultPageContent() {
           
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-6">
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center flex-shrink-0">
                 <FiBook className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -468,7 +468,7 @@ function ResultPageContent() {
                 </div>
                 <Link
                   href={healthScore > 70 ? '/utbildning/functional-flow' : '/utbildning/functional-basics'}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-secondary transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Läs mer om kursen
                   <FiArrowRight />
