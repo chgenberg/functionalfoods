@@ -184,7 +184,7 @@ export default function NewsletterSignup({
               </button>
             </div>
             
-            <div className="flex items-start justify-center gap-3 text-sm">
+            <div className="flex items-start gap-3 text-sm">
               <input
                 type="checkbox"
                 id="privacy-checkbox-hero"
