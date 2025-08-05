@@ -87,18 +87,22 @@ export default function Home() {
       {/* Hero Section with Working Video Background */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Vimeo video background */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           {/* Vimeo iframe background for both desktop and mobile */}
           <iframe
             src="https://player.vimeo.com/video/1107419263?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0"
             style={{ 
               zIndex: 10,
               opacity: 1,
               width: '100vw',
               height: '100vh',
-              minWidth: '100%',
-              minHeight: '100%'
+              minWidth: '120%',
+              minHeight: '120%',
+              left: '-10%',
+              top: '-10%',
+              transform: 'scale(1.1)',
+              objectFit: 'cover'
             }}
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"
