@@ -63,39 +63,41 @@ export default function Home() {
         
         {/* MINIMAL video element */}
         <div className="max-w-4xl mx-auto">
-          {/* Test our local videos */}
+          {/* Test tiny local video */}
           <video
-            src="/introvideo_compressed.mp4"
+            src="/test_simple.mp4"
             width="800"
             height="450"
             controls
             muted
             autoPlay
             loop
-            className="w-full border-4 border-green-500 mb-4"
+            className="w-full border-4 border-purple-500 mb-4"
           >
             Your browser does not support the video tag.
           </video>
           
+          {/* Working external video for comparison */}
           <video
-            src="/introvideo_mobile.mp4"
+            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             width="800"
             height="450"
             controls
             muted
             autoPlay
             loop
-            className="w-full border-4 border-blue-500"
+            className="w-full border-4 border-orange-500 mb-4"
           >
             Your browser does not support the video tag.
           </video>
           
-          <div className="mt-4 p-4 bg-green-200 border border-green-400 rounded">
-            <h2 className="font-bold">LOCAL VIDEO TEST:</h2>
-            <p>• Green border: Desktop video (introvideo_compressed.mp4)</p>
-            <p>• Blue border: Mobile video (introvideo_mobile.mp4)</p>
-            <p>• If videos don't load: Railway serving issue</p>
-            <p>• If videos load: SUCCESS! Problem was always the file serving</p>
+          <div className="mt-4 p-4 bg-purple-200 border border-purple-400 rounded">
+            <h2 className="font-bold">FINAL VIDEO TEST:</h2>
+            <p>• Purple border: Tiny local video (8KB test_simple.mp4)</p>
+            <p>• Orange border: Google CDN video (BigBuckBunny.mp4)</p>
+            <p>• If purple works: Railway can serve videos, just not our large ones</p>
+            <p>• If orange works but purple doesn't: Railway video serving broken</p>
+            <p>• If both work: We can use working video implementation!</p>
           </div>
         </div>
       </section>
