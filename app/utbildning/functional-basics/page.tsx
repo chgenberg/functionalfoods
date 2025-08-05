@@ -544,7 +544,7 @@ export default function FunctionalBasicsPage() {
         </AnimatePresence>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl p-8 text-white text-center">
+        <div className="bg-primary rounded-2xl p-8 text-white text-center">
             <h3 className="text-2xl font-bold mb-4">Redo att börja din hälsoresa?</h3>
             <p className="text-lg mb-6 text-white/90">
               Få tillgång till hela kursen och börja din transformation redan idag

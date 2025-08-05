@@ -603,7 +603,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5 }}
-                className="bg-gradient-to-r from-green-500 to-green-600 h-full rounded-full shadow-sm"
+                                      className="bg-primary h-full rounded-full shadow-sm"
               />
             </div>
           </div>

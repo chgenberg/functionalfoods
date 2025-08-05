@@ -421,7 +421,7 @@ export default function GenerateBookPage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={downloadBook}
-                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 font-medium shadow-lg flex items-center justify-center"
+                    className="w-full bg-primary text-white px-6 py-4 rounded-lg hover:bg-secondary transition-all duration-300 font-medium shadow-lg flex items-center justify-center"
                   >
                     <ArrowDownTrayIcon className="h-6 w-6 mr-2" />
                     Ladda ner bok (.txt)

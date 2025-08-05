@@ -228,7 +228,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={onRestart}
-            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                            className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-secondary transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Försök igen
           </button>

@@ -196,7 +196,7 @@ export default function AdminBlogPage() {
               onClick={() => setFilter('published')}
               className={`px-4 py-2 rounded-xl transition-all ${
                 filter === 'published' 
-                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md' 
+                  ? 'bg-primary text-white shadow-md' 
                   : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
               }`}
             >

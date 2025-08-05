@@ -142,7 +142,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="h-full bg-gradient-to-r from-green-500 to-green-600"
+                            className="h-full bg-primary"
           />
         </div>
       </div>
