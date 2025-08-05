@@ -251,6 +251,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           {/* Desktop video */}
           <video
+            src="/introvideo_compressed.mp4"
             className="hidden md:block absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 10,
@@ -262,15 +263,11 @@ export default function Home() {
             playsInline
             preload="auto"
             data-video-type="desktop"
-            dangerouslySetInnerHTML={{
-              __html: ''
-            }}
-          >
-            <source src="/introvideo_compressed.mp4" type="video/mp4" />
-          </video>
+          />
           
           {/* Mobile video */}
           <video
+            src="/introvideo_mobile.mp4"
             className="block md:hidden absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 10,
@@ -282,12 +279,7 @@ export default function Home() {
             playsInline
             preload="auto"
             data-video-type="mobile"
-            dangerouslySetInnerHTML={{
-              __html: ''
-            }}
-          >
-            <source src="/introvideo_mobile.mp4" type="video/mp4" />
-          </video>
+          />
           
           {/* Fallback background image - only if error */}
           <div 
