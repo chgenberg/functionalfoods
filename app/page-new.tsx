@@ -249,10 +249,10 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video background - SIMPLIFIED TEST */}
         <div className="absolute inset-0 z-0">
-          {/* Simple test video - should be visible */}
+          {/* Videos via GitHub Releases (CDN) */}
           <video
-            src="/introvideo_compressed.mp4"
-            className="absolute inset-0 w-full h-full object-cover"
+            src="https://github.com/chgenberg/functionalfoods/releases/download/videos/introvideo_compressed.mp4"
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 1
             }}
@@ -260,11 +260,21 @@ export default function Home() {
             autoPlay
             loop
             playsInline
-            controls
-            data-video-type="test"
-          >
-            Videor stöds inte i denna webbläsare.
-          </video>
+            data-video-type="desktop"
+          />
+          
+          <video
+            src="https://github.com/chgenberg/functionalfoods/releases/download/videos/introvideo_mobile.mp4"
+            className="block md:hidden absolute inset-0 w-full h-full object-cover"
+            style={{ 
+              zIndex: 1
+            }}
+            muted
+            autoPlay
+            loop
+            playsInline
+            data-video-type="mobile"
+          />
           
           {/* Fallback background image - only if error */}
           <div 
