@@ -21,70 +21,94 @@ export default function Home() {
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const router = useRouter();
 
-  // Enhanced video autoplay and loading
+  // AGGRESSIVE video autoplay and loading
   useEffect(() => {
-    const attemptVideoPlay = () => {
+    const forceVideoPlay = () => {
       const videos = document.querySelectorAll('video');
-      console.log(`Found ${videos.length} videos to play`);
+      console.log(`🎬 FORCING ${videos.length} videos to play`);
       
       videos.forEach((video, index) => {
-        console.log(`Attempting to play video ${index + 1}`);
+        console.log(`🎬 Force playing video ${index + 1}:`, video.src);
         
-        if (video.readyState >= 3) { // HAVE_FUTURE_DATA
+        // Remove any existing event listeners
+        video.removeEventListener('loadeddata', () => {});
+        video.removeEventListener('canplay', () => {});
+        
+        // Force video properties
+        video.muted = true;
+        video.loop = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.controls = false;
+        
+        // Try to play immediately
+        const tryPlay = () => {
           video.currentTime = 0;
-          
           const playPromise = video.play();
+          
           if (playPromise !== undefined) {
             playPromise.then(() => {
-              console.log(`Video ${index + 1} started playing successfully`);
+              console.log(`✅ Video ${index + 1} PLAYING successfully!`);
               setVideoLoaded(true);
               setVideoError(false);
+              
+              // Force video to be visible
+              video.style.opacity = '1';
+              video.style.zIndex = '10';
+              video.style.display = 'block';
             }).catch((error) => {
-              console.log(`Video ${index + 1} autoplay failed:`, error);
+              console.log(`❌ Video ${index + 1} play failed:`, error);
               setVideoError(true);
+              
+              // Try again after a short delay
+              setTimeout(tryPlay, 1000);
             });
           }
-        } else {
-          // Wait for video to load more data
-          video.addEventListener('canplay', () => {
-            video.currentTime = 0;
-            video.play().then(() => {
-              console.log(`Video ${index + 1} loaded and started playing`);
-              setVideoLoaded(true);
-              setVideoError(false);
-            }).catch((error) => {
-              console.log(`Video ${index + 1} play failed after loading:`, error);
-              setVideoError(true);
-            });
-          }, { once: true });
+        };
+        
+        // Try immediately if ready
+        if (video.readyState >= 2) {
+          tryPlay();
         }
+        
+        // Try when loaded
+        video.addEventListener('loadeddata', tryPlay);
+        video.addEventListener('canplay', tryPlay);
+        video.addEventListener('canplaythrough', tryPlay);
+        
+        // Force load
+        video.load();
       });
     };
 
-    // Multiple attempts with different timings
+    // Try multiple times with increasing delays
     const timers = [
-      setTimeout(attemptVideoPlay, 100),
-      setTimeout(attemptVideoPlay, 500),
-      setTimeout(attemptVideoPlay, 1000),
+      setTimeout(forceVideoPlay, 100),
+      setTimeout(forceVideoPlay, 500),
+      setTimeout(forceVideoPlay, 1000),
+      setTimeout(forceVideoPlay, 2000),
+      setTimeout(forceVideoPlay, 3000),
     ];
 
-    // Try on user interaction
+    // Try on ANY user interaction
     const handleInteraction = () => {
-      attemptVideoPlay();
-      document.removeEventListener('click', handleInteraction);
-      document.removeEventListener('touchstart', handleInteraction);
-      document.removeEventListener('scroll', handleInteraction);
+      console.log('🎬 User interaction detected - forcing video play');
+      forceVideoPlay();
     };
 
     document.addEventListener('click', handleInteraction);
     document.addEventListener('touchstart', handleInteraction);
     document.addEventListener('scroll', handleInteraction);
+    document.addEventListener('mousemove', handleInteraction);
+    document.addEventListener('keydown', handleInteraction);
 
     return () => {
       timers.forEach(clearTimeout);
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
       document.removeEventListener('scroll', handleInteraction);
+      document.removeEventListener('mousemove', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
     };
   }, []);
 
@@ -182,9 +206,9 @@ export default function Home() {
       
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Video background - prioritized */}
+        {/* Video background - FORCE VIDEOS TO SHOW */}
         <div className="absolute inset-0 z-0">
-          {/* Desktop video - highest priority */}
+          {/* Desktop video - ALWAYS VISIBLE */}
           <video
             key="desktop-video"
             autoPlay
@@ -192,8 +216,13 @@ export default function Home() {
             muted
             playsInline
             preload="auto"
-            className="hidden md:block absolute inset-0 w-full h-full object-cover z-10"
-            style={{ zIndex: 1 }}
+            poster=""
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            style={{ 
+              zIndex: 10,
+              opacity: 1,
+              display: 'block'
+            }}
             onLoadedData={() => {
               console.log('Desktop video loaded');
               setVideoLoaded(true);
@@ -212,7 +241,7 @@ export default function Home() {
             <source src="/introvideo_compressed.mp4" type="video/mp4" />
           </video>
           
-          {/* Mobile video - highest priority */}
+          {/* Mobile video - ALWAYS VISIBLE */}
           <video
             key="mobile-video"
             autoPlay
@@ -220,8 +249,13 @@ export default function Home() {
             muted
             playsInline
             preload="auto"
-            className="block md:hidden absolute inset-0 w-full h-full object-cover z-10"
-            style={{ zIndex: 1 }}
+            poster=""
+            className="block md:hidden absolute inset-0 w-full h-full object-cover"
+            style={{ 
+              zIndex: 10,
+              opacity: 1,
+              display: 'block'
+            }}
             onLoadedData={() => {
               console.log('Mobile video loaded');
               setVideoLoaded(true);
@@ -240,15 +274,14 @@ export default function Home() {
             <source src="/introvideo_mobile.mp4" type="video/mp4" />
           </video>
           
-          {/* Fallback background image - only if videos fail */}
+          {/* Fallback background image - HIDDEN BY DEFAULT */}
           <div 
-            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
-              videoError || !videoLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: 'url(/ulrika-hero-bg.jpg)',
               backgroundColor: '#f0fdf4',
-              zIndex: 0
+              zIndex: 1,
+              opacity: videoError ? 1 : 0
             }}
           >
             {/* Gradient overlay for better text readability */}
@@ -256,14 +289,14 @@ export default function Home() {
           </div>
           
           {/* Text overlay for videos */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/30 z-20" />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/30" style={{ zIndex: 20 }} />
           
-          {/* Debug info - remove in production */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="absolute top-4 left-4 z-50 bg-black/50 text-white p-2 rounded text-xs">
-              Video Status: {videoLoaded ? 'Loaded' : 'Loading'} | Error: {videoError ? 'Yes' : 'No'}
-            </div>
-          )}
+          {/* Debug info - ALWAYS SHOW FOR NOW */}
+          <div className="absolute top-4 left-4 bg-black/80 text-white p-3 rounded text-sm" style={{ zIndex: 50 }}>
+            <div>Video Status: {videoLoaded ? 'Loaded ✅' : 'Loading ⏳'}</div>
+            <div>Error: {videoError ? 'Yes ❌' : 'No ✅'}</div>
+            <div>Videos found: {typeof window !== 'undefined' ? document.querySelectorAll('video').length : 'Unknown'}</div>
+          </div>
         </div>
 
         {/* Animated background - now with lower opacity to blend with video */}
