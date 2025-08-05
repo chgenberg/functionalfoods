@@ -247,42 +247,24 @@ export default function Home() {
       
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Video background - IMPROVED APPROACH */}
+        {/* Video background - SIMPLIFIED TEST */}
         <div className="absolute inset-0 z-0">
-          {/* Desktop video */}
+          {/* Simple test video - should be visible */}
           <video
             src="/introvideo_compressed.mp4"
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{ 
-              zIndex: 30,
-              opacity: 1
+              zIndex: 1
             }}
             muted
             autoPlay
             loop
             playsInline
-            preload="auto"
-            data-video-type="desktop"
-          />
-          
-          {/* Mobile video */}
-          <video
-            src="/introvideo_mobile.mp4"
-            className="block md:hidden absolute inset-0 w-full h-full object-cover"
-            style={{ 
-              zIndex: 30,
-              opacity: 1
-            }}
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="auto"
-            data-video-type="mobile"
-          />
-          
-          {/* Video overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/30" style={{ zIndex: 35 }} />
+            controls
+            data-video-type="test"
+          >
+            Videor stöds inte i denna webbläsare.
+          </video>
           
           {/* Fallback background image - only if error */}
           <div 
@@ -292,7 +274,7 @@ export default function Home() {
             style={{
               backgroundImage: 'url(/ulrika-hero-bg.jpg)',
               backgroundColor: '#f0fdf4',
-              zIndex: 1
+              zIndex: 0
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
