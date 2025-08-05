@@ -29,56 +29,90 @@ export default function Home() {
       const videos = document.querySelectorAll('video');
       console.log(`🎬 Found ${videos.length} video elements`);
       
-      videos.forEach((video) => {
+      videos.forEach((video, index) => {
         const videoType = video.getAttribute('data-video-type') || 'unknown';
         console.log(`🔧 Setting up ${videoType} video`);
         
-        // Ensure video properties are set correctly
+        // Clear any existing event listeners
+        video.removeEventListener('canplay', handleCanPlay);
+        video.removeEventListener('loadeddata', handleLoadedData);
+        video.removeEventListener('error', handleError);
+        
+        // Force set properties multiple times for Safari
         video.muted = true;
         video.loop = true;
         video.playsInline = true;
         video.autoplay = true;
-        video.preload = 'auto';
+        video.preload = 'metadata';
+        video.defaultMuted = true;
         
-        // Set attributes explicitly for Safari
-        video.setAttribute('muted', '');
-        video.setAttribute('playsinline', '');
-        video.setAttribute('autoplay', '');
+        // Set attributes explicitly for Safari - multiple approaches
+        video.setAttribute('muted', 'true');
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('autoplay', 'true');
+        video.setAttribute('loop', 'true');
+        video.setAttribute('webkit-playsinline', 'true');
         
         // Event listeners
-        const handleCanPlay = async () => {
+        function handleCanPlay() {
           console.log(`✅ ${videoType} video can play`);
           setVideosLoaded(prev => prev + 1);
           
-          try {
-            await video.play();
+          // Immediate play attempt
+          video.play().then(() => {
             console.log(`▶️ ${videoType} video playing successfully`);
             setVideoError(false);
-          } catch (err: any) {
+          }).catch(err => {
             console.log(`❌ ${videoType} autoplay blocked:`, err.message);
-            // Don't set error for autoplay blocks, wait for user interaction
-          }
-        };
+            // Try again after a short delay
+            setTimeout(() => {
+              video.play().catch(() => {
+                console.log(`❌ ${videoType} delayed play also failed`);
+              });
+            }, 100);
+          });
+        }
         
-        const handleError = (e: any) => {
+        function handleError(e: any) {
           console.log(`❌ ${videoType} video error:`, e);
           setVideoError(true);
-        };
+        }
         
-        const handleLoadedData = () => {
+        function handleLoadedData() {
           console.log(`📊 ${videoType} video data loaded`);
-          // Try to play when data is loaded
+          // Multiple play attempts for Safari
           video.play().catch(err => {
-            console.log(`⚠️ ${videoType} play delayed:`, err.message);
+            console.log(`⚠️ ${videoType} loadeddata play failed:`, err.message);
+            // Try once more
+            setTimeout(() => {
+              video.play().catch(() => {
+                console.log(`❌ ${videoType} second attempt failed`);
+              });
+            }, 50);
           });
-        };
+        }
+        
+        function handleLoadedMetadata() {
+          console.log(`📋 ${videoType} metadata loaded`);
+          video.play().catch(err => {
+            console.log(`⚠️ ${videoType} metadata play failed:`, err.message);
+          });
+        }
         
         video.addEventListener('canplay', handleCanPlay);
         video.addEventListener('loadeddata', handleLoadedData);
+        video.addEventListener('loadedmetadata', handleLoadedMetadata);
         video.addEventListener('error', handleError);
         
-        // Force load
+        // Force load and immediate play attempt
         video.load();
+        
+        // Safari-specific: Try to play immediately if already loaded
+        if (video.readyState >= 3) {
+          video.play().catch(err => {
+            console.log(`⚠️ ${videoType} immediate play failed:`, err.message);
+          });
+        }
       });
       
       // Setup intersection observer for when videos come into view
@@ -98,13 +132,15 @@ export default function Home() {
             }
           }
         });
-      }, { threshold: 0.5 });
+      }, { threshold: 0.1 });
       
       videos.forEach(video => observer?.observe(video));
     };
 
-    // Setup videos when DOM is ready
-    const timer = setTimeout(setupVideos, 200);
+    // Setup videos when DOM is ready - try multiple times
+    const timer1 = setTimeout(setupVideos, 100);
+    const timer2 = setTimeout(setupVideos, 500);
+    const timer3 = setTimeout(setupVideos, 1000);
 
     // Enhanced user interaction handler
     const handleUserInteraction = async () => {
@@ -134,7 +170,9 @@ export default function Home() {
     });
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
       observer?.disconnect();
       events.forEach(event => {
         document.removeEventListener(event, handleUserInteraction);
@@ -247,9 +285,10 @@ export default function Home() {
               opacity: 1
             }}
             muted
+            autoPlay
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             data-video-type="desktop"
           />
           
@@ -262,9 +301,10 @@ export default function Home() {
               opacity: 1
             }}
             muted
+            autoPlay
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             data-video-type="mobile"
           />
           
@@ -286,7 +326,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/30" style={{ zIndex: 20 }} />
           
           {/* Debug info and manual controls */}
-          {(process.env.NODE_ENV === 'development' || videosLoaded === 0) && (
+          {(process.env.NODE_ENV === 'development' || (videosLoaded === 0 && videoError)) && (
             <div className="absolute top-4 left-4 bg-black/90 text-white p-4 rounded-lg text-sm font-mono" style={{ zIndex: 50 }}>
               <div>Video Status: {videosLoaded > 0 ? '✅ Playing' : '⏳ Loading'}</div>
               <div>Error: {videoError ? '❌ Yes' : '✅ No'}</div>
