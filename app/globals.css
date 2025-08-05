@@ -49,46 +49,46 @@ img {
 /* Functional Flow specific colors - matching Basic design structure */
 .functional-flow .bg-accent,
 .functional-flow .bg-primary {
-  background-color: #1a4d78 !important;
+  background-color: #014421 !important;
 }
 
 .functional-flow .text-primary {
-  color: #1a4d78 !important;
+  color: #014421 !important;
 }
 
 .functional-flow .hover\:text-primary:hover {
-  color: #1a4d78 !important;
+  color: #014421 !important;
 }
 
 .functional-flow .hover\:bg-primary:hover {
-  background-color: #1a4d78 !important;
+  background-color: #112A12 !important;
 }
 
 @layer base {
   :root {
     /* Primary Colors */
     --primary: #014421;
-    --primary-light: #93C560;
+    --primary-light: #112A12;
     --secondary: #112A12;
     
     /* Accent Colors */
-    --accent: #93C560;
-    --accent-hover: #7FB34E;
+    --accent: #014421;
+    --accent-hover: #112A12;
     
     /* Text Colors */
     --text-primary: #112A12;
     --text-secondary: #014421;
-    --text-light: #660C21;
+    --text-light: #112A12;
     
     /* Background Colors */
-    --background: #F3EFE3;
-    --background-secondary: #F7FBF3;
+    --background: #F7F3FB;
+    --background-secondary: #F7F3FB;
     
     /* Border Colors */
-    --border: #93C560;
+    --border: #112A12;
     
     /* Status Colors */
-    --success: #93C560;
+    --success: #014421;
     --warning: #F59E0B;
     --error: #660C21;
   }
@@ -272,11 +272,11 @@ img {
   }
   
   .glow {
-    box-shadow: 0 0 20px rgba(147, 197, 96, 0.3);
+    box-shadow: 0 0 20px rgba(1, 68, 33, 0.3);
   }
   
   .glow:hover {
-    box-shadow: 0 0 30px rgba(147, 197, 96, 0.5);
+    box-shadow: 0 0 30px rgba(1, 68, 33, 0.5);
   }
   
   /* Animation delays */

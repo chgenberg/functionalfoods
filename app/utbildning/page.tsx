@@ -40,7 +40,7 @@ export default function UtbildningPage() {
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
-            Vårt <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">kursutbud</span>
+            Vårt <span className="text-accent font-extrabold">kursutbud</span>
           </h1>
           <p className="text-lg text-text-secondary">
             Varje kropp är unik – därför erbjuder vi kunskap om functional foods och mervärdesmat 

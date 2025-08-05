@@ -171,7 +171,7 @@ export default function ArticleQuickAccess() {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" style={{ pointerEvents: 'auto' }}>
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
             {/* Header */}
-            <div className="bg-gradient-to-r from-accent to-accent-hover p-6 text-white">
+            <div className="bg-accent p-6 text-white">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white">

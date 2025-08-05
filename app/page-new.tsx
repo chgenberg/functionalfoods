@@ -122,7 +122,7 @@ export default function Home() {
               zIndex: 1
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
+            <div className="absolute inset-0 bg-black/40" />
           </div>
         </div>
 
@@ -213,19 +213,19 @@ export default function Home() {
                 icon: <GiFruitBowl className="w-8 h-8" />,
                 title: "Functional Foods",
                 description: "Naturliga livsmedel med specifika hälsofördelar",
-                color: "from-green-400 to-green-600"
+                color: "#014421"
               },
               {
                 icon: <FiTarget className="w-8 h-8" />,
                 title: "Personaliserat",
                 description: "Anpassat efter dina unika behov och mål",
-                color: "from-blue-400 to-blue-600"
+                color: "#112A12"
               },
               {
                 icon: <FiZap className="w-8 h-8" />,
                 title: "Snabba resultat",
                 description: "Känn skillnad redan efter några veckor",
-                color: "from-purple-400 to-purple-600"
+                color: "#014421"
               }
             ].map((feature, index) => (
               <motion.div
@@ -238,7 +238,7 @@ export default function Home() {
                 onClick={() => setSelectedFeature(feature)}
                 className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg md:shadow-xl hover:shadow-xl md:hover:shadow-2xl transition-all cursor-pointer group"
               >
-                <div className={`w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${feature.color} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 transition-transform`}>
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 transition-transform" style={{ backgroundColor: feature.color }}>
                   {feature.icon}
                 </div>
                 <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800 group-hover:text-[#1a4324] transition-colors">{feature.title}</h3>
