@@ -81,8 +81,15 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
     if (isOpen && guideSteps[currentStep]) {
       const updatePosition = () => {
         const element = document.querySelector(guideSteps[currentStep].targetElement);
-        console.log('Looking for element:', guideSteps[currentStep].targetElement, 'Found:', element);
+        console.log('Looking for element:', guideSteps[currentStep].targetElement);
+        console.log('Found element:', element);
+        console.log('All elements with class:', document.querySelectorAll(guideSteps[currentStep].targetElement));
+        
         if (element) {
+          // Kontrollera om elementet är synligt
+          const style = window.getComputedStyle(element);
+          console.log('Element display:', style.display, 'visibility:', style.visibility);
+          
           // Scrolla först så elementet är synligt
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
           
@@ -90,6 +97,7 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
           setTimeout(() => {
             const rect = element.getBoundingClientRect();
             console.log('Element rect:', rect, 'width:', rect.width, 'height:', rect.height);
+            console.log('Window scroll:', window.scrollY, window.scrollX);
             
             // Kontrollera att rect är giltig
             if (rect.width > 0 && rect.height > 0) {
@@ -101,37 +109,49 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
               });
             } else {
               console.warn('Invalid rect, using fallback');
-              // Fallback för första steget - video-sektionen
-              setHighlightPosition({
-                top: 300,
-                left: 300,
-                width: 800,
-                height: 400
-              });
+              // Bättre fallback baserat på vilket steg
+              const fallbackPositions = [
+                { top: 200, left: 50, width: window.innerWidth - 100, height: 400 }, // Video
+                { top: 650, left: 50, width: window.innerWidth - 100, height: 300 }, // Veckor
+                { top: 500, left: 50, width: 300, height: 150 }, // Mål
+                { top: 500, left: 400, width: 300, height: 150 }, // Nedladdningar
+                { top: 100, left: 50, width: 200, height: 300 }, // Community
+              ];
+              const fallback = fallbackPositions[currentStep] || fallbackPositions[0];
+              setHighlightPosition(fallback);
             }
-          }, 200);
+          }, 300);
         } else {
           console.warn('Element not found:', guideSteps[currentStep].targetElement);
-          // Fallback position
-          setHighlightPosition({
-            top: 300,
-            left: 300,
-            width: 800,
-            height: 400
-          });
+          // Bättre fallback
+          const fallbackPositions = [
+            { top: 200, left: 50, width: window.innerWidth - 100, height: 400 }, // Video
+            { top: 650, left: 50, width: window.innerWidth - 100, height: 300 }, // Veckor
+            { top: 500, left: 50, width: 300, height: 150 }, // Mål
+            { top: 500, left: 400, width: 300, height: 150 }, // Nedladdningar
+            { top: 100, left: 50, width: 200, height: 300 }, // Community
+          ];
+          const fallback = fallbackPositions[currentStep] || fallbackPositions[0];
+          setHighlightPosition(fallback);
         }
       };
 
       // Vänta lite så att DOM hinner uppdateras
-      setTimeout(updatePosition, 800);
+      setTimeout(updatePosition, 1000);
       
-      // Uppdatera vid resize
-      window.addEventListener('resize', updatePosition);
-      window.addEventListener('scroll', updatePosition);
+      // Uppdatera vid resize (med debounce)
+      let resizeTimeout: NodeJS.Timeout;
+      const handleResize = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(updatePosition, 300);
+      };
+      
+      window.addEventListener('resize', handleResize);
+      // Ta bort scroll listener för att undvika spam
       
       return () => {
-        window.removeEventListener('resize', updatePosition);
-        window.removeEventListener('scroll', updatePosition);
+        window.removeEventListener('resize', handleResize);
+        clearTimeout(resizeTimeout);
       };
     }
   }, [isOpen, currentStep]);
