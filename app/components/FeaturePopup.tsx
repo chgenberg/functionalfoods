@@ -96,9 +96,13 @@ export default function FeaturePopup({ isOpen, onClose, feature }: FeaturePopupP
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                       w-[95vw] max-w-2xl bg-white rounded-2xl md:rounded-3xl shadow-2xl z-[9999] 
-                       overflow-hidden flex flex-col max-h-[90vh]"
+            className="fixed inset-0 flex items-center justify-center p-4 z-[9999]"
+            onClick={onClose}
+          >
+            <div 
+              className="w-full max-w-2xl bg-white rounded-2xl md:rounded-3xl shadow-2xl 
+                         overflow-hidden flex flex-col max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
           >
             {/* Header with gradient */}
             <div className={`relative bg-gradient-to-br ${feature.color} p-6 md:p-8 text-white`}>
@@ -181,6 +185,7 @@ export default function FeaturePopup({ isOpen, onClose, feature }: FeaturePopupP
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </motion.a>
+            </div>
             </div>
           </motion.div>
         </>
