@@ -46,7 +46,7 @@ export default function ArticleQuickAccess() {
           setArticles([
             {
               id: '1',
-              title: 'Utforska våra blogginlägg',
+              title: 'Utforska våra artiklar',
               excerpt: 'Upptäck värdefull information om functional foods, näring och hälsa',
               category: 'Kunskapsbas',
               readTime: '5 min',

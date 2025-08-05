@@ -142,7 +142,7 @@ export default function Week2Page() {
                       <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-6">
                         <h4 className="font-semibold text-gray-900 mb-3">Meal prep</h4>
                         <p className="text-gray-700 mb-3">
-                          Börja förbereda måltider i förväg. Många av veckans recept 
+                          Börja förbereda måltider i förväg. Många av veckans mellanmål 
                           lämpar sig utmärkt för att laga i större mängder.
                         </p>
                         <ul className="space-y-2 text-sm text-gray-600">
@@ -214,7 +214,7 @@ export default function Week2Page() {
               
               {/* Recipe Highlights */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans recept</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans mellanmål</h3>
                 <p className="text-gray-600">Upptäck nya smaker och tekniker med veckans utvalda recept.</p>
               </div>
             </motion.div>

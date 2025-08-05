@@ -14,7 +14,7 @@ const downloadableFiles = [
   },
   {
     id: 2,
-    title: 'Veckans Receptsamling',
+    title: 'Veckans Mellanmålssamling',
     description: '7 nya, hälsosamma och enkla recept för hela veckan.',
     type: 'pdf',
     size: '4.1 MB',

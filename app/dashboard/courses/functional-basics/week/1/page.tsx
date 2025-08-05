@@ -203,7 +203,7 @@ export default function Week1Page() {
               
               {/* Recipe Highlights */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans recept</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans mellanmål</h3>
                 <p className="text-gray-600">Upptäck nya smaker och tekniker med veckans utvalda recept.</p>
               </div>
             </motion.div>

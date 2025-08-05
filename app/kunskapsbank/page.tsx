@@ -11,7 +11,7 @@ export default function KunskapsbankPage() {
   const sections = [
     {
       id: 'blog',
-      title: "Blogginlägg",
+      title: "Artiklar",
       description: "Läs våra senaste artiklar om hälsa, kost och livsstil",
       image: "/blogg.png",
       href: "/kunskapsbank/blogg",

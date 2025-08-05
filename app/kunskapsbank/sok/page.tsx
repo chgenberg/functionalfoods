@@ -313,7 +313,7 @@ export default function Sok() {
                     </Link>
                     <Link href="/kunskapsbank/blogg" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
                       <FiUser className="w-8 h-8 text-accent mx-auto mb-3" />
-                      <h4 className="font-semibold text-text-primary group-hover:text-primary">Blogg</h4>
+                      <h4 className="font-semibold text-text-primary group-hover:text-primary">Artiklar</h4>
                     </Link>
                     <Link href="/kontakt/faq" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
                       <FiTag className="w-8 h-8 text-accent mx-auto mb-3" />
