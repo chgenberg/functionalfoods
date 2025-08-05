@@ -11,6 +11,7 @@ import QuizResultScreen from "./components/QuizResultScreen";
 import NewsletterSignup from "./components/NewsletterSignup";
 import ArticleQuickAccess from "./components/ArticleQuickAccess";
 import FeaturePopup from "./components/FeaturePopup";
+import RecipeCarousel from "./components/RecipeCarousel";
 
 export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
@@ -189,6 +190,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Recipe Carousel */}
+      <RecipeCarousel />
 
       {/* Features Section - Mobile Optimized */}
       <section className="py-12 md:py-20 px-4 bg-gray-50">
