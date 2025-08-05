@@ -83,31 +83,47 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
         const element = document.querySelector(guideSteps[currentStep].targetElement);
         console.log('Looking for element:', guideSteps[currentStep].targetElement, 'Found:', element);
         if (element) {
-          const rect = element.getBoundingClientRect();
-          console.log('Element rect:', rect);
-          setHighlightPosition({
-            top: rect.top + window.scrollY,
-            left: rect.left + window.scrollX,
-            width: rect.width,
-            height: rect.height
-          });
-          
-          // Scrolla till elementet om det är utanför viewport
+          // Scrolla först så elementet är synligt
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Vänta på scroll och få korrekt position
+          setTimeout(() => {
+            const rect = element.getBoundingClientRect();
+            console.log('Element rect:', rect, 'width:', rect.width, 'height:', rect.height);
+            
+            // Kontrollera att rect är giltig
+            if (rect.width > 0 && rect.height > 0) {
+              setHighlightPosition({
+                top: rect.top + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width,
+                height: rect.height
+              });
+            } else {
+              console.warn('Invalid rect, using fallback');
+              // Fallback för första steget - video-sektionen
+              setHighlightPosition({
+                top: 300,
+                left: 300,
+                width: 800,
+                height: 400
+              });
+            }
+          }, 200);
         } else {
           console.warn('Element not found:', guideSteps[currentStep].targetElement);
-          // Fallback position - center av skärmen
+          // Fallback position
           setHighlightPosition({
-            top: window.innerHeight / 2,
-            left: window.innerWidth / 2,
-            width: 200,
-            height: 200
+            top: 300,
+            left: 300,
+            width: 800,
+            height: 400
           });
         }
       };
 
       // Vänta lite så att DOM hinner uppdateras
-      setTimeout(updatePosition, 500);
+      setTimeout(updatePosition, 800);
       
       // Uppdatera vid resize
       window.addEventListener('resize', updatePosition);
@@ -137,33 +153,59 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
   const getTooltipPosition = () => {
     const step = guideSteps[currentStep];
     const position = isMobile ? (step.mobilePosition || step.position) : step.position;
+    const tooltipWidth = 320;
+    const tooltipHeight = 150;
+    
+    let calculatedPosition;
     
     switch (position) {
       case 'top':
-        return {
-          top: highlightPosition.top - 120,
+        calculatedPosition = {
+          top: highlightPosition.top - tooltipHeight - 20,
           left: highlightPosition.left + highlightPosition.width / 2,
           transform: 'translateX(-50%)'
         };
+        break;
       case 'bottom':
-        return {
+        calculatedPosition = {
           top: highlightPosition.top + highlightPosition.height + 20,
           left: highlightPosition.left + highlightPosition.width / 2,
           transform: 'translateX(-50%)'
         };
+        break;
       case 'left':
-        return {
+        calculatedPosition = {
           top: highlightPosition.top + highlightPosition.height / 2,
-          left: highlightPosition.left - 320,
+          left: highlightPosition.left - tooltipWidth - 20,
           transform: 'translateY(-50%)'
         };
+        break;
       case 'right':
-        return {
+        calculatedPosition = {
           top: highlightPosition.top + highlightPosition.height / 2,
           left: highlightPosition.left + highlightPosition.width + 20,
           transform: 'translateY(-50%)'
         };
+        break;
     }
+    
+    // Säkerställ att tooltip inte hamnar utanför skärmen
+    if (calculatedPosition && calculatedPosition.left < 20) {
+      calculatedPosition.left = 20;
+      calculatedPosition.transform = 'translateX(0)';
+    }
+    if (calculatedPosition && calculatedPosition.left + tooltipWidth > window.innerWidth - 20) {
+      calculatedPosition.left = window.innerWidth - tooltipWidth - 20;
+      calculatedPosition.transform = 'translateX(0)';
+    }
+    if (calculatedPosition && calculatedPosition.top < 20) {
+      calculatedPosition.top = 20;
+    }
+    if (calculatedPosition && calculatedPosition.top + tooltipHeight > window.innerHeight - 20) {
+      calculatedPosition.top = window.innerHeight - tooltipHeight - 20;
+    }
+    
+    return calculatedPosition;
   };
 
   if (!isOpen) return null;
