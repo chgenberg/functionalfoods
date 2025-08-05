@@ -27,44 +27,43 @@ export default function Home() {
     const attemptVideoPlay = () => {
       const videos = document.querySelectorAll('video');
       videos.forEach(video => {
-        // Reset video to start
-        video.currentTime = 0;
-        
-        video.play().then(() => {
-          console.log('Video started playing successfully');
-          setVideoLoaded(true);
-          setForceShowVideo(true);
-        }).catch((error) => {
-          console.log('Video autoplay failed:', error);
-          // Try to load the video anyway, it might play on user interaction
-          setVideoLoaded(true);
-          setForceShowVideo(true);
-        });
+        if (video.paused) {
+          video.currentTime = 0;
+          
+          video.play().then(() => {
+            console.log('Video started playing successfully');
+            setVideoLoaded(true);
+            setVideoError(false);
+          }).catch((error) => {
+            console.log('Video autoplay failed:', error);
+            setVideoLoaded(true);
+          });
+        }
       });
     };
 
-    // Try immediately
+    // Try after a short delay to ensure DOM is ready
     const timer = setTimeout(() => {
       attemptVideoPlay();
-    }, 100);
+    }, 500);
 
     // Try on first user interaction
     const handleInteraction = () => {
       attemptVideoPlay();
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
-      document.removeEventListener('scroll', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
     };
 
     document.addEventListener('click', handleInteraction);
     document.addEventListener('touchstart', handleInteraction);
-    document.addEventListener('scroll', handleInteraction);
+    document.addEventListener('keydown', handleInteraction);
 
     return () => {
       clearTimeout(timer);
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
-      document.removeEventListener('scroll', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
     };
   }, []);
 
@@ -162,11 +161,13 @@ export default function Home() {
       
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Video/Image background */}
+        {/* Video background */}
         <div className="absolute inset-0 z-0">
-          {/* Fallback background image - always visible */}
+          {/* Fallback background image - only visible if videos fail */}
           <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+              videoError ? 'opacity-100' : 'opacity-0'
+            }`}
             style={{
               backgroundImage: 'url(/ulrika-hero-bg.jpg)',
               backgroundColor: '#f0fdf4'
@@ -176,24 +177,22 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
           </div>
           
-          {/* Desktop video - enhanced visibility */}
+          {/* Desktop video */}
           <video
             key="desktop-video"
             autoPlay
             loop
             muted
             playsInline
-            preload="metadata"
-            className={`hidden md:block absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${(videoLoaded || forceShowVideo) ? 'opacity-80' : 'opacity-0'}`}
+            preload="auto"
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
             onLoadedData={() => {
               console.log('Desktop video loaded');
               setVideoLoaded(true);
-              setForceShowVideo(true);
             }}
             onCanPlay={() => {
               console.log('Desktop video can play');
               setVideoLoaded(true);
-              setForceShowVideo(true);
             }}
             onError={(e) => {
               console.log('Desktop video error:', e);
@@ -201,27 +200,24 @@ export default function Home() {
             }}
           >
             <source src="/introvideo_compressed.mp4" type="video/mp4" />
-            <p>Your browser does not support the video tag.</p>
           </video>
           
-          {/* Mobile video - enhanced visibility */}
+          {/* Mobile video */}
           <video
             key="mobile-video"
             autoPlay
             loop
             muted
             playsInline
-            preload="metadata"
-            className={`block md:hidden absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${(videoLoaded || forceShowVideo) ? 'opacity-80' : 'opacity-0'}`}
+            preload="auto"
+            className="block md:hidden absolute inset-0 w-full h-full object-cover"
             onLoadedData={() => {
               console.log('Mobile video loaded');
               setVideoLoaded(true);
-              setForceShowVideo(true);
             }}
             onCanPlay={() => {
               console.log('Mobile video can play');
               setVideoLoaded(true);
-              setForceShowVideo(true);
             }}
             onError={(e) => {
               console.log('Mobile video error:', e);
@@ -229,11 +225,10 @@ export default function Home() {
             }}
           >
             <source src="/introvideo_mobile.mp4" type="video/mp4" />
-            <p>Your browser does not support the video tag.</p>
           </video>
           
           {/* Enhanced overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/40" />
         </div>
 
         {/* Animated background - now with lower opacity to blend with video */}
