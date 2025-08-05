@@ -54,7 +54,7 @@ export default function RecipeCarousel() {
             x: {
               repeat: Infinity,
               repeatType: "loop",
-              duration: recipes.length * 5, // 5 sekunder per recept
+              duration: recipes.length * 10, // 10 sekunder per recept (hälften så snabbt)
               ease: "linear",
             },
           },
@@ -101,7 +101,7 @@ export default function RecipeCarousel() {
               className="flex-shrink-0 group"
             >
               <motion.div
-                className="w-[300px] bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                className="w-[300px] h-[380px] bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col"
                 whileHover={{ y: -5 }}
               >
                 {/* Bild */}
@@ -130,18 +130,20 @@ export default function RecipeCarousel() {
                 </div>
 
                 {/* Innehåll */}
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                    {recipe.title}
-                  </h3>
-                  
-                  {recipe.excerpt && (
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                      {recipe.excerpt}
-                    </p>
-                  )}
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                      {recipe.title}
+                    </h3>
+                    
+                    {recipe.excerpt && (
+                      <p className="text-sm text-gray-600 line-clamp-3 mb-3">
+                        {recipe.excerpt}
+                      </p>
+                    )}
+                  </div>
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mt-auto">
                     {recipe.prepTime && (
                       <div className="flex items-center gap-1 text-sm text-gray-500">
                         <FiClock className="w-4 h-4" />
