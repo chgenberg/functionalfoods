@@ -16,33 +16,129 @@ export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizResults, setQuizResults] = useState<Record<number, string> | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videosLoaded, setVideosLoaded] = useState(0);
   const [videoError, setVideoError] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const router = useRouter();
 
-    // Simple video interaction handler
+  // Enhanced video management with Safari compatibility
   useEffect(() => {
-    const ensureVideoPlay = () => {
+    let observer: IntersectionObserver | null = null;
+    
+    const setupVideos = () => {
       const videos = document.querySelectorAll('video');
-      videos.forEach(video => {
-        if (video.paused) {
-          video.play().catch(console.error);
-        }
+      console.log(`🎬 Found ${videos.length} video elements`);
+      
+      videos.forEach((video) => {
+        const videoType = video.getAttribute('data-video-type') || 'unknown';
+        console.log(`🔧 Setting up ${videoType} video`);
+        
+        // Ensure video properties are set correctly
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.autoplay = true;
+        video.preload = 'auto';
+        
+        // Set attributes explicitly for Safari
+        video.setAttribute('muted', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('autoplay', '');
+        
+        // Event listeners
+        const handleCanPlay = async () => {
+          console.log(`✅ ${videoType} video can play`);
+          setVideosLoaded(prev => prev + 1);
+          
+          try {
+            await video.play();
+            console.log(`▶️ ${videoType} video playing successfully`);
+            setVideoError(false);
+          } catch (err: any) {
+            console.log(`❌ ${videoType} autoplay blocked:`, err.message);
+            // Don't set error for autoplay blocks, wait for user interaction
+          }
+        };
+        
+        const handleError = (e: any) => {
+          console.log(`❌ ${videoType} video error:`, e);
+          setVideoError(true);
+        };
+        
+        const handleLoadedData = () => {
+          console.log(`📊 ${videoType} video data loaded`);
+          // Try to play when data is loaded
+          video.play().catch(err => {
+            console.log(`⚠️ ${videoType} play delayed:`, err.message);
+          });
+        };
+        
+        video.addEventListener('canplay', handleCanPlay);
+        video.addEventListener('loadeddata', handleLoadedData);
+        video.addEventListener('error', handleError);
+        
+        // Force load
+        video.load();
       });
+      
+      // Setup intersection observer for when videos come into view
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const video = entry.target as HTMLVideoElement;
+            const videoType = video.getAttribute('data-video-type') || 'unknown';
+            
+            if (video.paused) {
+              video.play().then(() => {
+                console.log(`🎯 ${videoType} video playing (intersection)`);
+                setVideoError(false);
+              }).catch(err => {
+                console.log(`❌ ${videoType} intersection play failed:`, err.message);
+              });
+            }
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      videos.forEach(video => observer?.observe(video));
     };
 
-    // Try on user interaction
-    const handleInteraction = () => {
-      ensureVideoPlay();
+    // Setup videos when DOM is ready
+    const timer = setTimeout(setupVideos, 200);
+
+    // Enhanced user interaction handler
+    const handleUserInteraction = async () => {
+      console.log('👆 User interaction detected, attempting video play');
+      const videos = document.querySelectorAll('video');
+      
+      for (const video of videos) {
+        const videoType = video.getAttribute('data-video-type') || 'unknown';
+        
+        if (video.paused) {
+          try {
+            await video.play();
+            console.log(`▶️ ${videoType} video started after user interaction`);
+            setVideoError(false);
+          } catch (err: any) {
+            console.log(`❌ ${videoType} still failed after interaction:`, err.message);
+            setVideoError(true);
+          }
+        }
+      }
     };
 
-    document.addEventListener('click', handleInteraction, { once: true });
-    document.addEventListener('touchstart', handleInteraction, { once: true });
+    // Listen for multiple types of user interaction
+    const events = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
+    events.forEach(event => {
+      document.addEventListener(event, handleUserInteraction, { once: true });
+    });
 
     return () => {
-      document.removeEventListener('click', handleInteraction);
-      document.removeEventListener('touchstart', handleInteraction);
+      clearTimeout(timer);
+      observer?.disconnect();
+      events.forEach(event => {
+        document.removeEventListener(event, handleUserInteraction);
+      });
     };
   }, []);
 
@@ -140,62 +236,36 @@ export default function Home() {
       
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Video background - DIRECT SRC APPROACH */}
+        {/* Video background - IMPROVED APPROACH */}
         <div className="absolute inset-0 z-0">
           {/* Desktop video */}
           <video
-            ref={(el) => {
-              if (el) {
-                el.src = "/introvideo_compressed.mp4";
-                el.muted = true;
-                el.loop = true;
-                el.autoplay = true;
-                el.playsInline = true;
-                el.play().catch(console.error);
-              }
-            }}
+            src="/introvideo_compressed.mp4"
             className="hidden md:block absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 10,
               opacity: 1
             }}
-            onLoadedData={() => {
-              console.log('✅ Desktop video loaded and ready');
-              setVideoLoaded(true);
-              setVideoError(false);
-            }}
-            onError={(e) => {
-              console.log('❌ Desktop video error:', e);
-              setVideoError(true);
-            }}
+            muted
+            loop
+            playsInline
+            preload="auto"
+            data-video-type="desktop"
           />
           
           {/* Mobile video */}
           <video
-            ref={(el) => {
-              if (el) {
-                el.src = "/introvideo_mobile.mp4";
-                el.muted = true;
-                el.loop = true;
-                el.autoplay = true;
-                el.playsInline = true;
-                el.play().catch(console.error);
-              }
-            }}
+            src="/introvideo_mobile.mp4"
             className="block md:hidden absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 10,
               opacity: 1
             }}
-            onLoadedData={() => {
-              console.log('✅ Mobile video loaded and ready');
-              setVideoLoaded(true);
-              setVideoError(false);
-            }}
-            onError={(e) => {
-              console.log('❌ Mobile video error:', e);
-              setVideoError(true);
-            }}
+            muted
+            loop
+            playsInline
+            preload="auto"
+            data-video-type="mobile"
           />
           
           {/* Fallback background image - only if error */}
@@ -215,11 +285,45 @@ export default function Home() {
           {/* Video overlay for better text readability */}
           <div className="absolute inset-0 bg-black/30" style={{ zIndex: 20 }} />
           
-          {/* Debug info */}
-          <div className="absolute top-4 left-4 bg-black/80 text-white p-3 rounded text-sm" style={{ zIndex: 50 }}>
-            <div>Videos: {videoLoaded ? '✅ Playing' : '⏳ Loading'}</div>
-            <div>Error: {videoError ? '❌ Failed' : '✅ OK'}</div>
-          </div>
+          {/* Debug info and manual controls */}
+          {(process.env.NODE_ENV === 'development' || videosLoaded === 0) && (
+            <div className="absolute top-4 left-4 bg-black/90 text-white p-4 rounded-lg text-sm font-mono" style={{ zIndex: 50 }}>
+              <div>Video Status: {videosLoaded > 0 ? '✅ Playing' : '⏳ Loading'}</div>
+              <div>Error: {videoError ? '❌ Yes' : '✅ No'}</div>
+              <div>Videos loaded: {videosLoaded}/2</div>
+              <div className="mt-3 space-y-2">
+                <button 
+                  onClick={async () => {
+                    const videos = document.querySelectorAll('video');
+                    for (const video of videos) {
+                      try {
+                        await video.play();
+                        console.log('✅ Video played manually');
+                        setVideoError(false);
+                      } catch (err: any) {
+                        console.log('❌ Manual play failed:', err.message);
+                      }
+                    }
+                  }}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-xs font-semibold transition-colors"
+                >
+                  🎬 Spela Videor
+                </button>
+                <button 
+                  onClick={() => {
+                    const videos = document.querySelectorAll('video');
+                    videos.forEach(video => {
+                      video.load();
+                      console.log('🔄 Video reloaded');
+                    });
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-xs font-semibold transition-colors"
+                >
+                  🔄 Ladda Om
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Animated background - now with lower opacity to blend with video */}
