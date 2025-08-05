@@ -420,7 +420,7 @@ export default function FunctionalBasicsCommunityPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowNewThreadModal(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-semibold"
+                              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:shadow-lg transition-all duration-200 font-semibold"
             >
               <FiPlus className="w-5 h-5" />
               Starta första diskussionen
@@ -603,7 +603,7 @@ export default function FunctionalBasicsCommunityPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         disabled={submitting || !newThreadData.title || !newThreadData.content || !newThreadData.categoryId}
-                        className="px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-medium"
+                        className="px-6 py-3 bg-primary text-white rounded-xl hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-medium"
                       >
                         {submitting ? (
                           <>

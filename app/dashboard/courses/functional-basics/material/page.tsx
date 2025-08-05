@@ -237,9 +237,9 @@ export default function KnowledgeMaterialPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+            <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-green-600 to-teal-700 text-white py-16">
+              <div className="bg-primary text-white py-16">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -385,7 +385,7 @@ export default function KnowledgeMaterialPage() {
         >
           <Link
             href="/dashboard/courses/functional-basics"
-            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105"
+                            className="inline-flex items-center px-8 py-4 bg-secondary text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105"
           >
             <FiArrowRight className="w-5 h-5 mr-2 rotate-180" />
             Tillbaka till kursen
