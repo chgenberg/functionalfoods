@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiTarget, FiCheckCircle, FiPlus, FiBook, FiDownload,
-  FiTrendingUp, FiAward, FiStar, FiActivity, FiHeart, FiZap, FiEdit3, FiChevronDown, FiCheck, FiArrowRight, FiUsers
+  FiTrendingUp, FiAward, FiStar, FiActivity, FiHeart, FiZap, FiEdit3, FiChevronDown, FiCheck, FiArrowRight, FiUsers, FiHelpCircle
 } from 'react-icons/fi';
 import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
+import CourseGuide from '@/app/components/CourseGuide';
+import CourseProgressBar from '@/app/components/CourseProgressBar';
 
 // Fördefinierade mål för varje vecka (5-10 mål per vecka)
 const PREDEFINED_GOALS = {
@@ -79,6 +81,27 @@ export default function FunctionalBasicsPage() {
   const { goals, createGoal, updateGoal, loading } = useGoals();
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
+  const [courseStartDate, setCourseStartDate] = useState<string>('');
+
+  // Visa guide första gången
+  useEffect(() => {
+    const hasSeenGuide = localStorage.getItem('hasSeenBasicsGuide');
+    if (!hasSeenGuide) {
+      setShowGuide(true);
+      localStorage.setItem('hasSeenBasicsGuide', 'true');
+    }
+    
+    // Hämta eller sätt startdatum
+    const savedStartDate = localStorage.getItem('basicsStartDate');
+    if (savedStartDate) {
+      setCourseStartDate(savedStartDate);
+    } else {
+      const today = new Date().toISOString();
+      localStorage.setItem('basicsStartDate', today);
+      setCourseStartDate(today);
+    }
+  }, []);
 
   // Gruppera mål per vecka
   const goalsByWeek = goals.reduce((acc, goal) => {
@@ -139,8 +162,28 @@ export default function FunctionalBasicsPage() {
 
   return (
     <div className="space-y-4 md:space-y-8 pb-20 md:pb-8">
+      {/* Guide Button */}
+      <div className="absolute top-4 right-4 z-20">
+        <button
+          onClick={() => setShowGuide(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-all"
+          title="Visa guide"
+        >
+          <FiHelpCircle className="w-5 h-5 text-primary" />
+          <span className="hidden sm:inline text-sm font-medium text-gray-700">Guide</span>
+        </button>
+      </div>
+
+      {/* Course Progress Bar */}
+      {courseStartDate && (
+        <CourseProgressBar 
+          startDate={courseStartDate} 
+          courseName="Functional Basics"
+        />
+      )}
+
       {/* Intro Video Section - Mobile Optimized */}
-              <div className="relative bg-primary rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl">
+      <div className="relative bg-primary rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl week-overview">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-8 p-4 sm:p-6 md:p-12">
           <div className="flex flex-col justify-center space-y-4 md:space-y-6 z-10 order-2 md:order-1">
@@ -214,7 +257,7 @@ export default function FunctionalBasicsPage() {
 
       {/* Quick Actions - Mobile Optimized */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
-        <Link href="/dashboard/courses/functional-basics/goals" className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 hover:shadow-lg md:hover:shadow-xl transition-all group">
+        <Link href="/dashboard/courses/functional-basics/goals" className="goals-section bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 hover:shadow-lg md:hover:shadow-xl transition-all group">
           <div className="flex items-center space-x-3 md:space-x-4">
             <div className="bg-purple-100 rounded-lg p-2.5 md:p-3 group-hover:bg-purple-200 transition-colors">
               <FiTarget className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
@@ -238,7 +281,7 @@ export default function FunctionalBasicsPage() {
           </div>
         </Link>
 
-        <Link href="/dashboard/courses/functional-basics/downloads" className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 hover:shadow-lg md:hover:shadow-xl transition-all group sm:col-span-2 md:col-span-1">
+        <Link href="/dashboard/courses/functional-basics/downloads" className="downloads-section bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 hover:shadow-lg md:hover:shadow-xl transition-all group sm:col-span-2 md:col-span-1">
           <div className="flex items-center space-x-3 md:space-x-4">
             <div className="bg-orange-100 rounded-lg p-2.5 md:p-3 group-hover:bg-orange-200 transition-colors">
               <FiDownload className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
@@ -252,7 +295,7 @@ export default function FunctionalBasicsPage() {
       </div>
 
       {/* Weekly Progress - Mobile Optimized */}
-      <div className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-4 sm:p-6 md:p-8">
+      <div className="week-navigation bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-4 sm:p-6 md:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 md:mb-6">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">Förbestämda mål per vecka</h2>
           <div className="text-xs md:text-sm text-gray-600">
@@ -541,6 +584,12 @@ export default function FunctionalBasicsPage() {
           </motion.div>
         </motion.div>
       )}
+
+      {/* Course Guide */}
+      <CourseGuide 
+        isOpen={showGuide} 
+        onClose={() => setShowGuide(false)} 
+      />
     </div>
   );
 } 

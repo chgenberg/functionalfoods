@@ -152,6 +152,7 @@ export default function FunctionalBasicsLayout({
                         ? 'bg-accent text-white shadow-md' 
                         : 'text-text-primary hover:bg-background hover:text-primary'
                       }
+                      ${item.label === 'Community' ? 'community-link' : ''}
                     `}
                   >
                     <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-text-secondary'}`} />
