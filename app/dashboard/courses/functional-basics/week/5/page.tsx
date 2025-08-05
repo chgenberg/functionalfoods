@@ -204,7 +204,7 @@ export default function Week5Page() {
               className="space-y-8"
             >
               {/* Welcome Message */}
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl p-8 text-white shadow-xl">
+              <div className="bg-primary rounded-3xl p-8 text-white shadow-xl">
                 <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 5!</h2>
                 <p className="text-lg leading-relaxed mb-6">
                   Tycker du att det är bra att allt är planerat för dig, eller önskar du mer flexibilitet? 
@@ -246,7 +246,7 @@ export default function Week5Page() {
                           </li>
                         </ul>
                       </div>
-                      <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-6">
+                      <div className="bg-background rounded-xl p-6">
                         <h4 className="font-semibold text-gray-900 mb-3">Experimentera med superpulver</h4>
                         <ul className="space-y-2 text-sm text-gray-700">
                           <li className="flex items-start space-x-2">
@@ -275,7 +275,7 @@ export default function Week5Page() {
                   <Link href="/dashboard/courses/functional-basics/downloads" className="block">
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
-                      className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 text-center cursor-pointer h-full"
+                      className="bg-background rounded-xl p-6 text-center cursor-pointer h-full"
                     >
                       <div className="bg-background-secondary rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                         <FiDownload className="w-6 h-6 text-primary" />
@@ -390,11 +390,11 @@ export default function Week5Page() {
                       transition: { duration: 0.2 }
                     }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-gradient-to-br from-green-50 to-teal-50 hover:shadow-2xl transition-all duration-300"
+                    className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-background hover:shadow-2xl transition-all duration-300"
                   >
                     {/* Background with gradient overlay */}
-                    <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-green-100 via-teal-100 to-blue-100 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 via-teal-500/20 to-blue-600/20" />
+                    <div className="aspect-w-16 aspect-h-12 bg-background-secondary relative overflow-hidden">
+                      <div className="absolute inset-0 bg-primary/10" />
                       
                       {/* Decorative elements */}
                       <div className="absolute inset-0">
@@ -416,7 +416,7 @@ export default function Week5Page() {
                     
                     {/* Content */}
                     <div className="p-6 bg-white relative">
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                       
                       <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-primary transition-colors duration-300">
                         Vegetarisk currygryta
@@ -436,7 +436,7 @@ export default function Week5Page() {
                           <FiClock className="w-3 h-3" />
                           <span>45 min</span>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
                           <FiChevronRight className="w-4 h-4" />
                         </div>
                       </div>
@@ -567,9 +567,9 @@ export default function Week5Page() {
                   
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="group bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 border border-green-100 hover:border-border transition-all duration-300 hover:shadow-xl"
+                    className="group bg-background rounded-xl p-6 border border-green-100 hover:border-border transition-all duration-300 hover:shadow-xl"
                   >
-                    <div className="bg-gradient-to-r from-green-400 to-teal-500 rounded-full w-16 h-16 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <span className="text-3xl">🥘</span>
                     </div>
                     <h4 className="font-bold text-gray-900 mb-3 text-lg">Vegetarisk currygryta</h4>

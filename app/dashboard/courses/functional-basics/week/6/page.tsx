@@ -142,7 +142,7 @@ export default function Week6Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div 
@@ -216,7 +216,7 @@ export default function Week6Page() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <motion.div 
                     whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-r from-green-100 to-green-200 rounded-xl p-6 text-center"
+                    className="bg-background rounded-xl p-6 text-center"
                   >
                     <div className="text-3xl font-bold text-primary mb-2">42</div>
                     <div className="text-gray-700">Dagar av hälsosam mat</div>
@@ -285,7 +285,7 @@ export default function Week6Page() {
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Veckans avslutande rätter</h3>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6">
+                  <div className="bg-background rounded-xl p-6">
                     <h4 className="font-semibold text-gray-900 mb-2">Indisk laxgryta</h4>
                     <p className="text-gray-600 text-sm mb-3">
                       Smakrik gryta med antiinflammatoriska kryddor
@@ -364,7 +364,7 @@ export default function Week6Page() {
               </div>
 
               <div className="mt-8 text-center">
-                <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-8 mb-6">
+                <div className="bg-background rounded-xl p-8 mb-6">
                   <FiAward className="w-16 h-16 text-primary mx-auto mb-4" />
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Grattis!</h3>
                   <p className="text-gray-700">

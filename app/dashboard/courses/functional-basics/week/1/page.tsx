@@ -104,7 +104,7 @@ export default function Week1Page() {
               className="space-y-4 md:space-y-8"
             >
               {/* Welcome Message - Mobile Optimized */}
-              <div className="bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 text-white shadow-lg md:shadow-xl">
+              <div className="bg-primary rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 text-white shadow-lg md:shadow-xl">
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 md:mb-4">Välkommen till Functional Basics!</h2>
                 <p className="text-sm sm:text-base md:text-lg leading-relaxed mb-4 md:mb-6">
                   Nu har du en spännande resa framför dig under dessa 6 veckor med näringsrika och hälsobringade recept 

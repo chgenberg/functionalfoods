@@ -139,7 +139,7 @@ export default function Week2Page() {
                           </li>
                         </ul>
                       </div>
-                      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-6">
+                      <div className="bg-background rounded-xl p-6">
                         <h4 className="font-semibold text-gray-900 mb-3">Meal prep</h4>
                         <p className="text-gray-700 mb-3">
                           Börja förbereda måltider i förväg. Många av veckans mellanmål 

@@ -152,7 +152,7 @@ export function GoalsSection({ completedGoals, setCompletedGoals }: {
           <button className="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
             Radera mål
           </button>
-          <button className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-xl hover:shadow-lg transition-all">
+          <button className="px-6 py-3 bg-primary text-white rounded-xl hover:shadow-lg transition-all">
             Spara ändringar
           </button>
         </div>
@@ -185,11 +185,11 @@ export function RecipeHighlights() {
               transition: { duration: 0.2 }
             }}
             whileTap={{ scale: 0.98 }}
-            className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-gradient-to-br from-green-50 to-teal-50 hover:shadow-2xl transition-all duration-300"
+            className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-background hover:shadow-2xl transition-all duration-300"
           >
             {/* Background with gradient overlay */}
-            <div className="aspect-w-4 aspect-h-3 bg-gradient-to-br from-green-100 via-teal-100 to-blue-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 via-teal-500/20 to-blue-600/20" />
+            <div className="aspect-w-4 aspect-h-3 bg-background-secondary relative overflow-hidden">
+              <div className="absolute inset-0 bg-primary/10" />
               
               {/* Decorative elements */}
               <div className="absolute inset-0">
@@ -211,7 +211,7 @@ export function RecipeHighlights() {
             
             {/* Content */}
             <div className="p-4 bg-white relative">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               
               <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-primary transition-colors duration-300">
                 {recipe.name}
@@ -226,7 +226,7 @@ export function RecipeHighlights() {
                   <FiClock className="w-3 h-3" />
                   <span>15 min</span>
                 </div>
-                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
                   <FiChevronRight className="w-4 h-4" />
                 </div>
               </div>
@@ -273,7 +273,7 @@ export function MealPlanSection({
                 className="w-full px-6 py-4 bg-gradient-to-r from-gray-50 to-white flex items-center justify-between hover:from-gray-100 hover:to-gray-50 transition-colors"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg px-4 py-2">
+                  <div className="bg-primary text-white rounded-lg px-4 py-2">
                     <span className="font-bold text-lg">{day}</span>
                   </div>
                   <div className="flex items-center space-x-6 text-sm text-gray-600">
@@ -566,7 +566,7 @@ export function ShoppingListSection() {
             return (
               <div key={category} className="bg-gray-50 rounded-xl p-6">
                 <div className="flex items-center mb-4">
-                  <div className="bg-gradient-to-r from-green-500 to-teal-600 rounded-full p-3 mr-3">
+                  <div className="bg-primary rounded-full p-3 mr-3">
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900">{category}</h3>

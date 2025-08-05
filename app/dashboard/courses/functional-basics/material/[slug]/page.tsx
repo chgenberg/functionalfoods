@@ -434,7 +434,7 @@ export default function ArticlePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-16 bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl p-8 text-center"
+          className="mt-16 bg-background rounded-2xl p-8 text-center"
         >
           <h3 className="text-2xl font-bold text-gray-900 mb-4">Utforska mer kunskap</h3>
           <p className="text-gray-700 mb-6">

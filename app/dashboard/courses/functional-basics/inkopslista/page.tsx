@@ -221,7 +221,7 @@ export default function InkopslistaPage() {
           transition={{ delay: 0.5 }}
           className="mt-8 text-center"
         >
-          <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-6">
+          <div className="bg-background rounded-xl p-6">
             <GiFruitBowl className="w-12 h-12 text-primary mx-auto mb-3" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Tips för smart shopping</h3>
             <p className="text-gray-700 max-w-2xl mx-auto">
