@@ -184,20 +184,22 @@ export default function NewsletterSignup({
               </button>
             </div>
             
-            <div className="flex items-start justify-center gap-3 text-sm max-w-md mx-auto">
-              <input
-                type="checkbox"
-                id="privacy-checkbox-hero"
-                checked={privacyAccepted}
-                onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                className="w-5 h-5 mt-0.5 text-white rounded border-2 border-white/50 bg-white/10 focus:ring-2 focus:ring-white focus:ring-offset-0 cursor-pointer hover:bg-white/20 transition-colors relative z-10"
-                style={{ accentColor: 'white' }}
-                required
-              />
-              <label htmlFor="privacy-checkbox-hero" className="opacity-90 cursor-pointer select-none flex-1">
-                Jag accepterar 
-                <a href="/integritetspolicy" className="underline ml-1 hover:text-white/80 relative z-10">integritetspolicyn</a>
-              </label>
+            <div className="flex items-center justify-center text-sm max-w-md mx-auto">
+              <div className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  id="privacy-checkbox-hero"
+                  checked={privacyAccepted}
+                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                  className="w-5 h-5 mt-0.5 text-white rounded border-2 border-white/50 bg-white/10 focus:ring-2 focus:ring-white focus:ring-offset-0 cursor-pointer hover:bg-white/20 transition-colors relative z-10"
+                  style={{ accentColor: 'white' }}
+                  required
+                />
+                <label htmlFor="privacy-checkbox-hero" className="opacity-90 cursor-pointer select-none">
+                  Jag accepterar 
+                  <a href="/integritetspolicy" className="underline ml-1 hover:text-white/80 relative z-10">integritetspolicyn</a>
+                </label>
+              </div>
             </div>
 
             <AnimatePresence>
