@@ -32,6 +32,24 @@ img {
   image-orientation: from-image;
 }
 
+/* Gradient animation for newsletter signup */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 6s ease infinite;
+}
+
 /* Ensure Next.js Image components respect EXIF orientation */
 .next-image {
   image-orientation: from-image;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiMail, FiCheck, FiLoader } from 'react-icons/fi';
+import { FiMail, FiCheck, FiLoader, FiArrowRight } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface NewsletterSignupProps {
@@ -131,76 +131,97 @@ export default function NewsletterSignup({
 
   if (variant === 'hero') {
     return (
-      <div className="bg-[#1a4324] text-white rounded-2xl shadow-2xl p-8 md:p-12">
-        <div className="max-w-2xl mx-auto text-center">
-          <FiMail className="w-16 h-16 mx-auto mb-6 opacity-90" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
-          <p className="text-lg mb-8 opacity-90">{subtitle}</p>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="relative overflow-hidden bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-10 max-w-xl mx-auto border border-white/20 shadow-2xl"
+      >
+        {/* Animated background effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a4324]/20 via-transparent to-[#9dc46d]/20 animate-gradient" />
+        
+        <div className="relative z-10">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.3, type: "spring" }}
+            className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+          >
+            <FiMail className="w-8 h-8 text-white" />
+          </motion.div>
+          
+          <h3 className="text-2xl md:text-3xl font-bold mb-2 text-white text-center">{title}</h3>
+          <p className="text-white/80 text-center mb-8">{subtitle}</p>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            {showName && (
-              <div className="grid md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Förnamn"
-                  className="px-4 py-3 rounded-lg text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-white focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Efternamn"
-                  className="px-4 py-3 rounded-lg text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-white focus:outline-none"
-                />
-              </div>
-            )}
-            
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative group">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="din@email.se"
-                className="flex-1 px-4 py-3 rounded-lg text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-white focus:outline-none"
+                className="w-full px-6 py-4 rounded-2xl bg-white/90 backdrop-blur-sm text-gray-800 placeholder-gray-500 
+                         border-2 border-transparent focus:border-[#9dc46d] focus:bg-white
+                         transition-all duration-300 outline-none shadow-lg group-hover:shadow-xl"
                 required
               />
-              <button
-                type="submit"
-                disabled={status === 'loading' || !email || !privacyAccepted}
-                className="px-8 py-3 bg-white text-[#1a4324] font-semibold rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {status === 'loading' ? (
-                  <FiLoader className="w-5 h-5 animate-spin" />
-                ) : status === 'success' ? (
-                  <>
-                    <FiCheck className="w-5 h-5" />
-                    Prenumererad!
-                  </>
-                ) : (
-                  'Prenumerera nu'
-                )}
-              </button>
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#1a4324] to-[#9dc46d] opacity-0 
+                            group-hover:opacity-20 transition-opacity duration-300 pointer-events-none" />
             </div>
             
-            <div className="flex items-center justify-center text-sm max-w-md mx-auto">
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  id="privacy-checkbox-hero"
-                  checked={privacyAccepted}
-                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                  className="w-5 h-5 mt-0.5 text-white rounded border-2 border-white/50 bg-white/10 focus:ring-2 focus:ring-white focus:ring-offset-0 cursor-pointer hover:bg-white/20 transition-colors relative z-10"
-                  style={{ accentColor: 'white' }}
-                  required
-                />
-                <label htmlFor="privacy-checkbox-hero" className="opacity-90 cursor-pointer select-none">
-                  Jag accepterar 
-                  <a href="/integritetspolicy" className="underline ml-1 hover:text-white/80 relative z-10">integritetspolicyn</a>
-                </label>
-              </div>
-            </div>
+            <label 
+              htmlFor="privacy-checkbox-hero-new" 
+              className="flex items-center gap-3 p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 
+                       cursor-pointer hover:bg-white/20 transition-all duration-300 group"
+            >
+              <input
+                type="checkbox"
+                id="privacy-checkbox-hero-new"
+                checked={privacyAccepted}
+                onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                className="w-5 h-5 rounded border-2 border-white/50 bg-transparent checked:bg-[#9dc46d] 
+                         checked:border-[#9dc46d] focus:ring-2 focus:ring-white focus:ring-offset-0 
+                         cursor-pointer transition-all duration-300"
+                required
+              />
+              <span className="text-white/90 text-sm flex-1 select-none">
+                Jag accepterar{' '}
+                <a 
+                  href="/integritetspolicy" 
+                  className="underline underline-offset-2 hover:text-white transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  integritetspolicyn
+                </a>
+              </span>
+            </label>
+            
+            <motion.button
+              type="submit"
+              disabled={status === 'loading' || !email || !privacyAccepted}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full px-8 py-4 bg-gradient-to-r from-[#1a4324] to-[#9dc46d] text-white font-semibold 
+                       rounded-2xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed 
+                       transition-all duration-300 flex items-center justify-center gap-3 group"
+            >
+              {status === 'loading' ? (
+                <>
+                  <FiLoader className="w-5 h-5 animate-spin" />
+                  <span>Prenumererar...</span>
+                </>
+              ) : status === 'success' ? (
+                <>
+                  <FiCheck className="w-5 h-5" />
+                  <span>Tack för din prenumeration!</span>
+                </>
+              ) : (
+                <>
+                  <span>Prenumerera på nyhetsbrev</span>
+                  <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </motion.button>
 
             <AnimatePresence>
               {message && (
@@ -208,7 +229,7 @@ export default function NewsletterSignup({
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="text-sm"
+                  className={`text-center text-sm ${status === 'success' ? 'text-green-300' : 'text-red-300'}`}
                 >
                   {message}
                 </motion.p>
@@ -216,7 +237,7 @@ export default function NewsletterSignup({
             </AnimatePresence>
           </form>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
