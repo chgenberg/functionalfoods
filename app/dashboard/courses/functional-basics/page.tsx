@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fi';
 import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
-import CourseGuide from '@/app/components/CourseGuide';
+import HelpGuide from '@/app/components/HelpGuide';
 import CourseProgressBar from '@/app/components/CourseProgressBar';
 
 // Fördefinierade mål för varje vecka (5-10 mål per vecka)
@@ -167,10 +167,10 @@ export default function FunctionalBasicsPage() {
         <button
           onClick={() => setShowGuide(true)}
           className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-all"
-          title="Visa guide"
+          title="Visa hjälp"
         >
           <FiHelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          <span className="hidden sm:inline text-sm font-medium text-gray-700">Guide</span>
+          <span className="hidden sm:inline text-sm font-medium text-gray-700">Hjälp</span>
         </button>
       </div>
 
@@ -585,8 +585,8 @@ export default function FunctionalBasicsPage() {
         </motion.div>
       )}
 
-      {/* Course Guide */}
-      <CourseGuide 
+      {/* Help Guide */}
+      <HelpGuide 
         isOpen={showGuide} 
         onClose={() => setShowGuide(false)} 
       />
