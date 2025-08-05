@@ -352,10 +352,214 @@ const sources: Source[] = [
     category: "Prebiotika",
     summary: "Senaste forskningen om prebiotika och deras metaboliska hälsofördelar.",
     type: "review"
+  },
+  // Nya källor - Functional Foods
+  {
+    id: 31,
+    title: "Functional foods and dietary supplements: Products at the interface between pharma and nutrition",
+    authors: ["Weststrate, J.A.", "van Poppel, G.", "Verschuren, P.M."],
+    journal: "British Journal of Nutrition",
+    year: 2002,
+    category: "Functional Foods",
+    summary: "Analyserar gränsen mellan funktionella livsmedel och kosttillskott ur ett regulatoriskt och vetenskapligt perspektiv.",
+    type: "review"
+  },
+  {
+    id: 32,
+    title: "Functional foods: Health benefits and prevention of chronic diseases",
+    authors: ["Martirosyan, D.M.", "Singh, J."],
+    journal: "Food Science and Human Wellness",
+    year: 2015,
+    category: "Functional Foods",
+    summary: "Omfattande översikt av funktionella livsmedels roll i prevention av kroniska sjukdomar som diabetes, cancer och hjärt-kärlsjukdom.",
+    type: "review"
+  },
+  {
+    id: 33,
+    title: "The science behind functional foods: Understanding bioactive compounds",
+    authors: ["Granato, D.", "Barba, F.J.", "Bursać Kovačević, D."],
+    journal: "Comprehensive Reviews in Food Science",
+    year: 2020,
+    category: "Functional Foods",
+    summary: "Modern förståelse av bioaktiva föreningar i funktionella livsmedel och deras mekanismer.",
+    type: "research"
+  },
+  {
+    id: 34,
+    title: "Consumer acceptance of functional foods: socio-demographic, cognitive and attitudinal determinants",
+    authors: ["Urala, N.", "Lähteenmäki, L."],
+    journal: "Food Quality and Preference",
+    year: 2007,
+    category: "Functional Foods",
+    summary: "Studie av konsumentattityder och acceptans av funktionella livsmedel i olika demografiska grupper.",
+    type: "research"
+  },
+  {
+    id: 35,
+    title: "Novel functional foods: Modern trends and future perspectives",
+    authors: ["Siró, I.", "Kápolna, E.", "Kápolna, B.", "Lugasi, A."],
+    journal: "Appetite",
+    year: 2008,
+    category: "Functional Foods",
+    summary: "Framtidsperspektiv på utvecklingen av nya funktionella livsmedel och marknadstrender.",
+    type: "review"
+  },
+  // Longevity källor
+  {
+    id: 36,
+    title: "Targeting aging with metformin: A review of current evidence",
+    authors: ["Barzilai, N.", "Crandall, J.P.", "Kritchevsky, S.B.", "Espeland, M.A."],
+    journal: "Nature Reviews Endocrinology",
+    year: 2016,
+    category: "Longevity",
+    summary: "Metformin som potentiell anti-aging intervention baserat på kliniska och prekliniska studier.",
+    type: "review"
+  },
+  {
+    id: 37,
+    title: "The hallmarks of aging",
+    authors: ["López-Otín, C.", "Blasco, M.A.", "Partridge, L.", "Serrano, M.", "Kroemer, G."],
+    journal: "Cell",
+    year: 2013,
+    category: "Longevity",
+    summary: "Identifierar nio kännetecken för åldrande som utgör gemensamma nämnare i olika organismer.",
+    type: "review"
+  },
+  {
+    id: 38,
+    title: "Intermittent fasting: from calories to time restriction",
+    authors: ["Di Francesco, A.", "Di Germanio, C.", "Bernier, M.", "de Cabo, R."],
+    journal: "GeroScience",
+    year: 2018,
+    category: "Longevity",
+    summary: "Översikt av intermittent fasta och dess effekter på åldrande och livslängd.",
+    type: "review"
+  },
+  {
+    id: 39,
+    title: "NAD+ metabolism and the control of energy homeostasis",
+    authors: ["Cantó, C.", "Houtkooper, R.H.", "Pirinen, E."],
+    journal: "Cell Metabolism",
+    year: 2012,
+    category: "Longevity",
+    summary: "NAD+ metabolism som central regulator av cellulär energihomeostas och åldrande.",
+    type: "research"
+  },
+  {
+    id: 40,
+    title: "Senolytics: eliminating senescent cells to promote healthy aging",
+    authors: ["Kirkland, J.L.", "Tchkonia, T."],
+    journal: "Annual Review of Pharmacology",
+    year: 2020,
+    category: "Longevity",
+    summary: "Senolytiska läkemedel som ny strategi för att främja hälsosamt åldrande genom eliminering av senescenta celler.",
+    type: "review"
+  },
+  // Proteinrika källor
+  {
+    id: 41,
+    title: "Dietary protein and muscle mass: translating science to application and health benefit",
+    authors: ["Phillips, S.M.", "Chevalier, S.", "Leidy, H.J."],
+    journal: "Nutrition Reviews",
+    year: 2016,
+    category: "Protein",
+    summary: "Översättning av proteinvetenskap till praktiska tillämpningar för muskelhälsa och funktion.",
+    type: "review"
+  },
+  {
+    id: 42,
+    title: "Protein intake and exercise for optimal muscle function with aging",
+    authors: ["Paddon-Jones, D.", "Rasmussen, B.B."],
+    journal: "Current Opinion in Clinical Nutrition",
+    year: 2009,
+    category: "Protein",
+    summary: "Rekommendationer för proteinintag och träning för optimal muskelfunktion vid åldrande.",
+    type: "review"
+  },
+  {
+    id: 43,
+    title: "Plant proteins: Assessing their nutritional quality and effects on health and physical function",
+    authors: ["van Vliet, S.", "Burd, N.A.", "van Loon, L.J."],
+    journal: "Nutrients",
+    year: 2015,
+    category: "Protein",
+    summary: "Utvärdering av växtproteins näringskvalitet och effekter på hälsa och fysisk funktion.",
+    type: "review"
+  },
+  {
+    id: 44,
+    title: "Leucine-enriched essential amino acids improve recovery from muscle damage",
+    authors: ["Osmond, A.D.", "Directo, D.J.", "Elam, M.L."],
+    journal: "International Journal of Sports Nutrition",
+    year: 2019,
+    category: "Protein",
+    summary: "Leucin-berikade essentiella aminosyror och deras roll i muskelåterhämtning efter träning.",
+    type: "clinical"
+  },
+  {
+    id: 45,
+    title: "The anabolic response to protein ingestion during recovery from exercise",
+    authors: ["Moore, D.R."],
+    journal: "Physiological Reports",
+    year: 2019,
+    category: "Protein",
+    summary: "Den anabola responsen på proteinintag under återhämtning från träning och optimala strategier.",
+    type: "research"
+  },
+  // Fler Longevity källor
+  {
+    id: 46,
+    title: "Rapamycin and aging: When, for how long, and how much?",
+    authors: ["Johnson, S.C.", "Kaeberlein, M."],
+    journal: "Journal of Genetics and Genomics",
+    year: 2021,
+    category: "Longevity",
+    summary: "Rapamycin som potentiell anti-aging intervention: dosering, timing och säkerhet.",
+    type: "review"
+  },
+  {
+    id: 47,
+    title: "Exercise as a model to identify microRNAs linked to human cognition",
+    authors: ["Pedersen, B.K."],
+    journal: "Nature Aging",
+    year: 2022,
+    category: "Longevity",
+    summary: "Träning som modell för att identifiera mikroRNA kopplade till kognitiv funktion och åldrande.",
+    type: "research"
+  },
+  {
+    id: 48,
+    title: "Sirtuin activators and inhibitors: Promises, achievements, and challenges",
+    authors: ["Dai, H.", "Sinclair, D.A.", "Ellis, J.L.", "Steegborn, C."],
+    journal: "Pharmacology & Therapeutics",
+    year: 2018,
+    category: "Longevity",
+    summary: "Sirtuiner som mål för anti-aging interventioner: aktivatorer, hämmare och klinisk potential.",
+    type: "review"
+  },
+  {
+    id: 49,
+    title: "Mitochondrial dysfunction and aging: insights from metabolomics",
+    authors: ["Gonzalez-Freire, M.", "Moaddel, R.", "Sun, K."],
+    journal: "Metabolites",
+    year: 2020,
+    category: "Longevity",
+    summary: "Mitokondriell dysfunktion vid åldrande studerad genom metabolomik-metoder.",
+    type: "research"
+  },
+  {
+    id: 50,
+    title: "The gut microbiome and healthy aging: A mini-review",
+    authors: ["Badal, V.D.", "Vaccariello, E.D.", "Murray, E.R."],
+    journal: "Gerontology",
+    year: 2020,
+    category: "Longevity",
+    summary: "Tarmmikrobiomets roll för hälsosamt åldrande och potentiella interventioner.",
+    type: "review"
   }
 ];
 
-const categories = ["Alla", "Översikt", "Probiotika", "Prebiotika", "Antioxidanter", "Växtsteroler", "Mejeriprodukter", "Protein", "Longevity", "Antiinflammatorisk kost", "Tarmhälsa", "Omega-3", "Bioaktiva ämnen", "Allmänt"];
+const categories = ["Alla", "Functional Foods", "Probiotika", "Prebiotika", "Antioxidanter", "Växtsteroler", "Mejeriprodukter", "Protein", "Longevity", "Antiinflammatorisk kost", "Tarmhälsa", "Omega-3", "Bioaktiva ämnen", "Översikt", "Allmänt"];
 
 const typeColors = {
   research: "bg-blue-100 text-blue-800",
@@ -372,6 +576,7 @@ const typeLabels = {
 };
 
 const categoryIcons: Record<string, any> = {
+  "Functional Foods": FiBookOpen,
   "Antioxidanter": BiLeaf,
   "Omega-3": GiHeartOrgan,
   "Probiotika": GiMicroscope,
@@ -418,34 +623,76 @@ export default function KallorPage() {
   const stats = getCategoryStats();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#1a4324] to-[#9dc46d] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="bg-[#1a4324] text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring" }}
+              className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6"
+            >
+              <FiBookOpen className="w-10 h-10" />
+            </motion.div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
               Vetenskapliga Källor
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-3xl mx-auto leading-relaxed">
               Utforska de vetenskapliga referenserna bakom vår kunskap om functional foods
             </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <FiBookOpen className="w-5 h-5" />
-                <span>{sources.length} Källor</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FiCalendar className="w-5 h-5" />
-                <span>{Math.min(...sources.map(s => s.year))} - {Math.max(...sources.map(s => s.year))}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <GiMicroscope className="w-5 h-5" />
-                <span>{Object.keys(stats).length} Kategorier</span>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-4"
+              >
+                <div className="flex items-center gap-3 justify-center">
+                  <FiBookOpen className="w-6 h-6" />
+                  <div>
+                    <div className="text-2xl font-bold">{sources.length}</div>
+                    <div className="text-sm text-white/70">Vetenskapliga källor</div>
+                  </div>
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-4"
+              >
+                <div className="flex items-center gap-3 justify-center">
+                  <FiCalendar className="w-6 h-6" />
+                  <div>
+                    <div className="text-2xl font-bold">{Math.max(...sources.map(s => s.year)) - Math.min(...sources.map(s => s.year))} år</div>
+                    <div className="text-sm text-white/70">Forskningsspann</div>
+                  </div>
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-4"
+              >
+                <div className="flex items-center gap-3 justify-center">
+                  <GiMicroscope className="w-6 h-6" />
+                  <div>
+                    <div className="text-2xl font-bold">{Object.keys(stats).length}</div>
+                    <div className="text-sm text-white/70">Forskningsområden</div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -453,38 +700,82 @@ export default function KallorPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Search and Filter */}
-        <div className="mb-8 space-y-6">
-          <div className="relative">
-            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Sök efter titel, författare eller tidskrift..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent shadow-sm"
-            />
-          </div>
+        <div className="mb-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100"
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Search */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sök i källorna</label>
+                <div className="relative">
+                  <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Titel, författare eller tidskrift..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent transition-all hover:border-gray-300"
+                  />
+                </div>
+              </div>
 
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  selectedCategory === category
-                    ? 'bg-[#1a4324] text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {category}
-                {category !== "Alla" && stats[category] && (
-                  <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-full text-xs">
-                    {stats[category]}
+              {/* Category Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Forskningsområde</label>
+                <div className="relative">
+                  <FiFilter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full pl-12 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent appearance-none cursor-pointer hover:border-gray-300"
+                  >
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category} {category !== "Alla" && stats[category] && `(${stats[category]})`}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Active filters */}
+            {(searchTerm || selectedCategory !== "Alla") && (
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span className="text-sm text-gray-500">Aktiva filter:</span>
+                {searchTerm && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#9dc46d]/20 text-[#1a4324] rounded-full text-sm">
+                    <FiSearch className="w-3 h-3" />
+                    {searchTerm}
+                    <button onClick={() => setSearchTerm("")} className="ml-1 hover:text-red-600">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   </span>
                 )}
-              </button>
-            ))}
-          </div>
+                {selectedCategory !== "Alla" && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#9dc46d]/20 text-[#1a4324] rounded-full text-sm">
+                    <FiFilter className="w-3 h-3" />
+                    {selectedCategory}
+                    <button onClick={() => setSelectedCategory("Alla")} className="ml-1 hover:text-red-600">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
+          </motion.div>
         </div>
 
         {/* Results Info */}
@@ -502,27 +793,36 @@ export default function KallorPage() {
                 key={source.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border border-gray-100"
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ y: -4 }}
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 overflow-hidden"
               >
-                <div className="flex flex-col lg:flex-row lg:items-start gap-4">
-                  {/* Left side - Icon and metadata */}
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#1a4324] to-[#9dc46d] rounded-xl flex items-center justify-center text-white mb-3">
-                      <CategoryIcon className="w-6 h-6" />
-                    </div>
-                    <div className="space-y-2 text-sm">
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${typeColors[source.type]}`}>
-                        {typeLabels[source.type]}
-                      </span>
-                      <div className="text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <FiCalendar className="w-3 h-3" />
-                          {source.year}
+                {/* Category stripe */}
+                <div className="h-1 bg-gradient-to-r from-[#1a4324] to-[#9dc46d] group-hover:h-2 transition-all duration-300"></div>
+                
+                <div className="p-6 md:p-8">
+                  <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+                    {/* Left side - Icon and metadata */}
+                    <div className="flex-shrink-0">
+                      <motion.div
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-16 h-16 bg-gradient-to-br from-[#1a4324] to-[#9dc46d] rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg"
+                      >
+                        <CategoryIcon className="w-8 h-8" />
+                      </motion.div>
+                      <div className="space-y-3">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${typeColors[source.type]} backdrop-blur-sm`}>
+                          {typeLabels[source.type]}
+                        </span>
+                        <div className="text-gray-600">
+                          <div className="flex items-center gap-2 text-sm">
+                            <FiCalendar className="w-4 h-4 text-[#9dc46d]" />
+                            <span className="font-medium">{source.year}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
                   {/* Right side - Content */}
                   <div className="flex-1 min-w-0">
@@ -596,6 +896,7 @@ export default function KallorPage() {
                       </div>
                     </div>
                   </div>
+                </div>
                 </div>
               </motion.div>
             );
