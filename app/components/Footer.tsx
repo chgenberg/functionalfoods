@@ -26,6 +26,7 @@ export default function Footer() {
     kunskapsbank: [
       { label: 'Blogginlägg', href: '/kunskapsbank/blogg' },
       { label: 'Recept', href: '/kunskapsbank/recept' },
+      { label: 'Källor', href: '/kunskapsbank/kallor' },
       { label: 'Sök', href: '/kunskapsbank/sok' },
       { label: 'FAQ', href: '/kontakt/faq' },
     ],

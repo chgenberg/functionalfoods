@@ -1,7 +1,7 @@
 "use client";
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiBookOpen, FiSearch, FiMessageCircle, FiArrowRight } from 'react-icons/fi';
+import { FiBookOpen, FiSearch, FiMessageCircle, FiArrowRight, FiBook } from 'react-icons/fi';
 import { GiCookingPot } from 'react-icons/gi';
 import { useState } from 'react';
 
@@ -35,6 +35,15 @@ export default function KunskapsbankPage() {
       href: "/kunskapsbank/ingredienser",
       icon: GiCookingPot,
       color: "text-red-600"
+    },
+    {
+      id: 'sources',
+      title: "Källor",
+      description: "Vetenskapliga referenser och forskning bakom functional foods",
+      image: "/blogg.png", // Använder samma bild som blogg tills vi har en specifik
+      href: "/kunskapsbank/kallor",
+      icon: FiBook,
+      color: "text-indigo-600"
     },
     {
       id: 'search',
