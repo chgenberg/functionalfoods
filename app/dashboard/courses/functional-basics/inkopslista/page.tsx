@@ -75,7 +75,7 @@ export default function InkopslistaPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-teal-600 to-emerald-700 p-6 md:p-8 text-white shadow-xl mb-6 md:mb-8"
+                      className="relative overflow-hidden rounded-2xl bg-primary p-6 md:p-8 text-white shadow-xl mb-6 md:mb-8"
         >
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10">
@@ -162,7 +162,7 @@ export default function InkopslistaPage() {
                   <div className={`
                     w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white
                     ${section.week === 1 ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : ''}
-                    ${section.week === 2 ? 'bg-gradient-to-r from-green-500 to-teal-600' : ''}
+                    ${section.week === 2 ? 'bg-primary' : ''}
                     ${section.week === 3 ? 'bg-gradient-to-r from-purple-500 to-pink-600' : ''}
                     ${section.week === 4 ? 'bg-gradient-to-r from-orange-500 to-red-600' : ''}
                     ${section.week === 5 ? 'bg-gradient-to-r from-pink-500 to-rose-600' : ''}

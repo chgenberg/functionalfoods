@@ -297,7 +297,7 @@ export default function ArticlePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center">
+              <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Laddar artikel...</p>
@@ -321,11 +321,11 @@ export default function ArticlePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+            <div className="min-h-screen bg-background">
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
         <div 
-          className="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-300"
+                        className="h-full bg-primary transition-all duration-300"
           style={{ width: `${readProgress}%` }}
         />
       </div>
@@ -423,7 +423,7 @@ export default function ArticlePage() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-12"
         >
-          <button className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105">
+                      <button className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105">
             <FiCheckCircle className="w-5 h-5 mr-2" />
             Markera som läst
           </button>
@@ -451,7 +451,7 @@ export default function ArticlePage() {
             
             <Link
               href="/dashboard/courses/functional-basics"
-              className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-full font-semibold hover:shadow-lg transition-all"
+              className="px-6 py-3 bg-primary text-white rounded-full font-semibold hover:shadow-lg transition-all"
             >
               Tillbaka till kursen
             </Link>

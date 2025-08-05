@@ -69,7 +69,7 @@ export default function AdminCoursesPage() {
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'Beginner':
-        return 'bg-gradient-to-r from-green-400 to-green-600 text-white';
+        return 'bg-primary text-white';
       case 'Intermediate':
         return 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white';
       case 'Advanced':
@@ -270,7 +270,7 @@ export default function AdminCoursesPage() {
                 Över genomsnittet
               </p>
             </div>
-            <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-400 rounded-2xl flex items-center justify-center text-white shadow-lg">
+            <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg">
               <FiAward className="w-7 h-7" />
             </div>
           </div>

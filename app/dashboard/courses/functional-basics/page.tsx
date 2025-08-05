@@ -140,7 +140,7 @@ export default function FunctionalBasicsPage() {
   return (
     <div className="space-y-4 md:space-y-8 pb-20 md:pb-8">
       {/* Intro Video Section - Mobile Optimized */}
-      <div className="relative bg-gradient-to-br from-green-900 via-teal-800 to-green-700 rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl">
+              <div className="relative bg-primary rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-8 p-4 sm:p-6 md:p-12">
           <div className="flex flex-col justify-center space-y-4 md:space-y-6 z-10 order-2 md:order-1">
@@ -288,7 +288,7 @@ export default function FunctionalBasicsPage() {
                         w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-white text-sm md:text-base
                         ${week.number === 1 ? 'bg-gradient-to-r from-purple-500 to-pink-600' : 
                           week.number === 2 ? 'bg-gradient-to-r from-blue-500 to-cyan-600' :
-                          week.number === 3 ? 'bg-gradient-to-r from-green-500 to-teal-600' :
+                          week.number === 3 ? 'bg-primary' :
                           week.number === 4 ? 'bg-gradient-to-r from-yellow-500 to-orange-600' :
                           week.number === 5 ? 'bg-gradient-to-r from-red-500 to-pink-600' :
                           'bg-gradient-to-r from-indigo-500 to-purple-600'}
@@ -315,7 +315,7 @@ export default function FunctionalBasicsPage() {
                                 <motion.div
                                   initial={{ width: 0 }}
                                   animate={{ width: `${(completedGoals / totalGoals) * 100}%` }}
-                                  className="h-full bg-gradient-to-r from-green-500 to-teal-600"
+                                  className="h-full bg-primary"
                                 />
                               </div>
                             </div>

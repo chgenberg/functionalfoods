@@ -218,7 +218,7 @@ export default function GoalsPage() {
                         <div className="flex items-center space-x-2">
                           <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-gradient-to-r from-green-500 to-teal-600 transition-all duration-500"
+                              className="h-full bg-primary transition-all duration-500"
                               style={{ width: `${weekProgress}%` }}
                             />
                           </div>
