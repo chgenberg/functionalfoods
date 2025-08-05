@@ -60,36 +60,24 @@ export default function Home() {
       
       {/* Hero Section with Working Video Background */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Working video background using external CDN */}
+        {/* Vimeo video background */}
         <div className="absolute inset-0 z-0">
-          {/* Desktop video - using working external source */}
-          <video
-            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+          {/* Vimeo iframe background for both desktop and mobile */}
+          <iframe
+            src="https://player.vimeo.com/video/1107419263?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 10,
-              opacity: 1
+              opacity: 1,
+              width: '100vw',
+              height: '100vh',
+              minWidth: '100%',
+              minHeight: '100%'
             }}
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="auto"
-          />
-          
-          {/* Mobile video - same video for now */}
-          <video
-            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
-            className="block md:hidden absolute inset-0 w-full h-full object-cover"
-            style={{ 
-              zIndex: 10,
-              opacity: 1
-            }}
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="auto"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            title="Functional Foods Hero Video"
           />
           
           {/* Video overlay for better text readability */}
