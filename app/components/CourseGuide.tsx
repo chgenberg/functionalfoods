@@ -81,23 +81,14 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
     if (isOpen && guideSteps[currentStep]) {
       const updatePosition = () => {
         const element = document.querySelector(guideSteps[currentStep].targetElement);
-        console.log('Looking for element:', guideSteps[currentStep].targetElement);
-        console.log('Found element:', element);
-        console.log('All elements with class:', document.querySelectorAll(guideSteps[currentStep].targetElement));
         
         if (element) {
-          // Kontrollera om elementet är synligt
-          const style = window.getComputedStyle(element);
-          console.log('Element display:', style.display, 'visibility:', style.visibility);
-          
           // Scrolla först så elementet är synligt
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
           
           // Vänta på scroll och få korrekt position
           setTimeout(() => {
             const rect = element.getBoundingClientRect();
-            console.log('Element rect:', rect, 'width:', rect.width, 'height:', rect.height);
-            console.log('Window scroll:', window.scrollY, window.scrollX);
             
             // Kontrollera att rect är giltig
             if (rect.width > 0 && rect.height > 0) {
@@ -107,8 +98,7 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
                 width: rect.width,
                 height: rect.height
               });
-            } else {
-              console.warn('Invalid rect, using fallback');
+                          } else {
               // Bättre fallback baserat på vilket steg
               const fallbackPositions = [
                 { top: 200, left: 50, width: window.innerWidth - 100, height: 400 }, // Video
@@ -121,8 +111,7 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
               setHighlightPosition(fallback);
             }
           }, 300);
-        } else {
-          console.warn('Element not found:', guideSteps[currentStep].targetElement);
+                  } else {
           // Bättre fallback
           const fallbackPositions = [
             { top: 200, left: 50, width: window.innerWidth - 100, height: 400 }, // Video
@@ -257,16 +246,13 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
         <motion.div
           className="absolute border-4 border-primary rounded-lg shadow-2xl bg-white/5 backdrop-blur-sm"
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1,
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          style={{
             top: highlightPosition.top - 10,
             left: highlightPosition.left - 10,
             width: highlightPosition.width + 20,
-            height: highlightPosition.height + 20
-          }}
-          transition={{ duration: 0.3 }}
-          style={{
+            height: highlightPosition.height + 20,
             boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)',
           }}
         />
