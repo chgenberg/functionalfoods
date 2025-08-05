@@ -161,12 +161,12 @@ export default function InkopslistaPage() {
                 <div className="flex items-center gap-4">
                   <div className={`
                     w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white
-                    ${section.week === 1 ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : ''}
-                    ${section.week === 2 ? 'bg-primary' : ''}
-                    ${section.week === 3 ? 'bg-gradient-to-r from-purple-500 to-pink-600' : ''}
-                    ${section.week === 4 ? 'bg-gradient-to-r from-orange-500 to-red-600' : ''}
-                    ${section.week === 5 ? 'bg-gradient-to-r from-pink-500 to-rose-600' : ''}
-                    ${section.week === 6 ? 'bg-gradient-to-r from-indigo-500 to-purple-600' : ''}
+                    ${section.week === 1 ? 'bg-primary' : ''}
+                    ${section.week === 2 ? 'bg-[#0D5C29]' : ''}
+                    ${section.week === 3 ? 'bg-[#167531]' : ''}
+                    ${section.week === 4 ? 'bg-[#1F8E39]' : ''}
+                    ${section.week === 5 ? 'bg-[#28A741]' : ''}
+                    ${section.week === 6 ? 'bg-[#31C049]' : ''}
                   `}>
                     {section.week}
                   </div>

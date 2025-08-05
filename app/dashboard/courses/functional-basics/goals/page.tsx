@@ -100,12 +100,12 @@ export default function GoalsPage() {
   const completionRate = totalActiveGoals > 0 ? (completedGoals / totalActiveGoals) * 100 : 0;
 
   const weeks = [
-    { number: 1, title: "Introduktion till Functional Foods", color: "from-purple-500 to-pink-600" },
-    { number: 2, title: "Att välja rätt proteiner", color: "from-blue-500 to-cyan-600" },
-    { number: 3, title: "Att välja rätt kolhydrater", color: "from-green-500 to-teal-600" },
-    { number: 4, title: "Functional Foods Topplista", color: "from-yellow-500 to-orange-600" },
-    { number: 5, title: "Fördelarna med Functional Foods", color: "from-red-500 to-pink-600" },
-    { number: 6, title: "Att komma igång", color: "from-indigo-500 to-purple-600" }
+    { number: 1, title: "Introduktion till Functional Foods", color: "#014421" },
+    { number: 2, title: "Att välja rätt proteiner", color: "#0D5C29" },
+    { number: 3, title: "Att välja rätt kolhydrater", color: "#167531" },
+    { number: 4, title: "Functional Foods Topplista", color: "#1F8E39" },
+    { number: 5, title: "Fördelarna med Functional Foods", color: "#28A741" },
+    { number: 6, title: "Att komma igång", color: "#31C049" }
   ];
 
   return (
@@ -202,7 +202,7 @@ export default function GoalsPage() {
                 <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white bg-gradient-to-r ${week.color}`}>
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white" style={{ backgroundColor: week.color }}>
                         {week.number}
                       </div>
                       <div>

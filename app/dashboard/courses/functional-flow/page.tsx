@@ -104,12 +104,12 @@ export default function FunctionalFlowPage() {
   };
 
   const weeks = [
-    { number: 1, title: "Flow Foundation", status: "current" },
-    { number: 2, title: "Avancerad optimering", status: "upcoming" },
-    { number: 3, title: "Biohacking", status: "upcoming" },
-    { number: 4, title: "Personalisering", status: "upcoming" },
-    { number: 5, title: "Masterclass", status: "upcoming" },
-    { number: 6, title: "Integration", status: "upcoming" }
+    { number: 1, title: "Flow Foundation", status: "current", color: "#014421" },
+    { number: 2, title: "Avancerad optimering", status: "upcoming", color: "#0D5C29" },
+    { number: 3, title: "Biohacking", status: "upcoming", color: "#167531" },
+    { number: 4, title: "Personalisering", status: "upcoming", color: "#1F8E39" },
+    { number: 5, title: "Masterclass", status: "upcoming", color: "#28A741" },
+    { number: 6, title: "Integration", status: "upcoming", color: "#31C049" }
   ];
 
   return (
@@ -194,12 +194,13 @@ export default function FunctionalFlowPage() {
               className={`
                 relative p-3 md:p-4 rounded-lg md:rounded-xl text-center transition-all duration-300
                 ${week.status === 'current' 
-                  ? 'bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-lg transform scale-105' 
+                  ? 'text-white shadow-lg transform scale-105' 
                   : week.status === 'completed'
                   ? 'bg-teal-100 text-teal-800 hover:bg-teal-200'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }
               `}
+              style={week.status === 'current' ? { backgroundColor: week.color } : {}}
             >
               <div className="text-xs md:text-sm font-medium mb-1">Vecka {week.number}</div>
               <div className="text-xs font-normal line-clamp-2">{week.title}</div>

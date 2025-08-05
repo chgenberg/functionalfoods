@@ -81,7 +81,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
                 whileTap={{ scale: 0.95 }}
                 className={`relative p-4 rounded-xl transition-all duration-300 ${
                   selectedDay === index
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg transform scale-105'
+                    ? 'bg-primary text-white shadow-lg transform scale-105'
                     : status === 'completed'
                     ? 'bg-orange-100 text-orange-800 hover:bg-orange-200'
                     : status === 'current'

@@ -116,7 +116,16 @@ export default function InkopslistaPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 md:gap-4">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-full flex items-center justify-center text-white font-bold">
+                  <div 
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold"
+                    style={{ 
+                      backgroundColor: weekSection.week === 1 ? '#014421' :
+                                      weekSection.week === 2 ? '#0D5C29' :
+                                      weekSection.week === 3 ? '#167531' :
+                                      weekSection.week === 4 ? '#1F8E39' :
+                                      weekSection.week === 5 ? '#28A741' : '#31C049'
+                    }}
+                  >
                     {weekSection.week}
                   </div>
                   <div>

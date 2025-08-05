@@ -286,12 +286,12 @@ export default function FunctionalBasicsPage() {
                     <div className="flex items-center space-x-3 md:space-x-4 flex-1">
                       <div className={`
                         w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-white text-sm md:text-base
-                        ${week.number === 1 ? 'bg-gradient-to-r from-purple-500 to-pink-600' : 
-                          week.number === 2 ? 'bg-gradient-to-r from-blue-500 to-cyan-600' :
-                          week.number === 3 ? 'bg-primary' :
-                          week.number === 4 ? 'bg-gradient-to-r from-yellow-500 to-orange-600' :
-                          week.number === 5 ? 'bg-gradient-to-r from-red-500 to-pink-600' :
-                          'bg-gradient-to-r from-indigo-500 to-purple-600'}
+                        ${week.number === 1 ? 'bg-primary' : 
+                          week.number === 2 ? 'bg-[#0D5C29]' :
+                          week.number === 3 ? 'bg-[#167531]' :
+                          week.number === 4 ? 'bg-[#1F8E39]' :
+                          week.number === 5 ? 'bg-[#28A741]' :
+                          'bg-[#31C049]'}
                       `}>
                         {week.number}
                       </div>
