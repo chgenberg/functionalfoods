@@ -484,7 +484,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
               </div>
 
               {/* Right side - Ulrika's image */}
-              <div className="relative p-8 md:p-12 order-1 lg:order-2 bg-gradient-to-br from-green-50 to-blue-50">
+              <div className="relative p-8 md:p-12 order-1 lg:order-2 bg-background">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -493,7 +493,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                 >
                   {/* Organic shape frame */}
                   <div 
-                    className="absolute inset-0 bg-gradient-to-br from-green-400 to-green-600 shadow-2xl"
+                    className="absolute inset-0 bg-primary shadow-2xl"
                     style={{
                       clipPath: "polygon(30% 0%, 70% 0%, 100% 20%, 100% 70%, 80% 100%, 20% 100%, 0% 80%, 0% 30%)",
                       transform: "scale(1.05)"
@@ -537,7 +537,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     animate={{ rotate: 0, opacity: 1 }}
                     transition={{ delay: 1, duration: 0.8 }}
                     whileHover={{ rotate: 10, scale: 1.1 }}
-                    className="absolute -top-4 -left-4 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg cursor-default"
+                    className="absolute -top-4 -left-4 bg-primary text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg cursor-default"
                   >
                     <div className="text-center">
                       <div className="text-2xl font-bold">25+</div>
@@ -569,7 +569,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
 
   if (currentStep === 'quiz') {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -650,7 +650,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                       onClick={() => handleAnswer(option.value)}
                       className={`relative p-2.5 sm:p-4 rounded-xl border-2 transition-all duration-200 text-left group overflow-hidden ${
                         answers[currentQuestion] === option.value
-                          ? 'border-green-500 bg-gradient-to-br from-green-50 via-green-50 to-green-100 shadow-lg transform scale-[1.02]'
+                          ? 'border-primary bg-background shadow-lg transform scale-[1.02]'
                           : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-green-400 hover:shadow-md'
                       }`}
                     >
@@ -665,7 +665,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                           initial={{ scale: 0, rotate: -180 }}
                           animate={{ scale: 1, rotate: 0 }}
                           transition={{ type: "spring", stiffness: 200 }}
-                          className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg"
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow-lg"
                         >
                           <FiCheckCircle className="w-3.5 h-3.5 text-white" />
                         </motion.div>
