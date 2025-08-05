@@ -254,7 +254,7 @@ export default function Home() {
             src="/introvideo_compressed.mp4"
             className="hidden md:block absolute inset-0 w-full h-full object-cover"
             style={{ 
-              zIndex: 10,
+              zIndex: 30,
               opacity: 1
             }}
             muted
@@ -270,7 +270,7 @@ export default function Home() {
             src="/introvideo_mobile.mp4"
             className="block md:hidden absolute inset-0 w-full h-full object-cover"
             style={{ 
-              zIndex: 10,
+              zIndex: 30,
               opacity: 1
             }}
             muted
@@ -280,6 +280,9 @@ export default function Home() {
             preload="auto"
             data-video-type="mobile"
           />
+          
+          {/* Video overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/30" style={{ zIndex: 35 }} />
           
           {/* Fallback background image - only if error */}
           <div 
@@ -294,9 +297,6 @@ export default function Home() {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
           </div>
-          
-          {/* Video overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/30" style={{ zIndex: 20 }} />
           
           {/* Play button overlay - only show if videos haven't started after 2 seconds */}
           {videosLoaded === 0 && (
