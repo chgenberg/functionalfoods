@@ -13,7 +13,15 @@ export async function GET() {
     }
 
     const materials = await prisma.rawMaterial.findMany({ orderBy: { name: 'asc' } });
-    return NextResponse.json({ materials });
+    
+    // Sort materials with "Äpple" at the end
+    const sortedMaterials = materials.sort((a, b) => {
+      if (a.name.toLowerCase() === 'äpple') return 1;
+      if (b.name.toLowerCase() === 'äpple') return -1;
+      return a.name.localeCompare(b.name, 'sv');
+    });
+    
+    return NextResponse.json({ materials: sortedMaterials });
   } catch (error) {
     console.error('Error fetching raw materials', error);
     return NextResponse.json({ materials: [] }, { status: 200 });
