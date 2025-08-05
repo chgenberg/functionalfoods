@@ -253,7 +253,7 @@ export default function Home() {
                 </motion.button>
                 <Link
                   href="/utbildning"
-                  className="bg-white/90 backdrop-blur-sm border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-400 hover:text-green-600 hover:bg-white transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 backdrop-blur-sm border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-400 hover:text-primary hover:bg-white transition-all flex items-center justify-center gap-3"
                 >
                   <FiBook className="w-4 h-4 md:w-5 md:h-5" />
                   Våra kurser
@@ -351,7 +351,7 @@ export default function Home() {
             className="text-center mb-8 md:mb-16"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Upptäck kraften i <span className="font-bold text-green-600">functional foods</span>
+              Upptäck kraften i <span className="font-bold text-primary">functional foods</span>
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Få personaliserade rekommendationer baserat på din livsstil och hälsobehov
@@ -390,7 +390,7 @@ export default function Home() {
             className="text-center mb-8 md:mb-16"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Så här <span className="font-bold text-green-600">fungerar det</span>
+              Så här <span className="font-bold text-primary">fungerar det</span>
             </h2>
           </motion.div>
 
@@ -438,7 +438,7 @@ export default function Home() {
             className="text-center mb-8 md:mb-12"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Vad våra kunder <span className="font-bold text-green-600">säger</span>
+              Vad våra kunder <span className="font-bold text-primary">säger</span>
           </h2>
           </motion.div>
           
@@ -473,7 +473,7 @@ export default function Home() {
                   onClick={() => setActiveTestimonial(index)}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === activeTestimonial
-                      ? "w-8 bg-green-600"
+                      ? "w-8 bg-primary"
                       : "bg-gray-300 hover:bg-gray-400"
                   }`}
                 />
@@ -513,7 +513,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuiz(true)}
-              className="bg-white text-green-600 px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-gray-100 transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
+              className="bg-white text-primary px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-gray-100 transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
               Starta ditt quiz nu
               <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />

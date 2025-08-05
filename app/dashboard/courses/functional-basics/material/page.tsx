@@ -343,7 +343,7 @@ export default function KnowledgeMaterialPage() {
                         <span>{module.readTime}</span>
                       </div>
                       
-                      <div className="flex items-center text-green-600 font-semibold group-hover:text-green-700">
+                      <div className="flex items-center text-primary font-semibold group-hover:text-secondary">
                         <span className="mr-2">Läs mer</span>
                         <FiArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                       </div>
@@ -351,8 +351,8 @@ export default function KnowledgeMaterialPage() {
                     
                     {/* Progress indicator */}
                     {completedModules.includes(module.id) && (
-                      <div className="mt-4 flex items-center text-green-600">
-                        <div className="w-2 h-2 bg-green-600 rounded-full mr-2"></div>
+                      <div className="mt-4 flex items-center text-primary">
+                        <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
                         <span className="text-sm font-medium">Läst</span>
                       </div>
                     )}

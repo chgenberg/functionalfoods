@@ -151,7 +151,7 @@ export default function DownloadsPage() {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`px-4 py-2 rounded-full font-medium transition-all ${
                   selectedCategory === category.id
-                    ? 'bg-green-600 text-white shadow-lg'
+                    ? 'bg-primary text-white shadow-lg'
                     : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
@@ -182,7 +182,7 @@ export default function DownloadsPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
                     download.category === 'guide' ? 'bg-purple-100 text-purple-600' :
-                    download.category === 'recipe' ? 'bg-green-100 text-green-600' :
+                    download.category === 'recipe' ? 'bg-background-secondary text-primary' :
                     download.category === 'shopping' ? 'bg-blue-100 text-blue-600' :
                     'bg-orange-100 text-orange-600'
                   }`}>

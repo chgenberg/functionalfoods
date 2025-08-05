@@ -163,7 +163,7 @@ export default function Week1Page() {
                   <p className="text-gray-600 text-xs md:text-base">Dagar</p>
                 </div>
                 <div className="bg-white rounded-lg md:rounded-xl shadow-md md:shadow-lg p-4 md:p-6 text-center">
-                  <GiFruitBowl className="w-8 h-8 md:w-12 md:h-12 text-green-600 mx-auto mb-2 md:mb-3" />
+                  <GiFruitBowl className="w-8 h-8 md:w-12 md:h-12 text-primary mx-auto mb-2 md:mb-3" />
                   <h4 className="text-xl md:text-2xl font-bold text-gray-900">10</h4>
                   <p className="text-gray-600 text-xs md:text-base">Kategorier</p>
                 </div>

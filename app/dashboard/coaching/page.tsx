@@ -179,15 +179,15 @@ export default function CoachingPage() {
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Dina bokade sessioner</h3>
                 {isBooked && selectedSlot ? (
                     <div className="space-y-4 animate-fade-in">
-                        <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                        <div className="bg-background border-l-4 border-primary p-4 rounded-r-lg">
                             <div className="flex items-center gap-3">
-                                <FiCheckCircle className="text-green-600 w-6 h-6" />
+                                <FiCheckCircle className="text-primary w-6 h-6" />
                                 <div>
-                                    <p className="font-bold text-green-800">Bokning bekräftad!</p>
-                                    <p className="text-sm text-green-700">{`${selectedSlot.date} kl. ${selectedSlot.time}`}</p>
+                                    <p className="font-bold text-secondary">Bokning bekräftad!</p>
+                                    <p className="text-sm text-secondary">{`${selectedSlot.date} kl. ${selectedSlot.time}`}</p>
                                 </div>
                             </div>
-                            <p className="text-sm text-green-700 mt-2">En kalenderinbjudan har skickats till din e-post.</p>
+                            <p className="text-sm text-secondary mt-2">En kalenderinbjudan har skickats till din e-post.</p>
                         </div>
                     </div>
                 ) : (

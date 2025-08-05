@@ -354,7 +354,7 @@ export default function VadArFunctionalFoodsPage() {
                 <FiChevronRight className="ml-1" />
               </Link>
             </div>
-            <FiCheckCircle className="w-12 h-12 text-green-500" />
+            <FiCheckCircle className="w-12 h-12 text-primary" />
           </div>
         </motion.div>
       </div>

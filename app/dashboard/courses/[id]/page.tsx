@@ -222,7 +222,7 @@ export default function CoursePage() {
                     onClick={() => toggleLessonComplete(playingVideo)}
                     className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                       completedLessons.includes(playingVideo)
-                        ? 'bg-green-100 text-green-700'
+                        ? 'bg-background-secondary text-secondary'
                         : 'bg-primary text-white hover:bg-accent'
                     }`}
                   >
@@ -271,7 +271,7 @@ export default function CoursePage() {
                             key={lesson.id}
                             className={`border rounded-lg p-4 transition-all cursor-pointer ${
                               isCompleted 
-                                ? 'border-green-200 bg-green-50' 
+                                ? 'border-green-200 bg-background' 
                                 : 'border-gray-200 hover:border-primary/50 hover:shadow-md'
                             }`}
                             onClick={() => lesson.type === 'video' && setPlayingVideo(lesson.id)}
@@ -279,7 +279,7 @@ export default function CoursePage() {
                             <div className="flex items-center gap-4">
                               <div className={`p-3 rounded-lg ${
                                 isCompleted 
-                                  ? 'bg-green-100' 
+                                  ? 'bg-background-secondary' 
                                   : lesson.type === 'video' 
                                     ? 'bg-blue-100' 
                                     : lesson.type === 'recipe'
@@ -287,7 +287,7 @@ export default function CoursePage() {
                                       : 'bg-gray-100'
                               }`}>
                                 {isCompleted ? (
-                                  <FiCheckCircle className={`w-5 h-5 text-green-600`} />
+                                  <FiCheckCircle className={`w-5 h-5 text-primary`} />
                                 ) : (
                                   <Icon className={`w-5 h-5 ${
                                     lesson.type === 'video' 
@@ -376,7 +376,7 @@ export default function CoursePage() {
                 </button>
                 
                 <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <FiUsers className="w-5 h-5 text-green-600" />
+                  <FiUsers className="w-5 h-5 text-primary" />
                   <span className="font-medium text-gray-800">Gå med i kursforum</span>
                 </button>
                 

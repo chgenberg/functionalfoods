@@ -226,7 +226,7 @@ export default function AttValjaRattProteinerPage() {
                       
                       <div className="flex items-center justify-between">
                         <span className={`text-xs px-2 py-1 rounded-full ${
-                          source.category === 'animal' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+                          source.category === 'animal' ? 'bg-red-100 text-red-700' : 'bg-background-secondary text-secondary'
                         }`}>
                           {source.category === 'animal' ? 'Animaliskt' : 'Vegetabiliskt'}
                         </span>
@@ -269,7 +269,7 @@ export default function AttValjaRattProteinerPage() {
                             <ul className="space-y-2">
                               {source.benefits.map((benefit, idx) => (
                                 <li key={idx} className="flex items-center">
-                                  <FiShield className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" />
+                                  <FiShield className="w-5 h-5 text-primary mr-2 flex-shrink-0" />
                                   <span className="text-gray-600">{benefit}</span>
                                 </li>
                               ))}

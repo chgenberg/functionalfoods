@@ -90,7 +90,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -100,8 +100,8 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-green-100 rounded-xl">
-            <FiShoppingCart className="w-6 h-6 text-green-600" />
+          <div className="p-3 bg-background-secondary rounded-xl">
+            <FiShoppingCart className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Inköpslista</h2>
@@ -159,7 +159,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
               transition={{ delay: index * 0.05 }}
               className={`group flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer
                 ${item.isChecked 
-                  ? 'bg-green-50 border-green-200' 
+                  ? 'bg-background border-green-200' 
                   : 'bg-gray-50 hover:bg-gray-100 border-gray-200'
                 } border`}
               onClick={() => toggleItem(item.id, !item.isChecked)}
@@ -167,7 +167,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
               <div className={`
                 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all
                 ${item.isChecked 
-                  ? 'bg-green-600 border-green-600' 
+                  ? 'bg-primary border-primary' 
                   : 'border-gray-300 group-hover:border-green-400'
                 }
               `}>

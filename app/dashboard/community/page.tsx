@@ -47,7 +47,7 @@ interface ForumThread {
 
 const getCategoryStyle = (color: string) => {
   const styles = {
-    green: 'bg-green-100 text-green-800',
+    green: 'bg-background-secondary text-secondary',
     blue: 'bg-blue-100 text-blue-800',
     purple: 'bg-purple-100 text-purple-800',
     orange: 'bg-orange-100 text-orange-800',

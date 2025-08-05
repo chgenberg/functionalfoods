@@ -305,7 +305,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             
             <div className="flex items-center gap-3">
               {saveStatus === 'saved' && (
-                <div className="flex items-center gap-2 text-green-600">
+                <div className="flex items-center gap-2 text-primary">
                   <FiCheck className="w-4 h-4" />
                   <span className="text-sm">Sparat!</span>
                 </div>

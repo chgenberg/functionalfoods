@@ -82,14 +82,14 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
 
   if (compact) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-3">
+      <div className="bg-background border border-green-200 rounded-xl p-3 mb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <FiUser className="w-4 h-4 text-green-600" />
-            <span className="text-green-800 font-medium text-sm">{user.name || user.email}</span>
+            <FiUser className="w-4 h-4 text-primary" />
+            <span className="text-secondary font-medium text-sm">{user.name || user.email}</span>
           </div>
           {userData.quizResults && (
-            <div className="flex items-center space-x-1 text-green-700">
+            <div className="flex items-center space-x-1 text-secondary">
               <FiHeart className="w-4 h-4" />
               <span className="text-sm font-medium">{userData.quizResults.healthScore}/100</span>
             </div>
@@ -102,8 +102,8 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
   return (
     <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-4 mb-4">
       <div className="flex items-center space-x-2 mb-3">
-        <FiUser className="w-5 h-5 text-green-600" />
-        <span className="font-semibold text-green-800">Din Hälsoprofil</span>
+        <FiUser className="w-5 h-5 text-primary" />
+        <span className="font-semibold text-secondary">Din Hälsoprofil</span>
       </div>
 
       {userData.quizResults ? (
@@ -111,8 +111,8 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">Total Hälsopoäng</span>
             <div className="flex items-center space-x-2">
-              <FiTrendingUp className="w-4 h-4 text-green-600" />
-              <span className="font-bold text-green-700">{userData.quizResults.healthScore}/100</span>
+              <FiTrendingUp className="w-4 h-4 text-primary" />
+              <span className="font-bold text-secondary">{userData.quizResults.healthScore}/100</span>
             </div>
           </div>
 

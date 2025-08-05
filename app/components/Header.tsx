@@ -229,7 +229,7 @@ export default function Header() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   href="/mina-kurser"
-                  className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors text-sm font-medium"
+                  className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors text-sm font-medium"
                 >
                   Mina kurser
                 </Link>
@@ -324,7 +324,7 @@ export default function Header() {
                 <div className="space-y-2">
                   <Link
                     href="/mina-kurser"
-                    className="flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-green-600 hover:bg-green-700 rounded-2xl transition-all duration-200"
+                    className="flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-primary hover:bg-secondary rounded-2xl transition-all duration-200"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span>Mina kurser</span>
@@ -427,7 +427,7 @@ export default function Header() {
                     <input 
                       type="email" 
                       placeholder="E-postadress" 
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition-all duration-200 bg-white text-sm"
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 bg-white text-sm"
                       value={loginEmail}
                       onChange={e => setLoginEmail(e.target.value)}
                       required
@@ -438,7 +438,7 @@ export default function Header() {
                     <input 
                       type={showPassword ? "text" : "password"}
                       placeholder="Lösenord" 
-                      className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition-all duration-200 bg-white text-sm"
+                      className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 bg-white text-sm"
                       value={loginPassword}
                       onChange={e => setLoginPassword(e.target.value)}
                       required
@@ -468,7 +468,7 @@ export default function Header() {
                   <button 
                     type="submit" 
                     disabled={formLoading}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    className="w-full bg-primary hover:bg-secondary text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                   >
                     {formLoading ? (
                       <div className="flex items-center justify-center gap-2">
@@ -485,7 +485,7 @@ export default function Header() {
                     <input 
                       type="text" 
                       placeholder="Förnamn och efternamn" 
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition-all duration-200 bg-white text-sm"
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 bg-white text-sm"
                       value={signupName}
                       onChange={e => setSignupName(e.target.value)}
                       required
@@ -496,7 +496,7 @@ export default function Header() {
                     <input 
                       type="email" 
                       placeholder="E-postadress" 
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition-all duration-200 bg-white text-sm"
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 bg-white text-sm"
                       value={signupEmail}
                       onChange={e => setSignupEmail(e.target.value)}
                       required
@@ -507,7 +507,7 @@ export default function Header() {
                     <input 
                       type={showPassword ? "text" : "password"}
                       placeholder="Lösenord (minst 8 tecken)" 
-                      className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition-all duration-200 bg-white text-sm"
+                      className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 bg-white text-sm"
                       value={signupPassword}
                       onChange={e => setSignupPassword(e.target.value)}
                       required
@@ -527,15 +527,15 @@ export default function Header() {
                     </div>
                   )}
                   <div className="flex items-start">
-                    <input type="checkbox" className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500/20 mt-1" required />
+                    <input type="checkbox" className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary/20 mt-1" required />
                     <label className="ml-2 text-sm text-gray-600">
-                      Jag accepterar <button type="button" className="text-green-600 hover:text-green-700 font-medium">användarvillkoren</button> och <button type="button" className="text-green-600 hover:text-green-700 font-medium">integritetspolicyn</button>
+                      Jag accepterar <button type="button" className="text-primary hover:text-secondary font-medium">användarvillkoren</button> och <button type="button" className="text-primary hover:text-secondary font-medium">integritetspolicyn</button>
                     </label>
                   </div>
                   <button 
                     type="submit" 
                     disabled={formLoading}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    className="w-full bg-primary hover:bg-secondary text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                   >
                     {formLoading ? (
                       <div className="flex items-center justify-center gap-2">

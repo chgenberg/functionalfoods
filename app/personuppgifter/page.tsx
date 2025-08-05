@@ -104,9 +104,9 @@ export default function PersonuppgifterPage() {
                   </p>
                 </div>
 
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-green-800 mb-2">Rätt till rättelse</h3>
-                  <p className="text-green-700 text-sm">
+                <div className="bg-background p-4 rounded-lg">
+                  <h3 className="font-semibold text-secondary mb-2">Rätt till rättelse</h3>
+                  <p className="text-secondary text-sm">
                     Begära att felaktiga uppgifter korrigeras
                   </p>
                 </div>

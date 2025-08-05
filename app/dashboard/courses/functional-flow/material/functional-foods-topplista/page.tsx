@@ -229,7 +229,7 @@ export default function FunctionalFoodsTopplistaPage() {
                       }}
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                         isChecked 
-                          ? 'bg-green-500 border-green-500' 
+                          ? 'bg-primary border-primary' 
                           : 'border-gray-300 hover:border-primary'
                       }`}
                     >
@@ -269,7 +269,7 @@ export default function FunctionalFoodsTopplistaPage() {
                             <ul className="space-y-2">
                               {category.benefits.map((benefit, idx) => (
                                 <li key={idx} className="flex items-start">
-                                  <span className="text-green-500 mr-2">✓</span>
+                                  <span className="text-primary mr-2">✓</span>
                                   <span className="text-sm text-gray-600">{benefit}</span>
                                 </li>
                               ))}

@@ -240,7 +240,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   const totalScore = calculateTotalScore();
   
   const getScoreMessage = (score: number) => {
-    if (score >= 80) return { text: "Utmärkt! Du är på rätt väg!", emoji: "🌟", color: "text-green-600" };
+    if (score >= 80) return { text: "Utmärkt! Du är på rätt väg!", emoji: "🌟", color: "text-primary" };
     if (score >= 60) return { text: "Bra! Det finns potential för förbättring", emoji: "💪", color: "text-blue-600" };
     if (score >= 40) return { text: "Okej start! Låt oss förbättra din hälsa", emoji: "🌱", color: "text-yellow-600" };
     return { text: "Tid för förändring! Vi hjälper dig", emoji: "🚀", color: "text-orange-600" };
@@ -424,8 +424,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         whileTap={{ scale: 0.95 }}
                         className={`group relative w-14 h-14 rounded-full text-2xl transition-all flex-shrink-0 ${
                           activeTab === tab.id
-                            ? 'bg-green-600 text-white shadow-lg'
-                            : 'bg-white text-gray-600 hover:bg-green-100 hover:text-green-700 border border-gray-200 hover:border-green-300 shadow-sm hover:shadow-md'
+                            ? 'bg-primary text-white shadow-lg'
+                            : 'bg-white text-gray-600 hover:bg-background-secondary hover:text-secondary border border-gray-200 hover:border-green-300 shadow-sm hover:shadow-md'
                         }`}
                         title={tab.label}
                       >
@@ -507,8 +507,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                       >
                         <div className="flex gap-6">
                           <div className="flex-shrink-0">
-                            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                              <FiCheckCircle className="w-6 h-6 text-green-600" />
+                            <div className="w-12 h-12 bg-background-secondary rounded-xl flex items-center justify-center">
+                              <FiCheckCircle className="w-6 h-6 text-primary" />
                             </div>
                           </div>
                           <div className="flex-1">
@@ -518,7 +518,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                               dangerouslySetInnerHTML={{ __html: rec.description.replace(/\. /g, '.<br/><br/>') }}
                             />
                             <details className="group">
-                              <summary className="cursor-pointer text-green-600 hover:text-green-700 font-medium text-sm flex items-center gap-2">
+                              <summary className="cursor-pointer text-primary hover:text-secondary font-medium text-sm flex items-center gap-2">
                                 <span>Hur du använder det</span>
                                 <FiChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform" />
                               </summary>
@@ -546,7 +546,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: index * 0.05 }}
-                          className="border-l-4 border-gray-200 pl-6 py-2 hover:border-green-500 transition-colors"
+                          className="border-l-4 border-gray-200 pl-6 py-2 hover:border-primary transition-colors"
                         >
                           <div 
                             className="text-gray-700 space-y-2"
@@ -617,7 +617,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => window.location.href = '/utbildning/functional-flow'}
-                        className="bg-green-600 text-white px-6 py-4 rounded-xl font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                        className="bg-primary text-white px-6 py-4 rounded-xl font-medium hover:bg-secondary transition-colors flex items-center justify-center gap-2"
                       >
                         <FiStar className="w-5 h-5" />
                         <span>Functional Flow</span>
@@ -705,8 +705,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           transition={{ delay: index * 0.05 }}
                           className="flex gap-4"
                         >
-                          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <FiTrendingUp className="w-5 h-5 text-green-600" />
+                          <div className="w-10 h-10 bg-background-secondary rounded-lg flex items-center justify-center flex-shrink-0">
+                            <FiTrendingUp className="w-5 h-5 text-primary" />
                           </div>
                           <div 
                             className="text-gray-700 text-sm space-y-2"

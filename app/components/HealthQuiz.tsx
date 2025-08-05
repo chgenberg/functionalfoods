@@ -681,12 +681,12 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                         </motion.div>
                         <div className="flex-1 min-w-0">
                           <div className={`font-medium text-sm sm:text-base leading-tight transition-colors ${
-                            answers[currentQuestion] === option.value ? 'text-green-800' : 'text-gray-800'
+                            answers[currentQuestion] === option.value ? 'text-secondary' : 'text-gray-800'
                           }`}>
                             {option.label}
                           </div>
                           <div className={`text-xs leading-relaxed hidden sm:block mt-0.5 transition-colors ${
-                            answers[currentQuestion] === option.value ? 'text-green-700' : 'text-gray-600'
+                            answers[currentQuestion] === option.value ? 'text-secondary' : 'text-gray-600'
                           }`}>
                             {option.description}
                           </div>

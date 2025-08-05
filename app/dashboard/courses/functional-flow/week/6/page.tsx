@@ -168,7 +168,7 @@ export default function Week6Page() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all ${
                   activeTab === tab.id
-                    ? 'bg-white text-green-600 shadow-sm'
+                    ? 'bg-white text-primary shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -218,7 +218,7 @@ export default function Week6Page() {
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-r from-green-100 to-green-200 rounded-xl p-6 text-center"
                   >
-                    <div className="text-3xl font-bold text-green-600 mb-2">42</div>
+                    <div className="text-3xl font-bold text-primary mb-2">42</div>
                     <div className="text-gray-700">Dagar av hälsosam mat</div>
                   </motion.div>
                   
@@ -291,7 +291,7 @@ export default function Week6Page() {
                       Smakrik gryta med antiinflammatoriska kryddor
                     </p>
                     <div className="flex gap-2">
-                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Omega-3</span>
+                      <span className="bg-background-secondary text-secondary text-xs px-2 py-1 rounded-full">Omega-3</span>
                       <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">Kryddor</span>
                     </div>
                   </div>
@@ -343,8 +343,8 @@ export default function Week6Page() {
                             onClick={() => toggleItem(`${category}-${index}`)}
                             className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded border-2 transition-all ${
                               checkedItems.has(`${category}-${index}`)
-                                ? 'bg-green-500 border-green-500'
-                                : 'border-gray-300 hover:border-green-500'
+                                ? 'bg-primary border-primary'
+                                : 'border-gray-300 hover:border-primary'
                             }`}
                           >
                             {checkedItems.has(`${category}-${index}`) && (
@@ -365,7 +365,7 @@ export default function Week6Page() {
 
               <div className="mt-8 text-center">
                 <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-8 mb-6">
-                  <FiAward className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                  <FiAward className="w-16 h-16 text-primary mx-auto mb-4" />
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Grattis!</h3>
                   <p className="text-gray-700">
                     Du har klarat alla 6 veckor av Functional Basics kursen. 
@@ -381,7 +381,7 @@ export default function Week6Page() {
                 </Link>
                 <Link 
                   href="/dashboard/courses"
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center gap-2"
+                  className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-secondary transition-colors inline-flex items-center gap-2"
                 >
                   Avsluta kursen <FiChevronRight />
                 </Link>

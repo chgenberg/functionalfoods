@@ -76,15 +76,15 @@ export default function UtbildningPage() {
               
               <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-2 text-gray-700">
-                  <FiClock className="text-green-600" />
+                  <FiClock className="text-primary" />
                   <span>6 veckors program</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-700">
-                  <FiBook className="text-green-600" />
+                  <FiBook className="text-primary" />
                   <span>75+ recept</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-700">
-                  <FiUsers className="text-green-600" />
+                  <FiUsers className="text-primary" />
                   <span>Community & support</span>
                 </div>
               </div>

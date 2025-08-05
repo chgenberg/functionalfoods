@@ -73,7 +73,7 @@ const ChartContainer = ({ title, children }: any) => (
 
 const activityData = {
   move: { percentage: 76, value: '620 / 800 kcal', color: 'text-red-500' },
-  exercise: { percentage: 85, value: '51 / 60 min', color: 'text-green-500' },
+  exercise: { percentage: 85, value: '51 / 60 min', color: 'text-primary' },
   stand: { percentage: 92, value: '11 / 12 tim', color: 'text-blue-500' },
 };
 

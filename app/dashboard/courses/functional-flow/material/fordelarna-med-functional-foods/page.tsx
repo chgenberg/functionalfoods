@@ -223,7 +223,7 @@ export default function FordelarnaPage() {
                           <ul className="space-y-2">
                             {benefit.examples.map((example, idx) => (
                               <li key={idx} className="flex items-center">
-                                <FiCheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" />
+                                <FiCheckCircle className="w-5 h-5 text-primary mr-2 flex-shrink-0" />
                                 <span className="text-gray-600">{example}</span>
                               </li>
                             ))}
@@ -286,7 +286,7 @@ export default function FordelarnaPage() {
                 Markera som slutförd
               </button>
             ) : (
-              <div className="flex items-center text-green-600">
+              <div className="flex items-center text-primary">
                 <FiCheckCircle className="w-6 h-6 mr-2" />
                 <span className="font-medium">Slutförd!</span>
               </div>

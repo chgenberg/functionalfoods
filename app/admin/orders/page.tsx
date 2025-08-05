@@ -65,7 +65,7 @@ export default function AdminOrdersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'COMPLETED': return 'bg-green-100 text-green-800';
+      case 'COMPLETED': return 'bg-background-secondary text-secondary';
       case 'PENDING': return 'bg-yellow-100 text-yellow-800';
       case 'PROCESSING': return 'bg-blue-100 text-blue-800';
       case 'CANCELLED': return 'bg-red-100 text-red-800';
@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
-      case 'COMPLETED': return 'text-green-600';
+      case 'COMPLETED': return 'text-primary';
       case 'PENDING': return 'text-yellow-600';
       case 'PROCESSING': return 'text-blue-600';
       case 'FAILED': return 'text-red-600';

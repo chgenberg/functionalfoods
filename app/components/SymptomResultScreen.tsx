@@ -37,13 +37,13 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
   const getSeverityColor = (severity: number) => {
     if (severity >= 7) return 'text-red-600';
     if (severity >= 4) return 'text-yellow-600';
-    return 'text-green-600';
+    return 'text-primary';
   };
 
   const getSeverityBgColor = (severity: number) => {
     if (severity >= 7) return 'bg-red-100';
     if (severity >= 4) return 'bg-yellow-100';
-    return 'bg-green-100';
+    return 'bg-background-secondary';
   };
 
   return (
@@ -107,7 +107,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
                     transition={{ duration: 1, delay: 0.2 + index * 0.1 }}
                     className={`h-2 rounded-full ${
                       item.severity >= 7 ? 'bg-red-500' :
-                      item.severity >= 4 ? 'bg-yellow-500' : 'bg-green-500'
+                      item.severity >= 4 ? 'bg-yellow-500' : 'bg-primary'
                     }`}
                   />
                 </div>
@@ -268,8 +268,8 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
                   </div>
                   
                   <div className="flex items-start space-x-4">
-                    <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
-                      <FiHeart className="w-6 h-6 text-green-600" />
+                    <div className="bg-background-secondary rounded-full p-3 flex-shrink-0">
+                      <FiHeart className="w-6 h-6 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-800 mb-2">Stresshantering</h3>

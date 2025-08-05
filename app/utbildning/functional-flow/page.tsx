@@ -32,7 +32,7 @@ export default function FunctionalFlowPage() {
       icon: GiStomach,
       title: "Förbättrad tarmflora",
       description: "Genom att minimera processad mat, socker och onödiga tillsatser kan tarmfloran balanseras och inflammation minskas.",
-      color: "text-green-600"
+      color: "text-primary"
     },
     {
       icon: GiBrain,
@@ -149,7 +149,7 @@ export default function FunctionalFlowPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.5 }}
-                className="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg"
+                className="absolute -top-4 -right-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg"
               >
                 -20% Rabatt
               </motion.div>
@@ -327,9 +327,9 @@ export default function FunctionalFlowPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-3 p-4 bg-green-50 rounded-lg"
+                      className="flex items-start gap-3 p-4 bg-background rounded-lg"
                     >
-                      <FiCheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-1" />
+                      <FiCheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <span className="text-text-secondary">{item}</span>
                     </motion.div>
                   ))}

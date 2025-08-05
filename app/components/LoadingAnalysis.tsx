@@ -313,7 +313,7 @@ export default function LoadingAnalysis() {
                   transition={{ delay: index * 0.1 }}
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     index < messageIndex 
-                      ? 'bg-green-500 text-white' 
+                      ? 'bg-primary text-white' 
                       : index === messageIndex
                       ? 'bg-gradient-to-r from-primary to-accent text-white'
                       : 'bg-gray-200'

@@ -259,13 +259,13 @@ export default function NewBlogPage() {
             </div>
 
             <div className="space-y-4">
-              <label className="flex items-center p-4 border border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all duration-200 cursor-pointer">
+              <label className="flex items-center p-4 border border-gray-300 rounded-lg hover:border-primary hover:bg-background transition-all duration-200 cursor-pointer">
                 <input
                   type="checkbox"
                   id="published"
                   checked={blogData.published}
                   onChange={(e) => updateBlogData('published', e.target.checked)}
-                  className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                  className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                 />
                 <div className="ml-3">
                   <span className="text-sm font-medium text-gray-700">Publicera direkt</span>
@@ -324,9 +324,9 @@ export default function NewBlogPage() {
               />
             </div>
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <h3 className="font-medium text-green-800 mb-2">Skrivtips</h3>
-              <ul className="text-sm text-green-700 space-y-1">
+            <div className="bg-background border border-green-200 rounded-lg p-4">
+              <h3 className="font-medium text-secondary mb-2">Skrivtips</h3>
+              <ul className="text-sm text-secondary space-y-1">
                 <li>• Använd tydliga rubriker för att strukturera innehållet</li>
                 <li>• Inkludera praktiska tips och råd</li>
                 <li>• Referera till vetenskapliga studier när det är relevant</li>
@@ -375,7 +375,7 @@ export default function NewBlogPage() {
                 <div className="text-blue-600 text-base sm:text-lg font-medium line-clamp-1">
                   {blogData.title || 'Artikeltitel'}
                 </div>
-                <div className="text-green-600 text-xs sm:text-sm break-all">
+                <div className="text-primary text-xs sm:text-sm break-all">
                   functionalfoods.se/kunskapsbank/blogg/{blogData.slug || 'artikel-slug'}
                 </div>
                 <div className="text-gray-600 text-sm line-clamp-2">
@@ -407,7 +407,7 @@ export default function NewBlogPage() {
                           updateBlogData('functionalFoodsFocus', blogData.functionalFoodsFocus.filter(f => f !== option));
                         }
                       }}
-                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-green-500"
                     />
                     <label htmlFor={option} className="ml-2 text-sm text-gray-700">
                       {option}
@@ -448,7 +448,7 @@ export default function NewBlogPage() {
                 ))}
                 <button
                   onClick={addKeyTakeaway}
-                  className="flex items-center gap-2 text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-2 text-primary hover:bg-background px-3 py-2 rounded-lg transition-colors"
                 >
                   <FiPlus className="w-4 h-4" />
                   Lägg till nyckelpoäng
@@ -492,7 +492,7 @@ export default function NewBlogPage() {
                 ))}
                 <button
                   onClick={addReference}
-                  className="flex items-center gap-2 text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-2 text-primary hover:bg-background px-3 py-2 rounded-lg transition-colors"
                 >
                   <FiPlus className="w-4 h-4" />
                   Lägg till referens
@@ -524,7 +524,7 @@ export default function NewBlogPage() {
                 ))}
                 <button
                   onClick={addTag}
-                  className="flex items-center gap-2 text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-2 text-primary hover:bg-background px-3 py-2 rounded-lg transition-colors"
                 >
                   <FiPlus className="w-4 h-4" />
                   Lägg till tagg
@@ -555,12 +555,12 @@ export default function NewBlogPage() {
               </div>
             </div>
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-green-800">
+            <div className="bg-background border border-green-200 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-secondary">
                 <FiCheck className="w-5 h-5" />
                 <span className="font-medium">Redo att publicera</span>
               </div>
-              <p className="text-green-700 text-sm mt-1">
+              <p className="text-secondary text-sm mt-1">
                 Artikeln kommer att vara synlig för användare direkt efter publicering.
               </p>
             </div>
@@ -610,7 +610,7 @@ export default function NewBlogPage() {
                   <div className="absolute top-5 sm:top-6 -left-1/2 w-full">
                     <div
                       className={`h-1 transition-all ${
-                        currentStep > step.id ? 'bg-green-600' : 'bg-gray-200'
+                        currentStep > step.id ? 'bg-primary' : 'bg-gray-200'
                       }`}
                     />
                   </div>
@@ -621,7 +621,7 @@ export default function NewBlogPage() {
                   animate={{ scale: currentStep >= step.id ? 1 : 0.8 }}
                   className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-all mb-2 relative z-10 ${
                     currentStep >= step.id
-                      ? 'bg-green-600 text-white shadow-lg'
+                      ? 'bg-primary text-white shadow-lg'
                       : 'bg-gray-200 text-gray-500'
                   }`}
                 >
@@ -634,7 +634,7 @@ export default function NewBlogPage() {
                 
                 {/* Step text under the circle */}
                 <div className={`text-center ${
-                  currentStep >= step.id ? 'text-green-600 font-medium' : 'text-gray-500'
+                  currentStep >= step.id ? 'text-primary font-medium' : 'text-gray-500'
                 }`}>
                   <div className="text-xs font-medium leading-tight">{step.title}</div>
                   <div className="text-xs mt-1 leading-tight hidden sm:block">{step.description}</div>
@@ -677,7 +677,7 @@ export default function NewBlogPage() {
           {currentStep < steps.length ? (
             <button
               onClick={nextStep}
-              className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 hover:shadow-lg transition-all flex items-center justify-center gap-2"
+              className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary hover:shadow-lg transition-all flex items-center justify-center gap-2"
             >
               Nästa steg
               <FiArrowRight />
@@ -686,7 +686,7 @@ export default function NewBlogPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? (
                 <>

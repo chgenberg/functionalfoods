@@ -49,7 +49,7 @@ const getCategoryStyle = (color: string) => {
   const styles: Record<string, string> = {
     'red': 'bg-red-100 text-red-800',
     'blue': 'bg-blue-100 text-blue-800',
-    'green': 'bg-green-100 text-green-800',
+    'green': 'bg-background-secondary text-secondary',
     'yellow': 'bg-yellow-100 text-yellow-800',
     'purple': 'bg-purple-100 text-purple-800',
     'pink': 'bg-pink-100 text-pink-800',
@@ -233,7 +233,7 @@ export default function FunctionalBasicsThreadPage() {
             </p>
             <Link
               href="/dashboard/courses/functional-basics/community"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
             >
               <FiArrowLeft className="w-4 h-4" />
               Gå tillbaka till community
@@ -340,7 +340,7 @@ export default function FunctionalBasicsThreadPage() {
                       </div>
                       
                       <div className="flex items-center gap-3 text-sm text-gray-600">
-                        <button className="flex items-center gap-1 hover:text-green-600 transition-colors">
+                        <button className="flex items-center gap-1 hover:text-primary transition-colors">
                           <FiThumbsUp className="w-4 h-4" />
                           <span>{reply._count.likes}</span>
                         </button>
@@ -387,7 +387,7 @@ export default function FunctionalBasicsThreadPage() {
               <button
                 type="submit"
                 disabled={submittingReply || !newReply.trim()}
-                className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base font-medium"
+                className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-primary text-white rounded-lg hover:bg-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base font-medium"
               >
                 {submittingReply ? (
                   <>

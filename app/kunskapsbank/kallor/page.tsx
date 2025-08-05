@@ -563,7 +563,7 @@ const categories = ["Alla", "Functional Foods", "Probiotika", "Prebiotika", "Ant
 
 const typeColors = {
   research: "bg-blue-100 text-blue-800",
-  review: "bg-green-100 text-green-800", 
+  review: "bg-background-secondary text-secondary", 
   clinical: "bg-purple-100 text-purple-800",
   book: "bg-orange-100 text-orange-800"
 };
@@ -853,7 +853,7 @@ export default function KallorPage() {
                             </span>
                           )}
                           {source.pmid && (
-                            <span className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
+                            <span className="text-xs bg-background text-secondary px-2 py-1 rounded">
                               PMID: {source.pmid}
                             </span>
                           )}
@@ -871,8 +871,8 @@ export default function KallorPage() {
                         >
                           {copiedId === source.id ? (
                             <>
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-green-600">Kopierad!</span>
+                              <FiCheck className="w-4 h-4 text-primary" />
+                              <span className="text-primary">Kopierad!</span>
                             </>
                           ) : (
                             <>

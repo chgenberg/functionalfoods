@@ -179,7 +179,7 @@ export default function CoursesPage() {
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <span className={`text-green-600 font-medium flex items-center gap-1`}>
+                        <span className={`text-primary font-medium flex items-center gap-1`}>
                           <FiCheckCircle />
                           Aktiv
                         </span>

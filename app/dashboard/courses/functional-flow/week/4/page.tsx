@@ -249,11 +249,11 @@ export default function Week4Page() {
                         </p>
                         <ul className="space-y-2 text-sm text-gray-600">
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
+                            <FiCheckCircle className="text-primary mt-0.5 flex-shrink-0" />
                             <span>Kombinera järn med C-vitamin</span>
                           </li>
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
+                            <FiCheckCircle className="text-primary mt-0.5 flex-shrink-0" />
                             <span>Fett förbättrar upptag av fettlösliga vitaminer</span>
                           </li>
                         </ul>
@@ -276,7 +276,7 @@ export default function Week4Page() {
                   <p className="text-gray-600">Måltider</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                  <FiTrendingUp className="w-12 h-12 text-green-600 mx-auto mb-3" />
+                  <FiTrendingUp className="w-12 h-12 text-primary mx-auto mb-3" />
                   <h4 className="text-2xl font-bold text-gray-900">50%</h4>
                   <p className="text-gray-600">Av kursen</p>
                 </div>
@@ -364,7 +364,7 @@ export default function Week4Page() {
                       
                       <div className="flex gap-2 flex-wrap mb-3">
                         <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Protein</span>
-                        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Antiinflammatorisk</span>
+                        <span className="bg-background-secondary text-secondary text-xs px-2 py-1 rounded-full">Antiinflammatorisk</span>
                       </div>
                       
                       {/* Action indicator */}
@@ -481,7 +481,7 @@ export default function Week4Page() {
                     <div className="p-6 bg-white relative">
                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                       
-                      <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-green-600 transition-colors duration-300">
+                      <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-primary transition-colors duration-300">
                         Chiafrögrön
                       </h4>
                       <p className="text-gray-600 text-sm mb-3 group-hover:text-gray-700 transition-colors duration-300">
@@ -489,7 +489,7 @@ export default function Week4Page() {
                       </p>
                       
                       <div className="flex gap-2 flex-wrap mb-3">
-                        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Fiber</span>
+                        <span className="bg-background-secondary text-secondary text-xs px-2 py-1 rounded-full">Fiber</span>
                         <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">Antioxidanter</span>
                       </div>
                       
@@ -541,8 +541,8 @@ export default function Week4Page() {
                               onClick={() => toggleItem(`${category}-${index}`)}
                               className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded border-2 transition-all ${
                                 checkedItems.has(`${category}-${index}`)
-                                  ? 'bg-green-500 border-green-500'
-                                  : 'border-gray-300 hover:border-green-500'
+                                  ? 'bg-primary border-primary'
+                                  : 'border-gray-300 hover:border-primary'
                               }`}
                             >
                               {checkedItems.has(`${category}-${index}`) && (

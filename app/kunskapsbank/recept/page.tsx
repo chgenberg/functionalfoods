@@ -230,7 +230,7 @@ const RecipesPage = () => {
               <p className="text-xs text-gray-600">Totalt</p>
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4">
-              <p className="text-2xl font-bold text-green-600">{statistics.free}</p>
+              <p className="text-2xl font-bold text-primary">{statistics.free}</p>
               <p className="text-xs text-gray-600">Gratis</p>
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4">
@@ -558,7 +558,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
           )}
           {recipe.isFree && !recipe.isPremium && (
             <div className="absolute top-3 right-3">
-              <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+              <span className="bg-primary text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                 Gratis
               </span>
             </div>

@@ -194,7 +194,7 @@ export default function FunctionalBasicsPage() {
                   whileTap={{ scale: 0.95 }}
                   className="bg-white/90 backdrop-blur-sm rounded-full p-4 md:p-6 shadow-xl md:shadow-2xl transform transition-all duration-300 group-hover:bg-white"
                 >
-                  <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-green-700 ml-0.5 md:ml-1" />
+                  <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-secondary ml-0.5 md:ml-1" />
                 </motion.div>
               </div>
               
@@ -302,7 +302,7 @@ export default function FunctionalBasicsPage() {
                           <p className="text-xs md:text-sm text-gray-600">
                             {totalGoals > 0 ? (
                               <span className="flex items-center space-x-1">
-                                <FiCheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+                                <FiCheckCircle className="w-3 h-3 md:w-4 md:h-4 text-primary" />
                                 <span>{completedGoals}/{totalGoals} mål klara</span>
                               </span>
                             ) : (
@@ -356,7 +356,7 @@ export default function FunctionalBasicsPage() {
                                 animate={{ x: 0, opacity: 1 }}
                                 className={`flex items-start md:items-center justify-between p-3 md:p-4 rounded-lg border ${
                                   goal.status === 'completed' 
-                                    ? 'bg-green-50 border-green-200' 
+                                    ? 'bg-background border-green-200' 
                                     : 'bg-white border-gray-200 hover:border-gray-300'
                                 } transition-all`}
                               >
@@ -368,8 +368,8 @@ export default function FunctionalBasicsPage() {
                                     }}
                                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 md:mt-0 ${
                                       goal.status === 'completed'
-                                        ? 'bg-green-600 border-green-600 text-white'
-                                        : 'border-gray-300 hover:border-green-500'
+                                        ? 'bg-primary border-primary text-white'
+                                        : 'border-gray-300 hover:border-primary'
                                     }`}
                                   >
                                     {goal.status === 'completed' && <FiCheck className="w-3 h-3" />}
@@ -390,7 +390,7 @@ export default function FunctionalBasicsPage() {
                                   <span className={`text-xs px-2 py-0.5 md:py-1 rounded-full ${
                                     goal.priority === 'high' ? 'bg-red-100 text-red-700' :
                                     goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                                    'bg-green-100 text-green-700'
+                                    'bg-background-secondary text-secondary'
                                   }`}>
                                     {goal.priority === 'high' ? 'Hög' : goal.priority === 'medium' ? 'Medel' : 'Låg'}
                                   </span>

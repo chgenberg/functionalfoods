@@ -225,8 +225,8 @@ export default function KontaktFormular() {
 
               {/* Success Message */}
               {showSuccess && (
-                <div className="mt-6 p-4 bg-green-100 border border-green-300 rounded-lg animate-fade-in">
-                  <p className="text-green-800 font-medium">✓ Tack för ditt meddelande! Vi återkommer inom 24 timmar.</p>
+                <div className="mt-6 p-4 bg-background-secondary border border-green-300 rounded-lg animate-fade-in">
+                  <p className="text-secondary font-medium">✓ Tack för ditt meddelande! Vi återkommer inom 24 timmar.</p>
                 </div>
               )}
             </div>

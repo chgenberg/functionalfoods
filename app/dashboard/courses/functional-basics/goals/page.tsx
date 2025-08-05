@@ -160,8 +160,8 @@ export default function GoalsPage() {
               <p className="text-sm text-gray-600">Slutförda mål</p>
               <p className="text-2xl font-bold text-gray-900">{completedGoals}</p>
             </div>
-            <div className="bg-green-100 rounded-lg p-3">
-              <FiCheckCircle className="w-6 h-6 text-green-600" />
+            <div className="bg-background-secondary rounded-lg p-3">
+              <FiCheckCircle className="w-6 h-6 text-primary" />
             </div>
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function GoalsPage() {
                           transition={{ delay: index * 0.05 }}
                           className={`p-4 rounded-lg border-2 transition-all ${
                             isCompleted 
-                              ? 'bg-green-50 border-green-200' 
+                              ? 'bg-background border-green-200' 
                               : isActive 
                                 ? 'bg-orange-50 border-orange-200' 
                                 : 'bg-gray-50 border-gray-200'
@@ -264,7 +264,7 @@ export default function GoalsPage() {
                             <div className="text-2xl">{goal.icon}</div>
                             <div className="flex-1">
                               <h4 className={`font-medium text-sm ${
-                                isCompleted ? 'text-green-800 line-through' : 'text-gray-900'
+                                isCompleted ? 'text-secondary line-through' : 'text-gray-900'
                               }`}>
                                 {goal.title.replace(goal.icon, '').trim()}
                               </h4>
@@ -275,15 +275,15 @@ export default function GoalsPage() {
                                 <span className={`text-xs px-2 py-1 rounded-full ${
                                   goal.priority === 'high' ? 'bg-red-100 text-red-700' :
                                   goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                                  'bg-green-100 text-green-700'
+                                  'bg-background-secondary text-secondary'
                                 }`}>
                                   {goal.priority === 'high' ? 'Hög' : goal.priority === 'medium' ? 'Medel' : 'Låg'}
                                 </span>
                                 
                                 {isCompleted && (
                                   <div className="flex items-center space-x-1">
-                                    <FiCheckCircle className="w-4 h-4 text-green-600" />
-                                    <span className="text-xs text-green-600">Klar</span>
+                                    <FiCheckCircle className="w-4 h-4 text-primary" />
+                                    <span className="text-xs text-primary">Klar</span>
                                   </div>
                                 )}
                                 

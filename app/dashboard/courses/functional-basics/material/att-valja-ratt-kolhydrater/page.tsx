@@ -208,21 +208,21 @@ export default function AttValjaRattKolhydraterPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Långsamma kolhydrater</h2>
-              <FiActivity className="w-6 h-6 text-green-500" />
+              <FiActivity className="w-6 h-6 text-primary" />
             </div>
             <p className="text-gray-600 mb-4">
               Tar längre tid att bryta ner och påverkar blodsockret mindre.
             </p>
             <div className="space-y-2">
-              <div className="flex items-center text-green-600">
+              <div className="flex items-center text-primary">
                 <FiCheckCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Stabil blodsockernivå</span>
               </div>
-              <div className="flex items-center text-green-600">
+              <div className="flex items-center text-primary">
                 <FiCheckCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Långvarig energi</span>
               </div>
-              <div className="flex items-center text-green-600">
+              <div className="flex items-center text-primary">
                 <FiCheckCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Mättande & näringsrika</span>
               </div>
@@ -291,7 +291,7 @@ export default function AttValjaRattKolhydraterPage() {
                                 <ul className="space-y-1">
                                   {carb.effects.map((effect, idx) => (
                                     <li key={idx} className="text-xs text-gray-600 flex items-start">
-                                      <span className={`mr-1 ${carb.type === 'fast' ? 'text-red-500' : 'text-green-500'}`}>•</span>
+                                      <span className={`mr-1 ${carb.type === 'fast' ? 'text-red-500' : 'text-primary'}`}>•</span>
                                       {effect}
                                     </li>
                                   ))}
@@ -378,7 +378,7 @@ export default function AttValjaRattKolhydraterPage() {
                     <span className="text-sm text-gray-700">Snabba kolhydrater</span>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-4 h-4 bg-green-500 rounded mr-2" />
+                    <div className="w-4 h-4 bg-primary rounded mr-2" />
                     <span className="text-sm text-gray-700">Långsamma kolhydrater</span>
                   </div>
                 </div>

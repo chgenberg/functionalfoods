@@ -28,7 +28,7 @@ const stats = [
       change: 15.2, 
       bgColor: "bg-orange-100",
       iconColor: "text-orange-600",
-      changeColor: "text-green-600"
+      changeColor: "text-primary"
     },
     { 
       title: "Antal ordrar", 
@@ -37,7 +37,7 @@ const stats = [
       change: 21, 
       bgColor: "bg-yellow-100",
       iconColor: "text-yellow-600",
-      changeColor: "text-green-600"
+      changeColor: "text-primary"
     },
     { 
       title: "Nya kunder", 
@@ -46,7 +46,7 @@ const stats = [
       change: 8.5, 
       bgColor: "bg-amber-100",
       iconColor: "text-amber-600",
-      changeColor: "text-green-600"
+      changeColor: "text-primary"
     },
     { 
       title: "Snittordervärde", 

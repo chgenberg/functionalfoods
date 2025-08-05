@@ -62,8 +62,8 @@ export default function AdminDashboard() {
       count: stats.totalBlogs,
       icon: FiFileText,
       color: 'from-green-400 to-green-600',
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-600',
+      bgColor: 'bg-background',
+      textColor: 'text-primary',
       href: '/admin/blog',
       trend: '+8%'
     },
@@ -139,7 +139,7 @@ export default function AdminDashboard() {
                   <div className={`p-3 rounded-xl bg-gradient-to-br ${card.color} shadow-md`}>
                     <card.icon className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                  <span className="text-sm font-semibold text-primary bg-background px-2 py-1 rounded-full">
                     {card.trend}
                   </span>
                 </div>
@@ -236,7 +236,7 @@ export default function AdminDashboard() {
                 >
                   <div className={`p-2 rounded-lg mr-4 ${
                     activity.type === 'course' ? 'bg-blue-100 text-blue-600' :
-                    activity.type === 'blog' ? 'bg-green-100 text-green-600' :
+                    activity.type === 'blog' ? 'bg-background-secondary text-primary' :
                     activity.type === 'recipe' ? 'bg-orange-100 text-orange-600' :
                     'bg-purple-100 text-purple-600'
                   }`}>
@@ -272,29 +272,29 @@ export default function AdminDashboard() {
           Systemstatus
         </h3>
         <div className="grid md:grid-cols-4 gap-4">
-          <div className="flex items-center p-4 bg-green-50 rounded-xl">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+          <div className="flex items-center p-4 bg-background rounded-xl">
+            <div className="w-3 h-3 bg-primary rounded-full mr-3 animate-pulse"></div>
             <div>
               <p className="text-sm font-medium text-gray-900">Webbplats</p>
               <p className="text-xs text-gray-500">Fungerande</p>
             </div>
           </div>
-          <div className="flex items-center p-4 bg-green-50 rounded-xl">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+          <div className="flex items-center p-4 bg-background rounded-xl">
+            <div className="w-3 h-3 bg-primary rounded-full mr-3 animate-pulse"></div>
             <div>
               <p className="text-sm font-medium text-gray-900">Databas</p>
               <p className="text-xs text-gray-500">Ansluten</p>
             </div>
           </div>
-          <div className="flex items-center p-4 bg-green-50 rounded-xl">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+          <div className="flex items-center p-4 bg-background rounded-xl">
+            <div className="w-3 h-3 bg-primary rounded-full mr-3 animate-pulse"></div>
             <div>
               <p className="text-sm font-medium text-gray-900">API</p>
               <p className="text-xs text-gray-500">Aktiv</p>
             </div>
           </div>
-          <div className="flex items-center p-4 bg-green-50 rounded-xl">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+          <div className="flex items-center p-4 bg-background rounded-xl">
+            <div className="w-3 h-3 bg-primary rounded-full mr-3 animate-pulse"></div>
             <div>
               <p className="text-sm font-medium text-gray-900">E-post</p>
               <p className="text-xs text-gray-500">Konfigurerad</p>

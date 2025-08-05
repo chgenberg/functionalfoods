@@ -108,7 +108,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
       <div className="p-6 flex flex-col flex-grow">
         {/* Title - Fixed height with line clamp */}
         <div className="h-14 mb-3">
-          <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-green-600 transition-colors leading-tight">
+          <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
             {recipe.title}
           </h3>
         </div>
@@ -195,7 +195,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
               </button>
               <a
                 href="/utbildning"
-                className="block text-center text-green-600 hover:text-green-700 text-sm font-medium"
+                className="block text-center text-primary hover:text-secondary text-sm font-medium"
               >
                 Köp kurs för tillgång →
               </a>
@@ -205,7 +205,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
       </div>
 
       {/* Hover effect border */}
-      <div className="absolute inset-0 border-2 border-green-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+      <div className="absolute inset-0 border-2 border-primary rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
     </div>
   );
 };

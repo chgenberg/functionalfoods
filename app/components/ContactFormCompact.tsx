@@ -114,7 +114,7 @@ export default function ContactFormCompact() {
           </button>
 
           {showSuccess && (
-            <div className="p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
+            <div className="p-3 bg-primary/20 border border-primary/30 rounded-lg">
               <p className="text-green-300 text-sm">✓ Meddelande skickat!</p>
             </div>
           )}

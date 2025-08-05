@@ -85,7 +85,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
                     : status === 'completed'
                     ? 'bg-orange-100 text-orange-800 hover:bg-orange-200'
                     : status === 'current'
-                    ? 'bg-green-100 text-green-800 hover:bg-green-200 ring-2 ring-green-500'
+                    ? 'bg-background-secondary text-secondary hover:bg-green-200 ring-2 ring-green-500'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -99,7 +99,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
                   <FiCheck className="absolute top-1 right-1 w-4 h-4" />
                 )}
                 {status === 'current' && (
-                  <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  <div className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />
                 )}
               </motion.button>
             );
@@ -113,7 +113,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
             <span className="text-gray-600">Genomförd</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-100 rounded ring-2 ring-green-500" />
+            <div className="w-4 h-4 bg-background-secondary rounded ring-2 ring-green-500" />
             <span className="text-gray-600">Idag</span>
           </div>
           <div className="flex items-center gap-2">
@@ -220,7 +220,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
                 {currentDayMeals.snack.recipeLink && (
                   <a 
                     href={currentDayMeals.snack.recipeLink}
-                    className="text-sm text-green-600 hover:text-green-700 font-medium block mt-2"
+                    className="text-sm text-primary hover:text-secondary font-medium block mt-2"
                   >
                     Se recept →
                   </a>

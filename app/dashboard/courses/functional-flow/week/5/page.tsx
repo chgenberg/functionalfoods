@@ -250,15 +250,15 @@ export default function Week5Page() {
                         <h4 className="font-semibold text-gray-900 mb-3">Experimentera med superpulver</h4>
                         <ul className="space-y-2 text-sm text-gray-700">
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
+                            <FiCheckCircle className="text-primary mt-0.5 flex-shrink-0" />
                             <span>Prova spirulina, chlorella eller vetegräs</span>
                           </li>
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
+                            <FiCheckCircle className="text-primary mt-0.5 flex-shrink-0" />
                             <span>Gör egen benbuljong för kollagen</span>
                           </li>
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-green-600 mt-0.5 flex-shrink-0" />
+                            <FiCheckCircle className="text-primary mt-0.5 flex-shrink-0" />
                             <span>Skapa egna variationer av recepten</span>
                           </li>
                         </ul>
@@ -277,8 +277,8 @@ export default function Week5Page() {
                       whileHover={{ scale: 1.05 }}
                       className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 text-center cursor-pointer h-full"
                     >
-                      <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
-                        <FiDownload className="w-6 h-6 text-green-600" />
+                      <div className="bg-background-secondary rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                        <FiDownload className="w-6 h-6 text-primary" />
                       </div>
                       <h4 className="font-semibold text-gray-900 mb-2">Topplistan Functional Foods</h4>
                       <p className="text-sm text-gray-600">Komplett guide över de bästa råvarorna</p>
@@ -418,7 +418,7 @@ export default function Week5Page() {
                     <div className="p-6 bg-white relative">
                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                       
-                      <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-green-600 transition-colors duration-300">
+                      <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-primary transition-colors duration-300">
                         Vegetarisk currygryta
                       </h4>
                       <p className="text-gray-600 text-sm mb-3 group-hover:text-gray-700 transition-colors duration-300">
@@ -426,7 +426,7 @@ export default function Week5Page() {
                       </p>
                       
                       <div className="flex gap-2 flex-wrap mb-3">
-                        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Vegetarisk</span>
+                        <span className="bg-background-secondary text-secondary text-xs px-2 py-1 rounded-full">Vegetarisk</span>
                         <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">Fiber</span>
                       </div>
                       
@@ -577,7 +577,7 @@ export default function Week5Page() {
                       Proteinrik vegetarisk rätt med paneer som ger mättnad och näring. Perfekt för en hälsosam och smakrik middag.
                     </p>
                     <div className="flex gap-2 flex-wrap mb-3">
-                      <span className="bg-green-200 text-green-800 text-xs px-3 py-1 rounded-full font-medium">🌱 Vegetarisk</span>
+                      <span className="bg-green-200 text-secondary text-xs px-3 py-1 rounded-full font-medium">🌱 Vegetarisk</span>
                       <span className="bg-teal-200 text-teal-800 text-xs px-3 py-1 rounded-full font-medium">🌾 Fiber</span>
                     </div>
                     <div className="flex items-center text-xs text-gray-500">
@@ -642,8 +642,8 @@ export default function Week5Page() {
                               onClick={() => toggleItem(`${category}-${index}`)}
                               className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded border-2 transition-all ${
                                 checkedItems.has(`${category}-${index}`)
-                                  ? 'bg-green-500 border-green-500'
-                                  : 'border-gray-300 hover:border-green-500'
+                                  ? 'bg-primary border-primary'
+                                  : 'border-gray-300 hover:border-primary'
                               }`}
                             >
                               {checkedItems.has(`${category}-${index}`) && (

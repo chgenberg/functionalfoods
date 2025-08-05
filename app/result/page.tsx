@@ -744,7 +744,7 @@ function HolisticAdvicesBlock({ value }: { value: any }) {
     return (
       <>
         <div className="mb-4 whitespace-pre-line text-base text-gray-900">{String(value.advices)}</div>
-        <div className="font-semibold mt-4 mb-2 text-green-800">Step-by-step Checklist</div>
+        <div className="font-semibold mt-4 mb-2 text-secondary">Step-by-step Checklist</div>
         <ul className="list-disc ml-6 text-gray-900">
           {value.checklist.map((item: any, i: number) => (
             <li key={i} className="mb-1">{String(item)}</li>

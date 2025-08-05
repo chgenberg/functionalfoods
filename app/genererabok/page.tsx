@@ -382,8 +382,8 @@ export default function GenerateBookPage() {
                       <h3 className="font-medium text-gray-700 mb-2">Färdiga kapitel:</h3>
                       <div className="space-y-2">
                         {bookContent.map((_, index) => (
-                          <div key={index} className="flex items-center text-sm text-green-600">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                          <div key={index} className="flex items-center text-sm text-primary">
+                            <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
                             Kapitel {index + 1} ✓
                           </div>
                         ))}
@@ -409,7 +409,7 @@ export default function GenerateBookPage() {
                     >
                       <CheckCircleIcon className="h-12 w-12 text-white" />
                     </motion.div>
-                    <h3 className="text-2xl font-bold text-green-600 mb-2">
+                    <h3 className="text-2xl font-bold text-primary mb-2">
                       Boken är klar!
                     </h3>
                     <p className="text-gray-600 mb-6 text-lg">

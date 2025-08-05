@@ -38,7 +38,7 @@ export function MealPlanSection({
     breakfast: { icon: GiCookingPot, color: 'text-orange-600', bg: 'bg-orange-100' },
     lunch: { icon: GiMeal, color: 'text-blue-600', bg: 'bg-blue-100' },
     dinner: { icon: GiFruitBowl, color: 'text-purple-600', bg: 'bg-purple-100' },
-    snack: { icon: GiWaterBottle, color: 'text-green-600', bg: 'bg-green-100' }
+    snack: { icon: GiWaterBottle, color: 'text-primary', bg: 'bg-background-secondary' }
   };
 
   return (

@@ -176,9 +176,9 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
             <div className="text-lg sm:text-2xl font-bold text-orange-600">{totalGoals}</div>
             <div className="text-xs sm:text-sm text-orange-600">Aktiva</div>
           </div>
-          <div className="bg-green-50 rounded-lg p-3 sm:p-4 text-center">
-            <div className="text-lg sm:text-2xl font-bold text-green-600">{completedGoals}</div>
-            <div className="text-xs sm:text-sm text-green-600">Klara</div>
+          <div className="bg-background rounded-lg p-3 sm:p-4 text-center">
+            <div className="text-lg sm:text-2xl font-bold text-primary">{completedGoals}</div>
+            <div className="text-xs sm:text-sm text-primary">Klara</div>
           </div>
           <div className="bg-purple-50 rounded-lg p-3 sm:p-4 text-center">
             <div className="text-lg sm:text-2xl font-bold text-purple-600">{completionRate}%</div>
@@ -200,7 +200,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                 animate={{ x: 0, opacity: 1 }}
                 className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-lg border ${
                   goal.status === 'completed' 
-                    ? 'bg-green-50 border-green-200' 
+                    ? 'bg-background border-green-200' 
                     : 'bg-white border-gray-200 hover:border-gray-300'
                 } transition-all gap-3`}
               >
@@ -209,8 +209,8 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                     onClick={() => toggleGoalCompletion(goal.id, goal.status)}
                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 sm:mt-0 ${
                       goal.status === 'completed'
-                        ? 'bg-green-600 border-green-600 text-white'
-                        : 'border-gray-300 hover:border-green-500'
+                        ? 'bg-primary border-primary text-white'
+                        : 'border-gray-300 hover:border-primary'
                     }`}
                   >
                     {goal.status === 'completed' && <FiCheck className="w-3 h-3" />}
@@ -231,7 +231,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                   <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
                     goal.priority === 'high' ? 'bg-red-100 text-red-700' :
                     goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-green-100 text-green-700'
+                    'bg-background-secondary text-secondary'
                   }`}>
                     {goal.priority === 'high' ? 'Hög' : goal.priority === 'medium' ? 'Medel' : 'Låg'}
                   </span>

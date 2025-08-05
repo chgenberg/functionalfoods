@@ -202,7 +202,7 @@ export default function AdminCoursesPage() {
             <div>
               <p className="text-sm text-gray-600 mb-1">Totalt antal kurser</p>
               <p className="text-3xl font-bold text-gray-900">{courses.length}</p>
-              <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+              <p className="text-xs text-primary mt-2 flex items-center gap-1">
                 <FiTrendingUp />
                 +12% denna månad
               </p>
@@ -265,7 +265,7 @@ export default function AdminCoursesPage() {
             <div>
               <p className="text-sm text-gray-600 mb-1">Slutförandegrad</p>
               <p className="text-3xl font-bold text-gray-900">84%</p>
-              <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+              <p className="text-xs text-primary mt-2 flex items-center gap-1">
                 <FiAward />
                 Över genomsnittet
               </p>

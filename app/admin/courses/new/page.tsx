@@ -717,7 +717,7 @@ export default function NewCoursePage() {
                             <div className="space-y-1">
                               <label className="text-xs font-medium text-gray-600">Lunch</label>
                               {week.mealPlan[day]?.lunch?.name ? (
-                                <div className="flex items-center justify-between p-2 bg-green-50 rounded text-sm">
+                                <div className="flex items-center justify-between p-2 bg-background rounded text-sm">
                                   <span className="text-gray-700 truncate">{week.mealPlan[day].lunch.name}</span>
                                   <button
                                     onClick={() => removeMeal(weekIndex, day, 'lunch')}
@@ -1090,7 +1090,7 @@ export default function NewCoursePage() {
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>

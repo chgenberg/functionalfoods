@@ -174,7 +174,7 @@ export default function Week2Page() {
                   <p className="text-gray-600">Veckor klara</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                  <GiFruitBowl className="w-12 h-12 text-green-600 mx-auto mb-3" />
+                  <GiFruitBowl className="w-12 h-12 text-primary mx-auto mb-3" />
                   <h4 className="text-2xl font-bold text-gray-900">30+</h4>
                   <p className="text-gray-600">Ingredienser</p>
                 </div>

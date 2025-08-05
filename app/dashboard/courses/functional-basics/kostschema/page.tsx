@@ -76,7 +76,7 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <Link 
           href={recipeLink}
-          className="text-xs sm:text-sm text-green-600 hover:text-green-700 font-medium truncate"
+          className="text-xs sm:text-sm text-primary hover:text-secondary font-medium truncate"
         >
           Se recept →
         </Link>
@@ -93,7 +93,7 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
             whileTap={{ scale: 0.9 }}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <FiShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-green-500" />
+            <FiShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-primary" />
           </motion.button>
         </div>
       </div>
@@ -104,7 +104,7 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
 const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, dayNumber, isCurrentWeek }: any) => {
   const weekNumber = Math.ceil(dayNumber / 7);
   const weekColors = [
-    'bg-purple-500', 'bg-blue-500', 'bg-green-500', 
+    'bg-purple-500', 'bg-blue-500', 'bg-primary', 
     'bg-yellow-500', 'bg-red-500', 'bg-indigo-500'
   ];
   
@@ -116,13 +116,13 @@ const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, day
       className={`
         relative w-full h-12 sm:h-14 rounded-lg border-2 transition-all duration-200 text-sm font-medium
         ${isToday 
-          ? 'border-green-500 bg-green-50 text-green-700 shadow-md' 
+          ? 'border-primary bg-background text-secondary shadow-md' 
           : isSelected 
-            ? 'border-green-600 bg-green-600 text-white shadow-lg' 
+            ? 'border-primary bg-primary text-white shadow-lg' 
             : hasMealPlan
               ? isCurrentWeek
-                ? 'border-green-300 bg-green-50 text-gray-900 hover:border-green-400'
-                : 'border-gray-200 bg-white text-gray-900 hover:border-green-300 hover:bg-green-50'
+                ? 'border-green-300 bg-background text-gray-900 hover:border-green-400'
+                : 'border-gray-200 bg-white text-gray-900 hover:border-green-300 hover:bg-background'
               : 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
         }
       `}
@@ -138,7 +138,7 @@ const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, day
         </div>
       )}
       {isToday && (
-        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-primary rounded-full"></div>
       )}
     </motion.button>
   );
@@ -196,7 +196,7 @@ export default function KostschemaPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Laddar kostschema...</p>
         </div>
       </div>
@@ -283,7 +283,7 @@ export default function KostschemaPage() {
             </h1>
             <Link
               href="/dashboard/courses/functional-basics/inkopslista"
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-all duration-200 shadow-sm"
             >
               <FiShoppingCart className="w-5 h-5" />
               <span className="hidden sm:inline">Visa Inköpslistor</span>

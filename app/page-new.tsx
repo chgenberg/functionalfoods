@@ -133,7 +133,7 @@ export default function Home() {
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-6xl font-light text-white mb-6 leading-tight drop-shadow-lg">
                 UPPTÄCK KRAFTEN I
-                <span className="block text-green-400 font-bold drop-shadow-lg">
+                <span className="block text-accent font-bold drop-shadow-lg">
                   FUNCTIONAL FOODS
                 </span>
               </h1>
@@ -144,7 +144,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
                 <button
                   onClick={() => setShowQuiz(true)}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3"
+                  className="bg-primary hover:bg-secondary text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3"
                 >
                   Starta Hälsoquiz
                   <FiArrowRight className="w-5 h-5" />
@@ -170,7 +170,7 @@ export default function Home() {
               {/* Floating card */}
               <div className="absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 max-w-xs">
                 <div className="flex items-center gap-4 mb-3">
-                  <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
                     UD
                   </div>
                   <div>
@@ -200,7 +200,7 @@ export default function Home() {
             className="text-center mb-8 md:mb-16"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Upptäck kraften i <span className="font-bold text-green-600">functional foods</span>
+              Upptäck kraften i <span className="font-bold text-primary">functional foods</span>
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Få personaliserade rekommendationer baserat på din livsstil och hälsobehov
@@ -263,7 +263,7 @@ export default function Home() {
             className="text-center mb-8 md:mb-16"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Så här <span className="font-bold text-green-600">fungerar det</span>
+              Så här <span className="font-bold text-primary">fungerar det</span>
             </h2>
           </motion.div>
 
@@ -284,7 +284,7 @@ export default function Home() {
               >
                 <div className="text-center">
                   <div className="text-3xl md:text-5xl mb-3 md:mb-4">{item.icon}</div>
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl mx-auto mb-3 md:mb-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl mx-auto mb-3 md:mb-4">
                     {item.step}
                   </div>
                   <h3 className="text-base md:text-xl font-semibold mb-1 md:mb-2 text-gray-800">{item.title}</h3>
@@ -311,7 +311,7 @@ export default function Home() {
             className="text-center mb-8 md:mb-12"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Vad våra kunder <span className="font-bold text-green-600">säger</span>
+              Vad våra kunder <span className="font-bold text-primary">säger</span>
             </h2>
           </motion.div>
           
@@ -346,7 +346,7 @@ export default function Home() {
                   onClick={() => setActiveTestimonial(index)}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === activeTestimonial
-                      ? "w-8 bg-green-600"
+                      ? "w-8 bg-primary"
                       : "bg-gray-300 hover:bg-gray-400"
                   }`}
                 />
@@ -369,7 +369,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section - Mobile Optimized */}
-      <section className="py-12 md:py-20 px-4 bg-green-600 text-white">
+      <section className="py-12 md:py-20 px-4 bg-primary text-white">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -386,7 +386,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuiz(true)}
-              className="bg-white text-green-600 px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-gray-100 transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
+              className="bg-white text-primary px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-gray-100 transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
               Starta ditt quiz nu
               <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />

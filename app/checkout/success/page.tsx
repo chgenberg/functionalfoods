@@ -152,8 +152,8 @@ function CheckoutSuccessContent() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
       <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4 text-center animate-fade-in">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <FiCheckCircle className="w-8 h-8 text-green-600" />
+        <div className="w-16 h-16 bg-background-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+          <FiCheckCircle className="w-8 h-8 text-primary" />
         </div>
         
         <h1 className="text-2xl font-bold text-gray-800 mb-4">

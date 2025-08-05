@@ -203,7 +203,7 @@ export default function DagsAttKommaIgangPage() {
                       onClick={() => handleCheckItem(item.id)}
                       className={`w-6 h-6 rounded-full border-2 mr-4 mt-0.5 flex-shrink-0 transition-all duration-300 ${
                         isChecked 
-                          ? 'bg-green-500 border-green-500' 
+                          ? 'bg-primary border-primary' 
                           : 'border-gray-300 hover:border-primary'
                       }`}
                     >
@@ -213,7 +213,7 @@ export default function DagsAttKommaIgangPage() {
                     <div className="flex-grow">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <Icon className={`w-5 h-5 mr-3 ${isChecked ? 'text-green-600' : 'text-gray-500'}`} />
+                          <Icon className={`w-5 h-5 mr-3 ${isChecked ? 'text-primary' : 'text-gray-500'}`} />
                           <span className={`text-lg ${isChecked ? 'text-gray-500 line-through' : 'text-gray-800'}`}>
                             {item.text}
                           </span>

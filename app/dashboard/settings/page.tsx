@@ -256,7 +256,7 @@ export default function SettingsPage() {
               animate={{ opacity: 1, y: 0 }}
               className={`p-4 rounded-lg flex items-center gap-3 ${
                 message.type === 'success' 
-                  ? 'bg-green-50 text-green-800' 
+                  ? 'bg-background text-secondary' 
                   : 'bg-red-50 text-red-800'
               }`}
             >

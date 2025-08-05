@@ -158,12 +158,12 @@ export default function AdminUsersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-500">Aktiva</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-primary">
                     {users.filter(u => u.isActive).length}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <FiUsers className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-background-secondary rounded-xl flex items-center justify-center">
+                  <FiUsers className="w-6 h-6 text-primary" />
                 </div>
               </div>
             </motion.div>
@@ -284,7 +284,7 @@ export default function AdminUsersPage() {
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                         user.isActive 
-                          ? 'bg-green-100 text-green-800' 
+                          ? 'bg-background-secondary text-secondary' 
                           : 'bg-gray-100 text-gray-800'
                       }`}>
                         {user.isActive ? 'Aktiv' : 'Inaktiv'}

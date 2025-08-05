@@ -190,7 +190,7 @@ export default function Week3Page() {
                   <p className="text-gray-600">Fasta-alternativ</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                  <GiFruitBowl className="w-12 h-12 text-green-600 mx-auto mb-3" />
+                  <GiFruitBowl className="w-12 h-12 text-primary mx-auto mb-3" />
                   <h4 className="text-2xl font-bold text-gray-900">Flex</h4>
                   <p className="text-gray-600">Anpassa efter dig</p>
                 </div>

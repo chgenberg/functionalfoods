@@ -67,7 +67,7 @@ export default function FunctionalBasicsPage() {
       icon: GiStomach,
       title: "Bättre matsmältning",
       description: "Fiberrik mat och probiotiska livsmedel stöder tarmhälsan och minskar magproblem.",
-      color: "text-green-600"
+      color: "text-primary"
     },
     {
       icon: FiHeart,

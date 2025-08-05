@@ -104,7 +104,7 @@ function MicronutrientResultContent() {
               <h3 className="text-xl font-bold text-[#4B2E19]">{nutrient.nutrient}</h3>
               <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                 nutrient.status === "Low" ? "bg-red-100 text-red-700" :
-                nutrient.status === "High" ? "bg-green-100 text-green-700" :
+                nutrient.status === "High" ? "bg-background-secondary text-secondary" :
                 "bg-blue-100 text-blue-700"
               }`}>
                 {nutrient.status}

@@ -153,12 +153,12 @@ export default function AdminRecipesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Gratis recept</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-primary">
                   {recipes.filter(r => r.isFree && !r.isPremium).length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <FiCoffee className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-background-secondary rounded-xl flex items-center justify-center">
+                <FiCoffee className="w-6 h-6 text-primary" />
               </div>
             </div>
           </motion.div>
@@ -273,7 +273,7 @@ export default function AdminRecipesPage() {
                   </span>
                 )}
                 {recipe.isFree && (
-                  <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                  <span className="bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">
                     Gratis
                   </span>
                 )}

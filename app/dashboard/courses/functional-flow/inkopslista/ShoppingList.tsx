@@ -132,7 +132,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
             className="w-full flex justify-between items-center py-2 text-left"
           >
             <div className="flex items-center gap-3">
-              {categoryIcons[category] && React.createElement(categoryIcons[category], { className: "w-6 h-6 text-green-600" })}
+              {categoryIcons[category] && React.createElement(categoryIcons[category], { className: "w-6 h-6 text-primary" })}
               <h3 className="font-bold text-lg text-gray-800">{category}</h3>
             </div>
             {openCategories.has(category) ? <FiChevronUp className="text-gray-500" /> : <FiChevronDown className="text-gray-500" />}
@@ -155,7 +155,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
                     onClick={() => toggleItem(item.id)}
                     className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${checkedItems.has(item.id) ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
-                    <div className={`w-5 h-5 rounded-md flex items-center justify-center border-2 ${checkedItems.has(item.id) ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>
+                    <div className={`w-5 h-5 rounded-md flex items-center justify-center border-2 ${checkedItems.has(item.id) ? 'bg-primary border-primary' : 'border-gray-300'}`}>
                       {checkedItems.has(item.id) && <FiCheck className="w-4 h-4 text-white" />}
                     </div>
                     <span className={`${checkedItems.has(item.id) ? 'line-through' : ''}`}>

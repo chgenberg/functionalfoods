@@ -25,7 +25,7 @@ export default function KunskapsbankPage() {
       image: "/recept.png",
       href: "/kunskapsbank/recept",
       icon: GiCookingPot,
-      color: "text-green-600"
+      color: "text-primary"
     },
     {
       id: 'raw-materials',

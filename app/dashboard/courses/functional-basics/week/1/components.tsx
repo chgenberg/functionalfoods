@@ -72,7 +72,7 @@ export function GoalsSection({ completedGoals, setCompletedGoals }: {
             'Ta och få hjälp av andra'
           ].map((item, index) => (
             <div key={index} className="flex items-center space-x-2">
-              <FiCheckCircle className="text-green-600 flex-shrink-0" />
+              <FiCheckCircle className="text-primary flex-shrink-0" />
               <span className="text-gray-700">{item}</span>
             </div>
           ))}
@@ -201,7 +201,7 @@ export function RecipeHighlights() {
               {/* Icon */}
               <div className="flex items-center justify-center relative z-10">
                 <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg group-hover:bg-white group-hover:scale-110 transition-all duration-300">
-                  <GiMeal className="w-8 h-8 text-green-600" />
+                  <GiMeal className="w-8 h-8 text-primary" />
                 </div>
               </div>
               
@@ -213,7 +213,7 @@ export function RecipeHighlights() {
             <div className="p-4 bg-white relative">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               
-              <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-green-600 transition-colors duration-300">
+              <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-primary transition-colors duration-300">
                 {recipe.name}
               </h4>
               <p className="text-sm text-gray-600 mb-3 group-hover:text-gray-700 transition-colors duration-300">
@@ -252,7 +252,7 @@ export function MealPlanSection({
     breakfast: { icon: GiCookingPot, color: 'text-orange-600', bg: 'bg-orange-100' },
     lunch: { icon: GiMeal, color: 'text-blue-600', bg: 'bg-blue-100' },
     dinner: { icon: GiFruitBowl, color: 'text-purple-600', bg: 'bg-purple-100' },
-    snack: { icon: GiWaterBottle, color: 'text-green-600', bg: 'bg-green-100' }
+    snack: { icon: GiWaterBottle, color: 'text-primary', bg: 'bg-background-secondary' }
   };
 
   return (
@@ -554,7 +554,7 @@ export function ShoppingListSection() {
       <div className="bg-white rounded-2xl shadow-lg p-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold text-gray-900">Inköpslista vecka 1</h2>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors">
             <FiDownload />
             <span>Ladda ner PDF</span>
           </button>
@@ -581,7 +581,7 @@ export function ShoppingListSection() {
                         type="checkbox"
                         checked={checkedItems.includes(`${category}-${index}`)}
                         onChange={() => toggleItem(`${category}-${index}`)}
-                        className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                        className="w-4 h-4 text-primary rounded focus:ring-green-500"
                       />
                       <span className={`text-sm ${
                         checkedItems.includes(`${category}-${index}`)

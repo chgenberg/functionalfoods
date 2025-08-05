@@ -101,7 +101,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
               </motion.button>
               <Link
                 href="/utbildning"
-                className="bg-white border-2 border-gray-200 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-400 hover:text-green-600 transition-all flex items-center justify-center gap-3"
+                className="bg-white border-2 border-gray-200 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-400 hover:text-primary transition-all flex items-center justify-center gap-3"
               >
                 <FiBook className="w-4 h-4 md:w-5 md:h-5" />
                 Våra kurser

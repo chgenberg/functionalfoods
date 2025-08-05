@@ -162,7 +162,7 @@ export default function ChatBot() {
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                   message.sender === 'user'
-                    ? 'bg-green-500 text-white rounded-br-none'
+                    ? 'bg-primary text-white rounded-br-none'
                     : 'bg-gray-100 text-gray-800 rounded-bl-none'
                 }`}
               >
@@ -234,7 +234,7 @@ export default function ChatBot() {
               disabled={!inputValue.trim() || isLoading}
               className={`p-2 rounded-full transition-all ${
                 inputValue.trim() && !isLoading
-                  ? 'bg-green-500 text-white hover:bg-green-600'
+                  ? 'bg-primary text-white hover:bg-primary'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >

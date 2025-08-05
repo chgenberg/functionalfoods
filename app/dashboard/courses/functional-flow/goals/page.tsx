@@ -150,7 +150,7 @@ export default function FlowGoalsPage() {
               
               <div className="text-gray-400">
                 {goal.completed ? (
-                  <FiCheck className="w-5 h-5 text-green-500" />
+                  <FiCheck className="w-5 h-5 text-primary" />
                 ) : (
                   <FiClock className="w-5 h-5" />
                 )}

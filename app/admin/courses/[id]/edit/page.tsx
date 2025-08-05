@@ -561,7 +561,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
               {/* Additional Settings */}
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <FiTarget className="text-green-500" />
+                  <FiTarget className="text-primary" />
                   Pris & Inställningar
                 </h3>
 
@@ -625,7 +625,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                   </div>
                   <div>
                     <div className="text-gray-500">Status</div>
-                    <div className="font-semibold text-green-600">Publicerad</div>
+                    <div className="font-semibold text-primary">Publicerad</div>
                   </div>
                   <div>
                     <div className="text-gray-500">Version</div>
@@ -657,8 +657,8 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                     <div className="text-2xl font-bold text-orange-600">{formData.weeks.length}</div>
                     <div className="text-sm text-gray-600">Veckor</div>
                   </div>
-                  <div className="bg-green-50 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-bold text-green-600">
+                  <div className="bg-background rounded-xl p-4 text-center">
+                    <div className="text-2xl font-bold text-primary">
                       {formData.weeks.reduce((total, week) => {
                         return total + Object.keys(week.mealPlan).reduce((dayTotal, day) => {
                           const meals = week.mealPlan[day];
@@ -822,7 +822,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                                         setSelectedMealInfo({ weekIndex, day, mealType: 'lunch' });
                                         setRecipeSelectorOpen(true);
                                       }}
-                                      className="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-green-400 hover:text-green-600 hover:bg-green-50 transition-all"
+                                      className="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-green-400 hover:text-primary hover:bg-background transition-all"
                                     >
                                       + Välj recept
                                     </button>

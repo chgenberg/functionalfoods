@@ -20,7 +20,7 @@ const availableCourses: Course[] = [
     id: 'functional-basics',
     name: 'Functional Basics',
     displayName: 'Functional Basics',
-    color: 'text-green-600',
+    color: 'text-primary',
     gradient: 'from-green-500 to-teal-600',
     icon: '🌱'
   },
@@ -28,7 +28,7 @@ const availableCourses: Course[] = [
     id: 'functional-flow',
     name: 'Functional Flow',
     displayName: 'Functional Flow',
-    color: 'text-green-800',
+    color: 'text-secondary',
     gradient: 'from-green-800 to-green-900',
     icon: '🌊'
   }
@@ -177,7 +177,7 @@ export default function CourseSwitcher() {
                       )}
                     </div>
                     {isCurrentCourse && (
-                      <FiCheck className="w-5 h-5 text-green-500" />
+                      <FiCheck className="w-5 h-5 text-primary" />
                     )}
                   </button>
                 );

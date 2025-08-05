@@ -47,7 +47,7 @@ interface ForumThread {
 
 const getCategoryStyle = (color: string) => {
   const styles = {
-    green: 'bg-green-100 text-green-800',
+    green: 'bg-background-secondary text-secondary',
     blue: 'bg-blue-100 text-blue-800',
     purple: 'bg-purple-100 text-purple-800',
     orange: 'bg-orange-100 text-orange-800',
@@ -88,7 +88,7 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
           </div>
           
           <Link href={`/dashboard/courses/functional-basics/community/thread/${thread.id}`}>
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 hover:text-green-600 transition-colors group-hover:text-green-600 mb-2 break-words">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 hover:text-primary transition-colors group-hover:text-primary mb-2 break-words">
               {thread.title}
             </h3>
           </Link>
@@ -409,8 +409,8 @@ export default function FunctionalBasicsCommunityPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100"
           >
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FiMessageSquare className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-background-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiMessageSquare className="w-10 h-10 text-primary" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga diskussioner hittades</h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -569,13 +569,13 @@ export default function FunctionalBasicsCommunityPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 }}
-                      className="bg-green-50 border border-green-200 rounded-xl p-4"
+                      className="bg-background border border-green-200 rounded-xl p-4"
                     >
-                      <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                      <h4 className="font-semibold text-secondary mb-2 flex items-center gap-2">
                         <FiStar className="w-4 h-4" />
                         Tips för en bra diskussion
                       </h4>
-                      <ul className="text-sm text-green-700 space-y-1">
+                      <ul className="text-sm text-secondary space-y-1">
                         <li>• Var tydlig och specifik i din fråga</li>
                         <li>• Använd en beskrivande rubrik</li>
                         <li>• Respektera andras åsikter</li>

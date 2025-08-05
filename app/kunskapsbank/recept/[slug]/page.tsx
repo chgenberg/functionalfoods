@@ -492,13 +492,13 @@ export default function RecipePage() {
                       onClick={() => toggleIngredient(index)}
                       className={`flex items-center p-3 rounded-lg cursor-pointer transition-all no-print ${
                         checkedIngredients.includes(index) 
-                          ? 'bg-green-50 text-green-800' 
+                          ? 'bg-background text-secondary' 
                           : 'hover:bg-gray-50'
                       }`}
                     >
                       <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-all no-print ${
                         checkedIngredients.includes(index) 
-                          ? 'bg-green-500 border-green-500' 
+                          ? 'bg-primary border-primary' 
                           : 'border-gray-300'
                       }`}>
                         {checkedIngredients.includes(index) && (
@@ -542,13 +542,13 @@ export default function RecipePage() {
                       onClick={() => toggleStep(index)}
                       className={`flex gap-4 p-4 rounded-xl cursor-pointer transition-all ${
                         checkedSteps.includes(index) 
-                          ? 'bg-green-50' 
+                          ? 'bg-background' 
                           : 'hover:bg-gray-50'
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold transition-all ${
                         checkedSteps.includes(index) 
-                          ? 'bg-green-500 text-white' 
+                          ? 'bg-primary text-white' 
                           : 'bg-orange-100 text-orange-600'
                       }`}>
                         {checkedSteps.includes(index) ? <FiCheck /> : index + 1}
@@ -591,7 +591,7 @@ export default function RecipePage() {
                   className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors no-print"
                 >
                   <h3 className="text-xl font-bold flex items-center gap-2">
-                    <span className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center text-green-600">
+                    <span className="bg-background-secondary w-10 h-10 rounded-full flex items-center justify-center text-primary">
                       <FiHeart className="w-5 h-5" />
                     </span>
                     Näringsvärden
@@ -609,7 +609,7 @@ export default function RecipePage() {
                     >
                       {nutritionLoading ? (
                         <div className="p-8 text-center">
-                          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mx-auto"></div>
+                          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto"></div>
                           <p className="text-gray-600 mt-2">Beräknar näringsvärden...</p>
                         </div>
                       ) : nutrition ? (

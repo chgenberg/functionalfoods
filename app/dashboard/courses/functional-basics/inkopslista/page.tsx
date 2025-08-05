@@ -61,7 +61,7 @@ export default function InkopslistaPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Laddar inköpslistor...</p>
         </div>
       </div>
@@ -179,7 +179,7 @@ export default function InkopslistaPage() {
                   <Link
                     href={`/dashboard/courses/functional-basics/week/${section.week}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="text-sm text-green-600 hover:text-green-700 px-3 py-1 hover:bg-green-50 rounded-lg transition-colors"
+                    className="text-sm text-primary hover:text-secondary px-3 py-1 hover:bg-background rounded-lg transition-colors"
                   >
                     Gå till veckan
                   </Link>
@@ -222,7 +222,7 @@ export default function InkopslistaPage() {
           className="mt-8 text-center"
         >
           <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-6">
-            <GiFruitBowl className="w-12 h-12 text-green-600 mx-auto mb-3" />
+            <GiFruitBowl className="w-12 h-12 text-primary mx-auto mb-3" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Tips för smart shopping</h3>
             <p className="text-gray-700 max-w-2xl mx-auto">
               Planera dina inköp veckovis för att spara tid och pengar. 

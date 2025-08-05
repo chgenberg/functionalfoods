@@ -44,7 +44,7 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
       onClick={handleAddToCart}
       className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 ${
         isAdded
-          ? 'bg-green-500 text-white shadow-lg'
+          ? 'bg-primary text-white shadow-lg'
           : 'bg-primary text-white hover:bg-primary/90 shadow-md hover:shadow-lg'
       }`}
     >

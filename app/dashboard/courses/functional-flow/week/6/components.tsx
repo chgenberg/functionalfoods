@@ -12,7 +12,7 @@ export const CompletionMessage = () => {
       animate={{ opacity: 1, scale: 1 }}
       className="text-center py-8"
     >
-      <h2 className="text-3xl font-bold text-green-600 mb-4">
+      <h2 className="text-3xl font-bold text-primary mb-4">
         Grattis till din prestation!
       </h2>
       <p className="text-gray-700">
