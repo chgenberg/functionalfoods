@@ -188,7 +188,7 @@ export default function Week6Page() {
         >
           {activeTab === 'overview' && (
             <div className="space-y-8">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl shadow-lg p-8 text-white">
+              <div className="bg-primary rounded-2xl shadow-lg p-8 text-white">
                 <div className="flex items-start gap-4">
                   <FiAward className="w-12 h-12 flex-shrink-0" />
                   <div>

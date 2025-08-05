@@ -229,7 +229,7 @@ export default function Week5Page() {
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Veckans fokus: Flexibilitet och egna val</h3>
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6">
+                      <div className="bg-background rounded-xl p-6">
                         <h4 className="font-semibold text-gray-900 mb-3">Utveckla din självständighet</h4>
                         <ul className="space-y-2 text-sm text-gray-700">
                           <li className="flex items-start space-x-2">
@@ -301,7 +301,7 @@ export default function Week5Page() {
                   <Link href="/dashboard/courses/functional-basics/downloads" className="block">
                     <motion.div 
                       whileHover={{ scale: 1.05 }}
-                      className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 text-center cursor-pointer h-full"
+                      className="bg-background rounded-xl p-6 text-center cursor-pointer h-full"
                     >
                       <div className="bg-purple-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                         <FiDownload className="w-6 h-6 text-purple-600" />
@@ -330,8 +330,8 @@ export default function Week5Page() {
                     className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-gradient-to-br from-yellow-50 to-orange-50 hover:shadow-2xl transition-all duration-300"
                   >
                     {/* Background with gradient overlay */}
-                    <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-yellow-100 via-orange-100 to-red-100 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 via-orange-500/20 to-red-600/20" />
+                    <div className="aspect-w-16 aspect-h-12 bg-background-secondary relative overflow-hidden">
+                      <div className="absolute inset-0 bg-primary/10" />
                       
                       {/* Decorative elements */}
                       <div className="absolute inset-0">
@@ -353,7 +353,7 @@ export default function Week5Page() {
                     
                     {/* Content */}
                     <div className="p-6 bg-white relative">
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                       
                       <h4 className="font-bold text-lg mb-2 text-gray-900 group-hover:text-yellow-600 transition-colors duration-300">
                         Torsk från mellanöstern
@@ -453,7 +453,7 @@ export default function Week5Page() {
                       transition: { duration: 0.2 }
                     }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-gradient-to-br from-pink-50 to-purple-50 hover:shadow-2xl transition-all duration-300"
+                    className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-background hover:shadow-2xl transition-all duration-300"
                   >
                     {/* Background with gradient overlay */}
                     <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100 relative overflow-hidden">
@@ -588,7 +588,7 @@ export default function Week5Page() {
                   
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="group bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border border-pink-100 hover:border-pink-300 transition-all duration-300 hover:shadow-xl"
+                    className="group bg-background rounded-xl p-6 border border-pink-100 hover:border-pink-300 transition-all duration-300 hover:shadow-xl"
                   >
                     <div className="bg-gradient-to-r from-pink-400 to-purple-500 rounded-full w-16 h-16 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <span className="text-3xl">🍰</span>
@@ -669,7 +669,7 @@ export default function Week5Page() {
 
       {/* Next Week Button */}
       <div className="pb-16">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-8 text-white text-center">
+        <div className="bg-primary rounded-2xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">Snart i mål!</h3>
           <p className="text-lg mb-6">
             Du har kommit långt på din resa. Sista veckan väntar med sammanfattning och nästa steg.

@@ -115,7 +115,7 @@ export default function Week3Page() {
               className="space-y-8"
             >
               {/* Welcome Message */}
-              <div className="bg-gradient-to-r from-orange-500 to-red-600 rounded-3xl p-8 text-white shadow-xl">
+              <div className="bg-primary rounded-3xl p-8 text-white shadow-xl">
                 <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 3!</h2>
                 <p className="text-lg leading-relaxed mb-6">
                   Ny vecka med nya härliga recept i ditt kostschema! Du kanske har hittat en favoritfrukost 
@@ -138,7 +138,7 @@ export default function Week3Page() {
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Veckans fokus: Flexibilitet</h3>
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6">
+                      <div className="bg-background rounded-xl p-6">
                         <h4 className="font-semibold text-gray-900 mb-3">16:8 Fasta</h4>
                         <p className="text-gray-700 mb-3">
                           Prova att äta inom ett 8-timmars fönster och fasta i 16 timmar. 

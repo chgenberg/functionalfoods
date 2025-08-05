@@ -204,7 +204,7 @@ export default function Week5Page() {
               className="space-y-8"
             >
               {/* Welcome Message */}
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl p-8 text-white shadow-xl">
+              <div className="bg-primary rounded-3xl p-8 text-white shadow-xl">
                 <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 5!</h2>
                 <p className="text-lg leading-relaxed mb-6">
                   Tycker du att det är bra att allt är planerat för dig, eller önskar du mer flexibilitet? 
@@ -229,7 +229,7 @@ export default function Week5Page() {
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Veckans fokus: Flexibilitet och egna val</h3>
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6">
+                      <div className="bg-background rounded-xl p-6">
                         <h4 className="font-semibold text-gray-900 mb-3">Utveckla din självständighet</h4>
                         <ul className="space-y-2 text-sm text-gray-700">
                           <li className="flex items-start space-x-2">

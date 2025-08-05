@@ -229,7 +229,7 @@ export default function Week1Page() {
 
       {/* Next Week Button - Mobile Optimized */}
       <div className="pb-8 md:pb-16">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 text-white text-center">
+        <div className="bg-primary rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 text-white text-center">
           <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 md:mb-4">Redo för nästa steg?</h3>
           <p className="text-sm sm:text-base md:text-lg mb-4 md:mb-6">
             När du känner dig redo, fortsätt till vecka 2 för att fördjupa din kunskap och bygga starkare vanor.

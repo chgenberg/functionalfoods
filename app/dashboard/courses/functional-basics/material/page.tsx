@@ -30,7 +30,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Vad är Functional Foods?',
       description: 'Lär dig grunderna om mervärdesmat och dess 10 livsmedelskategorier',
       icon: GiFruitBowl,
-      color: 'from-green-500 to-teal-600',
+      color: '#014421',
       readTime: '6 min',
       category: 'Grundläggande'
     },
@@ -39,7 +39,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Functional Foods Topplista',
       description: 'De mest kraftfulla livsmedlen för din hälsa',
       icon: FiStar,
-      color: 'from-purple-500 to-pink-600',
+      color: '#112A12',
       readTime: '8 min',
       category: 'Grundläggande'
     },
@@ -48,7 +48,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Fördelarna med Functional Foods',
       description: 'Upptäck de omfattande hälsofördelarna',
       icon: FiHeart,
-      color: 'from-red-500 to-pink-600',
+      color: '#014421',
       readTime: '10 min',
       category: 'Hälsofördelar'
     },
@@ -57,7 +57,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Functional Foods - 3 steg till ett friskare liv',
       description: 'En steg-för-steg guide till bättre hälsa',
       icon: FiBookOpen,
-      color: 'from-teal-500 to-green-600',
+      color: '#112A12',
       readTime: '12 min',
       category: 'Praktisk guide'
     },
@@ -66,7 +66,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Dags att komma igång',
       description: 'Praktiska tips för att starta din resa',
       icon: FiTarget,
-      color: 'from-orange-500 to-red-600',
+      color: '#014421',
       readTime: '12 min',
       category: 'Praktisk guide'
     },
@@ -75,7 +75,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Att välja rätt kolhydrater',
       description: 'Skillnaden mellan bra och dåliga kolhydrater',
       icon: GiWheat,
-      color: 'from-yellow-500 to-orange-600',
+      color: '#112A12',
       readTime: '10 min',
       category: 'Näringslära'
     },
@@ -84,7 +84,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Att välja rätt proteiner',
       description: 'Kompletta proteinkällor för optimal hälsa',
       icon: GiMeal,
-      color: 'from-blue-500 to-indigo-600',
+      color: '#014421',
       readTime: '10 min',
       category: 'Näringslära'
     },
@@ -93,7 +93,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Ersättningsguide för kolhydrater',
       description: 'Hälsosamma alternativ till traditionella kolhydrater',
       icon: GiWheat,
-      color: 'from-amber-500 to-yellow-600',
+      color: '#112A12',
       readTime: '6 min',
       category: 'Näringslära'
     },
@@ -102,7 +102,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Motivation och reflektion',
       description: 'Verktyg för att hålla motivationen uppe',
       icon: FiAward,
-      color: 'from-indigo-500 to-purple-600',
+      color: '#014421',
       readTime: '15 min',
       category: 'Mindset'
     },
@@ -111,7 +111,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Functional Foods som livsstil',
       description: 'Gör hälsosam mat till en naturlig del av vardagen',
       icon: FiHeart,
-      color: 'from-violet-500 to-purple-600',
+      color: '#112A12',
       readTime: '6 min',
       category: 'Mindset'
     },
@@ -120,7 +120,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Benbuljong - Naturens healing elixir',
       description: 'Lär dig tillaga näringsrik benbuljong',
       icon: GiMeal,
-      color: 'from-amber-500 to-orange-600',
+      color: '#014421',
       readTime: '8 min',
       category: 'Recept & Tips'
     },
@@ -128,17 +128,17 @@ export default function KnowledgeMaterialPage() {
       id: 'drycker',
       title: 'Hälsosamma drycker',
       description: 'Upptäck näringsrika drycker för optimal hälsa',
-      icon: GiHealthNormal,
-      color: 'from-cyan-500 to-blue-600',
+      icon: GiFruitBowl,
+      color: '#112A12',
       readTime: '6 min',
       category: 'Recept & Tips'
     },
     {
-      id: 'naturens-egna-halsobomber',
+      id: 'superfoods',
       title: 'Naturens egna hälsobomber',
       description: 'Superfoods som förvandlar din hälsa',
       icon: FiStar,
-      color: 'from-emerald-500 to-green-600',
+      color: '#014421',
       readTime: '8 min',
       category: 'Superfoods'
     },
@@ -147,7 +147,7 @@ export default function KnowledgeMaterialPage() {
       title: 'Att äta ute med Functional Foods',
       description: 'Tips för hälsosamma val på restaurang',
       icon: GiMeal,
-      color: 'from-rose-500 to-pink-600',
+      color: '#112A12',
       readTime: '10 min',
       category: 'Praktisk guide'
     },
@@ -155,17 +155,17 @@ export default function KnowledgeMaterialPage() {
       id: 'at-mer-functional-foods-pa-ett-enkelt-satt',
       title: 'Ät mer Functional Foods på ett enkelt sätt',
       description: 'Enkla strategier för att öka näringsintaget',
-      icon: GiFruitBowl,
-      color: 'from-lime-500 to-green-600',
+      icon: FiBook,
+      color: '#014421',
       readTime: '8 min',
       category: 'Praktisk guide'
     },
     {
-      id: 'periodisk-fasta-ger-klarhet-och-energi',
+      id: 'periodisk-fasta',
       title: 'Periodisk fasta ger klarhet och energi',
       description: 'Fördelarna med kontrollerad fasta',
-      icon: FiTarget,
-      color: 'from-sky-500 to-blue-600',
+      icon: GiHealthNormal,
+      color: '#112A12',
       readTime: '8 min',
       category: 'Hälsofördelar'
     },
@@ -174,34 +174,34 @@ export default function KnowledgeMaterialPage() {
       title: 'Reflektion vecka 3',
       description: 'Utvärdera dina framsteg och lärdomar',
       icon: FiBook,
-      color: 'from-teal-500 to-cyan-600',
+      color: '#014421',
       readTime: '5 min',
       category: 'Reflektion'
     },
     {
-      id: 'fragor-och-svars',
+      id: 'fragor-och-svar',
       title: 'Frågor och svar',
       description: 'Svar på vanliga frågor om Functional Foods',
-      icon: FiBookOpen,
-      color: 'from-indigo-500 to-blue-600',
+      icon: FiBook,
+      color: '#112A12',
       readTime: '15 min',
       category: 'FAQ'
     },
     {
-      id: 'maldokument-styrelsemote-1',
+      id: 'malsattning-och-planering',
       title: 'Målsättning och planering',
       description: 'Strukturerad planering för hälsomål',
       icon: FiTarget,
-      color: 'from-purple-500 to-indigo-600',
+      color: '#014421',
       readTime: '8 min',
       category: 'Planering'
     },
     {
-      id: 'maldokument-styrelsemote-2',
+      id: 'utvardering-och-nasta-steg',
       title: 'Utvärdering och nästa steg',
       description: 'Reflektera och planera framåt',
       icon: FiAward,
-      color: 'from-pink-500 to-purple-600',
+      color: '#112A12',
       readTime: '6 min',
       category: 'Planering'
     }
@@ -322,7 +322,7 @@ export default function KnowledgeMaterialPage() {
               <Link href={`/dashboard/courses/functional-basics/material/${module.id}`}>
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 h-full">
                   {/* Header with gradient */}
-                  <div className={`bg-gradient-to-r ${module.color} p-6 text-white relative overflow-hidden`}>
+                  <div className="p-6 text-white relative overflow-hidden" style={{ backgroundColor: module.color }}>
                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
                     <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -ml-8 -mb-8"></div>
                     

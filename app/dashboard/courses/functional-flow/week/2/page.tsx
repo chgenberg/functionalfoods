@@ -100,7 +100,7 @@ export default function Week2Page() {
               className="space-y-8"
             >
               {/* Welcome Message */}
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
+              <div className="bg-primary rounded-3xl p-8 text-white shadow-xl">
                 <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 2!</h2>
                 <p className="text-lg leading-relaxed mb-6">
                   Nu har du kommit igång med din resa och det är dags att bygga vidare på grunderna. 
@@ -240,7 +240,7 @@ export default function Week2Page() {
 
       {/* Next Week Button */}
       <div className="pb-16">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-8 text-white text-center">
+        <div className="bg-primary rounded-2xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">Redo för nästa steg?</h3>
           <p className="text-lg mb-6">
             När du känner dig redo, fortsätt till vecka 3 för att utforska flexibilitet och fasta.
