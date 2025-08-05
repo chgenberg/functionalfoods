@@ -56,6 +56,7 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       {/* Article Quick Access Button */}
       <ArticleQuickAccess />
+      {/* Force deployment refresh */}
       
       {/* Hero Section with Working Video Background */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
