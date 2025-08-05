@@ -249,10 +249,10 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video background - SIMPLIFIED TEST */}
         <div className="absolute inset-0 z-0">
-          {/* Back to smaller videos without LFS */}
+          {/* TEST: External video to isolate the problem */}
           <video
-            src="/introvideo_compressed.mp4"
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{ 
               zIndex: 1
             }}
@@ -260,21 +260,14 @@ export default function Home() {
             autoPlay
             loop
             playsInline
-            data-video-type="desktop"
+            crossOrigin="anonymous"
+            data-video-type="external-test"
           />
           
-          <video
-            src="/introvideo_mobile.mp4"
-            className="block md:hidden absolute inset-0 w-full h-full object-cover"
-            style={{ 
-              zIndex: 1
-            }}
-            muted
-            autoPlay
-            loop
-            playsInline
-            data-video-type="mobile"
-          />
+          {/* Show current status */}
+          <div className="absolute top-4 right-4 bg-black/80 text-white p-2 rounded text-sm" style={{ zIndex: 50 }}>
+            VIDEO TEST: External source
+          </div>
           
           {/* Fallback background image - only if error */}
           <div 
