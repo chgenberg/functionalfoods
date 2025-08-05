@@ -18,7 +18,6 @@ export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
-  const [forceShowVideo, setForceShowVideo] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const router = useRouter();
 
@@ -26,44 +25,66 @@ export default function Home() {
   useEffect(() => {
     const attemptVideoPlay = () => {
       const videos = document.querySelectorAll('video');
-      videos.forEach(video => {
-        if (video.paused) {
+      console.log(`Found ${videos.length} videos to play`);
+      
+      videos.forEach((video, index) => {
+        console.log(`Attempting to play video ${index + 1}`);
+        
+        if (video.readyState >= 3) { // HAVE_FUTURE_DATA
           video.currentTime = 0;
           
-          video.play().then(() => {
-            console.log('Video started playing successfully');
-            setVideoLoaded(true);
-            setVideoError(false);
-          }).catch((error) => {
-            console.log('Video autoplay failed:', error);
-            setVideoLoaded(true);
-          });
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              console.log(`Video ${index + 1} started playing successfully`);
+              setVideoLoaded(true);
+              setVideoError(false);
+            }).catch((error) => {
+              console.log(`Video ${index + 1} autoplay failed:`, error);
+              setVideoError(true);
+            });
+          }
+        } else {
+          // Wait for video to load more data
+          video.addEventListener('canplay', () => {
+            video.currentTime = 0;
+            video.play().then(() => {
+              console.log(`Video ${index + 1} loaded and started playing`);
+              setVideoLoaded(true);
+              setVideoError(false);
+            }).catch((error) => {
+              console.log(`Video ${index + 1} play failed after loading:`, error);
+              setVideoError(true);
+            });
+          }, { once: true });
         }
       });
     };
 
-    // Try after a short delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      attemptVideoPlay();
-    }, 500);
+    // Multiple attempts with different timings
+    const timers = [
+      setTimeout(attemptVideoPlay, 100),
+      setTimeout(attemptVideoPlay, 500),
+      setTimeout(attemptVideoPlay, 1000),
+    ];
 
-    // Try on first user interaction
+    // Try on user interaction
     const handleInteraction = () => {
       attemptVideoPlay();
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
-      document.removeEventListener('keydown', handleInteraction);
+      document.removeEventListener('scroll', handleInteraction);
     };
 
     document.addEventListener('click', handleInteraction);
     document.addEventListener('touchstart', handleInteraction);
-    document.addEventListener('keydown', handleInteraction);
+    document.addEventListener('scroll', handleInteraction);
 
     return () => {
-      clearTimeout(timer);
+      timers.forEach(clearTimeout);
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('touchstart', handleInteraction);
-      document.removeEventListener('keydown', handleInteraction);
+      document.removeEventListener('scroll', handleInteraction);
     };
   }, []);
 
@@ -161,23 +182,9 @@ export default function Home() {
       
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Video background */}
+        {/* Video background - prioritized */}
         <div className="absolute inset-0 z-0">
-          {/* Fallback background image - only visible if videos fail */}
-          <div 
-            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
-              videoError ? 'opacity-100' : 'opacity-0'
-            }`}
-            style={{
-              backgroundImage: 'url(/ulrika-hero-bg.jpg)',
-              backgroundColor: '#f0fdf4'
-            }}
-          >
-            {/* Gradient overlay for better text readability */}
-            <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
-          </div>
-          
-          {/* Desktop video */}
+          {/* Desktop video - highest priority */}
           <video
             key="desktop-video"
             autoPlay
@@ -185,14 +192,17 @@ export default function Home() {
             muted
             playsInline
             preload="auto"
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            className="hidden md:block absolute inset-0 w-full h-full object-cover z-10"
+            style={{ zIndex: 1 }}
             onLoadedData={() => {
               console.log('Desktop video loaded');
               setVideoLoaded(true);
+              setVideoError(false);
             }}
             onCanPlay={() => {
               console.log('Desktop video can play');
               setVideoLoaded(true);
+              setVideoError(false);
             }}
             onError={(e) => {
               console.log('Desktop video error:', e);
@@ -202,7 +212,7 @@ export default function Home() {
             <source src="/introvideo_compressed.mp4" type="video/mp4" />
           </video>
           
-          {/* Mobile video */}
+          {/* Mobile video - highest priority */}
           <video
             key="mobile-video"
             autoPlay
@@ -210,14 +220,17 @@ export default function Home() {
             muted
             playsInline
             preload="auto"
-            className="block md:hidden absolute inset-0 w-full h-full object-cover"
+            className="block md:hidden absolute inset-0 w-full h-full object-cover z-10"
+            style={{ zIndex: 1 }}
             onLoadedData={() => {
               console.log('Mobile video loaded');
               setVideoLoaded(true);
+              setVideoError(false);
             }}
             onCanPlay={() => {
               console.log('Mobile video can play');
               setVideoLoaded(true);
+              setVideoError(false);
             }}
             onError={(e) => {
               console.log('Mobile video error:', e);
@@ -227,8 +240,30 @@ export default function Home() {
             <source src="/introvideo_mobile.mp4" type="video/mp4" />
           </video>
           
-          {/* Enhanced overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/40" />
+          {/* Fallback background image - only if videos fail */}
+          <div 
+            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+              videoError || !videoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{
+              backgroundImage: 'url(/ulrika-hero-bg.jpg)',
+              backgroundColor: '#f0fdf4',
+              zIndex: 0
+            }}
+          >
+            {/* Gradient overlay for better text readability */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-900/60 via-green-800/40 to-blue-900/50" />
+          </div>
+          
+          {/* Text overlay for videos */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/30 z-20" />
+          
+          {/* Debug info - remove in production */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="absolute top-4 left-4 z-50 bg-black/50 text-white p-2 rounded text-xs">
+              Video Status: {videoLoaded ? 'Loaded' : 'Loading'} | Error: {videoError ? 'Yes' : 'No'}
+            </div>
+          )}
         </div>
 
         {/* Animated background - now with lower opacity to blend with video */}
