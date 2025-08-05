@@ -159,7 +159,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
               transition={{ delay: index * 0.05 }}
               className={`group flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer
                 ${item.isChecked 
-                  ? 'bg-background border-green-200' 
+                  ? 'bg-background border-border' 
                   : 'bg-gray-50 hover:bg-gray-100 border-gray-200'
                 } border`}
               onClick={() => toggleItem(item.id, !item.isChecked)}
@@ -168,7 +168,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
                 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all
                 ${item.isChecked 
                   ? 'bg-primary border-primary' 
-                  : 'border-gray-300 group-hover:border-green-400'
+                  : 'border-gray-300 group-hover:border-primary'
                 }
               `}>
                 {item.isChecked && (

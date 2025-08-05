@@ -83,7 +83,7 @@ function formatContent(content: string): JSX.Element[] {
     // Handle headers (all caps or ending with colon)
     if (paragraph === paragraph.toUpperCase() || paragraph.endsWith(':')) {
       return (
-        <h3 key={index} className="text-xl font-bold text-gray-900 mt-8 mb-4 border-b-2 border-green-200 pb-2">
+        <h3 key={index} className="text-xl font-bold text-gray-900 mt-8 mb-4 border-b-2 border-border pb-2">
           {paragraph}
         </h3>
       );

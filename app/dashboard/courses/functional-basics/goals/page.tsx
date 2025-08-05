@@ -254,7 +254,7 @@ export default function GoalsPage() {
                           transition={{ delay: index * 0.05 }}
                           className={`p-4 rounded-lg border-2 transition-all ${
                             isCompleted 
-                              ? 'bg-background border-green-200' 
+                              ? 'bg-background border-border' 
                               : isActive 
                                 ? 'bg-orange-50 border-orange-200' 
                                 : 'bg-gray-50 border-gray-200'

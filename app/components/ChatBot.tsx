@@ -135,7 +135,7 @@ export default function ChatBot() {
                 height={40}
                 className="rounded-full border-2 border-white"
               />
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-accent rounded-full border-2 border-white"></div>
             </div>
             <div>
               <h3 className="font-semibold">Ulrika AI:sson</h3>
@@ -226,7 +226,7 @@ export default function ChatBot() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="Skriv ditt meddelande..."
-              className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               disabled={isLoading}
             />
             <button

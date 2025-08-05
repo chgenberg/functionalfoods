@@ -218,7 +218,7 @@ function ResultPageContent() {
             </div>
             <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                <FiActivity className="w-5 h-5 text-green-400" />
+                <FiActivity className="w-5 h-5 text-accent" />
                 Energimetabolism
               </h3>
               <p className="text-white/70 text-sm mb-2">
@@ -291,7 +291,7 @@ function ResultPageContent() {
                   transition={{ delay: 0.7 + index * 0.1 }}
                   className="flex items-start gap-2 mb-3"
                 >
-                  <FiArrowRight className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                  <FiArrowRight className="w-4 h-4 text-accent mt-1 flex-shrink-0" />
                   <div>
                     <span className="text-white/80 block">{rec}</span>
                     <span className="text-white/60 text-sm block mt-1">
@@ -450,19 +450,19 @@ function ResultPageContent() {
                 </p>
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <FiCheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">6 veckors strukturerat program</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <FiCheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">Personlig coachning och support</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <FiCheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">Över 75 näringsrika recept</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-green-400" />
+                    <FiCheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">Vetenskapligt baserade metoder</span>
                   </div>
                 </div>
@@ -654,7 +654,7 @@ function ChatBlockContent({ blockKey, value }: { blockKey: string; value: any })
     // Färgfunktion
     function getColor(status: string) {
       if (!status || status === "" || status === "unknown") return "bg-gray-300";
-      if (status.toLowerCase().includes("low")) return "bg-green-400";
+      if (status.toLowerCase().includes("low")) return "bg-accent";
       if (status.toLowerCase().includes("medium")) return "bg-yellow-400";
       if (status.toLowerCase().includes("high")) return "bg-red-500";
       return "bg-gray-300";
@@ -762,7 +762,7 @@ function RiskProfileDashboard({ value, labels }: { value: any, labels: any }) {
 
   function getColor(status: string) {
     if (!status || status === "" || status === "unknown") return "bg-gray-300";
-    if (status.toLowerCase().includes("low")) return "bg-green-400";
+    if (status.toLowerCase().includes("low")) return "bg-accent";
     if (status.toLowerCase().includes("medium")) return "bg-yellow-400";
     if (status.toLowerCase().includes("high")) return "bg-red-500";
     return "bg-gray-300";

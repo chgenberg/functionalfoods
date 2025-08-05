@@ -581,7 +581,7 @@ export function ShoppingListSection() {
                         type="checkbox"
                         checked={checkedItems.includes(`${category}-${index}`)}
                         onChange={() => toggleItem(`${category}-${index}`)}
-                        className="w-4 h-4 text-primary rounded focus:ring-green-500"
+                        className="w-4 h-4 text-primary rounded focus:ring-primary"
                       />
                       <span className={`text-sm ${
                         checkedItems.includes(`${category}-${index}`)

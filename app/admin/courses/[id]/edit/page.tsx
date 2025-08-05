@@ -822,7 +822,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                                         setSelectedMealInfo({ weekIndex, day, mealType: 'lunch' });
                                         setRecipeSelectorOpen(true);
                                       }}
-                                      className="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-green-400 hover:text-primary hover:bg-background transition-all"
+                                      className="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-primary hover:text-primary hover:bg-background transition-all"
                                     >
                                       + Välj recept
                                     </button>

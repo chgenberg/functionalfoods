@@ -356,7 +356,7 @@ export default function FunctionalBasicsPage() {
                                 animate={{ x: 0, opacity: 1 }}
                                 className={`flex items-start md:items-center justify-between p-3 md:p-4 rounded-lg border ${
                                   goal.status === 'completed' 
-                                    ? 'bg-background border-green-200' 
+                                    ? 'bg-background border-border' 
                                     : 'bg-white border-gray-200 hover:border-gray-300'
                                 } transition-all`}
                               >

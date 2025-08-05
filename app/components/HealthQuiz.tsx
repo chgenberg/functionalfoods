@@ -651,7 +651,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                       className={`relative p-2.5 sm:p-4 rounded-xl border-2 transition-all duration-200 text-left group overflow-hidden ${
                         answers[currentQuestion] === option.value
                           ? 'border-primary bg-background shadow-lg transform scale-[1.02]'
-                          : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-green-400 hover:shadow-md'
+                          : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-primary hover:shadow-md'
                       }`}
                     >
                       {/* Hover gradient effect */}

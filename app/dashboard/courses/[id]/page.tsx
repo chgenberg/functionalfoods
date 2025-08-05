@@ -271,7 +271,7 @@ export default function CoursePage() {
                             key={lesson.id}
                             className={`border rounded-lg p-4 transition-all cursor-pointer ${
                               isCompleted 
-                                ? 'border-green-200 bg-background' 
+                                ? 'border-border bg-background' 
                                 : 'border-gray-200 hover:border-primary/50 hover:shadow-md'
                             }`}
                             onClick={() => lesson.type === 'video' && setPlayingVideo(lesson.id)}

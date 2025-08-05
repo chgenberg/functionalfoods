@@ -345,7 +345,7 @@ export default function FunctionalBasicsCommunityPage() {
             placeholder="Sök diskussioner..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 shadow-sm"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 shadow-sm"
           />
         </motion.div>
         <motion.div 
@@ -357,7 +357,7 @@ export default function FunctionalBasicsCommunityPage() {
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 appearance-none shadow-sm cursor-pointer"
+            className="pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 appearance-none shadow-sm cursor-pointer"
           >
             <option value="latest">Senaste</option>
             <option value="popular">Mest populära</option>
@@ -510,7 +510,7 @@ export default function FunctionalBasicsCommunityPage() {
                         <select
                           value={newThreadData.categoryId}
                           onChange={(e) => setNewThreadData(prev => ({ ...prev, categoryId: e.target.value }))}
-                          className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 appearance-none bg-gray-50 cursor-pointer"
+                          className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 appearance-none bg-gray-50 cursor-pointer"
                           required
                         >
                           <option value="">Välj en kategori för din diskussion</option>
@@ -537,7 +537,7 @@ export default function FunctionalBasicsCommunityPage() {
                         type="text"
                         value={newThreadData.title}
                         onChange={(e) => setNewThreadData(prev => ({ ...prev, title: e.target.value }))}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50"
                         placeholder="En kort och beskrivande rubrik..."
                         required
                       />
@@ -557,7 +557,7 @@ export default function FunctionalBasicsCommunityPage() {
                         value={newThreadData.content}
                         onChange={(e) => setNewThreadData(prev => ({ ...prev, content: e.target.value }))}
                         rows={6}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none transition-all duration-200 bg-gray-50"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-200 bg-gray-50"
                         placeholder="Beskriv din fråga eller diskussion i detalj..."
                         required
                       />
@@ -569,7 +569,7 @@ export default function FunctionalBasicsCommunityPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 }}
-                      className="bg-background border border-green-200 rounded-xl p-4"
+                      className="bg-background border border-border rounded-xl p-4"
                     >
                       <h4 className="font-semibold text-secondary mb-2 flex items-center gap-2">
                         <FiStar className="w-4 h-4" />

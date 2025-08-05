@@ -227,7 +227,7 @@ export default function NewsletterSignup({
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className={`text-center text-sm ${status === 'success' ? 'text-green-300' : 'text-red-300'}`}
+                  className={`text-center text-sm ${status === 'success' ? 'text-accent' : 'text-red-300'}`}
                 >
                   {message}
                 </motion.p>

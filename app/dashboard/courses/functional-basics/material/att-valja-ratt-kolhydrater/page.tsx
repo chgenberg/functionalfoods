@@ -202,7 +202,7 @@ export default function AttValjaRattKolhydraterPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
             className={`bg-white rounded-xl shadow-lg p-6 cursor-pointer transition-all ${
-              selectedType === 'slow' ? 'ring-2 ring-green-400 transform scale-105' : 'hover:shadow-xl'
+              selectedType === 'slow' ? 'ring-2 ring-primary transform scale-105' : 'hover:shadow-xl'
             }`}
             onClick={() => setSelectedType(selectedType === 'slow' ? null : 'slow')}
           >

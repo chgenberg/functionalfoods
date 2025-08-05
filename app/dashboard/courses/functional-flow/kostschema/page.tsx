@@ -121,8 +121,8 @@ const CalendarDay = ({ day, date, isToday, isSelected, onClick, hasMealPlan, day
             ? 'border-primary bg-primary text-white shadow-lg' 
             : hasMealPlan
               ? isCurrentWeek
-                ? 'border-green-300 bg-background text-gray-900 hover:border-green-400'
-                : 'border-gray-200 bg-white text-gray-900 hover:border-green-300 hover:bg-background'
+                ? 'border-border bg-background text-gray-900 hover:border-primary'
+                : 'border-gray-200 bg-white text-gray-900 hover:border-border hover:bg-background'
               : 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
         }
       `}

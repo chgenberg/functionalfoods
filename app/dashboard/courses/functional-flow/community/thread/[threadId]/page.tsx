@@ -378,7 +378,7 @@ export default function FunctionalBasicsThreadPage() {
                 value={newReply}
                 onChange={(e) => setNewReply(e.target.value)}
                 placeholder="Dela dina tankar om Functional Basics..."
-                className="w-full h-24 md:h-32 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm md:text-base"
+                className="w-full h-24 md:h-32 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-sm md:text-base"
                 required
               />
             </div>

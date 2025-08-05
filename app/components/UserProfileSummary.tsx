@@ -82,7 +82,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
 
   if (compact) {
     return (
-      <div className="bg-background border border-green-200 rounded-xl p-3 mb-3">
+      <div className="bg-background border border-border rounded-xl p-3 mb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <FiUser className="w-4 h-4 text-primary" />
@@ -100,7 +100,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
   }
 
   return (
-    <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-4 mb-4">
+    <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-border rounded-xl p-4 mb-4">
       <div className="flex items-center space-x-2 mb-3">
         <FiUser className="w-5 h-5 text-primary" />
         <span className="font-semibold text-secondary">Din Hälsoprofil</span>
@@ -146,7 +146,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
       )}
 
       {(userData.symptomAnalysesCount > 0 || userData.coursesCount > 0) && (
-        <div className="flex items-center space-x-4 mt-3 pt-3 border-t border-green-200">
+        <div className="flex items-center space-x-4 mt-3 pt-3 border-t border-border">
           {userData.symptomAnalysesCount > 0 && (
             <div className="flex items-center space-x-1 text-blue-600">
               <FiActivity className="w-4 h-4" />

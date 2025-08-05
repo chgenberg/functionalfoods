@@ -253,7 +253,7 @@ export default function Home() {
                 </motion.button>
                 <Link
                   href="/utbildning"
-                  className="bg-white/90 backdrop-blur-sm border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-400 hover:text-primary hover:bg-white transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 backdrop-blur-sm border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-primary hover:text-primary hover:bg-white transition-all flex items-center justify-center gap-3"
                 >
                   <FiBook className="w-4 h-4 md:w-5 md:h-5" />
                   Våra kurser

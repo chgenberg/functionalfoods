@@ -129,7 +129,7 @@ export default function VideoTest() {
       {/* Logs */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Debug Logs</h2>
-        <div className="bg-black text-green-400 p-4 rounded-lg font-mono text-sm max-h-96 overflow-y-auto">
+        <div className="bg-black text-accent p-4 rounded-lg font-mono text-sm max-h-96 overflow-y-auto">
           {logs.map((log, index) => (
             <div key={index}>{log}</div>
           ))}

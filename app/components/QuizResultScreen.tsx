@@ -425,7 +425,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         className={`group relative w-14 h-14 rounded-full text-2xl transition-all flex-shrink-0 ${
                           activeTab === tab.id
                             ? 'bg-primary text-white shadow-lg'
-                            : 'bg-white text-gray-600 hover:bg-background-secondary hover:text-secondary border border-gray-200 hover:border-green-300 shadow-sm hover:shadow-md'
+                            : 'bg-white text-gray-600 hover:bg-background-secondary hover:text-secondary border border-gray-200 hover:border-border shadow-sm hover:shadow-md'
                         }`}
                         title={tab.label}
                       >

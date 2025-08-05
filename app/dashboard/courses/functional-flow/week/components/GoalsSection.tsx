@@ -200,7 +200,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                 animate={{ x: 0, opacity: 1 }}
                 className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-lg border ${
                   goal.status === 'completed' 
-                    ? 'bg-background border-green-200' 
+                    ? 'bg-background border-border' 
                     : 'bg-white border-gray-200 hover:border-gray-300'
                 } transition-all gap-3`}
               >

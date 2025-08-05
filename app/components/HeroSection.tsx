@@ -51,7 +51,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-green-400/20 rounded-full"
+            className="absolute w-2 h-2 bg-accent/20 rounded-full"
             initial={{
               x: Math.random() * 1000,
               y: Math.random() * 1000,
@@ -101,7 +101,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
               </motion.button>
               <Link
                 href="/utbildning"
-                className="bg-white border-2 border-gray-200 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-green-400 hover:text-primary transition-all flex items-center justify-center gap-3"
+                className="bg-white border-2 border-gray-200 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-3"
               >
                 <FiBook className="w-4 h-4 md:w-5 md:h-5" />
                 Våra kurser

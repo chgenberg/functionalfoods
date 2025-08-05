@@ -567,7 +567,7 @@ export default function Week5Page() {
                   
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="group bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 border border-green-100 hover:border-green-300 transition-all duration-300 hover:shadow-xl"
+                    className="group bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6 border border-green-100 hover:border-border transition-all duration-300 hover:shadow-xl"
                   >
                     <div className="bg-gradient-to-r from-green-400 to-teal-500 rounded-full w-16 h-16 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <span className="text-3xl">🥘</span>

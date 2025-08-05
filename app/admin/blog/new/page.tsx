@@ -204,7 +204,7 @@ export default function NewBlogPage() {
                   updateBlogData('title', e.target.value);
                   updateBlogData('slug', generateSlug(e.target.value));
                 }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="t.ex. Omega-3: Nyckeln till hjärnhälsa"
               />
             </div>
@@ -217,7 +217,7 @@ export default function NewBlogPage() {
                 type="text"
                 value={blogData.slug}
                 onChange={(e) => updateBlogData('slug', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-gray-50 transition-all duration-200"
                 placeholder="omega-3-nyckeln-till-hjarnhalsa"
               />
             </div>
@@ -230,7 +230,7 @@ export default function NewBlogPage() {
                 <select
                   value={blogData.category}
                   onChange={(e) => updateBlogData('category', e.target.value)}
-                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
                 >
                   <option value="">Välj kategori</option>
                   {categories.map(category => (
@@ -253,7 +253,7 @@ export default function NewBlogPage() {
                 type="number"
                 value={blogData.readTime}
                 onChange={(e) => updateBlogData('readTime', parseInt(e.target.value))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 min="1"
               />
             </div>
@@ -265,7 +265,7 @@ export default function NewBlogPage() {
                   id="published"
                   checked={blogData.published}
                   onChange={(e) => updateBlogData('published', e.target.checked)}
-                  className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                  className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
                 />
                 <div className="ml-3">
                   <span className="text-sm font-medium text-gray-700">Publicera direkt</span>
@@ -287,7 +287,7 @@ export default function NewBlogPage() {
                     type="datetime-local"
                     value={blogData.publishedAt}
                     onChange={(e) => updateBlogData('publishedAt', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-gray-400"
                   />
                 </motion.div>
               )}
@@ -306,7 +306,7 @@ export default function NewBlogPage() {
                 value={blogData.excerpt}
                 onChange={(e) => updateBlogData('excerpt', e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="En kort sammanfattning som visas i artikelöversikten och i sociala medier..."
               />
             </div>
@@ -319,12 +319,12 @@ export default function NewBlogPage() {
                 value={blogData.content}
                 onChange={(e) => updateBlogData('content', e.target.value)}
                 rows={20}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="Skriv artikelinnehållet här. Du kan använda Markdown-formatering..."
               />
             </div>
 
-            <div className="bg-background border border-green-200 rounded-lg p-4">
+            <div className="bg-background border border-border rounded-lg p-4">
               <h3 className="font-medium text-secondary mb-2">Skrivtips</h3>
               <ul className="text-sm text-secondary space-y-1">
                 <li>• Använd tydliga rubriker för att strukturera innehållet</li>
@@ -347,7 +347,7 @@ export default function NewBlogPage() {
                 type="url"
                 value={blogData.coverImage}
                 onChange={(e) => updateBlogData('coverImage', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 placeholder="https://example.com/cover-image.jpg"
               />
             </div>
@@ -361,7 +361,7 @@ export default function NewBlogPage() {
                 onChange={(e) => updateBlogData('metaDescription', e.target.value)}
                 rows={3}
                 maxLength={160}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
                 placeholder="En kort beskrivning för sökmotorer (max 160 tecken)"
               />
               <p className="text-sm text-gray-500 mt-1">
@@ -407,7 +407,7 @@ export default function NewBlogPage() {
                           updateBlogData('functionalFoodsFocus', blogData.functionalFoodsFocus.filter(f => f !== option));
                         }
                       }}
-                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-green-500"
+                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                     />
                     <label htmlFor={option} className="ml-2 text-sm text-gray-700">
                       {option}
@@ -432,7 +432,7 @@ export default function NewBlogPage() {
                         newTakeaways[index] = e.target.value;
                         updateBlogData('keyTakeaways', newTakeaways);
                       }}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="t.ex. Omega-3 kan förbättra minnesförmågan"
                     />
                     <button
@@ -476,7 +476,7 @@ export default function NewBlogPage() {
                         newReferences[index] = e.target.value;
                         updateBlogData('references', newReferences);
                       }}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="t.ex. Studie: 'Omega-3 and Brain Health', Journal of Nutrition (2023)"
                     />
                     <button
@@ -511,7 +511,7 @@ export default function NewBlogPage() {
                       type="text"
                       value={tag}
                       onChange={(e) => updateTag(index, e.target.value)}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="t.ex. omega-3, hjärnhälsa, forskning"
                     />
                     <button
@@ -555,7 +555,7 @@ export default function NewBlogPage() {
               </div>
             </div>
 
-            <div className="bg-background border border-green-200 rounded-lg p-4">
+            <div className="bg-background border border-border rounded-lg p-4">
               <div className="flex items-center gap-2 text-secondary">
                 <FiCheck className="w-5 h-5" />
                 <span className="font-medium">Redo att publicera</span>

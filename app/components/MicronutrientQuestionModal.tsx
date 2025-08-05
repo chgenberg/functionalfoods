@@ -50,7 +50,7 @@ const blockWeights: Record<string, number> = {
 
 // Helper för färger
 const colorMap: Record<string, string> = {
-  green: "bg-green-300",
+  green: "bg-accent",
   yellow: "bg-yellow-300",
   red: "bg-red-400",
   gray: "bg-gray-200"
@@ -93,7 +93,7 @@ function NutrientHeatmap({ matrix }: { matrix: any }) {
         </tbody>
       </table>
       <div className="text-xs text-gray-600 mt-2">
-        <span className="inline-block w-4 h-4 bg-green-300 mr-1 align-middle" /> Low risk
+        <span className="inline-block w-4 h-4 bg-accent mr-1 align-middle" /> Low risk
         <span className="inline-block w-4 h-4 bg-yellow-300 mx-2 align-middle" /> Moderate risk
         <span className="inline-block w-4 h-4 bg-red-400 mx-2 align-middle" /> High risk
       </div>

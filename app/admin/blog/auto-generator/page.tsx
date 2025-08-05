@@ -152,7 +152,7 @@ export default function AutoBlogGeneratorPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className={`mt-4 p-4 rounded-lg border ${
                     lastResult.success 
-                      ? 'bg-background border-green-200 text-secondary' 
+                      ? 'bg-background border-border text-secondary' 
                       : 'bg-red-50 border-red-200 text-red-800'
                   }`}
                 >
