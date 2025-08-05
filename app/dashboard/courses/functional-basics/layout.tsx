@@ -101,7 +101,7 @@ export default function FunctionalBasicsLayout({
   return (
     <div className="min-h-screen bg-background">
       {/* Top Header - Desktop & Mobile */}
-      <header className="bg-background-secondary shadow-sm border-b border-border sticky top-0 z-40">
+      <header className="bg-background-secondary shadow-sm sticky top-0 z-40">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Course Title */}

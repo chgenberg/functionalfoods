@@ -163,7 +163,7 @@ export default function FunctionalBasicsPage() {
   return (
     <div className="relative space-y-4 md:space-y-8 pb-20 md:pb-8">
       {/* Guide Button */}
-      <div className="fixed top-20 right-4 z-30">
+      <div className="fixed top-20 right-4 z-50">
         <button
           onClick={() => setShowGuide(true)}
           className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-all"
