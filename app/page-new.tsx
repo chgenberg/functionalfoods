@@ -63,25 +63,39 @@ export default function Home() {
         
         {/* MINIMAL video element */}
         <div className="max-w-4xl mx-auto">
+          {/* Test our local videos */}
           <video
-            src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4"
+            src="/introvideo_compressed.mp4"
             width="800"
             height="450"
             controls
             muted
             autoPlay
             loop
-            className="w-full border-4 border-red-500"
+            className="w-full border-4 border-green-500 mb-4"
           >
             Your browser does not support the video tag.
           </video>
           
-          <div className="mt-4 p-4 bg-yellow-200 border border-yellow-400 rounded">
-            <h2 className="font-bold">STATUS:</h2>
-            <p>• External video URL: sample-videos.com</p>
-            <p>• Controls: Enabled</p>
-            <p>• Red border: Should be visible</p>
-            <p>• If you see this but NO video, Safari blocks external videos</p>
+          <video
+            src="/introvideo_mobile.mp4"
+            width="800"
+            height="450"
+            controls
+            muted
+            autoPlay
+            loop
+            className="w-full border-4 border-blue-500"
+          >
+            Your browser does not support the video tag.
+          </video>
+          
+          <div className="mt-4 p-4 bg-green-200 border border-green-400 rounded">
+            <h2 className="font-bold">LOCAL VIDEO TEST:</h2>
+            <p>• Green border: Desktop video (introvideo_compressed.mp4)</p>
+            <p>• Blue border: Mobile video (introvideo_mobile.mp4)</p>
+            <p>• If videos don't load: Railway serving issue</p>
+            <p>• If videos load: SUCCESS! Problem was always the file serving</p>
           </div>
         </div>
       </section>
