@@ -190,13 +190,25 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
     }
     
     // Säkerställ att tooltip inte hamnar utanför skärmen
-    if (calculatedPosition && calculatedPosition.left < 20) {
-      calculatedPosition.left = 20;
-      calculatedPosition.transform = 'translateX(0)';
-    }
-    if (calculatedPosition && calculatedPosition.left + tooltipWidth > window.innerWidth - 20) {
-      calculatedPosition.left = window.innerWidth - tooltipWidth - 20;
-      calculatedPosition.transform = 'translateX(0)';
+    if (calculatedPosition) {
+      // För centrerade tooltips (top/bottom), justera om de hamnar utanför
+      if (calculatedPosition.transform === 'translateX(-50%)') {
+        const actualLeft = calculatedPosition.left - (tooltipWidth / 2);
+        if (actualLeft < 20) {
+          calculatedPosition.left = 20 + (tooltipWidth / 2);
+        }
+        if (actualLeft + tooltipWidth > window.innerWidth - 20) {
+          calculatedPosition.left = window.innerWidth - 20 - (tooltipWidth / 2);
+        }
+      } else {
+        // För icke-centrerade tooltips (left/right)
+        if (calculatedPosition.left < 20) {
+          calculatedPosition.left = 20;
+        }
+        if (calculatedPosition.left + tooltipWidth > window.innerWidth - 20) {
+          calculatedPosition.left = window.innerWidth - tooltipWidth - 20;
+        }
+      }
     }
     if (calculatedPosition && calculatedPosition.top < 20) {
       calculatedPosition.top = 20;
@@ -223,7 +235,7 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
 
         {/* Highlight område */}
         <motion.div
-          className="absolute border-4 border-primary rounded-lg shadow-2xl"
+          className="absolute border-4 border-primary rounded-lg shadow-2xl bg-white/5 backdrop-blur-sm"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ 
             opacity: 1, 
@@ -241,7 +253,7 @@ export default function CourseGuide({ isOpen, onClose }: CourseGuideProps) {
 
         {/* Tooltip */}
         <motion.div
-          className="absolute bg-white rounded-xl shadow-2xl p-6 max-w-sm z-60"
+          className="absolute bg-white rounded-xl shadow-2xl p-6 w-80 z-60"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           style={getTooltipPosition()}
