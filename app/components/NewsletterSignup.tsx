@@ -135,7 +135,7 @@ export default function NewsletterSignup({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="relative overflow-hidden bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-10 max-w-xl mx-auto border border-white/20 shadow-2xl"
+        className="relative overflow-hidden bg-[#1a4324] rounded-3xl p-8 md:p-10 max-w-xl mx-auto border border-[#9dc46d]/30 shadow-2xl"
       >
 
         
@@ -144,7 +144,7 @@ export default function NewsletterSignup({
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
-            className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+            className="w-16 h-16 bg-[#9dc46d]/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
           >
             <FiMail className="w-8 h-8 text-white" />
           </motion.div>
@@ -169,8 +169,8 @@ export default function NewsletterSignup({
             
             <label 
               htmlFor="privacy-checkbox-hero-new" 
-              className="flex items-center gap-3 p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 
-                       cursor-pointer hover:bg-white/20 transition-all duration-300 group"
+                             className="flex items-center gap-3 p-4 rounded-2xl bg-[#9dc46d]/10 border border-[#9dc46d]/30 
+                        cursor-pointer hover:bg-[#9dc46d]/20 transition-all duration-300 group"
             >
               <input
                 type="checkbox"

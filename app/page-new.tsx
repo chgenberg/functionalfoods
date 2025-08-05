@@ -27,19 +27,27 @@ export default function Home() {
       const videos = document.querySelectorAll('video');
       console.log(`🎬 FORCING ${videos.length} videos to play`);
       
-      videos.forEach((video, index) => {
-        console.log(`🎬 Force playing video ${index + 1}:`, video.src);
+              videos.forEach((video, index) => {
+          console.log(`🎬 Force playing video ${index + 1}:`, video.src);
+          console.log(`🎬 Video ${index + 1} sources:`, Array.from(video.children).map(s => (s as HTMLSourceElement).src));
         
         // Remove any existing event listeners
         video.removeEventListener('loadeddata', () => {});
         video.removeEventListener('canplay', () => {});
         
-        // Force video properties
-        video.muted = true;
-        video.loop = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.controls = false;
+                  // Force video properties
+          video.muted = true;
+          video.loop = true;
+          video.autoplay = true;
+          video.playsInline = true;
+          video.controls = false;
+          
+          // Ensure video has src from source elements
+          const sources = video.querySelectorAll('source');
+          if (sources.length > 0 && !video.src) {
+            video.src = (sources[0] as HTMLSourceElement).src;
+            console.log(`🎬 Set video ${index + 1} src to:`, video.src);
+          }
         
         // Try to play immediately
         const tryPlay = () => {
