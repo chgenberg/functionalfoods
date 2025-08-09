@@ -62,8 +62,8 @@ export async function GET() {
 
 function sampleFallback() {
   return [
-    { id: 'f1', title: 'Grönsakswok med tofu', slug: '', imageUrl: '/public/kunskapsbank/Gronsakswok.jpg', imageAlt: 'Grönsakswok', excerpt: 'Snabb, näringsrik wok – perfekt vardagsmat', prepTime: '20 min', categories: ['Vego'] },
-    { id: 'f2', title: 'Köttfärssås med zucchini', slug: '', imageUrl: '/public/kunskapsbank/kottfarssas.JPG', imageAlt: 'Köttfärssås', excerpt: 'Proteinrikt och familjefavorit', prepTime: '30 min', categories: ['Protein'] },
-    { id: 'f3', title: 'Äggröra med örter', slug: '', imageUrl: '/public/kunskapsbank/aggrora.jpg', imageAlt: 'Äggröra', excerpt: 'Enkel frukost full av protein', prepTime: '10 min', categories: ['Frukost'] }
+    { id: 'f1', title: 'Grönsakswok med tofu', slug: 'gronsakswok', imageUrl: '/kunskapsbank/Gronsakswok.jpg', imageAlt: 'Grönsakswok', excerpt: 'Snabb, näringsrik wok – perfekt vardagsmat', prepTime: '20 min', categories: ['Vego'] },
+    { id: 'f2', title: 'Köttfärssås med zucchini', slug: 'kottfarssas', imageUrl: '/kunskapsbank/kottfarssas.JPG', imageAlt: 'Köttfärssås', excerpt: 'Proteinrikt och familjefavorit', prepTime: '30 min', categories: ['Protein'] },
+    { id: 'f3', title: 'Äggröra med örter', slug: 'aggrora', imageUrl: '/kunskapsbank/aggrora.jpg', imageAlt: 'Äggröra', excerpt: 'Enkel frukost full av protein', prepTime: '10 min', categories: ['Frukost'] }
   ];
 } 
