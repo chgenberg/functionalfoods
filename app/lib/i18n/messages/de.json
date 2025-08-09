@@ -293,5 +293,22 @@
   "newsletter.policy": "Datenschutzerklärung",
   "newsletter.thanksShort": "Danke!",
   "newsletter.firstName": "Vorname",
-  "newsletter.lastName": "Nachname"
+  "newsletter.lastName": "Nachname",
+  "footer.about": "Wir helfen dir, deine Gesundheit mit funktioneller Ernährung und Lebensstil zu verbessern. Entdecke die Kraft von Mehrwert‑Lebensmitteln für langfristiges Wohlbefinden.",
+  "footer.heading.education": "Kurse",
+  "footer.heading.knowledge": "Wissensbank",
+  "footer.heading.contact": "Kontakt",
+  "footer.links.allCourses": "Alle Kurse",
+  "footer.links.functionalBasics": "Functional Basics",
+  "footer.links.functionalFlow": "Functional Flow",
+  "footer.links.catalog": "Kurskatalog",
+  "footer.links.terms": "Nutzungsbedingungen",
+  "footer.links.personal": "Personenbezogene Daten",
+  "footer.links.privacy": "Datenschutzerklärung",
+  "footer.links.cookie": "Cookie‑Richtlinie",
+  "footer.city": "Stockholm, Schweden",
+  "footer.rights": "Alle Rechte vorbehalten.",
+  "footer.admin": "Admin",
+  "footer.welcome": "Willkommen",
+  "footer.logout": "Abmelden"
 } 

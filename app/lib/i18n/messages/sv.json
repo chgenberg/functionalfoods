@@ -285,5 +285,22 @@
   "newsletter.policy": "integritetspolicyn",
   "newsletter.thanksShort": "Tack!",
   "newsletter.firstName": "Förnamn",
-  "newsletter.lastName": "Efternamn"
+  "newsletter.lastName": "Efternamn",
+  "footer.about": "Vi hjälper dig att förbättra din hälsa genom funktionell kost och livsstil. Upptäck kraften i mervärdesmat för långsiktigt välmående.",
+  "footer.heading.education": "Utbildning",
+  "footer.heading.knowledge": "Kunskapsbank",
+  "footer.heading.contact": "Kontakt",
+  "footer.links.allCourses": "Alla kurser",
+  "footer.links.functionalBasics": "Functional Basics",
+  "footer.links.functionalFlow": "Functional Flow",
+  "footer.links.catalog": "Kurskatalog",
+  "footer.links.terms": "Användarvillkor",
+  "footer.links.personal": "Personuppgifter",
+  "footer.links.privacy": "Integritetspolicy",
+  "footer.links.cookie": "Cookie-policy",
+  "footer.city": "Stockholm, Sverige",
+  "footer.rights": "Alla rättigheter förbehållna.",
+  "footer.admin": "Admin",
+  "footer.welcome": "Välkommen",
+  "footer.logout": "Logga ut"
 } 

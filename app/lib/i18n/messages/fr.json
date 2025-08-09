@@ -291,5 +291,22 @@
   "newsletter.policy": "politique de confidentialité",
   "newsletter.thanksShort": "Merci !",
   "newsletter.firstName": "Prénom",
-  "newsletter.lastName": "Nom"
+  "newsletter.lastName": "Nom",
+  "footer.about": "Nous vous aidons à améliorer votre santé grâce à une alimentation fonctionnelle et à un mode de vie sain. Découvrez la puissance des aliments à valeur ajoutée pour un bien‑être durable.",
+  "footer.heading.education": "Cours",
+  "footer.heading.knowledge": "Banque de connaissances",
+  "footer.heading.contact": "Contact",
+  "footer.links.allCourses": "Tous les cours",
+  "footer.links.functionalBasics": "Functional Basics",
+  "footer.links.functionalFlow": "Functional Flow",
+  "footer.links.catalog": "Catalogue des cours",
+  "footer.links.terms": "Conditions d’utilisation",
+  "footer.links.personal": "Données personnelles",
+  "footer.links.privacy": "Politique de confidentialité",
+  "footer.links.cookie": "Politique de cookies",
+  "footer.city": "Stockholm, Suède",
+  "footer.rights": "Tous droits réservés.",
+  "footer.admin": "Admin",
+  "footer.welcome": "Bienvenue",
+  "footer.logout": "Se déconnecter"
 } 

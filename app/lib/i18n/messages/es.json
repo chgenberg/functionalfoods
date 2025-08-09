@@ -250,5 +250,22 @@
   "newsletter.policy": "política de privacidad",
   "newsletter.thanksShort": "¡Gracias!",
   "newsletter.firstName": "Nombre",
-  "newsletter.lastName": "Apellido"
+  "newsletter.lastName": "Apellido",
+  "footer.about": "Te ayudamos a mejorar tu salud a través de alimentos funcionales y estilo de vida. Descubre el poder de los alimentos de valor añadido para un bienestar duradero.",
+  "footer.heading.education": "Cursos",
+  "footer.heading.knowledge": "Banco de conocimiento",
+  "footer.heading.contact": "Contacto",
+  "footer.links.allCourses": "Todos los cursos",
+  "footer.links.functionalBasics": "Functional Basics",
+  "footer.links.functionalFlow": "Functional Flow",
+  "footer.links.catalog": "Catálogo de cursos",
+  "footer.links.terms": "Términos de uso",
+  "footer.links.personal": "Datos personales",
+  "footer.links.privacy": "Política de privacidad",
+  "footer.links.cookie": "Política de cookies",
+  "footer.city": "Estocolmo, Suecia",
+  "footer.rights": "Todos los derechos reservados.",
+  "footer.admin": "Admin",
+  "footer.welcome": "Bienvenido",
+  "footer.logout": "Cerrar sesión"
 } 

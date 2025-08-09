@@ -285,5 +285,22 @@
   "home.geo.switch": "Switch",
   "home.geo.noThanks": "No thanks",
   "newsletter.title": "Get the latest Functional Foods tips",
-  "newsletter.subtitle": "Be the first to get our best advice and recipes straight to your inbox"
+  "newsletter.subtitle": "Be the first to get our best advice and recipes straight to your inbox",
+  "footer.about": "We help you improve your health through functional food and lifestyle. Discover the power of added‑value foods for long‑term wellbeing.",
+  "footer.heading.education": "Education",
+  "footer.heading.knowledge": "Knowledge base",
+  "footer.heading.contact": "Contact",
+  "footer.links.allCourses": "All courses",
+  "footer.links.functionalBasics": "Functional Basics",
+  "footer.links.functionalFlow": "Functional Flow",
+  "footer.links.catalog": "Course catalog",
+  "footer.links.terms": "Terms of use",
+  "footer.links.personal": "Personal data",
+  "footer.links.privacy": "Privacy policy",
+  "footer.links.cookie": "Cookie policy",
+  "footer.city": "Stockholm, Sweden",
+  "footer.rights": "All rights reserved.",
+  "footer.admin": "Admin",
+  "footer.welcome": "Welcome",
+  "footer.logout": "Log out"
 } 
