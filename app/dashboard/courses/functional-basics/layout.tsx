@@ -107,7 +107,7 @@ export default function FunctionalBasicsLayout({
     },
     {
       label: 'Inställningar',
-      href: '/dashboard/settings',
+      href: '/dashboard/courses/functional-basics/settings',
       icon: FiSettings,
     },
   ];

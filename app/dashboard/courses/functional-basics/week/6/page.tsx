@@ -328,12 +328,7 @@ export default function Week6Page() {
                 {Object.entries(shoppingList).map(([category, items]) => (
                   <div key={category} className="bg-gray-50 rounded-lg p-6">
                     <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      {category === 'Frukt/grönt' && '🥬'}
-                      {category === 'Kryddor/smaksättare' && '🌿'}
-                      {category === 'Mejeri' && '🥛'}
-                      {category === 'Kött/fisk/fågel/ägg/vego' && '🥩'}
-                      {category === 'Torrvaror' && '🌾'}
-                      {category === 'Övrigt' && '📦'}
+                      <FiShoppingCart className="w-4 h-4 text-primary" />
                       {category}
                     </h3>
                     <ul className="space-y-2">

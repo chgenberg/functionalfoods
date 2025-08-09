@@ -93,7 +93,7 @@ export default function FunctionalFlowLayout({
     },
     {
       label: 'Inställningar',
-      href: '/dashboard/settings',
+      href: '/dashboard/courses/functional-flow/settings',
       icon: FiSettings,
     },
   ];
