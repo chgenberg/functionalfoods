@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getFlowWeekData } from '@/app/data/mealPlans';
+import ReviewCTA from '../components/ReviewCTA';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface MealItem {
   name: string;
@@ -130,6 +132,7 @@ const shoppingList = {
 export default function Week6Page() {
   const [activeTab, setActiveTab] = useState('overview');
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const { user } = useAuth();
 
   const toggleItem = (item: string) => {
     const newCheckedItems = new Set(checkedItems);
@@ -270,6 +273,10 @@ export default function Week6Page() {
                   </Link>
                 </div>
               </div>
+
+              {user?.id && (
+                <ReviewCTA courseId="functional-flow" userId={user.id} />
+              )}
             </div>
           )}
 
