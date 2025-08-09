@@ -251,7 +251,7 @@ export default function Header() {
             </button>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 relative z-[60]">
             {user ? (
               <div className="hidden md:flex items-center gap-2">
                 <Link
