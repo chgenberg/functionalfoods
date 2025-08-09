@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
-import { useLanguage } from './LanguageProvider';
+import { useLanguage, useT } from './LanguageProvider';
 
 function getCache(locale: string): Record<string, string> {
   if (typeof localStorage === 'undefined') return {};
@@ -27,7 +27,6 @@ function collectTextNodes(root: Node): Text[] {
       if (parent.closest('[data-no-translate]')) return NodeFilter.FILTER_REJECT;
       if (parent.closest('code,pre')) return NodeFilter.FILTER_REJECT;
       if (parent.closest('svg')) return NodeFilter.FILTER_REJECT;
-      // short or mostly symbols -> skip
       const compact = text.trim();
       if (compact.length < 2) return NodeFilter.FILTER_REJECT;
       if (/^[^A-Za-zÅÄÖåäöáéíóúñü\d]+$/.test(compact)) return NodeFilter.FILTER_REJECT;
@@ -59,8 +58,6 @@ export function useAutoTranslate(enabled: boolean) {
   const [busy, setBusy] = useState(false);
 
   const restoreOriginals = () => {
-    originals.current && (originals.current as any);
-    // iterate WeakMap by walking DOM again
     const root = document.querySelector('main') || document.body;
     if (!root) return;
     const nodes = collectTextNodes(root);
@@ -68,21 +65,19 @@ export function useAutoTranslate(enabled: boolean) {
       const orig = originals.current.get(n);
       if (orig !== undefined) n.nodeValue = orig;
     });
+    // clear after restore to avoid stale node refs
+    originals.current = new WeakMap();
   };
 
   useEffect(() => {
-    if (!enabled) {
-      if (applied.current) {
-        restoreOriginals();
-        applied.current = false;
-      }
-      return;
+    // Reset any prior mutations before applying new language
+    if (applied.current) {
+      restoreOriginals();
+      applied.current = false;
     }
-    if (locale === 'sv') {
-      if (applied.current) {
-        restoreOriginals();
-        applied.current = false;
-      }
+
+    // Only auto-translate for locales we support via API (en, es)
+    if (!enabled || (locale !== 'en' && locale !== 'es')) {
       return;
     }
 
@@ -93,16 +88,16 @@ export function useAutoTranslate(enabled: boolean) {
     const nodes = collectTextNodes(root);
     const unique = Array.from(new Set(nodes.map(n => (n.nodeValue || '').trim())));
 
-    // prime cache
     const cache = getCache(locale);
     const toTranslate = unique.filter(txt => !cache[txt]);
 
     const applyMap = (map: Record<string,string>) => {
       nodes.forEach(node => {
-        const orig = (node.nodeValue || '').trim();
-        if (!originals.current.get(node)) originals.current.set(node, node.nodeValue || '');
+        const before = node.nodeValue || '';
+        const orig = before.trim();
+        if (!originals.current.get(node)) originals.current.set(node, before);
         const translated = map[orig];
-        if (translated) node.nodeValue = node.nodeValue?.replace(orig, translated) || translated;
+        if (translated) node.nodeValue = before.replace(orig, translated);
       });
       applied.current = true;
     };
@@ -113,7 +108,6 @@ export function useAutoTranslate(enabled: boolean) {
     }
 
     setBusy(true);
-    // batch in slices to keep payload small
     const slices: string[][] = [];
     for (let i=0; i<toTranslate.length; i+=80) slices.push(toTranslate.slice(i, i+80));
 
@@ -138,11 +132,12 @@ export function useAutoTranslate(enabled: boolean) {
 
 export default function AutoTranslate() {
   const { locale } = useLanguage();
+  const t = useT();
   const { busy } = useAutoTranslate(locale !== 'sv');
   return (
     <div aria-hidden className="pointer-events-none fixed bottom-4 right-4 z-[9999]">
       {busy && (
-        <div className="px-3 py-2 rounded-lg bg-[#F3EFE3] text-[#112A12] shadow">Översätter…</div>
+        <div className="px-3 py-2 rounded-lg bg-[#F3EFE3] text-[#112A12] shadow">{t('auto.translating','Översätter…')}</div>
       )}
     </div>
   );
