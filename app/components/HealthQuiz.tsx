@@ -379,10 +379,14 @@ interface HealthQuizProps {
 const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const { locale } = useLanguage();
   const t = useT();
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'quiz' | 'result'>('quiz');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'intro' | 'quiz' | 'result'>('quiz');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isAnimating, setIsAnimating] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [formError, setFormError] = useState('');
   const quizQuestions: QuizQuestion[] = locale === 'en' ? QUIZ_EN : locale === 'es' ? QUIZ_ES : locale === 'de' ? QUIZ_DE : locale === 'fr' ? QUIZ_FR : QUIZ_SV;
   const STORAGE_KEY = `health_quiz_state_v1_${locale}`;
   // Restore autosaved state
@@ -392,9 +396,17 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
       if (!raw) return;
       const saved = JSON.parse(raw) as { step: 'welcome'|'quiz'|'result'; q: number; a: Record<number,string> };
       if (saved && typeof saved.q === 'number' && saved.a) {
-        setCurrentStep(saved.step || 'quiz');
+        setCurrentStep((saved.step as any) || 'quiz');
         setCurrentQuestion(saved.q);
         setAnswers(saved.a);
+      }
+      // restore identity if available
+      const idRaw = localStorage.getItem('quiz_identity_v1');
+      if (idRaw) {
+        const id = JSON.parse(idRaw) as { firstName?: string; email?: string; consent?: boolean };
+        setFirstName(id.firstName || '');
+        setEmail(id.email || '');
+        setConsent(!!id.consent);
       }
     } catch {}
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -407,8 +419,15 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     } catch {}
   }, [currentStep, currentQuestion, answers, STORAGE_KEY]);
 
+  const validateEmail = (val: string) => /[^@\s]+@[^@\s]+\.[^@\s]+/.test(val);
   const startQuiz = () => {
-    setCurrentStep('quiz');
+    // Validate form
+    if (!firstName.trim()) { setFormError('Ange ditt förnamn.'); return; }
+    if (!validateEmail(email)) { setFormError('Ange en giltig e‑postadress.'); return; }
+    if (!consent) { setFormError('Du måste godkänna integritetspolicyn.'); return; }
+    setFormError('');
+    try { localStorage.setItem('quiz_identity_v1', JSON.stringify({ firstName, email, consent: true })); } catch {}
+    setCurrentStep('intro');
   };
 
   const handleAnswer = (answer: string) => {
@@ -519,27 +538,32 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   </div>
                 </motion.div>
 
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5 }}
-                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={startQuiz}
-                  className="bg-primary text-white px-10 py-5 rounded-full font-semibold text-lg hover:bg-secondary transition-all duration-300 shadow-xl flex items-center space-x-3 group"
-                >
-                  <span>{t('quiz.start','Starta Ditt Personliga Quiz')}</span>
-                  <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </motion.button>
-
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                  className="text-gray-500 mt-6 text-sm"
-                >
-                  {t('quiz.badge','10 smarta frågor • Kostnadsfritt • Inga mejl krävs')}
-                </motion.p>
+                <div className="bg-white/80 rounded-2xl border p-4 md:p-6">
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <input value={firstName} onChange={e=>setFirstName(e.target.value)} placeholder={t('auth.fullname','Förnamn och efternamn')} className="px-3 py-2 border rounded-lg" />
+                    <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={t('auth.email','E‑postadress')} className="px-3 py-2 border rounded-lg" />
+                  </div>
+                  <label className="mt-3 flex items-center gap-2 text-sm text-gray-700">
+                    <input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} />
+                    <span>
+                      {t('auth.acceptTerms','Jag accepterar')}
+                      {" "}
+                      <a href="/integritetspolicy" target="_blank" className="text-primary underline">{t('footer.links.privacy','Integritetspolicy')}</a>
+                    </span>
+                  </label>
+                  {formError && <div className="mt-2 text-sm text-red-600">{formError}</div>}
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    onClick={startQuiz}
+                    className="mt-4 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 inline-flex items-center gap-2"
+                  >
+                    <span>{t('quiz.start','Starta Ditt Personliga Quiz')}</span>
+                    <FiArrowRight className="w-5 h-5" />
+                  </motion.button>
+                  <p className="text-gray-500 mt-3 text-xs">{t('quiz.badge','10 smarta frågor • Kostnadsfritt')}</p>
+                </div>
               </div>
 
               {/* Right side - Ulrika's image */}
@@ -622,6 +646,18 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
             </div>
           </div>
         </motion.div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'intro') {
+    return (
+      <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 max-w-2xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">{firstName ? `Hej ${firstName}!` : t('quiz.hello','Hej!')}</h2>
+          <p className="text-gray-700 mb-6">{t('quiz.intro','Vad roligt att du vill göra vårt hälso‑quiz. Nu sätter vi igång!')}</p>
+          <button onClick={()=>setCurrentStep('quiz')} className="bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition">{t('quiz.startNow','Starta nu')}</button>
+        </div>
       </div>
     );
   }
