@@ -341,6 +341,44 @@ export class EmailService {
     });
   }
 
+  // Publik metod: skicka notifiering från kontaktformulär
+  async sendContactNotification(params: { namn: string; email: string; amne: string; meddelande: string; }): Promise<boolean> {
+    const { namn, email, amne, meddelande } = params;
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+      <body style="margin:0;padding:20px;font-family:Arial, sans-serif;background:#f7faf7;color:#1a4324;">
+        <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5efe2;border-radius:12px;box-shadow:0 8px 20px rgba(26,67,36,0.06);overflow:hidden;">
+          <div style="background:linear-gradient(135deg,#1a4324 0%,#2d5a3d 100%);padding:24px;color:#fff;">
+            <h1 style="margin:0;font-size:20px;">Nytt meddelande från kontaktformuläret</h1>
+            <p style="margin:8px 0 0 0;opacity:0.9;">${new Date().toLocaleString('sv-SE')}</p>
+          </div>
+          <div style="padding:24px;">
+            <p style="margin:0 0 8px 0;"><strong>Namn:</strong> ${namn}</p>
+            <p style="margin:0 0 8px 0;"><strong>E‑post:</strong> <a href="mailto:${email}">${email}</a></p>
+            <p style="margin:0 0 16px 0;"><strong>Ämne:</strong> ${amne}</p>
+            <div style="background:#f8fbf7;border:1px solid #e5efe2;border-radius:8px;padding:16px;">
+              <p style="white-space:pre-line;margin:0;color:#254a31;">${meddelande}</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return this.sendEmail({
+      to: 'info@functionalfoods.se',
+      toName: 'Functional Foods',
+      subject: `Kontaktformulär: ${amne}`,
+      html,
+      fromEmail: 'no-reply@functionalfoods.se',
+      fromName: 'Functional Foods Kontaktformulär',
+      replyTo: email,
+      tags: ['contact-form', 'website']
+    });
+  }
+
   // Send password reset email
   async sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
     const resetLink = `https://functionalfoods.se/reset-password?token=${resetToken}`;

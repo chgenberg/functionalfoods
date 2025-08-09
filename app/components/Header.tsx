@@ -159,7 +159,7 @@ export default function Header() {
               alt="Functional Foods"
               width={180}
               height={72}
-              className="h-12 md:h-16 w-auto"
+              className="h-14 md:h-20 w-auto"
               priority
             />
           </Link>
