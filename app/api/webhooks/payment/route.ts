@@ -316,7 +316,8 @@ async function completePayment(paymentId: string, webhookData: any) {
               courseId: item.courseId,
               amount: item.price * item.quantity,
               status: 'completed',
-              orderId: payment.order.id
+              orderId: payment.order.id,
+              accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
             }
           });
         }

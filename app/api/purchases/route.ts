@@ -235,7 +235,8 @@ export async function POST(request: Request) {
                 courseId: course.id,
                 amount: course.price * item.quantity,
                 status: 'completed',
-                orderId: order.id
+                orderId: order.id,
+                accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
               },
               include: {
                 course: true
