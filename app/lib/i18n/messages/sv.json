@@ -272,5 +272,18 @@
   "home.geo.switch": "Byt",
   "home.geo.noThanks": "Nej tack",
   "newsletter.title": "Få de senaste tipsen om Functional Foods",
-  "newsletter.subtitle": "Bli först med att få våra bästa råd och recept direkt i din inkorg"
+  "newsletter.subtitle": "Bli först med att få våra bästa råd och recept direkt i din inkorg",
+  "newsletter.emailPlaceholder": "din@email.se",
+  "newsletter.subscribe": "Prenumerera på nyhetsbrev",
+  "newsletter.subscribeShort": "Prenumerera",
+  "newsletter.subscribing": "Prenumererar...",
+  "newsletter.success": "Tack för din prenumeration!",
+  "newsletter.error": "Något gick fel. Försök igen senare.",
+  "newsletter.genericError": "Ett fel uppstod. Försök igen senare.",
+  "newsletter.acceptPrivacy": "Jag accepterar ",
+  "newsletter.readMore": "läs mer",
+  "newsletter.policy": "integritetspolicyn",
+  "newsletter.thanksShort": "Tack!",
+  "newsletter.firstName": "Förnamn",
+  "newsletter.lastName": "Efternamn"
 } 

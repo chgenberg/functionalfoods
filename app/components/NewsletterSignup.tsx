@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { FiMail, FiCheck, FiLoader, FiArrowRight } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface NewsletterSignupProps {
   title?: string;
@@ -12,11 +13,12 @@ interface NewsletterSignupProps {
 }
 
 export default function NewsletterSignup({ 
-  title = "Massor av matglädje - gratis!",
-  subtitle = "Skriv upp dig på vårt nyhetsbrev och få rabatter, erbjudanden och matglädje från Functional foods varje vecka.",
+  title,
+  subtitle,
   variant = 'default',
   showName = false
 }: NewsletterSignupProps) {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -24,11 +26,13 @@ export default function NewsletterSignup({
   const [message, setMessage] = useState('');
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
+  const localTitle = title ?? t('newsletter.title','Få de senaste tipsen om Functional Foods');
+  const localSubtitle = subtitle ?? t('newsletter.subtitle','Bli först med att få våra bästa råd och recept direkt i din inkorg');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!privacyAccepted) {
-      setMessage('Du måste acceptera vår integritetspolicy');
+      setMessage(t('newsletter.error','Något gick fel. Försök igen senare.'));
       setStatus('error');
       return;
     }
@@ -39,47 +43,40 @@ export default function NewsletterSignup({
     try {
       const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          firstName,
-          lastName,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, firstName, lastName }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         setStatus('success');
-        setMessage(data.message || 'Tack för din prenumeration!');
-        // Rensa formuläret
+        setMessage(data.message || t('newsletter.success','Tack för din prenumeration!'));
         setEmail('');
         setFirstName('');
         setLastName('');
         setPrivacyAccepted(false);
       } else {
         setStatus('error');
-        setMessage(data.error || 'Något gick fel. Försök igen senare.');
+        setMessage(data.error || t('newsletter.error','Något gick fel. Försök igen senare.'));
       }
     } catch (error) {
       setStatus('error');
-      setMessage('Ett fel uppstod. Försök igen senare.');
+      setMessage(t('newsletter.genericError','Ett fel uppstod. Försök igen senare.'));
     }
   };
 
   if (variant === 'compact') {
     return (
       <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">{localTitle}</h3>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="flex gap-2">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="din@email.se"
+              placeholder={t('newsletter.emailPlaceholder','din@email.se')}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
               required
             />
@@ -91,7 +88,7 @@ export default function NewsletterSignup({
               {status === 'loading' ? (
                 <FiLoader className="w-5 h-5 animate-spin" />
               ) : (
-                'Prenumerera'
+                t('newsletter.subscribeShort','Prenumerera')
               )}
             </button>
           </div>
@@ -107,8 +104,10 @@ export default function NewsletterSignup({
               required
             />
             <label htmlFor="privacy-checkbox-compact" className="text-gray-600 cursor-pointer select-none flex-1">
-              Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
-              <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1 relative z-10">läs mer</a>
+              {t('newsletter.acceptPrivacy','Jag accepterar ')}
+              <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1 relative z-10">
+                {t('newsletter.policy','integritetspolicyn')}
+              </a>
             </label>
           </div>
 
@@ -137,20 +136,18 @@ export default function NewsletterSignup({
         transition={{ delay: 0.2 }}
         className="relative overflow-hidden bg-white rounded-3xl p-8 md:p-10 max-w-xl mx-auto border border-[#F3EFE3] shadow-2xl"
       >
-
-        
         <div className="relative z-10">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring" }}
+            transition={{ delay: 0.3, type: 'spring' }}
             className="w-16 h-16 bg-[#F3EFE3] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
           >
             <FiMail className="w-8 h-8 text-[#112A12]" />
           </motion.div>
           
-          <h3 className="text-2xl md:text-3xl font-bold mb-2 text-[#112A12] text-center">{title}</h3>
-          <p className="text-[#112A12]/80 text-center mb-8">{subtitle}</p>
+          <h3 className="text-2xl md:text-3xl font-bold mb-2 text-[#112A12] text-center">{localTitle}</h3>
+          <p className="text-[#112A12]/80 text-center mb-8">{localSubtitle}</p>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative group">
@@ -158,38 +155,34 @@ export default function NewsletterSignup({
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="din@email.se"
+                placeholder={t('newsletter.emailPlaceholder','din@email.se')}
                 className="w-full px-6 py-4 rounded-2xl bg-white text-gray-800 placeholder-gray-500 
                          border-2 border-[#F3EFE3] focus:border-[#da695c]
                          transition-all duration-300 outline-none shadow-lg group-hover:shadow-xl"
                 required
               />
-
             </div>
             
             <label 
               htmlFor="privacy-checkbox-hero-new" 
-                             className="flex items-center gap-3 p-4 rounded-2xl bg-[#F3EFE3] border border-[#F3EFE3] 
-                        cursor-pointer hover:bg-[#e9e3d6] transition-all duration-300 group"
+              className="flex items-center gap-3 p-4 rounded-2xl bg-[#F3EFE3] border border-[#F3EFE3] cursor-pointer hover:bg-[#e9e3d6] transition-all duration-300 group"
             >
               <input
                 type="checkbox"
                 id="privacy-checkbox-hero-new"
                 checked={privacyAccepted}
                 onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                className="w-5 h-5 rounded border-2 border-[#112A12]/30 bg-transparent checked:bg-[#da695c] 
-                         checked:border-[#da695c] focus:ring-2 focus:ring-[#da695c] focus:ring-offset-0 
-                         cursor-pointer transition-all duration-300"
+                className="w-5 h-5 rounded border-2 border-[#112A12]/30 bg-transparent checked:bg-[#da695c] checked:border-[#da695c] focus:ring-2 focus:ring-[#da695c] focus:ring-offset-0 cursor-pointer transition-all duration-300"
                 required
               />
               <span className="text-[#112A12]/80 text-sm flex-1 select-none">
-                Jag accepterar{' '}
+                {t('newsletter.acceptPrivacy','Jag accepterar ')}
                 <a 
                   href="/integritetspolicy" 
                   className="underline underline-offset-2 hover:text-[#112A12] transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  integritetspolicyn
+                  {t('newsletter.policy','integritetspolicyn')}
                 </a>
               </span>
             </label>
@@ -199,23 +192,21 @@ export default function NewsletterSignup({
               disabled={status === 'loading' || !email || !privacyAccepted}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full px-8 py-4 bg-[#da695c] text-white font-semibold 
-                       rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#c85e52] disabled:opacity-50 disabled:cursor-not-allowed 
-                       transition-all duration-300 flex items-center justify-center gap-3 group"
+              className="w-full px-8 py-4 bg-[#da695c] text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#c85e52] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 group"
             >
               {status === 'loading' ? (
                 <>
                   <FiLoader className="w-5 h-5 animate-spin" />
-                  <span>Prenumererar...</span>
+                  <span>{t('newsletter.subscribing','Prenumererar...')}</span>
                 </>
               ) : status === 'success' ? (
                 <>
                   <FiCheck className="w-5 h-5" />
-                  <span>Tack för din prenumeration!</span>
+                  <span>{t('newsletter.success','Tack för din prenumeration!')}</span>
                 </>
               ) : (
                 <>
-                  <span>Prenumerera på nyhetsbrev</span>
+                  <span>{t('newsletter.subscribe','Prenumerera på nyhetsbrev')}</span>
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -239,11 +230,10 @@ export default function NewsletterSignup({
     );
   }
 
-  // Default variant
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-      <h3 className="text-2xl font-bold text-gray-800 mb-2">{title}</h3>
-      <p className="text-gray-600 mb-6">{subtitle}</p>
+      <h3 className="text-2xl font-bold text-gray-800 mb-2">{localTitle}</h3>
+      <p className="text-gray-600 mb-6">{localSubtitle}</p>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         {showName && (
@@ -252,14 +242,14 @@ export default function NewsletterSignup({
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Förnamn"
+              placeholder={t('newsletter.firstName','Förnamn')}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
             />
             <input
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              placeholder="Efternamn"
+              placeholder={t('newsletter.lastName','Efternamn')}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
             />
           </div>
@@ -270,7 +260,7 @@ export default function NewsletterSignup({
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="din@email.se"
+            placeholder={t('newsletter.emailPlaceholder','din@email.se')}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
             required
           />
@@ -284,12 +274,12 @@ export default function NewsletterSignup({
             ) : status === 'success' ? (
               <>
                 <FiCheck className="w-5 h-5" />
-                Tack!
+                {t('newsletter.thanksShort','Tack!')}
               </>
             ) : (
               <>
                 <FiMail className="w-5 h-5" />
-                Prenumerera
+                {t('newsletter.subscribeShort','Prenumerera')}
               </>
             )}
           </button>
@@ -306,8 +296,8 @@ export default function NewsletterSignup({
             required
           />
           <label htmlFor="privacy-checkbox-default" className="text-gray-600 cursor-pointer select-none flex-1">
-            Jag har tagit del av informationen rörande hanteringen av personuppgifter, 
-            <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1 relative z-10">läs mer</a>
+            {t('newsletter.acceptPrivacy','Jag accepterar ')}
+            <a href="/integritetspolicy" className="text-[#1a4324] hover:underline ml-1 relative z-10">{t('newsletter.policy','integritetspolicyn')}</a>
           </label>
         </div>
 

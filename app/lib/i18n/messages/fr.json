@@ -278,5 +278,18 @@
   "home.geo.switch": "Changer",
   "home.geo.noThanks": "Non merci",
   "newsletter.title": "Recevez les derniers conseils Functional Foods",
-  "newsletter.subtitle": "Soyez le premier à recevoir nos meilleurs conseils et recettes directement dans votre boîte mail"
+  "newsletter.subtitle": "Soyez le premier à recevoir nos meilleurs conseils et recettes directement dans votre boîte mail",
+  "newsletter.emailPlaceholder": "votre@email.com",
+  "newsletter.subscribe": "S'abonner à la newsletter",
+  "newsletter.subscribeShort": "S'abonner",
+  "newsletter.subscribing": "Abonnement en cours...",
+  "newsletter.success": "Merci pour votre abonnement !",
+  "newsletter.error": "Une erreur s'est produite. Réessayez plus tard.",
+  "newsletter.genericError": "Une erreur est survenue. Réessayez plus tard.",
+  "newsletter.acceptPrivacy": "J’accepte la ",
+  "newsletter.readMore": "en savoir plus",
+  "newsletter.policy": "politique de confidentialité",
+  "newsletter.thanksShort": "Merci !",
+  "newsletter.firstName": "Prénom",
+  "newsletter.lastName": "Nom"
 } 
