@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
 import {
   FiHome, FiUsers, FiBookOpen, FiDollarSign, FiSettings, FiLogOut,
-  FiMenu, FiX, FiFileText, FiVideo, FiShoppingBag, FiBarChart
+  FiMenu, FiX, FiFileText, FiVideo, FiShoppingBag, FiBarChart, FiTag
 } from "react-icons/fi";
 
 const menuItems = [
@@ -15,6 +15,7 @@ const menuItems = [
   { icon: FiVideo, label: "Recept", href: "/admin/recipes" },
   { icon: FiShoppingBag, label: "Beställningar", href: "/admin/orders" },
   { icon: FiBarChart, label: "Försäljning", href: "/admin/sales" },
+  { icon: FiTag, label: "Rabattkoder", href: "/admin/coupons" },
   { icon: FiSettings, label: "Inställningar", href: "/admin/settings" },
 ];
 

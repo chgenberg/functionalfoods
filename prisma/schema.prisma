@@ -430,6 +430,25 @@ model RawMaterial {
   description_fr  String?
 }
 
+// Coupons for discounts in checkout
+model Coupon {
+  id            String   @id @default(uuid())
+  code          String   @unique
+  type          String   // "percent" | "fixed"
+  amount        Float
+  active        Boolean  @default(true)
+  startsAt      DateTime?
+  expiresAt     DateTime?
+  usageLimit    Int?
+  timesUsed     Int      @default(0)
+  applicableCourseIds Json? // array of course IDs this applies to; null = all
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([code])
+  @@index([active])
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED
