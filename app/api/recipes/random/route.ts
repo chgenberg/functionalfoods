@@ -8,7 +8,6 @@ export async function GET() {
     if (!process.env.DATABASE_URL) {
       return NextResponse.json({ recipes: [] });
     }
-    // Hämta alla gratis recept
     const freeRecipes = await prisma.recipe.findMany({
       where: {
         isFree: true,
@@ -29,8 +28,21 @@ export async function GET() {
       }
     });
 
-    const count = Math.min(10, freeRecipes.length);
-    const shuffled = freeRecipes.sort(() => 0.5 - Math.random());
+    let pool = freeRecipes;
+    if (pool.length === 0) {
+      // Fallback: tillåt poster utan bild och ta de senaste
+      pool = await prisma.recipe.findMany({
+        where: { isFree: true, status: 'PUBLISHED' },
+        orderBy: { createdAt: 'desc' },
+        take: 12,
+        select: {
+          id: true, title: true, slug: true, imageUrl: true, imageAlt: true, excerpt: true, prepTime: true, categories: true
+        }
+      });
+    }
+
+    const count = Math.min(10, pool.length);
+    const shuffled = pool.sort(() => 0.5 - Math.random());
     const randomRecipes = shuffled.slice(0, count);
 
     return NextResponse.json({ recipes: randomRecipes });

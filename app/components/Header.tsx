@@ -132,10 +132,10 @@ export default function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'}`}>
       <div className="container-custom">
-        <div className="relative flex justify-between items-center h-16 md:h-20">
+        <div className="relative flex justify-between items-center h-20 md:h-24">
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <Link href="/" className="pointer-events-auto">
-              <Image src="/FF_logo.svg" alt="Functional Foods" width={200} height={80} className="h-12 md:h-20 w-auto" priority />
+              <Image src="/FF_logo.svg" alt="Functional Foods" width={220} height={96} className="h-14 md:h-24 w-auto" priority />
             </Link>
           </div>
 
