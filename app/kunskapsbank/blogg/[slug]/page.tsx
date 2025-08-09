@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FiCalendar, FiClock, FiArrowLeft, FiUser, FiTag } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface BlogPost {
   id: string;
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export default function BlogPostPage({ params }: Props) {
+  const t = useT();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -356,7 +358,7 @@ export default function BlogPostPage({ params }: Props) {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar artikel...</p>
+          <p className="text-gray-600">{t('blog.post.loading','Laddar artikel...')}</p>
         </div>
       </div>
     );
@@ -366,14 +368,14 @@ export default function BlogPostPage({ params }: Props) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Artikel hittades inte</h1>
-          <p className="text-gray-600 mb-6">{error || 'Artikeln du letar efter existerar inte.'}</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('blog.post.notFoundTitle','Artikel hittades inte')}</h1>
+          <p className="text-gray-600 mb-6">{error || t('blog.post.notFoundDesc','Artikeln du letar efter existerar inte.')}</p>
           <Link
             href="/kunskapsbank/blogg"
             className="inline-flex items-center text-accent hover:text-accent-hover font-medium"
           >
             <FiArrowLeft className="w-4 h-4 mr-2" />
-            Tillbaka till bloggen
+            {t('blog.post.backToBlog','Tillbaka till bloggen')}
           </Link>
         </div>
       </div>
@@ -396,7 +398,7 @@ export default function BlogPostPage({ params }: Props) {
               className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors group"
             >
               <FiArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Tillbaka till bloggen
+              {t('blog.post.backToBlog','Tillbaka till bloggen')}
             </Link>
           </motion.div>
 
@@ -474,7 +476,7 @@ export default function BlogPostPage({ params }: Props) {
             {/* Article Footer */}
             <div className="border-t border-gray-200 mt-12 pt-8">
               <div className="flex flex-wrap items-center gap-4">
-                <span className="text-sm text-text-secondary">Dela artikeln:</span>
+                <span className="text-sm text-text-secondary">{t('blog.post.share','Dela artikeln:')}</span>
                 <div className="flex gap-2">
                   <span className="inline-flex items-center gap-1 text-xs text-text-secondary bg-background-secondary px-2 py-1 rounded">
                     <FiTag className="w-4 h-4" />
@@ -501,7 +503,7 @@ export default function BlogPostPage({ params }: Props) {
             href="/kunskapsbank/blogg"
             className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-full hover:bg-accent-hover transition-colors font-medium"
           >
-            Läs fler artiklar
+            {t('blog.post.readMoreArticles','Läs fler artiklar')}
           </Link>
         </motion.div>
       </section>

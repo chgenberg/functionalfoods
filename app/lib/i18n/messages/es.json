@@ -67,5 +67,11 @@
   "blog.all": "Todos",
   "blog.readMoreFallback": "Lee más sobre este tema interesante de alimentos funcionales...",
   "blog.noneYet": "Aún no hay artículos publicados. ¡Vuelve pronto!",
-  "blog.noneFound": "No se encontraron artículos. Prueba cambiar tu búsqueda o filtros."
+  "blog.noneFound": "No se encontraron artículos. Prueba cambiar tu búsqueda o filtros.",
+  "blog.post.loading": "Cargando artículo...",
+  "blog.post.notFoundTitle": "Artículo no encontrado",
+  "blog.post.notFoundDesc": "El artículo que buscas no existe.",
+  "blog.post.backToBlog": "Volver al blog",
+  "blog.post.share": "Compartir artículo:",
+  "blog.post.readMoreArticles": "Leer más artículos"
 } 

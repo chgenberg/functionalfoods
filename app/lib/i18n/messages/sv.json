@@ -108,5 +108,11 @@
   "blog.all": "Alla",
   "blog.readMoreFallback": "Läs mer om detta intressanta ämne inom functional foods...",
   "blog.noneYet": "Inga artiklar publicerade än. Kom tillbaka snart!",
-  "blog.noneFound": "Inga artiklar hittades. Prova att ändra din sökning eller filter."
+  "blog.noneFound": "Inga artiklar hittades. Prova att ändra din sökning eller filter.",
+  "blog.post.loading": "Laddar artikel...",
+  "blog.post.notFoundTitle": "Artikel hittades inte",
+  "blog.post.notFoundDesc": "Artikeln du letar efter existerar inte.",
+  "blog.post.backToBlog": "Tillbaka till bloggen",
+  "blog.post.share": "Dela artikeln:",
+  "blog.post.readMoreArticles": "Läs fler artiklar"
 } 

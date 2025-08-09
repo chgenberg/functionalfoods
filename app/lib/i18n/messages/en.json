@@ -108,5 +108,11 @@
   "blog.all": "All",
   "blog.readMoreFallback": "Read more about this interesting topic in functional foods...",
   "blog.noneYet": "No articles published yet. Check back soon!",
-  "blog.noneFound": "No articles found. Try changing your search or filters."
+  "blog.noneFound": "No articles found. Try changing your search or filters.",
+  "blog.post.loading": "Loading article...",
+  "blog.post.notFoundTitle": "Article not found",
+  "blog.post.notFoundDesc": "The article you are looking for does not exist.",
+  "blog.post.backToBlog": "Back to blog",
+  "blog.post.share": "Share article:",
+  "blog.post.readMoreArticles": "Read more articles"
 } 

@@ -109,5 +109,11 @@
   "blog.all": "Tous",
   "blog.readMoreFallback": "En savoir plus sur ce sujet intéressant lié aux aliments fonctionnels...",
   "blog.noneYet": "Aucun article publié pour le moment. Revenez bientôt !",
-  "blog.noneFound": "Aucun article trouvé. Essayez de modifier votre recherche ou vos filtres."
+  "blog.noneFound": "Aucun article trouvé. Essayez de modifier votre recherche ou vos filtres.",
+  "blog.post.loading": "Chargement de l'article...",
+  "blog.post.notFoundTitle": "Article introuvable",
+  "blog.post.notFoundDesc": "L'article que vous cherchez n'existe pas.",
+  "blog.post.backToBlog": "Retour au blog",
+  "blog.post.share": "Partager l'article :",
+  "blog.post.readMoreArticles": "Lire plus d'articles"
 } 
