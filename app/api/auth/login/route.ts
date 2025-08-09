@@ -9,7 +9,6 @@ export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
 
-    // Validera input
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email och lösenord krävs' },
@@ -17,10 +16,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hitta användaren
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
+    const userRaw = await prisma.user.findUnique({ where: { email } });
+    const user = userRaw as any;
 
     if (!user) {
       return NextResponse.json(
@@ -29,7 +26,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verifiera lösenord
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
@@ -39,31 +35,29 @@ export async function POST(request: Request) {
       );
     }
 
-    // Uppdatera lastLogin
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLogin: new Date() }
-    });
+    await prisma.user.update({ where: { id: user.id }, data: { lastLogin: new Date() } });
 
-    // Skapa JWT token
     const token = jwt.sign(
       { 
         userId: user.id,
         email: user.email,
         name: user.name,
-        role: user.role
+        role: user.role,
+        preferredLanguage: user.preferredLanguage || null,
+        nationality: user.nationality || null
       },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );
 
-    // Ta bort lösenordet från svaret
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user as any;
 
-    return NextResponse.json({
-      user: userWithoutPassword,
-      token
-    });
+    const res = NextResponse.json({ user: userWithoutPassword, token });
+    if (user.preferredLanguage) {
+      const cookieVal = String(user.preferredLanguage).toLowerCase();
+      res.headers.set('Set-Cookie', `lang=${cookieVal}; Path=/; Max-Age=31536000; SameSite=Lax`);
+    }
+    return res;
   } catch (error) {
     console.error('Inloggningsfel:', error);
     return NextResponse.json(

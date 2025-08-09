@@ -4,11 +4,12 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+type LangCode = 'SV' | 'EN' | 'ES' | 'DE' | 'FR';
+
 export async function POST(request: Request) {
   try {
-    const { email, password, name } = await request.json();
+    const { email, password, name, nationality, preferredLanguage } = await request.json();
 
-    // Validera input
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email och lösenord krävs' },
@@ -16,11 +17,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Kolla om användaren redan finns
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
-
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
         { error: 'En användare med denna email finns redan' },
@@ -28,23 +25,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hasha lösenordet
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Skapa användaren
+    // Map preferredLanguage string -> enum string
+    let langEnum: LangCode | undefined = undefined;
+    const map: Record<string, LangCode> = { sv: 'SV', en: 'EN', es: 'ES', de: 'DE', fr: 'FR' };
+    if (preferredLanguage && typeof preferredLanguage === 'string' && map[preferredLanguage.toLowerCase()]) {
+      langEnum = map[preferredLanguage.toLowerCase()];
+    }
+
     const user = await prisma.user.create({
       data: {
         email,
         name,
         password: hashedPassword,
-        role: 'customer' // Default roll
-      }
+        role: 'customer',
+        nationality,
+        preferredLanguage: langEnum as any
+      } as any
     });
 
-    // Ta bort lösenordet från svaret
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user as any;
 
-    return NextResponse.json(userWithoutPassword);
+    const res = NextResponse.json(userWithoutPassword);
+    if (langEnum) {
+      const cookieVal = (langEnum as string).toLowerCase();
+      res.headers.set('Set-Cookie', `lang=${cookieVal}; Path=/; Max-Age=31536000; SameSite=Lax`);
+    }
+    return res;
   } catch (error) {
     console.error('Registreringsfel:', error);
     return NextResponse.json(

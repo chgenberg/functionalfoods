@@ -17,6 +17,14 @@ model User {
   updatedAt       DateTime          @updatedAt
   lastLogin       DateTime?
   isActive        Boolean           @default(true)
+  // Address fields
+  addressLine1    String?
+  addressLine2    String?
+  postalCode      String?
+  city            String?
+  country         String?
+  nationality     String?
+  preferredLanguage Language?       @default(SV)
   achievements    Achievement[]
   blogPosts       BlogPost[]
   chatMessages    ChatMessage[]
@@ -409,4 +417,12 @@ enum RecipeStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+enum Language {
+  SV
+  EN
+  ES
+  DE
+  FR
 }
