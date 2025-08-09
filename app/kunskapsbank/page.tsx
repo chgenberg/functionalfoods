@@ -13,7 +13,7 @@ export default function KunskapsbankPage() {
       id: 'blog',
       title: "Artiklar",
       description: "Läs våra senaste artiklar om hälsa, kost och livsstil",
-      image: "/blogg.png",
+      image: "/kunskapsbank/smoothie.jpg",
       href: "/kunskapsbank/blogg",
       icon: FiBookOpen,
       color: "text-blue-600"
@@ -22,7 +22,7 @@ export default function KunskapsbankPage() {
       id: 'recipes',
       title: "Recept",
       description: "Utforska våra hälsosamma och goda recept",
-      image: "/recept.png",
+      image: "/kunskapsbank/kottfarssas.JPG",
       href: "/kunskapsbank/recept",
       icon: GiCookingPot,
       color: "text-primary"
@@ -31,7 +31,7 @@ export default function KunskapsbankPage() {
       id: 'raw-materials',
       title: "Råvaror",
       description: "Läs om våra funktionella råvaror och deras hälsofördelar",
-      image: "/functionalfoods_ravaror.png",
+      image: "/kunskapsbank/musli.jpg",
       href: "/kunskapsbank/ingredienser",
       icon: GiCookingPot,
       color: "text-red-600"
@@ -40,7 +40,7 @@ export default function KunskapsbankPage() {
       id: 'sources',
       title: "Källor",
       description: "Vetenskapliga referenser och forskning bakom functional foods",
-      image: "/blogg.png", // Använder samma bild som blogg tills vi har en specifik
+      image: "/kunskapsbank/aggrora.jpg",
       href: "/kunskapsbank/kallor",
       icon: FiBook,
       color: "text-indigo-600"
@@ -49,7 +49,7 @@ export default function KunskapsbankPage() {
       id: 'search',
       title: "Sök",
       description: "Hitta specifik information i vår kunskapsbank",
-      image: "/sok.png",
+      image: "/kunskapsbank/sallad.JPG",
       href: "/kunskapsbank/sok",
       icon: FiSearch,
       color: "text-purple-600"
@@ -58,7 +58,7 @@ export default function KunskapsbankPage() {
       id: 'faq',
       title: "Q&A",
       description: "Vanliga frågor och svar om Functional Foods, kurser och mer",
-      image: "/faq.png",
+      image: "/kunskapsbank/Gronsakswok.jpg",
       href: "/kunskapsbank/qa",
       icon: FiMessageCircle,
       color: "text-orange-600"
