@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FiArrowLeft, FiSend, FiUser, FiMail } from "react-icons/fi";
 
 export default function AdressPage() {
@@ -59,17 +60,35 @@ export default function AdressPage() {
         {/* Back Link */}
         <Link
           href="/kontakt"
-          className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors"
+          className="inline-flex items-center text-text-secondary hover:text-primary mb-6 transition-colors"
         >
           <FiArrowLeft className="w-4 h-4 mr-2" />
           Tillbaka till kontakt
         </Link>
 
+        {/* Hero Image */}
+        <div className="relative h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-lg mb-10 group">
+          <Image
+            src="/kontakta-oss/gronsallad.jpg"
+            alt="Kontakta oss"
+            fill
+            priority
+            className="object-cover will-change-transform transition-transform duration-700 group-hover:scale-[1.03] animate-kenburns"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+          <div className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-white">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs md:text-sm mb-2">
+              <span>Vi svarar inom 24 timmar</span>
+            </div>
+            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight drop-shadow">Kontakta oss</h1>
+          </div>
+        </div>
+
         {/* Intro */}
         <div className="max-w-3xl mx-auto text-center mb-10">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
             VI FINNS HÄR FÖR DIG
-          </h1>
+          </h2>
           <p className="text-lg text-text-secondary mb-3">
             Vi gör vårt yttersta för att svara på alla dina frågor.
           </p>
@@ -185,6 +204,16 @@ export default function AdressPage() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes kenburns {
+          0% { transform: scale(1) translate3d(0, 0, 0); }
+          100% { transform: scale(1.06) translate3d(2%, -1%, 0); }
+        }
+        .animate-kenburns {
+          animation: kenburns 18s ease-out infinite alternate;
+        }
+      `}</style>
     </main>
   );
 } 
