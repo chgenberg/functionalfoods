@@ -14,6 +14,8 @@ export default function AdressPage() {
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [heroLoaded, setHeroLoaded] = useState(false);
+  const [heroError, setHeroError] = useState(false);
 
   const canSubmit =
     consent && formData.namn.trim() !== "" && formData.email.trim() !== "" && formData.meddelande.trim() !== "";
@@ -68,13 +70,27 @@ export default function AdressPage() {
 
         {/* Hero Image */}
         <div className="relative h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-lg mb-10 group">
-          <Image
-            src="/kontakta-oss/gronsallad.jpg"
-            alt="Kontakta oss"
-            fill
-            priority
-            className="object-cover will-change-transform transition-transform duration-700 group-hover:scale-[1.03] animate-kenburns"
-          />
+          {!heroError && (
+            <Image
+              src="/kontakta-oss/gronsallad.jpg"
+              alt="Kontakta oss"
+              fill
+              priority
+              unoptimized
+              sizes="100vw"
+              className={`object-cover will-change-transform transition-transform duration-700 group-hover:scale-[1.03] ${heroLoaded ? 'animate-kenburns' : ''}`}
+              onLoadingComplete={() => setHeroLoaded(true)}
+              onError={() => setHeroError(true)}
+            />
+          )}
+          {/* Fallback skeleton / bakgrund */}
+          {!heroLoaded && !heroError && (
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
+          )}
+          {heroError && (
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-200" />
+          )}
+
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
           <div className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-white">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs md:text-sm mb-2">
