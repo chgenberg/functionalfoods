@@ -219,5 +219,18 @@
   "sources.empty.title": "No sources found",
   "sources.empty.subtitle": "Try changing the search term or filters",
   "sources.footer.title": "About our sources",
-  "sources.footer.text": "All sources are carefully selected from peer-reviewed journals and recognized institutions. We strive to use the latest research in functional foods and nutrition to provide you with the most up-to-date and evidence-based information."
+  "sources.footer.text": "All sources are carefully selected from peer-reviewed journals and recognized institutions. We strive to use the latest research in functional foods and nutrition to provide you with the most up-to-date and evidence-based information.",
+  "qa.title": "Frequently Asked Questions",
+  "qa.subtitle": "Quickly find answers about Functional Foods",
+  "qa.search.placeholder": "Search questions and answers...",
+  "qa.questions": "questions",
+  "qa.noAnswerTitle": "Didn't find the answer?",
+  "qa.noAnswerSubtitle": "Contact our support and we'll help you!",
+  "qa.contact": "Contact us",
+
+  "podcasts.back": "Back to Knowledge Base",
+  "podcasts.badge": "Listen and learn",
+  "podcasts.title": "Podcasts",
+  "podcasts.subtitle": "Our latest episodes on health, nutrition and functional foods – with a simple, elegant player.",
+  "podcasts.playPause": "Play/Pause"
 } 

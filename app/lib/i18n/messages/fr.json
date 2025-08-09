@@ -213,5 +213,18 @@
   "sources.empty.title": "Aucune source trouvée",
   "sources.empty.subtitle": "Essayez de modifier le terme de recherche ou les filtres",
   "sources.footer.title": "À propos de nos sources",
-  "sources.footer.text": "Toutes les sources sont soigneusement sélectionnées à partir de revues à comité de lecture et d'institutions reconnues. Nous nous efforçons d'utiliser les recherches les plus récentes en aliments fonctionnels et en nutrition pour vous fournir des informations actualisées et fondées sur des preuves."
+  "sources.footer.text": "Toutes les sources sont soigneusement sélectionnées à partir de revues à comité de lecture et d'institutions reconnues. Nous nous efforçons d'utiliser les recherches les plus récentes en aliments fonctionnels et en nutrition pour vous fournir des informations actualisées et fondées sur des preuves.",
+  "qa.title": "Questions fréquentes",
+  "qa.subtitle": "Trouvez rapidement des réponses sur les Functional Foods",
+  "qa.search.placeholder": "Rechercher dans les questions et réponses...",
+  "qa.questions": "questions",
+  "qa.noAnswerTitle": "Vous n'avez pas trouvé la réponse ?",
+  "qa.noAnswerSubtitle": "Contactez notre support, nous vous aiderons !",
+  "qa.contact": "Nous contacter",
+
+  "podcasts.back": "Retour à la banque de connaissances",
+  "podcasts.badge": "Écouter et apprendre",
+  "podcasts.title": "Podcasts",
+  "podcasts.subtitle": "Nos derniers épisodes sur la santé, la nutrition et les aliments fonctionnels – avec un lecteur simple et élégant.",
+  "podcasts.playPause": "Lecture/Pause"
 } 

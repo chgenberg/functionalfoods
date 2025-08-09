@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronDown, FiSearch, FiBook, FiShoppingCart, FiCreditCard, FiShield, FiHelpCircle } from 'react-icons/fi';
 import { GiFruitBowl } from 'react-icons/gi';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface FAQ {
   question: string;
@@ -266,6 +267,7 @@ export default function QAPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedSections, setExpandedSections] = useState<string[]>(['general']);
   const [expandedQuestions, setExpandedQuestions] = useState<string[]>([]);
+  const t = useT();
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>
@@ -303,10 +305,10 @@ export default function QAPage() {
           </div>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-          Vanliga frågor & svar
+          {t('qa.title','Vanliga frågor & svar')}
         </h1>
         <p className="text-lg text-gray-600">
-          Hitta snabbt svar på dina frågor om Functional Foods
+          {t('qa.subtitle','Hitta snabbt svar på dina frågor om Functional Foods')}
         </p>
       </div>
 
@@ -315,7 +317,7 @@ export default function QAPage() {
         <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
         <input
           type="text"
-          placeholder="Sök bland frågor och svar..."
+          placeholder={t('qa.search.placeholder','Sök bland frågor och svar...')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -346,7 +348,7 @@ export default function QAPage() {
                     {section.title}
                   </h2>
                   <span className="text-sm text-gray-500">
-                    ({section.faqs.length} frågor)
+                    ({section.faqs.length} {t('qa.questions','frågor')})
                   </span>
                 </div>
                 <motion.div
@@ -422,16 +424,16 @@ export default function QAPage() {
       {/* Contact Support */}
       <div className="mt-12 bg-gray-50 rounded-xl p-6 text-center">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Hittade du inte svaret?
+          {t('qa.noAnswerTitle','Hittade du inte svaret?')}
         </h3>
         <p className="text-gray-600 mb-4">
-          Kontakta vår support så hjälper vi dig!
+          {t('qa.noAnswerSubtitle','Kontakta vår support så hjälper vi dig!')}
         </p>
         <a
           href="mailto:info@functionalfoods.se"
           className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors font-medium"
         >
-          Kontakta oss
+          {t('qa.contact','Kontakta oss')}
         </a>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FiArrowLeft, FiPlayCircle, FiPauseCircle, FiClock, FiHeadphones } from "react-icons/fi";
+import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface Episode {
   id: string;
@@ -38,6 +39,8 @@ const demoEpisodes: Episode[] = [
 export default function PodcastsPage() {
   const [currentId, setCurrentId] = useState<string | null>(null);
   const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
+  const t = useT();
+  const { locale } = useLanguage();
 
   const togglePlay = (id: string) => {
     const audio = audioRefs.current[id];
@@ -53,21 +56,23 @@ export default function PodcastsPage() {
     setCurrentId(id);
   };
 
+  const dateLocale = locale === 'sv' ? 'sv-SE' : locale === 'en' ? 'en-GB' : locale === 'es' ? 'es-ES' : locale === 'de' ? 'de-DE' : 'fr-FR';
+
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#fffdf3" }}>
       <div className="container-custom section-padding">
         <Link href="/kunskapsbank" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors">
           <FiArrowLeft className="w-4 h-4 mr-2" />
-          Tillbaka till Kunskapsbank
+          {t('podcasts.back','Tillbaka till Kunskapsbank')}
         </Link>
 
         <div className="max-w-3xl mx-auto text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4">
             <FiHeadphones className="w-4 h-4" />
-            <span>Lyssna och lär</span>
+            <span>{t('podcasts.badge','Lyssna och lär')}</span>
           </div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight">Poddar</h1>
-          <p className="text-lg text-text-secondary">Våra senaste poddavsnitt om hälsa, kost och functional foods – med en enkel och snygg spelare.</p>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight">{t('podcasts.title','Poddar')}</h1>
+          <p className="text-lg text-text-secondary">{t('podcasts.subtitle','Våra senaste poddavsnitt om hälsa, kost och functional foods – med en enkel och snygg spelare.')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
@@ -88,7 +93,7 @@ export default function PodcastsPage() {
                 <p className="text-text-secondary text-sm mb-4">{ep.description}</p>
                 <div className="flex items-center justify-between text-sm text-text-secondary mb-4">
                   <span className="inline-flex items-center gap-1"><FiClock className="w-4 h-4" /> {ep.duration}</span>
-                  <span>{new Date(ep.date).toLocaleDateString("sv-SE")}</span>
+                  <span>{new Date(ep.date).toLocaleDateString(dateLocale)}</span>
                 </div>
 
                 <div className="bg-background-secondary border border-border rounded-xl p-3">
@@ -96,7 +101,7 @@ export default function PodcastsPage() {
                     <button
                       onClick={() => togglePlay(ep.id)}
                       className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors"
-                      aria-label="Spela/Pausa"
+                      aria-label={t('podcasts.playPause','Spela/Pausa')}
                     >
                       {currentId === ep.id && audioRefs.current[ep.id] && !audioRefs.current[ep.id]!.paused ? (
                         <FiPauseCircle className="w-7 h-7" />
