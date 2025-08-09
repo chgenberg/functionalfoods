@@ -10,6 +10,77 @@ export const dynamic = 'force-dynamic';
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
 
+const SUPPORTED = ['sv', 'en', 'es', 'de', 'fr'] as const;
+type Lang = typeof SUPPORTED[number];
+const M: Record<Lang, Record<string,string>> = {
+  sv: {
+    noItems: 'Inga produkter i beställningen',
+    noMethod: 'Ingen betalningsmetod vald',
+    needCustomer: 'Kunduppgifter (email och namn) krävs för gästköp',
+    mustCreate: 'Du måste skapa ett konto för att genomföra köpet. Markera "Skapa ett konto åt mig" eller logga in om du redan har ett konto.',
+    notFound: 'En eller flera kurser hittades inte',
+    alreadyOwn: 'Du äger redan följande kurser: ',
+    successNew: 'Köp genomfört framgångsrikt! Ett konto har skapats åt dig.',
+    success: 'Köp genomfört framgångsrikt!',
+    payFailed: 'Betalningen misslyckades',
+    errCreate: 'Ett fel uppstod vid köp'
+  },
+  en: {
+    noItems: 'No items in the order',
+    noMethod: 'No payment method selected',
+    needCustomer: 'Customer details (email and name) are required for guest checkout',
+    mustCreate: 'You must create an account to complete the purchase. Check "Create an account for me" or log in if you already have one.',
+    notFound: 'One or more courses were not found',
+    alreadyOwn: 'You already own the following courses: ',
+    successNew: 'Purchase completed successfully! An account has been created for you.',
+    success: 'Purchase completed successfully!',
+    payFailed: 'Payment failed',
+    errCreate: 'An error occurred while processing the purchase'
+  },
+  es: {
+    noItems: 'No hay productos en el pedido',
+    noMethod: 'No se seleccionó método de pago',
+    needCustomer: 'Se requieren datos del cliente (correo y nombre) para la compra como invitado',
+    mustCreate: 'Debes crear una cuenta para completar la compra. Marca "Crear una cuenta para mí" o inicia sesión si ya tienes una.',
+    notFound: 'No se encontró uno o más cursos',
+    alreadyOwn: 'Ya posees los siguientes cursos: ',
+    successNew: '¡Compra completada con éxito! Se ha creado una cuenta para ti.',
+    success: '¡Compra completada con éxito!',
+    payFailed: 'El pago falló',
+    errCreate: 'Ocurrió un error al procesar la compra'
+  },
+  de: {
+    noItems: 'Keine Produkte in der Bestellung',
+    noMethod: 'Keine Zahlungsmethode ausgewählt',
+    needCustomer: 'Kundendaten (E-Mail und Name) sind für den Gastkauf erforderlich',
+    mustCreate: 'Du musst ein Konto erstellen, um den Kauf abzuschließen. Wähle "Konto für mich erstellen" oder melde dich an, wenn du bereits eines hast.',
+    notFound: 'Ein oder mehrere Kurse wurden nicht gefunden',
+    alreadyOwn: 'Du besitzt bereits folgende Kurse: ',
+    successNew: 'Kauf erfolgreich abgeschlossen! Es wurde ein Konto für dich erstellt.',
+    success: 'Kauf erfolgreich abgeschlossen!',
+    payFailed: 'Zahlung fehlgeschlagen',
+    errCreate: 'Beim Kauf ist ein Fehler aufgetreten'
+  },
+  fr: {
+    noItems: 'Aucun article dans la commande',
+    noMethod: 'Aucun mode de paiement sélectionné',
+    needCustomer: 'Les informations client (e‑mail et nom) sont requises pour le paiement invité',
+    mustCreate: 'Vous devez créer un compte pour finaliser l’achat. Cochez « Créer un compte pour moi » ou connectez‑vous si vous en avez déjà un.',
+    notFound: 'Un ou plusieurs cours sont introuvables',
+    alreadyOwn: 'Vous possédez déjà les cours suivants : ',
+    successNew: 'Achat effectué avec succès ! Un compte a été créé pour vous.',
+    success: 'Achat effectué avec succès !',
+    payFailed: 'Le paiement a échoué',
+    errCreate: "Une erreur s'est produite lors de l'achat"
+  }
+};
+function getLang(request: Request): Lang {
+  const hdr = (request as any).headers?.get?.('cookie') || '';
+  const m = /(?:^|;\s*)lang=([^;]+)/.exec(hdr);
+  const val = (m ? m[1] : '').toLowerCase();
+  return (SUPPORTED as readonly string[]).includes(val) ? (val as Lang) : 'sv';
+}
+
 // Helper function to generate a random password
 function generateRandomPassword(length: number = 8): string {
   const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -22,19 +93,20 @@ function generateRandomPassword(length: number = 8): string {
 
 export async function POST(request: Request) {
   try {
+    const lang = getLang(request);
     const body = await request.json();
     const { items, paymentMethod, customerInfo, createAccount = false } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
-        { error: 'Inga produkter i beställningen' },
+        { error: M[lang].noItems },
         { status: 400 }
       );
     }
 
     if (!paymentMethod) {
       return NextResponse.json(
-        { error: 'Ingen betalningsmetod vald' },
+        { error: M[lang].noMethod },
         { status: 400 }
       );
     }
@@ -61,7 +133,7 @@ export async function POST(request: Request) {
     if (!user) {
       if (!customerInfo || !customerInfo.email || !customerInfo.name) {
         return NextResponse.json(
-          { error: 'Kunduppgifter (email och namn) krävs för gästköp' },
+          { error: M[lang].needCustomer },
           { status: 400 }
         );
       }
@@ -95,7 +167,7 @@ export async function POST(request: Request) {
         } else {
           // User doesn't exist and doesn't want to create account
           return NextResponse.json(
-            { error: 'Du måste skapa ett konto för att genomföra köpet. Markera "Skapa ett konto åt mig" eller logga in om du redan har ett konto.' },
+            { error: M[lang].mustCreate },
             { status: 400 }
           );
         }
@@ -108,14 +180,12 @@ export async function POST(request: Request) {
       .map(item => item.name);
 
     const courses = await prisma.courseProduct.findMany({
-      where: {
-        name: { in: courseIds }
-      }
+      where: { name: { in: courseIds } }
     });
 
     if (courses.length !== courseIds.length) {
       return NextResponse.json(
-        { error: 'En eller flera kurser hittades inte' },
+        { error: M[lang].notFound },
         { status: 404 }
       );
     }
@@ -135,7 +205,7 @@ export async function POST(request: Request) {
       ).filter(Boolean);
       
       return NextResponse.json(
-        { error: `Du äger redan följande kurser: ${ownedCourses.join(', ')}` },
+        { error: `${M[lang].alreadyOwn}${ownedCourses.join(', ')}` },
         { status: 400 }
       );
     }
@@ -224,7 +294,7 @@ export async function POST(request: Request) {
       });
 
       // Create Purchase records for backward compatibility
-      const purchases = [];
+      const purchases = [] as any[];
       for (const item of items) {
         if (item.type === 'course') {
           const course = courses.find(c => c.name === item.name);
@@ -237,7 +307,7 @@ export async function POST(request: Request) {
                 status: 'completed',
                 orderId: order.id,
                 accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-              },
+              } as any,
               include: {
                 course: true
               }
@@ -308,8 +378,8 @@ export async function POST(request: Request) {
         },
         token, // JWT token for new users
         message: isNewUser 
-          ? 'Köp genomfört framgångsrikt! Ett konto har skapats åt dig.' 
-          : 'Köp genomfört framgångsrikt!'
+          ? M[lang].successNew
+          : M[lang].success
       });
 
     } else if (paymentResult.redirectUrl) {
@@ -338,7 +408,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json({
         success: false,
-        error: paymentResult.error || 'Betalningen misslyckades',
+        error: paymentResult.error || M[lang].payFailed,
         order: {
           id: order.id,
           orderNumber: order.orderNumber,
@@ -350,7 +420,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating purchase:', error);
     return NextResponse.json(
-      { error: 'Ett fel uppstod vid köp' },
+      { error: M[getLang(request)].errCreate },
       { status: 500 }
     );
   } finally {
