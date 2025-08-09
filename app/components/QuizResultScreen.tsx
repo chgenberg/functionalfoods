@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity, FiBookOpen, FiAlertTriangle, FiPhone, FiChevronRight } from 'react-icons/fi';
+import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity, FiBookOpen, FiAlertTriangle, FiPhone, FiChevronRight, FiMail } from 'react-icons/fi';
+import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
 
 interface QuizResultData {
@@ -47,10 +48,14 @@ interface QuizResultScreenProps {
 }
 
 const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart }) => {
+  const t = useT();
+  const { locale } = useLanguage();
   const [recommendations, setRecommendations] = useState<QuizResultData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('summary');
+  const [email, setEmail] = useState('');
+  const [emailStatus, setEmailStatus] = useState<'idle'|'sending'|'sent'|'error'>('idle');
   const [healthScores, setHealthScores] = useState<HealthScores>({
     energi: 7,
     sömn: 6,
@@ -278,8 +283,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
         <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl md:text-2xl font-light text-gray-900">Din Hälsoanalys</h1>
-              <p className="text-xs md:text-sm text-gray-500 mt-1">Personliga rekommendationer baserat på dina svar</p>
+              <h1 className="text-xl md:text-2xl font-light text-gray-900">{t('quiz.result.title','Din Hälsoanalys')}</h1>
+              <p className="text-xs md:text-sm text-gray-500 mt-1">{t('quiz.result.subtitle','Personliga rekommendationer baserat på dina svar')}</p>
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -288,7 +293,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <FiRefreshCw className="w-4 h-4" />
-              <span className="text-xs md:text-sm hidden sm:inline">Gör om test</span>
+              <span className="text-xs md:text-sm hidden sm:inline">{t('quiz.restart','Gör om test')}</span>
             </motion.button>
           </div>
         </div>
@@ -372,7 +377,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                 {/* Health Areas */}
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                  <h4 className="text-sm font-medium text-gray-900 mb-4">Hälsoområden</h4>
+                  <h4 className="text-sm font-medium text-gray-900 mb-4">{t('quiz.areas','Hälsoområden')}</h4>
                   <div className="space-y-4">
                     {healthAreas.map((area, index) => {
                       const score = healthScores[area.key as keyof HealthScores];
@@ -462,7 +467,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                       >
-                        <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Din hälsoprofil</h2>
+                        <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.profile','Din hälsoprofil')}</h2>
                         <div 
                           className="prose prose-gray max-w-none text-sm md:text-base text-gray-600 leading-relaxed space-y-4"
                           dangerouslySetInnerHTML={{ __html: recommendations.profile.replace(/\. /g, '.<br/><br/>') }}
@@ -538,7 +543,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                 {activeTab === 'lifestyle' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Livsstilsråd</h2>
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.lifestyle','Livsstilsråd')}</h2>
                     <div className="grid md:grid-cols-2 gap-6">
                       {recommendations.lifestyleAdvice.map((advice, index) => (
                         <motion.div
@@ -560,7 +565,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                 {activeTab === 'nextsteps' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-6 md:mb-8">Din handlingsplan</h2>
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-6 md:mb-8">{t('quiz.plan','Din handlingsplan')}</h2>
                     <div className="relative">
                       {/* Timeline line */}
                       <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
@@ -597,7 +602,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         onClick={() => window.location.href = '/utbildning/functional-flow'}
                         className="inline-flex items-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors"
                       >
-                        <span>Starta Functional Flow</span>
+                        <span>{t('quiz.startFlow','Starta Functional Flow')}</span>
                         <FiArrowRight className="w-5 h-5" />
                       </motion.button>
                     </div>
@@ -606,7 +611,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                 {activeTab === 'course' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Rekommenderad kurs för dig</h2>
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.course','Rekommenderad kurs för dig')}</h2>
                     <div 
                       className="prose prose-gray max-w-none text-gray-600 mb-8 space-y-4"
                       dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation.replace(/\. /g, '.<br/><br/>') }}
@@ -620,7 +625,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         className="bg-primary text-white px-6 py-4 rounded-xl font-medium hover:bg-secondary transition-colors flex items-center justify-center gap-2"
                       >
                         <FiStar className="w-5 h-5" />
-                        <span>Functional Flow</span>
+                        <span>{t('quiz.flow','Functional Flow')}</span>
                       </motion.button>
                       
                       <motion.button
@@ -629,7 +634,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         onClick={() => window.location.href = '/utbildning/functional-basics'}
                         className="bg-white text-gray-700 border-2 border-gray-200 px-6 py-4 rounded-xl font-medium hover:border-gray-300 transition-colors"
                       >
-                        Functional Basics
+                        {t('quiz.basics','Functional Basics')}
                       </motion.button>
                     </div>
                   </div>
@@ -637,7 +642,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                 {activeTab === 'science' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Vetenskaplig grund</h2>
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.science','Vetenskaplig grund')}</h2>
                     <div className="space-y-4">
                       {recommendations.scientificReferences.map((reference, index) => (
                         <motion.div
@@ -661,7 +666,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 {activeTab === 'warnings' && recommendations && (
                   <div className="space-y-4">
                     <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                      <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Viktigt att tänka på</h2>
+                      <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.warnings','Viktigt att tänka på')}</h2>
                       <div className="space-y-4">
                         {recommendations.warningSignals.map((warning, index) => (
                           <motion.div
@@ -684,7 +689,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                     <div className="bg-red-50 rounded-2xl p-6 border border-red-100">
                       <div className="flex items-center gap-3 mb-3">
                         <FiPhone className="w-6 h-6 text-red-600" />
-                        <h3 className="text-lg font-medium text-gray-900">Vid akuta besvär</h3>
+                        <h3 className="text-lg font-medium text-gray-900">{t('quiz.emergency','Vid akuta besvär')}</h3>
                       </div>
                       <p className="text-gray-700">
                         Ring <strong>1177</strong> för vårdguiden eller <strong>112</strong> vid nödsituationer.
@@ -695,7 +700,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                 {activeTab === 'metrics' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">Följ dina framsteg</h2>
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.metrics','Följ dina framsteg')}</h2>
                     <div className="grid md:grid-cols-2 gap-6 mb-8">
                       {recommendations.successMetrics.map((metric, index) => (
                         <motion.div

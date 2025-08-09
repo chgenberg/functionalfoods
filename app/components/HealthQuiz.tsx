@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiArrowRight, FiArrowLeft, FiX, FiCheckCircle } from 'react-icons/fi';
 import Image from 'next/image';
@@ -384,6 +384,28 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const quizQuestions: QuizQuestion[] = locale === 'en' ? QUIZ_EN : locale === 'es' ? QUIZ_ES : locale === 'de' ? QUIZ_DE : locale === 'fr' ? QUIZ_FR : QUIZ_SV;
+  const STORAGE_KEY = `health_quiz_state_v1_${locale}`;
+  // Restore autosaved state
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as { step: 'welcome'|'quiz'|'result'; q: number; a: Record<number,string> };
+      if (saved && typeof saved.q === 'number' && saved.a) {
+        setCurrentStep(saved.step || 'quiz');
+        setCurrentQuestion(saved.q);
+        setAnswers(saved.a);
+      }
+    } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [STORAGE_KEY]);
+  // Persist state
+  useEffect(() => {
+    try {
+      const payload = JSON.stringify({ step: currentStep, q: currentQuestion, a: answers });
+      localStorage.setItem(STORAGE_KEY, payload);
+    } catch {}
+  }, [currentStep, currentQuestion, answers, STORAGE_KEY]);
 
   const startQuiz = () => {
     setCurrentStep('quiz');
@@ -403,9 +425,14 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
       } else {
         setCurrentStep('result');
         onComplete?.(newAnswers);
+        // Clear persisted state after completion
+        try { localStorage.removeItem(STORAGE_KEY); } catch {}
       }
       setIsAnimating(false);
     }, 300);
+  };
+  const skipQuestion = () => {
+    handleAnswer('skipped');
   };
 
   const goToPrevious = () => {
@@ -422,6 +449,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     setCurrentStep('welcome');
     setCurrentQuestion(0);
     setAnswers({});
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
   };
 
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
@@ -668,9 +696,9 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
               </div>
 
               {/* Options Grid - Responsive layout without scrolling */}
-              <div className="flex-1 flex items-center justify-center">
+              <div className="flex-1 flex items-center justify-center" role="radiogroup" aria-label={t('quiz.question','Fråga')}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full max-w-4xl">
-                  {question.options.map((option, index) => (
+                  {question.options.map((option: QuizOption, index: number) => (
                     <motion.button
                       key={index}
                       initial={{ opacity: 0, y: 20 }}
@@ -684,6 +712,9 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                           ? 'border-primary bg-background shadow-lg transform scale-[1.02]'
                           : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-primary hover:shadow-md'
                       }`}
+                      role="radio"
+                      aria-checked={answers[currentQuestion] === option.value}
+                      aria-label={option.label}
                     >
                       {/* Hover gradient effect */}
                       <div className={`absolute inset-0 bg-gradient-to-br from-green-50/0 via-green-100/0 to-green-200/0 group-hover:from-green-50/40 group-hover:via-green-100/40 group-hover:to-green-200/40 transition-all duration-300 ${
@@ -735,16 +766,17 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     whileHover={{ x: -3 }}
                     onClick={goToPrevious}
                     className="flex items-center space-x-1.5 text-gray-600 hover:text-gray-800 transition-colors text-sm"
-                  >
+                    >
                     <FiArrowLeft className="w-3.5 h-3.5" />
-                    <span>Tillbaka</span>
+                    <span>{t('quiz.back','Tillbaka')}</span>
                   </motion.button>
                 ) : (
                   <div />
                 )}
-                <div className="text-xs text-gray-500 text-center">
+                <div className="text-xs sm:text-sm text-gray-500 text-center">
                   {currentQuestion === quizQuestions.length - 1 ? t('quiz.last','Sista frågan!') : t('quiz.choose','Välj ett alternativ')}
                 </div>
+                <button onClick={skipQuestion} className="text-xs sm:text-sm text-primary hover:text-secondary font-medium">{t('quiz.skip','Hoppa över')}</button>
               </div>
             </motion.div>
           </AnimatePresence>
