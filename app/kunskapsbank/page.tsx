@@ -94,7 +94,7 @@ export default function KunskapsbankPage() {
                     alt={section.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    onLoad={() => setImagesLoaded(prev => ({ ...prev, [section.id]: true }))}
+                    onLoadingComplete={() => setImagesLoaded(prev => ({ ...prev, [section.id]: true }))}
                   />
                 </div>
                 {!imagesLoaded[section.id] && (

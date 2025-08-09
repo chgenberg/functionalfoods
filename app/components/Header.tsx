@@ -151,21 +151,39 @@ export default function Header() {
       scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'
     }`}>
       <div className="container-custom">
-        <div className="flex justify-between items-center h-16 md:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0 z-10">
-            <Image
-              src="/FF_logo.svg"
-              alt="Functional Foods"
-              width={180}
-              height={72}
-              className="h-14 md:h-20 w-auto"
-              priority
-            />
-          </Link>
+        <div className="relative flex justify-between items-center h-20 md:h-24">
+          {/* Logo centrerad */}
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+            <Link href="/" className="pointer-events-auto">
+              <Image
+                src="/FF_logo.svg"
+                alt="Functional Foods"
+                width={200}
+                height={80}
+                className="h-16 md:h-20 w-auto"
+                priority
+              />
+            </Link>
+          </div>
+
+          {/* Desktop Navigation (hamburgare vänster) */}
+          <div className="hidden lg:flex items-center">
+            <button
+              type="button"
+              className="relative w-11 h-11 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center mr-3"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Öppna meny"
+            >
+              <div className="w-6 h-6 relative">
+                <span className={`absolute block h-0.5 w-6 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-3' : 'top-1.5'}`}></span>
+                <span className={`absolute block h-0.5 w-6 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'top-3'}`}></span>
+                <span className={`absolute block h-0.5 w-6 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-3' : 'top-4.5'}`}></span>
+              </div>
+            </button>
+          </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden">
             {menuItems.map((item) => (
               <div
                 key={item.label}
