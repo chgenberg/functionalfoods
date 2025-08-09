@@ -25,12 +25,18 @@ export default function NewsletterSignup({
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [hp, setHp] = useState('');
 
   const localTitle = title ?? t('newsletter.title','Få de senaste tipsen om Functional Foods');
   const localSubtitle = subtitle ?? t('newsletter.subtitle','Bli först med att få våra bästa råd och recept direkt i din inkorg');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!valid) { setEmailError(t('newsletter.invalidEmail','Ogiltig e‑postadress')); return; }
+    setEmailError(null);
+    if (hp) { return; }
     if (!privacyAccepted) {
       setMessage(t('newsletter.error','Något gick fel. Försök igen senare.'));
       setStatus('error');
@@ -44,7 +50,7 @@ export default function NewsletterSignup({
       const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName, lastName }),
+        body: JSON.stringify({ email, firstName, lastName, hp }),
       });
 
       const data = await response.json();
@@ -80,6 +86,7 @@ export default function NewsletterSignup({
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
               required
             />
+            <input type="text" value={hp} onChange={(e)=>setHp(e.target.value)} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <button
               type="submit"
               disabled={status === 'loading' || !email}
@@ -92,6 +99,7 @@ export default function NewsletterSignup({
               )}
             </button>
           </div>
+          {emailError && <p className="text-xs text-red-600 mt-1">{emailError}</p>}
           
           <div className="flex items-start gap-3 text-sm">
             <input
@@ -161,6 +169,8 @@ export default function NewsletterSignup({
                          transition-all duration-300 outline-none shadow-lg group-hover:shadow-xl"
                 required
               />
+              {emailError && <p className="mt-1 text-xs text-red-600">{emailError}</p>}
+              <input type="text" value={hp} onChange={(e)=>setHp(e.target.value)} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             </div>
             
             <label 
@@ -264,6 +274,8 @@ export default function NewsletterSignup({
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent"
             required
           />
+          <input type="text" value={hp} onChange={(e)=>setHp(e.target.value)} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+          {emailError && <span className="text-xs text-red-600">{emailError}</span>}
           <button
             type="submit"
             disabled={status === 'loading' || !email || !privacyAccepted}
