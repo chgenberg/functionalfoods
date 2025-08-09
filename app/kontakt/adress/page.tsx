@@ -4,8 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FiArrowLeft, FiSend, FiUser, FiMail } from "react-icons/fi";
+import { useT } from "@/app/lib/i18n/LanguageProvider";
 
 export default function AdressPage() {
+  const t = useT();
   const [formData, setFormData] = useState({
     namn: "",
     email: "",
@@ -65,7 +67,7 @@ export default function AdressPage() {
           className="inline-flex items-center text-text-secondary hover:text-primary mb-6 transition-colors"
         >
           <FiArrowLeft className="w-4 h-4 mr-2" />
-          Tillbaka till kontakt
+          {t('contact.back','Tillbaka till kontakt')}
         </Link>
 
         {/* Hero Image */}
@@ -94,31 +96,31 @@ export default function AdressPage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
           <div className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-white">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs md:text-sm mb-2">
-              <span>Vi svarar inom 24 timmar</span>
+              <span>{t('contact.replyIn24h','Vi svarar inom 24 timmar')}</span>
             </div>
-            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight drop-shadow">Kontakta oss</h1>
+            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight drop-shadow">{t('contact.title','Kontakta oss')}</h1>
           </div>
         </div>
 
         {/* Intro */}
         <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
-            VI FINNS HÄR FÖR DIG
+            {t('contact.weAreHere','VI FINNS HÄR FÖR DIG')}
           </h2>
           <p className="text-lg text-text-secondary mb-3">
-            Vi gör vårt yttersta för att svara på alla dina frågor.
+            {t('contact.intro1','Vi gör vårt yttersta för att svara på alla dina frågor.')}
           </p>
           <p className="text-lg text-text-secondary mb-3">
-            Kontakta oss via chatten, använd formuläret här nedan eller maila oss så återkommer vi inom 24 timmar.
+            {t('contact.intro2','Kontakta oss via chatten, använd formuläret här nedan eller maila oss så återkommer vi inom 24 timmar.')}
           </p>
           <div className="mt-6 p-4 bg-white rounded-xl shadow-md inline-block">
-            <p className="text-primary font-medium">Tips!</p>
+            <p className="text-primary font-medium">{t('contact.tip','Tips!')}</p>
             <p className="text-text-secondary">
-              Titta gärna om du kan hitta svaret på din fråga under {""}
+              {t('contact.tipText1','Titta gärna om du kan hitta svaret på din fråga under ')}
               <Link href="/kontakt/faq" className="text-accent hover:underline">
-                Frågor &amp; Svar
+                {t('contact.faq','Frågor & Svar')}
               </Link>{" "}
-              innan du kontaktar oss.
+              {t('contact.tipText2','innan du kontaktar oss.')}
             </p>
           </div>
         </div>
@@ -129,7 +131,7 @@ export default function AdressPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="namn" className="block text-sm font-medium text-primary mb-2">
-                  Namn
+                  {t('contact.name','Namn')}
                 </label>
                 <div className="relative">
                   <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -147,7 +149,7 @@ export default function AdressPage() {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
-                  E-post
+                  {t('contact.email','E-post')}
                 </label>
                 <div className="relative">
                   <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -165,7 +167,7 @@ export default function AdressPage() {
 
               <div>
                 <label htmlFor="meddelande" className="block text-sm font-medium text-primary mb-2">
-                  Meddelande
+                  {t('contact.message','Meddelande')}
                 </label>
                 <textarea
                   id="meddelande"
@@ -187,7 +189,7 @@ export default function AdressPage() {
                   required
                 />
                 <span className="text-sm text-text-secondary">
-                  Jag godkänner att denna hemsida sparar min information så att de kan svara på min fråga.
+                  {t('contact.consent','Jag godkänner att denna hemsida sparar min information så att de kan svara på min fråga.')}
                 </span>
               </label>
 
@@ -199,11 +201,11 @@ export default function AdressPage() {
                 {isSubmitting ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Skickar...
+                    {t('contact.sending','Skickar...')}
                   </>
                 ) : (
                   <>
-                    Skicka meddelande
+                    {t('contact.send','Skicka meddelande')}
                     <FiSend className="w-5 h-5" />
                   </>
                 )}
@@ -212,7 +214,7 @@ export default function AdressPage() {
               {showSuccess && (
                 <div className="p-4 bg-background-secondary border border-border rounded-lg">
                   <p className="text-secondary font-medium">
-                    ✓ Tack för ditt meddelande! Vi återkommer inom 24 timmar.
+                    ✓ {t('contact.success','Tack för ditt meddelande! Vi återkommer inom 24 timmar.')}
                   </p>
                 </div>
               )}

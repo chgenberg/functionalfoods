@@ -84,5 +84,22 @@
   "kb.sections.pod.title": "Podcasts",
   "kb.sections.pod.desc": "Höre unsere Podcast‑Episoden über Gesundheit und Functional Foods",
   "home.startQuiz": "Gesundheitsquiz starten",
-  "home.ourCourses": "Unsere Kurse"
+  "home.ourCourses": "Unsere Kurse",
+  "contact.back": "Zurück zur Kontaktseite",
+  "contact.replyIn24h": "Wir antworten innerhalb von 24 Stunden",
+  "contact.title": "Kontakt",
+  "contact.weAreHere": "WIR SIND FÜR DICH DA",
+  "contact.intro1": "Wir tun unser Bestes, um alle deine Fragen zu beantworten.",
+  "contact.intro2": "Kontaktiere uns per Chat, nutze das Formular unten oder sende eine E‑Mail – wir melden uns innerhalb von 24 Stunden.",
+  "contact.tip": "Tipp!",
+  "contact.tipText1": "Bitte prüfe zuerst die ",
+  "contact.faq": "FAQ",
+  "contact.tipText2": ", bevor du uns kontaktierst.",
+  "contact.name": "Name",
+  "contact.email": "E‑Mail",
+  "contact.message": "Nachricht",
+  "contact.consent": "Ich stimme zu, dass diese Website meine Informationen speichert, um auf meine Anfrage zu antworten.",
+  "contact.sending": "Wird gesendet...",
+  "contact.send": "Nachricht senden",
+  "contact.success": "Vielen Dank! Wir melden uns innerhalb von 24 Stunden."
 } 

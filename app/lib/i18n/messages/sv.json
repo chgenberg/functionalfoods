@@ -83,5 +83,22 @@
   "checkout.processing": "Bearbetar...",
   "checkout.placeOrder": "Slutför beställning",
   "home.startQuiz": "Starta Hälsoquiz",
-  "home.ourCourses": "Våra kurser"
+  "home.ourCourses": "Våra kurser",
+  "contact.back": "Tillbaka till kontakt",
+  "contact.replyIn24h": "Vi svarar inom 24 timmar",
+  "contact.title": "Kontakta oss",
+  "contact.weAreHere": "VI FINNS HÄR FÖR DIG",
+  "contact.intro1": "Vi gör vårt yttersta för att svara på alla dina frågor.",
+  "contact.intro2": "Kontakta oss via chatten, använd formuläret här nedan eller maila oss så återkommer vi inom 24 timmar.",
+  "contact.tip": "Tips!",
+  "contact.tipText1": "Titta gärna om du kan hitta svaret på din fråga under ",
+  "contact.faq": "Frågor & Svar",
+  "contact.tipText2": "innan du kontaktar oss.",
+  "contact.name": "Namn",
+  "contact.email": "E-post",
+  "contact.message": "Meddelande",
+  "contact.consent": "Jag godkänner att denna hemsida sparar min information så att de kan svara på min fråga.",
+  "contact.sending": "Skickar...",
+  "contact.send": "Skicka meddelande",
+  "contact.success": "Tack för ditt meddelande! Vi återkommer inom 24 timmar."
 } 

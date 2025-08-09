@@ -42,5 +42,22 @@
   "checkout.processing": "Procesando...",
   "checkout.placeOrder": "Finalizar pedido",
   "home.startQuiz": "Comenzar el quiz de salud",
-  "home.ourCourses": "Nuestros cursos"
+  "home.ourCourses": "Nuestros cursos",
+  "contact.back": "Volver al contacto",
+  "contact.replyIn24h": "Respondemos en 24 horas",
+  "contact.title": "Contáctanos",
+  "contact.weAreHere": "ESTAMOS AQUÍ PARA TI",
+  "contact.intro1": "Hacemos todo lo posible para responder a todas tus preguntas.",
+  "contact.intro2": "Contáctanos por chat, usa el formulario a continuación o envíanos un correo y responderemos en 24 horas.",
+  "contact.tip": "¡Consejo!",
+  "contact.tipText1": "Mira si puedes encontrar la respuesta en la ",
+  "contact.faq": "Sección de preguntas frecuentes",
+  "contact.tipText2": " antes de contactarnos.",
+  "contact.name": "Nombre",
+  "contact.email": "Correo electrónico",
+  "contact.message": "Mensaje",
+  "contact.consent": "Doy mi consentimiento para que este sitio almacene mi información para responder a mi pregunta.",
+  "contact.sending": "Enviando...",
+  "contact.send": "Enviar mensaje",
+  "contact.success": "¡Gracias! Te contactaremos dentro de 24 horas."
 } 

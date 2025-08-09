@@ -83,5 +83,22 @@
   "kb.sections.pod.title": "Podcasts",
   "kb.sections.pod.desc": "Listen to our podcast episodes about health and functional foods",
   "home.startQuiz": "Start health quiz",
-  "home.ourCourses": "Our courses"
+  "home.ourCourses": "Our courses",
+  "contact.back": "Back to contact",
+  "contact.replyIn24h": "We reply within 24 hours",
+  "contact.title": "Contact us",
+  "contact.weAreHere": "WE ARE HERE FOR YOU",
+  "contact.intro1": "We do our utmost to answer all your questions.",
+  "contact.intro2": "Contact us via chat, use the form below or email us and we will get back to you within 24 hours.",
+  "contact.tip": "Tip!",
+  "contact.tipText1": "Please check if you can find the answer under ",
+  "contact.faq": "FAQ",
+  "contact.tipText2": "before contacting us.",
+  "contact.name": "Name",
+  "contact.email": "Email",
+  "contact.message": "Message",
+  "contact.consent": "I consent to this website storing my information so they can reply to my question.",
+  "contact.sending": "Sending...",
+  "contact.send": "Send message",
+  "contact.success": "Thank you! We will get back to you within 24 hours."
 } 
