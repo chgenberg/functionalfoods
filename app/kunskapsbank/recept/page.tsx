@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiFilter, FiGrid, FiList, FiX, FiCheck } from 'react-icons/fi';
 import { useAuth } from '../../hooks/useAuth';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface Recipe {
   id: string;
@@ -65,6 +66,7 @@ const RecipesPage = () => {
   const searchRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
+  const t = useT();
 
   const getToken = () => {
     return localStorage.getItem('token');
@@ -183,7 +185,7 @@ const RecipesPage = () => {
           className="text-center"
         >
           <div className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-orange-800">Laddar recept...</p>
+          <p className="text-orange-800">{t('recipes.list.loading','Laddar recept...')}</p>
         </motion.div>
       </div>
     );
@@ -194,13 +196,13 @@ const RecipesPage = () => {
       <div className="min-h-screen flex items-center justify-center bg-orange-50">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">Kunde inte ladda recept</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">{t('recipes.list.errorTitle','Kunde inte ladda recept')}</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={fetchRecipes}
             className="bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors"
           >
-            Försök igen
+            {t('recipes.list.retry','Försök igen')}
           </button>
         </div>
       </div>
@@ -217,25 +219,25 @@ const RecipesPage = () => {
       >
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Våra Recept
+            {t('recipes.list.title','Våra Recept')}
           </h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Upptäck hälsosamma och näringsrika recept med funktionella livsmedel
+            {t('recipes.list.subtitle','Upptäck hälsosamma och näringsrika recept med funktionella livsmedel')}
           </p>
           
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 max-w-md mx-auto mt-8">
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4">
               <p className="text-2xl font-bold text-orange-600">{statistics.total}</p>
-              <p className="text-xs text-gray-600">Totalt</p>
+              <p className="text-xs text-gray-600">{t('recipes.list.stats.total','Totalt')}</p>
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4">
               <p className="text-2xl font-bold text-primary">{statistics.free}</p>
-              <p className="text-xs text-gray-600">Gratis</p>
+              <p className="text-xs text-gray-600">{t('recipes.list.stats.free','Gratis')}</p>
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4">
               <p className="text-2xl font-bold text-amber-600">{statistics.premium}</p>
-              <p className="text-xs text-gray-600">Premium</p>
+              <p className="text-xs text-gray-600">{t('recipes.list.stats.premium','Premium')}</p>
             </div>
           </div>
         </div>
@@ -250,7 +252,7 @@ const RecipesPage = () => {
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Sök recept eller ingredienser..."
+                placeholder={t('recipes.list.search.placeholder','Sök recept eller ingredienser...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchQuery.length > 1 && setShowSuggestions(true)}
@@ -291,7 +293,7 @@ const RecipesPage = () => {
               }`}
             >
               <FiFilter className="w-5 h-5" />
-              <span>Filter</span>
+              <span>{t('recipes.list.filters.button','Filter')}</span>
               {(selectedCategory !== 'all' || selectedStatus !== 'all') && (
                 <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">
                   {[selectedCategory !== 'all', selectedStatus !== 'all'].filter(Boolean).length}
@@ -337,7 +339,7 @@ const RecipesPage = () => {
                   <div className="grid sm:grid-cols-2 gap-4">
                     {/* Category Filter */}
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-2 block">Kategori</label>
+                      <label className="text-sm font-medium text-gray-700 mb-2 block">{t('recipes.list.filters.category','Kategori')}</label>
                       <div className="flex flex-wrap gap-2">
                         <button
                           onClick={() => setSelectedCategory('all')}
@@ -347,7 +349,7 @@ const RecipesPage = () => {
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
-                          Alla
+                          {t('recipes.list.filters.all','Alla')}
                         </button>
                         {categories.map(category => (
                           <button
@@ -367,12 +369,12 @@ const RecipesPage = () => {
 
                     {/* Type Filter */}
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-2 block">Typ</label>
+                      <label className="text-sm font-medium text-gray-700 mb-2 block">{t('recipes.list.filters.type','Typ')}</label>
                       <div className="flex gap-2">
                         {[
-                          { value: 'all', label: 'Alla', color: 'gray' },
-                          { value: 'free', label: 'Gratis', color: 'green' },
-                          { value: 'premium', label: 'Premium', color: 'amber' }
+                          { value: 'all', label: t('recipes.list.filters.typeAll','Alla'), color: 'gray' },
+                          { value: 'free', label: t('recipes.list.filters.typeFree','Gratis'), color: 'green' },
+                          { value: 'premium', label: t('recipes.list.filters.typePremium','Premium'), color: 'amber' }
                         ].map(option => (
                           <button
                             key={option.value}
@@ -398,11 +400,11 @@ const RecipesPage = () => {
                   {/* Active Filters Summary */}
                   {(selectedCategory !== 'all' || selectedStatus !== 'all' || searchQuery) && (
                     <div className="flex items-center gap-2 mt-4 text-sm">
-                      <span className="text-gray-500">Aktiva filter:</span>
+                      <span className="text-gray-500">{t('recipes.list.filters.active','Aktiva filter:')}</span>
                       <div className="flex flex-wrap gap-2">
                         {searchQuery && (
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
-                            Sökning: "{searchQuery}"
+                            {t('recipes.list.filters.searchLabel','Sökning:')} "{searchQuery}"
                             <button onClick={() => setSearchQuery('')} className="hover:text-orange-900">
                               <FiX className="w-3 h-3" />
                             </button>
@@ -418,7 +420,7 @@ const RecipesPage = () => {
                         )}
                         {selectedStatus !== 'all' && (
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
-                            {selectedStatus === 'free' ? 'Gratis' : 'Premium'}
+                            {selectedStatus === 'free' ? t('recipes.list.filters.typeFree','Gratis') : t('recipes.list.filters.typePremium','Premium')}
                             <button onClick={() => setSelectedStatus('all')} className="hover:text-orange-900">
                               <FiX className="w-3 h-3" />
                             </button>
@@ -472,8 +474,8 @@ const RecipesPage = () => {
             className="text-center py-16"
           >
             <div className="text-6xl mb-4">🔍</div>
-            <p className="text-gray-700 text-lg mb-2">Inga recept hittades</p>
-            <p className="text-gray-500 text-sm mb-6">Prova att ändra dina sökkriterier</p>
+            <p className="text-gray-700 text-lg mb-2">{t('recipes.list.empty.title','Inga recept hittades')}</p>
+            <p className="text-gray-500 text-sm mb-6">{t('recipes.list.empty.subtitle','Prova att ändra dina sökkriterier')}</p>
             <button
               onClick={() => {
                 setSearchQuery('');
@@ -482,7 +484,7 @@ const RecipesPage = () => {
               }}
               className="bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors"
             >
-              Rensa filter
+              {t('recipes.list.empty.clearButton','Rensa filter')}
             </button>
           </motion.div>
         )}
@@ -493,16 +495,16 @@ const RecipesPage = () => {
         <div className="bg-gradient-to-br from-orange-100 to-yellow-50 py-16 mt-16">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Få tillgång till alla premium-recept
+              {t('recipes.list.cta.title','Få tillgång till alla premium-recept')}
             </h2>
             <p className="text-lg text-gray-700 mb-8">
-              Köp en kurs och lås upp hela vårt receptbibliotek med exklusiva, näringsrika recept
+              {t('recipes.list.cta.subtitle','Köp en kurs och lås upp hela vårt receptbibliotek med exklusiva, näringsrika recept')}
             </p>
             <Link
               href="/utbildning"
               className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full hover:bg-orange-600 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              Utforska våra kurser
+              {t('recipes.list.cta.button','Utforska våra kurser')}
             </Link>
           </div>
         </div>
@@ -515,6 +517,7 @@ const RecipesPage = () => {
 const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
   const [imageError, setImageError] = useState(false);
+  const t = useT();
 
   return (
     <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -552,14 +555,14 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
           {recipe.isPremium && (
             <div className="absolute top-3 right-3">
               <span className="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
-                Premium
+                {t('recipes.card.badgePremium','Premium')}
               </span>
             </div>
           )}
           {recipe.isFree && !recipe.isPremium && (
             <div className="absolute top-3 right-3">
               <span className="bg-primary text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
-                Gratis
+                {t('recipes.card.badgeFree','Gratis')}
               </span>
             </div>
           )}
@@ -571,7 +574,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
             {recipe.title}
           </h3>
           <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">
-            {recipe.excerpt || 'Upptäck detta läckra recept.'}
+            {recipe.excerpt || t('recipes.card.excerptFallback','Upptäck detta läckra recept.')}
           </p>
           
           {/* Meta */}
@@ -583,7 +586,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
             )}
             {recipe.servings && (
               <span className="flex items-center gap-1">
-                <span>👥</span> {recipe.servings} port
+                <span>👥</span> {recipe.servings} {t('recipes.card.meta.servings','port')}
               </span>
             )}
             {recipe.difficulty && (
@@ -599,7 +602,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center rounded-2xl">
             <div className="text-white text-center">
               <div className="text-4xl mb-2">🔒</div>
-              <p className="text-sm font-medium">Premium recept</p>
+              <p className="text-sm font-medium">{t('recipes.card.locked','Premium recept')}</p>
             </div>
           </div>
         )}
@@ -611,6 +614,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
 // Recipe List Item Component
 const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
+  const t = useT();
 
   return (
     <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -649,13 +653,13 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
               </h3>
               {recipe.isPremium && (
                 <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full text-xs font-medium ml-2">
-                  Premium
+                  {t('recipes.card.badgePremium','Premium')}
                 </span>
               )}
             </div>
             
             <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-              {recipe.excerpt || 'Upptäck detta läckra recept.'}
+              {recipe.excerpt || t('recipes.card.excerptFallback','Upptäck detta läckra recept.')}
             </p>
             
             <div className="flex items-center gap-4 text-xs text-gray-500">
@@ -663,7 +667,7 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
                 <span>⏱️ {recipe.prepTime}</span>
               )}
               {recipe.servings && (
-                <span>👥 {recipe.servings} portioner</span>
+                <span>👥 {recipe.servings} {t('recipes.listitem.portions','portioner')}</span>
               )}
               {recipe.categories?.slice(0, 2).map((cat, i) => (
                 <span key={i} className="bg-orange-100 text-orange-700 px-2 py-1 rounded">
@@ -679,7 +683,7 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center rounded-2xl">
             <div className="text-white text-center">
               <div className="text-3xl mb-2">🔒</div>
-              <p className="text-sm font-medium">Premium recept</p>
+              <p className="text-sm font-medium">{t('recipes.card.locked','Premium recept')}</p>
             </div>
           </div>
         )}

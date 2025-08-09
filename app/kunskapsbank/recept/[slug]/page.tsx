@@ -13,6 +13,7 @@ import {
 import { useAuth } from '../../../hooks/useAuth';
 import RandomRecipes from '../../../components/RandomRecipes';
 import { GiCookingPot } from 'react-icons/gi';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface Recipe {
   id: string;
@@ -46,6 +47,7 @@ export default function RecipePage() {
   const params = useParams();
   const slug = params.slug as string;
   const { user } = useAuth();
+  const t = useT();
   
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
@@ -223,7 +225,7 @@ export default function RecipePage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar recept...</p>
+          <p className="text-gray-600">{t('recipes.detail.loading','Laddar recept...')}</p>
         </div>
       </div>
     );
@@ -236,11 +238,11 @@ export default function RecipePage() {
           <div className="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
             <FiX className="w-10 h-10 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Receptet hittades inte</h1>
-          <p className="text-gray-600 mb-6">{error || 'Det verkar som att receptet du letar efter inte finns.'}</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.notFoundTitle','Receptet hittades inte')}</h1>
+          <p className="text-gray-600 mb-6">{error || t('recipes.detail.notFoundText','Det verkar som att receptet du letar efter inte finns.')}</p>
           <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors">
             <FiArrowLeft />
-            Tillbaka till recept
+            {t('recipes.detail.backToRecipes','Tillbaka till recept')}
           </Link>
         </div>
       </div>
@@ -322,7 +324,7 @@ export default function RecipePage() {
         <div className="container mx-auto px-4 py-4 no-print">
           <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-500 transition-colors">
             <FiArrowLeft />
-            <span>Tillbaka till recept</span>
+            <span>{t('recipes.detail.backToRecipes','Tillbaka till recept')}</span>
           </Link>
         </div>
 
@@ -447,13 +449,13 @@ export default function RecipePage() {
                   <span className="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center text-orange-600">
                     <FiShoppingCart className="w-5 h-5" />
                   </span>
-                  Ingredienser
+                  {t('recipes.detail.ingredients','Ingredienser')}
                 </h2>
 
                 {/* Servings Selector - No Print */}
                 <div className="bg-orange-50 rounded-xl p-4 mb-6 no-print">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Portioner</span>
+                    <span className="font-medium text-gray-700">{t('recipes.detail.servings','Portioner')}</span>
                     <div className="flex items-center gap-3">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
@@ -478,7 +480,7 @@ export default function RecipePage() {
 
                 {/* Print Servings Info */}
                 <div className="hidden print:block mb-4">
-                  <p className="font-medium">För {servings} portioner</p>
+                  <p className="font-medium">{t('recipes.detail.forServings','För')} {servings} {t('recipes.detail.portions','portioner')}</p>
                 </div>
 
                 {/* Ingredients List */}
@@ -529,7 +531,7 @@ export default function RecipePage() {
                   <span className="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center text-orange-600">
                     <GiCookingPot className="w-5 h-5" />
                   </span>
-                  Gör så här
+                  {t('recipes.detail.instructions','Gör så här')}
                 </h2>
 
                 <div className="space-y-4">
@@ -594,7 +596,7 @@ export default function RecipePage() {
                     <span className="bg-background-secondary w-10 h-10 rounded-full flex items-center justify-center text-primary">
                       <FiHeart className="w-5 h-5" />
                     </span>
-                    Näringsvärden
+                    {t('recipes.detail.nutrition','Näringsvärden')}
                   </h3>
                   {showNutrition ? <FiChevronUp /> : <FiChevronDown />}
                 </button>
@@ -610,24 +612,24 @@ export default function RecipePage() {
                       {nutritionLoading ? (
                         <div className="p-8 text-center">
                           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto"></div>
-                          <p className="text-gray-600 mt-2">Beräknar näringsvärden...</p>
+                          <p className="text-gray-600 mt-2">{t('recipes.detail.calculating','Beräknar näringsvärden...')}</p>
                         </div>
                       ) : nutrition ? (
                         <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                           <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">Kalorier</p>
+                            <p className="text-sm text-gray-600">{t('recipes.detail.kcal','Kalorier')}</p>
                             <p className="text-2xl font-bold text-gray-900">{nutrition.calories || '-'}</p>
                           </div>
                           <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">Protein</p>
+                            <p className="text-sm text-gray-600">{t('recipes.detail.protein','Protein')}</p>
                             <p className="text-2xl font-bold text-gray-900">{nutrition.protein || '-'}g</p>
                           </div>
                           <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">Kolhydrater</p>
+                            <p className="text-sm text-gray-600">{t('recipes.detail.carbs','Kolhydrater')}</p>
                             <p className="text-2xl font-bold text-gray-900">{nutrition.carbs || '-'}g</p>
                           </div>
                           <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">Fett</p>
+                            <p className="text-sm text-gray-600">{t('recipes.detail.fat','Fett')}</p>
                             <p className="text-2xl font-bold text-gray-900">{nutrition.fat || '-'}g</p>
                           </div>
                         </div>
