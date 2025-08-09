@@ -5,6 +5,9 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ recipes: [] });
+    }
     // Hämta alla gratis recept
     const freeRecipes = await prisma.recipe.findMany({
       where: {
@@ -26,19 +29,16 @@ export async function GET() {
       }
     });
 
-    // Om vi har färre än 10 recept, använd alla
     const count = Math.min(10, freeRecipes.length);
-    
-    // Slumpa ordningen och ta första 10
     const shuffled = freeRecipes.sort(() => 0.5 - Math.random());
     const randomRecipes = shuffled.slice(0, count);
 
-    return NextResponse.json(randomRecipes);
+    return NextResponse.json({ recipes: randomRecipes });
   } catch (error) {
     console.error('Error fetching random recipes:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch recipes' },
-      { status: 500 }
+      { recipes: [] },
+      { status: 200 }
     );
   }
 } 

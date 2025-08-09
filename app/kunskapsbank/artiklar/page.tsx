@@ -1,3 +1,4 @@
+'use client';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 export default function Artiklar() {
