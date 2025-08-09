@@ -629,12 +629,13 @@ export default function KallorPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero portrait */}
-      <div className="relative h-64 md:h-80 lg:h-[28rem] overflow-hidden">
+      <div className="relative h-72 md:h-96 lg:h-[32rem] overflow-hidden">
         {!heroError && (
           <img
             src="/Ulrika_portratt/Ulrika2.jpeg"
             alt="Ulrika Daviddson"
             className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[4000ms] ${heroLoaded ? 'scale-105' : 'scale-100'}`}
+            style={{ objectPosition: '50% 18%' }}
             onLoad={() => setHeroLoaded(true)}
             onError={() => setHeroError(true)}
           />
