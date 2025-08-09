@@ -76,9 +76,9 @@ img {
     --accent-hover: #c6574c;
     
     /* Text Colors */
-    --text-primary: #112A12;
-    --text-secondary: #da695c;
-    --text-light: #112A12;
+    --text-primary: #000000; /* all text svart */
+    --text-secondary: #000000;
+    --text-light: #000000;
     
     /* Background Colors */
     --background: #F7F3FB;
@@ -126,7 +126,19 @@ img {
   }
 }
 
+/* Forcera svart text globalt men bevara vit text på knappar */
 @layer components {
+  /* Global text override */
+  body, body * {
+    color: #000000 !important;
+  }
+  /* Behåll vit text ovanpå korallknappar och accentbakgrunder */
+  .btn-primary, .btn-primary *,
+  .btn-secondary, .btn-secondary *,
+  .bg-primary, .bg-primary *,
+  .bg-accent, .bg-accent * {
+    color: #ffffff !important;
+  }
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
