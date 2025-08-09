@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity, FiBookOpen, FiAlertTriangle, FiPhone, FiChevronRight, FiMail } from 'react-icons/fi';
 import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
+import RadarChart from './RadarChart';
 
 interface QuizResultData {
   profile: string;
@@ -272,6 +273,55 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     { key: 'motion', label: 'Motion', icon: FiActivity, color: '#3b82f6' }
   ];
 
+  // Checklist (autosave) per domän
+  const checklistKey = 'quiz_checklist_v1';
+  const [checklist, setChecklist] = useState<Record<string, boolean>>(() => {
+    try { return JSON.parse(localStorage.getItem(checklistKey) || '{}'); } catch { return {}; }
+  });
+  useEffect(()=>{
+    try { localStorage.setItem(checklistKey, JSON.stringify(checklist)); } catch {}
+  }, [checklist]);
+  const toggleCheck = (id: string) => setChecklist(prev => ({ ...prev, [id]: !prev[id] }));
+
+  const domainTips: Record<string, string[]> = {
+    energi: [
+      t('quiz.tip.energy.1','Proteinrik frukost (25–35g) före kl 10'),
+      t('quiz.tip.energy.2','Grön te eller matcha kl 10–12 istället för kaffe nr 2'),
+      t('quiz.tip.energy.3','15 min dagsljus före kl 11 för cirkadian energi')
+    ],
+    sömn: [
+      t('quiz.tip.sleep.1','Nedvarvning 60 min: skärmfri tid + varm dusch'),
+      t('quiz.tip.sleep.2','Magnesiumcitrat 200–400 mg 60 min före säng'),
+      t('quiz.tip.sleep.3','Svalt, mörkt sovrum (16–19°C), konsekvent tid')
+    ],
+    stress: [
+      t('quiz.tip.stress.1','2×/dag 4‑7‑8‑andning i 2 min'),
+      t('quiz.tip.stress.2','Adaptogener: reishi kväll, ashwagandha 300 mg'),
+      t('quiz.tip.stress.3','2×10 min promenad utan telefon')
+    ],
+    kost: [
+      t('quiz.tip.diet.1','”Halva tallriken grönt” varje lunch/middag'),
+      t('quiz.tip.diet.2','Byt raffinerade kolhydrater mot fullkorn/baljväxter'),
+      t('quiz.tip.diet.3','Fermenterat 1–2 ggr/dag (kefir/kimchi)')
+    ],
+    motion: [
+      t('quiz.tip.exercise.1','3×/v helkropp styrka (30–40 min)'),
+      t('quiz.tip.exercise.2','Daglig NEAT: 8–10k steg'),
+      t('quiz.tip.exercise.3','Rörlighet 5 min efter uppvärmning')
+    ]
+  };
+
+  const copyPlan = async () => {
+    const lines: string[] = [];
+    lines.push(`${t('quiz.result.title','Din Hälsoanalys')} (${totalScore}/100)`);
+    for (const area of healthAreas) {
+      const s = (healthScores as any)[area.key] as number;
+      lines.push(`\n${area.label}: ${s}/10`);
+      for (const tip of domainTips[area.key]) lines.push(`- ${tip}`);
+    }
+    try { await navigator.clipboard.writeText(lines.join('\n')); } catch {}
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Minimalist Header */}
@@ -371,13 +421,19 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                       </div>
                     </div>
                     <h3 className="text-lg font-medium text-gray-900">{scoreMessage.text}</h3>
-                    <p className="text-sm text-gray-500 mt-1">Din övergripande hälsostatus</p>
+                    <p className="text-sm text-gray-500 mt-1">{t('quiz.overall','Din övergripande hälsostatus')}</p>
                   </div>
                 </div>
 
                 {/* Health Areas */}
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                   <h4 className="text-sm font-medium text-gray-900 mb-4">{t('quiz.areas','Hälsoområden')}</h4>
+                  <div className="flex items-center justify-center mb-6">
+                    <RadarChart
+                      labels={healthAreas.map(h=>h.label)}
+                      values={healthAreas.map(h=> (healthScores as any)[h.key] as number)}
+                    />
+                  </div>
                   <div className="space-y-4">
                     {healthAreas.map((area, index) => {
                       const score = healthScores[area.key as keyof HealthScores];
@@ -559,6 +615,30 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           />
                         </motion.div>
                       ))}
+                    </div>
+
+                    {/* Domain checklists */}
+                    <div className="mt-8 grid lg:grid-cols-2 gap-6">
+                      {healthAreas.map((area) => (
+                        <div key={area.key} className="bg-background-secondary rounded-xl p-4">
+                          <div className="flex items-center gap-2 mb-3"><area.icon className="w-4 h-4 text-gray-600" /><h3 className="text-sm font-medium text-gray-900">{area.label}</h3></div>
+                          <ul className="space-y-2">
+                            {domainTips[area.key].map((tip, i)=>{
+                              const id = `${area.key}-${i}`;
+                              return (
+                                <li key={id} className="flex items-start gap-2">
+                                  <input type="checkbox" checked={!!checklist[id]} onChange={()=>toggleCheck(id)} className="mt-1 w-4 h-4 text-primary border-gray-300 rounded" />
+                                  <span className="text-sm text-gray-700">{tip}</span>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 text-right">
+                      <button onClick={copyPlan} className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-secondary">{t('quiz.copyPlan','Kopiera min plan')}</button>
                     </div>
                   </div>
                 )}
