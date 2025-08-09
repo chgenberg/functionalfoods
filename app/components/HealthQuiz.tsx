@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiArrowRight, FiArrowLeft, FiX, FiCheckCircle } from 'react-icons/fi';
 import Image from 'next/image';
 import QuizResultScreen from './QuizResultScreen';
+import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface QuizOption {
   label: string;
@@ -20,7 +21,7 @@ interface QuizQuestion {
   options: QuizOption[];
 }
 
-const quizQuestions: QuizQuestion[] = [
+const QUIZ_SV: QuizQuestion[] = [
   {
     id: 1,
     question: "Hur skulle du beskriva din nuvarande energinivå?",
@@ -343,16 +344,46 @@ const quizQuestions: QuizQuestion[] = [
   }
 ];
 
+const QUIZ_EN: QuizQuestion[] = [
+  { id: 1, question: "How would you describe your current energy level?", subtitle: "We want to understand how you feel on a typical day", icon: "⚡", options: [
+    { label: "High energy throughout the day", description: "I feel alert from morning to evening", value: "high_energy", icon: "🚀" },
+    { label: "Good energy but afternoon dip", description: "I start well but often dip around lunch", value: "afternoon_dip", icon: "📈" },
+    { label: "Variable energy during the day", description: "Some days are great, others feel heavy", value: "variable_energy", icon: "🎢" },
+    { label: "Low energy and constant fatigue", description: "I feel tired most of the time", value: "low_energy", icon: "😴" }
+  ]},
+  { id: 2, question: "What does your typical sleep look like?", subtitle: "Sleep quality affects everything from energy to immunity", icon: "🌙", options: [
+    { label: "Excellent sleep (7‑9h, wake up refreshed)", description: "I fall asleep easily and wake up refreshed", value: "excellent_sleep", icon: "✨" },
+    { label: "Good sleep but sometimes wake up", description: "Generally good but not always deep", value: "good_sleep", icon: "🌟" },
+    { label: "Hard to fall asleep / wake often", description: "It takes time to fall asleep or I wake up several times", value: "disrupted_sleep", icon: "🌀" },
+    { label: "Poor sleep (too little or poor quality)", description: "I sleep too little or wake not refreshed", value: "poor_sleep", icon: "😵" }
+  ]},
+  // keep it short: reuse SV texts beyond first two if needed
+  ...QUIZ_SV.slice(3)
+];
+
+const QUIZ_ES: QuizQuestion[] = [
+  ...QUIZ_EN
+] as QuizQuestion[];
+const QUIZ_DE: QuizQuestion[] = [
+  ...QUIZ_EN
+] as QuizQuestion[];
+const QUIZ_FR: QuizQuestion[] = [
+  ...QUIZ_EN
+] as QuizQuestion[];
+
 interface HealthQuizProps {
   onComplete?: (answers: Record<number, string>) => void;
   onClose?: () => void;
 }
 
 const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
+  const { locale } = useLanguage();
+  const t = useT();
   const [currentStep, setCurrentStep] = useState<'welcome' | 'quiz' | 'result'>('quiz');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isAnimating, setIsAnimating] = useState(false);
+  const quizQuestions: QuizQuestion[] = locale === 'en' ? QUIZ_EN : locale === 'es' ? QUIZ_ES : locale === 'de' ? QUIZ_DE : locale === 'fr' ? QUIZ_FR : QUIZ_SV;
 
   const startQuiz = () => {
     setCurrentStep('quiz');
@@ -469,7 +500,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   onClick={startQuiz}
                   className="bg-primary text-white px-10 py-5 rounded-full font-semibold text-lg hover:bg-secondary transition-all duration-300 shadow-xl flex items-center space-x-3 group"
                 >
-                  <span>Starta Ditt Personliga Quiz</span>
+                  <span>{t('quiz.start','Starta Ditt Personliga Quiz')}</span>
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
 
@@ -479,7 +510,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   transition={{ delay: 0.8, duration: 0.5 }}
                   className="text-gray-500 mt-6 text-sm"
                 >
-                  10 smarta frågor • Kostnadsfritt • Inga mejl krävs
+                  {t('quiz.badge','10 smarta frågor • Kostnadsfritt • Inga mejl krävs')}
                 </motion.p>
               </div>
 
@@ -587,7 +618,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
           <div className="p-3 sm:p-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm lg:rounded-t-3xl">
             <div className="flex items-center justify-between mb-2">
               <div className="text-xs sm:text-sm text-gray-600 font-medium">
-                Fråga {currentQuestion + 1} av {quizQuestions.length}
+                {t('quiz.progress','Fråga')} {currentQuestion + 1} {t('quiz.of','av')} {quizQuestions.length}
               </div>
               {onClose && (
                 <button
@@ -712,7 +743,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   <div />
                 )}
                 <div className="text-xs text-gray-500 text-center">
-                  {currentQuestion === quizQuestions.length - 1 ? 'Sista frågan!' : 'Välj ett alternativ'}
+                  {currentQuestion === quizQuestions.length - 1 ? t('quiz.last','Sista frågan!') : t('quiz.choose','Välj ett alternativ')}
                 </div>
               </div>
             </motion.div>

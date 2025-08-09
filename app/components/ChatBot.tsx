@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { FiX, FiSend, FiMessageCircle } from 'react-icons/fi';
 import UserProfileSummary from './UserProfileSummary';
+import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface Message {
   id: string;
@@ -11,18 +12,14 @@ interface Message {
   timestamp: Date;
 }
 
-const EXAMPLE_QUESTIONS = [
-  "Vilka livsmedel är bra för inflammation?",
-  "Hur kan jag förbättra min maghälsa?",
-  "Vad är functional foods?"
-];
-
 export default function ChatBot() {
+  const { locale } = useLanguage();
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hej! Jag är Functional Foods AI-assistent, du kan fråga mig vad du vill om Functional Foods, hälsa och recept...",
+      text: t('chat.welcome','Hej! Jag är Functional Foods AI‑assistent, fråga mig vad du vill om Functional Foods, hälsa och recept...'),
       sender: 'bot',
       timestamp: new Date()
     }
@@ -32,67 +29,38 @@ export default function ChatBot() {
   const [isClient, setIsClient] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => { setIsClient(true); }, []);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); };
+  useEffect(() => { scrollToBottom(); }, [messages]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputValue,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
+    const userMessage: Message = { id: Date.now().toString(), text: inputValue, sender: 'user', timestamp: new Date() };
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
 
     try {
       const token = localStorage.getItem('token');
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const response = await fetch('/api/personalized-chat', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ message: inputValue }),
+        body: JSON.stringify({ message: userMessage.text, locale })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to get response');
-      }
-
+      if (!response.ok) throw new Error('Failed to get response');
       const data = await response.json();
-      
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: data.message,
-        sender: 'bot',
-        timestamp: new Date()
-      };
-
+      const botMessage: Message = { id: (Date.now() + 1).toString(), text: data.message, sender: 'bot', timestamp: new Date() };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se",
+        text: t('chat.error','Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se'),
         sender: 'bot',
         timestamp: new Date()
       };
@@ -102,85 +70,54 @@ export default function ChatBot() {
     }
   };
 
-  const handleExampleQuestion = (question: string) => {
-    setInputValue(question);
-  };
+  const exampleQuestions: string[] = [
+    t('chat.example1','Vilka livsmedel är bra för inflammation?'),
+    t('chat.example2','Hur kan jag förbättra min maghälsa?'),
+    t('chat.example3','Vad är functional foods?')
+  ];
 
   return (
     <>
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${
-          isOpen ? 'scale-0' : 'scale-100'
-        }`}
+        className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'}`}
       >
         <FiMessageCircle className="w-6 h-6" />
       </button>
 
       {/* Chat Window */}
-      <div
-        className={`fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col transform transition-all duration-300 ${
-          isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
-        }`}
-      >
+      <div className={`fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col transform transition-all duration-300 ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
         {/* Header */}
         <div className="bg-primary text-white p-4 rounded-t-2xl flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Image
-                src="/davidsson.png"
-                alt="Ulrika AI:sson"
-                width={40}
-                height={40}
-                className="rounded-full border-2 border-white"
-              />
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-accent rounded-full border-2 border-white"></div>
+              <Image src="/davidsson.png" alt="Ulrika AI:sson" width={40} height={40} className="rounded-full border-2 border-white" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-accent rounded-full border-2 border-white" />
             </div>
             <div>
               <h3 className="font-semibold">Ulrika AI:sson</h3>
-              <p className="text-xs opacity-90">Alltid redo att hjälpa</p>
+              <p className="text-xs opacity-90">{t('chat.ready','Alltid redo att hjälpa')}</p>
             </div>
           </div>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
-          >
+          <button onClick={() => setIsOpen(false)} className="text-white hover:bg-white/20 rounded-full p-2 transition-colors">
             <FiX className="w-5 h-5" />
           </button>
         </div>
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {/* User Profile Summary */}
           <UserProfileSummary compact={true} />
           {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                  message.sender === 'user'
-                    ? 'bg-primary text-white rounded-br-none'
-                    : 'bg-gray-100 text-gray-800 rounded-bl-none'
-                }`}
-              >
+            <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.sender === 'user' ? 'bg-primary text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}>
                 {message.sender === 'bot' ? (
-                  <div 
-                    className="text-sm prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ 
-                      __html: message.text.replace(/\n/g, '<br />')
-                    }}
-                  />
+                  <div className="text-sm prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: message.text.replace(/\n/g, '<br />') }} />
                 ) : (
                   <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                 )}
                 <p className="text-xs opacity-70 mt-1">
-                  {isClient ? message.timestamp.toLocaleTimeString('sv-SE', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  }) : ''}
+                  {isClient ? message.timestamp.toLocaleTimeString(locale === 'sv' ? 'sv-SE' : locale === 'en' ? 'en-GB' : locale === 'es' ? 'es-ES' : locale === 'de' ? 'de-DE' : 'fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''}
                 </p>
               </div>
             </div>
@@ -202,14 +139,10 @@ export default function ChatBot() {
         {/* Example Questions */}
         {messages.length === 1 && (
           <div className="px-4 pb-2">
-            <p className="text-xs text-gray-500 mb-2">Vanliga frågor:</p>
+            <p className="text-xs text-gray-500 mb-2">{t('chat.examples','Vanliga frågor:')}</p>
             <div className="space-y-1">
-              {EXAMPLE_QUESTIONS.map((question, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleExampleQuestion(question)}
-                  className="w-full text-left text-sm bg-gray-50 hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
-                >
+              {exampleQuestions.map((question, index) => (
+                <button key={index} onClick={() => setInputValue(question)} className="w-full text-left text-sm bg-gray-50 hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors">
                   {question}
                 </button>
               ))}
@@ -225,19 +158,11 @@ export default function ChatBot() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="Skriv ditt meddelande..."
+              placeholder={t('chat.placeholder','Skriv ditt meddelande...')}
               className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               disabled={isLoading}
             />
-            <button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              className={`p-2 rounded-full transition-all ${
-                inputValue.trim() && !isLoading
-                  ? 'bg-primary text-white hover:bg-primary'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              }`}
-            >
+            <button onClick={handleSendMessage} disabled={!inputValue.trim() || isLoading} className={`p-2 rounded-full transition-all ${inputValue.trim() && !isLoading ? 'bg-primary text-white hover:bg-primary' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
               <FiSend className="w-5 h-5" />
             </button>
           </div>

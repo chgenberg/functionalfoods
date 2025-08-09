@@ -115,5 +115,13 @@
   "blog.post.notFoundDesc": "L'article que vous cherchez n'existe pas.",
   "blog.post.backToBlog": "Retour au blog",
   "blog.post.share": "Partager l'article :",
-  "blog.post.readMoreArticles": "Lire plus d'articles"
+  "blog.post.readMoreArticles": "Lire plus d'articles",
+  "chat.welcome": "Bonjour ! Je suis l'assistant IA de Functional Foods. Posez‑moi vos questions sur les aliments fonctionnels, la santé et les recettes...",
+  "chat.ready": "Toujours prêt à aider",
+  "chat.examples": "Questions fréquentes :",
+  "chat.example1": "Quels aliments aident contre l'inflammation ?",
+  "chat.example2": "Comment améliorer ma santé intestinale ?",
+  "chat.example3": "Que sont les aliments fonctionnels ?",
+  "chat.placeholder": "Écrivez votre message...",
+  "chat.error": "Désolé, une erreur s'est produite. Réessayez plus tard ou contactez‑nous à hej@functionalfoods.se"
 } 

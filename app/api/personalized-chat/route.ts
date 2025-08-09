@@ -69,7 +69,6 @@ async function getRecipesAndRawMaterials() {
           },
         take: 20 // Top 20 populära recept
       }),
-      // @ts-expect-error rawMaterial model exists after prisma generate
       prisma.rawMaterial.findMany({
         select: {
           id: true,
@@ -164,7 +163,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { message } = await request.json();
+    const { message, locale } = await request.json();
     
     if (!message || typeof message !== 'string') {
       return NextResponse.json(
@@ -176,7 +175,7 @@ export async function POST(request: NextRequest) {
     // Hämta användare från token
     const authorization = request.headers.get('authorization');
     let userId = null;
-    let user = null;
+    let user: any = null;
     let userContext = '';
 
     if (authorization?.startsWith('Bearer ')) {
@@ -190,16 +189,16 @@ export async function POST(request: NextRequest) {
             where: { id: userId },
             include: {
               quizResults: {
-                orderBy: { createdAt: 'desc' },
+                orderBy: { createdAt: 'desc' } as any,
                 take: 1 // Senaste quiz-resultatet
               },
               healthProfile: true,
               symptomAnalyses: {
-                orderBy: { createdAt: 'desc' },
+                orderBy: { createdAt: 'desc' } as any,
                 take: 3 // Senaste 3 symptomanalyserna
               },
               chatMessages: {
-                orderBy: { createdAt: 'desc' },
+                orderBy: { createdAt: 'desc' } as any,
                 take: 5 // Senaste 5 chat-meddelandena för kontext
               },
               courses: true
@@ -256,7 +255,7 @@ ${typeof latestQuiz.results === 'object' && latestQuiz.results ?
             // Lägg till symptomanalyser
             if (user.symptomAnalyses.length > 0) {
               userContext += `TIDIGARE SYMPTOMANALYSER:
-${user.symptomAnalyses.map((analysis, index) => 
+${user.symptomAnalyses.map((analysis: any, index: number) => 
   `${index + 1}. ${analysis.bodyPart} (${analysis.createdAt.toLocaleDateString('sv-SE')}): ${analysis.description}`
 ).join('\n')}
 
@@ -266,7 +265,7 @@ ${user.symptomAnalyses.map((analysis, index) =>
             // Lägg till kurser
             if (user.courses.length > 0) {
               userContext += `KURSER:
-${user.courses.map(course => 
+${user.courses.map((course: any) => 
   `- ${course.title} (Progress: ${course.progress}%)`
 ).join('\n')}
 
@@ -276,7 +275,7 @@ ${user.courses.map(course =>
             // Lägg till tidigare chat-kontext
             if (user.chatMessages.length > 0) {
               userContext += `TIDIGARE CHAT-KONVERSATIONER:
-${user.chatMessages.map(chat => 
+${user.chatMessages.map((chat: any) => 
   `Fråga: ${chat.message}\nSvar: ${chat.response.substring(0, 200)}...`
 ).join('\n\n')}
 
@@ -293,6 +292,7 @@ ${user.chatMessages.map(chat =>
     const { basicsText, flowText } = await getCourseInfo();
     const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
     
+    const targetLang = locale === 'en' ? 'engelska' : locale === 'es' ? 'spanska' : locale === 'de' ? 'tyska' : locale === 'fr' ? 'franska' : 'svenska';
     const systemPrompt = `Du är Ulrika AI:sson, en vänlig och kunnig AI-assistent för Functional Foods.${userContext ? ` Du chattar nu med en registrerad användare.` : ' Du chattar med en gäst.'}
 
 ${userContext || ''}
@@ -320,7 +320,7 @@ ${rawMaterials.slice(0, 20).map((material: any) =>
 ).join('\n')}
 
 VIKTIGA REGLER:
-1. Svara ALLTID på svenska
+1. Svara ALLTID på ${targetLang}
 2. Var vänlig, professionell och hjälpsam
 3. ${userContext ? 'Använd användarens personliga information för att ge skräddarsydda råd' : 'Ge allmänna råd eftersom användaren inte är inloggad'}
 4. ${userContext ? 'Referera till användarens quiz-resultat, hälsoprofil och tidigare analyser när det är relevant' : ''}
@@ -367,17 +367,7 @@ ${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och
     if (userId && user) {
       try {
         await prisma.chatMessage.create({
-          data: {
-            userId,
-            message,
-            response: htmlResponse,
-            context: userContext ? {
-              hasQuizResults: user.quizResults.length > 0,
-              hasHealthProfile: !!user.healthProfile,
-              symptomAnalysesCount: user.symptomAnalyses.length,
-              coursesCount: user.courses.length
-            } : null
-          }
+          data: { userId, message, response: htmlResponse }
         });
       } catch (dbError) {
         console.error('Failed to save chat message:', dbError);

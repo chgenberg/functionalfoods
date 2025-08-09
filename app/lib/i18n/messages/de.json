@@ -115,5 +115,13 @@
   "blog.post.notFoundDesc": "Der gesuchte Artikel existiert nicht.",
   "blog.post.backToBlog": "Zurück zum Blog",
   "blog.post.share": "Artikel teilen:",
-  "blog.post.readMoreArticles": "Weitere Artikel lesen"
+  "blog.post.readMoreArticles": "Weitere Artikel lesen",
+  "chat.welcome": "Hallo! Ich bin der Functional Foods KI‑Assistent. Frag mich alles über Functional Foods, Gesundheit und Rezepte...",
+  "chat.ready": "Immer bereit zu helfen",
+  "chat.examples": "Häufige Fragen:",
+  "chat.example1": "Welche Lebensmittel helfen bei Entzündungen?",
+  "chat.example2": "Wie kann ich meine Darmgesundheit verbessern?",
+  "chat.example3": "Was sind Functional Foods?",
+  "chat.placeholder": "Schreibe deine Nachricht...",
+  "chat.error": "Entschuldigung, etwas ist schiefgelaufen. Bitte versuche es später erneut oder kontaktiere uns unter hej@functionalfoods.se"
 } 

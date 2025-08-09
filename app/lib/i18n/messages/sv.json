@@ -114,5 +114,19 @@
   "blog.post.notFoundDesc": "Artikeln du letar efter existerar inte.",
   "blog.post.backToBlog": "Tillbaka till bloggen",
   "blog.post.share": "Dela artikeln:",
-  "blog.post.readMoreArticles": "Läs fler artiklar"
+  "blog.post.readMoreArticles": "Läs fler artiklar",
+  "chat.welcome": "Hej! Jag är Functional Foods AI‑assistent, fråga mig vad du vill om Functional Foods, hälsa och recept...",
+  "chat.ready": "Alltid redo att hjälpa",
+  "chat.examples": "Vanliga frågor:",
+  "chat.example1": "Vilka livsmedel är bra för inflammation?",
+  "chat.example2": "Hur kan jag förbättra min maghälsa?",
+  "chat.example3": "Vad är functional foods?",
+  "chat.placeholder": "Skriv ditt meddelande...",
+  "chat.error": "Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se",
+  "quiz.start": "Starta Ditt Personliga Quiz",
+  "quiz.badge": "10 smarta frågor • Kostnadsfritt • Inga mejl krävs",
+  "quiz.progress": "Fråga",
+  "quiz.of": "av",
+  "quiz.last": "Sista frågan!",
+  "quiz.choose": "Välj ett alternativ"
 } 

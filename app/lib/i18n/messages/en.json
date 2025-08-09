@@ -114,5 +114,19 @@
   "blog.post.notFoundDesc": "The article you are looking for does not exist.",
   "blog.post.backToBlog": "Back to blog",
   "blog.post.share": "Share article:",
-  "blog.post.readMoreArticles": "Read more articles"
+  "blog.post.readMoreArticles": "Read more articles",
+  "chat.welcome": "Hi! I'm the Functional Foods AI assistant. Ask me anything about Functional Foods, health, and recipes...",
+  "chat.ready": "Always ready to help",
+  "chat.examples": "Common questions:",
+  "chat.example1": "Which foods help with inflammation?",
+  "chat.example2": "How can I improve my gut health?",
+  "chat.example3": "What are functional foods?",
+  "chat.placeholder": "Type your message...",
+  "chat.error": "Sorry, something went wrong. Please try again later or contact us at hej@functionalfoods.se",
+  "quiz.start": "Start your personal quiz",
+  "quiz.badge": "10 smart questions • Free • No email required",
+  "quiz.progress": "Question",
+  "quiz.of": "of",
+  "quiz.last": "Final question!",
+  "quiz.choose": "Choose an option"
 } 
