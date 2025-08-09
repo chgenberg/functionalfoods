@@ -16,20 +16,33 @@ export default function ChatBot() {
   const { locale } = useLanguage();
   const t = useT();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: t('chat.welcome','Hej! Jag är Functional Foods AI‑assistent, fråga mig vad du vill om Functional Foods, hälsa och recept...'),
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setIsClient(true); }, []);
+
+  // Ensure welcome message follows current language and only once at start
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([{
+        id: 'welcome',
+        text: t('chat.welcome','Hej! Jag är Functional Foods AI‑assistent, fråga mig vad du vill om Functional Foods, hälsa och recept...'),
+        sender: 'bot',
+        timestamp: new Date()
+      }]);
+    } else if (messages.length === 1 && messages[0].id === 'welcome') {
+      // Update welcome message if language changed
+      setMessages([{
+        id: 'welcome',
+        text: t('chat.welcome','Hej! Jag är Functional Foods AI‑assistent, fråga mig vad du vill om Functional Foods, hälsa och recept...'),
+        sender: 'bot',
+        timestamp: new Date()
+      }]);
+    }
+  }, [t, locale]);
 
   const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); };
   useEffect(() => { scrollToBottom(); }, [messages]);

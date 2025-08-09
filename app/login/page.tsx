@@ -10,6 +10,8 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [nationality, setNationality] = useState('');
+  const [preferredLanguage, setPreferredLanguage] = useState<'sv'|'en'|'es'|'de'|'fr'>('sv');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -111,7 +113,7 @@ function LoginForm() {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, name }),
+          body: JSON.stringify({ email, password, name, nationality, preferredLanguage }),
         });
 
         const data = await res.json();
@@ -185,6 +187,35 @@ function LoginForm() {
                     placeholder="Ditt namn"
                     required={!isLogin}
                   />
+                </div>
+              </div>
+            )}
+ 
+            {!isLogin && (
+              <div className="animate-slideIn grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nationalitet</label>
+                  <input
+                    type="text"
+                    value={nationality}
+                    onChange={(e) => setNationality(e.target.value)}
+                    className="w-full px-4 py-3 bg-background-secondary border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    placeholder="Sverige"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Språk</label>
+                  <select
+                    value={preferredLanguage}
+                    onChange={(e) => setPreferredLanguage(e.target.value as any)}
+                    className="w-full px-4 py-3 bg-background-secondary border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  >
+                    <option value="sv">Svenska</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="de">Deutsch</option>
+                    <option value="fr">Français</option>
+                  </select>
                 </div>
               </div>
             )}
