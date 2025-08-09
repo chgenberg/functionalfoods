@@ -7,8 +7,10 @@ import { GiSparkles } from 'react-icons/gi';
 
 import { FaCreditCard } from 'react-icons/fa';
 import Link from 'next/link';
+import { useT } from '../lib/i18n/LanguageProvider';
 
 export default function Checkout() {
+  const t = useT();
   const { items, total, clearCart, isLoaded } = useCart();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -148,7 +150,7 @@ export default function Checkout() {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center p-8 animate-fade-in">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-        <p className="text-text-secondary">Laddar checkout...</p>
+        <p className="text-text-secondary">{t('checkout.loading','Laddar checkout...')}</p>
       </div>
     );
   }
@@ -156,10 +158,10 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center p-8 animate-fade-in">
-        <h2 className="text-2xl font-light mb-4">Din varukorg är tom</h2>
-        <p className="text-text-secondary mb-6">Du har inga produkter i din varukorg.</p>
+        <h2 className="text-2xl font-light mb-4">{t('checkout.empty','Din varukorg är tom')}</h2>
+        <p className="text-text-secondary mb-6">{t('checkout.emptyDesc','Du har inga produkter i din varukorg.')}</p>
         <Link href="/utbildning" className="btn-primary">
-          Utforska våra kurser
+          {t('checkout.exploreCourses','Utforska våra kurser')}
         </Link>
       </div>
     );
@@ -172,7 +174,7 @@ export default function Checkout() {
         {/* Back button */}
         <Link href="/cart" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors group">
           <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
-          Tillbaka till varukorg
+          {t('checkout.backToCart','Tillbaka till varukorg')}
         </Link>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -184,7 +186,7 @@ export default function Checkout() {
               <div className="bg-[#1a4324] p-6 text-white">
                 <h2 className="text-2xl font-bold flex items-center">
                   <FiUser className="mr-3" />
-                  Dina uppgifter
+                  {t('checkout.yourDetails','Dina uppgifter')}
                 </h2>
               </div>
               
@@ -193,7 +195,7 @@ export default function Checkout() {
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Namn *
+                        {t('checkout.name','Namn')} *
                       </label>
                       <input
                         type="text"
@@ -207,7 +209,7 @@ export default function Checkout() {
                     
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        E-post *
+                        {t('checkout.email','E-post')} *
                       </label>
                       <input
                         type="email"
@@ -228,20 +230,19 @@ export default function Checkout() {
                           className="w-5 h-5 text-[#1a4324] rounded focus:ring-[#9dc46d]"
                         />
                         <span className="ml-3 text-gray-700">
-                          Skapa ett konto åt mig så jag slipper fylla i detta igen (rekommenderas)
+                          {t('checkout.createAccount','Skapa ett konto åt mig så jag slipper fylla i detta igen (rekommenderas)')}
                         </span>
                       </label>
                     </div>
                     
                     <p className="text-sm text-gray-500 flex items-center">
-                      Har du redan ett konto? <Link href="/login" className="text-[#1a4324] hover:underline ml-1">Logga in här</Link>
+                      {t('checkout.haveAccount','Har du redan ett konto?')} <Link href="/login" className="text-[#1a4324] hover:underline ml-1">{t('checkout.loginHere','Logga in här')}</Link>
                     </p>
                   </>
                 ) : (
                   <div className="bg-[#9dc46d]/10 border border-[#9dc46d]/30 rounded-lg p-4">
                     <p className="text-[#1a4324] flex items-center">
-                      <FiCheck className="mr-2" />
-                      Inloggad som <span className="font-semibold ml-1">{user?.email}</span>
+                      {t('checkout.loggedInAs','Inloggad som')} <span className="font-semibold ml-1">{user?.email}</span>
                     </p>
                   </div>
                 )}
@@ -253,7 +254,7 @@ export default function Checkout() {
               <div className="bg-[#1a4324] p-6 text-white">
                 <h2 className="text-2xl font-bold flex items-center">
                   <FiCreditCard className="mr-3" />
-                  Betalningsmetod
+                  {t('checkout.paymentMethod','Betalningsmetod')}
                 </h2>
               </div>
               
@@ -309,7 +310,7 @@ export default function Checkout() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden sticky top-8">
               <div className="bg-[#1a4324] p-6 text-white">
-                <h2 className="text-2xl font-bold">Din beställning</h2>
+                <h2 className="text-2xl font-bold">{t('checkout.orderSummary','Din beställning')}</h2>
               </div>
               
               <div className="p-6">
@@ -320,7 +321,7 @@ export default function Checkout() {
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-800">{item.name}</h3>
                         <p className="text-sm text-gray-600 mt-1">
-                          {item.type === 'course' ? 'Kurs' : 'Bok'} • Antal: {item.quantity}
+                          {(item.type === 'course' ? t('checkout.course','Kurs') : t('checkout.book','Bok'))} • {t('checkout.quantity','Antal')}: {item.quantity}
                         </p>
                       </div>
                       <div className="text-right">
@@ -336,16 +337,16 @@ export default function Checkout() {
                 {/* Total */}
                 <div className="border-t-2 border-gray-200 pt-4">
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-xl font-bold text-gray-800">Totalt</span>
+                    <span className="text-xl font-bold text-gray-800">{t('checkout.total','Totalt')}</span>
                     <span className="text-2xl font-bold text-[#1a4324]">{total} kr</span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-6">Inklusive moms</p>
+                  <p className="text-sm text-gray-600 mb-6">{t('checkout.vatIncluded','Inklusive moms')}</p>
 
                   {/* Security badges */}
                   <div className="bg-[#9dc46d]/10 rounded-lg p-4 mb-6">
                     <div className="flex items-center justify-center space-x-2 text-sm text-[#1a4324]">
                       <FiLock className="text-[#1a4324]" />
-                      <span>Säker betalning med 256-bit SSL-kryptering</span>
+                      <span>{t('checkout.secure','Säker betalning med 256-bit SSL-kryptering')}</span>
                     </div>
                   </div>
 
@@ -362,12 +363,12 @@ export default function Checkout() {
                     {isProcessing ? (
                       <span className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>
-                        Bearbetar...
+                        {t('checkout.processing','Bearbetar...')}
                       </span>
                     ) : (
                       <span className="flex items-center justify-center">
                         <GiSparkles className="mr-2" />
-                        Slutför beställning
+                        {t('checkout.placeOrder','Slutför beställning')}
                       </span>
                     )}
                   </button>
