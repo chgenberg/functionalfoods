@@ -138,10 +138,10 @@ export default function Week4Page() {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
   const tabs: TabProps[] = [
-    { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
-    { id: 'goals', label: 'Målsättning', icon: FiTarget, color: 'from-orange-500 to-red-600' },
-    { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-purple-500 to-pink-600' },
-    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
+    { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-[#112A12] to-[#112A12]' },
+    { id: 'goals', label: 'Målsättning', icon: FiTarget, color: 'from-[#da695c] to-[#da695c]' },
+    { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-[#112A12] to-[#112A12]' },
+    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-[#da695c] to-[#da695c]' }
   ];
 
   const toggleItem = (item: string) => {
@@ -164,23 +164,23 @@ export default function Week4Page() {
 
       {/* Tab Navigation */}
       <div className="mb-8">
-        <div className="bg-white rounded-2xl shadow-lg p-2">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="bg-[#F3EFE3] rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative p-4 rounded-xl transition-all duration-300 ${
+                className={`relative p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
                   activeTab === tab.id
-                    ? 'bg-gradient-to-r text-white shadow-lg transform scale-105'
-                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r text-white shadow-md md:shadow-lg transform scale-105'
+                    : 'bg-white text-[#112A12] hover:bg-[#F3EFE3]'
                 } ${activeTab === tab.id ? tab.color : ''}`}
               >
-                <tab.icon className={`w-6 h-6 mx-auto mb-2 ${
-                  activeTab === tab.id ? 'text-white' : 'text-gray-600'
+                <tab.icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2 ${
+                  activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
                 }`} />
-                <span className={`text-sm font-medium ${
-                  activeTab === tab.id ? 'text-white' : 'text-gray-700'
+                <span className={`text-xs md:text-sm font-medium ${
+                  activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
                 }`}>
                   {tab.label}
                 </span>
@@ -373,7 +373,7 @@ export default function Week4Page() {
                           <FiClock className="w-3 h-3" />
                           <span>35 min</span>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                        <div className="w-8 h-8 bg-[#112A12] rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
                           <FiChevronRight className="w-4 h-4" />
                         </div>
                       </div>
@@ -436,7 +436,7 @@ export default function Week4Page() {
                           <FiClock className="w-3 h-3" />
                           <span>25 min</span>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                        <div className="w-8 h-8 bg-[#da695c] rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
                           <FiChevronRight className="w-4 h-4" />
                         </div>
                       </div>
@@ -499,7 +499,7 @@ export default function Week4Page() {
                           <FiClock className="w-3 h-3" />
                           <span>5 min</span>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                        <div className="w-8 h-8 bg-[#da695c] rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
                           <FiChevronRight className="w-4 h-4" />
                         </div>
                       </div>

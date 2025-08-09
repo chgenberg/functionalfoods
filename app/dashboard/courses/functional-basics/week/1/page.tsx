@@ -45,10 +45,10 @@ export default function Week1Page() {
   const [completedGoals, setCompletedGoals] = useState<string[]>([]);
 
   const tabs: TabProps[] = [
-    { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-blue-500 to-indigo-600' },
-    { id: 'goals', label: 'Målsättning', icon: FiTarget, color: 'from-orange-500 to-red-600' },
-    { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-purple-500 to-pink-600' },
-    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-green-500 to-teal-600' }
+    { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-[#112A12] to-[#112A12]' },
+    { id: 'goals', label: 'Målsättning', icon: FiTarget, color: 'from-[#da695c] to-[#da695c]' },
+    { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-[#112A12] to-[#112A12]' },
+    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-[#da695c] to-[#da695c]' }
   ];
 
   // Get meal plan from centralized data
@@ -65,7 +65,7 @@ export default function Week1Page() {
 
       {/* Tab Navigation - Mobile Optimized */}
       <div className="mb-4 md:mb-8">
-        <div className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
+        <div className="bg-[#F3EFE3] rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
             {tabs.map((tab) => (
               <button
@@ -74,14 +74,14 @@ export default function Week1Page() {
                 className={`relative p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r text-white shadow-md md:shadow-lg transform scale-105'
-                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    : 'bg-white text-[#112A12] hover:bg-[#F3EFE3]'
                 } ${activeTab === tab.id ? tab.color : ''}`}
               >
                 <tab.icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2 ${
-                  activeTab === tab.id ? 'text-white' : 'text-gray-600'
+                  activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
                 }`} />
                 <span className={`text-xs md:text-sm font-medium ${
-                  activeTab === tab.id ? 'text-white' : 'text-gray-700'
+                  activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
                 }`}>
                   {tab.label}
                 </span>

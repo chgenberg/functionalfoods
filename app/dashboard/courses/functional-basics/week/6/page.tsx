@@ -155,27 +155,35 @@ export default function Week6Page() {
         </motion.div>
 
         {/* Tabs */}
-        <div className="mb-8">
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-            {[
-              { id: 'overview', label: 'Översikt', icon: FiBookOpen },
-              { id: 'goals', label: 'Mål', icon: FiStar },
-              { id: 'meals', label: 'Kostschema', icon: FiCalendar },
-              { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-white text-primary shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                <span className="font-medium">{tab.label}</span>
-              </button>
-            ))}
+        <div className="mb-4 md:mb-8">
+          <div className="bg-[#F3EFE3] rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
+              {[
+                { id: 'overview', label: 'Översikt', icon: FiBookOpen },
+                { id: 'goals', label: 'Mål', icon: FiStar },
+                { id: 'meals', label: 'Kostschema', icon: FiCalendar },
+                { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`relative p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
+                    activeTab === tab.id
+                      ? 'bg-gradient-to-r text-white shadow-md md:shadow-lg transform scale-105'
+                      : 'bg-white text-[#112A12] hover:bg-[#F3EFE3]'
+                  }`}
+                >
+                  <tab.icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2 ${
+                    activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
+                  }`} />
+                  <span className={`text-xs md:text-sm font-medium ${
+                    activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
+                  }`}>
+                    {tab.label}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

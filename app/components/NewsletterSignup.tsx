@@ -135,7 +135,7 @@ export default function NewsletterSignup({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="relative overflow-hidden bg-[#1a4324] rounded-3xl p-8 md:p-10 max-w-xl mx-auto border border-[#9dc46d]/30 shadow-2xl"
+        className="relative overflow-hidden bg-white rounded-3xl p-8 md:p-10 max-w-xl mx-auto border border-[#F3EFE3] shadow-2xl"
       >
 
         
@@ -144,13 +144,13 @@ export default function NewsletterSignup({
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
-            className="w-16 h-16 bg-[#9dc46d]/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+            className="w-16 h-16 bg-[#F3EFE3] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
           >
-            <FiMail className="w-8 h-8 text-white" />
+            <FiMail className="w-8 h-8 text-[#112A12]" />
           </motion.div>
           
-          <h3 className="text-2xl md:text-3xl font-bold mb-2 text-white text-center">{title}</h3>
-          <p className="text-white/80 text-center mb-8">{subtitle}</p>
+          <h3 className="text-2xl md:text-3xl font-bold mb-2 text-[#112A12] text-center">{title}</h3>
+          <p className="text-[#112A12]/80 text-center mb-8">{subtitle}</p>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative group">
@@ -159,8 +159,8 @@ export default function NewsletterSignup({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="din@email.se"
-                className="w-full px-6 py-4 rounded-2xl bg-white/90 backdrop-blur-sm text-gray-800 placeholder-gray-500 
-                         border-2 border-transparent focus:border-[#9dc46d] focus:bg-white
+                className="w-full px-6 py-4 rounded-2xl bg-white text-gray-800 placeholder-gray-500 
+                         border-2 border-[#F3EFE3] focus:border-[#da695c]
                          transition-all duration-300 outline-none shadow-lg group-hover:shadow-xl"
                 required
               />
@@ -169,24 +169,24 @@ export default function NewsletterSignup({
             
             <label 
               htmlFor="privacy-checkbox-hero-new" 
-                             className="flex items-center gap-3 p-4 rounded-2xl bg-[#9dc46d]/10 border border-[#9dc46d]/30 
-                        cursor-pointer hover:bg-[#9dc46d]/20 transition-all duration-300 group"
+                             className="flex items-center gap-3 p-4 rounded-2xl bg-[#F3EFE3] border border-[#F3EFE3] 
+                        cursor-pointer hover:bg-[#e9e3d6] transition-all duration-300 group"
             >
               <input
                 type="checkbox"
                 id="privacy-checkbox-hero-new"
                 checked={privacyAccepted}
                 onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                className="w-5 h-5 rounded border-2 border-white/50 bg-transparent checked:bg-[#9dc46d] 
-                         checked:border-[#9dc46d] focus:ring-2 focus:ring-white focus:ring-offset-0 
+                className="w-5 h-5 rounded border-2 border-[#112A12]/30 bg-transparent checked:bg-[#da695c] 
+                         checked:border-[#da695c] focus:ring-2 focus:ring-[#da695c] focus:ring-offset-0 
                          cursor-pointer transition-all duration-300"
                 required
               />
-              <span className="text-white/90 text-sm flex-1 select-none">
+              <span className="text-[#112A12]/80 text-sm flex-1 select-none">
                 Jag accepterar{' '}
                 <a 
                   href="/integritetspolicy" 
-                  className="underline underline-offset-2 hover:text-white transition-colors"
+                  className="underline underline-offset-2 hover:text-[#112A12] transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
                   integritetspolicyn
@@ -199,8 +199,8 @@ export default function NewsletterSignup({
               disabled={status === 'loading' || !email || !privacyAccepted}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full px-8 py-4 bg-[#1a4324] text-white font-semibold 
-                       rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#9dc46d] disabled:opacity-50 disabled:cursor-not-allowed 
+              className="w-full px-8 py-4 bg-[#da695c] text-white font-semibold 
+                       rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#c85e52] disabled:opacity-50 disabled:cursor-not-allowed 
                        transition-all duration-300 flex items-center justify-center gap-3 group"
             >
               {status === 'loading' ? (
@@ -227,7 +227,7 @@ export default function NewsletterSignup({
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className={`text-center text-sm ${status === 'success' ? 'text-accent' : 'text-red-300'}`}
+                  className={`text-center text-sm ${status === 'success' ? 'text-[#112A12]' : 'text-red-600'}`}
                 >
                   {message}
                 </motion.p>

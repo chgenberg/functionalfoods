@@ -263,7 +263,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="relative h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-lg group">
             <img
-              src="/ulrika_portratt/Ulrika1.jpeg"
+              src="/Ulrika_portratt/Ulrika1.jpeg"
               alt="Ulrika Davidsson"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               loading="lazy"
@@ -394,25 +394,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section - Mobile Optimized */}
-      <section className="py-12 md:py-20 px-4 bg-primary text-white">
+      {/* CTA / Prenumeration - vit sektion */}
+      <section className="py-12 md:py-20 px-4 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-4 md:mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-4 md:mb-6 text-[#112A12]">
               Redo att transformera din hälsa?
             </h2>
-            <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 opacity-90 max-w-2xl mx-auto px-4">
+            <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-[#112A12]/80 max-w-2xl mx-auto px-4">
               Starta din resa mot optimal hälsa med vårt personliga hälsoquiz
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuiz(true)}
-              className="bg-white text-primary px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-gray-100 transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
+              className="bg-[#da695c] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#c85e52] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
               Starta ditt quiz nu
               <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />
