@@ -15,7 +15,7 @@
   "nav.myCourses": "Meine Kurse",
   "hero.titleTop": "ENTDECKE DIE KRAFT VON",
   "hero.titleBottom": "FUNCTIONAL FOODS",
-  "hero.subtitle": "Essen als Medizin für Körper und Seele",
+  "hero.subtitle": "Essen als Medizin für Körper und Geist",
   "cta.headline": "Bereit, deine Gesundheit zu transformieren?",
   "cta.sub": "Starte deine Reise zur optimalen Gesundheit mit unserem persönlichen Gesundheitsquiz",
   "cta.button": "Starte jetzt dein Quiz",
@@ -227,5 +227,21 @@
   "podcasts.badge": "Hören und lernen",
   "podcasts.title": "Podcasts",
   "podcasts.subtitle": "Unsere neuesten Episoden zu Gesundheit, Ernährung und Functional Foods – mit einem einfachen, eleganten Player.",
-  "podcasts.playPause": "Abspielen/Pausieren"
+  "podcasts.playPause": "Abspielen/Pausieren",
+
+  "articles.quick.button": "Artikel schnell lesen",
+  "articles.quick.header": "Ulrikas Artikel‑Tipps",
+  "articles.quick.sub": "Schnelle Einblicke in Functional Foods",
+  "articles.quick.fallbackTitle": "Unsere Artikel entdecken",
+  "articles.quick.excerptFallback": "Entdecke wertvolle Informationen über Functional Foods und Gesundheit...",
+  "articles.quick.category": "Wissensbank",
+  "articles.quick.seeAll": "Alle Artikel ansehen",
+  "articles.quick.cat.supplements": "Ernährung & Supplemente",
+  "articles.quick.cat.innovation": "Innovation",
+  "articles.quick.cat.gut": "Darmgesundheit",
+  "articles.quick.cat.antioxidants": "Antioxidantien",
+  "articles.quick.cat.basics": "Grundlagen",
+  "articles.quick.cat.tips": "Praxistipps",
+  "articles.quick.cat.sustain": "Nachhaltigkeit",
+  "articles.quick.cat.health": "Gesundheit & Wellness"
 } 
