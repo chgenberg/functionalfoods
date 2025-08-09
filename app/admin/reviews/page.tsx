@@ -63,8 +63,8 @@ export default function AdminReviewsPage() {
                 ))}
               </div>
               <div className="mt-3 flex gap-2">
-                <button className="inline-flex items-center gap-2 px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700"><FiCheckCircle/>Godkänn</button>
-                <button className="inline-flex items-center gap-2 px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700"><FiXCircle/>Avvisa</button>
+                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'APPROVED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700"><FiCheckCircle/>Godkänn</button>
+                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'REJECTED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700"><FiXCircle/>Avvisa</button>
               </div>
             </div>
           ))}
