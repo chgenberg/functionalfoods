@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiArrowRight, FiBook, FiUsers, FiHeart, FiZap, FiTarget, FiAward, FiCheck, FiPlay, FiStar } from "react-icons/fi";
+import { FiArrowRight, FiBook, FiUsers, FiHeart, FiZap, FiTarget, FiAward, FiCheck, FiPlay } from "react-icons/fi";
+import { FaStar } from "react-icons/fa";
 import { GiFruitBowl, GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
@@ -180,9 +181,9 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-yellow-400">
-                  {/* använd signaturfärg för stjärnor */}
+                  {/* ifyllda stjärnor i signaturfärgen */}
                   {[...Array(5)].map((_, i) => (
-                    <FiStar key={i} className="w-4 h-4" color="#da695c" />
+                    <FaStar key={i} className="w-4 h-4" color="#da695c" />
                   ))}
                   <span className="text-gray-600 text-sm ml-2">25+ års erfarenhet</span>
                 </div>
@@ -352,7 +353,7 @@ export default function Home() {
               >
                 <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
                   {[...Array(5)].map((_, i) => (
-                    <FiStar key={i} className="w-5 h-5 md:w-6 md:h-6 text-yellow-400 fill-current" />
+                    <FaStar key={i} className="w-5 h-5 md:w-6 md:h-6" color="#da695c" />
                   ))}
                 </div>
                 <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
