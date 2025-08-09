@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fi';
 import { GiFruitBowl, GiMeal } from 'react-icons/gi';
 import CourseSwitcher from '@/app/components/CourseSwitcher';
+import { useAuth } from '@/app/hooks/useAuth';
 
 export default function FunctionalFlowLayout({
   children,
@@ -20,7 +21,9 @@ export default function FunctionalFlowLayout({
   children: React.ReactNode;
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [accessActive, setAccessActive] = useState<boolean | null>(null);
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const navigationItems = [
     {
@@ -103,8 +106,29 @@ export default function FunctionalFlowLayout({
     };
   }, []);
 
+  useEffect(() => {
+    const checkAccess = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return setAccessActive(false);
+        const res = await fetch('/api/user/purchases', { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        const flow = Array.isArray(data) ? data.find((p: any) => p.course?.name === 'Functional Flow') : null;
+        setAccessActive(!!flow?.isActive);
+      } catch {
+        setAccessActive(false);
+      }
+    };
+    checkAccess();
+  }, [user]);
+
   return (
     <div className="min-h-screen flow-layout">
+      {accessActive === false && (
+        <div className="bg-red-50 border-b border-red-200 text-red-700 text-sm py-3 text-center px-4">
+          Din åtkomst till denna kurs har gått ut. Kontakta support eller köp kursen igen för förlängd åtkomst.
+        </div>
+      )}
       {/* Top Header */}
       <header className="bg-white shadow-sm sticky top-0 z-40">
         <div className="px-4 sm:px-6 lg:px-8">
@@ -175,7 +199,15 @@ export default function FunctionalFlowLayout({
         <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              {children}
+              {accessActive === false ? (
+                <div className="bg-white rounded-2xl shadow p-8 text-center">
+                  <h2 className="text-2xl font-bold text-red-700 mb-2">Åtkomst utgången</h2>
+                  <p className="text-gray-600 mb-6">Du hade åtkomst i 12 månader från köpdatum. Vill du fortsätta? Köp kursen igen för att återfå tillgång.</p>
+                  <Link href="/utbildning" className="btn-primary inline-flex items-center">Köp kurs</Link>
+                </div>
+              ) : (
+                children
+              )}
             </div>
           </div>
         </main>
@@ -295,4 +327,4 @@ export default function FunctionalFlowLayout({
       `}</style>
     </div>
   );
-} 
+}

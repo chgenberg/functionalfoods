@@ -51,6 +51,10 @@ export default function CoursesPage() {
         const data = await response.json();
         const purchases = Array.isArray(data) ? data : (data.purchases || []);
         const purchasedCourseNames = purchases.map((p: any) => p.course.name);
+        const accessByName: Record<string, boolean> = {};
+        purchases.forEach((p: any) => {
+          accessByName[p.course.name] = !!p.isActive;
+        });
         
         const allCourses: Course[] = [
           {
@@ -60,27 +64,27 @@ export default function CoursesPage() {
             duration: '6 veckor',
             modules: 6,
             progress: 30,
-            status: purchasedCourseNames.includes('Functional Basics') ? 'active' : 'locked',
+            status: purchasedCourseNames.includes('Functional Basics') && accessByName['Functional Basics'] ? 'active' : purchasedCourseNames.includes('Functional Basics') ? 'locked' : 'locked',
             icon: GiFruitBowl,
             color: 'accent',
             gradient: 'from-green-500 to-teal-600',
             link: '/dashboard/courses/functional-basics',
             isPurchased: purchasedCourseNames.includes('Functional Basics')
           },
-                     {
-             id: 'functional-flow',
-             title: 'Functional Flow',
-             description: 'Avancerat program för optimal hälsa och livsstil',
-             duration: '6 veckor',
-             modules: 6,
-             progress: 0,
-             status: purchasedCourseNames.includes('Functional Flow') ? 'active' : 'locked',
-             icon: GiHealthNormal,
-             color: 'primary',
-             gradient: 'from-green-800 to-green-900',
-             link: '/dashboard/courses/functional-flow',
-             isPurchased: purchasedCourseNames.includes('Functional Flow')
-           }
+          {
+            id: 'functional-flow',
+            title: 'Functional Flow',
+            description: 'Avancerat program för optimal hälsa och livsstil',
+            duration: '6 veckor',
+            modules: 6,
+            progress: 0,
+            status: purchasedCourseNames.includes('Functional Flow') && accessByName['Functional Flow'] ? 'active' : purchasedCourseNames.includes('Functional Flow') ? 'locked' : 'locked',
+            icon: GiHealthNormal,
+            color: 'primary',
+            gradient: 'from-green-800 to-green-900',
+            link: '/dashboard/courses/functional-flow',
+            isPurchased: purchasedCourseNames.includes('Functional Flow')
+          }
         ];
         
         setCourses(allCourses);

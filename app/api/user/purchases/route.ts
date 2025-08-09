@@ -45,7 +45,16 @@ export async function GET(request: Request) {
       }
     });
 
-    return NextResponse.json(purchases);
+    // Beräkna 1 års åtkomstfönster
+    const now = new Date();
+    const enriched = purchases.map(p => {
+      const accessExpiresAt = new Date(p.createdAt);
+      accessExpiresAt.setFullYear(accessExpiresAt.getFullYear() + 1);
+      const isActive = now < accessExpiresAt;
+      return { ...p, accessExpiresAt, isActive };
+    });
+
+    return NextResponse.json(enriched);
   } catch (error) {
     console.error('Error fetching purchases:', error);
     return NextResponse.json(
