@@ -257,6 +257,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Portrait banner under features */}
+      <section className="px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="relative h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-lg group">
+            <img
+              src="/ulrika_portratt/Ulrika1.jpeg"
+              alt="Ulrika Davidsson"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-transparent" />
+            <div className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-white">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs md:text-sm mb-2">
+                <span>Functional Foods med Ulrika</span>
+              </div>
+              <p className="text-lg md:text-2xl font-semibold drop-shadow">Mat som medicin för kropp och själ</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How it works - Mobile Optimized */}
       <section className="py-12 md:py-20 px-4">
         <div className="max-w-6xl mx-auto">
