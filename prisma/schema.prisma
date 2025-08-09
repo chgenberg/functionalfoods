@@ -386,13 +386,22 @@ model ShoppingListItem {
 }
 
 model RawMaterial {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  imageUrl    String?
-  imageAlt    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String?
+  imageUrl        String?
+  imageAlt        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  // Translated fields
+  name_en         String?
+  name_es         String?
+  name_de         String?
+  name_fr         String?
+  description_en  String?
+  description_es  String?
+  description_de  String?
+  description_fr  String?
 }
 
 enum OrderStatus {
