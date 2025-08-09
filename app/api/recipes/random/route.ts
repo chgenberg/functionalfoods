@@ -6,7 +6,8 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
     if (!process.env.DATABASE_URL) {
-      return NextResponse.json({ recipes: [] });
+      // Static fallback
+      return NextResponse.json({ recipes: sampleFallback() });
     }
     const freeRecipes = await prisma.recipe.findMany({
       where: {
@@ -41,6 +42,10 @@ export async function GET() {
       });
     }
 
+    if (pool.length === 0) {
+      return NextResponse.json({ recipes: sampleFallback() });
+    }
+
     const count = Math.min(10, pool.length);
     const shuffled = pool.sort(() => 0.5 - Math.random());
     const randomRecipes = shuffled.slice(0, count);
@@ -49,8 +54,16 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching random recipes:', error);
     return NextResponse.json(
-      { recipes: [] },
+      { recipes: sampleFallback() },
       { status: 200 }
     );
   }
+}
+
+function sampleFallback() {
+  return [
+    { id: 'f1', title: 'Grönsakswok med tofu', slug: '', imageUrl: '/public/kunskapsbank/Gronsakswok.jpg', imageAlt: 'Grönsakswok', excerpt: 'Snabb, näringsrik wok – perfekt vardagsmat', prepTime: '20 min', categories: ['Vego'] },
+    { id: 'f2', title: 'Köttfärssås med zucchini', slug: '', imageUrl: '/public/kunskapsbank/kottfarssas.JPG', imageAlt: 'Köttfärssås', excerpt: 'Proteinrikt och familjefavorit', prepTime: '30 min', categories: ['Protein'] },
+    { id: 'f3', title: 'Äggröra med örter', slug: '', imageUrl: '/public/kunskapsbank/aggrora.jpg', imageAlt: 'Äggröra', excerpt: 'Enkel frukost full av protein', prepTime: '10 min', categories: ['Frukost'] }
+  ];
 } 
