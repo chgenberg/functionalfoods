@@ -128,10 +128,6 @@ img {
 
 /* Forcera svart text globalt men bevara vit text på knappar */
 @layer components {
-  /* Global text override */
-  body, body * {
-    color: #000000 !important;
-  }
   /* Behåll vit text ovanpå korallknappar och accentbakgrunder */
   .btn-primary, .btn-primary *,
   .btn-secondary, .btn-secondary *,

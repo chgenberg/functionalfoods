@@ -180,8 +180,9 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-yellow-400">
+                  {/* använd signaturfärg för stjärnor */}
                   {[...Array(5)].map((_, i) => (
-                    <FiStar key={i} className="w-4 h-4 fill-current" />
+                    <FiStar key={i} className="w-4 h-4" color="#da695c" />
                   ))}
                   <span className="text-gray-600 text-sm ml-2">25+ års erfarenhet</span>
                 </div>
@@ -214,19 +215,19 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-4 md:gap-8">
             {[
               {
-                icon: <GiFruitBowl className="w-8 h-8" />,
+                icon: <GiFruitBowl className="w-8 h-8 text-white" />,
                 title: "Functional Foods",
                 description: "Naturliga livsmedel med specifika hälsofördelar",
                 color: "#014421"
               },
               {
-                icon: <FiTarget className="w-8 h-8" />,
+                icon: <FiTarget className="w-8 h-8 text-white" />,
                 title: "Personaliserat",
                 description: "Anpassat efter dina unika behov och mål",
                 color: "#112A12"
               },
               {
-                icon: <FiZap className="w-8 h-8" />,
+                icon: <FiZap className="w-8 h-8 text-white" />,
                 title: "Snabba resultat",
                 description: "Känn skillnad redan efter några veckor",
                 color: "#014421"
