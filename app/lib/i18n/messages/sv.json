@@ -163,6 +163,8 @@
   "quiz.tip.exercise.1": "3×/v helkropp styrka (30–40 min)",
   "quiz.tip.exercise.2": "Daglig NEAT: 8–10k steg",
   "quiz.tip.exercise.3": "Rörlighet 5 min efter uppvärmning",
+  "quiz.next": "Nästa",
+  "quiz.toOverview": "Till översikt",
   "recipes.list.loading": "Laddar recept...",
   "recipes.list.errorTitle": "Kunde inte ladda recept",
   "recipes.list.retry": "Försök igen",
