@@ -14,6 +14,7 @@ import {
 import { GiFruitBowl, GiMeal } from 'react-icons/gi';
 import CourseSwitcher from '@/app/components/CourseSwitcher';
 import { useAuth } from '@/app/hooks/useAuth';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 export default function FunctionalFlowLayout({
   children,
@@ -24,75 +25,76 @@ export default function FunctionalFlowLayout({
   const [accessActive, setAccessActive] = useState<boolean | null>(null);
   const pathname = usePathname();
   const { user } = useAuth();
+  const t = useT();
 
   const navigationItems = [
     {
-      label: 'Översikt',
+      label: t('course.nav.overview','Översikt'),
       href: '/dashboard/courses/functional-flow',
       icon: FiHome,
     },
     {
-      label: 'Kostschema',
+      label: t('course.nav.mealplan','Kostschema'),
       href: '/dashboard/courses/functional-flow/kostschema',
       icon: GiMeal,
     },
     {
-      label: 'Inköpslistor',
+      label: t('course.nav.shopping','Inköpslistor'),
       href: '/dashboard/courses/functional-flow/inkopslista',
       icon: FiShoppingCart,
     },
     {
-      label: 'Vecka 1',
+      label: `${t('course.nav.week','Vecka')} 1`,
       href: '/dashboard/courses/functional-flow/week/1',
       icon: FiCalendar,
     },
     {
-      label: 'Vecka 2',
+      label: `${t('course.nav.week','Vecka')} 2`,
       href: '/dashboard/courses/functional-flow/week/2',
       icon: FiCalendar,
     },
     {
-      label: 'Vecka 3',
+      label: `${t('course.nav.week','Vecka')} 3`,
       href: '/dashboard/courses/functional-flow/week/3',
       icon: FiCalendar,
     },
     {
-      label: 'Vecka 4',
+      label: `${t('course.nav.week','Vecka')} 4`,
       href: '/dashboard/courses/functional-flow/week/4',
       icon: FiCalendar,
     },
     {
-      label: 'Vecka 5',
+      label: `${t('course.nav.week','Vecka')} 5`,
       href: '/dashboard/courses/functional-flow/week/5',
       icon: FiCalendar,
     },
     {
-      label: 'Vecka 6',
+      label: `${t('course.nav.week','Vecka')} 6`,
       href: '/dashboard/courses/functional-flow/week/6',
       icon: FiCalendar,
     },
     {
-      label: 'Mål',
+      label: t('course.nav.goals','Mål'),
       href: '/dashboard/courses/functional-flow/goals',
       icon: FiTarget,
     },
     {
-      label: 'Material',
+      label: t('course.nav.material','Material'),
       href: '/dashboard/courses/functional-flow/material',
       icon: FiBook,
     },
     {
-      label: 'Community',
+      label: t('course.nav.community','Community'),
       href: '/dashboard/courses/functional-flow/community',
       icon: FiUsers,
     },
     {
-      label: 'Ladda ner',
+      label: t('course.nav.downloads','Ladda ner'),
       href: '/dashboard/courses/functional-flow/downloads',
       icon: FiDownload,
     },
     {
-      label: 'Inställningar',
+      label: t('course.nav.settings','Inställningar'),
       href: '/dashboard/courses/functional-flow/settings',
       icon: FiSettings,
     },
@@ -167,7 +169,7 @@ export default function FunctionalFlowLayout({
             {/* Course Navigation */}
             <nav className="flex-1 px-4 pb-4 space-y-1">
               <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                Kursinnehåll
+                {t('course.sidebar.title','Kursinnehåll')}
               </h3>
               {navigationItems.map((item) => {
                 const isActive = pathname === item.href;
@@ -201,9 +203,9 @@ export default function FunctionalFlowLayout({
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               {accessActive === false ? (
                 <div className="bg-white rounded-2xl shadow p-8 text-center">
-                  <h2 className="text-2xl font-bold text-red-700 mb-2">Åtkomst utgången</h2>
-                  <p className="text-gray-600 mb-6">Du hade åtkomst i 12 månader från köpdatum. Vill du fortsätta? Köp kursen igen för att återfå tillgång.</p>
-                  <Link href="/utbildning" className="btn-primary inline-flex items-center">Köp kurs</Link>
+                  <h2 className="text-2xl font-bold text-red-700 mb-2">{t('course.access.expired.title','Åtkomst utgången')}</h2>
+                  <p className="text-gray-600 mb-6">{t('course.access.expired.desc','Du hade åtkomst i 12 månader från köpdatum. Vill du fortsätta? Köp kursen igen för att återfå tillgång.')}</p>
+                  <Link href="/utbildning" className="btn-primary inline-flex items-center">{t('course.access.buy','Köp kurs')}</Link>
                 </div>
               ) : (
                 children

@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiLoader } from 'react-icons/fi';
 import { useAuth } from '@/app/hooks/useAuth';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 export default function DashboardPage() {
+  const t = useT();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { user } = useAuth();
@@ -69,7 +71,7 @@ export default function DashboardPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
         <FiLoader className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-        <p className="text-gray-600">Laddar din dashboard...</p>
+        <p className="text-gray-600">{t('dashboard.loading','Laddar din dashboard...')}</p>
       </div>
     </div>
   );

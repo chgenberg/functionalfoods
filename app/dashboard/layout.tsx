@@ -5,17 +5,22 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiHome, FiBookOpen, FiActivity, FiUsers, FiCalendar, FiDownload, FiSettings, FiMenu, FiX, FiLogOut, FiHeart } from 'react-icons/fi';
 import { useAuth } from '../hooks/useAuth';
+import { useT } from '../lib/i18n/LanguageProvider';
 import Header from '@/app/components/Header';
 
-const menuItems = [
-  { href: '/dashboard', icon: FiHome, label: 'Översikt' },
-  { href: '/dashboard/courses', icon: FiBookOpen, label: 'Mina kurser' },
-  { href: '/dashboard/settings', icon: FiSettings, label: 'Inställningar' },
-];
+function useMenu(t: (k:string,f?:string)=>string) {
+  return [
+    { href: '/dashboard', icon: FiHome, label: t('dashboard.menu.overview','Översikt') },
+    { href: '/dashboard/courses', icon: FiBookOpen, label: t('dashboard.menu.courses','Mina kurser') },
+    { href: '/dashboard/settings', icon: FiSettings, label: t('dashboard.menu.settings','Inställningar') },
+  ];
+}
 
 function SidebarContent() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
+    const t = useT();
+    const menuItems = useMenu(t);
 
     return (
         <div className="flex flex-col h-full">
@@ -57,7 +62,7 @@ function SidebarContent() {
                     className="w-full flex items-center justify-center gap-3 mt-4 px-4 py-2 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
                 >
                     <FiLogOut className="w-5 h-5" />
-                    <span className="font-medium text-sm">Logga ut</span>
+                    <span className="font-medium text-sm">{t('dashboard.logout','Logga ut')}</span>
                 </button>
             </div>
         </div>
