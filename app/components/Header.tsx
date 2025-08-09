@@ -54,12 +54,17 @@ export default function Header() {
       label: "UTBILDNING",
       href: "/utbildning",
     },
+    // Ny toppnivå: Recept
+    {
+      label: "RECEPT",
+      href: "/kunskapsbank/recept",
+    },
     {
       label: "KUNSKAPSBANK",
       href: "/kunskapsbank",
       submenu: [
         { label: "Artiklar", href: "/kunskapsbank/blogg" },
-        { label: "Recept", href: "/kunskapsbank/recept" },
+        // { label: "Recept", href: "/kunskapsbank/recept" }, // flyttad till toppnivå
         { label: "Källor", href: "/kunskapsbank/kallor" },
         { label: "Råvaror", href: "/kunskapsbank/ingredienser" },
         { label: "Q&A", href: "/kunskapsbank/qa" },
