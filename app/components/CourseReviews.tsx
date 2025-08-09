@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { FiStar, FiQuoteLeft, FiX } from 'react-icons/fi';
+import { FiStar, FiMessageCircle, FiX } from 'react-icons/fi';
 
 interface Review {
   id: string;
@@ -10,7 +10,7 @@ interface Review {
   createdAt: string;
 }
 
-export default function CourseReviews({ courseId }: { courseId: string }) {
+export default function CourseReviews({ courseId, limit = 6 }: { courseId: string; limit?: number }) {
   const [items, setItems] = useState<Review[]>([]);
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -18,10 +18,11 @@ export default function CourseReviews({ courseId }: { courseId: string }) {
     const load = async () => {
       const res = await fetch(`/api/reviews?courseId=${courseId}&status=APPROVED`);
       const data = await res.json();
-      setItems((data.reviews || []).slice(0, 6));
+      const arr = data.reviews || [];
+      setItems(limit && limit > 0 ? arr.slice(0, limit) : arr);
     };
     load();
-  }, [courseId]);
+  }, [courseId, limit]);
 
   if (items.length === 0) return null;
 
@@ -37,7 +38,7 @@ export default function CourseReviews({ courseId }: { courseId: string }) {
               ))}
             </div>
             <div className="flex items-start gap-3 text-gray-700">
-              <FiQuoteLeft className="w-5 h-5 text-primary mt-1" />
+              <FiMessageCircle className="w-5 h-5 text-primary mt-1" />
               <p className="line-clamp-4">
                 {(r.answers?.[1]?.a || r.answers?.[0]?.a || '').slice(0, 220)}
               </p>
