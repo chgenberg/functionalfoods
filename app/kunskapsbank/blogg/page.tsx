@@ -176,6 +176,17 @@ export default function BlogPage() {
                       {post.excerpt || 'Läs mer om detta intressanta ämne inom functional foods...'}
                     </p>
 
+                    {/* Sammanfattning 3 punkter */}
+                    <ul className="bg-background-secondary border border-border rounded-xl p-4 mb-4 text-sm text-text-secondary list-disc list-inside space-y-1">
+                      {(post.excerpt ? post.excerpt.split('.').filter(Boolean).slice(0,3) : [
+                        'Vad du får veta i artikeln',
+                        'Varför ämnet är relevant för din hälsa',
+                        'Hur du kan använda kunskapen praktiskt'
+                      ]).map((point, idx) => (
+                        <li key={idx}>{point.trim()}</li>
+                      ))}
+                    </ul>
+
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2 mb-4">
                       <span className="flex items-center gap-1 text-xs text-text-secondary bg-background-secondary px-2 py-1 rounded">

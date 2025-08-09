@@ -300,13 +300,13 @@ export default function Header() {
         {/* Mobile menu overlay */}
         {mobileMenuOpen && (
           <div 
-            className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
             onClick={() => setMobileMenuOpen(false)}
           />
         )}
         
         {/* Mobile menu */}
-        <div className={`lg:hidden fixed left-0 right-0 top-16 bg-white shadow-lg transition-all duration-500 z-50 ${
+        <div className={`fixed left-0 right-0 top-20 md:top-24 bg-white shadow-lg transition-all duration-500 z-50 ${
           mobileMenuOpen ? 'max-h-[calc(100vh-4rem)] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
         }`}>
           <nav className="py-6 px-4 space-y-2 max-h-[calc(100vh-6rem)] overflow-y-auto">
