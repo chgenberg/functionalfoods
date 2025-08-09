@@ -49,35 +49,35 @@ img {
 /* Functional Flow specific colors - matching Basic design structure */
 .functional-flow .bg-accent,
 .functional-flow .bg-primary {
-  background-color: #014421 !important;
+  background-color: #da695c !important;
 }
 
 .functional-flow .text-primary {
-  color: #014421 !important;
+  color: #da695c !important;
 }
 
 .functional-flow .hover\:text-primary:hover {
-  color: #014421 !important;
+  color: #c6574c !important;
 }
 
 .functional-flow .hover\:bg-primary:hover {
-  background-color: #112A12 !important;
+  background-color: #c6574c !important;
 }
 
 @layer base {
   :root {
     /* Primary Colors */
-    --primary: #014421;
-    --primary-light: #112A12;
-    --secondary: #112A12;
+    --primary: #da695c;       /* korall */
+    --primary-light: #e07c71; /* ljusare variant */
+    --secondary: #c6574c;     /* mörkare för hover */
     
     /* Accent Colors */
-    --accent: #014421;
-    --accent-hover: #112A12;
+    --accent: #da695c;
+    --accent-hover: #c6574c;
     
     /* Text Colors */
     --text-primary: #112A12;
-    --text-secondary: #014421;
+    --text-secondary: #da695c;
     --text-light: #112A12;
     
     /* Background Colors */
@@ -85,10 +85,10 @@ img {
     --background-secondary: #F7F3FB;
     
     /* Border Colors */
-    --border: #112A12;
+    --border: #c6574c;
     
     /* Status Colors */
-    --success: #014421;
+    --success: #da695c;
     --warning: #F59E0B;
     --error: #660C21;
   }
