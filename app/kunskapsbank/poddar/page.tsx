@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FiArrowLeft, FiPlayCircle, FiPauseCircle, FiClock, FiHeadphones } from "react-icons/fi";
 
 interface Episode {
@@ -36,18 +37,17 @@ const demoEpisodes: Episode[] = [
 
 export default function PodcastsPage() {
   const [currentId, setCurrentId] = useState<string | null>(null);
-  const [audioRefs, setAudioRefs] = useState<Record<string, HTMLAudioElement | null>>({});
+  const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
 
   const togglePlay = (id: string) => {
-    const audio = audioRefs[id];
+    const audio = audioRefs.current[id];
     if (!audio) return;
     if (currentId === id && !audio.paused) {
       audio.pause();
       return;
     }
-    // pausa annan
-    if (currentId && audioRefs[currentId] && !audioRefs[currentId]!.paused) {
-      audioRefs[currentId]!.pause();
+    if (currentId && audioRefs.current[currentId] && !audioRefs.current[currentId]!.paused) {
+      audioRefs.current[currentId]!.pause();
     }
     audio.play();
     setCurrentId(id);
@@ -73,11 +73,14 @@ export default function PodcastsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {demoEpisodes.map((ep) => (
             <div key={ep.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-              <div className="aspect-video bg-gray-100">
-                {/* Cover image as background via style if provided */}
-                <div
-                  className="w-full h-full bg-center bg-cover"
-                  style={{ backgroundImage: `url(${ep.coverUrl || "/images/blog-placeholder.jpg"})` }}
+              <div className="relative aspect-video bg-gray-100">
+                <Image
+                  src={ep.coverUrl || "/images/blog-placeholder.jpg"}
+                  alt={ep.title}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
                 />
               </div>
               <div className="p-6">
@@ -95,7 +98,7 @@ export default function PodcastsPage() {
                       className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors"
                       aria-label="Spela/Pausa"
                     >
-                      {currentId === ep.id && audioRefs[ep.id] && !audioRefs[ep.id]!.paused ? (
+                      {currentId === ep.id && audioRefs.current[ep.id] && !audioRefs.current[ep.id]!.paused ? (
                         <FiPauseCircle className="w-7 h-7" />
                       ) : (
                         <FiPlayCircle className="w-7 h-7" />
@@ -104,7 +107,6 @@ export default function PodcastsPage() {
 
                     <div className="flex-1">
                       <div className="h-2 bg-white rounded-full overflow-hidden">
-                        {/* Native audio progress fallback hidden; could be enhanced later */}
                         <div className="h-full w-1/3 bg-accent transition-all duration-300" />
                       </div>
                       <div className="mt-2 flex justify-between text-xs text-text-secondary">
@@ -114,7 +116,7 @@ export default function PodcastsPage() {
                     </div>
 
                     <audio
-                      ref={(el) => setAudioRefs((prev) => ({ ...prev, [ep.id]: el }))}
+                      ref={(el) => { audioRefs.current[ep.id] = el; }}
                       src={ep.audioUrl}
                       preload="none"
                       onEnded={() => setCurrentId(null)}
