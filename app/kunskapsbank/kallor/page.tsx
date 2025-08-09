@@ -632,7 +632,7 @@ export default function KallorPage() {
       <div className="relative h-64 md:h-80 lg:h-[28rem] overflow-hidden">
         {!heroError && (
           <img
-            src="/ulrika_portratt/Ulrika2.jpeg"
+            src="/Ulrika_portratt/Ulrika2.jpeg"
             alt="Ulrika Daviddson"
             className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[4000ms] ${heroLoaded ? 'scale-105' : 'scale-100'}`}
             onLoad={() => setHeroLoaded(true)}
@@ -651,77 +651,26 @@ export default function KallorPage() {
         </div>
       </div>
 
-      {/* Header */}
-      <div className="bg-[#1a4324] text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-              className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6"
-            >
-              <FiBookOpen className="w-10 h-10" />
-            </motion.div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              {t('sources.title','Vetenskapliga Källor')}
-            </h1>
-            <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-3xl mx-auto leading-relaxed">
-              {t('sources.subtitle','Utforska de vetenskapliga referenserna bakom vår kunskap om functional foods')}
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-4"
-              >
-                <div className="flex items-center gap-3 justify-center">
-                  <FiBookOpen className="w-6 h-6" />
-                  <div>
-                    <div className="text-2xl font-bold">{sources.length}</div>
-                    <div className="text-sm text-white/70">{t('sources.stats.sources','Vetenskapliga källor')}</div>
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-4"
-              >
-                <div className="flex items-center gap-3 justify-center">
-                  <FiCalendar className="w-6 h-6" />
-                  <div>
-                    <div className="text-2xl font-bold">{Math.max(...sources.map(s => s.year)) - Math.min(...sources.map(s => s.year))} år</div>
-                    <div className="text-sm text-white/70">{t('sources.stats.span','Forskningsspann')}</div>
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-4"
-              >
-                <div className="flex items-center gap-3 justify-center">
-                  <GiMicroscope className="w-6 h-6" />
-                  <div>
-                    <div className="text-2xl font-bold">{Object.keys(stats).length}</div>
-                    <div className="text-sm text-white/70">{t('sources.stats.areas','Forskningsområden')}</div>
-                  </div>
-                </div>
-              </motion.div>
+      {/* Compact stats row below hero */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white rounded-xl border p-4 text-center">
+              <div className="mx-auto w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2"><FiBookOpen className="w-5 h-5"/></div>
+              <div className="text-2xl font-bold">{sources.length}</div>
+              <div className="text-sm text-gray-600">{t('sources.stats.sources','Vetenskapliga källor')}</div>
             </div>
-          </motion.div>
+            <div className="bg-white rounded-xl border p-4 text-center">
+              <div className="mx-auto w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2"><FiCalendar className="w-5 h-5"/></div>
+              <div className="text-2xl font-bold">{Math.max(...sources.map(s => s.year)) - Math.min(...sources.map(s => s.year))} år</div>
+              <div className="text-sm text-gray-600">{t('sources.stats.span','Forskningsspann')}</div>
+            </div>
+            <div className="bg-white rounded-xl border p-4 text-center">
+              <div className="mx-auto w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2"><GiMicroscope className="w-5 h-5"/></div>
+              <div className="text-2xl font-bold">{Object.keys(stats).length}</div>
+              <div className="text-sm text-gray-600">{t('sources.stats.areas','Forskningsområden')}</div>
+            </div>
+          </div>
         </div>
       </div>
 
