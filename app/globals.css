@@ -471,3 +471,5 @@ video {
   -webkit-transform: translateZ(0);
   will-change: transform;
 }
+
+/* i18n helper styles can go here if needed */

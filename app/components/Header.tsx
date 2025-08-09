@@ -4,9 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiLogOut } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useT } from '../lib/i18n/LanguageProvider';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Header() {
+  const t = useT();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -43,37 +46,37 @@ export default function Header() {
 
   const menuItems = [
     {
-      label: "HEM",
+      label: t('nav.home','HEM'),
       href: "/",
     },
     {
-      label: "BOKEN",
+      label: t('nav.book','BOKEN'),
       href: "/boken",
     },
     {
-      label: "UTBILDNING",
+      label: t('nav.education','UTBILDNING'),
       href: "/utbildning",
     },
     // Ny toppnivå: Recept
     {
-      label: "RECEPT",
+      label: t('nav.recipes','RECEPT'),
       href: "/kunskapsbank/recept",
     },
     {
-      label: "KUNSKAPSBANK",
+      label: t('nav.knowledge','KUNSKAPSBANK'),
       href: "/kunskapsbank",
       submenu: [
         { label: "Artiklar", href: "/kunskapsbank/blogg" },
         // { label: "Recept", href: "/kunskapsbank/recept" }, // flyttad till toppnivå
-        { label: "Källor", href: "/kunskapsbank/kallor" },
-        { label: "Råvaror", href: "/kunskapsbank/ingredienser" },
-        { label: "Q&A", href: "/kunskapsbank/qa" },
-        { label: "Sök", href: "/kunskapsbank/sok" },
-        { label: "Poddar", href: "/kunskapsbank/poddar" },
+        { label: t('nav.sources','Källor'), href: "/kunskapsbank/kallor" },
+        { label: t('nav.ingredients','Råvaror'), href: "/kunskapsbank/ingredienser" },
+        { label: t('nav.qa','Q&A'), href: "/kunskapsbank/qa" },
+        { label: t('nav.search','Sök'), href: "/kunskapsbank/sok" },
+        { label: t('nav.podcasts','Poddar'), href: "/kunskapsbank/poddar" },
       ],
     },
     {
-      label: "KONTAKT",
+      label: t('nav.contact','KONTAKT'),
       href: "/kontakt/adress",
     },
   ];
@@ -293,6 +296,7 @@ export default function Header() {
               </button>
             )}
             
+            <LanguageSwitcher />
             <Link href="/cart" className="rounded-full p-2 hover:bg-primary/10 transition relative" aria-label="Varukorg">
               <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               {isLoaded && items.length > 0 && (

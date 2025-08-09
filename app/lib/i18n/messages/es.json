@@ -1,0 +1,22 @@
+{
+  "nav.home": "Inicio",
+  "nav.book": "Libro",
+  "nav.education": "Cursos",
+  "nav.recipes": "Recetas",
+  "nav.knowledge": "Banco de Conocimiento",
+  "nav.sources": "Fuentes",
+  "nav.ingredients": "Ingredientes",
+  "nav.qa": "Preguntas y Respuestas",
+  "nav.search": "Buscar",
+  "nav.podcasts": "Podcasts",
+  "nav.contact": "Contacto",
+  "nav.login": "Iniciar sesión",
+  "nav.logout": "Cerrar sesión",
+  "nav.myCourses": "Mis cursos",
+  "hero.titleTop": "DESCUBRE EL PODER DE",
+  "hero.titleBottom": "LOS ALIMENTOS FUNCIONALES",
+  "hero.subtitle": "La comida como medicina para cuerpo y alma",
+  "cta.headline": "¿Listo para transformar tu salud?",
+  "cta.sub": "Comienza tu viaje hacia una salud óptima con nuestro cuestionario de salud",
+  "cta.button": "Comienza tu cuestionario ahora"
+} 

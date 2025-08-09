@@ -13,8 +13,11 @@ import NewsletterSignup from "./components/NewsletterSignup";
 import ArticleQuickAccess from "./components/ArticleQuickAccess";
 import FeaturePopup from "./components/FeaturePopup";
 import RecipeCarousel from "./components/RecipeCarousel";
+import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
 
 export default function Home() {
+  const t = useT();
+  const { locale, setLocale } = useLanguage();
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizResults, setQuizResults] = useState<Record<number, string> | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -22,6 +25,21 @@ export default function Home() {
   const [videoError, setVideoError] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const router = useRouter();
+  const [showGeoSuggest, setShowGeoSuggest] = useState(false);
+  const [suggestedLocale, setSuggestedLocale] = useState<'sv'|'en'|'es'|null>(null);
+
+  useEffect(() => {
+    // Geo-suggest only if no explicit language chosen yet
+    const chosen = typeof localStorage !== 'undefined' ? localStorage.getItem('lang') : null;
+    if (!chosen) {
+      fetch('/api/geo').then(r => r.json()).then(data => {
+        if (data?.suggested && data.suggested !== locale) {
+          setSuggestedLocale(data.suggested);
+          setShowGeoSuggest(true);
+        }
+      }).catch(() => {});
+    }
+  }, [locale]);
 
   const testimonials = [
     {
@@ -134,13 +152,13 @@ export default function Home() {
             {/* Left content */}
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-6xl font-light text-white mb-6 leading-tight drop-shadow-lg">
-                UPPTÄCK KRAFTEN I
+                {t('hero.titleTop')}
                 <span className="block text-white font-bold drop-shadow-lg">
-                  FUNCTIONAL FOODS
+                  {t('hero.titleBottom')}
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed drop-shadow-lg">
-                Mat som medicin för kropp och själ
+                {t('hero.subtitle')}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
@@ -404,10 +422,10 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-4 md:mb-6 text-[#112A12]">
-              Redo att transformera din hälsa?
+              {t('cta.headline')}
             </h2>
             <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-[#112A12]/80 max-w-2xl mx-auto px-4">
-              Starta din resa mot optimal hälsa med vårt personliga hälsoquiz
+              {t('cta.sub')}
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -415,7 +433,7 @@ export default function Home() {
               onClick={() => setShowQuiz(true)}
               className="bg-[#da695c] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#c85e52] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
-              Starta ditt quiz nu
+              {t('cta.button')}
               <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </motion.button>
           </motion.div>
@@ -429,6 +447,13 @@ export default function Home() {
           onClose={() => setSelectedFeature(null)}
           feature={selectedFeature}
         />
+      )}
+      {showGeoSuggest && suggestedLocale && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-xl border border-[#F3EFE3] rounded-2xl px-4 py-3 flex items-center gap-3 z-50">
+          <span className="text-sm text-[#112A12]">Vi ser att ditt språk kan vara {suggestedLocale.toUpperCase()}. Vill du byta?</span>
+          <button className="px-3 py-1.5 rounded-lg bg-[#da695c] text-white text-sm" onClick={() => { setLocale(suggestedLocale); setShowGeoSuggest(false); }}>Byt</button>
+          <button className="px-3 py-1.5 rounded-lg bg-[#F3EFE3] text-[#112A12] text-sm" onClick={() => setShowGeoSuggest(false)}>Nej tack</button>
+        </div>
       )}
     </div>
   );

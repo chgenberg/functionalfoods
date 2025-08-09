@@ -1,0 +1,22 @@
+{
+  "nav.home": "Hem",
+  "nav.book": "Boken",
+  "nav.education": "Utbildning",
+  "nav.recipes": "Recept",
+  "nav.knowledge": "Kunskapsbank",
+  "nav.sources": "Källor",
+  "nav.ingredients": "Råvaror",
+  "nav.qa": "Q&A",
+  "nav.search": "Sök",
+  "nav.podcasts": "Poddar",
+  "nav.contact": "Kontakt",
+  "nav.login": "Logga in",
+  "nav.logout": "Logga ut",
+  "nav.myCourses": "Mina kurser",
+  "hero.titleTop": "UPPTÄCK KRAFTEN I",
+  "hero.titleBottom": "FUNCTIONAL FOODS",
+  "hero.subtitle": "Mat som medicin för kropp och själ",
+  "cta.headline": "Redo att transformera din hälsa?",
+  "cta.sub": "Starta din resa mot optimal hälsa med vårt personliga hälsoquiz",
+  "cta.button": "Starta ditt quiz nu"
+} 
