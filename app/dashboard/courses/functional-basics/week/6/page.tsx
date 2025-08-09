@@ -6,6 +6,8 @@ import {
   FiCalendar, FiShoppingCart, FiBookOpen, FiClock,
   FiChevronRight, FiCheck, FiStar, FiAward, FiDownload
 } from 'react-icons/fi';
+import ReviewCTA from '../components/ReviewCTA';
+import { useAuth } from '@/app/hooks/useAuth';
 import Link from 'next/link';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
@@ -128,6 +130,7 @@ const shoppingList = {
 };
 
 export default function Week6Page() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
@@ -278,6 +281,10 @@ export default function Week6Page() {
                   </Link>
                 </div>
               </div>
+
+              {user?.id && (
+                <ReviewCTA courseId="functional-basics" userId={user.id} />
+              )}
             </div>
           )}
 

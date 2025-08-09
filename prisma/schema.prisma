@@ -8,38 +8,39 @@ datasource db {
 }
 
 model User {
-  id              String            @id @default(uuid())
-  email           String            @unique
-  name            String?
-  role            String            @default("customer")
-  createdAt       DateTime          @default(now())
-  password        String
-  updatedAt       DateTime          @updatedAt
-  lastLogin       DateTime?
-  isActive        Boolean           @default(true)
+  id                String            @id @default(uuid())
+  email             String            @unique
+  name              String?
+  role              String            @default("customer")
+  createdAt         DateTime          @default(now())
+  password          String
+  updatedAt         DateTime          @updatedAt
+  lastLogin         DateTime?
+  isActive          Boolean           @default(true)
   // Address fields
-  addressLine1    String?
-  addressLine2    String?
-  postalCode      String?
-  city            String?
-  country         String?
-  nationality     String?
-  preferredLanguage Language?       @default(SV)
-  achievements    Achievement[]
-  blogPosts       BlogPost[]
-  chatMessages    ChatMessage[]
-  courses         Course[]
-  forumLikes      ForumLike[]
-  forumReplies    ForumReply[]
-  forumThreads    ForumThread[]
-  goals           Goal[]
-  healthMetrics   HealthMetric[]
-  healthProfile   HealthProfile?
-  orders          Order[]
-  purchases       Purchase[]
-  quizResults     QuizResult[]
-  recipes         Recipe[]
-  symptomAnalyses SymptomAnalysis[]
+  addressLine1      String?
+  addressLine2      String?
+  postalCode        String?
+  city              String?
+  country           String?
+  nationality       String?
+  preferredLanguage Language?         @default(SV)
+  achievements      Achievement[]
+  blogPosts         BlogPost[]
+  chatMessages      ChatMessage[]
+  courses           Course[]
+  forumLikes        ForumLike[]
+  forumReplies      ForumReply[]
+  forumThreads      ForumThread[]
+  goals             Goal[]
+  healthMetrics     HealthMetric[]
+  healthProfile     HealthProfile?
+  orders            Order[]
+  purchases         Purchase[]
+  quizResults       QuizResult[]
+  recipes           Recipe[]
+  symptomAnalyses   SymptomAnalysis[]
+  courseReviews     CourseReview[]
 }
 
 model Course {
@@ -236,17 +237,17 @@ model Payment {
 }
 
 model Purchase {
-  id        String        @id @default(uuid())
-  userId    String
-  courseId  String
-  amount    Float
-  status    String        @default("completed")
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  orderId   String?
+  id              String        @id @default(uuid())
+  userId          String
+  courseId        String
+  amount          Float
+  status          String        @default("completed")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  orderId         String?
   accessExpiresAt DateTime?
-  course    CourseProduct @relation(fields: [courseId], references: [id])
-  user      User          @relation(fields: [userId], references: [id])
+  course          CourseProduct @relation(fields: [courseId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
 
   @@unique([userId, courseId])
 }
@@ -342,45 +343,45 @@ model ForumLike {
 }
 
 model Recipe {
-  id           String       @id @default(uuid())
-  title        String
-  slug         String       @unique
-  excerpt      String?
-  content      String?
-  imageUrl     String?
-  imageAlt     String?
-  categories   String[]
-  ingredients  String[]
-  instructions String?
-  difficulty   String?
-  prepTime     String?
-  cookTime     String?
-  totalTime    String?
-  servings     Int?
-  nutrition    Json?
-  tips         String?
-  tags         String[]
-  status       RecipeStatus @default(PUBLISHED)
-  isPremium    Boolean      @default(false)
-  isFree       Boolean      @default(true)
-  authorId     String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  searchText   String?
+  id              String       @id @default(uuid())
+  title           String
+  slug            String       @unique
+  excerpt         String?
+  content         String?
+  imageUrl        String?
+  imageAlt        String?
+  categories      String[]
+  ingredients     String[]
+  instructions    String?
+  difficulty      String?
+  prepTime        String?
+  cookTime        String?
+  totalTime       String?
+  servings        Int?
+  nutrition       Json?
+  tips            String?
+  tags            String[]
+  status          RecipeStatus @default(PUBLISHED)
+  isPremium       Boolean      @default(false)
+  isFree          Boolean      @default(true)
+  authorId        String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  searchText      String?
   // translations
-  title_en     String?
-  title_es     String?
-  title_de     String?
-  title_fr     String?
-  excerpt_en   String?
-  excerpt_es   String?
-  excerpt_de   String?
-  excerpt_fr   String?
+  title_en        String?
+  title_es        String?
+  title_de        String?
+  title_fr        String?
+  excerpt_en      String?
+  excerpt_es      String?
+  excerpt_de      String?
+  excerpt_fr      String?
   instructions_en String?
   instructions_es String?
   instructions_de String?
   instructions_fr String?
-  author       User?        @relation(fields: [authorId], references: [id])
+  author          User?        @relation(fields: [authorId], references: [id])
 
   @@index([status])
   @@index([isPremium])
@@ -412,41 +413,72 @@ model ShoppingListItem {
 }
 
 model RawMaterial {
-  id              String   @id @default(uuid())
-  name            String   @unique
-  description     String?
-  imageUrl        String?
-  imageAlt        String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(uuid())
+  name           String   @unique
+  description    String?
+  imageUrl       String?
+  imageAlt       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   // Translated fields
-  name_en         String?
-  name_es         String?
-  name_de         String?
-  name_fr         String?
-  description_en  String?
-  description_es  String?
-  description_de  String?
-  description_fr  String?
+  name_en        String?
+  name_es        String?
+  name_de        String?
+  name_fr        String?
+  description_en String?
+  description_es String?
+  description_de String?
+  description_fr String?
 }
 
 // Coupons for discounts in checkout
 model Coupon {
-  id            String   @id @default(uuid())
-  code          String   @unique
-  type          String   // "percent" | "fixed"
-  amount        Float
-  active        Boolean  @default(true)
-  startsAt      DateTime?
-  expiresAt     DateTime?
-  usageLimit    Int?
-  timesUsed     Int      @default(0)
+  id                  String    @id @default(uuid())
+  code                String    @unique
+  type                String // "percent" | "fixed"
+  amount              Float
+  active              Boolean   @default(true)
+  startsAt            DateTime?
+  expiresAt           DateTime?
+  usageLimit          Int?
+  timesUsed           Int       @default(0)
   applicableCourseIds Json? // array of course IDs this applies to; null = all
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   @@index([code])
   @@index([active])
+}
+
+// Course feedback/reviews from users
+model CourseReview {
+  id        String       @id @default(uuid())
+  userId    String
+  courseId  String // e.g. "functional-basics" | "functional-flow"
+  rating    Int?
+  answers   Json // structured answers to questions
+  consent   Boolean      @default(false) // allowed to publish as testimonial
+  category  String       @default("course-feedback")
+  source    ReviewSource @default(IN_APP)
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+  @@index([status])
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ReviewSource {
+  IN_APP
+  EMAIL
 }
 
 enum OrderStatus {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 type User = {
+  id?: string;
   email: string;
   role: string;
   name?: string;
@@ -15,7 +16,7 @@ export function useAuth() {
     if (storedToken) {
       try {
         const payload = JSON.parse(atob(storedToken.split('.')[1]));
-        setUser({ email: payload.email, role: payload.role, name: payload.name });
+        setUser({ id: payload.id || payload.userId, email: payload.email, role: payload.role, name: payload.name });
         setToken(storedToken);
       } catch (e) {
         setUser(null);
@@ -29,7 +30,7 @@ export function useAuth() {
     localStorage.setItem('token', newToken);
     try {
       const payload = JSON.parse(atob(newToken.split('.')[1]));
-      setUser({ email: payload.email, role: payload.role, name: payload.name });
+      setUser({ id: payload.id || payload.userId, email: payload.email, role: payload.role, name: payload.name });
       setToken(newToken);
     } catch (e) {
       setUser(null);
@@ -42,7 +43,7 @@ export function useAuth() {
     localStorage.removeItem('token');
     setUser(null);
     setToken(null);
-    window.location.href = '/'; // Omdirigera till startsidan
+    window.location.href = '/';
   }
 
   return { user, token, login, logout };
