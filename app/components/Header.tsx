@@ -184,7 +184,7 @@ export default function Header() {
                 <FiUser className="w-5 h-5 text-primary" />
               </button>
             )}
-            <LanguageSwitcher />
+            <div className="hidden sm:block"><LanguageSwitcher /></div>
             <Link href="/cart" className="rounded-full p-2 hover:bg-primary/10 transition relative" aria-label={t('cart.label','Varukorg')}>
               <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               {isLoaded && items.length > 0 && (<span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">{items.length}</span>)}
@@ -196,6 +196,9 @@ export default function Header() {
 
         <div className={`fixed top-20 md:top-24 left-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <nav className="py-6 px-4 space-y-2 h-full overflow-y-auto">
+            <div className="block lg:hidden mb-4">
+              <LanguageSwitcher />
+            </div>
             {menuItems.map((item, index) => (
               <div key={item.label} className={`animate-fade-in-up`} style={{ animationDelay: `${index * 50}ms` }}>
                 <Link href={item.href} className="flex items-center justify-between px-4 py-3 text-base font-medium text-primary hover:text-accent bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200" onClick={() => setMobileMenuOpen(false)}>
