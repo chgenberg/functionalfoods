@@ -1,7 +1,10 @@
+import { useT } from '@/app/lib/i18n/LanguageProvider';
+
 export default function Artiklar() {
+  const t = useT();
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-light text-gray-900 mb-8">Artiklar</h1>
+      <h1 className="text-4xl font-light text-gray-900 mb-8">{t('articles.title','Artiklar')}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Artikellista kommer att läggas till här */}
       </div>

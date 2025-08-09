@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { FiSearch, FiBookOpen, FiExternalLink, FiFilter, FiCalendar, FiUser, FiLink, FiCopy, FiCheck } from 'react-icons/fi';
 import { BiDna, BiLeaf } from 'react-icons/bi';
 import { GiMicroscope, GiHeartOrgan, GiBrain } from 'react-icons/gi';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface Source {
   id: number;
@@ -598,6 +599,7 @@ export default function KallorPage() {
   const [copiedId, setCopiedId] = useState<number | null>(null);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [heroError, setHeroError] = useState(false);
+  const t = useT();
 
   const filteredSources = sources.filter(source => {
     const matchesSearch = source.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -645,7 +647,7 @@ export default function KallorPage() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
         <div className="absolute left-6 bottom-6 text-white">
-          <h2 className="text-2xl md:text-3xl font-bold drop-shadow">Vetenskapliga Källor</h2>
+          <h2 className="text-2xl md:text-3xl font-bold drop-shadow">{t('sources.heroTitle','Vetenskapliga Källor')}</h2>
         </div>
       </div>
 
@@ -670,10 +672,10 @@ export default function KallorPage() {
               <FiBookOpen className="w-10 h-10" />
             </motion.div>
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              Vetenskapliga Källor
+              {t('sources.title','Vetenskapliga Källor')}
             </h1>
             <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Utforska de vetenskapliga referenserna bakom vår kunskap om functional foods
+              {t('sources.subtitle','Utforska de vetenskapliga referenserna bakom vår kunskap om functional foods')}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
               <motion.div
@@ -686,7 +688,7 @@ export default function KallorPage() {
                   <FiBookOpen className="w-6 h-6" />
                   <div>
                     <div className="text-2xl font-bold">{sources.length}</div>
-                    <div className="text-sm text-white/70">Vetenskapliga källor</div>
+                    <div className="text-sm text-white/70">{t('sources.stats.sources','Vetenskapliga källor')}</div>
                   </div>
                 </div>
               </motion.div>
@@ -700,7 +702,7 @@ export default function KallorPage() {
                   <FiCalendar className="w-6 h-6" />
                   <div>
                     <div className="text-2xl font-bold">{Math.max(...sources.map(s => s.year)) - Math.min(...sources.map(s => s.year))} år</div>
-                    <div className="text-sm text-white/70">Forskningsspann</div>
+                    <div className="text-sm text-white/70">{t('sources.stats.span','Forskningsspann')}</div>
                   </div>
                 </div>
               </motion.div>
@@ -714,7 +716,7 @@ export default function KallorPage() {
                   <GiMicroscope className="w-6 h-6" />
                   <div>
                     <div className="text-2xl font-bold">{Object.keys(stats).length}</div>
-                    <div className="text-sm text-white/70">Forskningsområden</div>
+                    <div className="text-sm text-white/70">{t('sources.stats.areas','Forskningsområden')}</div>
                   </div>
                 </div>
               </motion.div>
@@ -734,12 +736,12 @@ export default function KallorPage() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Search */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Sök i källorna</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('sources.search.label','Sök i källorna')}</label>
                 <div className="relative">
                   <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="text"
-                    placeholder="Titel, författare eller tidskrift..."
+                    placeholder={t('sources.search.placeholder','Titel, författare eller tidskrift...')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#9dc46d] focus:border-transparent transition-all hover:border-gray-300"
@@ -749,7 +751,7 @@ export default function KallorPage() {
 
               {/* Category Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Forskningsområde</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('sources.filter.label','Forskningsområde')}</label>
                 <div className="relative">
                   <FiFilter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <select
@@ -759,7 +761,7 @@ export default function KallorPage() {
                   >
                     {categories.map((category) => (
                       <option key={category} value={category}>
-                        {category} {category !== "Alla" && stats[category] && `(${stats[category]})`}
+                        {category} {category !== t('sources.filter.all','Alla') && stats[category] && `(${stats[category]})`}
                       </option>
                     ))}
                   </select>
@@ -773,9 +775,9 @@ export default function KallorPage() {
             </div>
 
             {/* Active filters */}
-            {(searchTerm || selectedCategory !== "Alla") && (
+            {(searchTerm || selectedCategory !== t('sources.filter.all','Alla')) && (
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                <span className="text-sm text-gray-500">Aktiva filter:</span>
+                <span className="text-sm text-gray-500">{t('sources.activeFilters','Aktiva filter:')}</span>
                 {searchTerm && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#9dc46d]/20 text-[#1a4324] rounded-full text-sm">
                     <FiSearch className="w-3 h-3" />
@@ -787,11 +789,11 @@ export default function KallorPage() {
                     </button>
                   </span>
                 )}
-                {selectedCategory !== "Alla" && (
+                {selectedCategory !== t('sources.filter.all','Alla') && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#9dc46d]/20 text-[#1a4324] rounded-full text-sm">
                     <FiFilter className="w-3 h-3" />
                     {selectedCategory}
-                    <button onClick={() => setSelectedCategory("Alla")} className="ml-1 hover:text-red-600">
+                    <button onClick={() => setSelectedCategory(t('sources.filter.all','Alla'))} className="ml-1 hover:text-red-600">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -805,7 +807,7 @@ export default function KallorPage() {
 
         {/* Results Info */}
         <div className="mb-6 text-gray-600">
-          Visar {filteredSources.length} av {sources.length} källor
+          {t('sources.results.showing','Visar')} {filteredSources.length} {t('sources.results.of','av')} {sources.length} {t('sources.results.items','källor')}
         </div>
 
         {/* Sources Grid */}
@@ -838,7 +840,7 @@ export default function KallorPage() {
                       </motion.div>
                       <div className="space-y-3">
                         <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${typeColors[source.type]} backdrop-blur-sm`}>
-                          {typeLabels[source.type]}
+                          {t(`sources.type.${source.type}` as any, typeLabels[source.type])}
                         </span>
                         <div className="text-gray-600">
                           <div className="flex items-center gap-2 text-sm">
@@ -874,12 +876,12 @@ export default function KallorPage() {
                         <div className="flex flex-wrap gap-2 mb-4">
                           {source.doi && (
                             <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
-                              DOI: {source.doi}
+                              {t('sources.doi','DOI')}: {source.doi}
                             </span>
                           )}
                           {source.pmid && (
                             <span className="text-xs bg-background text-secondary px-2 py-1 rounded">
-                              PMID: {source.pmid}
+                              {t('sources.pmid','PMID')}: {source.pmid}
                             </span>
                           )}
                           <span className="text-xs bg-gray-50 text-gray-700 px-2 py-1 rounded">
@@ -897,12 +899,12 @@ export default function KallorPage() {
                           {copiedId === source.id ? (
                             <>
                               <FiCheck className="w-4 h-4 text-primary" />
-                              <span className="text-primary">Kopierad!</span>
+                              <span className="text-primary">{t('sources.copied','Kopierad!')}</span>
                             </>
                           ) : (
                             <>
                               <FiCopy className="w-4 h-4" />
-                              <span>Kopiera citat</span>
+                              <span>{t('sources.copy','Kopiera citat')}</span>
                             </>
                           )}
                         </button>
@@ -915,7 +917,7 @@ export default function KallorPage() {
                             className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1a4324] text-white hover:bg-[#9dc46d] hover:text-[#1a4324] rounded-lg transition-colors"
                           >
                             <FiExternalLink className="w-4 h-4" />
-                            <span>Läs mer</span>
+                            <span>{t('sources.readMore','Läs mer')}</span>
                           </a>
                         )}
                       </div>
@@ -931,18 +933,16 @@ export default function KallorPage() {
         {filteredSources.length === 0 && (
           <div className="text-center py-12">
             <FiBookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Inga källor hittades</h3>
-            <p className="text-gray-500">Prova att ändra sökterm eller filter</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">{t('sources.empty.title','Inga källor hittades')}</h3>
+            <p className="text-gray-500">{t('sources.empty.subtitle','Prova att ändra sökterm eller filter')}</p>
           </div>
         )}
 
         {/* Footer Note */}
         <div className="mt-16 p-6 bg-[#1a4324] rounded-xl text-white">
-          <h3 className="text-lg font-semibold mb-2">Om våra källor</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('sources.footer.title','Om våra källor')}</h3>
           <p className="text-white/90 leading-relaxed">
-            Alla källor är noggrant utvalda från peer-reviewade tidskrifter och erkända institutioner. 
-            Vi strävar efter att använda den senaste forskningen inom functional foods och näringslära 
-            för att ge dig den mest aktuella och vetenskapligt grundade informationen.
+            {t('sources.footer.text','Alla källor är noggrant utvalda från peer-reviewade tidskrifter och erkända institutioner. Vi strävar efter att använda den senaste forskningen inom functional foods och näringslära för att ge dig den mest aktuella och vetenskapligt grundade informationen.')}
           </p>
         </div>
       </div>
