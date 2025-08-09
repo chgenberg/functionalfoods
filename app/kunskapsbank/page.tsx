@@ -98,14 +98,16 @@ export default function KunskapsbankPage() {
             >
               <div className="relative h-48 bg-gray-100">
                 <div className={`transition-opacity duration-500 ${imagesLoaded[section.id] ? 'opacity-100' : 'opacity-0'}`}>
-                  <Image
+                  <img
                     src={section.image}
                     alt={section.title}
-                    fill
-                    unoptimized
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    onLoadingComplete={() => setImagesLoaded(prev => ({ ...prev, [section.id]: true }))}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onLoad={() => setImagesLoaded(prev => ({ ...prev, [section.id]: true }))}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = '/images/blog-placeholder.jpg';
+                      setImagesLoaded(prev => ({ ...prev, [section.id]: true }));
+                    }}
+                    loading="lazy"
                   />
                 </div>
                 {!imagesLoaded[section.id] && (
