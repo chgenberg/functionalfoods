@@ -81,5 +81,7 @@
   "kb.sections.faq.title": "Q&A",
   "kb.sections.faq.desc": "Common questions about Functional Foods, courses and more",
   "kb.sections.pod.title": "Podcasts",
-  "kb.sections.pod.desc": "Listen to our podcast episodes about health and functional foods"
+  "kb.sections.pod.desc": "Listen to our podcast episodes about health and functional foods",
+  "home.startQuiz": "Start health quiz",
+  "home.ourCourses": "Our courses"
 } 

@@ -40,5 +40,7 @@
   "checkout.vatIncluded": "IVA incluido",
   "checkout.secure": "Pago seguro con cifrado SSL de 256 bits",
   "checkout.processing": "Procesando...",
-  "checkout.placeOrder": "Finalizar pedido"
+  "checkout.placeOrder": "Finalizar pedido",
+  "home.startQuiz": "Comenzar el quiz de salud",
+  "home.ourCourses": "Nuestros cursos"
 } 

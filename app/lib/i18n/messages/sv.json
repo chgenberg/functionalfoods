@@ -81,5 +81,7 @@
   "checkout.vatIncluded": "Inklusive moms",
   "checkout.secure": "Säker betalning med 256-bit SSL-kryptering",
   "checkout.processing": "Bearbetar...",
-  "checkout.placeOrder": "Slutför beställning"
+  "checkout.placeOrder": "Slutför beställning",
+  "home.startQuiz": "Starta Hälsoquiz",
+  "home.ourCourses": "Våra kurser"
 } 

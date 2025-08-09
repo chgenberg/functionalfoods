@@ -82,5 +82,7 @@
   "checkout.vatIncluded": "TVA incluse",
   "checkout.secure": "Paiement sécurisé avec chiffrement SSL 256 bits",
   "checkout.processing": "Traitement en cours...",
-  "checkout.placeOrder": "Passer la commande"
+  "checkout.placeOrder": "Passer la commande",
+  "home.startQuiz": "Commencer le quiz santé",
+  "home.ourCourses": "Nos cours"
 } 

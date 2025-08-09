@@ -66,7 +66,7 @@ export default function Header() {
       label: t('nav.knowledge','KUNSKAPSBANK'),
       href: "/kunskapsbank",
       submenu: [
-        { label: "Artiklar", href: "/kunskapsbank/blogg" },
+        { label: t('kb.sections.blog.title','Artiklar'), href: "/kunskapsbank/blogg" },
         // { label: "Recept", href: "/kunskapsbank/recept" }, // flyttad till toppnivå
         { label: t('nav.sources','Källor'), href: "/kunskapsbank/kallor" },
         { label: t('nav.ingredients','Råvaror'), href: "/kunskapsbank/ingredienser" },
@@ -258,13 +258,13 @@ export default function Header() {
                   href="/mina-kurser"
                   className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors text-sm font-medium"
                 >
-                  Mina kurser
+                  {t('nav.myCourses','Mina kurser')}
                 </Link>
                 <button 
                   onClick={logout} 
                   className="px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors text-sm font-medium"
                 >
-                  Logga ut
+                  {t('nav.logout','Logga ut')}
                 </button>
               </div>
             ) : (
@@ -377,7 +377,7 @@ export default function Header() {
                   }}
                   className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-primary hover:bg-accent rounded-xl transition-all duration-200"
                 >
-                  <span>Logga in</span>
+                  <span>{t('nav.login','Logga in')}</span>
                   <FiUser className="w-5 h-5" />
                 </button>
               )}
