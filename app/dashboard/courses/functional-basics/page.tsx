@@ -162,17 +162,15 @@ export default function FunctionalBasicsPage() {
 
   return (
     <div className="relative space-y-4 md:space-y-8 pb-20 md:pb-8">
-      {/* Guide Button */}
-      <div className="fixed top-20 right-4 sm:right-20 z-50">
-        <button
-          onClick={() => setShowGuide(true)}
-          className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-all"
-          title="Visa hjälp"
-        >
-          <FiHelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          <span className="hidden sm:inline text-sm font-medium text-gray-700">Hjälp</span>
-        </button>
-      </div>
+      {/* Guide FAB */}
+      <button
+        onClick={() => setShowGuide(true)}
+        className="fixed right-4 bottom-24 sm:right-6 sm:bottom-6 z-40 bg-primary text-white rounded-full shadow-lg hover:shadow-xl transition-all w-12 h-12 flex items-center justify-center"
+        title="Visa hjälp"
+        aria-label="Visa hjälp"
+      >
+        <FiHelpCircle className="w-5 h-5" />
+      </button>
 
       {/* Course Progress Bar */}
       {courseStartDate && (
