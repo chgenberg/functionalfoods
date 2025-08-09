@@ -9,7 +9,9 @@ export default function LanguageSwitcher() {
   const options: { code: Locale; label: string }[] = [
     { code: 'sv', label: 'Svenska' },
     { code: 'en', label: 'English' },
-    { code: 'es', label: 'Español' }
+    { code: 'es', label: 'Español' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'fr', label: 'Français' }
   ];
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function LanguageSwitcher() {
         <span className="text-sm font-medium uppercase">{locale}</span>
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg border border-[#F3EFE3] z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-[#F3EFE3] z-50 overflow-hidden">
           {options.map(o => (
             <button
               key={o.code}
