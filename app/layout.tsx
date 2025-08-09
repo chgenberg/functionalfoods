@@ -22,11 +22,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CartProvider>
             <AutoTranslate />
             <div className="flex flex-col min-h-screen">
-              <Header />
-              <main className="flex-grow pt-16 md:pt-20">
+              <header role="banner" aria-label="Huvud">
+                <Header />
+              </header>
+              <main role="main" aria-label="Innehåll" className="flex-grow pt-16 md:pt-20">
                 {children}
               </main>
-              <Footer />
+              <footer role="contentinfo" aria-label="Sidfot">
+                <Footer />
+              </footer>
             </div>
             <ChatBot />
           </CartProvider>

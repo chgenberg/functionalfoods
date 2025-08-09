@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiLogOut } from 'react-icons/fi';
+import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiLogOut, FiSearch } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useT } from '../lib/i18n/LanguageProvider';
@@ -13,6 +13,10 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [q, setQ] = useState('');
+  const [results, setResults] = useState<any[]>([]);
+  const [searchType, setSearchType] = useState<'all'|'recipe'|'article'|'raw-material'>('all');
   const { items, isLoaded } = useCart();
   const [showLogin, setShowLogin] = useState(false);
   const [tab, setTab] = useState<'login' | 'signup'>('login');
@@ -37,6 +41,19 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(()=>{
+    const fetchResults = async () => {
+      if (q.trim().length < 2) { setResults([]); return; }
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&type=${searchType}`);
+      if (res.ok) {
+        const data = await res.json();
+        setResults(data.results || []);
+      }
+    };
+    const t = setTimeout(fetchResults, 250);
+    return () => clearTimeout(t);
+  }, [q, searchType]);
 
   const menuItems = [
     { label: t('nav.home','HEM'), href: "/" },
@@ -115,10 +132,10 @@ export default function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'}`}>
       <div className="container-custom">
-        <div className="relative flex justify-between items-center h-20 md:h-24">
+        <div className="relative flex justify-between items-center h-14 md:h-20">
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <Link href="/" className="pointer-events-auto">
-              <Image src="/FF_logo.svg" alt="Functional Foods" width={200} height={80} className="h-16 md:h-20 w-auto" priority />
+              <Image src="/FF_logo.svg" alt="Functional Foods" width={200} height={80} className="h-10 md:h-20 w-auto" priority />
             </Link>
           </div>
 
@@ -164,7 +181,10 @@ export default function Header() {
             </button>
           </div>
 
-          <div className="flex items-center gap-4 relative z-[60]">
+          <div className="flex items-center gap-2 sm:gap-4 relative z-[60]">
+            <button className="rounded-full p-2 hover:bg-primary/10 transition" aria-label={t('nav.search','Sök')} onClick={()=>setShowSearch(true)}>
+              <FiSearch className="w-5 h-5 text-primary" />
+            </button>
             {user ? (
               <div className="hidden md:flex items-center gap-2">
                 <Link href="/mina-kurser" className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors text-sm font-medium">{t('nav.myCourses','Mina kurser')}</Link>
@@ -312,6 +332,38 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      {/* Fullscreen Search Modal */}
+      {showSearch && (
+        <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm flex items-start sm:items-center justify-center p-2 sm:p-6">
+          <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
+            <div className="flex items-center gap-2 p-3 border-b">
+              <FiSearch className="w-5 h-5 text-gray-500" />
+              <input autoFocus value={q} onChange={(e)=>setQ(e.target.value)} placeholder={t('recipes.list.search.placeholder','Sök recept eller ingredienser...')} className="flex-1 outline-none py-2" />
+              <select value={searchType} onChange={e=>setSearchType(e.target.value as any)} className="border rounded px-2 py-1 text-sm">
+                <option value="all">{t('search.all','Alla')}</option>
+                <option value="recipe">{t('search.recipes','Recept')}</option>
+                <option value="article">{t('search.articles','Artiklar')}</option>
+                <option value="raw-material">{t('search.raw','Råvaror')}</option>
+              </select>
+              <button onClick={()=>setShowSearch(false)} className="p-2 text-gray-500 hover:text-gray-700"><FiX className="w-5 h-5"/></button>
+            </div>
+            <div className="max-h-[70vh] overflow-y-auto divide-y">
+              {results.map((r:any)=> (
+                <Link key={r.id} href={r.href} onClick={()=>setShowSearch(false)} className="block p-3 hover:bg-gray-50">
+                  <div className="text-sm text-gray-500">{r.type}</div>
+                  <div className="font-medium text-gray-900">{r.title}</div>
+                  {r.excerpt && <div className="text-sm text-gray-600 line-clamp-2">{r.excerpt}</div>}
+                </Link>
+              ))}
+              {q && results.length===0 && (
+                <div className="p-4 text-sm text-gray-500">{t('search.noResults','Inga träffar')}</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
         .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.4,0,0.2,1); }
         .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.4,0,0.2,1); }
