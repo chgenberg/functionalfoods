@@ -5,16 +5,23 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiArrowLeft, FiArrowRight, FiSave, FiX, FiPlus, FiCheck, FiEye, FiCalendar, FiTag } from 'react-icons/fi';
 import Link from 'next/link';
+const LOCALES = ['sv','en','es','de','fr'] as const;
+type Locale = typeof LOCALES[number];
 
 interface BlogData {
   title: string;
   slug: string;
   content: string;
   excerpt: string;
+  // i18n
+  title_en?: string; title_es?: string; title_de?: string; title_fr?: string;
+  excerpt_en?: string; excerpt_es?: string; excerpt_de?: string; excerpt_fr?: string;
+  content_en?: string; content_es?: string; content_de?: string; content_fr?: string;
   category: string;
   tags: string[];
   coverImage: string;
   metaDescription: string;
+  metaDescription_en?: string; metaDescription_es?: string; metaDescription_de?: string; metaDescription_fr?: string;
   published: boolean;
   publishedAt: string;
   readTime: number;
@@ -62,6 +69,7 @@ const functionalFoodsOptions = [
 
 export default function NewBlogPage() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [activeLocale, setActiveLocale] = useState<Locale>('sv');
   const [blogData, setBlogData] = useState<BlogData>({
     title: '',
     slug: '',
@@ -161,8 +169,13 @@ export default function NewBlogPage() {
         readTime: blogData.readTime,
         functionalFoodsFocus: blogData.functionalFoodsFocus,
         keyTakeaways: blogData.keyTakeaways.filter(takeaway => takeaway.trim() !== ''),
-        references: blogData.references.filter(ref => ref.trim() !== '')
-      };
+        references: blogData.references.filter(ref => ref.trim() !== ''),
+        // i18n fields if present
+        title_en: blogData.title_en, title_es: blogData.title_es, title_de: blogData.title_de, title_fr: blogData.title_fr,
+        excerpt_en: blogData.excerpt_en, excerpt_es: blogData.excerpt_es, excerpt_de: blogData.excerpt_de, excerpt_fr: blogData.excerpt_fr,
+        content_en: blogData.content_en, content_es: blogData.content_es, content_de: blogData.content_de, content_fr: blogData.content_fr,
+        metaDescription_en: blogData.metaDescription_en, metaDescription_es: blogData.metaDescription_es, metaDescription_de: blogData.metaDescription_de, metaDescription_fr: blogData.metaDescription_fr,
+      } as any;
 
       const response = await fetch('/api/blog', {
         method: 'POST',
@@ -193,6 +206,12 @@ export default function NewBlogPage() {
       case 1:
         return (
           <div className="space-y-6">
+            {/* Language Tabs */}
+            <div className="flex gap-2 flex-wrap">
+              {LOCALES.map(l => (
+                <button key={l} onClick={()=>setActiveLocale(l)} className={`px-3 py-1 rounded-full text-sm border ${activeLocale===l?'bg-primary text-white border-primary':'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'}`}>{l.toUpperCase()}</button>
+              ))}
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Artikeltitel *
@@ -207,6 +226,10 @@ export default function NewBlogPage() {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="t.ex. Omega-3: Nyckeln till hjärnhälsa"
               />
+              {/* Localized title inputs */}
+              {activeLocale!=='sv' && (
+                <input type="text" value={(blogData as any)[`title_${activeLocale}`]||''} onChange={(e)=>updateBlogData(`title_${activeLocale}` as any, e.target.value)} className="mt-2 w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder={`Titel (${activeLocale.toUpperCase()})`} />
+              )}
             </div>
 
             <div>
@@ -220,6 +243,21 @@ export default function NewBlogPage() {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-gray-50 transition-all duration-200"
                 placeholder="omega-3-nyckeln-till-hjarnhalsa"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Utdrag
+              </label>
+              <textarea
+                value={blogData.excerpt}
+                onChange={(e) => updateBlogData('excerpt', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                rows={3}
+              />
+              {activeLocale!=='sv' && (
+                <textarea value={(blogData as any)[`excerpt_${activeLocale}`]||''} onChange={(e)=>updateBlogData(`excerpt_${activeLocale}` as any, e.target.value)} rows={2} className="mt-2 w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder={`Utdrag (${activeLocale.toUpperCase()})`} />
+              )}
             </div>
 
             <div>
@@ -299,29 +337,16 @@ export default function NewBlogPage() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kort sammanfattning *
-              </label>
-              <textarea
-                value={blogData.excerpt}
-                onChange={(e) => updateBlogData('excerpt', e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="En kort sammanfattning som visas i artikelöversikten och i sociala medier..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Artikelinnehåll *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Innehåll</label>
               <textarea
                 value={blogData.content}
                 onChange={(e) => updateBlogData('content', e.target.value)}
-                rows={20}
+                rows={12}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Skriv artikelinnehållet här. Du kan använda Markdown-formatering..."
               />
+              {activeLocale!=='sv' && (
+                <textarea value={(blogData as any)[`content_${activeLocale}`]||''} onChange={(e)=>updateBlogData(`content_${activeLocale}` as any, e.target.value)} rows={8} className="mt-2 w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder={`Innehåll (${activeLocale.toUpperCase()})`} />
+              )}
             </div>
 
             <div className="bg-background border border-border rounded-lg p-4">
@@ -353,20 +378,11 @@ export default function NewBlogPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Meta-beskrivning (SEO) *
-              </label>
-              <textarea
-                value={blogData.metaDescription}
-                onChange={(e) => updateBlogData('metaDescription', e.target.value)}
-                rows={3}
-                maxLength={160}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
-                placeholder="En kort beskrivning för sökmotorer (max 160 tecken)"
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                {blogData.metaDescription.length}/160 tecken
-              </p>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Meta‑beskrivning</label>
+              <textarea value={blogData.metaDescription} onChange={(e)=>updateBlogData('metaDescription', e.target.value)} rows={3} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+              {activeLocale!=='sv' && (
+                <textarea value={(blogData as any)[`metaDescription_${activeLocale}`]||''} onChange={(e)=>updateBlogData(`metaDescription_${activeLocale}` as any, e.target.value)} rows={2} className="mt-2 w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder={`Meta (${activeLocale.toUpperCase()})`} />
+              )}
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

@@ -44,19 +44,22 @@ export async function PUT(
 ) {
   try {
     const body = await req.json();
-    
-    const blogPost = await prisma.blogPost.update({
-      where: { id: params.id },
-      data: {
-        title: body.title,
-        slug: body.slug,
-        content: body.content,
-        excerpt: body.excerpt,
-        coverImage: body.coverImage,
-        published: body.published,
-        publishedAt: body.published ? (body.publishedAt ? new Date(body.publishedAt) : new Date()) : null,
-      },
+    const data: any = {
+      title: body.title,
+      slug: body.slug,
+      content: body.content,
+      excerpt: body.excerpt,
+      coverImage: body.coverImage,
+      published: body.published,
+      publishedAt: body.published ? (body.publishedAt ? new Date(body.publishedAt) : new Date()) : null,
+    };
+    ['en','es','de','fr'].forEach((lng) => {
+      if (body[`title_${lng}`]) data[`title_${lng}`] = body[`title_${lng}`];
+      if (body[`excerpt_${lng}`]) data[`excerpt_${lng}`] = body[`excerpt_${lng}`];
+      if (body[`content_${lng}`]) data[`content_${lng}`] = body[`content_${lng}`];
+      if (body[`metaDescription_${lng}`]) data[`metaDescription_${lng}`] = body[`metaDescription_${lng}`];
     });
+    const blogPost = await prisma.blogPost.update({ where: { id: params.id }, data });
 
     return NextResponse.json(blogPost);
   } catch (error) {

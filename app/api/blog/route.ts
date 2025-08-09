@@ -86,18 +86,24 @@ export async function POST(req: Request) {
     const body = await req.json();
     const adminUser = await prisma.user.findFirst({ where: { role: 'admin' } });
     if (!adminUser) return NextResponse.json({ error: 'No admin user found' }, { status: 403 });
-    const blogPost = await prisma.blogPost.create({
-      data: {
-        title: body.title,
-        slug: body.slug,
-        content: body.content,
-        excerpt: body.excerpt,
-        coverImage: body.coverImage,
-        published: body.published,
-        publishedAt: body.published ? (body.publishedAt ? new Date(body.publishedAt) : new Date()) : null,
-        authorId: adminUser.id,
-      },
+    const data: any = {
+      title: body.title,
+      slug: body.slug,
+      content: body.content,
+      excerpt: body.excerpt,
+      coverImage: body.coverImage,
+      published: body.published,
+      publishedAt: body.published ? (body.publishedAt ? new Date(body.publishedAt) : new Date()) : null,
+      authorId: adminUser.id,
+    };
+    // Map i18n fields if provided
+    ['en','es','de','fr'].forEach((lng) => {
+      if (body[`title_${lng}`]) data[`title_${lng}`] = body[`title_${lng}`];
+      if (body[`excerpt_${lng}`]) data[`excerpt_${lng}`] = body[`excerpt_${lng}`];
+      if (body[`content_${lng}`]) data[`content_${lng}`] = body[`content_${lng}`];
+      if (body[`metaDescription_${lng}`]) data[`metaDescription_${lng}`] = body[`metaDescription_${lng}`];
     });
+    const blogPost = await prisma.blogPost.create({ data });
     return NextResponse.json(blogPost);
   } catch (error) {
     console.error('Error creating blog post:', error);
