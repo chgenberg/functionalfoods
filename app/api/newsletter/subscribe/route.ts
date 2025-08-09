@@ -2,42 +2,110 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+const SUPPORTED = ['sv', 'en', 'es', 'de', 'fr'] as const;
+
+type Lang = typeof SUPPORTED[number];
+
+type Messages = Record<string, string>;
+
+const M: Record<Lang, Messages> = {
+  sv: {
+    invalidEmail: 'Ogiltig e-postadress',
+    missingConfig: 'Serverfel: Konfiguration saknas',
+    memberExists: 'Du är redan prenumerant på vårt nyhetsbrev!',
+    addFailed: 'Kunde inte lägga till prenumeration',
+    success: 'Tack för din prenumeration! Du kommer snart få ett bekräftelsemail.',
+    subscribeError: 'Ett fel uppstod vid prenumeration',
+    emailRequired: 'E-postadress krävs',
+    statusCheckFailed: 'Kunde inte kontrollera prenumerationsstatus',
+    statusCheckError: 'Ett fel uppstod vid kontroll av prenumeration'
+  },
+  en: {
+    invalidEmail: 'Invalid email address',
+    missingConfig: 'Server error: Missing configuration',
+    memberExists: 'You are already subscribed to our newsletter!',
+    addFailed: 'Could not add subscription',
+    success: 'Thank you for subscribing! You will receive a confirmation email shortly.',
+    subscribeError: 'An error occurred during subscription',
+    emailRequired: 'Email is required',
+    statusCheckFailed: 'Could not check subscription status',
+    statusCheckError: 'An error occurred while checking subscription'
+  },
+  es: {
+    invalidEmail: 'Dirección de correo no válida',
+    missingConfig: 'Error del servidor: Falta la configuración',
+    memberExists: '¡Ya estás suscrito a nuestro boletín!',
+    addFailed: 'No se pudo agregar la suscripción',
+    success: '¡Gracias por suscribirte! Pronto recibirás un correo de confirmación.',
+    subscribeError: 'Ocurrió un error durante la suscripción',
+    emailRequired: 'Se requiere correo electrónico',
+    statusCheckFailed: 'No se pudo comprobar el estado de la suscripción',
+    statusCheckError: 'Ocurrió un error al comprobar la suscripción'
+  },
+  de: {
+    invalidEmail: 'Ungültige E-Mail-Adresse',
+    missingConfig: 'Serverfehler: Fehlende Konfiguration',
+    memberExists: 'Du bist bereits für unseren Newsletter angemeldet!',
+    addFailed: 'Abonnement konnte nicht hinzugefügt werden',
+    success: 'Danke für deine Anmeldung! Du erhältst in Kürze eine Bestätigungs-E-Mail.',
+    subscribeError: 'Beim Abonnieren ist ein Fehler aufgetreten',
+    emailRequired: 'E-Mail-Adresse ist erforderlich',
+    statusCheckFailed: 'Abonnementstatus konnte nicht geprüft werden',
+    statusCheckError: 'Beim Prüfen des Abonnementstatus ist ein Fehler aufgetreten'
+  },
+  fr: {
+    invalidEmail: 'Adresse e-mail invalide',
+    missingConfig: 'Erreur serveur : configuration manquante',
+    memberExists: 'Vous êtes déjà abonné à notre newsletter !',
+    addFailed: 'Impossible d’ajouter l’abonnement',
+    success: 'Merci pour votre abonnement ! Vous recevrez bientôt un e-mail de confirmation.',
+    subscribeError: 'Une erreur s’est produite lors de l’abonnement',
+    emailRequired: 'Adresse e-mail requise',
+    statusCheckFailed: 'Impossible de vérifier le statut de l’abonnement',
+    statusCheckError: 'Une erreur s’est produite lors de la vérification de l’abonnement'
+  }
+};
+
+function getLang(request: NextRequest): Lang {
+  const cookieLang = request.cookies.get('lang')?.value?.toLowerCase();
+  if (cookieLang && (SUPPORTED as readonly string[]).includes(cookieLang)) {
+    return cookieLang as Lang;
+  }
+  return 'sv';
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const lang = getLang(request);
     const { email, firstName, lastName } = await request.json();
 
-    // Validera e-postadress
     if (!email || !email.includes('@')) {
       return NextResponse.json(
-        { error: 'Ogiltig e-postadress' },
+        { error: M[lang].invalidEmail },
         { status: 400 }
       );
     }
 
-    // Mailchimp konfiguration
     const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
     const MAILCHIMP_AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID;
     const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX;
 
     if (!MAILCHIMP_API_KEY || !MAILCHIMP_AUDIENCE_ID || !MAILCHIMP_SERVER_PREFIX) {
-      console.error('Mailchimp miljövariabler saknas');
+      console.error('Mailchimp env missing');
       return NextResponse.json(
-        { error: 'Serverfel: Konfiguration saknas' },
+        { error: M[lang].missingConfig },
         { status: 500 }
       );
     }
 
-    // Mailchimp API URL
     const url = `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members`;
 
-    // Skapa subscriber hash (används för att identifiera befintliga prenumeranter)
     const crypto = require('crypto');
     const subscriberHash = crypto
       .createHash('md5')
       .update(email.toLowerCase())
       .digest('hex');
 
-    // Försök först att uppdatera befintlig prenumerant
     const checkUrl = `${url}/${subscriberHash}`;
     
     const memberData = {
@@ -47,10 +115,9 @@ export async function POST(request: NextRequest) {
         FNAME: firstName || '',
         LNAME: lastName || ''
       },
-      tags: ['Website Signup', 'Functional Foods']
-    };
+      tags: ['Website Signup', 'Functional Foods', (lang || 'sv').toUpperCase()]
+    } as any;
 
-    // Försök att lägga till eller uppdatera prenumeranten
     const response = await fetch(checkUrl, {
       method: 'PUT',
       headers: {
@@ -63,27 +130,22 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
 
     if (!response.ok) {
-      // Om det är ett "already exists" fel, försök uppdatera istället
       if (data.title === 'Member Exists') {
         return NextResponse.json(
-          { message: 'Du är redan prenumerant på vårt nyhetsbrev!' },
+          { message: M[lang].memberExists },
           { status: 200 }
         );
       }
-      
-      console.error('Mailchimp API fel:', data);
+      console.error('Mailchimp API error:', data);
       return NextResponse.json(
-        { error: data.detail || 'Kunde inte lägga till prenumeration' },
+        { error: data.detail || M[lang].addFailed },
         { status: response.status }
       );
     }
 
-    // Skicka välkomstmail (valfritt - kan konfigureras i Mailchimp istället)
-    // Detta hanteras vanligtvis av Mailchimp's automation
-
     return NextResponse.json(
       { 
-        message: 'Tack för din prenumeration! Du kommer snart få ett bekräftelsemail.',
+        message: M[lang].success,
         data: {
           id: data.id,
           email: data.email_address,
@@ -95,22 +157,23 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Newsletter subscribe error:', error);
+    const lang = getLang(request);
     return NextResponse.json(
-      { error: 'Ett fel uppstod vid prenumeration' },
+      { error: M[lang].subscribeError },
       { status: 500 }
     );
   }
 }
 
-// GET endpoint för att kontrollera prenumerationsstatus
 export async function GET(request: NextRequest) {
   try {
+    const lang = getLang(request);
     const { searchParams } = new URL(request.url);
     const email = searchParams.get('email');
 
     if (!email) {
       return NextResponse.json(
-        { error: 'E-postadress krävs' },
+        { error: M[lang].emailRequired },
         { status: 400 }
       );
     }
@@ -121,7 +184,7 @@ export async function GET(request: NextRequest) {
 
     if (!MAILCHIMP_API_KEY || !MAILCHIMP_AUDIENCE_ID || !MAILCHIMP_SERVER_PREFIX) {
       return NextResponse.json(
-        { error: 'Serverfel: Konfiguration saknas' },
+        { error: M[lang].missingConfig },
         { status: 500 }
       );
     }
@@ -148,9 +211,8 @@ export async function GET(request: NextRequest) {
           { status: 200 }
         );
       }
-      
       return NextResponse.json(
-        { error: 'Kunde inte kontrollera prenumerationsstatus' },
+        { error: M[lang].statusCheckFailed },
         { status: response.status }
       );
     }
@@ -168,8 +230,9 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Newsletter status check error:', error);
+    const lang = getLang(request);
     return NextResponse.json(
-      { error: 'Ett fel uppstod vid kontroll av prenumeration' },
+      { error: M[lang].statusCheckError },
       { status: 500 }
     );
   }
