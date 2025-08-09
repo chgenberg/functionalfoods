@@ -1,11 +1,10 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiMail, FiPhone, FiMapPin, FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight } from 'react-icons/fi';
 import { FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import ContactFormCompact from './ContactFormCompact';
 import { useT } from '../lib/i18n/LanguageProvider';
 
 export default function Footer() {
@@ -40,11 +39,7 @@ export default function Footer() {
   return (
     <footer className="bg-primary text-white relative">
       <div className="container-custom py-16">
-        <div className="mb-12 max-w-md mx-auto lg:mx-0">
-          <ContactFormCompact />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           <div className="lg:col-span-2">
             <Link href="/" className="inline-block mb-6">
               <Image src="/FunctionalLogo.png" alt="Functional Foods" width={160} height={64} className="h-16 w-auto brightness-0 invert" style={{ height: "auto" }} />
@@ -67,7 +62,7 @@ export default function Footer() {
 
           <div>
             <h3 className="text-lg font-medium mb-4">{t('footer.heading.education','Utbildning')}</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 pointer-events-auto">
               {footerLinks.utbildning.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group">
@@ -81,7 +76,7 @@ export default function Footer() {
 
           <div>
             <h3 className="text-lg font-medium mb-4">{t('footer.heading.knowledge','Kunskapsbank')}</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 pointer-events-auto">
               {footerLinks.kunskapsbank.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group">
@@ -90,28 +85,6 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-medium mb-4">{t('footer.heading.contact','Kontakt')}</h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="mailto:info@functionalfoods.se" className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center">
-                  <FiMail className="w-5 h-5 mr-2" />
-                  <span className="text-sm">info@functionalfoods.se</span>
-                </a>
-              </li>
-              <li>
-                <a href="tel:+46XXXXXXXX" className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center">
-                  <FiPhone className="w-5 h-5 mr-2" />
-                  <span className="text-sm">+46 XX XXX XX XX</span>
-                </a>
-              </li>
-              <li className="flex items-start">
-                <FiMapPin className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-gray-400">{t('footer.city','Stockholm, Sverige')}</span>
-              </li>
             </ul>
           </div>
         </div>
