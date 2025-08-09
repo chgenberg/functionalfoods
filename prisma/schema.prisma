@@ -223,6 +223,7 @@ model Purchase {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   orderId   String?
+  accessExpiresAt DateTime?
   course    CourseProduct @relation(fields: [courseId], references: [id])
   user      User          @relation(fields: [userId], references: [id])
 
