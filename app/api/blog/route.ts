@@ -4,6 +4,19 @@ import { PrismaClient } from '@prisma/client';
 export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
+const SUPPORTED = ['sv','en','es','de','fr'] as const;
+type Lang = typeof SUPPORTED[number];
+function getLang(req: NextRequest): Lang {
+  const hdr = req.headers.get('cookie') || '';
+  const m = /(?:^|;\s*)lang=([^;]+)/.exec(hdr);
+  const val = (m ? m[1] : '').toLowerCase();
+  return (SUPPORTED as readonly string[]).includes(val as Lang) ? (val as Lang) : 'sv';
+}
+function pick(obj: any, base: string, lang: Lang) {
+  if (lang === 'sv') return obj[base];
+  const k = `${base}_${lang}`;
+  return obj[k] || obj[base];
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,67 +27,40 @@ export async function GET(request: NextRequest) {
     const published = searchParams.get('published');
     const search = searchParams.get('search') || '';
 
-    // Build Prisma filter
-    const where: any = {};
+    const lang = getLang(request);
 
-    // Filter by published status
+    const where: any = {};
     if (published !== null) {
       where.published = published === 'true';
     }
-
-    // Filter by category
-    if (category) {
-      where.category = category;
-    }
-
-    // Search filter
+    if (category) where.category = category;
     if (search) {
       where.OR = [
-        {
-          title: {
-            contains: search,
-            mode: 'insensitive'
-          }
-        },
-        {
-          excerpt: {
-            contains: search,
-            mode: 'insensitive'
-          }
-        },
-        {
-          content: {
-            contains: search,
-            mode: 'insensitive'
-          }
-        }
+        { title: { contains: search, mode: 'insensitive' } },
+        { excerpt: { contains: search, mode: 'insensitive' } },
+        { content: { contains: search, mode: 'insensitive' } },
       ];
     }
 
-    // Fetch blog posts from database
     const blogPosts = await prisma.blogPost.findMany({
       where,
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        }
-      },
-      orderBy: {
-        publishedAt: 'desc'
-      },
+      include: { author: { select: { id: true, name: true, email: true } } },
+      orderBy: { publishedAt: 'desc' },
       skip: (page - 1) * limit,
       take: limit
     });
 
-    // Count total posts
     const totalPosts = await prisma.blogPost.count({ where });
 
+    const localized = blogPosts.map((p: any) => ({
+      ...p,
+      title: pick(p, 'title', lang),
+      excerpt: pick(p, 'excerpt', lang),
+      content: pick(p, 'content', lang),
+    }));
+
     return NextResponse.json({
-      posts: blogPosts,
+      posts: localized,
       pagination: {
         page,
         limit,
@@ -98,20 +84,8 @@ export async function GET(request: NextRequest) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    
-    // Get the admin user (in a real app, this would come from auth)
-    const adminUser = await prisma.user.findFirst({
-      where: { role: 'admin' }
-    });
-
-    if (!adminUser) {
-      return NextResponse.json(
-        { error: 'No admin user found' },
-        { status: 403 }
-      );
-    }
-    
-    // Create the blog post
+    const adminUser = await prisma.user.findFirst({ where: { role: 'admin' } });
+    if (!adminUser) return NextResponse.json({ error: 'No admin user found' }, { status: 403 });
     const blogPost = await prisma.blogPost.create({
       data: {
         title: body.title,
@@ -124,13 +98,9 @@ export async function POST(req: Request) {
         authorId: adminUser.id,
       },
     });
-
     return NextResponse.json(blogPost);
   } catch (error) {
     console.error('Error creating blog post:', error);
-    return NextResponse.json(
-      { error: 'Failed to create blog post' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create blog post' }, { status: 500 });
   }
 } 

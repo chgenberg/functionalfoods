@@ -102,6 +102,19 @@ model BlogPost {
   excerpt     String?
   published   Boolean   @default(false)
   searchText  String?
+  // translations
+  title_en    String?
+  title_es    String?
+  title_de    String?
+  title_fr    String?
+  excerpt_en  String?
+  excerpt_es  String?
+  excerpt_de  String?
+  excerpt_fr  String?
+  content_en  String?
+  content_es  String?
+  content_de  String?
+  content_fr  String?
   author      User      @relation(fields: [authorId], references: [id])
 
   @@index([searchText])
@@ -354,6 +367,19 @@ model Recipe {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   searchText   String?
+  // translations
+  title_en     String?
+  title_es     String?
+  title_de     String?
+  title_fr     String?
+  excerpt_en   String?
+  excerpt_es   String?
+  excerpt_de   String?
+  excerpt_fr   String?
+  instructions_en String?
+  instructions_es String?
+  instructions_de String?
+  instructions_fr String?
   author       User?        @relation(fields: [authorId], references: [id])
 
   @@index([status])

@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const SUPPORTED = ['sv','en','es','de','fr'] as const;
+type Lang = typeof SUPPORTED[number];
+function getLang(req: NextRequest): Lang {
+  const hdr = req.headers.get('cookie') || '';
+  const m = /(?:^|;\s*)lang=([^;]+)/.exec(hdr);
+  const val = (m ? m[1] : '').toLowerCase();
+  return (SUPPORTED as readonly string[]).includes(val as Lang) ? (val as Lang) : 'sv';
+}
+function pick(obj: any, base: string, lang: Lang) {
+  if (lang === 'sv') return obj[base];
+  const k = `${base}_${lang}`;
+  return obj[k] || obj[base];
+}
 
 // GET a single blog post by slug
 export async function GET(
@@ -9,27 +22,26 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
+    const lang = getLang(request);
     const { slug } = params;
     const post = await prisma.blogPost.findUnique({
       where: { slug },
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-      },
+      include: { author: { select: { name: true, email: true } } },
     });
 
-    if (!post) {
-      return NextResponse.json({ error: "Inlägget hittades inte" }, { status: 404 });
-    }
+    if (!post) return NextResponse.json({ error: "Inlägget hittades inte" }, { status: 404 });
 
-    return NextResponse.json({ post });
+    const localized: any = { ...post };
+    localized.title = pick(post, 'title', lang);
+    localized.excerpt = pick(post, 'excerpt', lang);
+    localized.content = pick(post, 'content', lang);
+
+    return NextResponse.json({ post: localized });
   } catch (error) {
     console.error("Fel vid hämtning av blogginlägg:", error);
     return NextResponse.json({ error: "Internt serverfel" }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -53,8 +65,6 @@ export async function PUT(
         title,
         content,
         published: published !== undefined ? published : true,
-        // Optional: create a new slug if title changes
-        // slug: title.toLowerCase().replace(/\s+/g, '-').replace(/[åä]/g, 'a').replace(/ö/g, 'o')
       },
     });
 
@@ -62,5 +72,7 @@ export async function PUT(
   } catch (error) {
     console.error("Fel vid uppdatering av blogginlägg:", error);
     return NextResponse.json({ error: "Internt serverfel" }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 } 

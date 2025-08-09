@@ -2,22 +2,29 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+const SUPPORTED = ['sv','en','es','de','fr'] as const;
+type Lang = typeof SUPPORTED[number];
+function getLang(req: NextRequest): Lang {
+  const hdr = req.headers.get('cookie') || '';
+  const m = /(?:^|;\s*)lang=([^;]+)/.exec(hdr);
+  const val = (m ? m[1] : '').toLowerCase();
+  return (SUPPORTED as readonly string[]).includes(val as Lang) ? (val as Lang) : 'sv';
+}
+function pick(obj: any, base: string, lang: Lang) {
+  if (lang === 'sv') return obj[base];
+  const k = `${base}_${lang}`;
+  return obj[k] || obj[base];
+}
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   try {
+    const lang = getLang(req);
     const recipe = await prisma.recipe.findUnique({
       where: { slug: params.slug },
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true
-          }
-        }
-      }
+      include: { author: { select: { name: true, email: true } } }
     });
 
     if (!recipe) {
@@ -27,13 +34,21 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(recipe);
+    const localized: any = { ...recipe };
+    localized.title = pick(recipe as any, 'title', lang);
+    localized.excerpt = pick(recipe as any, 'excerpt', lang);
+    const instr = pick(recipe as any, 'instructions', lang) as string | null;
+    if (instr) localized.instructions = instr;
+
+    return NextResponse.json(localized);
   } catch (error) {
     console.error('Error fetching recipe:', error);
     return NextResponse.json(
       { error: 'Failed to fetch recipe' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -80,6 +95,8 @@ export async function PUT(
       { error: 'Failed to update recipe' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -88,10 +105,7 @@ export async function DELETE(
   { params }: { params: { slug: string } }
 ) {
   try {
-    await prisma.recipe.delete({
-      where: { slug: params.slug }
-    });
-
+    await prisma.recipe.delete({ where: { slug: params.slug } });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting recipe:', error);
@@ -99,5 +113,7 @@ export async function DELETE(
       { error: 'Failed to delete recipe' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 } 

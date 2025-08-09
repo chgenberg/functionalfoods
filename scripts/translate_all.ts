@@ -65,16 +65,33 @@ async function main() {
     for (const t of TARGETS) {
       const titleKey = `title_${t.code}`;
       const excerptKey = `excerpt_${t.code}`;
+      const contentKey = `content_${t.code}`;
       if (!(post as any)[titleKey]) updates[titleKey] = await translateText(client, post.title, t.code);
       if (post.excerpt && !(post as any)[excerptKey]) updates[excerptKey] = await translateText(client, post.excerpt, t.code);
+      if (post.content && !(post as any)[contentKey]) updates[contentKey] = await translateText(client, post.content, t.code);
     }
     if (Object.keys(updates).length > 0) {
-      try {
-        await prisma.blogPost.update({ where: { id: post.id }, data: updates });
-        console.log(`Updated post ${post.slug}`);
-      } catch {
-        // BlogPost does not yet have translated columns – skip silently
-      }
+      await prisma.blogPost.update({ where: { id: post.id }, data: updates });
+      console.log(`Updated post ${post.slug}`);
+    }
+  }
+
+  // 3) Recipes
+  const recipes = await prisma.recipe.findMany();
+  console.log(`Found ${recipes.length} recipes`);
+  for (const r of recipes) {
+    const updates: Record<string, any> = {};
+    for (const t of TARGETS) {
+      const tTitle = `title_${t.code}`;
+      const tExcerpt = `excerpt_${t.code}`;
+      const tInstr = `instructions_${t.code}`;
+      if (!(r as any)[tTitle]) updates[tTitle] = await translateText(client, r.title, t.code);
+      if (r.excerpt && !(r as any)[tExcerpt]) updates[tExcerpt] = await translateText(client, r.excerpt, t.code);
+      if (r.instructions && !(r as any)[tInstr]) updates[tInstr] = await translateText(client, r.instructions, t.code);
+    }
+    if (Object.keys(updates).length > 0) {
+      await prisma.recipe.update({ where: { id: r.id }, data: updates });
+      console.log(`Updated recipe ${r.slug}`);
     }
   }
 
