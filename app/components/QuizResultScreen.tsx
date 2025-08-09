@@ -430,12 +430,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 {/* Health Areas */}
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                   <h4 className="text-sm font-medium text-gray-900 mb-4">{t('quiz.areas','Hälsoområden')}</h4>
-                  <div className="flex items-center justify-center mb-6">
-                    <RadarChart
-                      labels={healthAreas.map(h=>h.label)}
-                      values={healthAreas.map(h=> (healthScores as any)[h.key] as number)}
-                    />
-                  </div>
+                  {/* Temporarily disabled radar chart to isolate a rendering error */}
+                  {/* <div className="flex items-center justify-center mb-6">
+                    <RadarChart labels={healthAreas.map(h=>h.label)} values={healthAreas.map(h=> (healthScores as any)[h.key] as number)} />
+                  </div> */}
                   <div className="space-y-4">
                     {healthAreas.map((area, index) => {
                       const score = healthScores[area.key as keyof HealthScores];
