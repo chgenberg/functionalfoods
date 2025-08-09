@@ -1,14 +1,11 @@
 "use client";
 import { useState } from 'react';
 import { FiMail, FiPhone, FiMapPin, FiSend } from 'react-icons/fi';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 export default function KontaktFormular() {
-  const [formData, setFormData] = useState({
-    namn: '',
-    email: '',
-    amne: '',
-    meddelande: ''
-  });
+  const t = useT();
+  const [formData, setFormData] = useState({ namn: '', email: '', amne: '', meddelande: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -16,30 +13,23 @@ export default function KontaktFormular() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       const result = await response.json();
-
       if (response.ok) {
         setShowSuccess(true);
         setFormData({ namn: '', email: '', amne: '', meddelande: '' });
-        
-        // Dölj success-meddelande efter 5 sekunder
         setTimeout(() => setShowSuccess(false), 5000);
       } else {
-        alert(result.error || 'Ett fel uppstod. Försök igen senare.');
+        alert(result.error || t('newsletter.error','Något gick fel. Försök igen senare.'));
       }
     } catch (error) {
       console.error('Submit error:', error);
-      alert('Ett fel uppstod. Försök igen senare.');
+      alert(t('newsletter.genericError','Ett fel uppstod. Försök igen senare.'));
     } finally {
       setIsSubmitting(false);
     }
@@ -48,23 +38,20 @@ export default function KontaktFormular() {
   return (
     <main className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
       <div className="container-custom section-padding">
-        {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4">
             <FiSend className="w-4 h-4" />
-            <span>Vi svarar inom 24 timmar</span>
+            <span>{t('contact.replyIn24h','Vi svarar inom 24 timmar')}</span>
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
-            Kontakta <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold animate-gradient">oss</span>
+            {t('contact.title','Kontakta')} <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold animate-gradient">{t('contact.weAreHere','oss')}</span>
           </h1>
           <p className="text-lg text-text-secondary">
-            Har du frågor om functional foods eller vill boka en konsultation? 
-            Vi finns här för att hjälpa dig på din hälsoresa.
+            {t('contact.intro1','Har du frågor om functional foods eller vill boka en konsultation?')} {t('contact.intro2','Vi finns här för att hjälpa dig på din hälsoresa.')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Contact Info Cards */}
           <div className="lg:col-span-1 space-y-4">
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-4 mb-3">
@@ -72,7 +59,7 @@ export default function KontaktFormular() {
                   <FiPhone className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-primary">Telefon</h3>
+                  <h3 className="font-medium text-primary">{t('contact.phone','Telefon')}</h3>
                   <p className="text-text-secondary">+46 70 123 45 67</p>
                 </div>
               </div>
@@ -84,7 +71,7 @@ export default function KontaktFormular() {
                   <FiMail className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-primary">E-post</h3>
+                  <h3 className="font-medium text-primary">{t('contact.email','E-post')}</h3>
                   <p className="text-text-secondary">info@functionalfoods.se</p>
                 </div>
               </div>
@@ -96,8 +83,8 @@ export default function KontaktFormular() {
                   <FiMapPin className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-primary">Adress</h3>
-                  <p className="text-text-secondary">Stockholm, Sverige</p>
+                  <h3 className="font-medium text-primary">{t('contact.address','Adress')}</h3>
+                  <p className="text-text-secondary">{t('footer.city','Stockholm, Sverige')}</p>
                 </div>
               </div>
             </div>
@@ -108,22 +95,19 @@ export default function KontaktFormular() {
                   <FiSend className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-primary">Öppettider</h3>
-                  <p className="text-text-secondary">Mån-Fre: 9:00-17:00</p>
+                  <h3 className="font-medium text-primary">{t('contact.hours','Öppettider')}</h3>
+                  <p className="text-text-secondary">{t('contact.hours.val','Mån-Fre: 9:00-17:00')}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Contact Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 animate-fade-in" style={{ animationDelay: '0.6s' }}>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="relative">
-                    <label htmlFor="namn" className="block text-sm font-medium text-primary mb-2">
-                      Namn
-                    </label>
+                    <label htmlFor="namn" className="block text-sm font-medium text-primary mb-2">{t('contact.name','Namn')}</label>
                     <div className="relative">
                       <FiMail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'namn' ? 'text-accent' : 'text-gray-400'}`} />
                       <input
@@ -134,16 +118,14 @@ export default function KontaktFormular() {
                         onFocus={() => setFocusedField('namn')}
                         onBlur={() => setFocusedField(null)}
                         className="w-full pl-10 pr-4 py-3 rounded-lg border border-border focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all duration-200"
-                        placeholder="Ditt namn"
+                        placeholder={t('contact.placeholder.name','Ditt namn')}
                         required
                       />
                     </div>
                   </div>
 
                   <div className="relative">
-                    <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
-                      E-post
-                    </label>
+                    <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">{t('contact.email','E-post')}</label>
                     <div className="relative">
                       <FiMail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'email' ? 'text-accent' : 'text-gray-400'}`} />
                       <input
@@ -154,7 +136,7 @@ export default function KontaktFormular() {
                         onFocus={() => setFocusedField('email')}
                         onBlur={() => setFocusedField(null)}
                         className="w-full pl-10 pr-4 py-3 rounded-lg border border-border focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all duration-200"
-                        placeholder="din@email.se"
+                        placeholder={t('contact.placeholder.email','din@email.se')}
                         required
                       />
                     </div>
@@ -162,9 +144,7 @@ export default function KontaktFormular() {
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="amne" className="block text-sm font-medium text-primary mb-2">
-                    Ämne
-                  </label>
+                  <label htmlFor="amne" className="block text-sm font-medium text-primary mb-2">{t('contact.subject','Ämne')}</label>
                   <div className="relative">
                     <FiSend className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'amne' ? 'text-accent' : 'text-gray-400'}`} />
                     <input
@@ -175,16 +155,14 @@ export default function KontaktFormular() {
                       onFocus={() => setFocusedField('amne')}
                       onBlur={() => setFocusedField(null)}
                       className="w-full pl-10 pr-4 py-3 rounded-lg border border-border focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all duration-200"
-                      placeholder="Vad gäller din fråga?"
+                      placeholder={t('contact.placeholder.subject','Vad gäller din fråga?')}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="meddelande" className="block text-sm font-medium text-primary mb-2">
-                    Meddelande
-                  </label>
+                  <label htmlFor="meddelande" className="block text-sm font-medium text-primary mb-2">{t('contact.message','Meddelande')}</label>
                   <textarea
                     id="meddelande"
                     value={formData.meddelande}
@@ -193,7 +171,7 @@ export default function KontaktFormular() {
                     onBlur={() => setFocusedField(null)}
                     rows={6}
                     className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all duration-200 resize-none"
-                    placeholder="Berätta mer om hur vi kan hjälpa dig..."
+                    placeholder={t('contact.placeholder.message','Berätta mer om hur vi kan hjälpa dig...')}
                     required
                   />
                   <div className="absolute bottom-3 right-3 text-sm text-text-secondary">
@@ -201,20 +179,16 @@ export default function KontaktFormular() {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-lg font-medium relative overflow-hidden group"
-                >
+                <button type="submit" disabled={isSubmitting} className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-lg font-medium relative overflow-hidden group">
                   <span className="relative z-10 flex items-center">
                     {isSubmitting ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Skickar...
+                        {t('contact.sending','Skickar...')}
                       </>
                     ) : (
                       <>
-                        Skicka meddelande
+                        {t('contact.send','Skicka meddelande')}
                         <FiSend className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
@@ -223,25 +197,23 @@ export default function KontaktFormular() {
                 </button>
               </form>
 
-              {/* Success Message */}
               {showSuccess && (
                 <div className="mt-6 p-4 bg-background-secondary border border-border rounded-lg animate-fade-in">
-                  <p className="text-secondary font-medium">✓ Tack för ditt meddelande! Vi återkommer inom 24 timmar.</p>
+                  <p className="text-secondary font-medium">{t('contact.success','✓ Tack för ditt meddelande! Vi återkommer inom 24 timmar.')}</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* FAQ Teaser */}
         <div className="mt-16 text-center animate-fade-in" style={{ animationDelay: '0.8s' }}>
           <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-primary mb-3">Vanliga frågor?</h2>
+            <h2 className="text-2xl font-bold text-primary mb-3">{t('contact.faq','Vanliga frågor?')}</h2>
             <p className="text-text-secondary mb-6">
-              Kolla in vår FAQ-sektion för snabba svar på de vanligaste frågorna om functional foods.
+              {t('contact.faqIntro','Kolla in vår FAQ-sektion för snabba svar på de vanligaste frågorna om functional foods.')}
             </p>
             <a href="/kontakt/faq" className="btn-secondary inline-flex items-center">
-              Se vanliga frågor
+              {t('contact.faqSee','Se vanliga frågor')}
               <FiSend className="ml-2 w-4 h-4" />
             </a>
           </div>
