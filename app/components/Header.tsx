@@ -164,7 +164,7 @@ export default function Header() {
         <div className="relative flex justify-between items-center h-28 md:h-32">
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <Link href="/" className="pointer-events-auto">
-              <Image src="/FF_logo.svg" alt="Functional Foods" width={240} height={108} className="h-16 md:h-28 w-auto" priority />
+              <Image src="/FF_logo.svg" alt="Functional Foods" width={230} height={100} className="h-14 md:h-24 w-auto" priority />
             </Link>
           </div>
 
