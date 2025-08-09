@@ -20,6 +20,7 @@ export default function BasicsSettingsPage() {
   const [postalCode, setPostalCode] = useState('');
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
+  const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +35,11 @@ export default function BasicsSettingsPage() {
         setPostalCode(data.user?.postalCode || '');
         setCity(data.user?.city || '');
         setCountry(data.user?.country || '');
+        // Hämta orders
+        const or = await fetch('/api/user/purchases', { headers: { Authorization: `Bearer ${token}` } });
+        const purchases = await or.json();
+        // purchases saknar orderId i svaret, men vi kan visa kursnamn och datum; kvitto kräver orderId – lämna tom länk om saknas
+        setOrders(Array.isArray(purchases) ? purchases : []);
       } catch (e) {
         setMessage({ type: 'error', text: 'Kunde inte hämta användardata' });
       } finally {
@@ -131,13 +137,37 @@ export default function BasicsSettingsPage() {
           <div className="flex items-center justify-between gap-3 pt-2">
             <div className="flex gap-3">
               <Link href="/utbildning" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800"><FiShoppingCart/> Köp fler kurser</Link>
-              <Link href="/api/orders/receipt" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background hover:bg-background-secondary text-secondary"><FiDownload/> Ladda ned kvitto</Link>
+              {/* Kvittolista */}
             </div>
             <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white hover:bg-secondary disabled:opacity-60">
               <FiSave/> {saving ? 'Sparar...' : 'Spara'}
             </button>
           </div>
         </form>
+      </div>
+
+      {/* Kvitton */}
+      <div className="bg-white rounded-xl shadow p-6 md:p-8 mt-6">
+        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2"><FiDownload/> Kvitton</h2>
+        <div className="text-sm text-gray-600 mb-3">Ladda ned kvitto för dina köp (PDF).</div>
+        <div className="divide-y">
+          {orders.length === 0 && <div className="py-3 text-gray-500">Inga kvitton tillgängliga ännu.</div>}
+          {orders.map((p: any) => (
+            <div key={p.id} className="py-3 flex items-center justify-between">
+              <div>
+                <div className="font-medium">{p.course?.name || 'Kurs'}</div>
+                <div className="text-gray-500 text-sm">Köpt: {new Date(p.createdAt).toLocaleDateString('sv-SE')}</div>
+              </div>
+              {p.orderId ? (
+                <a href={`/api/orders/receipt?orderId=${p.orderId}`} className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-background hover:bg-background-secondary text-secondary">
+                  <FiDownload/> Ladda ned
+                </a>
+              ) : (
+                <span className="text-gray-400 text-sm">Kvitto ej tillgängligt</span>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
