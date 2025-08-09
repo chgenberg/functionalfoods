@@ -64,6 +64,7 @@ export default function Header() {
         { label: "Råvaror", href: "/kunskapsbank/ingredienser" },
         { label: "Q&A", href: "/kunskapsbank/qa" },
         { label: "Sök", href: "/kunskapsbank/sok" },
+        { label: "Poddar", href: "/kunskapsbank/poddar" },
       ],
     },
     {

@@ -62,6 +62,15 @@ export default function KunskapsbankPage() {
       href: "/kunskapsbank/qa",
       icon: FiMessageCircle,
       color: "text-orange-600"
+    },
+    {
+      id: 'podcasts',
+      title: "Poddar",
+      description: "Lyssna på våra poddavsnitt om hälsa och functional foods",
+      image: "/kunskapsbank/smoothie.jpg",
+      href: "/kunskapsbank/poddar",
+      icon: FiBookOpen,
+      color: "text-emerald-600"
     }
   ];
 
