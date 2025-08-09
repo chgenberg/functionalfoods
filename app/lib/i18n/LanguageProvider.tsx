@@ -41,10 +41,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (initial && ['sv','en','es','de','fr'].includes(initial)) setLocaleState(initial);
   }, []);
 
+  useEffect(() => {
+    // Sync <html lang> with current locale for a11y/SEO and built-ins (dates)
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('lang', locale);
+    }
+  }, [locale]);
+
   const setLocale = (l: Locale) => {
     setLocaleState(l);
     if (typeof localStorage !== 'undefined') localStorage.setItem('lang', l);
     writeCookie('lang', l);
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('lang', l);
+    }
   };
 
   const t = (key: string, fallback?: string) => {
@@ -54,7 +64,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo(() => ({ locale, setLocale, t }), [locale]);
 
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={value}>
+      {React.createElement(React.Fragment, { key: locale }, children)}
+    </LanguageContext.Provider>
+  );
 }
 
 export function useLanguage() {
