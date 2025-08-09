@@ -65,6 +65,16 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     motion: 5
   });
 
+  // Checklist (autosave) per domän – must be declared before any early returns
+  const checklistKey = 'quiz_checklist_v1';
+  const [checklist, setChecklist] = useState<Record<string, boolean>>(() => {
+    try { return JSON.parse(localStorage.getItem(checklistKey) || '{}'); } catch { return {}; }
+  });
+  useEffect(()=>{
+    try { localStorage.setItem(checklistKey, JSON.stringify(checklist)); } catch {}
+  }, [checklist]);
+  const toggleCheck = (id: string) => setChecklist(prev => ({ ...prev, [id]: !prev[id] }));
+
   // Type guard to check if quizData is quiz answers or result data
   const isQuizAnswers = (data: any): data is Record<number, string> => {
     return typeof data === 'object' && !('symptoms' in data);
@@ -274,16 +284,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     { key: 'kost', label: 'Kost', icon: FiTarget, color: '#22c55e' },
     { key: 'motion', label: 'Motion', icon: FiActivity, color: '#3b82f6' }
   ];
-
-  // Checklist (autosave) per domän
-  const checklistKey = 'quiz_checklist_v1';
-  const [checklist, setChecklist] = useState<Record<string, boolean>>(() => {
-    try { return JSON.parse(localStorage.getItem(checklistKey) || '{}'); } catch { return {}; }
-  });
-  useEffect(()=>{
-    try { localStorage.setItem(checklistKey, JSON.stringify(checklist)); } catch {}
-  }, [checklist]);
-  const toggleCheck = (id: string) => setChecklist(prev => ({ ...prev, [id]: !prev[id] }));
 
   const domainTips: Record<string, string[]> = {
     energi: [
