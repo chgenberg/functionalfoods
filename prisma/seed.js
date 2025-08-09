@@ -275,6 +275,28 @@ async function main() {
   console.log('   Lösenord: basics123');
   console.log('   Tillgång: Functional Basics kurs + alla premium recept');
   console.log('');
+  // Dummy recensioner
+  await prisma.courseReview.createMany({ data: [
+    { userId: flowUser.id, courseId: 'functional-flow', rating: 5, consent: true, status: 'APPROVED', answers: [
+      { q: 'Levde kursen upp till dina förväntningar?', a: 'Absolut, överträffade dem. Jag känner mig piggare och mer fokuserad.' },
+      { q: 'Mest värdefulla lärdom?', a: 'Att planera mina måltider med funktionella råvaror – enorm skillnad.' },
+      { q: 'Påverkan på matvanor/energi/hälsa?', a: 'Mer stabil energi hela dagen och jämnare blodsocker.' },
+      { q: 'Upplägg/innehåll/pedagogik? Rekommenderar du?', a: 'Tydligt, inspirerande och konkret. Rekommenderar varmt till alla.' }
+    ] },
+    { userId: basicsUser.id, courseId: 'functional-basics', rating: 5, consent: true, status: 'APPROVED', answers: [
+      { q: 'Levde kursen upp till dina förväntningar?', a: 'Ja, jag fick äntligen en enkel struktur som fungerar i vardagen.' },
+      { q: 'Mest värdefulla lärdom?', a: 'Små dagliga val gör stor skillnad – och hur jag sätter ihop måltider.' },
+      { q: 'Påverkan på matvanor/energi/hälsa?', a: 'Mindre sötsug och bättre sömn redan efter två veckor.' },
+      { q: 'Upplägg/innehåll/pedagogik? Rekommenderar du?', a: 'Väldigt lätt att följa. Fem stjärnor!' }
+    ] },
+    { userId: admin.id, courseId: 'functional-basics', rating: 5, consent: true, status: 'APPROVED', answers: [
+      { q: 'Levde kursen upp till dina förväntningar?', a: 'Ja – tydligt, forskningsbaserat och praktiskt.' },
+      { q: 'Mest värdefulla lärdom?', a: 'Hur jag kan optimera min kost utan att komplicera livet.' },
+      { q: 'Påverkan på matvanor/energi/hälsa?', a: 'Mer jämn energi och bättre fokus under arbetsdagen.' },
+      { q: 'Upplägg/innehåll/pedagogik? Rekommenderar du?', a: 'Strålande upplägg. Rekommenderas starkt.' }
+    ] },
+  ]});
+  console.log('Dummy-recensioner skapade');
   console.log('Admin:');
   console.log('   Email: admin@functionalfoods.se');
   console.log('   Lösenord: admin123');
