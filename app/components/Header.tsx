@@ -305,28 +305,28 @@ export default function Header() {
           />
         )}
         
-        {/* Mobile menu */}
-        <div className={`fixed left-0 right-0 top-20 md:top-24 bg-white shadow-lg transition-all duration-500 z-50 ${
-          mobileMenuOpen ? 'max-h-[calc(100vh-4rem)] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+        {/* Side drawer menu (mobile + desktop) */}
+        <div className={`fixed top-20 md:top-24 left-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
-          <nav className="py-6 px-4 space-y-2 max-h-[calc(100vh-6rem)] overflow-y-auto">
+          <nav className="py-6 px-4 space-y-2 h-full overflow-y-auto">
             {menuItems.map((item, index) => (
               <div key={item.label} className={`animate-fade-in-up`} style={{ animationDelay: `${index * 50}ms` }}>
                 <Link
                   href={item.href}
-                  className="flex items-center justify-between px-5 py-4 text-lg font-medium text-primary hover:text-accent bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all duration-200"
+                  className="flex items-center justify-between px-4 py-3 text-base font-medium text-primary hover:text-accent bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>{item.label}</span>
                   {item.submenu && <FiChevronDown className="w-5 h-5" />}
                 </Link>
                 {item.submenu && (
-                  <div className="mt-2 space-y-1 pl-4">
+                  <div className="mt-1 space-y-1 pl-3">
                     {item.submenu.map((subItem) => (
                       <Link
                         key={subItem.label}
                         href={subItem.href}
-                        className="block px-5 py-3 text-base text-text-secondary hover:text-accent bg-white hover:bg-gray-50 rounded-xl transition-all duration-200"
+                        className="block px-4 py-2 text-sm text-text-secondary hover:text-accent bg-white hover:bg-gray-50 rounded-lg transition-all duration-200"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         {subItem.label}
@@ -337,13 +337,13 @@ export default function Header() {
               </div>
             ))}
             
-            {/* Login/User section in mobile menu */}
+            {/* Login/User section in drawer */}
             <div className="pt-4 mt-4 border-t border-gray-200">
               {user ? (
                 <div className="space-y-2">
                   <Link
                     href="/mina-kurser"
-                    className="flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-primary hover:bg-secondary rounded-2xl transition-all duration-200"
+                    className="flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-primary hover:bg-secondary rounded-xl transition-all duration-200"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span>Mina kurser</span>
@@ -354,7 +354,7 @@ export default function Header() {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full flex items-center justify-between px-5 py-4 text-lg font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-2xl transition-all duration-200"
+                    className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-xl transition-all duration-200"
                   >
                     <span>Logga ut</span>
                     <FiLogOut className="w-5 h-5" />
@@ -366,7 +366,7 @@ export default function Header() {
                     setShowLogin(true);
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-5 py-4 text-lg font-medium text-white bg-primary hover:bg-accent rounded-2xl transition-all duration-200"
+                  className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-primary hover:bg-accent rounded-xl transition-all duration-200"
                 >
                   <span>Logga in</span>
                   <FiUser className="w-5 h-5" />
