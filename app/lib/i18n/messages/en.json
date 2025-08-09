@@ -248,5 +248,11 @@
   "podcasts.badge": "Listen and learn",
   "podcasts.title": "Podcasts",
   "podcasts.subtitle": "Our latest episodes on health, nutrition and functional foods – with a simple, elegant player.",
-  "podcasts.playPause": "Play/Pause"
+  "podcasts.playPause": "Play/Pause",
+  "home.recipes.title": "Explore our ",
+  "home.recipes.free": "free recipes",
+  "home.recipes.subtitle": "Healthy meals for every day",
+  "home.recipes.prev": "Previous recipe",
+  "home.recipes.next": "Next recipe",
+  "home.recipes.goto": "Go to recipe"
 } 
