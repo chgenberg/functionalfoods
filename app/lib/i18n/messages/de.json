@@ -101,5 +101,13 @@
   "contact.consent": "Ich stimme zu, dass diese Website meine Informationen speichert, um auf meine Anfrage zu antworten.",
   "contact.sending": "Wird gesendet...",
   "contact.send": "Nachricht senden",
-  "contact.success": "Vielen Dank! Wir melden uns innerhalb von 24 Stunden."
+  "contact.success": "Vielen Dank! Wir melden uns innerhalb von 24 Stunden.",
+  "common.readMore": "Mehr lesen",
+  "blog.loading": "Artikel werden geladen...",
+  "blog.subtitle": "Entdecke unsere Artikel über Functional Foods, Gesundheit und Wohlbefinden. Hol dir wissenschaftlich basierte Tipps für ein längeres, gesünderes Leben.",
+  "blog.searchPlaceholder": "Artikel suchen...",
+  "blog.all": "Alle",
+  "blog.readMoreFallback": "Lies mehr über dieses interessante Thema zu Functional Foods...",
+  "blog.noneYet": "Noch keine Artikel veröffentlicht. Schau bald wieder vorbei!",
+  "blog.noneFound": "Keine Artikel gefunden. Ändere deine Suche oder Filter."
 } 

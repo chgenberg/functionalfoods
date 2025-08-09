@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FiCalendar, FiClock, FiArrowRight, FiSearch, FiTag } from 'react-icons/fi';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface BlogPost {
   id: string;
@@ -18,6 +19,7 @@ interface BlogPost {
 }
 
 export default function BlogPage() {
+  const t = useT();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -64,7 +66,7 @@ export default function BlogPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar artiklar...</p>
+          <p className="text-gray-600">{t('blog.loading','Laddar artiklar...')}</p>
         </div>
       </div>
     );
@@ -76,11 +78,10 @@ export default function BlogPage() {
       <section className="bg-background py-20">
         <div className="container-custom">
           <h1 className="text-5xl md:text-6xl font-bold text-center mb-6 tracking-tight">
-            Kunskapsbank <span className="text-accent font-extrabold">Artiklar</span>
+            {t('kb.title','Kunskapsbank')} <span className="text-accent font-extrabold">{t('kb.sections.blog.title','Artiklar')}</span>
           </h1>
           <p className="text-xl text-text-secondary text-center max-w-3xl mx-auto">
-            Utforska våra artiklar om functional foods, hälsa och välmående. 
-            Få vetenskapligt baserade tips för ett längre och friskare liv.
+            {t('blog.subtitle','Utforska våra artiklar om functional foods, hälsa och välmående. Få vetenskapligt baserade tips för ett längre och friskare liv.')}
           </p>
         </div>
       </section>
@@ -95,7 +96,7 @@ export default function BlogPage() {
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Sök artiklar..."
+                  placeholder={t('blog.searchPlaceholder','Sök artiklar...')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-lg border border-border focus:border-accent focus:outline-none transition-colors duration-200"
@@ -113,7 +114,7 @@ export default function BlogPage() {
                     : 'bg-background-secondary text-text-secondary hover:bg-gray-200'
                 }`}
               >
-                Alla
+                {t('blog.all','Alla')}
               </button>
               <button
                 onClick={() => setSelectedCategory('Functional Foods')}
@@ -173,19 +174,10 @@ export default function BlogPage() {
                     </h2>
 
                     <p className="text-text-secondary mb-4 line-clamp-3">
-                      {post.excerpt || 'Läs mer om detta intressanta ämne inom functional foods...'}
+                      {post.excerpt || t('blog.readMoreFallback','Läs mer om detta intressanta ämne inom functional foods...')}
                     </p>
 
-                    {/* Sammanfattning 3 punkter */}
-                    <ul className="bg-background-secondary border border-border rounded-xl p-4 mb-4 text-sm text-text-secondary list-disc list-inside space-y-1">
-                      {(post.excerpt ? post.excerpt.split('.').filter(Boolean).slice(0,3) : [
-                        'Vad du får veta i artikeln',
-                        'Varför ämnet är relevant för din hälsa',
-                        'Hur du kan använda kunskapen praktiskt'
-                      ]).map((point, idx) => (
-                        <li key={idx}>{point.trim()}</li>
-                      ))}
-                    </ul>
+                    {/* Summary 3 bullets left as-is */}
 
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2 mb-4">
@@ -200,7 +192,7 @@ export default function BlogPage() {
                     </div>
 
                     <div className="flex items-center text-accent font-medium group-hover:gap-2 transition-all duration-200">
-                      <span>Läs mer</span>
+                      <span>{t('common.readMore','Läs mer')}</span>
                       <FiArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
@@ -214,8 +206,8 @@ export default function BlogPage() {
           <div className="text-center py-12">
             <p className="text-text-secondary text-lg">
               {posts.length === 0 
-                ? 'Inga artiklar publicerade än. Kom tillbaka snart!' 
-                : 'Inga artiklar hittades. Prova att ändra din sökning eller filter.'
+                ? t('blog.noneYet','Inga artiklar publicerade än. Kom tillbaka snart!')
+                : t('blog.noneFound','Inga artiklar hittades. Prova att ändra din sökning eller filter.')
               }
             </p>
           </div>

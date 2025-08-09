@@ -100,5 +100,13 @@
   "contact.consent": "I consent to this website storing my information so they can reply to my question.",
   "contact.sending": "Sending...",
   "contact.send": "Send message",
-  "contact.success": "Thank you! We will get back to you within 24 hours."
+  "contact.success": "Thank you! We will get back to you within 24 hours.",
+  "common.readMore": "Read more",
+  "blog.loading": "Loading articles...",
+  "blog.subtitle": "Explore our articles on functional foods, health and wellbeing. Get science‑based tips for a longer, healthier life.",
+  "blog.searchPlaceholder": "Search articles...",
+  "blog.all": "All",
+  "blog.readMoreFallback": "Read more about this interesting topic in functional foods...",
+  "blog.noneYet": "No articles published yet. Check back soon!",
+  "blog.noneFound": "No articles found. Try changing your search or filters."
 } 

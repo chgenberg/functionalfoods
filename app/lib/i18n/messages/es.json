@@ -59,5 +59,13 @@
   "contact.consent": "Doy mi consentimiento para que este sitio almacene mi información para responder a mi pregunta.",
   "contact.sending": "Enviando...",
   "contact.send": "Enviar mensaje",
-  "contact.success": "¡Gracias! Te contactaremos dentro de 24 horas."
+  "contact.success": "¡Gracias! Te contactaremos dentro de 24 horas.",
+  "common.readMore": "Leer más",
+  "blog.loading": "Cargando artículos...",
+  "blog.subtitle": "Explora nuestros artículos sobre alimentos funcionales, salud y bienestar. Obtén consejos basados en ciencia para una vida más larga y saludable.",
+  "blog.searchPlaceholder": "Buscar artículos...",
+  "blog.all": "Todos",
+  "blog.readMoreFallback": "Lee más sobre este tema interesante de alimentos funcionales...",
+  "blog.noneYet": "Aún no hay artículos publicados. ¡Vuelve pronto!",
+  "blog.noneFound": "No se encontraron artículos. Prueba cambiar tu búsqueda o filtros."
 } 

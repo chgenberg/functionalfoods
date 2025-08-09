@@ -101,5 +101,13 @@
   "contact.consent": "J’autorise ce site à stocker mes informations afin de répondre à ma demande.",
   "contact.sending": "Envoi en cours...",
   "contact.send": "Envoyer le message",
-  "contact.success": "Merci ! Nous reviendrons vers vous sous 24 heures."
+  "contact.success": "Merci ! Nous reviendrons vers vous sous 24 heures.",
+  "common.readMore": "En savoir plus",
+  "blog.loading": "Chargement des articles...",
+  "blog.subtitle": "Découvrez nos articles sur les aliments fonctionnels, la santé et le bien‑être. Des conseils fondés sur la science pour une vie plus longue et plus saine.",
+  "blog.searchPlaceholder": "Rechercher des articles...",
+  "blog.all": "Tous",
+  "blog.readMoreFallback": "En savoir plus sur ce sujet intéressant lié aux aliments fonctionnels...",
+  "blog.noneYet": "Aucun article publié pour le moment. Revenez bientôt !",
+  "blog.noneFound": "Aucun article trouvé. Essayez de modifier votre recherche ou vos filtres."
 } 

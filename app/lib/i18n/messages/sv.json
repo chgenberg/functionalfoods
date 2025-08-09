@@ -100,5 +100,13 @@
   "contact.consent": "Jag godkänner att denna hemsida sparar min information så att de kan svara på min fråga.",
   "contact.sending": "Skickar...",
   "contact.send": "Skicka meddelande",
-  "contact.success": "Tack för ditt meddelande! Vi återkommer inom 24 timmar."
+  "contact.success": "Tack för ditt meddelande! Vi återkommer inom 24 timmar.",
+  "common.readMore": "Läs mer",
+  "blog.loading": "Laddar artiklar...",
+  "blog.subtitle": "Utforska våra artiklar om functional foods, hälsa och välmående. Få vetenskapligt baserade tips för ett längre och friskare liv.",
+  "blog.searchPlaceholder": "Sök artiklar...",
+  "blog.all": "Alla",
+  "blog.readMoreFallback": "Läs mer om detta intressanta ämne inom functional foods...",
+  "blog.noneYet": "Inga artiklar publicerade än. Kom tillbaka snart!",
+  "blog.noneFound": "Inga artiklar hittades. Prova att ändra din sökning eller filter."
 } 
