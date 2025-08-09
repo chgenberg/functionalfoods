@@ -1,3 +1,4 @@
+'use client';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import en from './messages/en.json';
 import es from './messages/es.json';
