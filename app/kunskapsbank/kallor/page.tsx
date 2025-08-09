@@ -596,6 +596,8 @@ export default function KallorPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Alla");
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [heroLoaded, setHeroLoaded] = useState(false);
+  const [heroError, setHeroError] = useState(false);
 
   const filteredSources = sources.filter(source => {
     const matchesSearch = source.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -624,6 +626,29 @@ export default function KallorPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Hero portrait */}
+      <div className="relative h-64 md:h-80 lg:h-[28rem] overflow-hidden">
+        {!heroError && (
+          <img
+            src="/ulrika_portratt/Ulrika2.jpeg"
+            alt="Ulrika Daviddson"
+            className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[4000ms] ${heroLoaded ? 'scale-105' : 'scale-100'}`}
+            onLoad={() => setHeroLoaded(true)}
+            onError={() => setHeroError(true)}
+          />
+        )}
+        {!heroLoaded && !heroError && (
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
+        )}
+        {heroError && (
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-200" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+        <div className="absolute left-6 bottom-6 text-white">
+          <h2 className="text-2xl md:text-3xl font-bold drop-shadow">Vetenskapliga Källor</h2>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="bg-[#1a4324] text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
