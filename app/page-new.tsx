@@ -29,7 +29,6 @@ export default function Home() {
   const [suggestedLocale, setSuggestedLocale] = useState<'sv'|'en'|'es'|null>(null);
 
   useEffect(() => {
-    // Geo-suggest only if no explicit language chosen yet
     const chosen = typeof localStorage !== 'undefined' ? localStorage.getItem('lang') : null;
     if (!chosen) {
       fetch('/api/geo').then(r => r.json()).then(data => {
@@ -44,22 +43,21 @@ export default function Home() {
   const testimonials = [
     {
       name: "Maria L.",
-      text: "Efter 3 veckor med Functional Foods känner jag mig som en ny människa!",
+      text: t('home.testimonials.sample1','Efter 3 veckor med Functional Foods känner jag mig som en ny människa!'),
       rating: 5
     },
     {
       name: "Johan K.",
-      text: "Äntligen ett program som faktiskt fungerar. Min energi är på topp!",
+      text: t('home.testimonials.sample2','Äntligen ett program som faktiskt fungerar. Min energi är på topp!'),
       rating: 5
     },
     {
       name: "Anna S.",
-      text: "Ulrika är fantastisk! Hon har hjälpt mig att helt förändra min hälsa.",
+      text: t('home.testimonials.sample3','Ulrika är fantastisk! Hon har hjälpt mig att helt förändra min hälsa.'),
       rating: 5
     }
   ];
 
-  // Auto-rotate testimonials
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
@@ -78,7 +76,6 @@ export default function Home() {
     setShowQuiz(true);
   };
 
-  // If showing quiz results, render them inline
   if (quizResults) {
     return (
       <QuizResultScreen 
@@ -88,7 +85,6 @@ export default function Home() {
     );
   }
 
-  // If showing quiz, render it as overlay
   if (showQuiz) {
     return (
         <HealthQuiz 
@@ -100,15 +96,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Article Quick Access Button */}
       <ArticleQuickAccess />
-      {/* Force deployment refresh */}
       
-      {/* Hero Section with Working Video Background */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Vimeo video background */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Vimeo iframe background for both desktop and mobile */}
           <iframe
             src="https://player.vimeo.com/video/1107419263?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
             className="absolute inset-0"
@@ -129,11 +120,7 @@ export default function Home() {
             allowFullScreen
             title="Functional Foods Hero Video"
           />
-          
-          {/* Video overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" style={{ zIndex: 15 }} />
-          
-          {/* Fallback background image */}
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
@@ -146,10 +133,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Hero content */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left content */}
             <div className="text-center lg:text-left">
               <h1 className="text-4xl md:text-6xl font-light text-white mb-6 leading-tight drop-shadow-lg">
                 {t('hero.titleTop')}
@@ -179,7 +164,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right content - Hero image */}
             <div className="relative">
               <img
                 src="/udavidsson.PNG"
@@ -187,7 +171,6 @@ export default function Home() {
                 className="rounded-3xl shadow-2xl w-full h-auto"
               />
               
-              {/* Floating card */}
               <div className="absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 max-w-xs">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
@@ -195,15 +178,14 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">Ulrika Davidsson</p>
-                    <p className="text-sm text-gray-600">Functional Foods Expert</p>
+                    <p className="text-sm text-gray-600">{t('home.ud.role','Functional Foods Expert')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-yellow-400">
-                  {/* ifyllda stjärnor i signaturfärgen */}
                   {[...Array(5)].map((_, i) => (
                     <FaStar key={i} className="w-4 h-4" color="#da695c" />
                   ))}
-                  <span className="text-gray-600 text-sm ml-2">25+ års erfarenhet</span>
+                  <span className="text-gray-600 text-sm ml-2">{t('home.ud.experience','25+ års erfarenhet')}</span>
                 </div>
               </div>
             </div>
@@ -211,10 +193,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Recipe Carousel */}
       <RecipeCarousel />
 
-      {/* Features Section - Mobile Optimized */}
       <section className="py-12 md:py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -224,10 +204,10 @@ export default function Home() {
             className="text-center mb-8 md:mb-16"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Upptäck kraften i <span className="font-bold text-primary">functional foods</span>
+              {t('home.features.title','Upptäck kraften i ')}<span className="font-bold text-primary">functional foods</span>
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
-              Få personaliserade rekommendationer baserat på din livsstil och hälsobehov
+              {t('home.features.subtitle','Få personaliserade rekommendationer baserat på din livsstil och hälsobehov')}
             </p>
           </motion.div>
 
@@ -235,20 +215,20 @@ export default function Home() {
             {[
               {
                 icon: <GiFruitBowl className="w-8 h-8 text-white" />,
-                title: "Functional Foods",
-                description: "Naturliga livsmedel med specifika hälsofördelar",
+                title: t('home.features.card.functional.title','Functional Foods'),
+                description: t('home.features.card.functional.desc','Naturliga livsmedel med specifika hälsofördelar'),
                 color: "#014421"
               },
               {
                 icon: <FiTarget className="w-8 h-8 text-white" />,
-                title: "Personaliserat",
-                description: "Anpassat efter dina unika behov och mål",
+                title: t('home.features.card.personalized.title','Personaliserat'),
+                description: t('home.features.card.personalized.desc','Anpassat efter dina unika behov och mål'),
                 color: "#112A12"
               },
               {
                 icon: <FiZap className="w-8 h-8 text-white" />,
-                title: "Snabba resultat",
-                description: "Känn skillnad redan efter några veckor",
+                title: t('home.features.card.fast.title','Snabba resultat'),
+                description: t('home.features.card.fast.desc','Känn skillnad redan efter några veckor'),
                 color: "#014421"
               }
             ].map((feature, index) => (
@@ -268,7 +248,7 @@ export default function Home() {
                 <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800 group-hover:text-[#1a4324] transition-colors">{feature.title}</h3>
                 <p className="text-gray-600 leading-relaxed text-sm md:text-base">{feature.description}</p>
                 <div className="mt-4 text-[#9dc46d] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-sm">
-                  <span>Läs mer</span>
+                  <span>{t('common.readMore','Läs mer')}</span>
                   <FiArrowRight className="w-4 h-4" />
                 </div>
               </motion.div>
@@ -277,7 +257,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Portrait banner under features */}
       <section className="px-4">
         <div className="max-w-6xl mx-auto">
           <div className="relative h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-lg group">
@@ -290,15 +269,14 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-transparent" />
             <div className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-white">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs md:text-sm mb-2">
-                <span>Functional Foods med Ulrika</span>
+                <span>{t('home.portrait.badge','Functional Foods med Ulrika')}</span>
               </div>
-              <p className="text-lg md:text-2xl font-semibold drop-shadow">Mat som medicin för kropp och själ</p>
+              <p className="text-lg md:text-2xl font-semibold drop-shadow">{t('home.portrait.subtitle','Mat som medicin för kropp och själ')}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* How it works - Mobile Optimized */}
       <section className="py-12 md:py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -308,16 +286,16 @@ export default function Home() {
             className="text-center mb-8 md:mb-16"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Så här <span className="font-bold text-primary">fungerar det</span>
+              {t('home.how.title','Så här fungerar det')}
             </h2>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {[
-              { step: "1", title: "Ta quizet", desc: "Besvara några enkla frågor om din hälsa", icon: "📝" },
-              { step: "2", title: "Få din analys", desc: "Vi analyserar dina svar med AI", icon: "🔬" },
-              { step: "3", title: "Personlig plan", desc: "Få skräddarsydda rekommendationer", icon: "📋" },
-              { step: "4", title: "Börja må bättre", desc: "Implementera och känn skillnad", icon: "🚀" }
+              { step: "1", title: t('home.how.step1.title','Ta quizet'), desc: t('home.how.step1.desc','Besvara några enkla frågor om din hälsa'), icon: "📝" },
+              { step: "2", title: t('home.how.step2.title','Få din analys'), desc: t('home.how.step2.desc','Vi analyserar dina svar med AI'), icon: "🔬" },
+              { step: "3", title: t('home.how.step3.title','Personlig plan'), desc: t('home.how.step3.desc','Få skräddarsydda rekommendationer'), icon: "📋" },
+              { step: "4", title: t('home.how.step4.title','Börja må bättre'), desc: t('home.how.step4.desc','Implementera och känn skillnad'), icon: "🚀" }
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -346,7 +324,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials - Mobile Optimized */}
       <section className="py-12 md:py-20 px-4 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -356,7 +333,7 @@ export default function Home() {
             className="text-center mb-8 md:mb-12"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              Vad våra kunder <span className="font-bold text-primary">säger</span>
+              {t('home.testimonials.title','Vad våra kunder säger')}
             </h2>
           </motion.div>
           
@@ -383,7 +360,6 @@ export default function Home() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Dots indicator */}
             <div className="flex justify-center gap-2 mt-6 md:mt-8">
               {testimonials.map((_, index) => (
                 <button
@@ -401,19 +377,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter Section - Mobile Optimized */}
       <section className="py-12 md:py-20 px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           <NewsletterSignup 
             variant="hero"
-            title="Få de senaste tipsen om Functional Foods"
-            subtitle="Bli först med att få våra bästa råd och recept direkt i din inkorg"
+            title={t('newsletter.title','Få de senaste tipsen om Functional Foods')}
+            subtitle={t('newsletter.subtitle','Bli först med att få våra bästa råd och recept direkt i din inkorg')}
             showName={true}
           />
         </div>
       </section>
 
-      {/* CTA / Prenumeration - vit sektion */}
       <section className="py-12 md:py-20 px-4 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
@@ -440,7 +414,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Feature Popup */}
       {selectedFeature && (
         <FeaturePopup
           isOpen={!!selectedFeature}
@@ -450,9 +423,9 @@ export default function Home() {
       )}
       {showGeoSuggest && suggestedLocale && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-xl border border-[#F3EFE3] rounded-2xl px-4 py-3 flex items-center gap-3 z-50">
-          <span className="text-sm text-[#112A12]">Vi ser att ditt språk kan vara {suggestedLocale.toUpperCase()}. Vill du byta?</span>
-          <button className="px-3 py-1.5 rounded-lg bg-[#da695c] text-white text-sm" onClick={() => { setLocale(suggestedLocale); setShowGeoSuggest(false); }}>Byt</button>
-          <button className="px-3 py-1.5 rounded-lg bg-[#F3EFE3] text-[#112A12] text-sm" onClick={() => setShowGeoSuggest(false)}>Nej tack</button>
+          <span className="text-sm text-[#112A12]">{t('home.geo.seeLang','Vi ser att ditt språk kan vara ')}{suggestedLocale.toUpperCase()}. {t('home.geo.question','Vill du byta?')}</span>
+          <button className="px-3 py-1.5 rounded-lg bg-[#da695c] text-white text-sm" onClick={() => { setLocale(suggestedLocale); setShowGeoSuggest(false); }}>{t('home.geo.switch','Byt')}</button>
+          <button className="px-3 py-1.5 rounded-lg bg-[#F3EFE3] text-[#112A12] text-sm" onClick={() => setShowGeoSuggest(false)}>{t('home.geo.noThanks','Nej tack')}</button>
         </div>
       )}
     </div>
