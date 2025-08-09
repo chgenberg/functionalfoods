@@ -735,7 +735,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           <FiBookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                           <div 
                             className="text-gray-700 text-sm space-y-2"
-                            dangerouslySetInnerHTML={{ __html: reference.replace(/\. /g, '.<br/><br/>') }}
+                            dangerouslySetInnerHTML={{ __html: reference.replace(/\n+/g, '<br/>') }}
                           />
                         </motion.div>
                       ))}
