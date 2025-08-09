@@ -131,11 +131,40 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'}`}>
+      {/* Top announcement bar */}
+      <div className="w-full bg-primary text-white text-xs sm:text-sm">
+        <div className="container-custom">
+          <div className="relative overflow-hidden h-8 flex items-center">
+            <div className="animate-marquee whitespace-nowrap">
+              <Link href="/utbildning" className="mx-8 inline-flex items-center gap-2 hover:underline">
+                <span>🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
+              </Link>
+              <Link href="/kunskapsbank/recept" className="mx-8 inline-flex items-center gap-2 hover:underline">
+                <span>🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
+              </Link>
+              <Link href="/kunskapsbank/kallor" className="mx-8 inline-flex items-center gap-2 hover:underline">
+                <span>🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
+              </Link>
+            </div>
+            <div className="animate-marquee2 whitespace-nowrap absolute left-full">
+              <Link href="/utbildning" className="mx-8 inline-flex items-center gap-2 hover:underline">
+                <span>🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
+              </Link>
+              <Link href="/kunskapsbank/recept" className="mx-8 inline-flex items-center gap-2 hover:underline">
+                <span>🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
+              </Link>
+              <Link href="/kunskapsbank/kallor" className="mx-8 inline-flex items-center gap-2 hover:underline">
+                <span>🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="container-custom">
-        <div className="relative flex justify-between items-center h-20 md:h-24">
+        <div className="relative flex justify-between items-center h-24 md:h-28">
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <Link href="/" className="pointer-events-auto">
-              <Image src="/FF_logo.svg" alt="Functional Foods" width={220} height={96} className="h-14 md:h-24 w-auto" priority />
+              <Image src="/FF_logo.svg" alt="Functional Foods" width={220} height={96} className="h-14 md:h-22 w-auto" priority />
             </Link>
           </div>
 
@@ -214,7 +243,7 @@ export default function Header() {
 
         {mobileMenuOpen && (<div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-fade-in" onClick={() => setMobileMenuOpen(false)} />)}
 
-        <div className={`fixed top-20 md:top-24 left-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className={`fixed top-32 md:top-36 left-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <nav className="py-6 px-4 space-y-2 h-full overflow-y-auto">
             <div className="block lg:hidden mb-4">
               <LanguageSwitcher />
@@ -368,9 +397,13 @@ export default function Header() {
         .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.4,0,0.2,1); }
         .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.4,0,0.2,1); }
         .animate-fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.4,0,0.2,1) both; }
+        .animate-marquee { animation: marquee 20s linear infinite; }
+        .animate-marquee2 { animation: marquee2 20s linear infinite; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.95);} to { opacity: 1; transform: scale(1);} }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        @keyframes marquee2 { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
       `}</style>
     </header>
   );
