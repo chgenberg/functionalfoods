@@ -174,5 +174,21 @@
   "recipes.detail.kcal": "Calories",
   "recipes.detail.protein": "Protein",
   "recipes.detail.carbs": "Carbohydrates",
-  "recipes.detail.fat": "Fat"
+  "recipes.detail.fat": "Fat",
+  "ingredients.title": "Functional Ingredients",
+  "ingredients.subtitle": "Explore our database of nutrient-rich ingredients and their health benefits",
+  "ingredients.search.placeholder": "Search for an ingredient or nutrient...",
+  "ingredients.filter": "Filters",
+  "ingredients.categories.all": "All categories",
+  "ingredients.category.Frukt & Bär": "Fruits & Berries",
+  "ingredients.category.Kött": "Meat",
+  "ingredients.category.Fisk & Skaldjur": "Fish & Seafood",
+  "ingredients.category.Mejeri": "Dairy",
+  "ingredients.category.Spannmål": "Grains",
+  "ingredients.category.Örter & Kryddor": "Herbs & Spices",
+  "ingredients.category.Övrigt": "Other",
+  "ingredients.results.showing": "Showing",
+  "ingredients.results.of": "of",
+  "ingredients.results.items": "ingredients",
+  "ingredients.empty": "No ingredients matched your search."
 } 

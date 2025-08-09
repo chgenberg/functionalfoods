@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiGrid, FiList, FiFilter, FiX, FiChevronRight } from 'react-icons/fi';
 import { GiWheat, GiFruitBowl, GiMeat, GiHerbsBundle } from 'react-icons/gi';
 import { FaCheese, FaFish, FaLeaf } from 'react-icons/fa';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface RawMaterial {
   id: string;
@@ -43,7 +44,6 @@ const renderDescription = (description: string | undefined, isExpanded: boolean 
   const paragraphs = description.split('\n\n').filter(p => p.trim());
   
   if (!isExpanded) {
-    // For collapsed view, show only first paragraph truncated
     return <p className="text-text-secondary text-sm line-clamp-2">{paragraphs[0]}</p>;
   }
   
@@ -66,6 +66,7 @@ export default function IngrediensPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const searchRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   useEffect(() => {
     fetchMaterials();
@@ -117,27 +118,22 @@ export default function IngrediensPage() {
   };
 
   const categories = ['all', 'Frukt & Bär', 'Kött', 'Fisk & Skaldjur', 'Mejeri', 'Spannmål', 'Örter & Kryddor', 'Övrigt'];
+  const categoryLabel = (cat: string) => {
+    if (cat === 'all') return t('ingredients.categories.all','Alla kategorier');
+    return t(`ingredients.category.${cat}` as any, cat);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.05
-      }
+      transition: { staggerChildren: 0.05 }
     }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100
-      }
-    }
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
   };
 
   return (
@@ -151,11 +147,11 @@ export default function IngrediensPage() {
         >
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
             <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold">
-              Funktionella Råvaror
+              {t('ingredients.title','Funktionella Råvaror')}
             </span>
           </h1>
           <p className="text-lg text-text-secondary">
-            Utforska vår databas av näringsrika råvaror och deras hälsofördelar
+            {t('ingredients.subtitle','Utforska vår databas av näringsrika råvaror och deras hälsofördelar')}
           </p>
         </motion.div>
 
@@ -168,7 +164,7 @@ export default function IngrediensPage() {
                 <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Sök efter råvara eller näringsämne..."
+                  placeholder={t('ingredients.search.placeholder','Sök efter råvara eller näringsämne...')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-accent/20 focus:border-accent focus:outline-none transition-colors"
@@ -193,7 +189,7 @@ export default function IngrediensPage() {
                 }`}
               >
                 <FiFilter className="w-5 h-5" />
-                <span className="hidden sm:inline">Filter</span>
+                <span className="hidden sm:inline">{t('ingredients.filter','Filter')}</span>
               </button>
               
               <div className="flex rounded-full border-2 border-accent/20 overflow-hidden">
@@ -236,7 +232,7 @@ export default function IngrediensPage() {
                         }`}
                       >
                         {category !== 'all' && <Icon className="w-4 h-4" />}
-                        <span>{category === 'all' ? 'Alla kategorier' : category}</span>
+                        <span>{category === 'all' ? t('ingredients.categories.all','Alla kategorier') : categoryLabel(category)}</span>
                       </button>
                     );
                   })}
@@ -248,8 +244,8 @@ export default function IngrediensPage() {
 
         {/* Results Count */}
         <div className="mb-6 text-text-secondary">
-          Visar <span className="font-medium text-text-primary">{filteredMaterials.length}</span> av{' '}
-          <span className="font-medium text-text-primary">{materials.length}</span> råvaror
+          {t('ingredients.results.showing','Visar')} <span className="font-medium text-text-primary">{filteredMaterials.length}</span> {t('ingredients.results.of','av')}{' '}
+          <span className="font-medium text-text-primary">{materials.length}</span> {t('ingredients.results.items','råvaror')}
         </div>
 
         {/* Content */}
@@ -349,7 +345,7 @@ export default function IngrediensPage() {
         {/* No Results */}
         {!loading && filteredMaterials.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-text-secondary text-lg">Inga råvaror hittades som matchar din sökning.</p>
+            <p className="text-text-secondary text-lg">{t('ingredients.empty','Inga råvaror hittades som matchar din sökning.')}</p>
           </div>
         )}
       </div>

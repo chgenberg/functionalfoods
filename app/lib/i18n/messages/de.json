@@ -169,5 +169,21 @@
   "recipes.detail.kcal": "Kalorien",
   "recipes.detail.protein": "Eiweiß",
   "recipes.detail.carbs": "Kohlenhydrate",
-  "recipes.detail.fat": "Fett"
+  "recipes.detail.fat": "Fett",
+  "ingredients.title": "Funktionelle Zutaten",
+  "ingredients.subtitle": "Entdecke unsere Datenbank mit nährstoffreichen Zutaten und ihren gesundheitlichen Vorteilen",
+  "ingredients.search.placeholder": "Zutat oder Nährstoff suchen...",
+  "ingredients.filter": "Filter",
+  "ingredients.categories.all": "Alle Kategorien",
+  "ingredients.category.Frukt & Bär": "Obst & Beeren",
+  "ingredients.category.Kött": "Fleisch",
+  "ingredients.category.Fisk & Skaldjur": "Fisch & Meeresfrüchte",
+  "ingredients.category.Mejeri": "Milchprodukte",
+  "ingredients.category.Spannmål": "Getreide",
+  "ingredients.category.Örter & Kryddor": "Kräuter & Gewürze",
+  "ingredients.category.Övrigt": "Sonstiges",
+  "ingredients.results.showing": "Zeige",
+  "ingredients.results.of": "von",
+  "ingredients.results.items": "Zutaten",
+  "ingredients.empty": "Keine Zutaten entsprechen deiner Suche."
 } 

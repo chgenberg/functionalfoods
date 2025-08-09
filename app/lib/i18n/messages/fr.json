@@ -169,5 +169,21 @@
   "recipes.detail.kcal": "Calories",
   "recipes.detail.protein": "Protéines",
   "recipes.detail.carbs": "Glucides",
-  "recipes.detail.fat": "Lipides"
+  "recipes.detail.fat": "Lipides",
+  "ingredients.title": "Ingrédients fonctionnels",
+  "ingredients.subtitle": "Découvrez notre base d'ingrédients riches en nutriments et leurs bienfaits pour la santé",
+  "ingredients.search.placeholder": "Rechercher un ingrédient ou un nutriment...",
+  "ingredients.filter": "Filtres",
+  "ingredients.categories.all": "Toutes les catégories",
+  "ingredients.category.Frukt & Bär": "Fruits & baies",
+  "ingredients.category.Kött": "Viande",
+  "ingredients.category.Fisk & Skaldjur": "Poissons & fruits de mer",
+  "ingredients.category.Mejeri": "Produits laitiers",
+  "ingredients.category.Spannmål": "Céréales",
+  "ingredients.category.Örter & Kryddor": "Herbes & épices",
+  "ingredients.category.Övrigt": "Autres",
+  "ingredients.results.showing": "Affichage",
+  "ingredients.results.of": "sur",
+  "ingredients.results.items": "ingrédients",
+  "ingredients.empty": "Aucun ingrédient ne correspond à votre recherche."
 } 
