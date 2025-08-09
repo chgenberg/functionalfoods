@@ -110,8 +110,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      // Show loading for at least 90 seconds for better UX
-      const minLoadingTime = 90000;
+      // Show loading for at least 45 seconds for better UX
+      const minLoadingTime = 45000;
       const startTime = Date.now();
 
       // Define fallback data
@@ -218,7 +218,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   }, [quizData]);
 
   if (loading) {
-    return <LoadingAnalysis />;
+    const answeredCount = isQuizAnswers(quizData) ? Object.keys(quizData).length : 10;
+    const adaptiveMs = answeredCount < 5 ? 20000 : answeredCount < 8 ? 30000 : 45000;
+    return <LoadingAnalysis totalMs={adaptiveMs} />;
   }
 
   if (error) {
