@@ -35,7 +35,7 @@ export default function FunctionalFlowLayout({
     },
     {
       label: t('course.nav.mealplan','Kostschema'),
-      href: '/dashboard/courses/functional-flow/kostschema',
+      href: '/dashboard/courses/functional-flow/kostschema?view=week&week=1',
       icon: GiMeal,
     },
     {

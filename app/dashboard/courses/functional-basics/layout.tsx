@@ -49,7 +49,7 @@ export default function FunctionalBasicsLayout({
     },
     {
       label: t('course.nav.mealplan','Kostschema'),
-      href: '/dashboard/courses/functional-basics/kostschema',
+      href: '/dashboard/courses/functional-basics/kostschema?view=week&week=1',
       icon: GiMeal,
     },
     {
