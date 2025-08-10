@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FiChevronLeft, FiChevronRight, FiCalendar, FiClock, 
@@ -10,7 +10,7 @@ import {
 import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
 import { getMealForDay, getFlowWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+// no next/navigation hooks to avoid suspense in export
 
 // Helper function to generate recipe slug from name
 const generateRecipeSlug = (name: string): string => {
@@ -152,7 +152,7 @@ export default function KostschemaPage() {
   const [courseStartDate, setCourseStartDate] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
-  const searchParams = useSearchParams();
+  // no searchParams hook
 
   // Hämta användarens kursstartdatum
   useEffect(() => {
@@ -202,10 +202,12 @@ export default function KostschemaPage() {
     setSelectedWeek(Math.ceil(dayNumber / 7));
   }, [courseStartDate]);
 
-  // Läs query-parametrar (?view=week&week=N)
+  // Läs query-parametrar (?view=week&week=N) via window (CSR only)
   useEffect(() => {
-    const view = searchParams.get('view');
-    const weekParam = searchParams.get('week');
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('view');
+    const weekParam = params.get('week');
     if (view === 'week') setViewMode('week');
     if (weekParam) {
       const w = parseInt(weekParam, 10);
@@ -214,7 +216,7 @@ export default function KostschemaPage() {
         setSelectedDay((w - 1) * 7 + 1);
       }
     }
-  }, [searchParams]);
+  }, []);
 
   // Visa loading state medan vi hämtar kursstartdatum
   if (loading || !courseStartDate) {
@@ -298,242 +300,242 @@ export default function KostschemaPage() {
   const currentMealCount = countMeals();
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
-      {/* Header */}
-      <div className="bg-white sticky top-0 z-20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">
-              Mitt Kostschema
-            </h1>
-            <Link
-              href="/dashboard/courses/functional-flow/inkopslista"
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-all duration-200 shadow-sm"
-            >
-              <FiShoppingCart className="w-5 h-5" />
-              <span className="hidden sm:inline">Visa Inköpslistor</span>
-            </Link>
-          </div>
-          <div className="flex items-center justify-between pb-4">
-            <button
-              onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
-              className="p-2 rounded-full hover:bg-gray-100"
-            >
-              <FiChevronLeft />
-            </button>
-                        <div className="flex items-center gap-3">
-              <h2 className="font-semibold text-lg">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h2>
-              <button
-                onClick={() => {
-                  const today = new Date();
-                  setCurrentMonth(new Date(today.getFullYear(), today.getMonth(), 1));
-                  const dayNumber = getCurrentDayOfCourse(today);
-                  setSelectedDay(dayNumber);
-                }}
-                className="px-3 py-1 text-xs rounded-full border hover:bg-gray-50"
-              >
-                Idag
-              </button>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setViewMode('month')}
-                className={`px-3 py-1 text-xs rounded-full border ${viewMode==='month' ? 'bg-primary text-white border-primary' : 'hover:bg-gray-50'}`}
-              >
-                Månad
-              </button>
-              <button
-                onClick={() => setViewMode('week')}
-                className={`px-3 py-1 text-xs rounded-full border ${viewMode==='week' ? 'bg-primary text-white border-primary' : 'hover:bg-gray-50'}`}
-              >
-                Vecka
-              </button>
-            </div>
-             <button
-               onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
-               className="p-2 rounded-full hover:bg-gray-100"
-             >
-               <FiChevronRight />
-             </button>
-          </div>
-        </div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Month or Week */}
-        {viewMode === 'month' ? (
-          <>
-            <div className="grid grid-cols-7 gap-1 sm:gap-2 my-4">
-              {dayNames.map(name => (
-                <div key={name} className="text-center text-xs font-medium text-gray-500">{name}</div>
-              ))}
-              {days.map((day, index) => {
-                const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
-                const today = new Date();
-                const isToday = day.getDate() === today.getDate() && day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
-                const dayNumber = isDateInCourse(day) ? getCurrentDayOfCourse(day) + 1 : 0;
-                const isSelected = selectedDay === dayNumber;
-
-                return (
-                  <CalendarDay
-                    key={index}
-                    day={day.toLocaleDateString('sv-SE', { weekday: 'short' })}
-                    date={day.getDate()}
-                    isToday={isToday}
-                    isSelected={isSelected}
-                    onClick={() => {
-                      if (isDateInCourse(day)) {
-                        setSelectedDay(dayNumber);
-                        setSelectedWeek(Math.ceil(dayNumber / 7));
-                      }
-                    }}
-                    hasMealPlan={isDateInCourse(day)}
-                    dayNumber={dayNumber}
-                    isCurrentWeek={isCurrentMonth}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Day Detail */}
-            <div className="mt-8">
-              <motion.div
-                key={selectedDay}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mt-6"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {currentDayMeals ? (
-                    <>
-                      {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
-                      {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
-                      {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
-                      {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
-                      {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
-                    </>
-                  ) : (
-                    <p>Inget kostschema för denna dag.</p>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </>
-        ) : (
-          <>
-            {/* Week Selector */}
-            <div className="flex items-center gap-2 flex-wrap my-4">
-              {[1, 2, 3, 4, 5, 6].map((week) => (
-                <button
-                  key={week}
-                  onClick={() => {
-                    setSelectedWeek(week);
-                    setSelectedDay((week - 1) * 7 + 1);
-                  }}
-                  className={`px-3 py-1 text-xs rounded-full border ${selectedWeek === week ? 'bg-primary text-white border-primary' : 'hover:bg-gray-50'}`}
-                >
-                  Vecka {week}
-                </button>
-              ))}
+      <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
+        {/* Header */}
+        <div className="bg-white sticky top-0 z-20 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+                Mitt Kostschema
+              </h1>
               <Link
-                href={`/dashboard/courses/functional-flow/inkopslista?week=${selectedWeek}`}
-                className="ml-auto flex items-center gap-2 px-3 py-1 text-xs rounded-full border hover:bg-gray-50"
+                href="/dashboard/courses/functional-flow/inkopslista"
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-all duration-200 shadow-sm"
               >
-                <FiShoppingCart className="w-4 h-4" /> Inköpslista v{selectedWeek}
+                <FiShoppingCart className="w-5 h-5" />
+                <span className="hidden sm:inline">Visa Inköpslistor</span>
               </Link>
             </div>
-
-            {/* Weekly Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(() => {
-                const weekData = getFlowWeekData(selectedWeek);
-                const weekMeals = (weekData?.days as any) || {};
-                const weekDays = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
-                return weekDays.map((name, idx) => {
-                  const meals = weekMeals[name];
-                  const absoluteDay = (selectedWeek - 1) * 7 + idx + 1;
-                  const isActive = selectedDay === absoluteDay;
-                  return (
-                    <button
-                      key={name}
-                      onClick={() => setSelectedDay(absoluteDay)}
-                      className={`text-left bg-white rounded-xl border p-4 hover:shadow-sm transition ${isActive ? 'border-primary' : 'border-gray-100'}`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-gray-800">{name}</span>
-                        <span className="text-xs text-gray-500">Dag {absoluteDay}</span>
-                      </div>
-                      {meals ? (
-                        <div className="flex flex-col gap-2 text-sm text-gray-700">
-                          {meals.breakfast && <div className="truncate"><span className="text-gray-500">Frukost: </span>{meals.breakfast.name}</div>}
-                          {meals.lunch && <div className="truncate"><span className="text-gray-500">Lunch: </span>{meals.lunch.name}</div>}
-                          {meals.dinner && <div className="truncate"><span className="text-gray-500">Middag: </span>{meals.dinner.name}</div>}
-                          {meals.snack && <div className="truncate"><span className="text-gray-500">Mellanmål: </span>{meals.snack.name}</div>}
-                        </div>
-                      ) : (
-                        <div className="text-xs text-gray-400">Ingen plan för denna dag</div>
-                      )}
-                    </button>
-                  );
-                });
-              })()}
-            </div>
-
-            {/* Day Detail */}
-            <div className="mt-8">
-              <motion.div
-                key={`week-${selectedWeek}-day-${selectedDay}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mt-6"
+            <div className="flex items-center justify-between pb-4">
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                className="p-2 rounded-full hover:bg-gray-100"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {currentDayMeals ? (
-                    <>
-                      {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
-                      {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
-                      {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
-                      {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
-                      {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
-                    </>
-                  ) : (
-                    <p>Inget kostschema för denna dag.</p>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </>
-        )}
-
-        {/* Floating summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-lg bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-gray-200"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-800">
-                Vecka <span className="text-primary font-bold">{selectedWeek}</span>, Dag <span className="text-primary font-bold">{selectedDay}</span>
-              </p>
-              <p className="text-xs text-gray-500">Översikt för den valda dagen</p>
-            </div>
-            <div className="flex items-center gap-4 text-center">
-              <div>
-                <p className="font-bold text-lg text-gray-900">{currentMealCount}</p>
-                <p className="text-xs text-gray-500">Måltider</p>
+                <FiChevronLeft />
+              </button>
+              <div className="flex items-center gap-3">
+                <h2 className="font-semibold text-lg">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h2>
+                <button
+                  onClick={() => {
+                    const today = new Date();
+                    setCurrentMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+                    const dayNumber = getCurrentDayOfCourse(today);
+                    setSelectedDay(dayNumber);
+                  }}
+                  className="px-3 py-1 text-xs rounded-full border hover:bg-gray-50"
+                >
+                  Idag
+                </button>
               </div>
-              <div>
-                <p className="font-bold text-lg text-gray-900">~{currentTotalCalories}</p>
-                <p className="text-xs text-gray-500">Kalorier</p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setViewMode('month')}
+                  className={`px-3 py-1 text-xs rounded-full border ${viewMode==='month' ? 'bg-primary text-white border-primary' : 'hover:bg-gray-50'}`}
+                >
+                  Månad
+                </button>
+                <button
+                  onClick={() => setViewMode('week')}
+                  className={`px-3 py-1 text-xs rounded-full border ${viewMode==='week' ? 'bg-primary text-white border-primary' : 'hover:bg-gray-50'}`}
+                >
+                  Vecka
+                </button>
               </div>
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+                className="p-2 rounded-full hover:bg-gray-100"
+              >
+                <FiChevronRight />
+              </button>
             </div>
           </div>
-        </motion.div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Month or Week */}
+          {viewMode === 'month' ? (
+            <>
+              <div className="grid grid-cols-7 gap-1 sm:gap-2 my-4">
+                {dayNames.map(name => (
+                  <div key={name} className="text-center text-xs font-medium text-gray-500">{name}</div>
+                ))}
+                {days.map((day, index) => {
+                  const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
+                  const today = new Date();
+                  const isToday = day.getDate() === today.getDate() && day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
+                  const dayNumber = isDateInCourse(day) ? getCurrentDayOfCourse(day) + 1 : 0;
+                  const isSelected = selectedDay === dayNumber;
+
+                  return (
+                    <CalendarDay
+                      key={index}
+                      day={day.toLocaleDateString('sv-SE', { weekday: 'short' })}
+                      date={day.getDate()}
+                      isToday={isToday}
+                      isSelected={isSelected}
+                      onClick={() => {
+                        if (isDateInCourse(day)) {
+                          setSelectedDay(dayNumber);
+                          setSelectedWeek(Math.ceil(dayNumber / 7));
+                        }
+                      }}
+                      hasMealPlan={isDateInCourse(day)}
+                      dayNumber={dayNumber}
+                      isCurrentWeek={isCurrentMonth}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Day Detail */}
+              <div className="mt-8">
+                <motion.div
+                  key={selectedDay}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-6"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {currentDayMeals ? (
+                      <>
+                        {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
+                        {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
+                        {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
+                        {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
+                        {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
+                      </>
+                    ) : (
+                      <p>Inget kostschema för denna dag.</p>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Week Selector */}
+              <div className="flex items-center gap-2 flex-wrap my-4">
+                {[1, 2, 3, 4, 5, 6].map((week) => (
+                  <button
+                    key={week}
+                    onClick={() => {
+                      setSelectedWeek(week);
+                      setSelectedDay((week - 1) * 7 + 1);
+                    }}
+                    className={`px-3 py-1 text-xs rounded-full border ${selectedWeek === week ? 'bg-primary text-white border-primary' : 'hover:bg-gray-50'}`}
+                  >
+                    Vecka {week}
+                  </button>
+                ))}
+                <Link
+                  href={`/dashboard/courses/functional-flow/inkopslista?week=${selectedWeek}`}
+                  className="ml-auto flex items-center gap-2 px-3 py-1 text-xs rounded-full border hover:bg-gray-50"
+                >
+                  <FiShoppingCart className="w-4 h-4" /> Inköpslista v{selectedWeek}
+                </Link>
+              </div>
+
+              {/* Weekly Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {(() => {
+                  const weekData = getFlowWeekData(selectedWeek);
+                  const weekMeals = (weekData?.days as any) || {};
+                  const weekDays = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+                  return weekDays.map((name, idx) => {
+                    const meals = weekMeals[name];
+                    const absoluteDay = (selectedWeek - 1) * 7 + idx + 1;
+                    const isActive = selectedDay === absoluteDay;
+                    return (
+                      <button
+                        key={name}
+                        onClick={() => setSelectedDay(absoluteDay)}
+                        className={`text-left bg-white rounded-xl border p-4 hover:shadow-sm transition ${isActive ? 'border-primary' : 'border-gray-100'}`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-semibold text-gray-800">{name}</span>
+                          <span className="text-xs text-gray-500">Dag {absoluteDay}</span>
+                        </div>
+                        {meals ? (
+                          <div className="flex flex-col gap-2 text-sm text-gray-700">
+                            {meals.breakfast && <div className="truncate"><span className="text-gray-500">Frukost: </span>{meals.breakfast.name}</div>}
+                            {meals.lunch && <div className="truncate"><span className="text-gray-500">Lunch: </span>{meals.lunch.name}</div>}
+                            {meals.dinner && <div className="truncate"><span className="text-gray-500">Middag: </span>{meals.dinner.name}</div>}
+                            {meals.snack && <div className="truncate"><span className="text-gray-500">Mellanmål: </span>{meals.snack.name}</div>}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-gray-400">Ingen plan för denna dag</div>
+                        )}
+                      </button>
+                    );
+                  });
+                })()}
+              </div>
+
+              {/* Day Detail */}
+              <div className="mt-8">
+                <motion.div
+                  key={`week-${selectedWeek}-day-${selectedDay}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-6"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {currentDayMeals ? (
+                      <>
+                        {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
+                        {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
+                        {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
+                        {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
+                        {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
+                      </>
+                    ) : (
+                      <p>Inget kostschema för denna dag.</p>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+
+          {/* Floating summary */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-lg bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 border border-gray-200"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-800">
+                  Vecka <span className="text-primary font-bold">{selectedWeek}</span>, Dag <span className="text-primary font-bold">{selectedDay}</span>
+                </p>
+                <p className="text-xs text-gray-500">Översikt för den valda dagen</p>
+              </div>
+              <div className="flex items-center gap-4 text-center">
+                <div>
+                  <p className="font-bold text-lg text-gray-900">{currentMealCount}</p>
+                  <p className="text-xs text-gray-500">Måltider</p>
+                </div>
+                <div>
+                  <p className="font-bold text-lg text-gray-900">~{currentTotalCalories}</p>
+                  <p className="text-xs text-gray-500">Kalorier</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </div>
   );
 } 
