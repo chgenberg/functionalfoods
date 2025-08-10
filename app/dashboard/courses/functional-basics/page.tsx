@@ -292,6 +292,24 @@ export default function FunctionalBasicsPage() {
         </Link>
       </div>
 
+      {/* Snabblänk till Kostschema */}
+      <div className="mt-4">
+        <Link 
+          href="/dashboard/courses/functional-basics/kostschema?view=week&week=1"
+          className="block bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-lg mb-1">Mitt kostschema</h3>
+              <p className="text-sm text-purple-100">Veckoöversikt och dagliga måltider</p>
+            </div>
+            <div className="bg-white/20 p-3 rounded-lg">
+              <FiBook className="w-6 h-6" />
+            </div>
+          </div>
+        </Link>
+      </div>
+
       {/* Weekly Progress - Mobile Optimized */}
       <div className="week-navigation bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-4 sm:p-6 md:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 md:mb-6">
@@ -318,61 +336,28 @@ export default function FunctionalBasicsPage() {
                 initial={false}
               >
                 <div 
-                  className={`p-4 md:p-6 cursor-pointer transition-colors ${
-                    isExpanded ? 'bg-orange-50' : 'hover:bg-gray-50'
-                  }`}
+                  className="flex items-center justify-between p-3 md:p-4 bg-gray-50 cursor-pointer"
                   onClick={() => setExpandedWeek(isExpanded ? null : week.number)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3 md:space-x-4 flex-1">
-                      <div className={`
-                        w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-white text-sm md:text-base
-                        ${week.number === 1 ? 'bg-primary' : 
-                          week.number === 2 ? 'bg-[#0D5C29]' :
-                          week.number === 3 ? 'bg-[#167531]' :
-                          week.number === 4 ? 'bg-[#1F8E39]' :
-                          week.number === 5 ? 'bg-[#28A741]' :
-                          'bg-[#31C049]'}
-                      `}>
-                        {week.number}
-                      </div>
-                      
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 text-sm md:text-base">{week.title}</h3>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-1">
-                          <p className="text-xs md:text-sm text-gray-600">
-                            {totalGoals > 0 ? (
-                              <span className="flex items-center space-x-1">
-                                <FiCheckCircle className="w-3 h-3 md:w-4 md:h-4 text-primary" />
-                                <span>{completedGoals}/{totalGoals} mål klara</span>
-                              </span>
-                            ) : (
-                              <span className="text-orange-600">Klicka för att se förslag på mål</span>
-                            )}
-                          </p>
-                          {totalGoals > 0 && (
-                            <div className="flex-1 max-w-full sm:max-w-xs">
-                              <div className="w-full h-1.5 md:h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <motion.div
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${(completedGoals / totalGoals) * 100}%` }}
-                                  className="h-full bg-primary"
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center ml-2">
-                      <motion.div
-                        animate={{ rotate: isExpanded ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <FiChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
-                      </motion.div>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm md:text-base font-semibold">Vecka {week.number}</div>
+                    <div className="text-xs md:text-sm text-gray-600">{week.title}</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/dashboard/courses/functional-basics/kostschema?view=week&week=${week.number}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs md:text-sm bg-primary text-white px-3 py-1 rounded-full hover:bg-secondary"
+                    >
+                      Öppna kostschema
+                    </Link>
+                    <Link
+                      href={`/dashboard/courses/functional-basics/inkopslista?week=${week.number}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs md:text-sm border px-3 py-1 rounded-full hover:bg-gray-50"
+                    >
+                      Inköpslista v{week.number}
+                    </Link>
                   </div>
                 </div>
 

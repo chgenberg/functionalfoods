@@ -10,6 +10,7 @@ import {
 import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
 import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 // Helper function to generate recipe slug from name
 const generateRecipeSlug = (name: string): string => {
@@ -152,6 +153,7 @@ export default function KostschemaPage() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
   const [selectedWeek, setSelectedWeek] = useState(Math.ceil(selectedDay / 7));
+  const searchParams = useSearchParams();
 
   // Hämta användarens kursstartdatum
   useEffect(() => {
@@ -192,6 +194,31 @@ export default function KostschemaPage() {
 
     fetchCourseStartDate();
   }, []);
+
+  useEffect(() => {
+    if (!courseStartDate) return;
+    const today = new Date();
+    const dayNumber = getCurrentDayOfCourse(today);
+    setSelectedDay(dayNumber);
+    setSelectedWeek(Math.ceil(dayNumber / 7));
+    setSelectedDate(today);
+  }, [courseStartDate]);
+
+  // Läs query-parametrar (?view=week&week=N)
+  useEffect(() => {
+    const view = searchParams.get('view');
+    const weekParam = searchParams.get('week');
+    if (view === 'week') {
+      setViewMode('week');
+    }
+    if (weekParam) {
+      const w = parseInt(weekParam, 10);
+      if (!isNaN(w) && w >= 1 && w <= 6) {
+        setSelectedWeek(w);
+        setSelectedDay((w - 1) * 7 + 1);
+      }
+    }
+  }, [searchParams]);
 
   // Visa loading state medan vi hämtar kursstartdatum
   if (loading || !courseStartDate) {

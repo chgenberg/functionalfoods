@@ -190,7 +190,7 @@ export default function FunctionalFlowPage() {
           {weeks.map((week) => (
             <Link
               key={week.number}
-              href={`/dashboard/courses/functional-flow/week/${week.number}`}
+              href={`/dashboard/courses/functional-flow/kostschema?view=week&week=${week.number}`}
               className={`
                 relative p-3 md:p-4 rounded-lg md:rounded-xl text-center transition-all duration-300
                 ${week.status === 'current' 
@@ -317,7 +317,7 @@ export default function FunctionalFlowPage() {
 
           {/* Recipe Plan */}
           <Link 
-            href="/dashboard/courses/functional-flow/kostschema"
+            href="/dashboard/courses/functional-flow/kostschema?view=week&week=1"
             className="block bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg md:shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
           >
             <div className="flex items-center justify-between">
