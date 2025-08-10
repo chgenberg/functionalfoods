@@ -180,7 +180,7 @@ Formatera svaret som JSON med följande struktur:
 }`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "GPT5-mini",
       messages: [
         {
           role: "system",

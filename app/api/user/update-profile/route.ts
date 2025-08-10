@@ -7,89 +7,57 @@ const prisma = new PrismaClient();
 
 export async function PUT(req: NextRequest) {
   try {
-    // Get token from headers
     const token = req.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({ error: 'Ingen auktorisering' }, { status: 401 });
-    }
+    if (!token) return NextResponse.json({ error: 'Ingen auktorisering' }, { status: 401 });
 
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const userId = decoded.userId;
 
-    // Get request body
     const body = await req.json();
-    const { name, email, currentPassword, newPassword } = body;
+    const { name, email, currentPassword, newPassword, addressLine1, addressLine2, postalCode, city, country } = body;
 
-    // Find user
-    const user = await prisma.user.findUnique({
-      where: { id: userId }
-    });
+    const user: any = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return NextResponse.json({ error: 'Användare hittades inte' }, { status: 404 });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Användare hittades inte' }, { status: 404 });
-    }
-
-    // Prepare update data
     const updateData: any = {};
 
-    // Update name if provided
-    if (name && name !== user.name) {
-      updateData.name = name;
-    }
+    if (name && name !== user.name) updateData.name = name;
 
-    // Update email if provided and different
     if (email && email !== user.email) {
-      // Check if email is already taken
-      const existingUser = await prisma.user.findUnique({
-        where: { email }
-      });
-      
-      if (existingUser) {
-        return NextResponse.json({ error: 'E-postadressen används redan' }, { status: 400 });
-      }
-      
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+      if (existingUser) return NextResponse.json({ error: 'E-postadressen används redan' }, { status: 400 });
       updateData.email = email;
     }
 
-    // Update password if provided
     if (newPassword) {
-      // Verify current password first
-      if (!currentPassword) {
-        return NextResponse.json({ error: 'Nuvarande lösenord krävs' }, { status: 400 });
-      }
-
+      if (!currentPassword) return NextResponse.json({ error: 'Nuvarande lösenord krävs' }, { status: 400 });
       const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-      if (!isPasswordValid) {
-        return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 400 });
-      }
-
-      // Hash new password
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      updateData.password = hashedPassword;
+      if (!isPasswordValid) return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 400 });
+      updateData.password = await bcrypt.hash(newPassword, 10);
     }
 
-    // Update user if there are changes
-    if (Object.keys(updateData).length > 0) {
-      const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: updateData,
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          createdAt: true
-        }
-      });
+    updateData.addressLine1 = addressLine1 ?? user.addressLine1;
+    updateData.addressLine2 = addressLine2 ?? user.addressLine2;
+    updateData.postalCode = postalCode ?? user.postalCode;
+    updateData.city = city ?? user.city;
+    updateData.country = country ?? user.country;
 
-      return NextResponse.json({ 
-        message: 'Profil uppdaterad',
-        user: updatedUser 
-      });
-    }
+    const updated: any = await prisma.user.update({ where: { id: userId }, data: updateData });
 
-    return NextResponse.json({ message: 'Inga ändringar gjordes' });
+    const safeUser = {
+      id: updated.id,
+      email: updated.email,
+      name: updated.name,
+      role: updated.role,
+      createdAt: updated.createdAt,
+      addressLine1: updated.addressLine1,
+      addressLine2: updated.addressLine2,
+      postalCode: updated.postalCode,
+      city: updated.city,
+      country: updated.country,
+    };
+
+    return NextResponse.json({ message: 'Profil uppdaterad', user: safeUser });
 
   } catch (error) {
     console.error('Profile update error:', error);
@@ -97,45 +65,36 @@ export async function PUT(req: NextRequest) {
   }
 }
 
-// GET endpoint to fetch current user data
 export async function GET(req: NextRequest) {
   try {
-    // Get token from headers
     const token = req.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({ error: 'Ingen auktorisering' }, { status: 401 });
-    }
+    if (!token) return NextResponse.json({ error: 'Ingen auktorisering' }, { status: 401 });
 
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const userId = decoded.userId;
 
-    // Find user
-    const user = await prisma.user.findUnique({
+    const user: any = await prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
-        purchases: {
-          include: {
-            course: {
-              include: {
-                product: true
-              }
-            }
-          }
-        }
-      }
+      include: { purchases: { include: { course: true } } }
     });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Användare hittades inte' }, { status: 404 });
-    }
+    if (!user) return NextResponse.json({ error: 'Användare hittades inte' }, { status: 404 });
 
-    return NextResponse.json({ user });
+    const safeUser = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      createdAt: user.createdAt,
+      addressLine1: user.addressLine1,
+      addressLine2: user.addressLine2,
+      postalCode: user.postalCode,
+      city: user.city,
+      country: user.country,
+      purchases: user.purchases
+    };
+
+    return NextResponse.json({ user: safeUser });
 
   } catch (error) {
     console.error('Get profile error:', error);

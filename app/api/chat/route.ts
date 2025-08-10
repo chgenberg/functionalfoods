@@ -209,7 +209,7 @@ VIKTIGA REGLER:
 18. VIKTIGT: Använd ALDRIG markdown-länkar som [text](http://...) - skriv bara texten`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "GPT5-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }

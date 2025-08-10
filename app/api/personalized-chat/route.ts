@@ -342,7 +342,7 @@ VIKTIGA REGLER:
 ${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "GPT5-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }

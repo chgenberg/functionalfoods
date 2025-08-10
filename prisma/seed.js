@@ -276,7 +276,7 @@ async function main() {
   console.log('   Tillgång: Functional Basics kurs + alla premium recept');
   console.log('');
   // Dummy recensioner
-  await prisma.courseReview.createMany({ data: [
+  await prisma.courseReview.createMany({ skipDuplicates: true, data: [
     { userId: flowUser.id, courseId: 'functional-flow', rating: 5, consent: true, status: 'APPROVED', answers: [
       { q: 'Levde kursen upp till dina förväntningar?', a: 'Absolut, överträffade dem. Jag känner mig piggare och mer fokuserad.' },
       { q: 'Mest värdefulla lärdom?', a: 'Att planera mina måltider med funktionella råvaror – enorm skillnad.' },

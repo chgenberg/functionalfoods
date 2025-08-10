@@ -276,6 +276,12 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     { id: 'warnings', label: 'Varningar', icon: '⚠️' },
     { id: 'metrics', label: 'Mätning', icon: '📈' }
   ];
+  const orderedTabIds = tabs.map(t => t.id);
+  const currentTabIndex = orderedTabIds.indexOf(activeTab);
+  const goNextTab = () => {
+    if (currentTabIndex < orderedTabIds.length - 1) setActiveTab(orderedTabIds[currentTabIndex + 1]);
+    else setActiveTab('summary');
+  };
 
   const healthAreas = [
     { key: 'energi', label: 'Energi', icon: FiZap, color: '#fbbf24' },
@@ -823,6 +829,14 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                 )}
                 </motion.div>
               </AnimatePresence>
+
+              {/* Step footer navigation */}
+              <div className="mt-6 flex justify-end">
+                <button onClick={goNextTab} className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-medium hover:bg-secondary transition-colors">
+                  {currentTabIndex < orderedTabIds.length - 1 ? t('quiz.next','Nästa') : t('quiz.toOverview','Till översikt')}
+                  <FiArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
