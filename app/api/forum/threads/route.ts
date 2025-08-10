@@ -54,7 +54,7 @@ Svara endast med JA eller NEJ.
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "GPT5-mini",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 10,
       temperature: 0.1,
@@ -100,7 +100,7 @@ Håll svaret mellan 200-400 ord.
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "GPT5-mini",
       messages: [
         {
           role: "system",

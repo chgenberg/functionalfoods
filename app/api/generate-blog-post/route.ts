@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     // Generera blogginlägg med OpenAI
     const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "GPT5-mini",
       messages: [
         {
           role: "system",
