@@ -136,7 +136,7 @@ export default function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'}`}>
       {/* Top announcement bar */}
-      <div className="w-full bg-primary text-white text-xs sm:text-sm">
+      <div className="w-full text-white text-xs sm:text-sm" style={{ backgroundColor: '#112A12' }}>
         <div className="container-custom">
           <div className="relative overflow-hidden h-8 flex items-center">
             <div className="animate-marquee whitespace-nowrap">
