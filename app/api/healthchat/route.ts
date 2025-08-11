@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { OpenAI } from "openai";
+import { resolveModel } from '@/app/lib/ai';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 export async function POST(req: NextRequest) {
   try {
+    if (!openai) {
+      return NextResponse.json({ reply: "OpenAI not configured" }, { status: 500 });
+    }
     const { messages } = await req.json();
 
     const systemPrompt = `
@@ -26,7 +30,7 @@ Always answer in English.
     ];
 
     const gptResponse = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: gptMessages,
       max_tokens: 400,
     });

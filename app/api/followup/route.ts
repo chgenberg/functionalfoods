@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { OpenAI } from "openai";
 import { Question, UserResponse, APIResponse } from '@/app/types';
+import { resolveModel } from '@/app/lib/ai';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 export async function POST(req: NextRequest): Promise<NextResponse<APIResponse>> {
   try {
+    if (!openai) {
+      return NextResponse.json({ questions: [], error: 'OpenAI not configured', raw: '' });
+    }
     const { bodyPart, description, previousAnswers = [] } = await req.json() as UserResponse;
 
     const prompt = `
@@ -32,7 +36,7 @@ Return ONLY valid JSON, nothing else.
 `;
 
     const completion = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [{ role: "user", content: prompt }],
       max_tokens: 600,
       temperature: 0.7,
@@ -58,22 +62,13 @@ Return ONLY valid JSON, nothing else.
       return NextResponse.json({ 
         questions: [], 
         error: "Invalid JSON from GPT",
-        raw: jsonMatch[0]
+        raw: content
       });
     }
 
-    return NextResponse.json({ 
-      questions,
-      metadata: {
-        hasNutrientQuestions: false,
-        symptomCount: previousAnswers.filter(a => a.type === 'symptom').length
-      }
-    });
+    return NextResponse.json({ questions });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ 
-      questions: [],
-      error: "Something went wrong" 
-    });
+    console.error("Follow-up API error:", error);
+    return NextResponse.json({ questions: [], error: 'Server error', raw: '' }, { status: 500 });
   }
 }

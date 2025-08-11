@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import OpenAI from 'openai';
+import { resolveModel } from '@/app/lib/ai';
 
 const prisma = new PrismaClient();
 
@@ -107,7 +108,7 @@ export async function POST(req: NextRequest) {
     // Generera blogginlägg med OpenAI
     const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [
         {
           role: "system",

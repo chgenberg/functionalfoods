@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { resolveModel } from '@/app/lib/ai';
 import OpenAI from 'openai';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
@@ -180,7 +181,7 @@ Formatera svaret som JSON med följande struktur:
 }`;
 
     const completion = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [
         {
           role: "system",

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { resolveModel } from '@/app/lib/ai';
 import OpenAI from 'openai';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
@@ -342,7 +343,7 @@ VIKTIGA REGLER:
 ${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
 
     const completion = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }

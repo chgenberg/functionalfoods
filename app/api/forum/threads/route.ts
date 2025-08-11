@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import OpenAI from 'openai';
+import { resolveModel } from '@/app/lib/ai';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,7 +55,7 @@ Svara endast med JA eller NEJ.
 
   try {
     const response = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [{ role: "user", content: prompt }],
       max_tokens: 10,
       temperature: 0.1,
@@ -100,7 +101,7 @@ Håll svaret mellan 200-400 ord.
 
   try {
     const response = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [
         {
           role: "system",

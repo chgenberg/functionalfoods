@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import fs from 'fs/promises';
 import path from 'path';
+import { resolveModel } from '@/app/lib/ai';
 
 const prisma = new PrismaClient();
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
     `;
 
     const completion = await openai.chat.completions.create({
-              model: "GPT5-mini",
+              model: resolveModel('gpt-5-mini'),
       messages: [{ role: "user", content: articlePrompt }],
       response_format: { type: "json_object" },
       max_tokens: 2500,

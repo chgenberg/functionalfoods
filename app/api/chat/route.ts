@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { resolveModel } from '@/app/lib/ai';
 import { PrismaClient } from '@prisma/client';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
@@ -209,7 +210,7 @@ VIKTIGA REGLER:
 18. VIKTIGT: Använd ALDRIG markdown-länkar som [text](http://...) - skriv bara texten`;
 
     const completion = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }

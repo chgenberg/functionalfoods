@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveModel } from '@/app/lib/ai';
 import { OpenAI } from "openai";
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
     `;
 
     const completion = await openai.chat.completions.create({
-      model: "GPT5-mini",
+      model: resolveModel('gpt-5-mini'),
       messages: [{ role: "user", content: prompt }],
       temperature: 0.2,
     });
