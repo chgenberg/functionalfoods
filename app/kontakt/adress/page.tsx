@@ -63,11 +63,12 @@ export default function AdressPage() {
       <div className="container-custom section-padding">
         {/* Back Link */}
         <Link
-          href="/kontakt"
+          href="/"
+          prefetch={false}
           className="inline-flex items-center text-text-secondary hover:text-primary mb-6 transition-colors"
         >
           <FiArrowLeft className="w-4 h-4 mr-2" />
-          {t('contact.back','Tillbaka till kontakt')}
+          {t('contact.backHome','Tillbaka till förstasidan')}
         </Link>
 
         {/* Hero Image */}
