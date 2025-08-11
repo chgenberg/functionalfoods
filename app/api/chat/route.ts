@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { resolveModel } from '@/app/lib/ai';
+import { resolveModel, chatWithFallback } from '@/app/lib/ai';
 import { PrismaClient } from '@prisma/client';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
@@ -209,15 +209,14 @@ VIKTIGA REGLER:
 17. Ge konkreta förslag på functional foods från vår råvarudatabas
 18. VIKTIGT: Använd ALDRIG markdown-länkar som [text](http://...) - skriv bara texten`;
 
-    const completion = await openai.chat.completions.create({
-      model: resolveModel('gpt-5-mini'),
+    const completion = await chatWithFallback(openai, {
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ],
-      max_tokens: 350, // Lite extra tokens för att säkerställa kompletta meningar
+      max_tokens: 350,
       temperature: 0.7,
-      stop: null, // Ta bort stop sequences för att undvika avbrott
+      stop: null,
     });
 
     let response = completion.choices[0].message.content || "Ursäkta, jag kunde inte generera ett svar just nu.";

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { resolveModel } from '@/app/lib/ai';
+import { resolveModel, chatWithFallback } from '@/app/lib/ai';
 import OpenAI from 'openai';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
@@ -342,8 +342,7 @@ VIKTIGA REGLER:
 19. VIKTIGT: Använd ALDRIG markdown-länkar som [text](http://...) - skriv bara texten
 ${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
 
-    const completion = await openai.chat.completions.create({
-      model: resolveModel('gpt-5-mini'),
+    const completion = await chatWithFallback(openai, {
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }

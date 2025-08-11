@@ -2,4 +2,18 @@ export const OPENAI_CHAT_MODEL = process.env.OPENAI_MODEL || process.env.NEXT_PU
 
 export function resolveModel(fallback?: string): string {
   return OPENAI_CHAT_MODEL || fallback || 'gpt-5-mini';
+}
+
+export async function chatWithFallback(openai: any, params: { messages: any[]; max_tokens?: number; temperature?: number; stop?: any; }) {
+  const primaryModel = resolveModel('gpt-5-mini');
+  try {
+    return await openai.chat.completions.create({ model: primaryModel, ...params });
+  } catch (err: any) {
+    const message = (err?.message || '').toLowerCase();
+    const isModelIssue = message.includes('model') || message.includes('unknown') || message.includes('not found');
+    if (isModelIssue) {
+      return await openai.chat.completions.create({ model: 'gpt-4o-mini', ...params });
+    }
+    throw err;
+  }
 } 
