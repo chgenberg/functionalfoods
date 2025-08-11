@@ -165,15 +165,15 @@ export default function Header() {
         </div>
       </div>
       <div className="container-custom">
-        <div className="relative flex justify-between items-center h-28 md:h-32">
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div className="relative flex justify-between items-center h-24 md:h-28">
+          <div className="flex items-center">
             <Link href="/" className="pointer-events-auto">
-              <Image src="/FF_logo.svg" alt="Functional Foods" width={230} height={100} className="h-14 md:h-24 w-auto" priority />
+              <Image src="/FF_logo.svg" alt="Functional Foods" width={200} height={80} className="h-12 md:h-16 w-auto" priority />
             </Link>
           </div>
 
           {/* Desktop navbar */}
-          <nav className="hidden lg:flex items-center gap-4">
+          <nav className="hidden lg:flex items-center gap-6 ml-6">
             {menuItems.map((item) => (
               <div key={item.label} className="relative group" onMouseEnter={() => setActiveDropdown(item.label)} onMouseLeave={() => setActiveDropdown(null)}>
                 <Link href={item.href} className="flex items-center space-x-1 text-primary hover:text-accent px-2 py-2 text-sm font-semibold tracking-wide transition-colors duration-200">
