@@ -58,7 +58,11 @@ export default function Header() {
   const menuItems = [
     { label: t('nav.home','HEM'), href: "/" },
     { label: t('nav.book','BOKEN'), href: "/boken" },
-    { label: t('nav.education','UTBILDNING'), href: "/utbildning" },
+    { label: t('nav.education','UTBILDNING'), href: "/utbildning", submenu: [
+      { label: t('nav.allCourses','Alla kurser'), href: "/utbildning/alla-kurser" },
+      { label: "Functional Basics", href: "/utbildning/functional-basics" },
+      { label: "Functional Flow", href: "/utbildning/functional-flow" },
+    ] },
     { label: t('nav.recipes','RECEPT'), href: "/kunskapsbank/recept" },
     { label: t('nav.knowledge','KUNSKAPSBANK'), href: "/kunskapsbank", submenu: [
       { label: t('kb.sections.blog.title','Artiklar'), href: "/kunskapsbank/blogg" },
@@ -168,28 +172,19 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="hidden lg:flex items-center">
-            <button type="button" className="relative w-11 h-11 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center mr-3" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={t('nav.openMenu','Öppna meny')}>
-              <div className="w-6 h-6 relative">
-                <span className={`absolute block h-0.5 w-6 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-3' : 'top-1.5'}`}></span>
-                <span className={`absolute block h-0.5 w-6 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'top-3'}`}></span>
-                <span className={`absolute block h-0.5 w-6 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-3' : 'top-4.5'}`}></span>
-              </div>
-            </button>
-          </div>
-
-          <nav className="hidden">
+          {/* Desktop navbar */}
+          <nav className="hidden lg:flex items-center gap-4">
             {menuItems.map((item) => (
               <div key={item.label} className="relative group" onMouseEnter={() => setActiveDropdown(item.label)} onMouseLeave={() => setActiveDropdown(null)}>
-                <Link href={item.href} className="flex items-center space-x-1 text-primary hover:text-accent px-1 py-2 text-sm font-medium tracking-wider transition-colors duration-200">
+                <Link href={item.href} className="flex items-center space-x-1 text-primary hover:text-accent px-2 py-2 text-sm font-semibold tracking-wide transition-colors duration-200">
                   <span>{item.label}</span>
                   {item.submenu && (<FiChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === item.label ? 'rotate-180' : ''}`} />)}
                 </Link>
                 {item.submenu && (
-                  <div className={`absolute left-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black/5 transition-all duration-200 ${activeDropdown === item.label ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-2 invisible'}`}>
+                  <div className={`absolute left-0 mt-2 min-w-[14rem] rounded-xl shadow-xl bg-white ring-1 ring-black/5 transition-all duration-200 ${activeDropdown === item.label ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-2 invisible'}`}>
                     <div className="py-2" role="menu">
                       {item.submenu.map((subItem) => (
-                        <Link key={subItem.label} href={subItem.href} className="block px-4 py-3 text-sm text-text-secondary hover:bg-background-secondary hover:text-accent transition-colors duration-200" role="menuitem">
+                        <Link key={subItem.label} href={subItem.href} className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-background-secondary hover:text-accent transition-colors duration-200" role="menuitem">
                           {subItem.label}
                         </Link>
                       ))}
@@ -199,6 +194,10 @@ export default function Header() {
               </div>
             ))}
           </nav>
+
+          {/* Mobile hamburger (shown on small screens) */}
+          <div className="lg:hidden">
+          </div>
 
           <div className="lg:hidden">
             <button type="button" className="relative w-10 h-10 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
