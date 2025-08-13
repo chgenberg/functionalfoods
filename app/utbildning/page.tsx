@@ -1,203 +1,109 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiBookOpen, FiClock, FiUsers, FiArrowRight } from 'react-icons/fi';
-import { useState } from 'react';
-import AddToCart from '@/app/components/AddToCart';
-import { motion } from 'framer-motion';
-import { GiFruitBowl, GiHealthNormal } from 'react-icons/gi';
-import { FiBook, FiChevronRight } from 'react-icons/fi';
+import { FiArrowRight, FiBookOpen, FiClock, FiTrendingUp } from 'react-icons/fi';
 
 export default function UtbildningPage() {
-  const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({ basics: false, flow: false });
-
   const courses = [
     {
       id: 'basics',
       title: 'Functional Basics',
-      description: 'Lär dig grunderna om funktionella livsmedel, recept och måltidsplanering.',
-      image: '/functional_basics.png',
+      description: 'Lär dig grunderna i Functional Foods och bygg hållbara vanor som ger energi och balans.',
       href: '/utbildning/functional-basics',
-      features: ['Grundläggande koncept', 'Praktiska recept', 'Måltidsplanering'],
-      duration: '4 veckor',
-      level: 'Nybörjare'
+      image: '/functional_basics.png',
+      duration: '6 veckor',
+      level: 'Nybörjare',
+      highlights: ['Grunderna i functional foods', 'Veckomenyer och recept', 'Praktiska verktyg och mål']
     },
     {
       id: 'flow',
       title: 'Functional Flow',
-      description: 'Fokus på maghälsa, antiinflammatorisk kost och ett naturligt flöde i vardagen.',
-      image: '/functional_flow.png',
+      description: 'Fördjupning med fokus på maghälsa, antiinflammation och naturligt flöde i vardagen.',
       href: '/utbildning/functional-flow',
-      features: ['Maghälsa', 'Antiinflammation', 'Energibalans'],
+      image: '/functional_flow.png',
       duration: '6 veckor',
-      level: 'Fortsättning'
+      level: 'Fortsättning',
+      highlights: ['Maghälsa & mikrobiom', 'Antiinflammatorisk kost', 'Vanor som håller över tid']
     }
   ];
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
-      <div className="container-custom section-padding">
-        {/* Hero Section */}
-        <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
-            Vårt <span className="text-accent font-extrabold">kursutbud</span>
-          </h1>
-          <p className="text-lg text-text-secondary">
-            Varje kropp är unik – därför erbjuder vi kunskap om functional foods och mervärdesmat 
-            anpassad efter dina behov och mål, för ökad hälsa och livskvalitet.
+    <main className="min-h-screen bg-background">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="mb-8 md:mb-12 text-center">
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900">Alla kurser</h1>
+          <p className="mt-3 md:mt-4 text-gray-600 max-w-2xl mx-auto">
+            Välj den kurs som passar dig bäst. Oavsett om du vill komma igång eller fördjupa dig – här hittar du vägen framåt.
           </p>
         </div>
 
-        {/* Courses Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {/* Functional Basics */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow"
-          >
-            <Link href="/utbildning/functional-basics" className="h-64 relative overflow-hidden block cursor-pointer">
-              <Image
-                src="/basic.JPG"
-                alt="Functional Basics kurs"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
-            </Link>
-            <div className="p-8">
-              <h3 className="text-2xl font-bold text-gray-800 mb-3">Functional Basics</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Lär dig grunderna i functional foods och börja din resa mot bättre hälsa. 
-                Perfekt för dig som vill ha en strukturerad introduktion.
-              </p>
-              
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <FiClock className="text-primary" />
-                  <span>6 veckors program</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <FiBook className="text-primary" />
-                  <span>75+ recept</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <FiUsers className="text-primary" />
-                  <span>Community & support</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-3xl font-bold text-gray-800">2 295 kr</p>
-                  <p className="text-sm text-gray-500">Engångsbetalning</p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <AddToCart 
-                  id="functional-basics"
-                  name="Functional Basics"
-                  price={2295}
-                  type="course"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {courses.map((course) => (
+            <div key={course.id} className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-shadow">
+              <div className="relative h-48 md:h-60 w-full overflow-hidden">
+                <Image
+                  src={course.image}
+                  alt={course.title}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                 />
-                <Link
-                  href="/utbildning/functional-basics"
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-                >
-                  Läs mer
-                  <FiChevronRight />
-                </Link>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                <div className="absolute left-4 bottom-4 flex items-center gap-3 text-white">
+                  <span className="inline-flex items-center gap-1.5 text-xs md:text-sm bg-white/15 px-3 py-1 rounded-full backdrop-blur-sm">
+                    <FiClock className="w-4 h-4" /> {course.duration}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs md:text-sm bg-white/15 px-3 py-1 rounded-full backdrop-blur-sm">
+                    <FiTrendingUp className="w-4 h-4" /> {course.level}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-5 md:p-6">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">{course.title}</h2>
+                <p className="mt-2 text-gray-600">{course.description}</p>
+
+                <ul className="mt-4 space-y-2 text-gray-700 text-sm">
+                  {course.highlights.map((h) => (
+                    <li key={h} className="flex items-start gap-2">
+                      <FiBookOpen className="mt-0.5 w-4 h-4 text-primary" />
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-5 flex items-center justify-between">
+                  <Link
+                    href={course.href}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors"
+                  >
+                    Läs mer
+                    <FiArrowRight className="w-4 h-4" />
+                  </Link>
+
+                  <Link
+                    href={course.id === 'basics' ? '/dashboard/courses/functional-basics' : '/dashboard/courses/functional-flow'}
+                    className="text-primary hover:text-secondary font-medium"
+                  >
+                    Gå till kursen →
+                  </Link>
+                </div>
               </div>
             </div>
-          </motion.div>
+          ))}
+        </div>
 
-          {/* Functional Flow */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow"
+        <div className="mt-10 md:mt-14 text-center">
+          <Link
+            href="/utbildning/kurskatalog"
+            className="inline-flex items-center gap-2 text-gray-700 hover:text-primary font-medium"
           >
-            <Link href="/utbildning/functional-flow" className="h-64 relative overflow-hidden block cursor-pointer">
-              <Image
-                src="/flow.JPG"
-                alt="Functional Flow kurs"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
-            </Link>
-            <div className="p-8">
-              <h3 className="text-2xl font-bold text-gray-800 mb-3">Functional Flow</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Ta din hälsa till nästa nivå med avancerade koncept och strategier. 
-                För dig som vill optimera din livsstil maximalt.
-              </p>
-              
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <FiClock className="text-[#1a4324]" />
-                  <span>6 veckors avancerat program</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <FiBook className="text-[#1a4324]" />
-                  <span>75+ avancerade recept</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <FiUsers className="text-[#1a4324]" />
-                  <span>Premium support</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <p className="text-3xl font-bold text-gray-800">1 836 kr</p>
-                    <span className="text-lg text-gray-500 line-through">2 295 kr</span>
-                    <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">-20%</span>
-                  </div>
-                  <p className="text-sm text-gray-500">Engångsbetalning</p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <AddToCart 
-                  id="functional-flow"
-                  name="Functional Flow"
-                  price={1836}
-                  type="course"
-                />
-                <Link
-                  href="/utbildning/functional-flow"
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-                >
-                  Läs mer
-                  <FiChevronRight />
-                </Link>
-              </div>
-            </div>
-          </motion.div>
+            Visa hela kurskatalogen
+            <FiArrowRight className="w-4 h-4" />
+          </Link>
         </div>
-
-        {/* CTA Section */}
-        <div className="mt-16 text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
-            <FiBookOpen className="w-5 h-5 text-accent mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-primary mb-3">Osäker på vilken kurs som passar dig?</h2>
-            <p className="text-text-secondary mb-6">
-              Kontakta oss så hjälper vi dig att hitta rätt utbildning för dina behov och mål.
-            </p>
-            <Link href="/kontakt/formular" className="btn-secondary inline-flex items-center">
-              Kontakta oss
-              <FiArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </div>
+      </section>
     </main>
   );
 } 
