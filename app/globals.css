@@ -473,3 +473,7 @@ video {
 }
 
 /* i18n helper styles can go here if needed */
+
+/* Global override: unify gray backgrounds to #F3EFE3 across the site */
+.bg-gray-50, .bg-gray-100, .bg-gray-200 { background-color: #F3EFE3 !important; }
+.hover\:bg-gray-50:hover, .hover\:bg-gray-100:hover, .hover\:bg-gray-200:hover { background-color: #F3EFE3 !important; }
