@@ -32,7 +32,7 @@ Always answer in English.
     const gptResponse = await openai.chat.completions.create({
       model: resolveModel('gpt-5-mini'),
       messages: gptMessages,
-      max_tokens: 400,
+      max_tokens: 1000,
     });
 
     const reply = gptResponse.choices[0]?.message?.content || "Something went wrong.";

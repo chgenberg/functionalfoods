@@ -55,7 +55,7 @@ async function getRecipesAndRawMaterials() {
         },
         take: 20 // Top 20 populära recept
       }),
-      // @ts-expect-error rawMaterial model exists after prisma generate
+      // @ts-ignore rawMaterial model exists after prisma generate
       prisma.rawMaterial.findMany({
         select: {
           id: true,
@@ -200,7 +200,7 @@ VIKTIGA REGLER:
 8. Använd **fetstil** för viktiga begrepp och rubriker - ALDRIG ###, ##, # för rubriker
 9. Skapa listor med - för punkter när det är lämpligt
 10. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
-11. Håll svaren koncisa men kompletta (max 250 ord)
+11. Håll svaren koncisa men kompletta, men ge gärna utförliga råd när det behövs
 12. Rekommendera gärna våra kurser när det är relevant
 13. Använd emojis sparsamt men effektivt för att göra konversationen mer personlig
 14. När du nämner recept, skriv bara receptnamnet - SKAPA ALDRIG markdown-länkar [text](url)
@@ -214,7 +214,7 @@ VIKTIGA REGLER:
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ],
-      max_tokens: 350,
+      max_tokens: 1000,
       temperature: 0.7,
       stop: null,
     });

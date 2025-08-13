@@ -332,7 +332,7 @@ VIKTIGA REGLER:
 9. Använd **fetstil** för viktiga begrepp och rubriker - ALDRIG ###, ##, # för rubriker
 10. Skapa listor med - för punkter när det är lämpligt
 11. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
-12. Håll svaren koncisa men kompletta (max 300 ord)
+12. Håll svaren koncisa men kompletta, men ge gärna utförliga råd när det behövs
 13. Rekommendera gärna våra kurser när det är relevant
 14. Använd emojis sparsamt men effektivt
 15. När du nämner recept, skriv bara receptnamnet - SKAPA ALDRIG markdown-länkar [text](url)
@@ -347,7 +347,7 @@ ${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ],
-      max_tokens: 400,
+      max_tokens: 1000,
       temperature: 0.7,
       stop: null,
     });
