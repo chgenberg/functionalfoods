@@ -24,6 +24,13 @@ export default function ChatBot() {
 
   useEffect(() => { setIsClient(true); }, []);
 
+  // Allow external trigger to open chat
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener('openChatBot' as any, handler);
+    return () => window.removeEventListener('openChatBot' as any, handler);
+  }, []);
+
   // Ensure welcome message follows current language and only once at start
   useEffect(() => {
     if (messages.length === 0) {

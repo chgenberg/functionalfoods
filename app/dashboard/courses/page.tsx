@@ -182,14 +182,27 @@ export default function CoursesPage() {
                         </div>
                       </div>
 
+                      {/* Week + Next step */}
+                      <div className="flex items-center justify-between text-sm mb-4">
+                        <span className="text-text-secondary">Vecka 1 av {course.modules}</span>
+                        <span className="text-text-secondary">Nästa steg: Öppna kostschema</span>
+                      </div>
+
+                      {/* Quick links */}
+                      <div className="grid grid-cols-3 gap-2 mb-4">
+                        <Link href={`${course.link}/kostschema?view=week&week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Kostschema</Link>
+                        <Link href={`${course.link}/inkopslista?week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Inköp</Link>
+                        <Link href={`${course.link}/goals`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Mål</Link>
+                      </div>
+
                       <div className="flex items-center justify-between">
+                        <Link href={`${course.link}/kostschema?view=week&week=1`} className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">
+                          Fortsätt
+                          <FiChevronRight />
+                        </Link>
                         <span className={`text-primary font-medium flex items-center gap-1`}>
                           <FiCheckCircle />
                           Aktiv
-                        </span>
-                        <span className="text-primary font-medium flex items-center gap-1">
-                          Fortsätt
-                          <FiChevronRight />
                         </span>
                       </div>
                     </div>

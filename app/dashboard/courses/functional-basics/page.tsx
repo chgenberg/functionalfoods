@@ -10,6 +10,7 @@ import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
 import HelpGuide from '@/app/components/HelpGuide';
 import CourseProgressBar from '@/app/components/CourseProgressBar';
+import OnboardingModal from '@/app/components/OnboardingModal';
 
 // Fördefinierade mål för varje vecka (5-10 mål per vecka)
 const PREDEFINED_GOALS = {
@@ -83,6 +84,7 @@ export default function FunctionalBasicsPage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [courseStartDate, setCourseStartDate] = useState<string>('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Visa guide första gången
   useEffect(() => {
@@ -101,6 +103,10 @@ export default function FunctionalBasicsPage() {
       localStorage.setItem('basicsStartDate', today);
       setCourseStartDate(today);
     }
+
+    // Show onboarding if no data
+    const hasOnboarding = localStorage.getItem('onboarding_v1');
+    if (!hasOnboarding) setShowOnboarding(true);
   }, []);
 
   // Gruppera mål per vecka
@@ -162,6 +168,12 @@ export default function FunctionalBasicsPage() {
 
   return (
     <div className="relative space-y-4 md:space-y-8 pb-20 md:pb-8">
+      {/* Quick shortcuts row */}
+      <div className="grid grid-cols-3 gap-2 sticky top-16 z-30">
+        <Link href="/dashboard/courses/functional-basics/kostschema?view=week&week=1" className="text-center text-xs bg-white rounded-lg shadow px-3 py-2 hover:shadow-md">Veckans kostschema</Link>
+        <Link href="/dashboard/courses/functional-basics/inkopslista?week=1" className="text-center text-xs bg-white rounded-lg shadow px-3 py-2 hover:shadow-md">Veckans inköpslista</Link>
+        <Link href="/dashboard/courses/functional-basics/goals" className="text-center text-xs bg-white rounded-lg shadow px-3 py-2 hover:shadow-md">Veckans mål</Link>
+      </div>
       {/* Guide FAB */}
       <button
         onClick={() => setShowGuide(true)}
@@ -170,6 +182,15 @@ export default function FunctionalBasicsPage() {
         aria-label="Visa hjälp"
       >
         <FiHelpCircle className="w-5 h-5" />
+      </button>
+      {/* Open chat quick help */}
+      <button
+        onClick={() => window.dispatchEvent(new CustomEvent('openChatBot'))}
+        className="fixed right-4 bottom-40 sm:right-6 sm:bottom-24 z-40 bg-[#112A12] text-white rounded-full shadow-lg hover:shadow-xl transition-all w-12 h-12 flex items-center justify-center"
+        title="Behöver du hjälp?"
+        aria-label="Behöver du hjälp?"
+      >
+        ?
       </button>
 
       {/* Course Progress Bar */}
@@ -573,6 +594,7 @@ export default function FunctionalBasicsPage() {
         isOpen={showGuide} 
         onClose={() => setShowGuide(false)} 
       />
+      <OnboardingModal isOpen={showOnboarding} onClose={() => setShowOnboarding(false)} />
     </div>
   );
 } 

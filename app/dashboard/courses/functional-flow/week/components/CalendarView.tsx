@@ -28,6 +28,9 @@ const weekDays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag',
 export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
   const [selectedDay, setSelectedDay] = useState(0);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
+  const [miniChecklist, setMiniChecklist] = useState<Record<string, boolean>>(()=>{
+    try { return JSON.parse(localStorage.getItem(`miniChecklist_flow_week_${weekNumber}`) || '{}'); } catch { return {}; }
+  });
 
   useEffect(() => {
     // Calculate which day of the week it is (0 = Monday, 6 = Sunday)
@@ -53,6 +56,17 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
     }
   }, [weekNumber]);
 
+  useEffect(()=>{
+    try { localStorage.setItem(`miniChecklist_flow_week_${weekNumber}`, JSON.stringify(miniChecklist)); } catch {}
+  }, [miniChecklist, weekNumber]);
+
+  const defaultTasks = [
+    { id: 'prep', label: 'Prepp: fermenterat & fiber' },
+    { id: 'move', label: '40 min rörelse idag' },
+    { id: 'sleep', label: 'Sömnoptimering i kväll' },
+    { id: 'goal', label: 'Veckans mål uppdaterade' }
+  ];
+
   const getDayStatus = (dayIndex: number) => {
     if (dayIndex < currentDayIndex) return 'completed';
     if (dayIndex === currentDayIndex) return 'current';
@@ -63,6 +77,25 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
 
   return (
     <div className="space-y-6">
+      <div className="sticky top-16 z-20">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow p-3 flex items-center justify-between">
+          <div className="text-sm text-gray-700">Vecka {weekNumber}</div>
+          <button onClick={() => setSelectedDay(currentDayIndex >= 0 ? currentDayIndex : 0)} className="px-3 py-1.5 rounded-full bg-primary text-white text-sm hover:bg-secondary">Idag</button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow p-4">
+        <div className="text-sm font-semibold text-gray-800 mb-2">Dagens fokus</div>
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
+          {defaultTasks.map(t => (
+            <label key={t.id} className="flex items-center gap-2 text-sm bg-gray-50 hover:bg-gray-100 rounded-lg px-3 py-2 cursor-pointer">
+              <input type="checkbox" checked={!!miniChecklist[t.id]} onChange={() => setMiniChecklist(prev=>({ ...prev, [t.id]: !prev[t.id] }))} className="accent-[#da695c]" />
+              <span className={miniChecklist[t.id] ? 'line-through text-gray-500' : 'text-gray-800'}>{t.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
       {/* Calendar Grid */}
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">

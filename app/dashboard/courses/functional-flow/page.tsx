@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiTarget, FiCheckCircle, FiPlus, FiBook, FiDownload,
   FiTrendingUp, FiAward, FiStar, FiActivity, FiHeart, FiZap, FiEdit3, FiChevronDown, FiCheck, FiArrowRight, FiUsers,
-  FiShoppingCart, FiX
+  FiShoppingCart, FiX, FiHelpCircle
 } from 'react-icons/fi';
 import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
@@ -61,6 +61,7 @@ export default function FunctionalFlowPage() {
   const [showAllGoals, setShowAllGoals] = useState(false);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   // Group goals by week
   const goalsByWeek = goals.reduce((acc, goal) => {
@@ -113,7 +114,12 @@ export default function FunctionalFlowPage() {
   ];
 
   return (
-    <div className="space-y-4 md:space-y-8 pb-20 md:pb-8">
+    <div className="relative space-y-4 md:space-y-8 pb-20 md:pb-8">
+      <div className="grid grid-cols-3 gap-2 sticky top-16 z-30">
+        <Link href="/dashboard/courses/functional-flow/kostschema?view=week&week=1" className="text-center text-xs bg-white rounded-lg shadow px-3 py-2 hover:shadow-md">Veckans kostschema</Link>
+        <Link href="/dashboard/courses/functional-flow/inkopslista?week=1" className="text-center text-xs bg-white rounded-lg shadow px-3 py-2 hover:shadow-md">Veckans inköpslista</Link>
+        <Link href="/dashboard/courses/functional-flow/goals" className="text-center text-xs bg-white rounded-lg shadow px-3 py-2 hover:shadow-md">Veckans mål</Link>
+      </div>
       {/* Intro Video Section - Mobile Optimized */}
       <div className="relative bg-gradient-to-br from-teal-900 via-cyan-800 to-teal-700 rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -502,6 +508,22 @@ export default function FunctionalFlowPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      <button
+        onClick={() => setShowGuide(true)}
+        className="fixed right-4 bottom-24 sm:right-6 sm:bottom-6 z-40 bg-primary text-white rounded-full shadow-lg hover:shadow-xl transition-all w-12 h-12 flex items-center justify-center"
+        title="Visa hjälp"
+        aria-label="Visa hjälp"
+      >
+        <FiHelpCircle className="w-5 h-5" />
+      </button>
+      <button
+        onClick={() => window.dispatchEvent(new CustomEvent('openChatBot'))}
+        className="fixed right-4 bottom-40 sm:right-6 sm:bottom-24 z-40 bg-[#112A12] text-white rounded-full shadow-lg hover:shadow-xl transition-all w-12 h-12 flex items-center justify-center"
+        title="Behöver du hjälp?"
+        aria-label="Behöver du hjälp?"
+      >
+        ?
+      </button>
     </div>
   );
 } 
