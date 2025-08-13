@@ -173,7 +173,7 @@ export default function Home() {
               
               <div className="absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 max-w-xs">
                 <div className="flex items-center gap-4 mb-3">
-                  <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl" style={{ backgroundColor: '#112A12' }}>
                     UD
                   </div>
                   <div>
@@ -181,9 +181,9 @@ export default function Home() {
                     <p className="text-sm text-gray-600">{t('home.ud.role','Functional Foods Expert')}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-yellow-400">
+                <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-4 h-4" color="#da695c" />
+                    <FaStar key={i} className="w-4 h-4" color="#FFE135" />
                   ))}
                   <span className="text-gray-600 text-sm ml-2">{t('home.ud.experience','25+ års erfarenhet')}</span>
                 </div>
@@ -195,7 +195,7 @@ export default function Home() {
 
       <RecipeCarousel />
 
-      <section className="py-12 md:py-20 px-4 bg-gray-50">
+      <section className="py-12 md:py-20 px-4 bg-[#F3EFE3]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -324,7 +324,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-20 px-4 bg-gray-50">
+      <section className="py-12 md:py-20 px-4 bg-[#F3EFE3]">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -348,7 +348,7 @@ export default function Home() {
               >
                 <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
                   {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-5 h-5 md:w-6 md:h-6" color="#da695c" />
+                    <FaStar key={i} className="w-5 h-5 md:w-6 md:h-6" color="#FFE135" />
                   ))}
                 </div>
                 <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
