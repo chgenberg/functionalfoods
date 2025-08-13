@@ -79,7 +79,7 @@ export default function RecipeCarousel() {
   if (recipes.length === 0) return null;
 
   return (
-    <section className="py-8 md:py-12 overflow-hidden bg-background-secondary">
+    <section className="py-8 md:py-12 overflow-hidden" style={{ backgroundColor: '#F3EFE3' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <h2 className="text-2xl md:text-3xl font-light text-center text-gray-800">
           {t('home.recipes.title','Utforska våra ')}<span className="font-bold text-primary">{t('home.recipes.free','gratis recept')}</span>
@@ -93,8 +93,8 @@ export default function RecipeCarousel() {
         <button onClick={() => moveCarousel('right')} className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 md:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-70 md:opacity-0 group-hover:opacity-100 hover:scale-110" aria-label={t('home.recipes.next','Nästa recept')}>
           <FiChevronRight className="w-5 h-5 md:w-6 md:h-6" />
         </button>
-        <div className="absolute left-0 top-0 bottom-0 w-12 md:w-20 bg-gradient-to-r from-background-secondary to-transparent z-[5] pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-12 md:w-20 bg-gradient-to-l from-background-secondary to-transparent z-[5] pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 md:w-20 z-[5] pointer-events-none" style={{ background: 'linear-gradient(to right, #F3EFE3, rgba(243,239,227,0))' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-12 md:w-20 z-[5] pointer-events-none" style={{ background: 'linear-gradient(to left, #F3EFE3, rgba(243,239,227,0))' }} />
         <motion.div className="flex gap-5" animate={controls} style={{ width: 'fit-content' }}>
           {recipes.map((recipe, index) => (
             <Link key={`${recipe.id}-${index}`} href={`/kunskapsbank/recept/${recipe.slug}`} className="flex-shrink-0 group/card">
