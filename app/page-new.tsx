@@ -95,7 +95,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <ArticleQuickAccess />
       
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -125,7 +125,7 @@ export default function Home() {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: 'url(/ulrika-hero-bg.jpg)',
-              backgroundColor: '#f0fdf4',
+              backgroundColor: '#F3EFE3',
               zIndex: 1
             }}
           >
