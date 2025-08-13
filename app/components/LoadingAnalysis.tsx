@@ -88,7 +88,7 @@ export default function LoadingAnalysis({ totalMs = 45000 }: { totalMs?: number 
   // Simple fallback during SSR
   if (!mounted) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
         <div className="max-w-lg w-full mx-4">
           <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 text-center">
             <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
@@ -106,7 +106,7 @@ export default function LoadingAnalysis({ totalMs = 45000 }: { totalMs?: number 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
       {/* Animated background particles */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(30)].map((_, i) => (

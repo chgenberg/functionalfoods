@@ -327,11 +327,24 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
       lines.push(`\n${area.label}: ${s}/10`);
       for (const tip of domainTips[area.key]) lines.push(`- ${tip}`);
     }
-    try { await navigator.clipboard.writeText(lines.join('\n')); } catch {}
+    const text = lines.join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      try { document.execCommand('copy'); } catch {}
+      document.body.removeChild(textarea);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-background">
       {/* Minimalist Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
