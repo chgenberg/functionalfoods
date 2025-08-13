@@ -9,6 +9,7 @@ import {
 } from 'react-icons/fi';
 import { useGoals } from '@/app/hooks/useGoals';
 import Link from 'next/link';
+import OnboardingModal from '@/app/components/OnboardingModal';
 
 // Fördefinierade mål för varje vecka (5-10 mål per vecka)
 const PREDEFINED_GOALS = {
@@ -62,6 +63,12 @@ export default function FunctionalFlowPage() {
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(()=>{
+    const hasOnboarding = localStorage.getItem('onboarding_v1');
+    if (!hasOnboarding) setShowOnboarding(true);
+  }, []);
 
   // Group goals by week
   const goalsByWeek = goals.reduce((acc, goal) => {
@@ -524,6 +531,7 @@ export default function FunctionalFlowPage() {
       >
         ?
       </button>
+      <OnboardingModal isOpen={showOnboarding} onClose={() => setShowOnboarding(false)} />
     </div>
   );
 } 
