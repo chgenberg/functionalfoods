@@ -1,0 +1,98 @@
+{
+  "week1": {
+    "title": "Vecka 1: Synkroniserad från DOCX/PPTX",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Yoghurt med ketomüsli",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketomusli"
+        },
+        "lunch": {
+          "name": "Tonfisksallad med äpple",
+          "recipeLink": "/kunskapsbank/recept/tonfisksallad-med-apple"
+        },
+        "dinner": {
+          "name": "Squashspagetti med köttfärssås",
+          "recipeLink": "/kunskapsbank/recept/squashspagetti-med-kottfarssas"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Stekt ägg med lax",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-lax"
+        },
+        "lunch": {
+          "name": ""
+        },
+        "dinner": {
+          "name": "Squashspagetti med köttfärssås rester"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Grön juice",
+          "recipeLink": "/kunskapsbank/recept/gron-juice"
+        },
+        "lunch": {
+          "name": "Pokébowl med kyckling",
+          "recipeLink": "/kunskapsbank/recept/pokebowl-med-kyckling"
+        },
+        "dinner": {
+          "name": "Köttfärsbiffar med stekt blomkål",
+          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-stekt-blomkal"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Omelett med tomat",
+          "recipeLink": "/kunskapsbank/recept/omelett-med-tomat"
+        },
+        "lunch": {
+          "name": ""
+        },
+        "dinner": {
+          "name": "Het ratatouille",
+          "recipeLink": "/kunskapsbank/recept/het-ratatouille"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg",
+          "recipeLink": "/kunskapsbank/recept/1-havrefrallor-med-morotter-och-aprikoser-valfritt-palagg"
+        },
+        "lunch": {
+          "name": "Köttfärsbiffar med stekt blomkål",
+          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-stekt-blomkal"
+        },
+        "dinner": {
+          "name": "rester"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "16:8"
+        },
+        "lunch": {
+          "name": "Tropisk smoothiebowl",
+          "recipeLink": "/kunskapsbank/recept/tropisk-smoothiebowl"
+        },
+        "dinner": {
+          "name": "Kycklinggryta med bakad spetskål",
+          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Tropisk smoothiebowl rester"
+        },
+        "lunch": {
+          "name": "Laxburgare med krämig grönsaksröra rester"
+        },
+        "dinner": {
+          "name": "Ugnsbakad tomat med köttfärs",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakad-tomat-med-kottfars"
+        }
+      }
+    }
+  }
+}
