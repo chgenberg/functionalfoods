@@ -5,6 +5,7 @@ const path = require('path');
 const mammoth = require('mammoth');
 const JSZip = require('jszip');
 const { XMLParser } = require('fast-xml-parser');
+const cheerio = require('cheerio');
 
 // ---------- Config ----------
 const BASE_DIR = path.resolve(process.cwd(), 'Recept-Final', 'Kostschema-basic');
@@ -21,9 +22,15 @@ const THEME_ACCENTS_ALLOWED = new Set(['accent1', 'accent2', 'accent3', 'accent4
 
 // Meals order per day (adjust if DOCX has snack/dessert)
 const MEAL_SLOTS = ['breakfast', 'lunch', 'dinner'];
-const DAY_NAME_MAP = {
-  'Mån': 'Måndag', 'Tis': 'Tisdag', 'Ons': 'Onsdag', 'Tors': 'Torsdag', 'Fre': 'Fredag', 'Lör': 'Lördag', 'Sön': 'Söndag',
-  'Måndag': 'Måndag', 'Tisdag': 'Tisdag', 'Onsdag': 'Onsdag', 'Torsdag': 'Torsdag', 'Fredag': 'Fredag', 'Lördag': 'Lördag', 'Söndag': 'Söndag'
+const SLOT_LABEL = { breakfast: 'Frukost', lunch: 'Lunch', dinner: 'Middag' };
+const DAY_NORMALIZE = {
+  'mån': 'Måndag', 'måndag': 'Måndag',
+  'tis': 'Tisdag', 'tisdag': 'Tisdag',
+  'ons': 'Onsdag', 'onsdag': 'Onsdag',
+  'tors': 'Torsdag', 'torsdag': 'Torsdag',
+  'fre': 'Fredag', 'fredag': 'Fredag',
+  'lör': 'Lördag', 'lördag': 'Lördag',
+  'sön': 'Söndag', 'söndag': 'Söndag',
 };
 
 // ---------- Utils ----------
@@ -79,18 +86,34 @@ function isLikelyRecipeName(name) {
   const lower = n.toLowerCase();
   if (lower.includes('rester')) return false;
   if (lower.includes('frysen')) return false;
-  if (lower === '16:8' || lower.includes('16:8')) return false;
   if (/^\d+$/.test(lower)) return false;
   return true;
 }
 
-// ---------- PPTX Parsing ----------
+function stripKcalAndRester(text) {
+  if (!text) return '';
+  let t = String(text);
+  // remove kcal parentheses e.g., (337 kcal)
+  t = t.replace(/\(\s*\d+\s*kcal\s*\)/gi, '').trim();
+  // remove trailing 'rester' even without whitespace before
+  t = t.replace(/\s*rester\s*$/i, '').trim();
+  return t;
+}
+
+function baseTitleFromCell(name) {
+  if (!name) return '';
+  // If multiple items in one cell like "Laxburgare ... (700 kcal) Mangoglass (123 kcal)", take the part up to first ") "
+  const parts = String(name).split(/\)\s+/);
+  const first = parts[0] + (parts.length ? ')' : '');
+  return stripKcalAndRester(first);
+}
+
+// ---------- PPTX Parsing (unchanged) ----------
 async function extractBlueTextFromPptx(pptxPath) {
   const buf = await fsp.readFile(pptxPath);
   const zip = await JSZip.loadAsync(buf);
   const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
 
-  // Find slide files
   const slideEntries = Object.keys(zip.files)
     .filter((k) => k.startsWith('ppt/slides/slide') && k.endsWith('.xml'))
     .sort((a, b) => {
@@ -104,16 +127,12 @@ async function extractBlueTextFromPptx(pptxPath) {
   for (const slidePath of slideEntries) {
     const xmlText = await zip.files[slidePath].async('text');
     const xml = parser.parse(xmlText);
-
-    // Path to shapes: p:sld -> p:cSld -> p:spTree -> p:sp[]
     const spTree = xml?.['p:sld']?.['p:cSld']?.['p:spTree'];
     if (!spTree) continue;
 
     const shapes = [];
     if (Array.isArray(spTree['p:sp'])) shapes.push(...spTree['p:sp']);
     else if (spTree['p:sp']) shapes.push(spTree['p:sp']);
-
-    // Some content might be inside grouped shapes p:grpSp
     const grp = spTree['p:grpSp'];
     if (grp) {
       const inner = Array.isArray(grp) ? grp : [grp];
@@ -135,7 +154,6 @@ async function extractBlueTextFromPptx(pptxPath) {
       }
       if (!keep) continue;
 
-      // Extract text runs: p:txBody -> a:p[] -> a:r[] -> a:t
       const txBody = sp['p:txBody'];
       if (!txBody) continue;
       const paras = Array.isArray(txBody['a:p']) ? txBody['a:p'] : (txBody['a:p'] ? [txBody['a:p']] : []);
@@ -151,7 +169,6 @@ async function extractBlueTextFromPptx(pptxPath) {
       if (text && isLikelyRecipeName(text)) collectedTexts.push(text);
     }
 
-    // Also extract from tables if present (p:graphicFrame -> a:tbl)
     const gFrames = Array.isArray(spTree['p:graphicFrame']) ? spTree['p:graphicFrame'] : (spTree['p:graphicFrame'] ? [spTree['p:graphicFrame']] : []);
     for (const gf of gFrames) {
       const tbl = gf?.['a:graphic']?.['a:graphicData']?.['a:tbl'];
@@ -178,42 +195,84 @@ async function extractBlueTextFromPptx(pptxPath) {
     }
   }
 
-  // Deduplicate
-  const unique = Array.from(new Set(collectedTexts));
-  return unique;
+  return Array.from(new Set(collectedTexts));
 }
 
-// ---------- DOCX Parsing ----------
+// ---------- DOCX Parsing via HTML Tables ----------
 async function extractWeekScheduleFromDocx(docxPath) {
-  const { value: rawText } = await mammoth.extractRawText({ path: docxPath });
-  const lines = rawText.split('\n').map((l) => l.trim()).filter(Boolean);
+  const { value: html } = await mammoth.convertToHtml({ path: docxPath }, { styleMap: [] });
+  const $ = cheerio.load(html);
 
   const weekPlan = { title: 'Vecka 1: Synkroniserad från DOCX/PPTX', days: {} };
-  let currentDay = null;
-  let mealIdx = 0; // 0..MEAL_SLOTS.length-1
 
-  for (const line of lines) {
-    if (DAY_NAME_MAP[line]) {
-      currentDay = DAY_NAME_MAP[line];
-      weekPlan.days[currentDay] = {};
-      mealIdx = 0;
-      continue;
-    }
-
-    if (!currentDay) continue;
-
-    if (mealIdx < MEAL_SLOTS.length) {
-      // Strip kcal markers like (450 kcal)
-      const cleaned = line.replace(/\s*\([\d\s,]+kcal\)/i, '').trim();
-      weekPlan.days[currentDay][MEAL_SLOTS[mealIdx]] = { name: cleaned };
-      mealIdx += 1;
-    }
+  function normalizeDayCell(text) {
+    const t = (text || '').toLowerCase().replace(/\./g, ' ').replace(/\s+/g, ' ').trim();
+    // Match if cell contains any day token anywhere
+    if (t.includes('mån')) return 'Måndag';
+    if (t.includes('måndag')) return 'Måndag';
+    if (t.includes('tis')) return 'Tisdag';
+    if (t.includes('tisdag')) return 'Tisdag';
+    if (t.includes('ons')) return 'Onsdag';
+    if (t.includes('onsdag')) return 'Onsdag';
+    if (t.includes('tors')) return 'Torsdag';
+    if (t.includes('tor ')) return 'Torsdag';
+    if (t.includes('torsdag')) return 'Torsdag';
+    if (t.includes('fre')) return 'Fredag';
+    if (t.includes('fredag')) return 'Fredag';
+    if (t.includes('lör')) return 'Lördag';
+    if (t.includes('lor')) return 'Lördag';
+    if (t.includes('lördag')) return 'Lördag';
+    if (t.includes('sön')) return 'Söndag';
+    if (t.includes('son')) return 'Söndag';
+    if (t.includes('söndag')) return 'Söndag';
+    return null;
   }
+
+  $('table').each((_, table) => {
+    const rows = $(table).find('tr');
+    if (rows.length < 2) return; // header + at least one row
+
+    const headers = [];
+    $(rows[0]).find('td,th').each((i, cell) => {
+      const text = $(cell).text().trim().toLowerCase();
+      headers.push(text);
+    });
+
+    let dayIdx = headers.findIndex(h => h.includes('dag'));
+    let frIdx = headers.findIndex(h => h.includes('frukost'));
+    let luIdx = headers.findIndex(h => h.includes('lunch'));
+    let miIdx = headers.findIndex(h => h.includes('middag'));
+    if (dayIdx === -1 || frIdx === -1 || luIdx === -1 || miIdx === -1) return;
+
+    for (let r = 1; r < rows.length; r++) {
+      const cells = $(rows[r]).find('td,th');
+      if (cells.length < Math.max(dayIdx, frIdx, luIdx, miIdx) + 1) continue;
+
+      const dayCellRaw = $(cells[dayIdx]).text().trim();
+      const day = normalizeDayCell(dayCellRaw);
+      if (!day) continue;
+
+      let fr = $(cells[frIdx]).text().trim();
+      const lu = $(cells[luIdx]).text().trim();
+      const mi = $(cells[miIdx]).text().trim();
+
+      // If "16:8" is present in day cell and breakfast empty, set it
+      if ((!fr || fr.length === 0) && /16\s*:\s*8/.test(dayCellRaw)) {
+        fr = '16:8';
+      }
+
+      weekPlan.days[day] = {
+        breakfast: { name: fr },
+        lunch: { name: lu },
+        dinner: { name: mi },
+      };
+    }
+  });
 
   return weekPlan;
 }
 
-// ---------- Main ----------
+// ---------- Main (unchanged thereafter) ----------
 async function main() {
   const prisma = DRY_RUN ? null : new PrismaClient();
 
@@ -228,30 +287,28 @@ async function main() {
     const pptxRecipes = await extractBlueTextFromPptx(pptxPath);
     console.log(`🟦 Found ${pptxRecipes.length} recipe titles in PPTX blue boxes`);
 
-    console.log('📄 Parsing DOCX for weekly schedule...');
+    console.log('📄 Parsing DOCX for weekly schedule (table-aware)...');
     const weekPlan = await extractWeekScheduleFromDocx(docxPath);
 
-    // Collect unique names from DOCX schedule
     const docxNamesSet = new Set();
     for (const day of Object.keys(weekPlan.days)) {
       for (const slot of Object.keys(weekPlan.days[day])) {
         const name = weekPlan.days[day][slot]?.name;
-        if (isLikelyRecipeName(name)) docxNamesSet.add(name);
+        const base = baseTitleFromCell(name);
+        if (isLikelyRecipeName(base)) docxNamesSet.add(base);
       }
     }
 
     const unionNames = Array.from(new Set([ ...pptxRecipes, ...docxNamesSet ]));
 
-    // Fetch existing recipes
     let dbRecipes = [];
     if (!DRY_RUN) {
       dbRecipes = await prisma.recipe.findMany({ select: { id: true, slug: true, title: true } });
     }
     const normalizedDb = dbRecipes.map((r) => ({ ...r, norm: normalize(r.title) }));
 
-    // Upsert union of names
     console.log('🗂️  Upserting recipes from PPTX+DOCX union...');
-    const createdOrFound = new Map(); // title -> { id, slug, title }
+    const createdOrFound = new Map();
 
     for (const title of unionNames) {
       const slug = createSlug(title);
@@ -284,45 +341,46 @@ async function main() {
       console.log(`✅ Created recipe: ${title} (${slug})`);
     }
 
-    // Helper: find best DB match for a meal name
     function findBestMatch(mealName) {
-      const n = normalize(mealName);
+      const base = baseTitleFromCell(mealName);
+      const n = normalize(base);
       let best = null;
-      let bestDist = 4; // threshold
+      let bestDist = 4;
       for (const r of normalizedDb) {
         const d = levenshtein(n, r.norm);
         if (d < bestDist) { bestDist = d; best = r; }
       }
-      // Try exact slug match as fallback
       if (!best) {
-        const slug = createSlug(mealName);
+        const slug = createSlug(base);
         const exact = dbRecipes.find((r) => r.slug === slug);
         if (exact) best = exact;
       }
-      // Also try newly created list from union names
-      if (!best && createdOrFound.has(mealName)) {
-        best = createdOrFound.get(mealName);
+      if (!best && createdOrFound.has(base)) {
+        best = createdOrFound.get(base);
       }
       return best;
     }
 
-    // Link week plan meals to recipe slugs when possible
     for (const day of Object.keys(weekPlan.days)) {
       const meals = weekPlan.days[day];
       for (const slot of Object.keys(meals)) {
         const name = meals[slot]?.name || '';
         if (!name) continue;
+        // If leftovers, keep text only
+        if (/rester/i.test(name)) {
+          meals[slot] = { name };
+          continue;
+        }
         const match = findBestMatch(name);
         if (match) {
           meals[slot] = {
-            name,
+            name, // keep original with kcal
             recipeLink: `/kunskapsbank/recept/${match.slug}`,
           };
         }
       }
     }
 
-    // Output JSON for week1 mapping
     const outPath = path.resolve(process.cwd(), 'scripts', 'generatedMealPlans.functional1.json');
     await fsp.writeFile(outPath, JSON.stringify({ week1: weekPlan }, null, 2), 'utf8');
     console.log(`\n📦 Wrote week1 plan to: ${outPath}`);
