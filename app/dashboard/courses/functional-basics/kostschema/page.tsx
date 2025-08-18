@@ -153,6 +153,7 @@ export default function KostschemaPage() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
   const [selectedWeek, setSelectedWeek] = useState(Math.ceil(selectedDay / 7));
+  const [apiWeekPlan, setApiWeekPlan] = useState<any | null>(null);
   // no searchParams hook
 
   // Hämta användarens kursstartdatum
@@ -219,6 +220,26 @@ export default function KostschemaPage() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (viewMode !== 'week') return;
+    const controller = new AbortController();
+    const loadWeek = async () => {
+      try {
+        const res = await fetch(`/api/courses/functional-basics/week/${selectedWeek}/meal-plan`, { signal: controller.signal });
+        if (res.ok) {
+          const json = await res.json();
+          setApiWeekPlan(json.plan || null);
+        } else {
+          setApiWeekPlan(null);
+        }
+      } catch {
+        setApiWeekPlan(null);
+      }
+    };
+    loadWeek();
+    return () => controller.abort();
+  }, [viewMode, selectedWeek]);
 
   // Visa loading state medan vi hämtar kursstartdatum
   if (loading || !courseStartDate) {
@@ -453,7 +474,7 @@ export default function KostschemaPage() {
               {/* Weekly Overview */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(() => {
-                  const weekData = getWeekData(selectedWeek);
+                  const weekData = apiWeekPlan || getWeekData(selectedWeek);
                   const weekMeals = (weekData?.days as any) || {};
                   const weekDays = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
                   return weekDays.map((name, idx) => {
