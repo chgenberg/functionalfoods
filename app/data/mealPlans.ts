@@ -84,8 +84,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/1-havrefrallor-med-morotter-och-aprikoser-valfritt-palagg"
         },
         "lunch": {
-          "name": "Köttfärsbiffar med stekt blomkål (355 kcal)rester",
-          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-stekt-blomkal-rester"
+          "name": "Köttfärsbiffar med stekt blomkål (355 kcal) rester"
         },
         "dinner": {
           "name": "Kycklinggryta med bakad spetskål (650 kcal)",
@@ -98,8 +97,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/tropisk-smoothiebowl"
         },
         "lunch": {
-          "name": "Kycklinggryta med bakad spetskål (650 kcal)rester",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal-rester"
+          "name": "Kycklinggryta med bakad spetskål (650 kcal) rester"
         },
         "dinner": {
           "name": "Laxburgare med krämig grönsaksröra (700 kcal) Mangoglass (123 kcal)",
@@ -121,7 +119,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
         }
       }
     }
-  ,
+  },
   "week2": {
     "title": "Vecka 2: Synkroniserad från DOCX",
     "days": {
