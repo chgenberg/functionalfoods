@@ -42,8 +42,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/stekt-agg-med-lax"
         },
         "lunch": {
-          "name": "Squashspagetti med köttfärssås (337 kcal) rester",
-          "recipeLink": "/kunskapsbank/recept/squashspagetti-med-kottfarssas"
+          "name": "Squashspagetti med köttfärssås (337 kcal) rester"
         },
         "dinner": {
           "name": "Het ratatouille (157 kcal)",
@@ -70,12 +69,10 @@ export const mealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/omelett-med-tomat"
         },
         "lunch": {
-          "name": "Het ratatouille (157 kcal) rester",
-          "recipeLink": "/kunskapsbank/recept/het-ratatouille"
+          "name": "Het ratatouille (157 kcal) rester"
         },
         "dinner": {
-          "name": "Pokébowl med kyckling (350 kcal) rester",
-          "recipeLink": "/kunskapsbank/recept/pokebowl-med-kyckling"
+          "name": "Pokébowl med kyckling (350 kcal) rester"
         }
       },
       "Fredag": {
