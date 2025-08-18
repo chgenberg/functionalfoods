@@ -20,101 +20,108 @@ export interface WeekMealPlan {
 // Functional Basics meal plans (synced from DOCX documents)
 export const mealPlans: Record<string, WeekMealPlan> = {
   "week1": {
-    "title": "Vecka 1: Synkroniserad från DOCX",
-    "days": {
+    "title": "Vecka 1: Synkroniserad från DOCX/PPTX",
+    "days":     {
       "Måndag": {
         "breakfast": {
-          "name": "Yoghurt med ketomüsli",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketom-sli"
+          "name": "Yoghurt med ketomüsli (378 kcal)",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketomusli"
         },
         "lunch": {
-          "name": "Tonfisksallad med äpple",
+          "name": "Tonfisksallad med äpple (443 kcal)",
           "recipeLink": "/kunskapsbank/recept/tonfisksallad-med-apple"
         },
         "dinner": {
-          "name": "Squashspagetti med köttfärssås",
+          "name": "Squashspagetti med köttfärssås (337 kcal)",
           "recipeLink": "/kunskapsbank/recept/squashspagetti-med-kottfarssas"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Stekt ägg med lax",
+          "name": "Stekt ägg med lax (286 kcal)",
           "recipeLink": "/kunskapsbank/recept/stekt-agg-med-lax"
         },
         "lunch": {
-          "name": ""
+          "name": "Squashspagetti med köttfärssås (337 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/squashspagetti-med-kottfarssas"
         },
         "dinner": {
-          "name": "Squashspagetti med köttfärssås (Rester)"
+          "name": "Het ratatouille (157 kcal)",
+          "recipeLink": "/kunskapsbank/recept/het-ratatouille"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Grön juice",
+          "name": "Grön juice (133 kcal)",
           "recipeLink": "/kunskapsbank/recept/gron-juice"
         },
         "lunch": {
-          "name": "Pokébowl med kyckling",
+          "name": "Pokébowl med kyckling (350 kcal)",
           "recipeLink": "/kunskapsbank/recept/pokebowl-med-kyckling"
         },
         "dinner": {
-          "name": "Köttfärsbiffar med stekt blomkål",
+          "name": "Köttfärsbiffar med stekt blomkål (355 kcal)",
           "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-stekt-blomkal"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Omelett med tomat",
+          "name": "Omelett med tomat (240 kcal)",
           "recipeLink": "/kunskapsbank/recept/omelett-med-tomat"
         },
         "lunch": {
-          "name": ""
+          "name": "Het ratatouille (157 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/het-ratatouille"
         },
         "dinner": {
-          "name": "Het ratatouille",
-          "recipeLink": "/kunskapsbank/recept/het-ratatouille"
+          "name": "Pokébowl med kyckling (350 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/pokebowl-med-kyckling"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg",
+          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg (354 kcal)",
           "recipeLink": "/kunskapsbank/recept/1-havrefrallor-med-morotter-och-aprikoser-valfritt-palagg"
         },
         "lunch": {
-          "name": "Köttfärsbiffar med stekt blomkål",
-          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-stekt-blomkal"
+          "name": "Köttfärsbiffar med stekt blomkål (355 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-stekt-blomkal-rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Kycklinggryta med bakad spetskål (650 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "16:8"
-        },
-        "lunch": {
-          "name": "Tropisk smoothiebowl",
+          "name": "Tropisk smoothiebowl (461 kcal)",
           "recipeLink": "/kunskapsbank/recept/tropisk-smoothiebowl"
         },
+        "lunch": {
+          "name": "Kycklinggryta med bakad spetskål (650 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal-rester"
+        },
         "dinner": {
-          "name": "Kycklinggryta med bakad spetskål",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal-1"
+          "name": "Laxburgare med krämig grönsaksröra (700 kcal) Mangoglass (123 kcal)",
+          "recipeLink": "/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Tropisk smoothiebowl (Rester)"
+          "name": "Tropisk smoothiebowl (461 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/tropisk-smoothiebowl"
         },
         "lunch": {
-          "name": "Laxburgare med krämig grönsaksröra (Rester)"
+          "name": "Laxburgare med krämig grönsaksröra (700 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora"
         },
         "dinner": {
-          "name": "Ugnsbakad tomat med köttfärs",
+          "name": "Ugnsbakad tomat med köttfärs (507 kcal)",
           "recipeLink": "/kunskapsbank/recept/ugnsbakad-tomat-med-kottfars"
         }
       }
     }
-  },
+  ,
   "week2": {
     "title": "Vecka 2: Synkroniserad från DOCX",
     "days": {
