@@ -10,7 +10,7 @@ export default function UtbildningPage() {
       title: 'Functional Basics',
       description: 'Lär dig grunderna i Functional Foods och bygg hållbara vanor som ger energi och balans.',
       href: '/utbildning/functional-basics',
-      image: '/functional_basics.png',
+      image: '/basic.JPG',
       duration: '6 veckor',
       level: 'Nybörjare',
       highlights: ['Grunderna i functional foods', 'Veckomenyer och recept', 'Praktiska verktyg och mål']
@@ -20,7 +20,7 @@ export default function UtbildningPage() {
       title: 'Functional Flow',
       description: 'Fördjupning med fokus på maghälsa, antiinflammation och naturligt flöde i vardagen.',
       href: '/utbildning/functional-flow',
-      image: '/functional_flow.png',
+      image: '/flow.JPG',
       duration: '6 veckor',
       level: 'Fortsättning',
       highlights: ['Maghälsa & mikrobiom', 'Antiinflammatorisk kost', 'Vanor som håller över tid']
