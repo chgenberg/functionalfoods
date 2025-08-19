@@ -129,112 +129,124 @@ function splitSectionsByDashes(rawText) {
 
 function parseSection(sectionText) {
   const rawLines = sectionText.split(/\n+/);
-  const lines = rawLines.map(l => cleanLine(l.replace(/\u00A0/g,' '))).filter(l => l.length >= 0);
+  const lines = rawLines.map(l => cleanLine(l.replace(/\u00A0/g,' '))).filter(l => l.length > 0);
   if (lines.length === 0) return null;
 
   let title = '';
   let servings = null;
-  let calories = null;
   let ingredients = [];
   let instructions = [];
 
-  const norm = (s)=>s.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
-  const isServingsLine = (s)=>/\b(\d+)\s*portion(er)?\b/i.test(s);
-  const extractServings = (s)=>{ const m = s.match(/\b(\d+)\s*portion(er)?\b/i); return m?parseInt(m[1],10):null; };
-
-  // Title: if marker present, take next lines until we hit servings line or a blank, join with space
-  const markerIdx = rawLines.findIndex(l => /^namn pa ratt/i.test(norm(l)) || /^namn på rätt/i.test(norm(l)));
-  if (markerIdx !== -1) {
-    const after = cleanLine(rawLines[markerIdx].split(/namn på rätt\s*[:\-–—]?\s*|namn pa ratt\s*[:\-–—]?\s*/i).pop());
-    if (after) {
-      // Cut everything from '– N portion(er)' and onward
-      title = after.replace(/\s*[–—-]\s*\d+\s*portion(er)?\b[\s\S]*$/i,'').trim();
-      const s = extractServings(after);
-      if (s) servings = s;
-    }
-    if (!title) {
-      // try next lines, concatenate until servings line
-      const buff = [];
-      for (let i=markerIdx+1;i<rawLines.length;i++){
-        const t = cleanLine(rawLines[i]);
-        if (!t) break;
-        if (isServingsLine(t)) { servings = extractServings(t); break; }
-        // if t has ' - N portioner', split
-        const split = t.split(/\s*[–—-]\s*\d+\s*portion(er)?\b/i)[0];
-        buff.push(split || t);
-        if (split !== t) { servings = extractServings(t); break; }
-        // stop if line looks like ingredient (starts with digit/unit)
-        if (/^(\d+|[½¼¾⅓⅔])/.test(t)) break;
-      }
-      title = buff.join(' ').trim();
-    }
+  // Step 1: Extract clean title
+  const firstLine = lines[0] || '';
+  if (/^namn på rätt/i.test(firstLine)) {
+    // Extract title from marker line, stop at portion info or ingredients
+    let titlePart = firstLine.replace(/^namn på rätt\s*[:\-–—]?\s*/i, '');
+    titlePart = titlePart.replace(/\s*[–—-]\s*\d+\s*portion(er)?\b.*$/i, ''); // remove portion and after
+    titlePart = titlePart.replace(/\s*\d+\s*(dl|g|ml|kg|l|tsk|msk|st)\b.*$/i, ''); // remove if ingredient leaked
+    title = titlePart.trim();
+    
+    // Extract servings from first line if present
+    const servMatch = firstLine.match(/\b(\d+)\s*portion(er)?\b/i);
+    if (servMatch) servings = parseInt(servMatch[1], 10);
+  } else {
+    title = firstLine;
   }
 
-  // Decide when to switch from ingredients to instructions
-  const verbs = ['vispa','lägg','skär','heta','blanda','mixa','riv','sätt','servera','dela','tillsätt','toppa','dekorera','rosta','strö','hacka','koka','stek','häll','låt','rör'];
-  const isVerbLine = (s)=>{ const n=norm(s); return verbs.some(v=>n.startsWith(v+' ')); };
-  const looksLikeIngredient = (s)=>{
-    if (!s) return false;
-    if (s.startsWith('- ')) return true;
-    if (/^(\d+|[½¼¾⅓⅔])/.test(s)) return true;
-    if (/(dl|g|ml|kg|l|tsk|msk|st|cm|%|gram|liter)\b/i.test(s)) return true;
-    if (/^salt( och)?( svart)?peppar$/i.test(s)) return true;
-    if (/^(topping|dekoration|hummus|citronyoghurt)\b/i.test(s)) return true; // treat headers as ingredient context
-    return false;
-  };
+  // Step 2: Find where ingredients start and end
+  let ingredientStart = -1;
+  let instructionStart = -1;
 
-  let mode = 'auto';
+  // Look for explicit headers
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const lower = line.toLowerCase();
-    if (!title && lower.startsWith('namn på rätt')) { title = cleanLine(line.split(/[:\-–—]/)[1] || '').trim(); continue; }
-    if (lower.startsWith('antal portioner')) { const m = line.match(/(\d+)/); if (m) servings = parseInt(m[1], 10); continue; }
-    if (lower.startsWith('kalorier per rätt')) { calories = cleanLine(line.split(':')[1] || '').trim(); continue; }
-    if (lower === 'ingredienser:' || lower.startsWith('ingredienser')) { mode = 'ingredients'; continue; }
-
-    if (mode === 'auto') {
-      // until we hit verb/sentence, treat as ingredients
-      if (looksLikeIngredient(line)) { ingredients.push(line.replace(/^-\s*/,'')); continue; }
-      if (isVerbLine(line) || /\.[\s\)]?$/.test(line)) { mode = 'instructions'; instructions.push(line); continue; }
-      // lines like labels keep as ingredient context
-      if (/^(topping|dekoration|hummus|citronyoghurt)\b/i.test(line)) { ingredients.push(line+':'); continue; }
-      // if empty, skip
-      if (!line) continue;
-      // default: if we already have some ingredients, consider remaining as instructions
-      if (ingredients.length>0) { mode='instructions'; instructions.push(line); continue; }
-      // else append to title continuation (rare)
-      if (!title) title = line; else title += ' ' + line;
+    const lower = lines[i].toLowerCase();
+    if (lower === 'ingredienser:' || lower.startsWith('ingredienser')) {
+      ingredientStart = i + 1;
       continue;
     }
-
-    if (mode === 'ingredients') {
-      if (looksLikeIngredient(line) || /^(topping|dekoration|hummus|citronyoghurt)\b/i.test(line)) { ingredients.push(line.replace(/^-\s*/,'')); continue; }
-      // switch to instructions on verb/sentence
-      if (isVerbLine(line) || /\.[\s\)]?$/.test(line)) { mode='instructions'; instructions.push(line); continue; }
-      // blank lines keep going
-      if (!line) continue;
-      // otherwise, still ingredients (free text ingredient)
-      ingredients.push(line);
-      continue;
-    }
-
-    if (mode === 'instructions') {
-      if (line) instructions.push(line);
-      continue;
+    if (lower.startsWith('beskrivning') || lower.startsWith('instruktion') || lower.startsWith('gör så här')) {
+      instructionStart = i + 1;
+      break;
     }
   }
 
-  if (!title) {
-    const first = lines.find(l => l && !/^namn på rätt/i.test(l));
-    if (first) title = first;
+  // If no explicit headers, use heuristics
+  if (ingredientStart === -1) {
+    // Start after title line, look for ingredient patterns
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      if (/^(\d+|[½¼¾⅓⅔])/.test(line) || 
+          /(dl|g|ml|kg|l|tsk|msk|st|cm)\b/i.test(line) ||
+          line.startsWith('- ') ||
+          /^salt( och)?( svart)?peppar$/i.test(line)) {
+        ingredientStart = i;
+        break;
+      }
+    }
   }
 
+  if (instructionStart === -1 && ingredientStart !== -1) {
+    // Find where ingredients end (first verb line or sentence)
+    const verbs = ['vispa','lägg','skär','heta','blanda','mixa','riv','sätt','servera','dela','tillsätt','toppa','dekorera','rosta','strö','hacka','koka','stek','häll','låt','rör','forma','fyll','bryn','smaka'];
+    for (let i = ingredientStart; i < lines.length; i++) {
+      const line = lines[i];
+      const lower = line.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+      
+      // Check if line starts with a verb
+      const startsWithVerb = verbs.some(v => lower.startsWith(v + ' '));
+      // Or if it's a complete sentence (ends with period)
+      const isSentence = /\.\s*$/.test(line) && line.length > 10;
+      
+      if (startsWithVerb || isSentence) {
+        instructionStart = i;
+        break;
+      }
+    }
+  }
+
+  // Step 3: Extract ingredients
+  if (ingredientStart !== -1) {
+    const endIdx = instructionStart !== -1 ? instructionStart : lines.length;
+    for (let i = ingredientStart; i < endIdx; i++) {
+      const line = lines[i];
+      if (!line) continue;
+      
+      // Skip headers and non-ingredient lines
+      if (/^(topping|dekoration|hummus|citronyoghurt|bottnen)\s*:?\s*$/i.test(line)) {
+        ingredients.push(line + ':');
+        continue;
+      }
+      
+      ingredients.push(line.replace(/^-\s*/, ''));
+    }
+  }
+
+  // Step 4: Extract instructions
+  if (instructionStart !== -1) {
+    for (let i = instructionStart; i < lines.length; i++) {
+      const line = lines[i];
+      if (line && !/^(beskrivning|instruktion|gör så här)/i.test(line)) {
+        instructions.push(line);
+      }
+    }
+  }
+
+  // Step 5: Fallback if no instructions found
+  if (instructions.length === 0 && ingredientStart !== -1) {
+    // Take any remaining lines after ingredients as instructions
+    const remaining = lines.slice(ingredientStart + ingredients.length).filter(l => 
+      l && !/^(ingredienser|topping|dekoration)/i.test(l)
+    );
+    instructions = remaining;
+  }
+
+  // Clean up
   title = title.trim();
-  ingredients = ingredients.map(cleanLine).filter(Boolean);
-  instructions = instructions.map(cleanLine).filter(Boolean);
+  ingredients = ingredients.map(l => l.trim()).filter(Boolean);
+  instructions = instructions.map(l => l.trim()).filter(Boolean);
 
   if (!title) return null;
-  return { title, servings, calories, ingredients, instructions };
+  return { title, servings, ingredients, instructions };
 }
 
 async function extractDocxLines(docxPath) {
