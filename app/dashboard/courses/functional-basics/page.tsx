@@ -11,7 +11,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
-import { getWeekData } from '@/app/data/mealPlans';
+import { getWeekData, functionalBasicsMealPlans } from '@/app/data/mealPlans';
 
 interface WeekDay {
   day: number;
@@ -146,7 +146,7 @@ export default function FunctionalBasicsPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           onClick={() => setShowHelpGuide(true)}
-          className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors"
+          className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors z-10"
           title="Öppna hjälpguide"
         >
           <FiHelpCircle className="w-6 h-6" />
@@ -213,6 +213,38 @@ export default function FunctionalBasicsPage() {
                   `}>
                     {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Låst'}
                   </span>
+                  
+                  {/* Daily Meals Summary */}
+                  {(() => {
+                    const weekData = functionalBasicsMealPlans[currentWeek - 1];
+                    const dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                    const dayMeals = weekData?.days[dayNames[day.day - 1]];
+                    
+                    if (!dayMeals) return null;
+                    
+                    return (
+                      <div className="mt-3 space-y-1 text-xs">
+                        {dayMeals.breakfast && (
+                          <div className="text-left">
+                            <span className="font-medium text-orange-600">Frukost:</span>
+                            <span className="text-gray-600 ml-1">{dayMeals.breakfast.name.split('(')[0].trim()}</span>
+                          </div>
+                        )}
+                        {dayMeals.lunch && (
+                          <div className="text-left">
+                            <span className="font-medium text-green-600">Lunch:</span>
+                            <span className="text-gray-600 ml-1">{dayMeals.lunch.name.split('(')[0].trim()}</span>
+                          </div>
+                        )}
+                        {dayMeals.dinner && (
+                          <div className="text-left">
+                            <span className="font-medium text-purple-600">Middag:</span>
+                            <span className="text-gray-600 ml-1">{dayMeals.dinner.name.split('(')[0].trim()}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </motion.div>
             ))}
