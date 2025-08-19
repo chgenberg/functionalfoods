@@ -7,6 +7,7 @@ import {
   FiMessageSquare, FiThumbsUp, FiEye, FiSearch, FiEdit, FiFilter,
   FiPlus, FiClock, FiUser, FiTag, FiTrendingUp, FiStar
 } from 'react-icons/fi';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface ForumCategory {
   id: string;

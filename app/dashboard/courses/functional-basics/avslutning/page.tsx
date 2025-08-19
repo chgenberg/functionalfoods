@@ -4,26 +4,20 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowLeft, FiCheck, FiHeart, FiTarget, FiStar, FiBookOpen } from 'react-icons/fi';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard/courses/functional-basics" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <FiArrowLeft className="w-5 h-5" />
-            </Link>
-            <h1 className="text-2xl font-bold text-[#014421]">Kursen avslutad</h1>
-          </div>
-        </div>
-      </div>
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={6} />
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
+        <h1 className="text-3xl font-bold text-[#014421] text-center mb-8">Kursen avslutad</h1>
+        
         {/* Video Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

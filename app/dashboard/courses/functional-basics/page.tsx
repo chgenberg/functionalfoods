@@ -49,10 +49,11 @@ export default function FunctionalBasicsPage() {
       setCourseStartDate(today);
     }
     
-    // Check if onboarding should be shown
-    const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
-    if (!hasCompletedOnboarding) {
+    // Check if help guide should be shown (only first time)
+    const hasSeenHelpGuide = localStorage.getItem('basics_help_guide_seen');
+    if (!hasSeenHelpGuide) {
       setShowHelpGuide(true);
+      localStorage.setItem('basics_help_guide_seen', 'true');
     }
   }, []);
 
@@ -312,6 +313,18 @@ export default function FunctionalBasicsPage() {
               </div>
             );
           })}
+          
+          {/* Link to weekly meals */}
+          <div className="mt-6 text-center">
+            <Link 
+              href={`/dashboard/courses/functional-basics/week/${currentWeek}`}
+              className="inline-flex items-center gap-2 text-[#014421] hover:text-[#112A12] font-medium"
+            >
+              <FiCalendar className="w-5 h-5" />
+              Se hela veckans kostschema
+              <FiArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
         {/* Quick Actions */}
