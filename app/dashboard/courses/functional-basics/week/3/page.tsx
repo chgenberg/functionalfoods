@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -16,7 +16,6 @@ import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
-import ShoppingList from '../[week]/ShoppingList';
 
 interface TabProps {
   id: string;
@@ -40,20 +39,6 @@ interface DayMeals {
 
 export default function Week3Page() {
   const [activeTab, setActiveTab] = useState('overview');
-  const [courseId, setCourseId] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Hämta course ID för Functional Basics
-    fetch('/api/courses')
-      .then(res => res.json())
-      .then(data => {
-        const functionalBasics = data.courses?.find((c: any) => c.name === 'Functional Basics');
-        if (functionalBasics) {
-          setCourseId(functionalBasics.id);
-        }
-      })
-      .catch(err => console.error('Error fetching course:', err));
-  }, []);
 
   const tabs: TabProps[] = [
     { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-[#112A12] to-[#112A12]' },
@@ -70,8 +55,8 @@ export default function Week3Page() {
     <div>
       {/* Page Title */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Vecka 3: Flexibilitet & Fasta</h1>
-        <p className="text-gray-600 mt-2">Utforska flexibilitet och periodisk fasta</p>
+        <h1 className="text-3xl font-bold text-gray-900">Vecka 3: Fetter & kolhydrater</h1>
+        <p className="text-gray-600 mt-2">Optimera din energi med rätt makronutrienter</p>
       </div>
 
       {/* Tab Navigation */}
@@ -118,57 +103,56 @@ export default function Week3Page() {
               <div className="bg-primary rounded-3xl p-8 text-white shadow-xl">
                 <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 3!</h2>
                 <p className="text-lg leading-relaxed mb-6">
-                  Ny vecka med nya härliga recept i ditt kostschema! Du kanske har hittat en favoritfrukost 
-                  och vill hålla dig till den – kostschemat är en guide och ger dig stor flexibilitet. 
-                  Om du vill kan du också prova 16:8 fasta, där du hoppar över frukosten och börjar äta vid lunch. 
-                  Det ger fördelar för matsmältningen, men lyssna på din kropp och variera vid behov.
+                  Denna vecka dyker vi djupare in i makronutrienternas värld. Du kommer att lära dig 
+                  hur rätt balans mellan fetter och kolhydrater kan optimera din energi, förbättra din 
+                  koncentration och stödja din övergripande hälsa.
                 </p>
                 <p className="text-lg leading-relaxed">
-                  Nu har du även matlådor i frysen som sparar både tid och pengar. Den här veckan ska du 
-                  också läsa dokumenten "Periodisk fasta" och "Reflektion vecka 3".
+                  Fokus ligger på att välja kvalitetsfetter och komplexa kolhydrater som ger långvarig 
+                  energi utan blodsockertoppar.
                 </p>
               </div>
 
               {/* Week Progress */}
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-orange-100 rounded-full p-3">
-                    <FiTrendingUp className="w-8 h-8 text-orange-600" />
+                  <div className="bg-purple-100 rounded-full p-3">
+                    <FiTrendingUp className="w-8 h-8 text-purple-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Veckans fokus: Flexibilitet</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Veckans fokus</h3>
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="bg-background rounded-xl p-6">
-                        <h4 className="font-semibold text-gray-900 mb-3">16:8 Fasta</h4>
+                        <h4 className="font-semibold text-gray-900 mb-3">Hälsosamma fetter</h4>
                         <p className="text-gray-700 mb-3">
-                          Prova att äta inom ett 8-timmars fönster och fasta i 16 timmar. 
-                          Detta kan ge din matsmältning vila och förbättra din energi.
+                          Upptäck kraften i omega-3-fettsyror, avokado och nötter. Lär dig hur 
+                          dessa fetter stödjer hjärnhälsa och minskar inflammation.
                         </p>
                         <ul className="space-y-2 text-sm text-gray-600">
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-orange-600 mt-0.5 flex-shrink-0" />
-                            <span>Ät mellan 12:00-20:00</span>
+                            <FiCheckCircle className="text-purple-600 mt-0.5 flex-shrink-0" />
+                            <span>Omega-3 från fisk</span>
                           </li>
                           <li className="flex items-start space-x-2">
-                            <FiCheckCircle className="text-orange-600 mt-0.5 flex-shrink-0" />
-                            <span>Drick vatten, te eller kaffe under fastan</span>
+                            <FiCheckCircle className="text-purple-600 mt-0.5 flex-shrink-0" />
+                            <span>Växtbaserade fetter</span>
                           </li>
                         </ul>
                       </div>
-                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6">
-                        <h4 className="font-semibold text-gray-900 mb-3">Meal prep</h4>
+                      <div className="bg-background rounded-xl p-6">
+                        <h4 className="font-semibold text-gray-900 mb-3">Komplexa kolhydrater</h4>
                         <p className="text-gray-700 mb-3">
-                          Använd dina nya kunskaper för att förbereda måltider i förväg. 
-                          Detta sparar tid och säkerställer att du alltid har hälsosam mat tillgänglig.
+                          Välj långsamma kolhydrater som ger stabil energi. Fullkorn, quinoa 
+                          och grönsaker står i fokus denna vecka.
                         </p>
                         <ul className="space-y-2 text-sm text-gray-600">
                           <li className="flex items-start space-x-2">
                             <FiCheckCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Laga större portioner</span>
+                            <span>Stabilt blodsocker</span>
                           </li>
                           <li className="flex items-start space-x-2">
                             <FiCheckCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Frys in i portioner</span>
+                            <span>Långvarig mättnad</span>
                           </li>
                         </ul>
                       </div>
@@ -181,23 +165,23 @@ export default function Week3Page() {
               <div className="grid md:grid-cols-4 gap-6">
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <GiMeal className="w-12 h-12 text-purple-600 mx-auto mb-3" />
-                  <h4 className="text-2xl font-bold text-gray-900">21</h4>
+                  <h4 className="text-2xl font-bold text-gray-900">10</h4>
                   <p className="text-gray-600">Nya recept</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                  <FiClock className="w-12 h-12 text-blue-600 mx-auto mb-3" />
-                  <h4 className="text-2xl font-bold text-gray-900">16:8</h4>
-                  <p className="text-gray-600">Fasta-alternativ</p>
+                  <FiCalendar className="w-12 h-12 text-blue-600 mx-auto mb-3" />
+                  <h4 className="text-2xl font-bold text-gray-900">3/6</h4>
+                  <p className="text-gray-600">Veckor klara</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <GiFruitBowl className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <h4 className="text-2xl font-bold text-gray-900">Flex</h4>
-                  <p className="text-gray-600">Anpassa efter dig</p>
+                  <h4 className="text-2xl font-bold text-gray-900">35+</h4>
+                  <p className="text-gray-600">Ingredienser</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 text-center">
                   <FiHeart className="w-12 h-12 text-red-600 mx-auto mb-3" />
-                  <h4 className="text-2xl font-bold text-gray-900">50%</h4>
-                  <p className="text-gray-600">Halvvägs!</p>
+                  <h4 className="text-2xl font-bold text-gray-900">100%</h4>
+                  <p className="text-gray-600">Näringsrikt</p>
                 </div>
               </div>
             </motion.div>
@@ -227,28 +211,28 @@ export default function Week3Page() {
             >
               {/* Calendar View */}
               <CalendarView mealPlan={mealPlan} weekNumber={3} />
-
+              
               {/* Recipe Highlights */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans mellanmål</h3>
-                <p className="text-gray-600">Upptäck nya smaker och tekniker med veckans utvalda recept.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans favoriter</h3>
+                <p className="text-gray-600">Balanserade måltider med fokus på hälsosamma fetter och komplexa kolhydrater.</p>
               </div>
             </motion.div>
           )}
 
-          {/* Shopping Tab */}
+          {/* Shopping List Tab */}
           {activeTab === 'shopping' && (
             <motion.div
               key="shopping"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
             >
-              {/* För nu, anta att courseId är hårdkodat eller hämtat från en context/API */}
-              <ShoppingList 
-                weekNumber={3} 
-                courseId={courseId || ''} 
-              />
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Inköpslista</h3>
+                <p className="text-gray-600">Handla smart för vecka 3 - fokus på kvalitetsfetter och fullkorn.</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -257,9 +241,9 @@ export default function Week3Page() {
       {/* Next Week Button */}
       <div className="pb-16">
         <div className="bg-primary rounded-2xl p-8 text-white text-center">
-          <h3 className="text-2xl font-bold mb-4">Halvvägs där!</h3>
+          <h3 className="text-2xl font-bold mb-4">Redo för nästa steg?</h3>
           <p className="text-lg mb-6">
-            Du har klarat halva kursen! Fortsätt med samma energi in i vecka 4.
+            När du har lärt dig balansera makronutrienter, fortsätt till vecka 4 för vitaminer och mineraler.
           </p>
           <Link
             href="/dashboard/courses/functional-basics/week/4"
