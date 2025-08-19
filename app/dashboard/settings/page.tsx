@@ -136,7 +136,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Kontoinställningar</h1>
 
       <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">

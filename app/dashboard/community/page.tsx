@@ -227,7 +227,7 @@ export default function CommunityPage() {
   const totalThreads = categories.reduce((sum, cat) => sum + cat._count.threads, 0);
 
   return (
-    <div className="space-y-8">
+    <div className="py-8 space-y-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>

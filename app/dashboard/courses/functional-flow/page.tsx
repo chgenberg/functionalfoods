@@ -148,7 +148,17 @@ export default function FunctionalFlowPage() {
               </motion.button>
             ))}
             
-            {/* Community and Settings Links */}
+            {/* Completion, Community and Settings Links */}
+            <Link
+              href="/dashboard/courses/functional-flow/avslutning"
+              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg"
+            >
+              <span className="flex items-center gap-2">
+                <FiAward className="w-4 h-4" />
+                Avslutning
+              </span>
+            </Link>
+            
             <Link
               href="/dashboard/community"
               className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#112A12] hover:bg-[#E8E0D4]"

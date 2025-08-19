@@ -148,7 +148,7 @@ export default function FunctionalBasicsPage() {
             {weeks.map((week) => (
               <motion.button
                 key={week.number}
-                onClick={() => week.number <= currentWeek && setCurrentWeek(week.number)}
+                onClick={() => setCurrentWeek(week.number)}
                 className={`
                   px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all
                   ${week.number === currentWeek 
@@ -169,7 +169,17 @@ export default function FunctionalBasicsPage() {
               </motion.button>
             ))}
             
-            {/* Community and Settings Links */}
+            {/* Completion, Community and Settings Links */}
+            <Link
+              href="/dashboard/courses/functional-basics/avslutning"
+              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg"
+            >
+              <span className="flex items-center gap-2">
+                <FiAward className="w-4 h-4" />
+                Avslutning
+              </span>
+            </Link>
+            
             <Link
               href="/dashboard/community"
               className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
@@ -216,7 +226,7 @@ export default function FunctionalBasicsPage() {
                     : 'bg-white hover:shadow-lg'
                   }
                 `}
-                onClick={() => !day.locked && (window.location.href = `/dashboard/courses/functional-basics/week/${currentWeek}/day/${day.day}`)}
+                onClick={() => (window.location.href = `/dashboard/courses/functional-basics/week/${currentWeek}/day/${day.day}`)}
               >
                 {day.current && (
                   <div className="absolute -top-2 -right-2 bg-[#014421] text-white text-xs px-3 py-1 rounded-full">
