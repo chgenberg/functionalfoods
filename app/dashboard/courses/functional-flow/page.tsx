@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
+import { getFlowWeekData } from '@/app/data/mealPlans';
 
 interface WeekDay {
   day: number;
@@ -25,6 +26,7 @@ export default function FunctionalFlowPage() {
   const [currentDay, setCurrentDay] = useState(1);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -132,6 +134,18 @@ export default function FunctionalFlowPage() {
             Se introduktionsvideo
           </motion.button>
         </div>
+
+        {/* Help Button */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          onClick={() => setShowHelpGuide(true)}
+          className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors z-10"
+          title="Öppna hjälpguide"
+        >
+          <FiHelpCircle className="w-6 h-6" />
+        </motion.button>
 
         {/* Decorative elements */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
@@ -254,6 +268,38 @@ export default function FunctionalFlowPage() {
                   `}>
                     {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Låst'}
                   </span>
+                  
+                  {/* Daily Meals Summary */}
+                  {(() => {
+                    const weekData = getFlowWeekData(currentWeek);
+                    const swedishDayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+                    const dayMeals = weekData?.days[swedishDayNames[day.day - 1]];
+                    
+                    if (!dayMeals) return null;
+                    
+                    return (
+                      <div className="mt-3 space-y-1 text-xs">
+                        {dayMeals.breakfast && (
+                          <div className="text-left">
+                            <span className="font-medium text-orange-600">Frukost:</span>
+                            <span className="text-gray-600 ml-1">{dayMeals.breakfast.name.split('(')[0].trim()}</span>
+                          </div>
+                        )}
+                        {dayMeals.lunch && (
+                          <div className="text-left">
+                            <span className="font-medium text-green-600">Lunch:</span>
+                            <span className="text-gray-600 ml-1">{dayMeals.lunch.name.split('(')[0].trim()}</span>
+                          </div>
+                        )}
+                        {dayMeals.dinner && (
+                          <div className="text-left">
+                            <span className="font-medium text-purple-600">Middag:</span>
+                            <span className="text-gray-600 ml-1">{dayMeals.dinner.name.split('(')[0].trim()}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </motion.div>
             ))}
@@ -375,6 +421,12 @@ export default function FunctionalFlowPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpGuide} 
+        onClose={() => setShowHelpGuide(false)} 
+      />
     </div>
   );
 } 
