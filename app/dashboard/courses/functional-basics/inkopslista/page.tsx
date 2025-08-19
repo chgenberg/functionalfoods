@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowLeft, FiCheckSquare, FiSquare, FiPrinter, FiCopy } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface ShoppingItem {
   ingredient: string;
@@ -95,18 +96,17 @@ function ShoppingListContent() {
   }, {} as Record<string, ShoppingItem[]>);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/courses/functional-basics" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <FiArrowLeft className="w-5 h-5" />
-          </Link>
+    <div className="min-h-screen bg-[#F3EFE3]">
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={weekNumber} />
+      
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-[#014421]">Inköpslista - Vecka {weekNumber}</h1>
             <p className="text-gray-600">{shoppingList.recipeCount} recept</p>
           </div>
-        </div>
         
         <div className="flex gap-2">
           <button
@@ -201,6 +201,7 @@ function ShoppingListContent() {
           }
         }
       `}</style>
+      </div>
     </div>
   );
 }

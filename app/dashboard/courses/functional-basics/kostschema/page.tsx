@@ -11,6 +11,7 @@ import { MdDinnerDining } from 'react-icons/md';
 import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
 import Image from 'next/image';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: string, icon: any, time: string, day: string }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -164,14 +165,10 @@ export default function KostschemaPage() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/dashboard/courses/functional-basics" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <FiArrowLeft className="w-5 h-5" />
-              </Link>
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={currentWeek} />
+
+      {/* Main Content */}
               <div>
                 <h1 className="text-2xl font-bold text-[#014421]">Kostschema</h1>
                 <p className="text-sm text-gray-600">Vecka {currentWeek} - {weekTitles[currentWeek - 1]}</p>
