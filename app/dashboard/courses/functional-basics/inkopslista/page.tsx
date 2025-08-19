@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowLeft, FiCheckSquare, FiSquare, FiPrinter, FiCopy } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
-import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface ShoppingItem {
   ingredient: string;
@@ -96,11 +95,7 @@ function ShoppingListContent() {
   }, {} as Record<string, ShoppingItem[]>);
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={weekNumber} />
-      
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

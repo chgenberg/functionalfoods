@@ -10,7 +10,6 @@ import {
 import { MdDinnerDining } from 'react-icons/md';
 import { getWeekData } from '@/app/data/mealPlans';
 import { useParams } from 'next/navigation';
-import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 export default function DayPage() {
   const params = useParams();
@@ -95,11 +94,7 @@ export default function DayPage() {
   const nextDay = ((nextDayNumber - 1) % 7) + 1;
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={weekNumber} />
-      
-      {/* Header */}
+    <div className="min-h-screen bg-[#F3EFE3]">{/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">

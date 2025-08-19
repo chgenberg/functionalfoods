@@ -7,7 +7,6 @@ import {
   FiMessageSquare, FiThumbsUp, FiEye, FiSearch, FiEdit, FiFilter,
   FiPlus, FiClock, FiUser, FiTag, FiTrendingUp, FiStar
 } from 'react-icons/fi';
-import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface ForumCategory {
   id: string;
@@ -228,11 +227,7 @@ export default function CommunityPage() {
   const totalThreads = categories.reduce((sum, cat) => sum + cat._count.threads, 0);
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={1} />
-      
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div>

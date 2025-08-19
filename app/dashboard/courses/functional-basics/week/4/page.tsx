@@ -16,7 +16,6 @@ import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
-import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface TabProps {
   id: string;
@@ -53,11 +52,7 @@ export default function Week4Page() {
   const mealPlan = weekData?.days || {};
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={4} />
-      
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Vecka 4: Vitaminer & mineraler</h1>

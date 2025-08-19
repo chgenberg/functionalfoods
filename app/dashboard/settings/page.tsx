@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiSave, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
-import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface UserData {
   id: string;
@@ -137,11 +136,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={1} />
-      
-      <div className="max-w-4xl mx-auto py-8">
+    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-[#014421] mb-8">Kontoinställningar</h1>
 
       <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
