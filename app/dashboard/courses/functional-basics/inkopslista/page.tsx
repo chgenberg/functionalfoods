@@ -1,236 +1,206 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiShoppingCart, FiCheck, FiChevronDown, FiChevronUp, 
-  FiDownload, FiPrinter, FiShare2, FiRefreshCw
-} from 'react-icons/fi';
-import { GiFruitBowl } from 'react-icons/gi';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import ShoppingList from './ShoppingList';
+import { FiArrowLeft, FiCheckSquare, FiSquare, FiPrinter, FiCopy } from 'react-icons/fi';
+import { useSearchParams } from 'next/navigation';
 
-interface WeekSection {
-  week: number;
-  title: string;
-  description: string;
+interface ShoppingItem {
+  ingredient: string;
+  amount: number;
+  unit: string;
+  category: string;
 }
 
-const weekSections: WeekSection[] = [
-  { week: 1, title: 'Introduktion till Functional Foods', description: 'Lär dig grunderna och kom igång med din hälsoresa' },
-  { week: 2, title: 'Att välja rätt proteiner', description: 'Fokus på högkvalitativa proteinkällor' },
-  { week: 3, title: 'Att välja rätt kolhydrater', description: 'Lär dig om bra kolhydrater för stabil energi' },
-  { week: 4, title: 'Functional Foods Topplista', description: 'De mest kraftfulla livsmedlen för din hälsa' },
-  { week: 5, title: 'Fördelarna med Functional Foods', description: 'Fördjupa din förståelse för hälsofördelarna' },
-  { week: 6, title: 'Att komma igång', description: 'Sammanfattning och vägen framåt' }
-];
+interface ShoppingList {
+  week: number;
+  courseType: string;
+  recipeCount: number;
+  items: ShoppingItem[];
+  generatedAt: string;
+}
 
-export default function InkopslistaPage() {
-  const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1]));
-  const courseId = '851b830e-9f81-4e92-9b2d-3bcfdac86c9e'; // Functional Basics course ID
-  const [loading, setLoading] = useState(false);
+export default function ShoppingListPage() {
+  const searchParams = useSearchParams();
+  const weekNumber = parseInt(searchParams.get('week') || '1');
+  const [shoppingList, setShoppingList] = useState<ShoppingList | null>(null);
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
 
-  const toggleWeek = (week: number) => {
-    const newExpanded = new Set(expandedWeeks);
-    if (newExpanded.has(week)) {
-      newExpanded.delete(week);
-    } else {
-      newExpanded.add(week);
+  useEffect(() => {
+    fetchShoppingList();
+  }, [weekNumber]);
+
+  const fetchShoppingList = async () => {
+    try {
+      const response = await fetch(`/api/shopping-list/basics/${weekNumber}`);
+      if (response.ok) {
+        const data = await response.json();
+        setShoppingList(data);
+      }
+    } catch (error) {
+      console.error('Error fetching shopping list:', error);
+    } finally {
+      setLoading(false);
     }
-    setExpandedWeeks(newExpanded);
   };
 
-  const expandAll = () => {
-    setExpandedWeeks(new Set([1, 2, 3, 4, 5, 6]));
+  const toggleItem = (itemKey: string) => {
+    const newChecked = new Set(checkedItems);
+    if (newChecked.has(itemKey)) {
+      newChecked.delete(itemKey);
+    } else {
+      newChecked.add(itemKey);
+    }
+    setCheckedItems(newChecked);
   };
 
-  const collapseAll = () => {
-    setExpandedWeeks(new Set());
+  const copyToClipboard = () => {
+    if (!shoppingList) return;
+    
+    const text = shoppingList.items
+      .map(item => `${item.amount} ${item.unit} ${item.ingredient}`)
+      .join('\n');
+    
+    navigator.clipboard.writeText(text);
   };
 
-  const downloadAllLists = () => {
-    // Implementera nedladdning av alla listor som PDF eller text
-    console.log('Laddar ner alla inköpslistor...');
-  };
-
-  const printAllLists = () => {
+  const print = () => {
     window.print();
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar inköpslistor...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-                      className="relative overflow-hidden rounded-2xl bg-primary p-6 md:p-8 text-white shadow-xl mb-6 md:mb-8"
-        >
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative z-10">
-            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-3 bg-white/20 rounded-xl">
-                    <FiShoppingCart className="w-8 h-8" />
-                  </div>
-                  <h1 className="text-2xl md:text-3xl font-bold">Inköpslistor</h1>
-                </div>
-                <p className="text-green-100 text-base md:text-lg">
-                  Alla dina inköpslistor för 6-veckorsprogrammet samlade på ett ställe
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={downloadAllLists}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-all duration-200"
-                >
-                  <FiDownload className="w-4 h-4" />
-                  <span className="hidden sm:inline">Ladda ner alla</span>
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={printAllLists}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-all duration-200"
-                >
-                  <FiPrinter className="w-4 h-4" />
-                  <span className="hidden sm:inline">Skriv ut</span>
-                </motion.button>
-              </div>
-            </div>
-          </div>
-          
-          {/* Decorative elements */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        </motion.div>
-
-        {/* Action buttons */}
-        <div className="flex justify-between items-center mb-6">
-          <Link 
-            href="/dashboard/courses/functional-basics/kostschema"
-            className="text-gray-600 hover:text-gray-900 flex items-center gap-2"
-          >
-            ← Tillbaka till kostschema
-          </Link>
-          <div className="flex gap-2">
-            <button
-              onClick={expandAll}
-              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              Expandera alla
-            </button>
-            <button
-              onClick={collapseAll}
-              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              Stäng alla
-            </button>
-          </div>
-        </div>
-
-        {/* Week sections */}
-        <div className="space-y-4">
-          {weekSections.map((section) => (
-            <motion.div
-              key={section.week}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: section.week * 0.05 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
-            >
-              {/* Week header */}
-              <button
-                onClick={() => toggleWeek(section.week)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`
-                    w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white
-                    ${section.week === 1 ? 'bg-primary' : ''}
-                    ${section.week === 2 ? 'bg-[#0D5C29]' : ''}
-                    ${section.week === 3 ? 'bg-[#167531]' : ''}
-                    ${section.week === 4 ? 'bg-[#1F8E39]' : ''}
-                    ${section.week === 5 ? 'bg-[#28A741]' : ''}
-                    ${section.week === 6 ? 'bg-[#31C049]' : ''}
-                  `}>
-                    {section.week}
-                  </div>
-                  <div className="text-left">
-                    <h3 className="font-semibold text-gray-900">Vecka {section.week}: {section.title}</h3>
-                    <p className="text-sm text-gray-600">{section.description}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Link
-                    href={`/dashboard/courses/functional-basics/week/${section.week}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-sm text-primary hover:text-secondary px-3 py-1 hover:bg-background rounded-lg transition-colors"
-                  >
-                    Gå till veckan
-                  </Link>
-                  {expandedWeeks.has(section.week) ? (
-                    <FiChevronUp className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <FiChevronDown className="w-5 h-5 text-gray-400" />
-                  )}
-                </div>
-              </button>
-
-              {/* Week content */}
-              <AnimatePresence>
-                {expandedWeeks.has(section.week) && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="border-t border-gray-100"
-                  >
-                    <div className="p-6">
-                      <ShoppingList 
-                        weekNumber={section.week} 
-                        courseId={courseId}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Bottom info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8 text-center"
-        >
-          <div className="bg-background rounded-xl p-6">
-            <GiFruitBowl className="w-12 h-12 text-primary mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Tips för smart shopping</h3>
-            <p className="text-gray-700 max-w-2xl mx-auto">
-              Planera dina inköp veckovis för att spara tid och pengar. 
-              Många ingredienser återkommer mellan veckorna, så köp större kvantiteter av basvaror.
-            </p>
-          </div>
-        </motion.div>
+  if (!shoppingList) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <p className="text-center text-gray-600">Ingen inköpslista tillgänglig för vecka {weekNumber}</p>
       </div>
+    );
+  }
+
+  const groupedItems = shoppingList.items.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+    acc[item.category].push(item);
+    return acc;
+  }, {} as Record<string, ShoppingItem[]>);
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard/courses/functional-basics" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <FiArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-[#014421]">Inköpslista - Vecka {weekNumber}</h1>
+            <p className="text-gray-600">{shoppingList.recipeCount} recept</p>
+          </div>
+        </div>
+        
+        <div className="flex gap-2">
+          <button
+            onClick={copyToClipboard}
+            className="p-2 bg-[#F3EFE3] text-[#014421] rounded-lg hover:bg-[#E8E0D4] transition-colors"
+            title="Kopiera lista"
+          >
+            <FiCopy className="w-5 h-5" />
+          </button>
+          <button
+            onClick={print}
+            className="p-2 bg-[#F3EFE3] text-[#014421] rounded-lg hover:bg-[#E8E0D4] transition-colors"
+            title="Skriv ut"
+          >
+            <FiPrinter className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Week Navigation */}
+      <div className="flex justify-center gap-2 mb-8">
+        {[1, 2, 3, 4, 5, 6].map((week) => (
+          <Link
+            key={week}
+            href={`/dashboard/courses/functional-basics/inkopslista?week=${week}`}
+            className={`
+              px-4 py-2 rounded-full text-sm transition-all
+              ${week === weekNumber 
+                ? 'bg-[#014421] text-white shadow-md' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }
+            `}
+          >
+            Vecka {week}
+          </Link>
+        ))}
+      </div>
+
+      {/* Shopping List */}
+      <div className="space-y-8 print:space-y-6">
+        {Object.entries(groupedItems).map(([category, items]) => (
+          <motion.div
+            key={category}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-xl shadow-sm p-6 print:shadow-none print:p-4"
+          >
+            <h2 className="text-lg font-bold text-[#014421] mb-4">{category}</h2>
+            <div className="space-y-2">
+              {items.map((item, index) => {
+                const itemKey = `${category}-${index}`;
+                const isChecked = checkedItems.has(itemKey);
+                
+                return (
+                  <div
+                    key={itemKey}
+                    className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0 print:py-1"
+                  >
+                    <button
+                      onClick={() => toggleItem(itemKey)}
+                      className="print:hidden"
+                    >
+                      {isChecked ? (
+                        <FiCheckSquare className="w-5 h-5 text-green-600" />
+                      ) : (
+                        <FiSquare className="w-5 h-5 text-gray-400" />
+                      )}
+                    </button>
+                    <span className={`flex-1 ${isChecked ? 'line-through text-gray-400' : ''}`}>
+                      <span className="font-medium">{item.amount} {item.unit}</span> {item.ingredient}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Print styles */}
+      <style jsx global>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          .print\\:shadow-none,
+          .print\\:shadow-none * {
+            visibility: visible;
+          }
+          .print\\:hidden {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 } 
