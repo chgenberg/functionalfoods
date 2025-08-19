@@ -11,7 +11,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
-import { getWeekData, functionalBasicsMealPlans } from '@/app/data/mealPlans';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface WeekDay {
   day: number;
@@ -216,12 +216,12 @@ export default function FunctionalBasicsPage() {
                   
                   {/* Daily Meals Summary */}
                   {(() => {
-                    const weekData = functionalBasicsMealPlans[currentWeek - 1];
-                    const dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                    const dayMeals = weekData?.days[dayNames[day.day - 1]];
-                    
+                    const weekData = getWeekData(currentWeek);
+                    const swedishDayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+                    const dayMeals = weekData?.days[swedishDayNames[day.day - 1]];
+
                     if (!dayMeals) return null;
-                    
+
                     return (
                       <div className="mt-3 space-y-1 text-xs">
                         {dayMeals.breakfast && (
