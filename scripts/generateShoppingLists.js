@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 // Initialize OpenAI (you'll need to add your API key here temporarily)
 const openai = new OpenAI({
-  apiKey: 'YOUR_OPENAI_API_KEY_HERE', // Replace with your API key when running
+  apiKey: process.env.OPENAI_API_KEY || 'YOUR_OPENAI_API_KEY_HERE',
 });
 
 // Ingredient normalization and unit conversion
@@ -141,7 +141,7 @@ async function generateShoppingListForWeek(weekNumber, courseType) {
   console.log(`\nGenerating shopping list for ${courseType} Week ${weekNumber}...`);
   
   // Get meal plan data
-  const mealPlanModule = require('../app/data/mealPlans');
+  const mealPlanModule = require('../app/data/mealPlans.ts');
   const mealPlan = courseType === 'basics' 
     ? mealPlanModule.functionalBasicsMealPlans[weekNumber - 1]
     : mealPlanModule.functionalFlowMealPlans[weekNumber - 1];

@@ -24,9 +24,15 @@ export default function DashboardLayout({
     }
   }, [pathname]);
 
+  // Only show navigation on certain pages
+  const showNavigation = pathname.includes('/dashboard/community') || 
+                        pathname.includes('/dashboard/settings') ||
+                        pathname.includes('/dashboard/courses/functional-basics/week') ||
+                        pathname.includes('/dashboard/courses/functional-flow/week');
+
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      <CourseNavigation courseType={courseType} />
+      {showNavigation && <CourseNavigation courseType={courseType} />}
       {children}
     </div>
   );
