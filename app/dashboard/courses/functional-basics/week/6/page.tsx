@@ -1,17 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  FiCalendar, FiShoppingCart, FiBookOpen, FiClock,
-  FiChevronRight, FiCheck, FiStar, FiAward, FiDownload
-} from 'react-icons/fi';
-import ReviewCTA from '../components/ReviewCTA';
-import { useAuth } from '@/app/hooks/useAuth';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FiArrowLeft, FiCalendar, FiShoppingCart, FiBook, FiTarget,
+  FiChevronRight, FiClock, FiUsers, FiCheckCircle, FiDownload,
+  FiStar, FiHeart, FiAward, FiTrendingUp
+} from 'react-icons/fi';
+import { 
+  GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal,
+  GiWheat, GiMeat, GiWaterBottle
+} from 'react-icons/gi';
+import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
+
+interface TabProps {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  color: string;
+}
 
 interface MealItem {
   name: string;
@@ -24,381 +35,233 @@ interface DayMeals {
   lunch: MealItem;
   dinner: MealItem;
   snack?: MealItem;
-  dessert?: MealItem;
 }
 
-// Hämta centraliserad måltidsdata för vecka 6
-const weekData = getWeekData(6);
-const mealPlan = weekData?.days || {};
-
-const shoppingList = {
-  'Frukt/grönt': [
-    '6 klyftor vitlök',
-    '2 röd chili',
-    '2 paprikor',
-    '0.25 squash',
-    '0.25 fänkål',
-    '5 cocktailtomater',
-    '3 morötter',
-    '10 brysselkål',
-    '0.5 kiwi',
-    '0.25 rödlök',
-    '2 dl rucola',
-    'ca 10 cm purjolök',
-    '1 pak choi',
-    '0.25 lime',
-    '0.5 ananas',
-    'ca 7 cm ingefära',
-    '1 salladslök',
-    '2 gul lök',
-    '100 gram haricots verts',
-    '0.25 aubergine',
-    '5 färska champinjoner',
-    '0.75 färsk mango',
-    '1 palsternacka',
-    '0.75 granatäpple',
-    '0.5 citron',
-    '160 gram majs',
-    '1.5 apelsin',
-    '1 banan',
-    '1 cantaloupemelon',
-    '2 dl frysta blåbär',
-    '2 dl frysta hallon',
-    '300 gram frysta wokgrönsaker'
-  ],
-  'Kryddor/smaksättare': [
-    'salt',
-    'svartpeppar',
-    '1.5 tsk örtagårdskrydda',
-    '1 krm paprikapulver',
-    '0.75 tsk kardemumma',
-    '1 tsk curry',
-    '1 tsk garam masala',
-    '0.5 msk furikakekrydda',
-    '1 tsk malen kanel',
-    '0.5 tsk spiskummin',
-    '1 dl teriyakisås',
-    '1 tsk srirachasås',
-    '1 msk ketjap manis',
-    '1 köttbuljongtärning',
-    '1 hönsbuljongtärning',
-    '1 msk färsk koriander',
-    '2 msk färsk basilika',
-    '1 dl färsk mynta',
-    '1.75 dl färsk persilja'
-  ],
-  'Mejeri': [
-    '1 dl keso',
-    '2 msk smör',
-    '1 dl grekisk yoghurt',
-    '0.5 dl gräddfil',
-    '150 gram halloumi'
-  ],
-  'Kött/fisk/fågel/ägg/vego': [
-    '300 gram kycklingfilé',
-    '300 gram nötfärs',
-    '350 gram torskrygg',
-    '4 ägg',
-    '500 gram laxfilé',
-    '800 gram lammstek'
-  ],
-  'Torrvaror': [
-    '1 tsk rapsolja',
-    '2.5 msk olivolja',
-    '1 msk pekannötter',
-    '600 gram krossade tomater',
-    '5 torkade aprikoser',
-    '1 dl havregryn',
-    '6 torkade plommon',
-    '1 msk jordnötter',
-    '3 soltorkade tomater',
-    '0.5 msk pistagenötter',
-    '1 dl röda linser',
-    '1 dl vit quinoa',
-    '3 dl bulgur',
-    '1 msk kokosflingor',
-    '2 msk kokosskivor'
-  ],
-  'Övrigt': [
-    '0.5 msk majonnäs',
-    '1 dl mandelmjölk',
-    '1 dl syltlök',
-    'valfritt pålägg till en fralla',
-    '10 cornichongurkor',
-    '1 dl lingonsylt'
-  ]
-};
-
 export default function Week6Page() {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
-  const toggleItem = (item: string) => {
-    const newCheckedItems = new Set(checkedItems);
-    if (newCheckedItems.has(item)) {
-      newCheckedItems.delete(item);
-    } else {
-      newCheckedItems.add(item);
-    }
-    setCheckedItems(newCheckedItems);
-  };
+  const tabs: TabProps[] = [
+    { id: 'overview', label: 'Översikt', icon: FiBook, color: 'from-[#112A12] to-[#112A12]' },
+    { id: 'goals', label: 'Målsättning', icon: FiTarget, color: 'from-[#da695c] to-[#da695c]' },
+    { id: 'mealplan', label: 'Kostschema', icon: FiCalendar, color: 'from-[#112A12] to-[#112A12]' },
+    { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-[#da695c] to-[#da695c]' }
+  ];
+
+  // Hämta centraliserad måltidsdata för vecka 6
+  const weekData = getWeekData(6);
+  const mealPlan = weekData?.days || {};
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Vecka 6</h1>
-          <p className="text-lg text-gray-600">Sista veckan - dags att fira din resa!</p>
-        </motion.div>
+    <div>
+      {/* Page Title */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Vecka 6: Att komma igång</h1>
+        <p className="text-gray-600 mt-2">Skapa din egen hållbara Functional Foods-livsstil</p>
+      </div>
 
-        {/* Tabs */}
-        <div className="mb-4 md:mb-8">
-          <div className="bg-[#F3EFE3] rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
-              {[
-                { id: 'overview', label: 'Översikt', icon: FiBookOpen },
-                { id: 'goals', label: 'Mål', icon: FiStar },
-                { id: 'meals', label: 'Kostschema', icon: FiCalendar },
-                { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`relative p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r text-white shadow-md md:shadow-lg transform scale-105'
-                      : 'bg-white text-[#112A12] hover:bg-[#F3EFE3]'
-                  }`}
-                >
-                  <tab.icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2 ${
-                    activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
-                  }`} />
-                  <span className={`text-xs md:text-sm font-medium ${
-                    activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
-                  }`}>
-                    {tab.label}
-                  </span>
-                </button>
-              ))}
-            </div>
+      {/* Tab Navigation */}
+      <div className="mb-4 md:mb-8">
+        <div className="bg-[#F3EFE3] rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r text-white shadow-md md:shadow-lg transform scale-105'
+                    : 'bg-white text-[#112A12] hover:bg-[#F3EFE3]'
+                } ${activeTab === tab.id ? tab.color : ''}`}
+              >
+                <tab.icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2 ${
+                  activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
+                }`} />
+                <span className={`text-xs md:text-sm font-medium ${
+                  activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
+                }`}>
+                  {tab.label}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Tab Content */}
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+      {/* Content Area */}
+      <div className="pb-16">
+        <AnimatePresence mode="wait">
+          {/* Overview Tab */}
           {activeTab === 'overview' && (
-            <div className="space-y-8">
-              <div className="bg-primary rounded-2xl shadow-lg p-8 text-white">
-                <div className="flex items-start gap-4">
-                  <FiAward className="w-12 h-12 flex-shrink-0" />
-                  <div>
-                    <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 6!</h2>
-                    <p className="text-lg leading-relaxed mb-4">
-                      Nu är det sista veckan i baskursen och du har lärt dig grunderna för hur råvaror och 
-                      tillagning påverkar din hälsa. Under dessa veckor har du fått prova många maträtter och 
-                      lärt dig recept som du kan anpassa efter egna smakpreferenser.
-                    </p>
-                    <p className="text-lg leading-relaxed mb-4">
-                      Förhoppningsvis har du också blivit inspirerad att använda näringsrika grönsaker som kål, 
-                      rotfrukter och bladgrönsaker, som är rika på antioxidanter och fibrer.
-                    </p>
-                    <p className="text-lg leading-relaxed">
-                      Du har ätit en naturligt glutenfri kost och ersatt mindre hälsosamma alternativ som pasta, 
-                      vete och socker med bättre val. Du får i dig mer protein, grönsaker, frukt, baljväxter och 
-                      omega-3, samt både prebiotika och probiotika. Nu är det dags att anamma detta som livsstil!
-                    </p>
+            <motion.div
+              key="overview"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              {/* Welcome Message */}
+              <div className="bg-primary rounded-3xl p-8 text-white shadow-xl">
+                <h2 className="text-3xl font-bold mb-4">Grattis - du är i mål! 🎉</h2>
+                <p className="text-lg leading-relaxed mb-6">
+                  Under dessa 6 veckor har du byggt en solid grund inom Functional Foods. 
+                  Nu är det dags att ta det du lärt dig och skapa din egen hållbara livsstil. 
+                  Du har alla verktyg du behöver för att fortsätta din hälsoresa.
+                </p>
+                <p className="text-lg leading-relaxed">
+                  Denna sista vecka handlar om att planera framåt, skapa egna rutiner och 
+                  förstå hur du kan anpassa Functional Foods-principerna till ditt liv.
+                </p>
+              </div>
+
+              {/* Week Progress */}
+              <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-purple-100 rounded-full p-3">
+                    <FiTrendingUp className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Veckans fokus</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="bg-background rounded-xl p-6">
+                        <h4 className="font-semibold text-gray-900 mb-3">Egen planering</h4>
+                        <p className="text-gray-700 mb-3">
+                          Lär dig skapa egna veckoscheman, planera inköp och välja recept 
+                          som passar din livsstil och smakpreferenser.
+                        </p>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li className="flex items-start space-x-2">
+                            <FiCheckCircle className="text-purple-600 mt-0.5 flex-shrink-0" />
+                            <span>Skapa egna menyer</span>
+                          </li>
+                          <li className="flex items-start space-x-2">
+                            <FiCheckCircle className="text-purple-600 mt-0.5 flex-shrink-0" />
+                            <span>Anpassa till familjen</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="bg-background rounded-xl p-6">
+                        <h4 className="font-semibold text-gray-900 mb-3">Hållbara vanor</h4>
+                        <p className="text-gray-700 mb-3">
+                          Fokusera på att bygga vanor som håller över tid. Flexibilitet 
+                          och balans är nyckeln till långsiktig framgång.
+                        </p>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li className="flex items-start space-x-2">
+                            <FiCheckCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
+                            <span>80/20-regeln</span>
+                          </li>
+                          <li className="flex items-start space-x-2">
+                            <FiCheckCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
+                            <span>Lyssna på kroppen</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Din fantastiska resa</h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-background rounded-xl p-6 text-center"
-                  >
-                    <div className="text-3xl font-bold text-primary mb-2">42</div>
-                    <div className="text-gray-700">Dagar av hälsosam mat</div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl p-6 text-center"
-                  >
-                    <div className="text-3xl font-bold text-blue-600 mb-2">126+</div>
-                    <div className="text-gray-700">Näringsrika måltider</div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl p-6 text-center"
-                  >
-                    <div className="text-3xl font-bold text-purple-600 mb-2">100%</div>
-                    <div className="text-gray-700">Glutenfri kost</div>
-                  </motion.div>
-                  
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-r from-pink-100 to-pink-200 rounded-xl p-6 text-center"
-                  >
-                    <div className="text-3xl font-bold text-pink-600 mb-2">∞</div>
-                    <div className="text-gray-700">Kunskap för livet</div>
-                  </motion.div>
+              {/* Quick Stats */}
+              <div className="grid md:grid-cols-4 gap-6">
+                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                  <GiMeal className="w-12 h-12 text-purple-600 mx-auto mb-3" />
+                  <h4 className="text-2xl font-bold text-gray-900">100+</h4>
+                  <p className="text-gray-600">Recept lärt</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                  <FiCalendar className="w-12 h-12 text-blue-600 mx-auto mb-3" />
+                  <h4 className="text-2xl font-bold text-gray-900">6/6</h4>
+                  <p className="text-gray-600">Veckor klara</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                  <GiFruitBowl className="w-12 h-12 text-primary mx-auto mb-3" />
+                  <h4 className="text-2xl font-bold text-gray-900">∞</h4>
+                  <p className="text-gray-600">Möjligheter</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                  <FiHeart className="w-12 h-12 text-red-600 mx-auto mb-3" />
+                  <h4 className="text-2xl font-bold text-gray-900">100%</h4>
+                  <p className="text-gray-600">Klar för framtiden</p>
                 </div>
               </div>
-
-              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-8 border-2 border-yellow-200">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Nästa steg</h3>
-                <p className="text-gray-700 mb-6">
-                  Nu är det dags att anamma Functional Foods som livsstil. Läs dokumentet 
-                  "Functional Foods som livsstil" för att få vägledning om hur du fortsätter din resa.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  <Link 
-                    href="/dashboard/courses/functional-basics/downloads"
-                    className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors"
-                  >
-                    <FiDownload className="w-5 h-5" />
-                    Ladda ner "Functional Foods som livsstil"
-                  </Link>
-                  <Link 
-                    href="/dashboard/courses"
-                    className="inline-flex items-center gap-2 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors"
-                  >
-                    Utforska fler kurser
-                  </Link>
-                </div>
-              </div>
-
-              {user?.id && (
-                <ReviewCTA courseId="functional-basics" userId={user.id} />
-              )}
-            </div>
+            </motion.div>
           )}
 
+          {/* Goals Tab */}
           {activeTab === 'goals' && (
-            <GoalsSection weekNumber={6} />
+            <motion.div
+              key="goals"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              <GoalsSection weekNumber={6} />
+            </motion.div>
           )}
 
-          {activeTab === 'meals' && (
-            <div className="space-y-8">
+          {/* Meal Plan Tab */}
+          {activeTab === 'mealplan' && (
+            <motion.div
+              key="mealplan"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              {/* Calendar View */}
               <CalendarView mealPlan={mealPlan} weekNumber={6} />
               
               {/* Recipe Highlights */}
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Veckans avslutande rätter</h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="bg-background rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 mb-2">Indisk laxgryta</h4>
-                    <p className="text-gray-600 text-sm mb-3">
-                      Smakrik gryta med antiinflammatoriska kryddor
-                    </p>
-                    <div className="flex gap-2">
-                      <span className="bg-background-secondary text-secondary text-xs px-2 py-1 rounded-full">Omega-3</span>
-                      <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">Kryddor</span>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 mb-2">Lammgryta med plommon</h4>
-                    <p className="text-gray-600 text-sm mb-3">
-                      Näringsrik proteinrätt med naturlig sötma
-                    </p>
-                    <div className="flex gap-2">
-                      <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">Protein</span>
-                      <span className="bg-pink-100 text-pink-700 text-xs px-2 py-1 rounded-full">Antioxidanter</span>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 mb-2">Tropisk fruktsallad</h4>
-                    <p className="text-gray-600 text-sm mb-3">
-                      Färgglad avslutning med C-vitaminrika frukter
-                    </p>
-                    <div className="flex gap-2">
-                      <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full">C-vitamin</span>
-                      <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full">Efterrätt</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Avslutande favoriter</h3>
+                <p className="text-gray-600">Sista veckans recept som sammanfattar allt du lärt dig om Functional Foods.</p>
               </div>
-            </div>
+            </motion.div>
           )}
 
+          {/* Shopping List Tab */}
           {activeTab === 'shopping' && (
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Inköpslista vecka 6</h2>
-              
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Object.entries(shoppingList).map(([category, items]) => (
-                  <div key={category} className="bg-gray-50 rounded-lg p-6">
-                    <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <FiShoppingCart className="w-4 h-4 text-primary" />
-                      {category}
-                    </h3>
-                    <ul className="space-y-2">
-                      {items.map((item, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <button
-                            onClick={() => toggleItem(`${category}-${index}`)}
-                            className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded border-2 transition-all ${
-                              checkedItems.has(`${category}-${index}`)
-                                ? 'bg-primary border-primary'
-                                : 'border-gray-300 hover:border-primary'
-                            }`}
-                          >
-                            {checkedItems.has(`${category}-${index}`) && (
-                              <FiCheck className="w-3 h-3 text-white" />
-                            )}
-                          </button>
-                          <span className={`text-gray-700 ${
-                            checkedItems.has(`${category}-${index}`) ? 'line-through opacity-50' : ''
-                          }`}>
-                            {item}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+            <motion.div
+              key="shopping"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Inköpslista</h3>
+                <p className="text-gray-600">Din sista guidade inköpslista - snart planerar du helt själv!</p>
               </div>
-
-              <div className="mt-8 text-center">
-                <div className="bg-background rounded-xl p-8 mb-6">
-                  <FiAward className="w-16 h-16 text-primary mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Grattis!</h3>
-                  <p className="text-gray-700">
-                    Du har klarat alla 6 veckor av Functional Basics kursen. 
-                    Nu har du kunskapen att fortsätta din hälsoresa!
-                  </p>
-                </div>
-                
-                <Link 
-                  href="/dashboard/courses/functional-basics/week/5"
-                  className="text-gray-600 hover:text-gray-900 mr-4"
-                >
-                  ← Tillbaka till vecka 5
-                </Link>
-                <Link 
-                  href="/dashboard/courses"
-                  className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-secondary transition-colors inline-flex items-center gap-2"
-                >
-                  Avsluta kursen <FiChevronRight />
-                </Link>
-              </div>
-            </div>
+            </motion.div>
           )}
-        </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Course Complete Button */}
+      <div className="pb-16">
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white text-center">
+          <h3 className="text-2xl font-bold mb-4">🎉 Kursen är klar!</h3>
+          <p className="text-lg mb-6">
+            Du har genomfört hela Functional Basics-kursen. Fortsätt din resa med Flow-kursen eller utforska vårt receptbibliotek.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/dashboard/courses/functional-basics/avslutning"
+              className="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Se avslutning
+              <FiAward className="ml-2" />
+            </Link>
+            <Link
+              href="/utbildning/functional-flow"
+              className="inline-flex items-center px-6 py-3 bg-white/20 text-white border border-white/30 rounded-lg font-semibold hover:bg-white/30 transition-colors"
+            >
+              Fortsätt med Flow
+              <FiChevronRight className="ml-2" />
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
