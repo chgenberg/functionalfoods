@@ -56,45 +56,25 @@ export default function Week1Page() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Page Title */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Vecka 1: Grunden i Functional Foods</h1>
-          <p className="text-gray-600 mt-2">Starta din resa mot bättre hälsa</p>
+      {/* Hero */}
+      <div className="relative h-[260px] md:h-[340px] overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-12">
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Din Functional Foods Resa</h1>
+          <p className="text-white/90 text-lg">Välkommen till vecka 1 - Grunden i Functional Foods</p>
         </div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
       </div>
 
       {/* Course Navigation */}
       <CourseNavigation courseType="basics" currentWeek={1} />
-      
+
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Tab Navigation */}
-        <div className="mb-4 md:mb-8">
-          <div className="bg-[#F3EFE3] rounded-xl md:rounded-2xl shadow-md md:shadow-lg p-1.5 md:p-2">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`relative p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r text-white shadow-md md:shadow-lg transform scale-105'
-                      : 'bg-white text-[#112A12] hover:bg-[#F3EFE3]'
-                  } ${activeTab === tab.id ? tab.color : ''}`}
-                >
-                  <tab.icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-1 md:mb-2 ${
-                    activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
-                  }`} />
-                  <span className={`text-xs md:text-sm font-medium ${
-                    activeTab === tab.id ? 'text-white' : 'text-[#112A12]'
-                  }`}>
-                    {tab.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Keep existing content but hide tab bar */}
+        {false && (
+          <div className="mb-4 md:mb-8">{/* old tabs hidden */}</div>
+        )}
 
         {/* Content Area */}
         <div className="pb-16">
