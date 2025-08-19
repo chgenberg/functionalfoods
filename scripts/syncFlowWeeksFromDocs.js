@@ -112,11 +112,25 @@ async function extractWeekScheduleFromDocx(docxPath) {
     const allWeeks = {};
     
     for (let weekNum = 1; weekNum <= 6; weekNum++) {
-      const fileName = `Functional Flow - Kostschema v. ${weekNum}.docx`;
-      const filePath = path.join(BASE_DIR, fileName);
+      // Try both filename patterns
+      const patterns = [
+        `Functional Flow - Kostschema v. ${weekNum}.docx`,
+        `Functional Flow kostschema v.${weekNum}.docx`
+      ];
       
-      if (!fs.existsSync(filePath)) {
-        console.warn(`⚠️  File not found: ${fileName}, skipping`);
+      let filePath = null;
+      let fileName = null;
+      for (const pattern of patterns) {
+        const testPath = path.join(BASE_DIR, pattern);
+        if (fs.existsSync(testPath)) {
+          filePath = testPath;
+          fileName = pattern;
+          break;
+        }
+      }
+      
+      if (!filePath) {
+        console.warn(`⚠️  File not found for week ${weekNum}, skipping`);
         continue;
       }
 
