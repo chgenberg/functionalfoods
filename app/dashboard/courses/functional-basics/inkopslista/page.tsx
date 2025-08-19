@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowLeft, FiCheckSquare, FiSquare, FiPrinter, FiCopy } from 'react-icons/fi';
@@ -21,7 +21,7 @@ interface ShoppingList {
   generatedAt: string;
 }
 
-export default function ShoppingListPage() {
+function ShoppingListContent() {
   const searchParams = useSearchParams();
   const weekNumber = parseInt(searchParams.get('week') || '1');
   const [shoppingList, setShoppingList] = useState<ShoppingList | null>(null);
@@ -202,5 +202,17 @@ export default function ShoppingListPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function ShoppingListPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
+      </div>
+    }>
+      <ShoppingListContent />
+    </Suspense>
   );
 } 
