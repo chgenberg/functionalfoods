@@ -70,7 +70,13 @@ export default function RecipePage() {
 
   useEffect(() => {
     if (recipe) {
-      calculateNutrition();
+      // Use nutrition from DB if available, otherwise calculate
+      if (recipe.nutrition) {
+        setNutrition(recipe.nutrition);
+        setNutritionLoading(false);
+      } else {
+        calculateNutrition();
+      }
     }
   }, [recipe]);
 
