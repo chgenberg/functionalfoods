@@ -6,12 +6,13 @@ import {
   FiPlay, FiClock, FiCheckCircle, FiBook, FiDownload,
   FiTrendingUp, FiAward, FiStar, FiChevronRight, FiUsers,
   FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings,
-  FiHelpCircle
+  FiHelpCircle, FiSun
 } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
 import { getFlowWeekData } from '@/app/data/mealPlans';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface WeekDay {
   day: number;
@@ -151,67 +152,8 @@ export default function FunctionalFlowPage() {
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
       </div>
 
-      {/* Week Navigation */}
-      <div className="sticky top-0 z-40 bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-            {weeks.map((week) => (
-              <motion.button
-                key={week.number}
-                onClick={() => week.number <= currentWeek && setCurrentWeek(week.number)}
-                className={`
-                  px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all
-                  ${week.number === currentWeek 
-                    ? 'bg-[#112A12] text-white shadow-lg' 
-                    : week.number < currentWeek
-                    ? 'bg-[#F3EFE3] text-[#112A12] hover:bg-[#E8E0D4]'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  }
-                `}
-                whileHover={week.number <= currentWeek ? { scale: 1.05 } : {}}
-                whileTap={week.number <= currentWeek ? { scale: 0.95 } : {}}
-              >
-                <span className="flex items-center gap-2">
-                  {week.number < currentWeek && <FiCheckCircle className="w-4 h-4" />}
-                  Vecka {week.number}
-                  {week.number > currentWeek && <FiLock className="w-4 h-4" />}
-                </span>
-              </motion.button>
-            ))}
-            
-            {/* Completion, Community and Settings Links */}
-            <Link
-              href="/dashboard/courses/functional-flow/avslutning"
-              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg"
-            >
-              <span className="flex items-center gap-2">
-                <FiAward className="w-4 h-4" />
-                Avslutning
-              </span>
-            </Link>
-            
-            <Link
-              href="/dashboard/community"
-              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#112A12] hover:bg-[#E8E0D4]"
-            >
-              <span className="flex items-center gap-2">
-                <FiUsers className="w-4 h-4" />
-                Community
-              </span>
-            </Link>
-            
-            <Link
-              href="/dashboard/settings"
-              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#112A12] hover:bg-[#E8E0D4]"
-            >
-              <span className="flex items-center gap-2">
-                <FiSettings className="w-4 h-4" />
-                Inställningar
-              </span>
-            </Link>
-          </div>
-        </div>
-      </div>
+      {/* Course Navigation */}
+      <CourseNavigation courseType="flow" currentWeek={currentWeek} />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -268,42 +210,103 @@ export default function FunctionalFlowPage() {
                   `}>
                     {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Låst'}
                   </span>
-                  
-                  {/* Daily Meals Summary */}
-                  {(() => {
-                    const weekData = getFlowWeekData(currentWeek);
-                    const swedishDayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-                    const dayMeals = weekData?.days[swedishDayNames[day.day - 1]];
-                    
-                    if (!dayMeals) return null;
-                    
-                    return (
-                      <div className="mt-3 space-y-1 text-xs">
-                        {dayMeals.breakfast && (
-                          <div className="text-left">
-                            <span className="font-medium text-orange-600">Frukost:</span>
-                            <span className="text-gray-600 ml-1">{dayMeals.breakfast.name.split('(')[0].trim()}</span>
-                          </div>
-                        )}
-                        {dayMeals.lunch && (
-                          <div className="text-left">
-                            <span className="font-medium text-green-600">Lunch:</span>
-                            <span className="text-gray-600 ml-1">{dayMeals.lunch.name.split('(')[0].trim()}</span>
-                          </div>
-                        )}
-                        {dayMeals.dinner && (
-                          <div className="text-left">
-                            <span className="font-medium text-purple-600">Middag:</span>
-                            <span className="text-gray-600 ml-1">{dayMeals.dinner.name.split('(')[0].trim()}</span>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
                 </div>
               </motion.div>
             ))}
           </div>
+        </div>
+
+        {/* Weekly Meal Schedule List */}
+        <div className="mb-12 bg-white rounded-2xl p-6 shadow-lg">
+          <h3 className="text-xl font-bold text-[#112A12] mb-6">Veckans måltider</h3>
+          
+          {getDaysForWeek(currentWeek).map((day) => {
+            const weekData = getFlowWeekData(currentWeek);
+            const swedishDayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+            const dayMeals = weekData?.days[swedishDayNames[day.day - 1]];
+
+            if (!dayMeals) return null;
+
+            return (
+              <div key={day.day} className="border-b border-gray-200 pb-4 mb-4 last:border-0">
+                <h4 className="text-lg font-semibold text-[#112A12] mb-3">{day.name}</h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Breakfast */}
+                  {dayMeals.breakfast && (
+                    <div className="bg-orange-50 rounded-lg p-4 flex items-start gap-3">
+                      <div className="bg-orange-100 rounded-full p-2 flex-shrink-0">
+                        <FiSun className="w-5 h-5 text-orange-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-semibold text-[#112A12]">Frukost</span>
+                          <span className="text-xs text-gray-500 bg-orange-100 px-2 py-0.5 rounded-full">07:00</span>
+                        </div>
+                        <p className="text-sm text-gray-700">{dayMeals.breakfast.name}</p>
+                        {(dayMeals.breakfast as any).slug && (
+                          <Link 
+                            href={`/kunskapsbank/recept/${(dayMeals.breakfast as any).slug}`}
+                            className="text-sm text-orange-600 hover:underline mt-1 inline-block"
+                          >
+                            Se recept →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Lunch */}
+                  {dayMeals.lunch && (
+                    <div className="bg-green-50 rounded-lg p-4 flex items-start gap-3">
+                      <div className="bg-green-100 rounded-full p-2 flex-shrink-0">
+                        <FiSun className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-semibold text-[#112A12]">Lunch</span>
+                          <span className="text-xs text-gray-500 bg-green-100 px-2 py-0.5 rounded-full">12:00</span>
+                        </div>
+                        <p className="text-sm text-gray-700">{dayMeals.lunch.name}</p>
+                        {dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester') && (
+                          <Link 
+                            href={`/kunskapsbank/recept/${dayMeals.lunch.slug}`}
+                            className="text-sm text-green-600 hover:underline mt-1 inline-block"
+                          >
+                            Se recept →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Dinner */}
+                  {dayMeals.dinner && (
+                    <div className="bg-purple-50 rounded-lg p-4 flex items-start gap-3">
+                      <div className="bg-purple-100 rounded-full p-2 flex-shrink-0">
+                        <FiSun className="w-5 h-5 text-purple-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-semibold text-[#112A12]">Middag</span>
+                          <span className="text-xs text-gray-500 bg-purple-100 px-2 py-0.5 rounded-full">18:00</span>
+                        </div>
+                        <p className="text-sm text-gray-700">{dayMeals.dinner.name}</p>
+                        {dayMeals.dinner.slug && (
+                          <Link 
+                            href={`/kunskapsbank/recept/${dayMeals.dinner.slug}`}
+                            className="text-sm text-purple-600 hover:underline mt-1 inline-block"
+                          >
+                            Se recept →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Quick Actions */}
