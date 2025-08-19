@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowLeft, FiCalendar, FiShoppingCart, FiBook, FiTarget,
   FiChevronRight, FiClock, FiUsers, FiCheckCircle, FiDownload,
-  FiStar, FiHeart, FiAward, FiTrendingUp
+  FiStar, FiHeart, FiAward, FiTrendingUp, FiSun
 } from 'react-icons/fi';
 import { 
   GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal,
@@ -222,9 +222,9 @@ export default function Week1Page() {
                                 <span className="text-xs text-gray-500 bg-orange-100 px-2 py-0.5 rounded-full">07:00</span>
                               </div>
                               <p className="text-sm text-gray-700">{dayMeals.breakfast.name}</p>
-                              {dayMeals.breakfast.slug && (
+                              {(dayMeals.breakfast.recipeLink || dayMeals.breakfast.slug) && (
                                 <Link 
-                                  href={`/kunskapsbank/recept/${dayMeals.breakfast.slug}`}
+                                  href={dayMeals.breakfast.recipeLink || `/kunskapsbank/recept/${dayMeals.breakfast.slug}`}
                                   className="text-sm text-orange-600 hover:underline mt-1 inline-block"
                                 >
                                   Se recept →
@@ -246,9 +246,9 @@ export default function Week1Page() {
                                 <span className="text-xs text-gray-500 bg-green-100 px-2 py-0.5 rounded-full">12:00</span>
                               </div>
                               <p className="text-sm text-gray-700">{dayMeals.lunch.name}</p>
-                              {dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester') && (
+                              {(dayMeals.lunch.recipeLink || (dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester'))) && (
                                 <Link 
-                                  href={`/kunskapsbank/recept/${dayMeals.lunch.slug}`}
+                                  href={dayMeals.lunch.recipeLink || `/kunskapsbank/recept/${dayMeals.lunch.slug}`}
                                   className="text-sm text-green-600 hover:underline mt-1 inline-block"
                                 >
                                   Se recept →
@@ -270,9 +270,9 @@ export default function Week1Page() {
                                 <span className="text-xs text-gray-500 bg-purple-100 px-2 py-0.5 rounded-full">18:00</span>
                               </div>
                               <p className="text-sm text-gray-700">{dayMeals.dinner.name}</p>
-                              {dayMeals.dinner.slug && (
+                              {(dayMeals.dinner.recipeLink || dayMeals.dinner.slug) && (
                                 <Link 
-                                  href={`/kunskapsbank/recept/${dayMeals.dinner.slug}`}
+                                  href={dayMeals.dinner.recipeLink || `/kunskapsbank/recept/${dayMeals.dinner.slug}`}
                                   className="text-sm text-purple-600 hover:underline mt-1 inline-block"
                                 >
                                   Se recept →

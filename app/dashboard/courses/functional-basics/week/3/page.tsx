@@ -155,21 +155,21 @@ export default function Week3Page() {
                   <div className="bg-orange-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-1"><span className="font-semibold text-[#014421]">Frukost</span><span className="text-xs text-gray-500 bg-orange-100 px-2 py-0.5 rounded-full">07:00</span></div>
                     <p className="text-sm text-gray-700">{dayMeals.breakfast.name}</p>
-                    {dayMeals.breakfast.slug && (<Link href={`/kunskapsbank/recept/${dayMeals.breakfast.slug}`} className="text-sm text-orange-600 hover:underline mt-1 inline-block">Se recept →</Link>)}
+                    {(dayMeals.breakfast.recipeLink || dayMeals.breakfast.slug) && (<Link href={dayMeals.breakfast.recipeLink || `/kunskapsbank/recept/${dayMeals.breakfast.slug}`} className="text-sm text-orange-600 hover:underline mt-1 inline-block">Se recept →</Link>)}
                   </div>
                 )}
                 {dayMeals.lunch && (
                   <div className="bg-green-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-1"><span className="font-semibold text-[#014421]">Lunch</span><span className="text-xs text-gray-500 bg-green-100 px-2 py-0.5 rounded-full">12:00</span></div>
                     <p className="text-sm text-gray-700">{dayMeals.lunch.name}</p>
-                    {dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester') && (<Link href={`/kunskapsbank/recept/${dayMeals.lunch.slug}`} className="text-sm text-green-600 hover:underline mt-1 inline-block">Se recept →</Link>)}
+                    {(dayMeals.lunch.recipeLink || (dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester'))) && (<Link href={dayMeals.lunch.recipeLink || `/kunskapsbank/recept/${dayMeals.lunch.slug}`} className="text-sm text-green-600 hover:underline mt-1 inline-block">Se recept →</Link>)}
                   </div>
                 )}
                 {dayMeals.dinner && (
                   <div className="bg-purple-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-1"><span className="font-semibold text-[#014421]">Middag</span><span className="text-xs text-gray-500 bg-purple-100 px-2 py-0.5 rounded-full">18:00</span></div>
                     <p className="text-sm text-gray-700">{dayMeals.dinner.name}</p>
-                    {dayMeals.dinner.slug && (<Link href={`/kunskapsbank/recept/${dayMeals.dinner.slug}`} className="text-sm text-purple-600 hover:underline mt-1 inline-block">Se recept →</Link>)}
+                    {(dayMeals.dinner.recipeLink || dayMeals.dinner.slug) && (<Link href={dayMeals.dinner.recipeLink || `/kunskapsbank/recept/${dayMeals.dinner.slug}`} className="text-sm text-purple-600 hover:underline mt-1 inline-block">Se recept →</Link>)}
                   </div>
                 )}
               </div>
