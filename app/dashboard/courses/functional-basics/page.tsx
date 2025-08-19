@@ -210,7 +210,7 @@ export default function FunctionalBasicsPage() {
                     ) : day.current ? (
                       <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
                     ) : (
-                      <FiLock className="w-5 h-5 text-gray-400" />
+                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
                     )}
                   </div>
                   
@@ -218,7 +218,7 @@ export default function FunctionalBasicsPage() {
                     text-sm font-medium
                     ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}
                   `}>
-                    {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Låst'}
+                    {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}
                   </span>
                 </div>
               </motion.div>
@@ -254,14 +254,14 @@ export default function FunctionalBasicsPage() {
                           <span className="text-xs text-gray-500 bg-orange-100 px-2 py-0.5 rounded-full">07:00</span>
                         </div>
                         <p className="text-sm text-gray-700">{dayMeals.breakfast.name}</p>
-                        {dayMeals.breakfast.slug && (
-                          <Link 
-                            href={`/kunskapsbank/recept/${dayMeals.breakfast.slug}`}
-                            className="text-sm text-orange-600 hover:underline mt-1 inline-block"
-                          >
-                            Se recept →
-                          </Link>
-                        )}
+                        {dayMeals.breakfast.recipeLink && (
+                                  <Link 
+                                    href={dayMeals.breakfast.recipeLink}
+                                    className="text-sm text-orange-600 hover:underline mt-1 inline-block"
+                                  >
+                                    Se recept →
+                                  </Link>
+                                )}
                       </div>
                     </div>
                   )}
@@ -278,14 +278,14 @@ export default function FunctionalBasicsPage() {
                           <span className="text-xs text-gray-500 bg-green-100 px-2 py-0.5 rounded-full">12:00</span>
                         </div>
                         <p className="text-sm text-gray-700">{dayMeals.lunch.name}</p>
-                        {dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester') && (
-                          <Link 
-                            href={`/kunskapsbank/recept/${dayMeals.lunch.slug}`}
-                            className="text-sm text-green-600 hover:underline mt-1 inline-block"
-                          >
-                            Se recept →
-                          </Link>
-                        )}
+                        {dayMeals.lunch.recipeLink && (
+                                  <Link 
+                                    href={dayMeals.lunch.recipeLink}
+                                    className="text-sm text-green-600 hover:underline mt-1 inline-block"
+                                  >
+                                    Se recept →
+                                  </Link>
+                                )}
                       </div>
                     </div>
                   )}
@@ -302,14 +302,14 @@ export default function FunctionalBasicsPage() {
                           <span className="text-xs text-gray-500 bg-purple-100 px-2 py-0.5 rounded-full">18:00</span>
                         </div>
                         <p className="text-sm text-gray-700">{dayMeals.dinner.name}</p>
-                        {dayMeals.dinner.slug && (
-                          <Link 
-                            href={`/kunskapsbank/recept/${dayMeals.dinner.slug}`}
-                            className="text-sm text-purple-600 hover:underline mt-1 inline-block"
-                          >
-                            Se recept →
-                          </Link>
-                        )}
+                        {dayMeals.dinner.recipeLink && (
+                                  <Link 
+                                    href={dayMeals.dinner.recipeLink}
+                                    className="text-sm text-purple-600 hover:underline mt-1 inline-block"
+                                  >
+                                    Se recept →
+                                  </Link>
+                                )}
                       </div>
                     </div>
                   )}

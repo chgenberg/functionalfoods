@@ -10,7 +10,9 @@ export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">{/* Main Content */}
+    <div className="min-h-screen bg-[#F3EFE3]">
+      <CourseNavigation courseType="basics" currentWeek={6} />
+      {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-[#014421] text-center mb-8">Kursen avslutad</h1>
         

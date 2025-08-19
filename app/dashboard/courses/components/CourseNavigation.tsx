@@ -37,7 +37,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             {weeks.map((week) => (
               <motion.button
                 key={week.number}
-                onClick={() => window.location.href = `${basePath}/week/${week.number}`}
+                onClick={() => window.location.href = (week.number === 1 ? `${basePath}` : `${basePath}/week/${week.number}`)}
                 className={`
                   px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0
                   ${week.number === activeWeek 

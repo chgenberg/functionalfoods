@@ -229,6 +229,9 @@ export default function CommunityPage() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+        {/* Dashboard Navigation */}
+        <CourseNavigation courseType="basics" currentWeek={1} />
+        
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div>
