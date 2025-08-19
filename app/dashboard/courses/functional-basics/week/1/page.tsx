@@ -217,10 +217,89 @@ export default function Week1Page() {
               {/* Calendar View */}
               <CalendarView mealPlan={mealPlan} weekNumber={1} />
               
-              {/* Recipe Highlights */}
+              {/* Daily Meals with Recipe Links */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Veckans höjdpunkter</h3>
-                <p className="text-gray-600">Upptäck grunderna i Functional Foods med enkla och näringsrika recept.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Veckans måltider</h3>
+                
+                {Object.entries(mealPlan).map(([dayName, dayMeals]: [string, any]) => (
+                  <div key={dayName} className="border-b border-gray-200 pb-4 mb-4 last:border-0">
+                    <h4 className="text-lg font-semibold text-[#014421] mb-3">{dayName}</h4>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Breakfast */}
+                      {dayMeals.breakfast && (
+                        <div className="bg-orange-50 rounded-lg p-4 flex items-start gap-3">
+                          <div className="bg-orange-100 rounded-full p-2 flex-shrink-0">
+                            <FiSun className="w-5 h-5 text-orange-600" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-semibold text-[#014421]">Frukost</span>
+                              <span className="text-xs text-gray-500 bg-orange-100 px-2 py-0.5 rounded-full">07:00</span>
+                            </div>
+                            <p className="text-sm text-gray-700">{dayMeals.breakfast.name}</p>
+                            {dayMeals.breakfast.slug && (
+                              <Link 
+                                href={`/kunskapsbank/recept/${dayMeals.breakfast.slug}`}
+                                className="text-sm text-orange-600 hover:underline mt-1 inline-block"
+                              >
+                                Se recept →
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Lunch */}
+                      {dayMeals.lunch && (
+                        <div className="bg-green-50 rounded-lg p-4 flex items-start gap-3">
+                          <div className="bg-green-100 rounded-full p-2 flex-shrink-0">
+                            <FiSun className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-semibold text-[#014421]">Lunch</span>
+                              <span className="text-xs text-gray-500 bg-green-100 px-2 py-0.5 rounded-full">12:00</span>
+                            </div>
+                            <p className="text-sm text-gray-700">{dayMeals.lunch.name}</p>
+                            {dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester') && (
+                              <Link 
+                                href={`/kunskapsbank/recept/${dayMeals.lunch.slug}`}
+                                className="text-sm text-green-600 hover:underline mt-1 inline-block"
+                              >
+                                Se recept →
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Dinner */}
+                      {dayMeals.dinner && (
+                        <div className="bg-purple-50 rounded-lg p-4 flex items-start gap-3">
+                          <div className="bg-purple-100 rounded-full p-2 flex-shrink-0">
+                            <FiSun className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-semibold text-[#014421]">Middag</span>
+                              <span className="text-xs text-gray-500 bg-purple-100 px-2 py-0.5 rounded-full">18:00</span>
+                            </div>
+                            <p className="text-sm text-gray-700">{dayMeals.dinner.name}</p>
+                            {dayMeals.dinner.slug && (
+                              <Link 
+                                href={`/kunskapsbank/recept/${dayMeals.dinner.slug}`}
+                                className="text-sm text-purple-600 hover:underline mt-1 inline-block"
+                              >
+                                Se recept →
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </motion.div>
           )}
