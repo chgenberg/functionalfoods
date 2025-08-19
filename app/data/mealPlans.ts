@@ -970,6 +970,194 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         }
       }
     }
+  },
+  "week5": {
+    "title": "Vecka 5: Synkroniserad från DOCX",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Blåbärssmoothie (160 kcal) rester"
+        },
+        "lunch": {
+          "name": "Zucchiniplättar med yoghurtsås (341 kcal)rester"
+        },
+        "dinner": {
+          "name": "Köttfärslimpa med tomat (445 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-tomat"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Färskostmacka med ost och paprika(354 kcal)",
+          "recipeLink": "/kunskapsbank/recept/farskostmacka-med-ost-och-paprika"
+        },
+        "lunch": {
+          "name": "Köttfärslimpa med tomat (445 kcal) rester"
+        },
+        "dinner": {
+          "name": "Linssoppa från medelhavet (375 kcal)rester från frysen"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Yoghurt med mango och apelsin (220 kcal)",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-mango-och-apelsin"
+        },
+        "lunch": {
+          "name": "Ugnsbakad blomkål med ratatouille (332 kcal) rester från frysen"
+        },
+        "dinner": {
+          "name": "Pestotorsk med capresesallad (605 kcal)",
+          "recipeLink": "/kunskapsbank/recept/pestotorsk-med-capresesallad"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Stekt ägg med parmaskinka (271 kcal)",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-parmaskinka"
+        },
+        "lunch": {
+          "name": "Pestotorsk med capresesallad (605 kcal) rester"
+        },
+        "dinner": {
+          "name": "Kyckling med blomkålsris och dillyoghurt (352 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kyckling-med-blomkalsris-och-dillyoghurt"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Bananmuffin (169 kcal)från frysen",
+          "recipeLink": "/kunskapsbank/recept/bananmuffin-fran-frysen"
+        },
+        "lunch": {
+          "name": "Kyckling med blomkålsris och dillyoghurt (352 kcal) rester"
+        },
+        "dinner": {
+          "name": "Nötgryta med rotfrukter (494 kcal)",
+          "recipeLink": "/kunskapsbank/recept/notgryta-med-rotfrukter"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Äggröra med champinjoner (291 kcal)",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-champinjoner"
+        },
+        "lunch": {
+          "name": "Nötgryta med rotfrukter (494 kcal) rester"
+        },
+        "dinner": {
+          "name": "Quinoasallad med scampi och mango (586 kcal)Gino (325 kcal)",
+          "recipeLink": "/kunskapsbank/recept/quinoasallad-med-scampi-och-mango-gino"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Bananpannkaka (200 kcal)",
+          "recipeLink": "/kunskapsbank/recept/bananpannkaka"
+        },
+        "lunch": {
+          "name": "Quinoasallad med scampi och mango (586 kcal)rester"
+        },
+        "dinner": {
+          "name": "Grönkålspaj med champinjoner (430 kcal)",
+          "recipeLink": "/kunskapsbank/recept/gronkalspaj-med-champinjoner"
+        }
+      }
+    }
+  },
+  "week6": {
+    "title": "Vecka 6: Synkroniserad från DOCX",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Bananpannkaka (200 kcal)rester"
+        },
+        "lunch": {
+          "name": "Grönkålspaj med champinjoner (430 kcal) rester"
+        },
+        "dinner": {
+          "name": "Köttfärslimpa med tomat (445 kcal) rester från frysen"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Kokta ägg med kaviar (289 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kokta-agg-med-kaviar"
+        },
+        "lunch": {
+          "name": "Nötgryta med rotfrukter (494 kcal) rester från frysen"
+        },
+        "dinner": {
+          "name": "Stekt torsk med bearnaisesås och haricot verts (278 kcal)",
+          "recipeLink": "/kunskapsbank/recept/stekt-torsk-med-bearnaisesas-och-haricot-verts"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Yoghurt med bovetegranola och bär (299 kcal)",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola-och-bar"
+        },
+        "lunch": {
+          "name": "Stekt torsk med bearnaisesås och haricot verts (278 kcal)rester"
+        },
+        "dinner": {
+          "name": "Kycklingfärsbiffar med vitlöksost (426 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklingfarsbiffar-med-vitloksost"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Varm chiagröt med äpple (274 kcal)",
+          "recipeLink": "/kunskapsbank/recept/varm-chiagrot-med-apple"
+        },
+        "lunch": {
+          "name": "Kycklingfärsbiffar med vitlöksost (426 kcal) rester"
+        },
+        "dinner": {
+          "name": "Varma grönsaker med halloumi (382 kcal)",
+          "recipeLink": "/kunskapsbank/recept/varma-gronsaker-med-halloumi"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Ägghack med kallrökt lax (300 kcal)",
+          "recipeLink": "/kunskapsbank/recept/agghack-med-kallrokt-lax"
+        },
+        "lunch": {
+          "name": "Varma grönsaker med halloumi (382 kcal)rester"
+        },
+        "dinner": {
+          "name": "Lax med quinoasallad och grapefrukt (590 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lax-med-quinoasallad-och-grapefrukt"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Smoothiebowl med blåbär och granola (305 kcal)",
+          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
+        },
+        "lunch": {
+          "name": "Lax med quinoasallad och grapefrukt (590 kcal)rester"
+        },
+        "dinner": {
+          "name": "Hamburgare med grekisk sallad (560 kcal)Mandelkaka med choklad och hallon (385 kcal)",
+          "recipeLink": "/kunskapsbank/recept/hamburgare-med-grekisk-sallad-mandelkaka-med-choklad-och-hallon"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Smoothiebowl med blåbär och granola(305 kcal)",
+          "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola"
+        },
+        "lunch": {
+          "name": "Hamburgare med grekisk sallad (560 kcal)rester"
+        },
+        "dinner": {
+          "name": "Asiatisk köttfärswok med grönkål (280 kcal)",
+          "recipeLink": "/kunskapsbank/recept/asiatisk-kottfarswok-med-gronkal"
+        }
+      }
+    }
   }
 ,
 };
