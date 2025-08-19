@@ -5,10 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiCheckCircle, FiBook, FiDownload,
   FiTrendingUp, FiAward, FiStar, FiChevronRight, FiUsers,
-  FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings
+  FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings,
+  FiHelpCircle
 } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
+import HelpGuide from '@/app/components/HelpGuide';
 
 interface WeekDay {
   day: number;

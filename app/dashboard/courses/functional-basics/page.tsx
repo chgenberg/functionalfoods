@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
-import OnboardingModal from '@/app/components/OnboardingModal';
+import HelpGuide from '@/app/components/HelpGuide';
 import { getWeekData } from '@/app/data/mealPlans';
 
 interface WeekDay {
@@ -25,7 +25,7 @@ export default function FunctionalBasicsPage() {
   const [currentWeek, setCurrentWeek] = useState(1);
   const [currentDay, setCurrentDay] = useState(1);
   const [showVideoModal, setShowVideoModal] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function FunctionalBasicsPage() {
     // Check if onboarding should be shown
     const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
     if (!hasCompletedOnboarding) {
-      setShowOnboarding(true);
+      setShowHelpGuide(true);
     }
   }, []);
 
@@ -92,8 +92,23 @@ export default function FunctionalBasicsPage() {
     <div className="min-h-screen bg-[#F3EFE3]">
       {/* Hero Section with Video */}
       <div className="relative h-[300px] md:h-[400px] bg-gradient-to-br from-[#014421] to-[#112A12] overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-10"></div>
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <Image 
+            src="/Ulrika_portratt/udavidssondesktop.png" 
+            alt="Ulrika Davidsson"
+            fill
+            className="object-cover opacity-30 hidden md:block"
+            priority
+          />
+          <Image 
+            src="/Ulrika_portratt/udavidssonmobile.png" 
+            alt="Ulrika Davidsson"
+            fill
+            className="object-cover opacity-30 block md:hidden"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#014421]/80 to-[#112A12]/80"></div>
         </div>
         
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
@@ -130,9 +145,9 @@ export default function FunctionalBasicsPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          onClick={() => setShowOnboarding(true)}
+          onClick={() => setShowHelpGuide(true)}
           className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors"
-          title="Öppna onboarding"
+          title="Öppna hjälpguide"
         >
           <FiHelpCircle className="w-6 h-6" />
         </motion.button>
@@ -379,10 +394,10 @@ export default function FunctionalBasicsPage() {
         )}
       </AnimatePresence>
 
-      {/* Onboarding Modal */}
-      <OnboardingModal 
-        isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)} 
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpGuide} 
+        onClose={() => setShowHelpGuide(false)} 
       />
     </div>
   );
