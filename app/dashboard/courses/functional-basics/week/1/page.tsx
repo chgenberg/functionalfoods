@@ -16,6 +16,7 @@ import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 interface TabProps {
   id: string;
@@ -52,12 +53,16 @@ export default function Week1Page() {
   const mealPlan = weekData?.days || {};
 
   return (
-    <div>
-      {/* Page Title */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Vecka 1: Grunden i Functional Foods</h1>
-        <p className="text-gray-600 mt-2">Starta din resa mot bättre hälsa</p>
-      </div>
+    <div className="min-h-screen bg-[#F3EFE3]">
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={1} />
+      
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Page Title */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Vecka 1: Grunden i Functional Foods</h1>
+          <p className="text-gray-600 mt-2">Starta din resa mot bättre hälsa</p>
+        </div>
 
       {/* Tab Navigation */}
       <div className="mb-4 md:mb-8">
@@ -253,6 +258,7 @@ export default function Week1Page() {
             <FiChevronRight className="ml-2" />
           </Link>
         </div>
+      </div>
       </div>
     </div>
   );
