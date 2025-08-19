@@ -89,7 +89,7 @@ export default function FunctionalBasicsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
+    <>
       {/* Hero Section with Video */}
       <div className="relative h-[300px] md:h-[400px] bg-gradient-to-br from-[#014421] to-[#112A12] overflow-hidden">
         {/* Background image */}
@@ -98,17 +98,17 @@ export default function FunctionalBasicsPage() {
             src="/Ulrika_portratt/udavidssondesktop.png" 
             alt="Ulrika Davidsson"
             fill
-            className="object-cover opacity-30 hidden md:block"
+            className="object-cover opacity-50 hidden md:block"
             priority
           />
           <Image 
             src="/Ulrika_portratt/udavidssonmobile.png" 
             alt="Ulrika Davidsson"
             fill
-            className="object-cover opacity-30 block md:hidden"
+            className="object-cover opacity-50 block md:hidden"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#014421]/80 to-[#112A12]/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#014421]/60 to-[#112A12]/60"></div>
         </div>
         
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
@@ -156,67 +156,7 @@ export default function FunctionalBasicsPage() {
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
       </div>
 
-      {/* Week Navigation */}
-      <div className="sticky top-0 z-40 bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-            {weeks.map((week) => (
-              <motion.button
-                key={week.number}
-                onClick={() => setCurrentWeek(week.number)}
-                className={`
-                  px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all
-                  ${week.number === currentWeek 
-                    ? 'bg-[#014421] text-white shadow-lg' 
-                    : week.number < currentWeek
-                    ? 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  }
-                `}
-                whileHover={week.number <= currentWeek ? { scale: 1.05 } : {}}
-                whileTap={week.number <= currentWeek ? { scale: 0.95 } : {}}
-              >
-                <span className="flex items-center gap-2">
-                  {week.number < currentWeek && <FiCheckCircle className="w-4 h-4" />}
-                  Vecka {week.number}
-                  {week.number > currentWeek && <FiLock className="w-4 h-4" />}
-                </span>
-              </motion.button>
-            ))}
-            
-            {/* Completion, Community and Settings Links */}
-            <Link
-              href="/dashboard/courses/functional-basics/avslutning"
-              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg"
-            >
-              <span className="flex items-center gap-2">
-                <FiAward className="w-4 h-4" />
-                Avslutning
-              </span>
-            </Link>
-            
-            <Link
-              href="/dashboard/community"
-              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
-            >
-              <span className="flex items-center gap-2">
-                <FiUsers className="w-4 h-4" />
-                Community
-              </span>
-            </Link>
-            
-            <Link
-              href="/dashboard/settings"
-              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
-            >
-              <span className="flex items-center gap-2">
-                <FiSettings className="w-4 h-4" />
-                Inställningar
-              </span>
-            </Link>
-          </div>
-        </div>
-      </div>
+
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -399,6 +339,6 @@ export default function FunctionalBasicsPage() {
         isOpen={showHelpGuide} 
         onClose={() => setShowHelpGuide(false)} 
       />
-    </div>
+    </>
   );
 } 

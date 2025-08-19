@@ -10,6 +10,7 @@ import {
 import { MdDinnerDining } from 'react-icons/md';
 import { getWeekData } from '@/app/data/mealPlans';
 import { useParams } from 'next/navigation';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 export default function DayPage() {
   const params = useParams();
@@ -95,8 +96,11 @@ export default function DayPage() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={weekNumber} />
+      
       {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-40">
+      <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -105,12 +109,12 @@ export default function DayPage() {
               </Link>
               <div>
                 <p className="text-sm text-gray-600">Vecka {weekNumber} - {weekTitle}</p>
-                <h1 className="text-2xl font-bold text-[#014421]">{dayName}, {dayDate}</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-[#014421]">{dayName}, {dayDate}</h1>
               </div>
             </div>
             
             {/* Navigation */}
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
               <Link href={`/dashboard/courses/functional-basics/week/${prevWeek}/day/${prevDay}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <FiArrowLeft className="w-5 h-5" />
               </Link>
@@ -119,6 +123,17 @@ export default function DayPage() {
                 <FiArrowRight className="w-5 h-5" />
               </Link>
             </div>
+          </div>
+          
+          {/* Mobile Day Navigation */}
+          <div className="flex md:hidden items-center justify-between mt-3">
+            <Link href={`/dashboard/courses/functional-basics/week/${prevWeek}/day/${prevDay}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <FiArrowLeft className="w-5 h-5" />
+            </Link>
+            <span className="text-sm font-medium">Dag {totalDayNumber} av 42</span>
+            <Link href={`/dashboard/courses/functional-basics/week/${nextWeek}/day/${nextDay}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <FiArrowRight className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </div>
