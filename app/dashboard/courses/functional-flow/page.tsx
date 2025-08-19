@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiCheckCircle, FiBook, FiDownload,
   FiTrendingUp, FiAward, FiStar, FiChevronRight, FiUsers,
-  FiShoppingCart, FiCalendar, FiLock, FiArrowRight
+  FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings
 } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -146,6 +146,27 @@ export default function FunctionalFlowPage() {
                 </span>
               </motion.button>
             ))}
+            
+            {/* Community and Settings Links */}
+            <Link
+              href="/dashboard/community"
+              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#112A12] hover:bg-[#E8E0D4]"
+            >
+              <span className="flex items-center gap-2">
+                <FiUsers className="w-4 h-4" />
+                Community
+              </span>
+            </Link>
+            
+            <Link
+              href="/dashboard/settings"
+              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#112A12] hover:bg-[#E8E0D4]"
+            >
+              <span className="flex items-center gap-2">
+                <FiSettings className="w-4 h-4" />
+                Inställningar
+              </span>
+            </Link>
           </div>
         </div>
       </div>

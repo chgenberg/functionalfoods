@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiCheckCircle, FiBook, FiDownload,
   FiTrendingUp, FiAward, FiStar, FiChevronRight, FiUsers,
-  FiShoppingCart, FiCalendar, FiLock, FiArrowRight
+  FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings
 } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getWeekData } from '@/app/data/mealPlans';
 
 interface WeekDay {
   day: number;
@@ -146,6 +147,27 @@ export default function FunctionalBasicsPage() {
                 </span>
               </motion.button>
             ))}
+            
+            {/* Community and Settings Links */}
+            <Link
+              href="/dashboard/community"
+              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
+            >
+              <span className="flex items-center gap-2">
+                <FiUsers className="w-4 h-4" />
+                Community
+              </span>
+            </Link>
+            
+            <Link
+              href="/dashboard/settings"
+              className="px-6 py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
+            >
+              <span className="flex items-center gap-2">
+                <FiSettings className="w-4 h-4" />
+                Inställningar
+              </span>
+            </Link>
           </div>
         </div>
       </div>
@@ -153,7 +175,7 @@ export default function FunctionalBasicsPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Days Journey */}
-        <div className="mb-12">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold text-[#014421] mb-6">Din vecka</h2>
           <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
             {getDaysForWeek(currentWeek).map((day) => (
