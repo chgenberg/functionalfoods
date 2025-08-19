@@ -32,7 +32,7 @@ export default function CompletionPage() {
         >
           <div className="relative bg-black rounded-2xl overflow-hidden aspect-video shadow-2xl">
             <iframe
-              src="https://player.vimeo.com/video/1021859875?badge=0&autopause=0&player_id=0&app_id=58479"
+              src="https://player.vimeo.com/video/1058943393"
               className="w-full h-full"
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"

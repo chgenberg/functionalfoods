@@ -529,6 +529,34 @@ export default function RecipePage() {
                   <FiShoppingCart />
                   <span className="font-medium">Lägg till i inköpslista</span>
                 </motion.button>
+
+                {/* Nutrition Information */}
+                {(recipe.nutrition || nutrition) && (
+                  <div className="mt-6 p-4 bg-[#F3EFE3] rounded-lg">
+                    <h3 className="font-semibold mb-3 flex items-center gap-2">
+                      <FiHeart className="text-red-500" />
+                      Näringsvärden
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Kalorier</span>
+                        <span className="font-medium">{recipe.nutrition?.calories || nutrition?.calories || '-'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Protein</span>
+                        <span className="font-medium">{recipe.nutrition?.protein || nutrition?.protein || '-'}g</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Kolhydrater</span>
+                        <span className="font-medium">{recipe.nutrition?.carbs || nutrition?.carbs || '-'}g</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Fett</span>
+                        <span className="font-medium">{recipe.nutrition?.fat || nutrition?.fat || '-'}g</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Instructions Column */}
