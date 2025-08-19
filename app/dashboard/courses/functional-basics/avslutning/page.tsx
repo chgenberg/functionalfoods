@@ -11,7 +11,20 @@ export default function CompletionPage() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
+      {/* Hero banner */}
+      <div className="relative h-[260px] md:h-[340px] overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-12">
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Kursen avslutad</h1>
+          <p className="text-white/90 text-lg">Stort grattis! Här är din avslutningsfilm och nästa steg</p>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
+      </div>
+
+      {/* Dashboard menu under hero */}
       <CourseNavigation courseType="basics" currentWeek={6} />
+
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-[#014421] text-center mb-8">Kursen avslutad</h1>
