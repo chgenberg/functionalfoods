@@ -168,16 +168,17 @@ export default function KostschemaPage() {
       {/* Course Navigation */}
       <CourseNavigation courseType="basics" currentWeek={currentWeek} />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-[#014421]">Kostschema</h1>
-            <p className="text-sm text-gray-600">Vecka {currentWeek} - {weekTitles[currentWeek - 1]}</p>
-          </div>
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-[#014421]">Kostschema</h1>
+              <p className="text-sm text-gray-600">Vecka {currentWeek} - {weekTitles[currentWeek - 1]}</p>
+            </div>
 
-          {/* Search and Filter */}
-          <div className="flex items-center gap-4">
+            {/* Search and Filter */}
+            <div className="flex items-center gap-4">
               <div className="relative">
                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
