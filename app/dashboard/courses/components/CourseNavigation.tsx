@@ -31,58 +31,65 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   return (
     <div className="sticky top-0 z-40 bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-2 md:px-4 py-3">
-        <div className="flex items-center gap-1 md:gap-2 overflow-x-auto scrollbar-hide">
-          {weeks.map((week) => (
-            <motion.button
-              key={week.number}
-              onClick={() => window.location.href = basePath}
-              className={`
-                px-2 py-1.5 text-xs md:px-4 md:py-2 md:text-sm rounded-full font-medium whitespace-nowrap transition-all
-                ${week.number === activeWeek 
-                  ? 'bg-[#014421] text-white shadow-lg' 
-                  : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
-                }
-              `}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+        {/* Mobile scroll wrapper with gradient indicators */}
+        <div className="relative">
+          <div className="flex items-center gap-1 md:gap-1.5 overflow-x-auto scrollbar-hide scroll-smooth">
+            {weeks.map((week) => (
+              <motion.button
+                key={week.number}
+                onClick={() => window.location.href = basePath}
+                className={`
+                  px-2 py-1 text-[10px] sm:text-xs md:px-2.5 md:py-1.5 lg:px-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0
+                  ${week.number === activeWeek 
+                    ? 'bg-[#014421] text-white shadow-lg' 
+                    : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
+                  }
+                `}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="flex items-center gap-0.5">
+                  <span className="hidden sm:inline">V.</span> {week.number}
+                </span>
+              </motion.button>
+            ))}
+            
+            {/* Completion, Community and Settings Links */}
+            <Link
+              href={`${basePath}/avslutning`}
+              className="px-2 py-1 text-[10px] sm:text-xs md:px-2.5 md:py-1.5 lg:px-3 rounded-full font-medium whitespace-nowrap transition-all bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg flex-shrink-0"
             >
-              <span className="flex items-center gap-1">
-                <span className="hidden sm:inline">Vecka</span> {week.number}
+              <span className="flex items-center gap-0.5">
+                <FiAward className="w-3 h-3" />
+                <span className="hidden sm:inline">Avslutning</span>
+                <span className="sm:hidden">Slut</span>
               </span>
-            </motion.button>
-          ))}
+            </Link>
+            
+            <Link
+              href="/dashboard/community"
+              className="px-2 py-1 text-[10px] sm:text-xs md:px-2.5 md:py-1.5 lg:px-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4] flex-shrink-0"
+            >
+              <span className="flex items-center gap-0.5">
+                <FiUsers className="w-3 h-3" />
+                <span className="hidden md:inline">Community</span>
+              </span>
+            </Link>
+            
+            <Link
+              href="/dashboard/settings"
+              className="px-2 py-1 text-[10px] sm:text-xs md:px-2.5 md:py-1.5 lg:px-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4] flex-shrink-0"
+            >
+              <span className="flex items-center gap-0.5">
+                <FiSettings className="w-3 h-3" />
+                <span className="hidden lg:inline">Inställningar</span>
+              </span>
+            </Link>
+          </div>
           
-          {/* Completion, Community and Settings Links */}
-          <Link
-            href={`${basePath}/avslutning`}
-            className="px-2 py-1.5 text-xs md:px-4 md:py-2 md:text-sm rounded-full font-medium whitespace-nowrap transition-all bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg"
-          >
-            <span className="flex items-center gap-1">
-              <FiAward className="w-3 h-3 md:w-4 md:h-4" />
-              <span className="hidden sm:inline">Avslutning</span>
-              <span className="sm:hidden">Slut</span>
-            </span>
-          </Link>
-          
-          <Link
-            href="/dashboard/community"
-            className="px-2 py-1.5 text-xs md:px-4 md:py-2 md:text-sm rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
-          >
-            <span className="flex items-center gap-1">
-              <FiUsers className="w-3 h-3 md:w-4 md:h-4" />
-              <span className="hidden sm:inline">Community</span>
-            </span>
-          </Link>
-          
-          <Link
-            href="/dashboard/settings"
-            className="px-2 py-1.5 text-xs md:px-4 md:py-2 md:text-sm rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
-          >
-            <span className="flex items-center gap-1">
-              <FiSettings className="w-3 h-3 md:w-4 md:h-4" />
-              <span className="hidden sm:inline">Inställningar</span>
-            </span>
-          </Link>
+          {/* Mobile scroll indicators */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none md:hidden" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none md:hidden" />
         </div>
       </div>
     </div>
