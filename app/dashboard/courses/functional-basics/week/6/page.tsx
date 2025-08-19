@@ -17,6 +17,7 @@ import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
 
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 interface TabProps {
   id: string;
   label: string;
@@ -58,6 +59,9 @@ export default function Week6Page() {
           <h1 className="text-3xl font-bold text-gray-900">Vecka 6: Att komma igång</h1>
           <p className="text-gray-600 mt-2">Skapa din egen hållbara Functional Foods-livsstil</p>
         </div>
+
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={6} />
 
       {/* Tab Navigation */}
       <div className="mb-4 md:mb-8">

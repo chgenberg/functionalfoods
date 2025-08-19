@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowLeft, FiCheck, FiHeart, FiTarget, FiStar, FiBookOpen } from 'react-icons/fi';
 
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
 

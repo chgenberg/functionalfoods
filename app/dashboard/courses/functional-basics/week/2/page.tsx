@@ -17,6 +17,7 @@ import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
 
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 interface TabProps {
   id: string;
   label: string;
@@ -58,6 +59,9 @@ export default function Week2Page() {
           <h1 className="text-3xl font-bold text-gray-900">Vecka 2: Proteiner & aminosyror</h1>
           <p className="text-gray-600 mt-2">Bygg starkare vanor och utforska nya smaker</p>
         </div>
+
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={2} />
 
         {/* Tab Navigation */}
         <div className="mb-4 md:mb-8">

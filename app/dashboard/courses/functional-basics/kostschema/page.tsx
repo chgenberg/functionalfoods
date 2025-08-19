@@ -12,6 +12,7 @@ import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: string, icon: any, time: string, day: string }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -224,6 +225,9 @@ export default function KostschemaPage() {
       </div>
 
       {/* Main Content */}
+            {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={1} />
+      
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Week Navigation */}
         <div className="flex items-center justify-between mb-8">

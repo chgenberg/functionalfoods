@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiSave, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 interface UserData {
   id: string;
   email: string;

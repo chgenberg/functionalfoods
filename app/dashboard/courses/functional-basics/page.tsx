@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import { getWeekData } from '@/app/data/mealPlans';
 
 interface WeekDay {
@@ -155,7 +156,17 @@ export default function FunctionalBasicsPage() {
 
         {/* Decorative elements */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
-      </div>{/* Main Content */}
+      </div>
+
+      {/* Course Navigation - After Hero Section */}
+      <div className="sticky top-16 md:top-20 z-40 bg-white shadow-lg border-b-4 border-[#014421]">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+          <div className="text-center mb-2 text-xs text-gray-500">DASHBOARD NAVIGATION</div>
+          <CourseNavigation courseType="basics" currentWeek={currentWeek} />
+        </div>
+      </div>
+
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Days Journey */}
         <div className="mb-8">

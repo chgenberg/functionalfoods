@@ -10,6 +10,7 @@ import {
 import { MdDinnerDining } from 'react-icons/md';
 import { getWeekData } from '@/app/data/mealPlans';
 import { useParams } from 'next/navigation';
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 
 export default function DayPage() {
   const params = useParams();
@@ -133,8 +134,12 @@ export default function DayPage() {
         </div>
       </div>
 
-      {/* Progress Overview */}
+      {/* Course Navigation */}
+      <CourseNavigation courseType="basics" currentWeek={weekNumber} />
+
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Progress Overview */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

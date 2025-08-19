@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { FiArrowLeft, FiCheckSquare, FiSquare, FiPrinter, FiCopy } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
 
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 interface ShoppingItem {
   ingredient: string;
   amount: number;
