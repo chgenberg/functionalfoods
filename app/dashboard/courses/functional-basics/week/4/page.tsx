@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowLeft, FiCalendar, FiShoppingCart, FiBook, FiTarget,
   FiChevronRight, FiClock, FiUsers, FiCheckCircle, FiDownload,
-  FiStar, FiHeart, FiAward, FiTrendingUp
+  FiStar, FiHeart, FiAward, FiTrendingUp, FiSun
 } from 'react-icons/fi';
 import { 
   GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal,
@@ -38,7 +38,7 @@ interface DayMeals {
   snack?: MealItem;
 }
 
-export default function Week1Page() {
+export default function Week4Page() {
   const [activeTab, setActiveTab] = useState('overview');
 
   const tabs: TabProps[] = [
@@ -48,20 +48,20 @@ export default function Week1Page() {
     { id: 'shopping', label: 'Inköpslista', icon: FiShoppingCart, color: 'from-[#da695c] to-[#da695c]' }
   ];
 
-  // Hämta centraliserad måltidsdata för vecka 1
-  const weekData = getWeekData(1);
+  // Hämta centraliserad måltidsdata för vecka 4
+  const weekData = getWeekData(4);
   const mealPlan = weekData?.days || {};
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
       {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={1} />
+      <CourseNavigation courseType="basics" currentWeek={4} />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Vecka 1: Grunden i Functional Foods</h1>
-          <p className="text-gray-600 mt-2">Starta din resa mot bättre hälsa</p>
+          <h1 className="text-3xl font-bold text-gray-900">Vecka 4: Vitaminer & mineraler</h1>
+          <p className="text-gray-600 mt-2">Stärk din kropp med viktiga mikronäringsämnen</p>
         </div>
 
       {/* Tab Navigation */}
@@ -106,7 +106,7 @@ export default function Week1Page() {
             >
               {/* Welcome Message */}
               <div className="bg-primary rounded-3xl p-8 text-white shadow-xl">
-                <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 1!</h2>
+                <h2 className="text-3xl font-bold mb-4">Välkommen till vecka 4!</h2>
                 <p className="text-lg leading-relaxed mb-6">
                   Du har tagit det första viktiga steget mot en hälsosammare livsstil! Under denna första vecka 
                   kommer du att lära dig grunderna i Functional Foods och börja upptäcka hur näringsrik mat 
@@ -201,7 +201,7 @@ export default function Week1Page() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-8"
             >
-              <GoalsSection weekNumber={1} />
+              <GoalsSection weekNumber={4} />
             </motion.div>
           )}
 
@@ -215,7 +215,7 @@ export default function Week1Page() {
               className="space-y-8"
             >
               {/* Calendar View */}
-              <CalendarView mealPlan={mealPlan} weekNumber={1} />
+              <CalendarView mealPlan={mealPlan} weekNumber={4} />
               
               {/* Daily Meals with Recipe Links */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
