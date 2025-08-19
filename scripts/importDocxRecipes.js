@@ -128,8 +128,7 @@ function splitSectionsByDashes(rawText) {
 }
 
 function parseSection(sectionText) {
-  const rawLines = sectionText.split(/\n+/);
-  const lines = rawLines.map(l => cleanLine(l.replace(/\u00A0/g,' '))).filter(l => l.length > 0);
+  const lines = sectionText.split(/\n+/).map(l => cleanLine(l.replace(/\u00A0/g,' '))).filter(l => l.length > 0);
   if (lines.length === 0) return null;
 
   let title = '';
@@ -137,113 +136,75 @@ function parseSection(sectionText) {
   let ingredients = [];
   let instructions = [];
 
-  // Step 1: Extract clean title
-  const firstLine = lines[0] || '';
+  // Extract title from first line
+  const firstLine = lines[0];
   if (/^namn på rätt/i.test(firstLine)) {
-    // Extract title from marker line, stop at portion info or ingredients
-    let titlePart = firstLine.replace(/^namn på rätt\s*[:\-–—]?\s*/i, '');
-    titlePart = titlePart.replace(/\s*[–—-]\s*\d+\s*portion(er)?\b.*$/i, ''); // remove portion and after
-    titlePart = titlePart.replace(/\s*\d+\s*(dl|g|ml|kg|l|tsk|msk|st)\b.*$/i, ''); // remove if ingredient leaked
-    title = titlePart.trim();
+    // Clean title: remove marker and everything after portion info
+    title = firstLine
+      .replace(/^namn på rätt\s*[:\-–—]?\s*/i, '')
+      .replace(/\s*[–—-]\s*\d+\s*portion.*$/i, '')
+      .replace(/\s*\d+\s*(dl|g|ml|kg)\b.*$/i, '')
+      .trim();
     
-    // Extract servings from first line if present
+    // Extract servings
     const servMatch = firstLine.match(/\b(\d+)\s*portion(er)?\b/i);
     if (servMatch) servings = parseInt(servMatch[1], 10);
   } else {
     title = firstLine;
   }
 
-  // Step 2: Find where ingredients start and end
-  let ingredientStart = -1;
-  let instructionStart = -1;
+  // Process remaining lines
+  let mode = 'ingredients'; // start with ingredients after title
+  let foundInstructions = false;
 
-  // Look for explicit headers
-  for (let i = 0; i < lines.length; i++) {
-    const lower = lines[i].toLowerCase();
-    if (lower === 'ingredienser:' || lower.startsWith('ingredienser')) {
-      ingredientStart = i + 1;
-      continue;
-    }
-    if (lower.startsWith('beskrivning') || lower.startsWith('instruktion') || lower.startsWith('gör så här')) {
-      instructionStart = i + 1;
-      break;
-    }
-  }
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    const lower = line.toLowerCase();
 
-  // If no explicit headers, use heuristics
-  if (ingredientStart === -1) {
-    // Start after title line, look for ingredient patterns
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
+    // Skip headers
+    if (/^(ingredienser|beskrivning|instruktion|gör så här)/i.test(line)) continue;
+
+    // Detect instruction start (verbs or sentences)
+    const verbs = ['vispa','lägg','skär','heta','blanda','mixa','riv','sätt','servera','dela','tillsätt','toppa','dekorera','rosta','strö','hacka','koka','stek','häll','låt','rör','forma','fyll','bryn','smaka','skala'];
+    const startsWithVerb = verbs.some(v => lower.startsWith(v + ' '));
+    const isSentence = /\.\s*$/.test(line) && line.length > 15;
+    
+    if ((startsWithVerb || isSentence) && !foundInstructions) {
+      mode = 'instructions';
+      foundInstructions = true;
+    }
+
+    if (mode === 'ingredients') {
+      // Keep as ingredient if it looks like one
       if (/^(\d+|[½¼¾⅓⅔])/.test(line) || 
           /(dl|g|ml|kg|l|tsk|msk|st|cm)\b/i.test(line) ||
           line.startsWith('- ') ||
-          /^salt( och)?( svart)?peppar$/i.test(line)) {
-        ingredientStart = i;
-        break;
-      }
-    }
-  }
-
-  if (instructionStart === -1 && ingredientStart !== -1) {
-    // Find where ingredients end (first verb line or sentence)
-    const verbs = ['vispa','lägg','skär','heta','blanda','mixa','riv','sätt','servera','dela','tillsätt','toppa','dekorera','rosta','strö','hacka','koka','stek','häll','låt','rör','forma','fyll','bryn','smaka'];
-    for (let i = ingredientStart; i < lines.length; i++) {
-      const line = lines[i];
-      const lower = line.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
-      
-      // Check if line starts with a verb
-      const startsWithVerb = verbs.some(v => lower.startsWith(v + ' '));
-      // Or if it's a complete sentence (ends with period)
-      const isSentence = /\.\s*$/.test(line) && line.length > 10;
-      
-      if (startsWithVerb || isSentence) {
-        instructionStart = i;
-        break;
-      }
-    }
-  }
-
-  // Step 3: Extract ingredients
-  if (ingredientStart !== -1) {
-    const endIdx = instructionStart !== -1 ? instructionStart : lines.length;
-    for (let i = ingredientStart; i < endIdx; i++) {
-      const line = lines[i];
-      if (!line) continue;
-      
-      // Skip headers and non-ingredient lines
-      if (/^(topping|dekoration|hummus|citronyoghurt|bottnen)\s*:?\s*$/i.test(line)) {
-        ingredients.push(line + ':');
-        continue;
-      }
-      
-      ingredients.push(line.replace(/^-\s*/, ''));
-    }
-  }
-
-  // Step 4: Extract instructions
-  if (instructionStart !== -1) {
-    for (let i = instructionStart; i < lines.length; i++) {
-      const line = lines[i];
-      if (line && !/^(beskrivning|instruktion|gör så här)/i.test(line)) {
+          /^(salt|peppar|topping|dekoration)/i.test(line)) {
+        ingredients.push(line.replace(/^-\s*/, ''));
+      } else if (startsWithVerb || isSentence) {
+        // Switch to instructions
+        mode = 'instructions';
+        foundInstructions = true;
         instructions.push(line);
+      } else {
+        // Ambiguous line - if we have ingredients already, treat as instruction
+        if (ingredients.length > 0) {
+          mode = 'instructions';
+          foundInstructions = true;
+          instructions.push(line);
+        } else {
+          ingredients.push(line);
+        }
       }
+    } else if (mode === 'instructions') {
+      instructions.push(line);
     }
   }
 
-  // Step 5: Fallback if no instructions found
-  if (instructions.length === 0 && ingredientStart !== -1) {
-    // Take any remaining lines after ingredients as instructions
-    const remaining = lines.slice(ingredientStart + ingredients.length).filter(l => 
-      l && !/^(ingredienser|topping|dekoration)/i.test(l)
-    );
-    instructions = remaining;
-  }
-
-  // Clean up
+  // Clean up results
   title = title.trim();
-  ingredients = ingredients.map(l => l.trim()).filter(Boolean);
-  instructions = instructions.map(l => l.trim()).filter(Boolean);
+  ingredients = ingredients.filter(Boolean);
+  instructions = instructions.filter(Boolean);
 
   if (!title) return null;
   return { title, servings, ingredients, instructions };
