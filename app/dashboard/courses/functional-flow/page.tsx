@@ -84,9 +84,24 @@ export default function FunctionalFlowPage() {
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
       {/* Hero Section with Video */}
-      <div className="relative h-[300px] md:h-[400px] bg-gradient-to-br from-[#112A12] to-[#014421] overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-10"></div>
+      <div className="relative h-[300px] md:h-[400px] bg-[#112A12] overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <Image 
+            src="/Ulrika_portratt/udavidssondesktop.png" 
+            alt="Ulrika Davidsson"
+            fill
+            className="object-cover opacity-60 hidden md:block"
+            priority
+          />
+          <Image 
+            src="/Ulrika_portratt/udavidssonmobile.png" 
+            alt="Ulrika Davidsson"
+            fill
+            className="object-cover opacity-60 block md:hidden"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
         
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">

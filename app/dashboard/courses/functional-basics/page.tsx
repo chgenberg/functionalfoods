@@ -91,24 +91,24 @@ export default function FunctionalBasicsPage() {
   return (
     <>
       {/* Hero Section with Video */}
-      <div className="relative h-[300px] md:h-[400px] bg-gradient-to-br from-[#014421] to-[#112A12] overflow-hidden">
+      <div className="relative h-[300px] md:h-[400px] bg-[#112A12] overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0">
           <Image 
             src="/Ulrika_portratt/udavidssondesktop.png" 
             alt="Ulrika Davidsson"
             fill
-            className="object-cover opacity-50 hidden md:block"
+            className="object-cover opacity-60 hidden md:block"
             priority
           />
           <Image 
             src="/Ulrika_portratt/udavidssonmobile.png" 
             alt="Ulrika Davidsson"
             fill
-            className="object-cover opacity-50 block md:hidden"
+            className="object-cover opacity-60 block md:hidden"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#014421]/60 to-[#112A12]/60"></div>
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
         
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
