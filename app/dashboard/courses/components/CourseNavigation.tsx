@@ -29,8 +29,9 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
     : currentWeek;
 
   return (
-    <div className="bg-[#F3EFE3] shadow-md border-b border-[#E8E0D4]">
-      <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+    <div className="bg-white shadow-lg border-b-4 border-[#014421] relative z-50">
+      <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">{/* Add debug text to verify component renders */}
+        <div className="text-center mb-2 text-xs text-gray-500">DASHBOARD NAVIGATION</div>
         {/* Mobile scroll wrapper with gradient indicators */}
         <div className="relative">
           <div className="flex items-center justify-center gap-2 md:gap-3 overflow-x-auto scrollbar-hide scroll-smooth">
