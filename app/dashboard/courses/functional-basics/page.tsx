@@ -5,10 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiPlay, FiClock, FiCheckCircle, FiBook, FiDownload,
   FiTrendingUp, FiAward, FiStar, FiChevronRight, FiUsers,
-  FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings
+  FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings,
+  FiHelpCircle
 } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
+import OnboardingModal from '@/app/components/OnboardingModal';
 import { getWeekData } from '@/app/data/mealPlans';
 
 interface WeekDay {
@@ -23,6 +25,7 @@ export default function FunctionalBasicsPage() {
   const [currentWeek, setCurrentWeek] = useState(1);
   const [currentDay, setCurrentDay] = useState(1);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -43,6 +46,12 @@ export default function FunctionalBasicsPage() {
       const today = new Date();
       localStorage.setItem('basicsStartDate', today.toISOString());
       setCourseStartDate(today);
+    }
+    
+    // Check if onboarding should be shown
+    const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
+    if (!hasCompletedOnboarding) {
+      setShowOnboarding(true);
     }
   }, []);
 
@@ -115,6 +124,18 @@ export default function FunctionalBasicsPage() {
             Se introduktionsvideo
           </motion.button>
         </div>
+
+        {/* Help Button */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          onClick={() => setShowOnboarding(true)}
+          className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors"
+          title="Öppna onboarding"
+        >
+          <FiHelpCircle className="w-6 h-6" />
+        </motion.button>
 
         {/* Decorative elements */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
@@ -347,6 +368,12 @@ export default function FunctionalBasicsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
     </div>
   );
 } 

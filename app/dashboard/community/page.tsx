@@ -70,7 +70,7 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
     >
       <div className="flex items-start gap-4">
         {/* Avatar placeholder */}
-        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">
+        <div className="w-12 h-12 bg-[#014421] rounded-full flex items-center justify-center text-white font-bold">
           {thread.author.name?.charAt(0) || thread.author.email.charAt(0)}
         </div>
         
@@ -88,7 +88,7 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
           </div>
           
           <Link href={`/dashboard/community/thread/${thread.id}`}>
-            <h3 className="text-lg font-semibold text-gray-900 hover:text-orange-600 transition-colors group-hover:text-orange-600 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 hover:text-[#014421] transition-colors group-hover:text-[#014421] mb-2">
               {thread.title}
             </h3>
           </Link>
@@ -238,7 +238,7 @@ export default function CommunityPage() {
         </div>
         <button 
           onClick={() => setShowNewThreadModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#112A12] transition-colors shadow-sm"
         >
           <FiPlus className="w-4 h-4" />
           <span>Starta diskussion</span>
@@ -253,7 +253,7 @@ export default function CommunityPage() {
             onClick={() => setSelectedCategory('all')}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               selectedCategory === 'all'
-                ? 'bg-orange-600 text-white'
+                ? 'bg-[#014421] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -265,7 +265,7 @@ export default function CommunityPage() {
               onClick={() => setSelectedCategory(category.id)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 selectedCategory === category.id
-                  ? 'bg-orange-600 text-white'
+                  ? 'bg-[#014421] text-white'
                   : `${getCategoryStyle(category.color)} hover:opacity-80`
               }`}
             >
@@ -284,7 +284,7 @@ export default function CommunityPage() {
             placeholder="Sök diskussioner..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-transparent transition-colors"
           />
         </div>
         <div className="relative">
@@ -292,7 +292,7 @@ export default function CommunityPage() {
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors appearance-none"
+            className="pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-transparent transition-colors appearance-none"
           >
             <option value="latest">Senaste</option>
             <option value="popular">Mest populära</option>
@@ -334,7 +334,7 @@ export default function CommunityPage() {
             </p>
             <button 
               onClick={() => setShowNewThreadModal(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#112A12] transition-colors"
             >
               <FiPlus className="w-4 h-4" />
               Starta diskussion
@@ -344,21 +344,21 @@ export default function CommunityPage() {
       </div>
 
       {/* Community Stats */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 text-white">
+      <div className="bg-[#014421] rounded-xl p-6 text-white">
         <div className="grid md:grid-cols-3 gap-6 text-center">
           <div>
             <div className="text-3xl font-bold mb-1">{totalThreads}</div>
-            <div className="text-purple-100">Diskussioner</div>
+            <div className="text-white/80">Diskussioner</div>
           </div>
           <div>
             <div className="text-3xl font-bold mb-1">
               {threads.reduce((sum, t) => sum + t._count.replies, 0)}
             </div>
-            <div className="text-purple-100">Svar</div>
+            <div className="text-white/80">Svar</div>
           </div>
           <div>
             <div className="text-3xl font-bold mb-1">{categories.length}</div>
-            <div className="text-purple-100">Kategorier</div>
+            <div className="text-white/80">Kategorier</div>
           </div>
         </div>
       </div>
@@ -456,7 +456,7 @@ export default function CommunityPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-6 py-3 bg-[#014421] text-white rounded-lg hover:bg-[#112A12] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       {submitting ? (
                         <>

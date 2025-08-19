@@ -22,6 +22,7 @@ export default function FunctionalFlowPage() {
   const [currentWeek, setCurrentWeek] = useState(1);
   const [currentDay, setCurrentDay] = useState(1);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
