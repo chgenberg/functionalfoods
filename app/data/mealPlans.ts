@@ -19,9 +19,10 @@ export interface WeekMealPlan {
 
 // Functional Basics meal plans (synced from DOCX documents)
 export const mealPlans: Record<string, WeekMealPlan> = {
+
   "week1": {
-    "title": "Vecka 1: Synkroniserad från DOCX/PPTX",
-    "days":     {
+    "title": "Vecka 1: Synkroniserad från DOCX",
+    "days": {
       "Måndag": {
         "breakfast": {
           "name": "Yoghurt med ketomüsli (378 kcal)",
@@ -81,7 +82,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/1-havrefrallor-med-morotter-och-aprikoser-valfritt-palagg"
         },
         "lunch": {
-          "name": "Köttfärsbiffar med stekt blomkål (355 kcal) rester"
+          "name": "Köttfärsbiffar med stekt blomkål (355 kcal)rester"
         },
         "dinner": {
           "name": "Kycklinggryta med bakad spetskål (650 kcal)",
@@ -94,21 +95,19 @@ export const mealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/tropisk-smoothiebowl"
         },
         "lunch": {
-          "name": "Kycklinggryta med bakad spetskål (650 kcal) rester"
+          "name": "Kycklinggryta med bakad spetskål (650 kcal)rester"
         },
         "dinner": {
           "name": "Laxburgare med krämig grönsaksröra (700 kcal) Mangoglass (123 kcal)",
-          "recipeLink": "/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora"
+          "recipeLink": "/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora-mangoglass"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Tropisk smoothiebowl (461 kcal) rester",
-          "recipeLink": "/kunskapsbank/recept/tropisk-smoothiebowl"
+          "name": "Tropisk smoothiebowl (461 kcal) rester"
         },
         "lunch": {
-          "name": "Laxburgare med krämig grönsaksröra (700 kcal) rester",
-          "recipeLink": "/kunskapsbank/recept/laxburgare-med-kramig-gronsaksrora"
+          "name": "Laxburgare med krämig grönsaksröra (700 kcal) rester"
         },
         "dinner": {
           "name": "Ugnsbakad tomat med köttfärs (507 kcal)",
@@ -122,92 +121,92 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Yoghurt med ketomüsli",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketom-sli"
+          "name": "Yoghurt med ketomüsli (378 kcal)",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketomusli"
         },
         "lunch": {
-          "name": "Ugnsbakad tomat med köttfärs (Rester)"
+          "name": "Ugnsbakad tomat med köttfärs (507 kcal) rester"
         },
         "dinner": {
-          "name": "Nudelsoppa med grönsaker",
+          "name": "Nudelsoppa med grönsaker (360 kcal)",
           "recipeLink": "/kunskapsbank/recept/nudelsoppa-med-gronsaker"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Omelett med champinjoner",
+          "name": "Omelett med champinjoner (269 kcal)",
           "recipeLink": "/kunskapsbank/recept/omelett-med-champinjoner"
         },
         "lunch": {
-          "name": "Nudelsoppa med grönsaker (Rester)"
+          "name": "Nudelsoppa med grönsaker (360 kcal) rester"
         },
         "dinner": {
-          "name": "Torskrygg med ägghack och sparris",
+          "name": "Torskrygg med ägghack och sparris (345 kcal)",
           "recipeLink": "/kunskapsbank/recept/torskrygg-med-agghack-och-sparris"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Morotsjuice",
+          "name": "Morotsjuice (310 kcal)",
           "recipeLink": "/kunskapsbank/recept/morotsjuice"
         },
         "lunch": {
-          "name": "Torskrygg med ägghack och sparris",
-          "recipeLink": "/kunskapsbank/recept/torskrygg-med-agghack-och-sparris"
+          "name": "Torskrygg med ägghack och sparris (345 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Turkiska lammfärsspett med raita och sallad (666 kcal)",
+          "recipeLink": "/kunskapsbank/recept/turkiska-lammfarsspett-med-raita-och-sallad"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Morotsjuice",
+          "name": "Morotsjuice (310 kcal)",
           "recipeLink": "/kunskapsbank/recept/morotsjuice"
         },
         "lunch": {
-          "name": "Turkiska lammfärsspett med raita och sallad",
-          "recipeLink": "/kunskapsbank/recept/turkiska-lammfarsspett-med-raita-och-sallad"
+          "name": "Turkiska lammfärsspett med raita och sallad (666 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Kycklingröra med örter och tomat (375 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklingrora-med-orter-och-tomat"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg",
+          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg (354 kcal)",
           "recipeLink": "/kunskapsbank/recept/1-havrefrallor-med-morotter-och-aprikoser-valfritt-palagg"
         },
         "lunch": {
-          "name": "Kycklingröra med örter och tomat (Rester)"
+          "name": "Kycklingröra med örter och tomat (375 kcal) rester"
         },
         "dinner": {
-          "name": "Lax med fetaost och rostade rotfrukter och brysselkål",
+          "name": "Lax med fetaost och rostade rotfrukter och brysselkål (546 kcal)",
           "recipeLink": "/kunskapsbank/recept/lax-med-fetaost-och-rostade-rotfrukter-och-brysselkal"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Blåbärs smoothiebowl",
+          "name": "Blåbärs smoothiebowl (546 kcal)",
           "recipeLink": "/kunskapsbank/recept/blabars-smoothiebowl"
         },
         "lunch": {
-          "name": "Lax med fetaost och rostade rotfrukter och brysselkål",
-          "recipeLink": "/kunskapsbank/recept/lax-med-fetaost-och-rostade-rotfrukter-och-brysselkal"
+          "name": "Lax med fetaost och rostade rotfrukter och brysselkål (546 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Asiatiska köttbullar med nudelsallad (422 kcal)Mango och jordgubbar med vit chokladcréme (220 kcal)",
+          "recipeLink": "/kunskapsbank/recept/asiatiska-kottbullar-med-nudelsallad-mango-och-jordgubbar-med-vit-chokladcreme"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Blåbärs smoothiebowl (Rester)"
+          "name": "Blåbärs smoothiebowl (546 kcal) rester"
         },
         "lunch": {
-          "name": "Asiatiska köttbullar med nudelsallad",
-          "recipeLink": "/kunskapsbank/recept/asiatiska-kottbullar-med-nudelsallad"
+          "name": "Asiatiska köttbullar med nudelsallad (422 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Päronsallad med chévreost (470 kcal)",
+          "recipeLink": "/kunskapsbank/recept/paronsallad-med-chevreost"
         }
       }
     }
@@ -217,93 +216,91 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Yoghurt med ketomüsli",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketom-sli"
+          "name": "Yoghurt med ketomüsli (378 kcal)",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketomusli"
         },
         "lunch": {
-          "name": "Päronsallad med chévreost",
-          "recipeLink": "/kunskapsbank/recept/paronsallad-med-chevreost"
+          "name": "Päronsallad med chévreost (470 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Kycklingfylld aubergine (573 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklingfylld-aubergine"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Äggröra med rökt lax",
+          "name": "Äggröra med rökt lax (316 kcal)",
           "recipeLink": "/kunskapsbank/recept/aggrora-med-rokt-lax"
         },
         "lunch": {
-          "name": "Kycklingfylld aubergine (Rester)"
+          "name": "Kycklingfylld aubergine (573 kcal) rester"
         },
         "dinner": {
-          "name": "Rökt lax med blomkålssallad och citronyoghurt",
-          "recipeLink": "/kunskapsbank/recept/rokt-lax-med-blomkalsallad-och-citronyoghurt"
+          "name": "Rökt lax med blomkålssallad och citronyoghurt (302 kcal)",
+          "recipeLink": "/kunskapsbank/recept/rokt-lax-med-blomkalssallad-och-citronyoghurt"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Rödbetsjuice",
+          "name": "Rödbetsjuice (250 kcal)",
           "recipeLink": "/kunskapsbank/recept/rodbetsjuice"
         },
         "lunch": {
-          "name": "Rökt lax med blomkålssallad och citronyoghurt (Rester)"
+          "name": "Rökt lax med blomkålssallad och citronyoghurt (302 kcal) rester"
         },
         "dinner": {
-          "name": "Vegetarisk currygryta med panéer",
-          "recipeLink": "/kunskapsbank/recept/vegetarisk-currygryta-med-pan-er"
+          "name": "Vegetarisk currygryta med panéer (360 kcal)",
+          "recipeLink": "/kunskapsbank/recept/vegetarisk-currygryta-med-paneer"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Rödbetsjuice",
-          "recipeLink": "/kunskapsbank/recept/rodbetsjuice"
+          "name": "Rödbetsjuice (250 kcal)rester"
         },
         "lunch": {
-          "name": "(Rester)"
+          "name": "Vegetarisk currygryta med panéer (360 kcal)rester"
         },
         "dinner": {
-          "name": "Vegetarisk currygryta med panéer",
-          "recipeLink": "/kunskapsbank/recept/vegetarisk-currygryta-med-pan-er"
+          "name": "Kycklinggryta med bakad spetskål (650 kcal)rester från fysen"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg",
+          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg (354 kcal)",
           "recipeLink": "/kunskapsbank/recept/1-havrefrallor-med-morotter-och-aprikoser-valfritt-palagg"
         },
         "lunch": {
-          "name": "Lax med fetaost och rostade rotfrukter och brysselkål",
-          "recipeLink": "/kunskapsbank/recept/lax-med-fetaost-och-rostade-rotfrukter-och-brysselkal"
+          "name": "Lax med fetaost och rostade rotfrukter och brysselkål (546 kcal)rester från frysen"
         },
         "dinner": {
-          "name": "(Rester) från frysen"
+          "name": "Högrevsburgare med hummus (635 kcal)",
+          "recipeLink": "/kunskapsbank/recept/hogrevsburgare-med-hummus"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Keso med granola och fruktsallad",
+          "name": "Keso med granola och fruktsallad (190 kcal)",
           "recipeLink": "/kunskapsbank/recept/keso-med-granola-och-fruktsallad"
         },
         "lunch": {
-          "name": "Högrevsburgare med hummus",
-          "recipeLink": "/kunskapsbank/recept/hogrevsburgare-med-hummus"
+          "name": "Högrevsburgare med hummus (635 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Ugnsbakad kyckling med tzatziki och sallad (330 kcal)Mandel och citronpaj (425 kcal)",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakad-kyckling-med-tzatziki-och-sallad-mandel-och-citronpaj"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Omelett med hallon",
+          "name": "Omelett med hallon (250 kcal)",
           "recipeLink": "/kunskapsbank/recept/omelett-med-hallon"
         },
         "lunch": {
-          "name": ""
+          "name": "Ugnsbakad kyckling med tzatziki och sallad (330 kcal) rester"
         },
         "dinner": {
-          "name": "Ugnsbakad kyckling med tzatziki och sallad",
-          "recipeLink": "/kunskapsbank/recept/ugnsbakad-kyckling-med-tzatziki-och-sallad"
+          "name": "Lax med waldorfsallad (555 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lax-med-waldorfsallad"
         }
       }
     }
@@ -313,92 +310,91 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Omelett med bär",
+          "name": "Omelett med bär (223 kcal)",
           "recipeLink": "/kunskapsbank/recept/omelett-med-bar"
         },
         "lunch": {
-          "name": ""
+          "name": "Lax med waldorfsallad (555 kcal)rester"
         },
         "dinner": {
-          "name": "Lax med waldorfsallad",
-          "recipeLink": "/kunskapsbank/recept/lax-med-waldorfsallad"
+          "name": "Grekiska köttbullar i tomatsås med rostad sötpotatis (447 kcal)",
+          "recipeLink": "/kunskapsbank/recept/grekiska-kottbullar-i-tomatsas-med-rostad-sotpotatis"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Ägghack med kalkon",
+          "name": "Ägghack med kalkon (268 kcal)",
           "recipeLink": "/kunskapsbank/recept/agghack-med-kalkon"
         },
         "lunch": {
-          "name": "Grekiska köttbullar i tomatsås med rostad sötpotatis (Rester)"
+          "name": "Grekiska köttbullar i tomatsås med rostad sötpotatis (447 kcal) rester"
         },
         "dinner": {
-          "name": "Kycklinggryta med röda linser",
-          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-roda-linser-1"
+          "name": "Kycklinggryta med röda linser (296 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklinggryta-med-roda-linser"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Fruktsmoothie",
+          "name": "Fruktsmoothie (182 kcal)",
           "recipeLink": "/kunskapsbank/recept/fruktsmoothie"
         },
         "lunch": {
-          "name": ""
+          "name": "Kycklinggryta med röda linser (296 kcal) rester"
         },
         "dinner": {
-          "name": "Kycklinggryta med röda linser (Rester)"
+          "name": "Laxsallad med vindruvor (575 kcal)",
+          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Fruktsmoothie",
-          "recipeLink": "/kunskapsbank/recept/fruktsmoothie"
+          "name": "Fruktsmoothie (182 kcal) rester"
         },
         "lunch": {
-          "name": "(Rester)"
+          "name": "Laxsallad med vindruvor (575 kcal)rester"
         },
         "dinner": {
-          "name": "Laxsallad med vindruvor",
-          "recipeLink": "/kunskapsbank/recept/laxsallad-med-vindruvor"
+          "name": "Asiatiska köttbullar med nudelsallad (422 kcal)rester från fysen"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Bananplättar med mango och granatäpple",
+          "name": "Bananplättar med mango och granatäpple (250 kcal)",
           "recipeLink": "/kunskapsbank/recept/bananplattar-med-mango-och-granatapple"
         },
         "lunch": {
-          "name": "Vegetarisk currygryta med panéer",
-          "recipeLink": "/kunskapsbank/recept/vegetarisk-currygryta-med-pan-er"
+          "name": "Vegetarisk currygryta med panéer (360 kcal)rester från frysen"
         },
         "dinner": {
-          "name": "(Rester) från frysen"
+          "name": "Grillade köttspett med grekisk sallad och morotstzatziki (482 kcal)",
+          "recipeLink": "/kunskapsbank/recept/grillade-kottspett-med-grekisk-sallad-och-morotstzatziki"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Keso med hallon och granatäpple",
+          "name": "Keso med hallon och granatäpple (105 kcal)",
           "recipeLink": "/kunskapsbank/recept/keso-med-hallon-och-granatapple"
         },
         "lunch": {
-          "name": "Grillade köttspett med grekisk sallad och morotstzatziki",
-          "recipeLink": "/kunskapsbank/recept/grillade-kottspett-med-grekisk-sallad-och-morotstzatziki"
+          "name": "Grillade köttspett med grekisk sallad och morotstzatziki (482 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Ugnsbakad kyckling med quinoasallad och chilimajjo (750 kcal)Hallon och kiwi med vit chokladcréme (219 kcal)",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakad-kyckling-med-quinoasallad-och-chilimajjo-hallon-och-kiwi-med-vit-chokladcreme"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Havregrynsgröt med torkad frukt och äpple",
+          "name": "Havregrynsgröt med torkad frukt och äpple (282 kcal)",
           "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-torkad-frukt-och-apple"
         },
         "lunch": {
-          "name": "Ugnsbakad kyckling med tzatziki och sallad",
-          "recipeLink": "/kunskapsbank/recept/ugnsbakad-kyckling-med-tzatziki-och-sallad"
+          "name": "Ugnsbakad kyckling med tzatziki och sallad (750 kcal) rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Torsk från mellanöstern (455 kcal)",
+          "recipeLink": "/kunskapsbank/recept/torsk-fran-mellanostern"
         }
       }
     }
@@ -408,90 +404,90 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Yoghurt med ketomüsli",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketom-sli"
+          "name": "Yoghurt med ketomüsli (378 kcal)",
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-ketomusli"
         },
         "lunch": {
-          "name": "Torsk från mellanöstern (Rester)"
+          "name": "Torsk från mellanöstern (455 kcal) rester"
         },
         "dinner": {
-          "name": "Japansk kycklingfärswok med groddar (320 kcal"
+          "name": "Japansk kycklingfärswok med groddar (320 kcal",
+          "recipeLink": "/kunskapsbank/recept/japansk-kycklingfarswok-med-groddar-320-kcal"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Äggröra med paprika",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-paprika-1"
+          "name": "Äggröra med paprika (250 kcal)",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-paprika"
         },
         "lunch": {
-          "name": "Japansk kycklingfärswok med groddar (320 kcal (Rester)"
+          "name": "Japansk kycklingfärswok med groddar (320 kcal rester"
         },
         "dinner": {
-          "name": "Grekisk sallad med fetaost",
+          "name": "Grekisk sallad med fetaost (529 kcal)",
           "recipeLink": "/kunskapsbank/recept/grekisk-sallad-med-fetaost"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Chiafrögröt",
+          "name": "Chiafrögröt (269 kcal)",
           "recipeLink": "/kunskapsbank/recept/chiafrogrot"
         },
         "lunch": {
-          "name": "Lax med fetaost och rostade rotfrukter och brysselkål",
-          "recipeLink": "/kunskapsbank/recept/lax-med-fetaost-och-rostade-rotfrukter-och-brysselkal"
+          "name": "Lax med fetaost och rostade rotfrukter och brysselkål (546 kcal)rester från fysen"
         },
         "dinner": {
-          "name": "(Rester) från fysen"
+          "name": "Köttfärslimpa med ajvar och rostad sötpotatis (677 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-ajvar-och-rostad-sotpotatis"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Bananplättar med jordgubbar och kokos",
+          "name": "Bananplättar med jordgubbar och kokos (250 kcal)",
           "recipeLink": "/kunskapsbank/recept/bananplattar-med-jordgubbar-och-kokos"
         },
         "lunch": {
-          "name": "Köttfärslimpa med ajvar, fetaost och rostad sötpotatis",
-          "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-ajvar-fetaost-och-rostad-sotpotatis"
+          "name": "Köttfärslimpa med ajvar, fetaost och rostad sötpotatis (677 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Vegetarisk currygryta med panéer (360 kcal)rester från frysen"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Bananplättar med jordgubbar och kokos (Rester)"
+          "name": "Bananplättar med jordgubbar och kokos (250 kcal) rester"
         },
         "lunch": {
-          "name": "Kycklinggryta med röda linser (Rester) från frysen"
+          "name": "Kycklinggryta med röda linser (296 kcal) rester från frysen"
         },
         "dinner": {
-          "name": "Skaldjursgryta med torsk i gul curry",
+          "name": "Skaldjursgryta med torsk i gul curry (491 kcal)",
           "recipeLink": "/kunskapsbank/recept/skaldjursgryta-med-torsk-i-gul-curry"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Mangosmoothie med spenat",
+          "name": "Mangosmoothie med spenat (119 kcal)",
           "recipeLink": "/kunskapsbank/recept/mangosmoothie-med-spenat"
         },
         "lunch": {
-          "name": "Skaldjursgryta med torsk i gul curry",
-          "recipeLink": "/kunskapsbank/recept/skaldjursgryta-med-torsk-i-gul-curry"
+          "name": "Skaldjursgryta med torsk i gul curry (491 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Kycklingjärpar med linssallad (402 kcal)Mandelkaka med frukt (385 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklingjarpar-med-linssallad-mandelkaka-med-frukt"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Mangosmoothie med spenat (Rester)"
+          "name": "Mangosmoothie med spenat (119 kcal) rester"
         },
         "lunch": {
-          "name": "Kycklingjärpar med linssallad",
-          "recipeLink": "/kunskapsbank/recept/kycklingjarpar-med-linssallad"
+          "name": "Kycklingjärpar med linssallad (402 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Laxfilé med ratatouille (370 kcal)",
+          "recipeLink": "/kunskapsbank/recept/laxfile-med-ratatouille"
         }
       }
     }
@@ -501,96 +497,96 @@ export const mealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg",
+          "name": "1 havrefrallor med morötter och aprikoser + valfritt pålägg (354 kcal)",
           "recipeLink": "/kunskapsbank/recept/1-havrefrallor-med-morotter-och-aprikoser-valfritt-palagg"
         },
         "lunch": {
-          "name": "Laxfilé med ratatouille (Rester)"
+          "name": "Laxfilé med ratatouille (370 kcal) rester"
         },
         "dinner": {
-          "name": "Grönsakswok med kyckling",
+          "name": "Grönsakswok med kyckling (310 kcal)",
           "recipeLink": "/kunskapsbank/recept/gronsakswok-med-kyckling"
         }
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Kokt ägg med majonnäs",
+          "name": "Kokt ägg med majonnäs (233 kcal)",
           "recipeLink": "/kunskapsbank/recept/kokt-agg-med-majonnas"
         },
         "lunch": {
-          "name": "Grönsakswok med kyckling (Rester)"
+          "name": "Grönsakswok med kyckling (310 kcal) rester"
         },
         "dinner": {
-          "name": "Köttfärspytt med italienska smaker",
+          "name": "Köttfärspytt med italienska smaker (340 kcal)",
           "recipeLink": "/kunskapsbank/recept/kottfarspytt-med-italienska-smaker"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Mango med keso och nötter",
+          "name": "Mango med keso och nötter (202 kcal)",
           "recipeLink": "/kunskapsbank/recept/mango-med-keso-och-notter"
         },
         "lunch": {
-          "name": "Köttfärspytt med italienska smaker",
-          "recipeLink": "/kunskapsbank/recept/kottfarspytt-med-italienska-smaker"
+          "name": "Köttfärspytt med italienska smaker (340 kcal) rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Indisk laxgryta med röda linser (382 kcal)",
+          "recipeLink": "/kunskapsbank/recept/indisk-laxgryta-med-roda-linser"
         }
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Äggröra med granatäpple och kiwi",
+          "name": "Äggröra med granatäpple och kiwi (230 kcal)",
           "recipeLink": "/kunskapsbank/recept/aggrora-med-granatapple-och-kiwi"
         },
         "lunch": {
-          "name": "Indisk laxgryta med röda linser",
-          "recipeLink": "/kunskapsbank/recept/indisk-laxgryta-med-roda-linser-1"
+          "name": "Indisk laxgryta med röda linser (382 kcal)rester"
         },
         "dinner": {
-          "name": "(Rester)"
+          "name": "Quinoasallad med stekt halloumi (580 kcal)",
+          "recipeLink": "/kunskapsbank/recept/quinoasallad-med-stekt-halloumi"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Havregrynsgröt med apelsin och kokos",
+          "name": "Havregrynsgröt med apelsin och kokos (239 kcal)",
           "recipeLink": "/kunskapsbank/recept/havregrynsgrot-med-apelsin-och-kokos"
         },
         "lunch": {
-          "name": ""
+          "name": "Quinoasallad med stekt halloumi (580 kcal) rester"
         },
         "dinner": {
-          "name": "Quinoasallad med stekt halloumi (Rester)"
+          "name": "Torsk teriyaki med grönsaker (267 kcal)",
+          "recipeLink": "/kunskapsbank/recept/torsk-teriyaki-med-gronsaker"
         }
       },
       "Lördag": {
         "breakfast": {
-          "name": "Hallon- och blåbärssmoothie",
+          "name": "Hallon- och blåbärssmoothie (160 kcal)",
           "recipeLink": "/kunskapsbank/recept/hallon-och-blabarssmoothie"
         },
         "lunch": {
-          "name": ""
+          "name": "Torsk teriyaki med grönsaker (267 kcal)rester"
         },
         "dinner": {
-          "name": "Torsk teriyaki med grönsaker",
-          "recipeLink": "/kunskapsbank/recept/torsk-teriyaki-med-gronsaker"
+          "name": "Lammgryta med plommon och bulgur (610 kcal)Tropisk fruktsallad(225 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lammgryta-med-plommon-och-bulgur-tropisk-fruktsallad"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Hallon- och blåbärssmoothie",
-          "recipeLink": "/kunskapsbank/recept/hallon-och-blabarssmoothie"
+          "name": "Hallon- och blåbärssmoothie (160 kcal) rester"
         },
         "lunch": {
-          "name": "(Rester)"
+          "name": "Lammgryta plommon och bulgur (610 kcal)rester"
         },
         "dinner": {
-          "name": "Lammgryta plommon och bulgur",
-          "recipeLink": "/kunskapsbank/recept/lammgryta-plommon-och-bulgur"
+          "name": "Kycklinggryta med bakad spetskål (650 kcal)rester från frysen"
         }
       }
     }
   }
+,
 };
 
 // Functional Flow meal plans (synced from Flow DOCX documents)
