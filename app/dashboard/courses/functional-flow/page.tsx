@@ -190,25 +190,6 @@ export default function FunctionalFlowPage() {
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-[#112A12] mb-6">Din vecka</h2>
           
-          {/* Week Quick Navigation */}
-          <div className="flex justify-center gap-2 mb-6 flex-wrap">
-            {weeks.map((week) => (
-              <button
-                key={week.number}
-                onClick={() => setCurrentWeek(week.number)}
-                className={`
-                  px-3 py-1 text-xs rounded-full transition-all
-                  ${week.number === currentWeek 
-                    ? 'bg-[#112A12] text-white shadow-md' 
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }
-                `}
-              >
-                Vecka {week.number}
-              </button>
-            ))}
-          </div>
-          
           <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
             {getDaysForWeek(currentWeek).map((day) => (
               <motion.div
