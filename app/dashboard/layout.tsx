@@ -19,11 +19,14 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Global Course Navigation - shows on ALL dashboard pages */}
-      <CourseNavigation courseType={courseType} currentWeek={currentWeek} />
-      
-      {/* Page content */}
+      {/* This div will be under the main header due to pt-16/pt-20 in root layout */}
       <div className="w-full">
+        {/* Course Navigation - shows under the main header */}
+        <div className="sticky top-16 md:top-20 z-40 bg-[#F3EFE3]">
+          <CourseNavigation courseType={courseType} currentWeek={currentWeek} />
+        </div>
+        
+        {/* Page content */}
         {children}
       </div>
     </div>

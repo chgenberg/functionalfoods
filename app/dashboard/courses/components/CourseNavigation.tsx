@@ -29,7 +29,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
     : currentWeek;
 
   return (
-    <div className="sticky top-0 z-50 bg-white shadow-md">
+    <div className="bg-[#F3EFE3] shadow-md border-b border-[#E8E0D4]">
       <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
         {/* Mobile scroll wrapper with gradient indicators */}
         <div className="relative">
@@ -88,8 +88,8 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
           </div>
           
           {/* Mobile scroll indicators */}
-          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none md:hidden" />
-          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none md:hidden" />
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#F3EFE3] to-transparent pointer-events-none md:hidden" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#F3EFE3] to-transparent pointer-events-none md:hidden" />
         </div>
       </div>
     </div>
