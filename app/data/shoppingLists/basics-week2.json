@@ -1,1 +1,68 @@
- 
+{
+  "week": 2,
+  "courseType": "basics",
+  "recipeCount": 15,
+  "items": [
+    {
+      "ingredient": "Ägg",
+      "amount": 12,
+      "unit": "st",
+      "category": "Mejeri & Ägg"
+    },
+    {
+      "ingredient": "Kyckling",
+      "amount": 1,
+      "unit": "kg",
+      "category": "Kött & Fisk"
+    },
+    {
+      "ingredient": "Lax",
+      "amount": 500,
+      "unit": "g",
+      "category": "Kött & Fisk"
+    },
+    {
+      "ingredient": "Yoghurt",
+      "amount": 1,
+      "unit": "förp",
+      "category": "Mejeri & Ägg"
+    },
+    {
+      "ingredient": "Tomat",
+      "amount": 1,
+      "unit": "kg",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "ingredient": "Gurka",
+      "amount": 2,
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "ingredient": "Sallad",
+      "amount": 1,
+      "unit": "huvud",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "ingredient": "Olivolja",
+      "amount": 1,
+      "unit": "flaska",
+      "category": "Kryddor & Olja"
+    },
+    {
+      "ingredient": "Havremjöl",
+      "amount": 1,
+      "unit": "påse",
+      "category": "Torrvaror"
+    },
+    {
+      "ingredient": "Köttfärs",
+      "amount": 500,
+      "unit": "g",
+      "category": "Kött & Fisk"
+    }
+  ],
+  "generatedAt": "2025-01-19T15:27:00.000Z"
+} 
