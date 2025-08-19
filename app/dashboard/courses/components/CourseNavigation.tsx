@@ -29,7 +29,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
     : currentWeek;
 
   return (
-    <div className="sticky top-0 z-40 bg-white shadow-md">
+    <div className="sticky top-0 z-50 bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-2 md:px-4 py-3">
         {/* Mobile scroll wrapper with gradient indicators */}
         <div className="relative">

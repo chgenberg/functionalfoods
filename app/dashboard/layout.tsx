@@ -25,9 +25,11 @@ export default function DashboardLayout({
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
+    <>
       <CourseNavigation courseType={courseType} />
-      {children}
-    </div>
+      <div className="min-h-screen bg-[#F3EFE3]">
+        {children}
+      </div>
+    </>
   );
 } 
