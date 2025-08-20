@@ -13,10 +13,6 @@ import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import { getWeekData } from '@/app/data/mealPlans';
-import { useRouter } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-
-interface WeekDay {
   day: number;
   name: string;
   completed: boolean;
