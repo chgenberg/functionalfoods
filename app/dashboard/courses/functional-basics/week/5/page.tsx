@@ -122,8 +122,8 @@ export default function Week5Page() {
                 <div className="flex flex-col items-center text-center">
                   <span className="text-sm text-gray-600 mb-1">{formatDate(5, day.day)}</span>
                   <h3 className="font-bold text-lg mb-3">{day.name}</h3>
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}`}>{day.completed ? (<FiCheckCircle className="w-6 h-6 text-green-600" />) : day.current ? (<div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>) : (<FiLock className="w-5 h-5 text-gray-400" />)}</div>
-                  <span className={`text-sm font-medium ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}`}>{day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Låst'}</span>
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}`}>{day.completed ? (<FiCheckCircle className="w-6 h-6 text-green-600" />) : day.current ? (<div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>) : (<div className="w-3 h-3 bg-gray-400 rounded-full"></div>)}</div>
+                  <span className={`text-sm font-medium ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}`}>{day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}</span>
                 </div>
               </div>
             ))}

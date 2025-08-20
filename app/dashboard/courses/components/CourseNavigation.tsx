@@ -58,7 +58,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             {/* Completion, Community and Settings Links */}
             <Link
               href={`${basePath}/avslutning`}
-              className="px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg flex-shrink-0"
+              className="px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all bg-primary text-white hover:bg-secondary flex-shrink-0"
             >
               <span className="flex items-center gap-1">
                 <FiAward className="w-4 h-4" />

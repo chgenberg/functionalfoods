@@ -137,10 +137,10 @@ export default function Week2Page() {
                     ) : day.current ? (
                       <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
                     ) : (
-                      <FiLock className="w-5 h-5 text-gray-400" />
+                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
                     )}
                   </div>
-                  <span className={`text-sm font-medium ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}`}>{day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Låst'}</span>
+                  <span className={`text-sm font-medium ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}`}>{day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}</span>
                 </div>
               </div>
             ))}
