@@ -156,7 +156,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
           <div className="bg-orange-100 rounded-full p-3">
-            <FiTarget className="w-6 h-6 text-orange-600" />
+            <FiTarget className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Mål för vecka {weekNumber}</h2>

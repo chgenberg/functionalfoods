@@ -137,7 +137,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{totalPredefinedGoals}</p>
             </div>
             <div className="bg-blue-100 rounded-lg p-3">
-              <FiTarget className="w-6 h-6 text-blue-600" />
+              <FiTarget className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{totalActiveGoals}</p>
             </div>
             <div className="bg-orange-100 rounded-lg p-3">
-              <FiFlag className="w-6 h-6 text-orange-600" />
+              <FiFlag className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
             </div>
           </div>
         </div>
@@ -161,7 +161,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{completedGoals}</p>
             </div>
             <div className="bg-background-secondary rounded-lg p-3">
-              <FiCheckCircle className="w-6 h-6 text-primary" />
+              <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
           </div>
         </div>
@@ -173,7 +173,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{Math.round(completionRate)}%</p>
             </div>
             <div className="bg-purple-100 rounded-lg p-3">
-              <FiTrendingUp className="w-6 h-6 text-purple-600" />
+              <FiTrendingUp className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
             </div>
           </div>
         </div>

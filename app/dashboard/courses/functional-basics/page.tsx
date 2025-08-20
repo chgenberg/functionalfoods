@@ -135,10 +135,18 @@ export default function FunctionalBasicsPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
             onClick={() => setShowVideoModal(true)}
-            className="bg-white text-[#014421] px-8 py-4 rounded-full font-semibold flex items-center gap-3 hover:scale-105 transition-transform shadow-lg"
+            className="relative overflow-hidden rounded-full px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-medium text-white bg-[#014421] hover:bg-[#112A12] transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+            style={{
+              backgroundImage: window.innerWidth >= 768 
+                ? "url('/Ulrika_portratt/udavidssondesktop.png')" 
+                : "url('/Ulrika_portratt/udavidssonmobile.png')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
           >
-            <FiPlay className="w-5 h-5" />
-            Se introduktionsvideo
+            <div className="absolute inset-0 bg-[#014421]/80"></div>
+            <FiPlay className="w-5 h-5 md:w-6 md:h-6 relative z-10" />
+            <span className="relative z-10">Se introduktionsvideo</span>
           </motion.button>
         </div>
 
@@ -151,11 +159,11 @@ export default function FunctionalBasicsPage() {
           className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors z-10"
           title="Öppna hjälpguide"
         >
-          <FiHelpCircle className="w-6 h-6" />
+          <FiHelpCircle className="w-5 h-5 md:w-6 md:h-6" />
         </motion.button>
 
         {/* Decorative elements */}
-        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-[#F3EFE3]/80"></div>
       </div>
 
       {/* Course Navigation - After Hero Section */}
@@ -171,7 +179,7 @@ export default function FunctionalBasicsPage() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-[#014421] mb-6">Din vecka</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3 md:gap-4">
             {getDaysForWeek(currentWeek).map((day) => (
               <motion.div
                 key={day.day}
@@ -179,9 +187,9 @@ export default function FunctionalBasicsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: day.day * 0.05 }}
                 className={`
-                  relative p-6 rounded-2xl transition-all cursor-pointer
+                  relative p-4 md:p-4 md:p-6 rounded-2xl transition-all cursor-pointer
                   ${day.current 
-                    ? 'bg-gradient-to-br from-[#FFB5A7] to-[#FCD5CE] shadow-xl scale-105' 
+                    ? 'bg-[#FFB5A7] shadow-xl scale-105' 
                     : day.completed
                     ? 'bg-white hover:shadow-lg'
                     : day.locked
@@ -189,33 +197,33 @@ export default function FunctionalBasicsPage() {
                     : 'bg-white hover:shadow-lg'
                   }
                 `}
-                onClick={() => (window.location.href = `/dashboard/courses/functional-basics/week/${currentWeek}/day/${day.day}`)}
+                onClick={() => !day.locked && (window.location.href = `/dashboard/courses/functional-basics/week/${currentWeek}/day/${day.day}`)}
               >
-                {day.current && (
-                  <div className="absolute -top-2 -right-2 bg-[#014421] text-white text-xs px-3 py-1 rounded-full">
-                    Idag
-                  </div>
-                )}
-                
-                <div className="flex flex-col items-center text-center">
-                  <span className="text-sm text-gray-600 mb-1">{formatDate(currentWeek, day.day)}</span>
-                  <h3 className="font-bold text-lg mb-3">{day.name}</h3>
-                  
+                {/* Date tag */}
+                <div className={`
+                  absolute -top-2 -right-2 px-3 py-1 text-xs rounded-full font-medium
+                  ${day.current ? 'bg-[#014421] text-white' : 'bg-[#014421] text-white'}
+                `}>
+                  {day.current ? 'Idag' : formatDate(currentWeek, day.day).split('.')[0] + ' ' + formatDate(currentWeek, day.day).split(' ')[1]}
+                </div>
+
+                <div className="text-center">
+                  <span className="text-xs md:text-sm text-gray-600 mb-1">{formatDate(currentWeek, day.day)}</span>
+                  <h3 className="font-bold text-base md:text-base md:text-lg mb-3">{day.name}</h3>
                   <div className={`
-                    w-12 h-12 rounded-full flex items-center justify-center mb-3
+                    w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto
                     ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}
                   `}>
                     {day.completed ? (
-                      <FiCheckCircle className="w-6 h-6 text-green-600" />
+                      <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
                     ) : day.current ? (
                       <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
                     ) : (
                       <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
                     )}
                   </div>
-                  
                   <span className={`
-                    text-sm font-medium
+                    text-xs md:text-sm font-medium
                     ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}
                   `}>
                     {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}
@@ -332,80 +340,77 @@ export default function FunctionalBasicsPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
-          >
-            <Link href={`/dashboard/courses/functional-basics/kostschema?view=week&week=${currentWeek}`}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiCalendar className="w-6 h-6 text-[#014421]" />
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-[#014421] mb-6">Snabbval</h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Link href={`/dashboard/courses/functional-basics/kostschema?view=week&week=${currentWeek}`} className="block">
+              <div className="bg-[#F3EFE3] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer border-2 border-transparent hover:border-[#014421]">
+                <div className="flex items-center mb-4">
+                  <div className="bg-[#014421] rounded-full p-3 mr-4">
+                    <FiCalendar className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  </div>
+                  <h3 className="font-bold text-lg text-[#014421]">Veckans kostschema</h3>
                 </div>
-                <FiArrowRight className="w-5 h-5 text-gray-400" />
+                <p className="text-gray-600 text-sm">Se alla recept och måltider för vecka {currentWeek}</p>
               </div>
-              <h3 className="font-bold text-lg mb-2">Veckans kostschema</h3>
-              <p className="text-gray-600">Se alla recept och måltider för vecka {currentWeek}</p>
             </Link>
-          </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
-          >
-            <Link href={`/dashboard/courses/functional-basics/inkopslista?week=${currentWeek}`}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiShoppingCart className="w-6 h-6 text-[#014421]" />
+            <Link href={`/dashboard/courses/functional-basics/inkopslista?week=${currentWeek}`} className="block">
+              <div className="bg-[#FFB5A7] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer border-2 border-transparent hover:border-[#014421]">
+                <div className="flex items-center mb-4">
+                  <div className="bg-white rounded-full p-3 mr-4">
+                    <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
+                  </div>
+                  <h3 className="font-bold text-lg text-white">Inköpslista</h3>
                 </div>
-                <FiArrowRight className="w-5 h-5 text-gray-400" />
+                <p className="text-white/90 text-sm">Allt du behöver för veckans recept</p>
               </div>
-              <h3 className="font-bold text-lg mb-2">Inköpslista</h3>
-              <p className="text-gray-600">Allt du behöver för veckans recept</p>
             </Link>
-          </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
-          >
-            <Link href="/dashboard/community">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiUsers className="w-6 h-6 text-[#014421]" />
+            <Link href="/dashboard/community" className="block">
+              <div className="bg-[#014421] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer border-2 border-transparent hover:border-[#FFB5A7]">
+                <div className="flex items-center mb-4">
+                  <div className="bg-white rounded-full p-3 mr-4">
+                    <FiUsers className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
+                  </div>
+                  <h3 className="font-bold text-lg text-white">Community</h3>
                 </div>
-                <FiArrowRight className="w-5 h-5 text-gray-400" />
+                <p className="text-white/90 text-sm">Dela erfarenheter med andra deltagare</p>
               </div>
-              <h3 className="font-bold text-lg mb-2">Community</h3>
-              <p className="text-gray-600">Dela erfarenheter med andra deltagare</p>
             </Link>
-          </motion.div>
+          </div>
         </div>
 
         {/* Week Materials */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg">
-          <h3 className="text-xl font-bold text-[#014421] mb-6">Veckans material</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <FiBook className="w-5 h-5 text-[#014421]" />
-                <span className="font-medium">Vecka {currentWeek} - Arbetsbok (PDF)</span>
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-[#014421] mb-6">Veckans material</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="bg-[#014421] rounded-full p-3 mr-4">
+                  <FiDownload className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-lg text-[#014421]">Kostschema PDF</h3>
               </div>
-              <FiDownload className="w-5 h-5 text-[#014421]" />
+              <p className="text-gray-600 mb-4">Ladda ner veckans kostschema som PDF</p>
+              <button className="w-full bg-[#014421] text-white rounded-lg py-3 hover:bg-[#112A12] transition-colors">
+                Ladda ner
+              </button>
             </div>
-            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <FiBook className="w-5 h-5 text-[#014421]" />
-                <span className="font-medium">Receptsamling vecka {currentWeek}</span>
+
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="bg-[#FFB5A7] rounded-full p-3 mr-4">
+                  <FiBook className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-lg text-[#014421]">Bonusmaterial</h3>
               </div>
-              <FiDownload className="w-5 h-5 text-[#014421]" />
-            </div>
-            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <FiBook className="w-5 h-5 text-[#014421]" />
-                <span className="font-medium">Bonusmaterial - Extra recept</span>
-              </div>
-              <FiDownload className="w-5 h-5 text-[#014421]" />
+              <p className="text-gray-600 mb-4">Extra recept och tips för veckan</p>
+              <button className="w-full bg-[#FFB5A7] text-white rounded-lg py-3 hover:bg-[#FFA493] transition-colors">
+                Öppna material
+              </button>
             </div>
           </div>
         </div>

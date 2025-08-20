@@ -258,7 +258,7 @@ export default function AttValjaRattProteinerPage() {
                       <div key={source.id} className="bg-white rounded-2xl shadow-xl p-8">
                         <div className="flex items-center mb-6">
                           <div className={`w-12 h-12 bg-gradient-to-r ${source.color} rounded-full flex items-center justify-center mr-4`}>
-                            <Icon className="w-6 h-6 text-white" />
+                            <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                           </div>
                           <h3 className="text-2xl font-bold text-gray-800">{source.name}</h3>
                         </div>

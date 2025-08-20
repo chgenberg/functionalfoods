@@ -201,7 +201,7 @@ export default function DagsAttKommaIgangPage() {
                   <div className="flex items-start">
                     <button
                       onClick={() => handleCheckItem(item.id)}
-                      className={`w-6 h-6 rounded-full border-2 mr-4 mt-0.5 flex-shrink-0 transition-all duration-300 ${
+                      className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 mr-4 mt-0.5 flex-shrink-0 transition-all duration-300 ${
                         isChecked 
                           ? 'bg-primary border-primary' 
                           : 'border-gray-300 hover:border-primary'
@@ -269,7 +269,7 @@ export default function DagsAttKommaIgangPage() {
                 className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
               >
                 <div className={`w-12 h-12 bg-gradient-to-r ${tip.color} rounded-full flex items-center justify-center mb-4`}>
-                  <Icon className="w-6 h-6 text-white" />
+                  <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">{tip.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{tip.content}</p>

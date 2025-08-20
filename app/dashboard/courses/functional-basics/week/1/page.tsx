@@ -64,7 +64,7 @@ export default function Week1Page() {
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Din Functional Foods Resa</h1>
           <p className="text-white/90 text-lg">Välkommen till vecka 1 - Grunden i Functional Foods</p>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-[#F3EFE3]/80"></div>
       </div>
 
       {/* Course Navigation */}

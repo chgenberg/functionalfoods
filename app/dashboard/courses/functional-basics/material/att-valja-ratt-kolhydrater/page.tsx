@@ -175,7 +175,7 @@ export default function AttValjaRattKolhydraterPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Snabba kolhydrater</h2>
-              <FiTrendingUp className="w-6 h-6 text-red-500" />
+              <FiTrendingUp className="w-5 h-5 md:w-6 md:h-6 text-red-500" />
             </div>
             <p className="text-gray-600 mb-4">
               Innehåller ofta lite näring, mycket socker och ger kort mättnad.
@@ -208,7 +208,7 @@ export default function AttValjaRattKolhydraterPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Långsamma kolhydrater</h2>
-              <FiActivity className="w-6 h-6 text-primary" />
+              <FiActivity className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
             <p className="text-gray-600 mb-4">
               Tar längre tid att bryta ner och påverkar blodsockret mindre.
@@ -260,7 +260,7 @@ export default function AttValjaRattKolhydraterPage() {
                       >
                         <div className="flex items-center mb-3">
                           <div className={`w-10 h-10 bg-gradient-to-r ${carb.color} rounded-full flex items-center justify-center mr-3`}>
-                            <Icon className="w-6 h-6 text-white" />
+                            <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                           </div>
                           <div className="flex-grow">
                             <h4 className="font-semibold text-gray-800">{carb.name}</h4>

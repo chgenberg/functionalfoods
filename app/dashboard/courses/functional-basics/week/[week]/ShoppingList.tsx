@@ -101,7 +101,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-background-secondary rounded-xl">
-            <FiShoppingCart className="w-6 h-6 text-primary" />
+            <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-primary" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Inköpslista</h2>
@@ -165,7 +165,7 @@ export default function ShoppingList({ weekNumber, courseId }: ShoppingListProps
               onClick={() => toggleItem(item.id, !item.isChecked)}
             >
               <div className={`
-                w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all
+                w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center transition-all
                 ${item.isChecked 
                   ? 'bg-primary border-primary' 
                   : 'border-gray-300 group-hover:border-primary'

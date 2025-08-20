@@ -194,7 +194,7 @@ export function RecipeHighlights() {
               {/* Decorative elements */}
               <div className="absolute inset-0">
                 <div className="absolute top-2 right-2 w-8 h-8 bg-white/20 rounded-full blur-sm"></div>
-                <div className="absolute bottom-4 left-4 w-6 h-6 bg-white/30 rounded-full blur-sm"></div>
+                <div className="absolute bottom-4 left-4 w-5 h-5 md:w-6 md:h-6 bg-white/30 rounded-full blur-sm"></div>
                 <div className="absolute top-1/2 left-1/3 w-4 h-4 bg-white/25 rounded-full blur-sm"></div>
               </div>
               
@@ -374,7 +374,7 @@ export function MealPlanSection({
                 {/* Decorative elements */}
                 <div className="absolute inset-0">
                   <div className="absolute top-3 right-3 w-10 h-10 bg-white/20 rounded-full blur-sm"></div>
-                  <div className="absolute bottom-4 left-4 w-6 h-6 bg-white/30 rounded-full blur-sm"></div>
+                  <div className="absolute bottom-4 left-4 w-5 h-5 md:w-6 md:h-6 bg-white/30 rounded-full blur-sm"></div>
                   <div className="absolute top-1/3 left-1/4 w-4 h-4 bg-white/25 rounded-full blur-sm"></div>
                 </div>
                 
@@ -567,7 +567,7 @@ export function ShoppingListSection() {
               <div key={category} className="bg-gray-50 rounded-xl p-6">
                 <div className="flex items-center mb-4">
                   <div className="bg-primary rounded-full p-3 mr-3">
-                    <Icon className="w-6 h-6 text-white" />
+                    <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900">{category}</h3>
                 </div>
@@ -683,7 +683,7 @@ export function KnowledgeSection() {
                 <div className="bg-white rounded-xl p-6">
                   <div className="flex items-start space-x-4">
                     <div className={`bg-gradient-to-r ${section.color} rounded-full p-3`}>
-                      <section.icon className="w-6 h-6 text-white" />
+                      <section.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{section.title}</h3>

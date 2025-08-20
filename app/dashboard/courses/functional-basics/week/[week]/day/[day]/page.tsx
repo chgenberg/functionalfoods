@@ -167,7 +167,7 @@ export default function DayPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-[#FFB5A7] to-[#FCD5CE] rounded-2xl shadow-lg p-6 mb-8 text-white"
+          className="bg-[#FFB5A7] rounded-2xl shadow-lg p-6 mb-8 text-white"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -224,7 +224,7 @@ export default function DayPage() {
                         }
                       `}
                     >
-                      {isCompleted && <FiCheck className="w-6 h-6" />}
+                      {isCompleted && <FiCheck className="w-5 h-5 md:w-6 md:h-6" />}
                     </button>
                   </div>
                   

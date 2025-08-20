@@ -18,9 +18,9 @@ const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: stri
   const [isCompleted, setIsCompleted] = useState(false);
 
   const typeColors: Record<string, { bg: string, text: string, accent: string }> = {
-    breakfast: { bg: 'bg-gradient-to-br from-yellow-50 to-orange-50', text: 'text-orange-700', accent: 'bg-orange-400' },
-    lunch: { bg: 'bg-gradient-to-br from-emerald-50 to-teal-50', text: 'text-teal-700', accent: 'bg-teal-400' },
-    dinner: { bg: 'bg-gradient-to-br from-purple-50 to-pink-50', text: 'text-purple-700', accent: 'bg-purple-400' }
+    breakfast: { bg: 'bg-yellow-50', text: 'text-orange-700', accent: 'bg-orange-400' },
+    lunch: { bg: 'bg-emerald-50', text: 'text-teal-700', accent: 'bg-teal-400' },
+    dinner: { bg: 'bg-purple-50', text: 'text-purple-700', accent: 'bg-purple-400' }
   };
 
   const typeNames: Record<string, string> = {
@@ -39,7 +39,7 @@ const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: stri
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className={`
-        relative p-6 rounded-2xl shadow-lg transition-all cursor-pointer
+        relative p-4 md:p-6 rounded-2xl shadow-lg transition-all cursor-pointer
         ${typeColors[type]?.bg || 'bg-white'}
         ${isCompleted ? 'opacity-70' : ''}
       `}
@@ -56,7 +56,7 @@ const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: stri
           setIsCompleted(!isCompleted);
         }}
         className={`
-          absolute top-4 right-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all
+          absolute top-4 right-4 w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center transition-all
           ${isCompleted ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-400'}
         `}
       >
@@ -65,7 +65,7 @@ const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: stri
 
       <div className="flex items-start gap-4">
         <div className={`w-12 h-12 rounded-full ${typeColors[type]?.accent} bg-opacity-20 flex items-center justify-center flex-shrink-0`}>
-          <Icon className={`w-6 h-6 ${typeColors[type]?.text}`} />
+          <Icon className={`w-5 h-5 md:w-6 md:h-6 ${typeColors[type]?.text}`} />
         </div>
         
         <div className="flex-1">
@@ -378,34 +378,34 @@ export default function KostschemaPage() {
         )}
 
         {/* Quick Actions */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="bg-gradient-to-br from-[#FFB5A7] to-[#FCD5CE] rounded-2xl p-6 shadow-lg cursor-pointer"
+            className="bg-[#FFB5A7] rounded-2xl p-4 md:p-6 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
           >
             <Link href={`/dashboard/courses/functional-basics/inkopslista?week=${currentWeek}`}>
-              <FiShoppingCart className="w-8 h-8 text-white mb-3" />
-              <h3 className="text-lg font-bold text-white mb-2">Veckans inköpslista</h3>
-              <p className="text-white/90 text-sm">Få alla ingredienser för vecka {currentWeek}</p>
+              <FiShoppingCart className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
+              <h3 className="text-base md:text-lg font-bold text-white mb-2">Veckans inköpslista</h3>
+              <p className="text-white/90 text-xs md:text-sm">Få alla ingredienser för vecka {currentWeek}</p>
             </Link>
           </motion.div>
 
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="bg-gradient-to-br from-[#014421] to-[#112A12] rounded-2xl p-6 shadow-lg cursor-pointer"
+            className="bg-[#014421] rounded-2xl p-4 md:p-6 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
           >
-            <FiDownload className="w-8 h-8 text-white mb-3" />
-            <h3 className="text-lg font-bold text-white mb-2">Ladda ner schema</h3>
-            <p className="text-white/90 text-sm">Spara som PDF för offline</p>
+            <FiDownload className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
+            <h3 className="text-base md:text-lg font-bold text-white mb-2">Ladda ner schema</h3>
+            <p className="text-white/90 text-xs md:text-sm">Spara som PDF för offline</p>
           </motion.div>
 
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-6 shadow-lg cursor-pointer"
+            className="bg-[#112A12] rounded-2xl p-4 md:p-6 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
           >
-            <FiHeart className="w-8 h-8 text-white mb-3" />
-            <h3 className="text-lg font-bold text-white mb-2">Mina favoriter</h3>
-            <p className="text-white/90 text-sm">Se dina sparade recept</p>
+            <FiHeart className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
+            <h3 className="text-base md:text-lg font-bold text-white mb-2">Mina favoriter</h3>
+            <p className="text-white/90 text-xs md:text-sm">Se dina sparade recept</p>
           </motion.div>
         </div>
       </div>

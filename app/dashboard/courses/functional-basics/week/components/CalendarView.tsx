@@ -106,7 +106,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
       {/* Calendar Grid */}
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
-          <FiCalendar className="w-6 h-6 text-purple-600" />
+          <FiCalendar className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
           <h3 className="text-2xl font-bold text-gray-900">Vecka {weekNumber} - Kostschema</h3>
         </div>
 

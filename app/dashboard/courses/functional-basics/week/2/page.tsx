@@ -108,39 +108,51 @@ export default function Week2Page() {
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Din Functional Foods Resa</h1>
           <p className="text-white/90 text-lg">Välkommen till vecka 2 - Proteiner & aminosyror</p>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
+        {/* Decorative elements */}
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-[#F3EFE3]/80"></div>
       </div>
 
-      {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={2} />
+      {/* Course Navigation - After Hero Section */}
+      <div className="bg-white shadow-lg border-b-4 border-[#014421]">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+          <CourseNavigation courseType="basics" currentWeek={2} />
+        </div>
+      </div>
 
-      {/* New: Days Journey section */}
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Days Journey */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-[#014421] mb-6">Din vecka</h2>
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3 md:gap-4">
             {getDaysForWeek(2).map((day) => (
               <div
                 key={day.day}
-                className={`relative p-6 rounded-2xl transition-all ${day.current ? 'bg-gradient-to-br from-[#FFB5A7] to-[#FCD5CE] shadow-xl scale-105' : day.completed ? 'bg-white hover:shadow-lg' : day.locked ? 'bg-gray-50 opacity-60' : 'bg-white hover:shadow-lg'}`}
-                onClick={() => (window.location.href = `/dashboard/courses/functional-basics/week/2/day/${day.day}`)}
+                className={`relative p-4 md:p-4 md:p-6 rounded-2xl transition-all ${day.current ? 'bg-[#FFB5A7] shadow-xl scale-105' : day.completed ? 'bg-white hover:shadow-lg' : day.locked ? 'bg-gray-50 opacity-60' : 'bg-white hover:shadow-lg'}`}
+                onClick={() => !day.locked && (window.location.href = `/dashboard/courses/functional-basics/week/2/day/${day.day}`)}
               >
-                {day.current && (
-                  <div className="absolute -top-2 -right-2 bg-[#014421] text-white text-xs px-3 py-1 rounded-full">Idag</div>
-                )}
-                <div className="flex flex-col items-center text-center">
-                  <span className="text-sm text-gray-600 mb-1">{formatDate(2, day.day)}</span>
-                  <h3 className="font-bold text-lg mb-3">{day.name}</h3>
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}`}>
+                {/* Date tag */}
+                <div className={`
+                  absolute -top-2 -right-2 px-3 py-1 text-xs rounded-full font-medium
+                  ${day.current ? 'bg-[#014421] text-white' : 'bg-[#014421] text-white'}
+                `}>
+                  {day.current ? 'Idag' : formatDate(2, day.day).split('.')[0] + ' ' + formatDate(2, day.day).split(' ')[1]}
+                </div>
+
+                <div className="text-center">
+                  <span className="text-xs md:text-sm text-gray-600 mb-1">{formatDate(2, day.day)}</span>
+                  <h3 className="font-bold text-base md:text-base md:text-lg mb-3">{day.name}</h3>
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}`}>
                     {day.completed ? (
-                      <FiCheckCircle className="w-6 h-6 text-green-600" />
+                      <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
                     ) : day.current ? (
                       <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
                     ) : (
                       <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
                     )}
                   </div>
-                  <span className={`text-sm font-medium ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}`}>{day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}</span>
+                  <span className={`text-xs md:text-sm font-medium ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}`}>{day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}</span>
                 </div>
               </div>
             ))}
@@ -201,7 +213,7 @@ export default function Week2Page() {
             <Link href={`/dashboard/courses/functional-basics/kostschema?view=week&week=2`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiCalendar className="w-6 h-6 text-[#014421]" />
+                  <FiCalendar className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
                 </div>
                 <FiChevronRight className="w-5 h-5 text-gray-400" />
               </div>
@@ -214,7 +226,7 @@ export default function Week2Page() {
             <Link href={`/dashboard/courses/functional-basics/inkopslista?week=2`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiShoppingCart className="w-6 h-6 text-[#014421]" />
+                  <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
                 </div>
                 <FiChevronRight className="w-5 h-5 text-gray-400" />
               </div>
@@ -227,7 +239,7 @@ export default function Week2Page() {
             <Link href="/dashboard/community">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiUsers className="w-6 h-6 text-[#014421]" />
+                  <FiUsers className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
                 </div>
                 <FiChevronRight className="w-5 h-5 text-gray-400" />
               </div>

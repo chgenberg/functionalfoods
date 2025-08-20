@@ -19,7 +19,7 @@ export default function CompletionPage() {
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Kursen avslutad</h1>
           <p className="text-white/90 text-lg">Stort grattis! Här är din avslutningsfilm och nästa steg</p>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-[#F3EFE3]/80"></div>
       </div>
 
       {/* Dashboard menu under hero */}
@@ -55,7 +55,7 @@ export default function CompletionPage() {
           className="bg-white rounded-2xl shadow-lg p-8 mb-8"
         >
           <div className="flex items-center justify-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#FFB5A7] to-[#FCD5CE] rounded-full flex items-center justify-center">
+            <div className="w-20 h-20 bg-[#FFB5A7] rounded-full flex items-center justify-center">
               <FiCheck className="w-10 h-10 text-white" />
             </div>
           </div>
@@ -94,7 +94,7 @@ export default function CompletionPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-br from-[#014421] to-[#112A12] rounded-2xl shadow-lg p-8 text-white"
+          className="bg-[#014421] rounded-2xl shadow-lg p-8 text-white"
         >
           <div className="flex items-center gap-3 mb-6">
             <FiTarget className="w-8 h-8" />

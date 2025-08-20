@@ -105,7 +105,7 @@ export default function Week3Page() {
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Din Functional Foods Resa</h1>
           <p className="text-white/90 text-lg">Välkommen till vecka 3 - Fetter & kolhydrater</p>
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F3EFE3] to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-[#F3EFE3]/80"></div>
       </div>
 
       {/* Course Navigation */}
@@ -115,11 +115,11 @@ export default function Week3Page() {
         {/* Days Journey */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-[#014421] mb-6">Din vecka</h2>
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-4">
             {getDaysForWeek(3).map((day) => (
               <div
                 key={day.day}
-                className={`relative p-6 rounded-2xl transition-all ${day.current ? 'bg-gradient-to-br from-[#FFB5A7] to-[#FCD5CE] shadow-xl scale-105' : day.completed ? 'bg-white hover:shadow-lg' : day.locked ? 'bg-gray-50 opacity-60' : 'bg-white hover:shadow-lg'}`}
+                className={`relative p-4 md:p-6 rounded-2xl transition-all ${day.current ? 'bg-[#FFB5A7] shadow-xl scale-105' : day.completed ? 'bg-white hover:shadow-lg' : day.locked ? 'bg-gray-50 opacity-60' : 'bg-white hover:shadow-lg'}`}
                 onClick={() => (window.location.href = `/dashboard/courses/functional-basics/week/3/day/${day.day}`)}
               >
                 {day.current && (
@@ -127,10 +127,10 @@ export default function Week3Page() {
                 )}
                 <div className="flex flex-col items-center text-center">
                   <span className="text-sm text-gray-600 mb-1">{formatDate(3, day.day)}</span>
-                  <h3 className="font-bold text-lg mb-3">{day.name}</h3>
+                  <h3 className="font-bold text-base md:text-lg mb-3">{day.name}</h3>
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}`}>
                     {day.completed ? (
-                      <FiCheckCircle className="w-6 h-6 text-green-600" />
+                      <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
                     ) : day.current ? (
                       <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
                     ) : (
@@ -183,7 +183,7 @@ export default function Week3Page() {
             <Link href={`/dashboard/courses/functional-basics/kostschema?view=week&week=3`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiCalendar className="w-6 h-6 text-[#014421]" />
+                  <FiCalendar className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
                 </div>
                 <FiChevronRight className="w-5 h-5 text-gray-400" />
               </div>
@@ -196,7 +196,7 @@ export default function Week3Page() {
             <Link href={`/dashboard/courses/functional-basics/inkopslista?week=3`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiShoppingCart className="w-6 h-6 text-[#014421]" />
+                  <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
                 </div>
                 <FiChevronRight className="w-5 h-5 text-gray-400" />
               </div>
@@ -209,7 +209,7 @@ export default function Week3Page() {
             <Link href="/dashboard/community">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiUsers className="w-6 h-6 text-[#014421]" />
+                  <FiUsers className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
                 </div>
                 <FiChevronRight className="w-5 h-5 text-gray-400" />
               </div>

@@ -132,7 +132,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
             className="w-full flex justify-between items-center py-2 text-left"
           >
             <div className="flex items-center gap-3">
-              {categoryIcons[category] && React.createElement(categoryIcons[category], { className: "w-6 h-6 text-primary" })}
+              {categoryIcons[category] && React.createElement(categoryIcons[category], { className: "w-5 h-5 md:w-6 md:h-6 text-primary" })}
               <h3 className="font-bold text-lg text-gray-800">{category}</h3>
             </div>
             {openCategories.has(category) ? <FiChevronUp className="text-gray-500" /> : <FiChevronDown className="text-gray-500" />}

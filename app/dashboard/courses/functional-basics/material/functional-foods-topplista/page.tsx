@@ -227,7 +227,7 @@ export default function FunctionalFoodsTopplistaPage() {
                         e.stopPropagation();
                         handleCategoryCheck(category.id);
                       }}
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                      className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                         isChecked 
                           ? 'bg-primary border-primary' 
                           : 'border-gray-300 hover:border-primary'

@@ -186,7 +186,7 @@ export default function DownloadsPage() {
                     download.category === 'shopping' ? 'bg-blue-100 text-blue-600' :
                     'bg-orange-100 text-orange-600'
                   }`}>
-                    <download.icon className="w-6 h-6" />
+                    <download.icon className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <span className="text-sm text-gray-500">{download.size}</span>
                 </div>
@@ -214,7 +214,7 @@ export default function DownloadsPage() {
           className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8"
         >
           <div className="flex items-start gap-4">
-            <FiInfo className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+            <FiInfo className="w-5 h-5 md:w-6 md:h-6 text-blue-600 flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Tips för nedladdningar</h3>
               <p className="text-gray-600">

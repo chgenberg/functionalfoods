@@ -212,7 +212,7 @@ export default function FordelarnaPage() {
                     <div key={benefit.id} className="bg-white rounded-2xl shadow-xl p-8">
                       <div className="flex items-center mb-6">
                         <div className={`w-12 h-12 bg-gradient-to-r ${benefit.color} rounded-full flex items-center justify-center mr-4`}>
-                          <Icon className="w-6 h-6 text-white" />
+                          <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                         </div>
                         <h3 className="text-2xl font-bold text-gray-800">{benefit.title}</h3>
                       </div>
@@ -264,7 +264,7 @@ export default function FordelarnaPage() {
             Varje måltid blir en möjlighet att ge din kropp det bästa – näring som läker, stärker och energiserar.
           </p>
           <div className="flex items-center">
-            <FiActivity className="w-6 h-6 mr-2" />
+            <FiActivity className="w-5 h-5 md:w-6 md:h-6 mr-2" />
             <span className="font-medium">Din hälsoresa börjar med varje medvetet val du gör!</span>
           </div>
         </motion.div>
@@ -287,7 +287,7 @@ export default function FordelarnaPage() {
               </button>
             ) : (
               <div className="flex items-center text-primary">
-                <FiCheckCircle className="w-6 h-6 mr-2" />
+                <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 mr-2" />
                 <span className="font-medium">Slutförd!</span>
               </div>
             )}
