@@ -159,7 +159,7 @@ export default function FunctionalBasicsPage() {
       </div>
 
       {/* Course Navigation - After Hero Section */}
-      <div className="sticky top-16 md:top-20 z-40 bg-white shadow-lg border-b-4 border-[#014421]">
+      <div className="bg-white shadow-lg border-b-4 border-[#014421]">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType="basics" currentWeek={currentWeek} />
         </div>
