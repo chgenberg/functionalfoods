@@ -137,9 +137,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-4xl mx-auto py-8">
+    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-7xl mx-auto px-4 py-8">
         {/* Hero banner */}
-        <div className="relative h-[200px] md:h-[260px] overflow-hidden rounded-2xl mb-4 mx-4 md:mx-0">
+        <div className="relative h-[200px] md:h-[260px] overflow-hidden rounded-2xl mb-4">
           <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
           <div className="absolute inset-0 bg-black/20" />
           <div className="relative z-10 h-full flex items-center p-6">
