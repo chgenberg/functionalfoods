@@ -100,7 +100,7 @@ export default function Week4Page() {
       {/* Hero */}
       <div className="relative h-[260px] md:h-[340px] overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
-        <div className="absolute inset-0 bg-black/20" />
+        
         <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-12">
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Din Functional Foods Resa</h1>
           <p className="text-white/90 text-lg">Välkommen till vecka 4 - Vitaminer & mineraler</p>

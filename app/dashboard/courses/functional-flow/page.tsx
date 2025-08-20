@@ -103,7 +103,7 @@ export default function FunctionalFlowPage() {
             className="object-cover opacity-60 block md:hidden"
             priority
           />
-          <div className="absolute inset-0 bg-black/20"></div>
+          
         </div>
         
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
