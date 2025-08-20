@@ -38,6 +38,14 @@ interface DayMeals {
   snack?: MealItem;
 }
 
+interface WeekDay {
+  day: number;
+  name: string;
+  completed: boolean;
+  current: boolean;
+  locked: boolean;
+}
+
 export default function Week2Page() {
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -64,18 +72,36 @@ export default function Week2Page() {
     }
   }, []);
 
-  const getDaysForWeek = (weekNumber: number) => {
+  const getDaysForWeek = (weekNumber: number): WeekDay[] => {
     const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+    
+    // Get actual current date
+    const today = new Date();
+    const savedStartDate = localStorage.getItem('basicsStartDate');
+    let isCurrentWeek = false;
+    let actualCurrentDay = 0;
+    
+    if (savedStartDate) {
+      const startDate = new Date(savedStartDate);
+      const daysDiff = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
+      const calculatedWeek = Math.min(6, Math.max(1, Math.ceil((daysDiff + 1) / 7)));
+      const calculatedDay = Math.min(7, Math.max(1, (daysDiff % 7) + 1));
+      
+      isCurrentWeek = calculatedWeek === weekNumber;
+      actualCurrentDay = isCurrentWeek ? calculatedDay : 0;
+    }
+    
     return dayNames.map((name, index) => {
       const dayNumber = index + 1;
       const totalDayNumber = (weekNumber - 1) * 7 + dayNumber;
-      const currentTotalDay = (currentWeek - 1) * 7 + currentDay;
+      const currentTotalDay = Math.floor((today.getTime() - new Date(savedStartDate || today).getTime()) / (1000 * 3600 * 24)) + 1;
+      
       return {
         day: dayNumber,
         name,
         completed: totalDayNumber < currentTotalDay,
-        current: weekNumber === currentWeek && dayNumber === currentDay,
-        locked: totalDayNumber > currentTotalDay
+        current: isCurrentWeek && dayNumber === actualCurrentDay,
+        locked: false
       };
     });
   };
@@ -113,7 +139,7 @@ export default function Week2Page() {
       </div>
 
       {/* Course Navigation - After Hero Section */}
-      <div className="bg-white shadow-lg border-b-4 border-[#014421]">
+      <div className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType="basics" currentWeek={2} />
         </div>

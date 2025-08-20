@@ -95,47 +95,60 @@ export default function DayPage() {
   const nextDay = ((nextDayNumber - 1) % 7) + 1;
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">{/* Header */}
+    <div className="min-h-screen bg-[#F3EFE3]">
+      {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/dashboard/courses/functional-basics" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <Link
+                href={`/dashboard/courses/functional-basics/week/${weekNumber}`}
+                className="flex items-center gap-2 text-[#014421] hover:text-[#112A12] transition-colors"
+              >
                 <FiArrowLeft className="w-5 h-5" />
+                <span className="text-sm font-medium">Tillbaka till vecka {weekNumber}</span>
               </Link>
-              <div>
-                <p className="text-sm text-gray-600">Vecka {weekNumber} - {weekTitle}</p>
-                <h1 className="text-xl md:text-2xl font-bold text-[#014421]">{dayName}, {dayDate}</h1>
-              </div>
             </div>
             
-            {/* Navigation */}
-            <div className="hidden md:flex items-center gap-2">
-              <Link href={`/dashboard/courses/functional-basics/week/${prevWeek}/day/${prevDay}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <FiArrowLeft className="w-5 h-5" />
-              </Link>
-              <span className="text-sm font-medium px-3">Dag {totalDayNumber} av 42</span>
-              <Link href={`/dashboard/courses/functional-basics/week/${nextWeek}/day/${nextDay}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <FiArrowRight className="w-5 h-5" />
-              </Link>
+            <div className="flex items-center gap-2">
+              {/* Previous day button */}
+              {!(weekNumber === 1 && dayNumber === 1) && (
+                <Link
+                  href={dayNumber > 1 
+                    ? `/dashboard/courses/functional-basics/week/${weekNumber}/day/${dayNumber - 1}`
+                    : `/dashboard/courses/functional-basics/week/${weekNumber - 1}/day/7`
+                  }
+                  className="p-2 rounded-full bg-[#F3EFE3] hover:bg-[#E8E0D4] transition-colors"
+                  title="Föregående dag"
+                >
+                  <FiArrowLeft className="w-5 h-5 text-[#014421]" />
+                </Link>
+              )}
+              
+              {/* Next day button */}
+              {!(weekNumber === 6 && dayNumber === 7) && (
+                <Link
+                  href={dayNumber < 7 
+                    ? `/dashboard/courses/functional-basics/week/${weekNumber}/day/${dayNumber + 1}`
+                    : `/dashboard/courses/functional-basics/week/${weekNumber + 1}/day/1`
+                  }
+                  className="p-2 rounded-full bg-[#F3EFE3] hover:bg-[#E8E0D4] transition-colors"
+                  title="Nästa dag"
+                >
+                  <FiArrowRight className="w-5 h-5 text-[#014421]" />
+                </Link>
+              )}
             </div>
-          </div>
-          
-          {/* Mobile Day Navigation */}
-          <div className="flex md:hidden items-center justify-between mt-3">
-            <Link href={`/dashboard/courses/functional-basics/week/${prevWeek}/day/${prevDay}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <FiArrowLeft className="w-5 h-5" />
-            </Link>
-            <span className="text-sm font-medium">Dag {totalDayNumber} av 42</span>
-            <Link href={`/dashboard/courses/functional-basics/week/${nextWeek}/day/${nextDay}`} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <FiArrowRight className="w-5 h-5" />
-            </Link>
           </div>
         </div>
       </div>
 
       {/* Course Navigation */}
-      <CourseNavigation courseType="basics" currentWeek={weekNumber} />
+      <div className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+          <CourseNavigation courseType="basics" currentWeek={weekNumber} />
+        </div>
+      </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">

@@ -100,14 +100,14 @@ export default function FunctionalBasicsPage() {
             src="/Ulrika_portratt/udavidssondesktop.png" 
             alt="Ulrika Davidsson"
             fill
-            className="object-cover opacity-60 hidden md:block"
+            className="object-cover opacity-60 hidden md:block object-top"
             priority
           />
           <Image 
             src="/Ulrika_portratt/udavidssonmobile.png" 
             alt="Ulrika Davidsson"
             fill
-            className="object-cover opacity-60 block md:hidden"
+            className="object-cover opacity-60 block md:hidden object-top"
             priority
           />
           <div className="absolute inset-0 bg-black/20"></div>
@@ -167,7 +167,7 @@ export default function FunctionalBasicsPage() {
       </div>
 
       {/* Course Navigation - After Hero Section */}
-      <div className="bg-white shadow-lg border-b-4 border-[#014421]">
+      <div className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType="basics" currentWeek={currentWeek} />
         </div>
