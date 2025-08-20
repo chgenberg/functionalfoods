@@ -15,7 +15,6 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 import { getWeekData } from '@/app/data/mealPlans';
 
 interface WeekDay {
-interface WeekDay {
   day: number;
   name: string;
   completed: boolean;
