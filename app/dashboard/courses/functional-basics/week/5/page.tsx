@@ -145,7 +145,75 @@ export default function Week5Page() {
           ))}
         </div>
 
-        {false && (<></>)}
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-8">
+          <motion.div whileHover={{ scale: 1.02 }} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+            <Link href={`/dashboard/courses/functional-basics/kostschema?view=week&week=5`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
+                  <FiCalendar className="w-6 h-6 text-[#014421]" />
+                </div>
+                <FiChevronRight className="w-5 h-5 text-gray-400" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Veckans kostschema</h3>
+              <p className="text-gray-600">Se alla recept och måltider för vecka 5</p>
+            </Link>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.02 }} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+            <Link href={`/dashboard/courses/functional-basics/inkopslista?week=5`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
+                  <FiShoppingCart className="w-6 h-6 text-[#014421]" />
+                </div>
+                <FiChevronRight className="w-5 h-5 text-gray-400" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Inköpslista</h3>
+              <p className="text-gray-600">Allt du behöver för veckans recept</p>
+            </Link>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.02 }} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+            <Link href="/dashboard/community">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
+                  <FiUsers className="w-6 h-6 text-[#014421]" />
+                </div>
+                <FiChevronRight className="w-5 h-5 text-gray-400" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Community</h3>
+              <p className="text-gray-600">Dela erfarenheter med andra deltagare</p>
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Week Materials */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <h3 className="text-xl font-bold text-[#014421] mb-6">Veckans material</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <FiBook className="w-5 h-5 text-[#014421]" />
+                <span className="font-medium">Vecka 5 - Arbetsbok (PDF)</span>
+              </div>
+              <FiDownload className="w-5 h-5 text-[#014421]" />
+            </div>
+            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <FiBook className="w-5 h-5 text-[#014421]" />
+                <span className="font-medium">Receptsamling vecka 5</span>
+              </div>
+              <FiDownload className="w-5 h-5 text-[#014421]" />
+            </div>
+            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <FiBook className="w-5 h-5 text-[#014421]" />
+                <span className="font-medium">Bonusmaterial - Extra recept</span>
+              </div>
+              <FiDownload className="w-5 h-5 text-[#014421]" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
