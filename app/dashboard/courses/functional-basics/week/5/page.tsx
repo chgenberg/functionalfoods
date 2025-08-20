@@ -97,7 +97,7 @@ export default function Week5Page() {
   const mealPlan = weekData?.days || {};
 
   return (
-    <div
+    <div className="min-h-screen bg-[#F3EFE3]">
       
 
       {/* Course Navigation */}

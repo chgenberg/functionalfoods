@@ -97,7 +97,7 @@ export default function Week4Page() {
   const mealPlan = weekData?.days || {};
 
   return (
-    <div
+    <div className="min-h-screen bg-[#F3EFE3]">
       
 
       {/* Course Navigation */}
@@ -109,7 +109,7 @@ export default function Week4Page() {
           <h2 className="text-2xl font-bold text-[#014421] mb-6">Din vecka</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-4">
             {getDaysForWeek(4).map((day) => (
-              <div
+              <div className="min-h-screen bg-[#F3EFE3]">
                 key={day.day}
                 className={`relative p-4 md:p-6 rounded-2xl transition-all ${day.current ? 'bg-[#FFB5A7] shadow-xl scale-105' : day.completed ? 'bg-white hover:shadow-lg' : day.locked ? 'bg-gray-50 opacity-60' : 'bg-white hover:shadow-lg'}`}
                 onClick={() => (window.location.href = `/dashboard/courses/functional-basics/week/4/day/${day.day}`)}

@@ -103,8 +103,6 @@ export default function FunctionalBasicsPage() {
     
     return days;
   };
-    });
-  };
 
   const formatDate = (weekNumber: number, dayNumber: number) => {
     if (!courseStartDate) return '';
