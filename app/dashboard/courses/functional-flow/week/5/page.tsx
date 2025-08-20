@@ -183,7 +183,7 @@ export default function Week5Page() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-6xl font-bold text-white mb-4"
           >
-            Vecka 5 - {weekTitle}
+            Vecka 5 - Functional Flow
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -191,7 +191,7 @@ export default function Week5Page() {
             transition={{ delay: 0.1 }}
             className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl"
           >
-            {weekDescription}
+            Avancerat program för optimal hälsa
           </motion.p>
         </div>
       </div>
