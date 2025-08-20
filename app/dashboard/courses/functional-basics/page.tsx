@@ -13,6 +13,8 @@ import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import { getWeekData } from '@/app/data/mealPlans';
+import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface WeekDay {
   day: number;
@@ -136,14 +138,21 @@ export default function FunctionalBasicsPage() {
             transition={{ delay: 0.2 }}
             onClick={() => setShowVideoModal(true)}
             className="relative overflow-hidden rounded-full px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-medium text-white bg-[#014421] hover:bg-[#112A12] transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-            style={{
-              backgroundImage: window.innerWidth >= 768 
-                ? "url('/Ulrika_portratt/udavidssondesktop.png')" 
-                : "url('/Ulrika_portratt/udavidssonmobile.png')",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
           >
+            {/* Desktop background image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center hidden md:block"
+              style={{
+                backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')"
+              }}
+            />
+            {/* Mobile background image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center block md:hidden"
+              style={{
+                backgroundImage: "url('/Ulrika_portratt/udavidssonmobile.png')"
+              }}
+            />
             <div className="absolute inset-0 bg-[#014421]/80"></div>
             <FiPlay className="w-5 h-5 md:w-6 md:h-6 relative z-10" />
             <span className="relative z-10">Se introduktionsvideo</span>
@@ -180,57 +189,70 @@ export default function FunctionalBasicsPage() {
           <h2 className="text-2xl font-bold text-[#014421] mb-6">Din vecka</h2>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3 md:gap-4">
-            {getDaysForWeek(currentWeek).map((day) => (
-              <motion.div
-                key={day.day}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: day.day * 0.05 }}
-                className={`
-                  relative p-4 md:p-4 md:p-6 rounded-2xl transition-all cursor-pointer
-                  ${day.current 
-                    ? 'bg-[#FFB5A7] shadow-xl scale-105' 
-                    : day.completed
-                    ? 'bg-white hover:shadow-lg'
-                    : day.locked
-                    ? 'bg-gray-50 opacity-60'
-                    : 'bg-white hover:shadow-lg'
-                  }
-                `}
-                onClick={() => !day.locked && (window.location.href = `/dashboard/courses/functional-basics/week/${currentWeek}/day/${day.day}`)}
-              >
-                {/* Date tag */}
-                <div className={`
-                  absolute -top-2 -right-2 px-3 py-1 text-xs rounded-full font-medium
-                  ${day.current ? 'bg-[#014421] text-white' : 'bg-[#014421] text-white'}
-                `}>
-                  {day.current ? 'Idag' : formatDate(currentWeek, day.day).split('.')[0] + ' ' + formatDate(currentWeek, day.day).split(' ')[1]}
-                </div>
-
-                <div className="text-center">
-                  <span className="text-xs md:text-sm text-gray-600 mb-1">{formatDate(currentWeek, day.day)}</span>
-                  <h3 className="font-bold text-base md:text-base md:text-lg mb-3">{day.name}</h3>
+            {getDaysForWeek(currentWeek).map((day) => {
+              const dayContent = (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: day.day * 0.05 }}
+                  className={`
+                    relative p-4 md:p-4 md:p-6 rounded-2xl transition-all cursor-pointer
+                    ${day.current 
+                      ? 'bg-[#FFB5A7] shadow-xl scale-105' 
+                      : day.completed
+                      ? 'bg-white hover:shadow-lg'
+                      : day.locked
+                      ? 'bg-gray-50 opacity-60'
+                      : 'bg-white hover:shadow-lg'
+                    }
+                  `}
+                >
+                  {/* Date tag */}
                   <div className={`
-                    w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto
-                    ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}
+                    absolute -top-2 -right-2 px-3 py-1 text-xs rounded-full font-medium
+                    ${day.current ? 'bg-[#014421] text-white' : 'bg-[#014421] text-white'}
                   `}>
-                    {day.completed ? (
-                      <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
-                    ) : day.current ? (
-                      <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
-                    ) : (
-                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-                    )}
+                    {day.current ? 'Idag' : formatDate(currentWeek, day.day).split('.')[0] + ' ' + formatDate(currentWeek, day.day).split(' ')[1]}
                   </div>
-                  <span className={`
-                    text-xs md:text-sm font-medium
-                    ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}
-                  `}>
-                    {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}
-                  </span>
+
+                  <div className="text-center">
+                    <span className="text-xs md:text-sm text-gray-600 mb-1">{formatDate(currentWeek, day.day)}</span>
+                    <h3 className="font-bold text-base md:text-base md:text-lg mb-3">{day.name}</h3>
+                    <div className={`
+                      w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto
+                      ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}
+                    `}>
+                      {day.completed ? (
+                        <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
+                      ) : day.current ? (
+                        <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
+                      ) : (
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      )}
+                    </div>
+                    <span className={`
+                      text-xs md:text-sm font-medium
+                      ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}
+                    `}>
+                      {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}
+                    </span>
+                  </div>
+                </motion.div>
+              );
+
+              return day.locked ? (
+                <div key={day.day} className="pointer-events-none">
+                  {dayContent}
                 </div>
-              </motion.div>
-            ))}
+              ) : (
+                <Link 
+                  key={day.day} 
+                  href={`/dashboard/courses/functional-basics/week/${currentWeek}/day/${day.day}`}
+                >
+                  {dayContent}
+                </Link>
+              );
+            })}
           </div>
         </div>
 
