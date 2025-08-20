@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowLeft, FiCalendar, FiShoppingCart, FiBook, FiTarget,
@@ -96,17 +97,8 @@ export default function Week5Page() {
   const mealPlan = weekData?.days || {};
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Hero */}
-      <div className="relative h-[260px] md:h-[340px] overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
-        
-        <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-12">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Din Functional Foods Resa</h1>
-          <p className="text-white/90 text-lg">Välkommen till vecka 5 - Antioxidanter & fytokemikalier</p>
-        </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-[#F3EFE3]/80"></div>
-      </div>
+    <div
+      
 
       {/* Course Navigation */}
       <CourseNavigation courseType="basics" currentWeek={5} />

@@ -15,28 +15,13 @@ const OpenAI = require('openai');
 
 const prisma = new PrismaClient();
 
-// Parse course flag
-const args = process.argv.slice(2);
-const courseArg = args.find(a => a.startsWith('--course='));
-const course = courseArg ? courseArg.split('=')[1] : 'basic'; // basic | flow | all
-
-const rawKey = process.env.OPENAI_API_KEY || '';
-const apiKey = rawKey.trim().replace(/^['"]|['"]$/g, '');
-if (!apiKey) {
-  console.error('OPENAI_API_KEY is missing. Set it in .env as OPENAI_API_KEY=REMOVED_FOR_SECURITY...');
-  process.exit(1);
-}
+const apiKey = 'REMOVED_FOR_SECURITY';
 const openai = new OpenAI({ apiKey });
 
 const IMAGES_DIR = path.resolve('public', 'Bilder_basic');
 
 function slugify(title) {
-  return title
-    .toLowerCase()
-    .replace(/[åä]/g, 'a')
-    .replace(/ö/g, 'o')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return title.toLowerCase().replace(/[åä]/g, 'a').replace(/ö/g, 'o').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
 function isPortrait(width, height) { return height >= width; }
@@ -92,30 +77,9 @@ function levenshtein(a, b) {
   return matrix[an][bn];
 }
 
-function looksBasic(title) {
-  const t = title.toLowerCase();
-  const basicHints = ['yoghurt', 'ketom', 'bovete', 'granola', 'äg', 'omelett', 'smoothie', 'juice', 'lax', 'torsk', 'sallad', 'keso', 'hallon', 'mango', 'nudelsoppa'];
-  return basicHints.some(h => t.includes(h));
-}
-
-function looksFlow(title) {
-  const t = title.toLowerCase();
-  const flowHints = ['flow']; // placeholder if we add specific flow-only names later
-  return flowHints.some(h => t.includes(h));
-}
-
 async function main() {
   // 1) Read all recipes
-  let recipes = await prisma.recipe.findMany({ select: { id: true, title: true, slug: true } });
-
-  // Filter by course if requested (heuristic)
-  if (course === 'basic') {
-    recipes = recipes.filter(r => looksBasic(r.title));
-  } else if (course === 'flow') {
-    recipes = recipes.filter(r => looksFlow(r.title) || !looksBasic(r.title));
-  }
-
-  console.log(`Matching images for course: ${course}. Candidate recipes: ${recipes.length}`);
+  const recipes = await prisma.recipe.findMany({ select: { id: true, title: true, slug: true } });
 
   // 2) Read images in folder
   const files = await fsp.readdir(IMAGES_DIR);
@@ -142,7 +106,7 @@ async function main() {
       if (d < bestScore) { best = r; bestScore = d; }
     }
 
-    if (!best || bestScore > 12) { // slightly more lenient
+    if (!best || bestScore > 10) { // threshold safeguard
       console.warn('No close match for', file, 'predicted:', predicted);
       continue;
     }

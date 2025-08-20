@@ -15,6 +15,7 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 export default function DayPage() {
   const params = useParams();
   const weekNumber = parseInt(params.week as string);
+  const courseType = window.location.pathname.includes('functional-flow') ? 'functional-flow' : 'functional-basics';
   const dayNumber = parseInt(params.day as string);
   
   const [completedMeals, setCompletedMeals] = useState<string[]>([]);
@@ -147,6 +148,42 @@ export default function DayPage() {
       <div className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType="basics" currentWeek={weekNumber} />
+
+      {/* Navigation Header */}
+      <div className="flex items-center justify-between mb-8">
+        <Link
+          href={`/dashboard/courses/${courseType}/week/${weekNumber}`}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          <FiArrowLeft className="w-5 h-5" />
+          <span>Tillbaka till vecka {weekNumber}</span>
+        </Link>
+        
+        <div className="flex items-center space-x-4">
+          {dayNumber > 1 && (
+            <Link
+              href={`/dashboard/courses/${courseType}/week/${weekNumber}/day/${dayNumber - 1}`}
+              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <FiArrowLeft className="w-5 h-5" />
+            </Link>
+          )}
+          
+          <span className="text-sm text-gray-600">
+            Dag {dayNumber} av 7
+          </span>
+          
+          {dayNumber < 7 && (
+            <Link
+              href={`/dashboard/courses/${courseType}/week/${weekNumber}/day/${dayNumber + 1}`}
+              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <FiArrowRight className="w-5 h-5" />
+            </Link>
+          )}
+        </div>
+      </div>
+
         </div>
       </div>
 

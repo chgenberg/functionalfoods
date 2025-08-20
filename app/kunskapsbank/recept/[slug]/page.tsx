@@ -354,16 +354,18 @@ export default function RecipePage() {
                     onError={() => setImageError(true)}
                   />
                   {/* Desktop image */}
-                  <Image
-                    src={recipe.imageUrl!}
-                    alt={recipe.imageAlt || recipe.title}
-                    fill
-                    className="object-cover recipe-image hidden md:block"
-                    style={{ objectFit: 'cover', objectPosition: 'center', imageOrientation: 'from-image' }}
-                    priority
-                    sizes="(max-width: 1200px) 80vw, 70vw"
-                    onError={() => setImageError(true)}
-                  />
+                  {recipe.imageUrl && (
+                    <Image
+                      src={recipe.imageUrl}
+                      alt={recipe.imageAlt || recipe.title}
+                      fill
+                      className="object-cover recipe-image hidden md:block"
+                      style={{ objectFit: 'cover', objectPosition: 'center', imageOrientation: 'from-image' }}
+                      priority
+                      sizes="(max-width: 1200px) 80vw, 70vw"
+                      onError={() => setImageError(true)}
+                    />
+                  )}
                 </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">

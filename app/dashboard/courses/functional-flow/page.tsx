@@ -22,6 +22,7 @@ interface WeekDay {
 }
 
 export default function FunctionalFlowPage() {
+  const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
   const [currentWeek, setCurrentWeek] = useState(1);
   const [currentDay, setCurrentDay] = useState(1);
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -59,20 +60,42 @@ export default function FunctionalFlowPage() {
     { number: 6, title: "Personlig optimering", color: "#112A12" }
   ];
 
-  const getDaysForWeek = (weekNumber: number): WeekDay[] => {
-    const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-    return dayNames.map((name, index) => {
-      const dayNumber = index + 1;
-      const totalDayNumber = (weekNumber - 1) * 7 + dayNumber;
-      const currentTotalDay = (currentWeek - 1) * 7 + currentDay;
+  const getDaysForWeek = (week: number) => {
+    const days = [];
+    const weekDays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+    
+    // Get the selected week's start date
+    const startDate = typeof window !== 'undefined' ? localStorage.getItem('functional-flowStartDate') : null;
+    const courseStart = startDate ? new Date(startDate) : new Date('2024-08-19');
+    const weekStart = new Date(courseStart);
+    weekStart.setDate(courseStart.getDate() + (week - 1) * 7);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    for (let i = 0; i < 7; i++) {
+      const dayDate = new Date(weekStart);
+      dayDate.setDate(weekStart.getDate() + i);
       
-      return {
-        day: dayNumber,
-        name,
-        completed: totalDayNumber < currentTotalDay,
-        current: weekNumber === currentWeek && dayNumber === currentDay,
-        locked: totalDayNumber > currentTotalDay
-      };
+      const dayDateOnly = new Date(dayDate);
+      dayDateOnly.setHours(0, 0, 0, 0);
+      
+      const isCompleted = dayDateOnly < today;
+      const isCurrent = dayDateOnly.getTime() === today.getTime();
+      
+      days.push({
+        day: i + 1,
+        name: weekDays[i],
+        date: dayDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }),
+        completed: isCompleted,
+        current: isCurrent,
+        locked: false, // Never lock days
+        meals: 3
+      });
+    }
+    
+    return days;
+  };
     });
   };
 

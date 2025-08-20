@@ -7,6 +7,7 @@ import {
   FiChevronRight, FiCheck, FiStar, FiAward, FiDownload
 } from 'react-icons/fi';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getFlowWeekData } from '@/app/data/mealPlans';
@@ -145,7 +146,45 @@ export default function Week6Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+    <div>
+      <div className="relative h-[300px] md:h-[400px] bg-[#112A12] overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <Image 
+            src="/Ulrika_portratt/udavidssondesktop.png" 
+            alt="Ulrika Davidsson"
+            fill
+            className="object-cover opacity-60 hidden md:block object-top"
+            priority
+          />
+          <Image 
+            src="/Ulrika_portratt/udavidssonmobile.png" 
+            alt="Ulrika Davidsson"
+            fill
+            className="object-cover opacity-60 block md:hidden object-top"
+            priority
+          />
+        </div>
+        
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-4"
+          >
+            Vecka 6 - {weekTitle}
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl"
+          >
+            {weekDescription}
+          </motion.p>
+        </div>
+      </div>
+ className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div 

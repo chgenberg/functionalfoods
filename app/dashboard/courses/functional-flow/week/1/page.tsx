@@ -7,6 +7,7 @@ import {
   FiUsers, FiAward, FiTrendingUp
 } from 'react-icons/fi';
 import Link from 'next/link';
+import Image from 'next/image';
 import { GoalsSection } from '../components/GoalsSection';
 import { CalendarView } from '../components/CalendarView';
 import { 

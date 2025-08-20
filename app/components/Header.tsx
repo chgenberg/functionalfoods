@@ -138,27 +138,27 @@ export default function Header() {
       {/* Top announcement bar */}
       <div className="w-full text-white text-xs sm:text-sm" style={{ backgroundColor: '#112A12' }}>
         <div className="container-custom">
-          <div className="relative overflow-hidden h-8 flex items-center">
+          <div className="relative overflow-hidden h-8 sm:h-10 flex items-center">
             <div className="animate-marquee whitespace-nowrap">
-              <Link href="/utbildning" className="mx-8 inline-flex items-center gap-2 hover:underline">
-                <span>🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
+              <Link href="/utbildning" className="mx-4 sm:mx-8 inline-flex items-center gap-1 sm:gap-2 hover:underline">
+                <span className="text-xs sm:text-sm">🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
               </Link>
-              <Link href="/kunskapsbank/recept" className="mx-8 inline-flex items-center gap-2 hover:underline">
-                <span>🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
+              <Link href="/kunskapsbank/recept" className="mx-4 sm:mx-8 inline-flex items-center gap-1 sm:gap-2 hover:underline">
+                <span className="text-xs sm:text-sm">🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
               </Link>
-              <Link href="/kunskapsbank/kallor" className="mx-8 inline-flex items-center gap-2 hover:underline">
-                <span>🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
+              <Link href="/kunskapsbank/kallor" className="mx-4 sm:mx-8 inline-flex items-center gap-1 sm:gap-2 hover:underline">
+                <span className="text-xs sm:text-sm">🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
               </Link>
             </div>
             <div className="animate-marquee2 whitespace-nowrap absolute left-full">
-              <Link href="/utbildning" className="mx-8 inline-flex items-center gap-2 hover:underline">
-                <span>🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
+              <Link href="/utbildning" className="mx-4 sm:mx-8 inline-flex items-center gap-1 sm:gap-2 hover:underline">
+                <span className="text-xs sm:text-sm">🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
               </Link>
-              <Link href="/kunskapsbank/recept" className="mx-8 inline-flex items-center gap-2 hover:underline">
-                <span>🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
+              <Link href="/kunskapsbank/recept" className="mx-4 sm:mx-8 inline-flex items-center gap-1 sm:gap-2 hover:underline">
+                <span className="text-xs sm:text-sm">🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
               </Link>
-              <Link href="/kunskapsbank/kallor" className="mx-8 inline-flex items-center gap-2 hover:underline">
-                <span>🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
+              <Link href="/kunskapsbank/kallor" className="mx-4 sm:mx-8 inline-flex items-center gap-1 sm:gap-2 hover:underline">
+                <span className="text-xs sm:text-sm">🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
               </Link>
             </div>
           </div>

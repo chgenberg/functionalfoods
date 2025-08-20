@@ -17,18 +17,18 @@ model User {
   updatedAt         DateTime          @updatedAt
   lastLogin         DateTime?
   isActive          Boolean           @default(true)
-  // Address fields
   addressLine1      String?
   addressLine2      String?
-  postalCode        String?
   city              String?
   country           String?
+  postalCode        String?
   nationality       String?
   preferredLanguage Language?         @default(SV)
   achievements      Achievement[]
   blogPosts         BlogPost[]
   chatMessages      ChatMessage[]
   courses           Course[]
+  courseReviews     CourseReview[]
   forumLikes        ForumLike[]
   forumReplies      ForumReply[]
   forumThreads      ForumThread[]
@@ -40,7 +40,6 @@ model User {
   quizResults       QuizResult[]
   recipes           Recipe[]
   symptomAnalyses   SymptomAnalysis[]
-  courseReviews     CourseReview[]
 }
 
 model Course {
@@ -103,19 +102,18 @@ model BlogPost {
   excerpt     String?
   published   Boolean   @default(false)
   searchText  String?
-  // translations
-  title_en    String?
-  title_es    String?
-  title_de    String?
-  title_fr    String?
-  excerpt_en  String?
-  excerpt_es  String?
-  excerpt_de  String?
-  excerpt_fr  String?
+  content_de  String?
   content_en  String?
   content_es  String?
-  content_de  String?
   content_fr  String?
+  excerpt_de  String?
+  excerpt_en  String?
+  excerpt_es  String?
+  excerpt_fr  String?
+  title_de    String?
+  title_en    String?
+  title_es    String?
+  title_fr    String?
   author      User      @relation(fields: [authorId], references: [id])
 
   @@index([searchText])
@@ -349,7 +347,6 @@ model Recipe {
   excerpt         String?
   content         String?
   imageUrl        String?
-  imageMobileUrl  String?
   imageAlt        String?
   categories      String[]
   ingredients     String[]
@@ -369,19 +366,19 @@ model Recipe {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   searchText      String?
-  // translations
-  title_en        String?
-  title_es        String?
-  title_de        String?
-  title_fr        String?
+  excerpt_de      String?
   excerpt_en      String?
   excerpt_es      String?
-  excerpt_de      String?
   excerpt_fr      String?
+  instructions_de String?
   instructions_en String?
   instructions_es String?
-  instructions_de String?
   instructions_fr String?
+  title_de        String?
+  title_en        String?
+  title_es        String?
+  title_fr        String?
+  imageMobileUrl  String?
   author          User?        @relation(fields: [authorId], references: [id])
 
   @@index([status])
@@ -421,29 +418,27 @@ model RawMaterial {
   imageAlt       String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  // Translated fields
-  name_en        String?
-  name_es        String?
-  name_de        String?
-  name_fr        String?
+  description_de String?
   description_en String?
   description_es String?
-  description_de String?
   description_fr String?
+  name_de        String?
+  name_en        String?
+  name_es        String?
+  name_fr        String?
 }
 
-// Coupons for discounts in checkout
 model Coupon {
   id                  String    @id @default(uuid())
   code                String    @unique
-  type                String // "percent" | "fixed"
+  type                String
   amount              Float
   active              Boolean   @default(true)
   startsAt            DateTime?
   expiresAt           DateTime?
   usageLimit          Int?
   timesUsed           Int       @default(0)
-  applicableCourseIds Json? // array of course IDs this applies to; null = all
+  applicableCourseIds Json?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
@@ -451,14 +446,13 @@ model Coupon {
   @@index([active])
 }
 
-// Course feedback/reviews from users
 model CourseReview {
   id        String       @id @default(uuid())
   userId    String
-  courseId  String // e.g. "functional-basics" | "functional-flow"
+  courseId  String
   rating    Int?
-  answers   Json // structured answers to questions
-  consent   Boolean      @default(false) // allowed to publish as testimonial
+  answers   Json
+  consent   Boolean      @default(false)
   category  String       @default("course-feedback")
   source    ReviewSource @default(IN_APP)
   status    ReviewStatus @default(PENDING)
