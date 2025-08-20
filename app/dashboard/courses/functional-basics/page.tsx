@@ -155,25 +155,10 @@ export default function FunctionalBasicsPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
             onClick={() => setShowVideoModal(true)}
-            className="relative overflow-hidden rounded-full px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-medium text-white bg-[#014421] hover:bg-[#112A12] transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+            className="bg-[#014421] hover:bg-[#112A12] text-white px-8 py-4 rounded-full font-semibold flex items-center gap-3 transition-all shadow-lg"
           >
-            {/* Desktop background image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center hidden md:block"
-              style={{
-                backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')"
-              }}
-            />
-            {/* Mobile background image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center block md:hidden"
-              style={{
-                backgroundImage: "url('/Ulrika_portratt/udavidssonmobile.png')"
-              }}
-            />
-            <div className="absolute inset-0 bg-[#014421]/80"></div>
-            <FiPlay className="w-5 h-5 md:w-6 md:h-6 relative z-10" />
-            <span className="relative z-10">Se introduktionsvideo</span>
+            <FiPlay className="w-5 h-5" />
+            Se introduktionsvideo
           </motion.button>
         </div>
 

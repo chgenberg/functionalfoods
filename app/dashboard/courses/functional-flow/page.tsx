@@ -149,7 +149,7 @@ export default function FunctionalFlowPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
             onClick={() => setShowVideoModal(true)}
-            className="bg-white text-[#112A12] px-8 py-4 rounded-full font-semibold flex items-center gap-3 hover:scale-105 transition-transform shadow-lg"
+            className="bg-[#014421] hover:bg-[#112A12] text-white px-8 py-4 rounded-full font-semibold flex items-center gap-3 transition-all shadow-lg"
           >
             <FiPlay className="w-5 h-5" />
             Se introduktionsvideo
