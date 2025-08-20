@@ -55,7 +55,8 @@ export default function Week2Page() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    const savedStartDate = localStorage.getItem('basicsStartDate');
+    if (typeof window === 'undefined') return;
+    const savedStartDate = window.localStorage.getItem('basicsStartDate');
     if (savedStartDate) {
       const startDate = new Date(savedStartDate);
       setCourseStartDate(startDate);
@@ -67,7 +68,7 @@ export default function Week2Page() {
       setCurrentDay(calculatedDay);
     } else {
       const today = new Date();
-      localStorage.setItem('basicsStartDate', today.toISOString());
+      window.localStorage.setItem('basicsStartDate', today.toISOString());
       setCourseStartDate(today);
     }
   }, []);
@@ -77,7 +78,7 @@ export default function Week2Page() {
     
     // Get actual current date
     const today = new Date();
-    const savedStartDate = localStorage.getItem('basicsStartDate');
+    const savedStartDate = typeof window !== 'undefined' ? window.localStorage.getItem('basicsStartDate') : null;
     let isCurrentWeek = false;
     let actualCurrentDay = 0;
     
