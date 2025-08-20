@@ -96,8 +96,6 @@ export default function FunctionalFlowPage() {
     
     return days;
   };
-    });
-  };
 
   const formatDate = (weekNumber: number, dayNumber: number) => {
     if (!courseStartDate) return '';
