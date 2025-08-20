@@ -349,6 +349,7 @@ model Recipe {
   excerpt         String?
   content         String?
   imageUrl        String?
+  imageMobileUrl  String?
   imageAlt        String?
   categories      String[]
   ingredients     String[]

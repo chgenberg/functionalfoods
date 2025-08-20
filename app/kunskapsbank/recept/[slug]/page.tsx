@@ -22,6 +22,7 @@ interface Recipe {
   excerpt?: string;
   content?: string;
   imageUrl?: string;
+  imageMobileUrl?: string;
   imageAlt?: string;
   categories: string[];
   ingredients: string[];
@@ -339,21 +340,31 @@ export default function RecipePage() {
           <div className="bg-white rounded-t-3xl shadow-xl overflow-hidden">
             {/* Image Container - Responsive and Better Handling */}
             <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] bg-gray-100">
-              {recipe.imageUrl && !imageError ? (
-                <Image
-                  src={recipe.imageUrl}
-                  alt={recipe.imageAlt || recipe.title}
-                  fill
-                  className="object-cover recipe-image"
-                  style={{ 
-                    objectFit: 'cover', 
-                    objectPosition: 'center',
-                    imageOrientation: 'from-image'
-                  }}
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                  onError={() => setImageError(true)}
-                />
+              {(recipe.imageUrl || recipe.imageMobileUrl) && !imageError ? (
+                <>
+                  {/* Mobile image */}
+                  <Image
+                    src={recipe.imageMobileUrl || recipe.imageUrl!}
+                    alt={recipe.imageAlt || recipe.title}
+                    fill
+                    className="object-cover recipe-image block md:hidden"
+                    style={{ objectFit: 'cover', objectPosition: 'center', imageOrientation: 'from-image' }}
+                    priority
+                    sizes="100vw"
+                    onError={() => setImageError(true)}
+                  />
+                  {/* Desktop image */}
+                  <Image
+                    src={recipe.imageUrl!}
+                    alt={recipe.imageAlt || recipe.title}
+                    fill
+                    className="object-cover recipe-image hidden md:block"
+                    style={{ objectFit: 'cover', objectPosition: 'center', imageOrientation: 'from-image' }}
+                    priority
+                    sizes="(max-width: 1200px) 80vw, 70vw"
+                    onError={() => setImageError(true)}
+                  />
+                </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">
                   <FiCamera className="w-20 h-20 text-orange-300" />
