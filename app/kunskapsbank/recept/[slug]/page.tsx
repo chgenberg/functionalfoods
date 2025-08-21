@@ -71,8 +71,8 @@ export default function RecipePage() {
 
   useEffect(() => {
     if (recipe) {
-      // Use nutrition from DB if available, otherwise calculate
-      if (recipe.nutrition) {
+      // Use nutrition from DB if available and in correct format, otherwise calculate
+      if (recipe.nutrition && recipe.nutrition.perServing) {
         setNutrition(recipe.nutrition);
         setNutritionLoading(false);
       } else {
@@ -129,7 +129,7 @@ export default function RecipePage() {
   const calculateNutrition = async () => {
     if (!recipe?.ingredients || recipe.ingredients.length === 0) return;
     
-    if (recipe.nutrition) {
+    if (recipe.nutrition && recipe.nutrition.perServing) {
       setNutrition(recipe.nutrition);
       return;
     }
@@ -151,6 +151,8 @@ export default function RecipePage() {
       if (response.ok) {
         const data = await response.json();
         setNutrition(data.nutrition);
+      } else {
+        console.error('Failed to calculate nutrition:', response.statusText);
       }
     } catch (error) {
       console.error('Error calculating nutrition:', error);
@@ -543,33 +545,7 @@ export default function RecipePage() {
                   <span className="font-medium">Lägg till i inköpslista</span>
                 </motion.button>
 
-                {/* Nutrition Information */}
-                {(recipe.nutrition || nutrition) && (
-                  <div className="mt-6 p-4 bg-[#F3EFE3] rounded-lg">
-                    <h3 className="font-semibold mb-3 flex items-center gap-2">
-                      <FiHeart className="text-red-500" />
-                      Näringsvärden
-                    </h3>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Kalorier</span>
-                        <span className="font-medium">{recipe.nutrition?.calories || nutrition?.calories || '-'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Protein</span>
-                        <span className="font-medium">{recipe.nutrition?.protein || nutrition?.protein || '-'}g</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Kolhydrater</span>
-                        <span className="font-medium">{recipe.nutrition?.carbs || nutrition?.carbs || '-'}g</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Fett</span>
-                        <span className="font-medium">{recipe.nutrition?.fat || nutrition?.fat || '-'}g</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
+
               </div>
 
               {/* Instructions Column */}
@@ -662,22 +638,50 @@ export default function RecipePage() {
                           <p className="text-gray-600 mt-2">{t('recipes.detail.calculating','Beräknar näringsvärden...')}</p>
                         </div>
                       ) : nutrition ? (
-                        <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">{t('recipes.detail.kcal','Kalorier')}</p>
-                            <p className="text-2xl font-bold text-gray-900">{nutrition.calories || '-'}</p>
+                        <div className="p-6">
+                          <div className="mb-4">
+                            <p className="text-sm text-gray-600 mb-2">Per portion ({recipe.servings || 4} portioner totalt)</p>
                           </div>
-                          <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">{t('recipes.detail.protein','Protein')}</p>
-                            <p className="text-2xl font-bold text-gray-900">{nutrition.protein || '-'}g</p>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="bg-white rounded-lg p-4 text-center">
+                              <p className="text-sm text-gray-600">{t('recipes.detail.kcal','Kalorier')}</p>
+                              <p className="text-2xl font-bold text-gray-900">{nutrition?.perServing?.calories || '-'}</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-4 text-center">
+                              <p className="text-sm text-gray-600">{t('recipes.detail.protein','Protein')}</p>
+                              <p className="text-2xl font-bold text-gray-900">{nutrition?.perServing?.protein || '-'}g</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-4 text-center">
+                              <p className="text-sm text-gray-600">{t('recipes.detail.carbs','Kolhydrater')}</p>
+                              <p className="text-2xl font-bold text-gray-900">{nutrition?.perServing?.carbs || '-'}g</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-4 text-center">
+                              <p className="text-sm text-gray-600">{t('recipes.detail.fat','Fett')}</p>
+                              <p className="text-2xl font-bold text-gray-900">{nutrition?.perServing?.fat || '-'}g</p>
+                            </div>
                           </div>
-                          <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">{t('recipes.detail.carbs','Kolhydrater')}</p>
-                            <p className="text-2xl font-bold text-gray-900">{nutrition.carbs || '-'}g</p>
-                          </div>
-                          <div className="bg-white rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">{t('recipes.detail.fat','Fett')}</p>
-                            <p className="text-2xl font-bold text-gray-900">{nutrition.fat || '-'}g</p>
+                          
+                          {/* Total nutrition info */}
+                          <div className="mt-6 pt-4 border-t border-gray-200">
+                            <p className="text-sm text-gray-600 mb-3">Totalt för hela receptet</p>
+                            <div className="grid grid-cols-4 gap-2 text-xs text-gray-600">
+                              <div className="text-center">
+                                <span className="font-medium">{nutrition?.total?.calories || '-'}</span>
+                                <br />kcal
+                              </div>
+                              <div className="text-center">
+                                <span className="font-medium">{nutrition?.total?.protein || '-'}g</span>
+                                <br />protein
+                              </div>
+                              <div className="text-center">
+                                <span className="font-medium">{nutrition?.total?.carbs || '-'}g</span>
+                                <br />kolh.
+                              </div>
+                              <div className="text-center">
+                                <span className="font-medium">{nutrition?.total?.fat || '-'}g</span>
+                                <br />fett
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ) : null}
