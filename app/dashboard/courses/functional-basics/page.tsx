@@ -138,7 +138,7 @@ export default function FunctionalBasicsPage() {
       {/* Hero Section with Video */}
       <WeekHeroWithVideo
         weekNumber={1}
-        weekTitle="Grunderna"
+        weekTitle="Functional Basics"
         weekSubtitle="Vecka 1 - Lär dig grunderna i functional foods och hur du optimerar din hälsa"
         heroImage="/Ulrika_portratt/udavidssondesktop.png"
         videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
@@ -167,7 +167,7 @@ export default function FunctionalBasicsPage() {
                   className={`
                     relative p-4 md:p-4 md:p-6 rounded-2xl transition-all cursor-pointer
                     ${day.current 
-                      ? 'bg-[#FFB5A7] shadow-xl scale-105' 
+                      ? 'bg-[#014421] shadow-xl scale-105' 
                       : day.completed
                       ? 'bg-white hover:shadow-lg'
                       : day.locked
@@ -363,14 +363,14 @@ export default function FunctionalBasicsPage() {
 
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
               <div className="flex items-center mb-3 sm:mb-4">
-                <div className="bg-[#FFB5A7] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
+                <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
                   <FiUsers className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <h3 className="font-bold text-base sm:text-lg text-[#014421]">Community</h3>
               </div>
               <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Diskutera och dela erfarenheter</p>
               <Link href="/dashboard/community">
-                <button className="w-full bg-[#FFB5A7] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#FFA493] transition-colors text-sm sm:text-base">
+                <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
                   Gå till community
                 </button>
               </Link>

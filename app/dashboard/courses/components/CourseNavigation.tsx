@@ -56,7 +56,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                 className={`
                   px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0
                   ${week.number === activeWeek 
-                    ? 'bg-[#FFB5A7] text-white shadow-lg' 
+                    ? 'bg-[#014421] text-white shadow-lg' 
                     : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
                   }
                 `}
@@ -75,7 +75,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               href={`${basePath}/avslutning`}
               className={`px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                 isOnCompletion 
-                  ? 'bg-[#FFB5A7] text-white shadow-lg' 
+                  ? 'bg-[#014421] text-white shadow-lg' 
                   : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
               }`}
             >
@@ -89,7 +89,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               href="/dashboard/community"
               className={`px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                 isOnCommunity 
-                  ? 'bg-[#FFB5A7] text-white shadow-lg' 
+                  ? 'bg-[#014421] text-white shadow-lg' 
                   : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
               }`}
             >
@@ -103,7 +103,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               href="/dashboard/settings"
               className={`px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                 isOnSettings 
-                  ? 'bg-[#FFB5A7] text-white shadow-lg' 
+                  ? 'bg-[#014421] text-white shadow-lg' 
                   : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
               }`}
             >

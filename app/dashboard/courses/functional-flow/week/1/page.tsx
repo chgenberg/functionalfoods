@@ -30,4 +30,4 @@ export default function Week1Page() {
       courseStartDate={courseStartDate}
     />
   );
-} 
+}
