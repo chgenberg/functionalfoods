@@ -27,6 +27,11 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   const activeWeek = pathname.includes('/week/') 
     ? parseInt(pathname.split('/week/')[1].split('/')[0]) 
     : currentWeek;
+    
+  // Check if we're on specific pages
+  const isOnCompletion = pathname.includes('/avslutning');
+  const isOnCommunity = pathname.includes('/community');
+  const isOnSettings = pathname.includes('/settings');
 
   return (
     <div className="bg-white shadow-lg border-b-4 border-[#014421] relative z-50">
@@ -41,7 +46,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                 className={`
                   px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0
                   ${week.number === activeWeek 
-                    ? 'bg-[#014421] text-white shadow-lg' 
+                    ? 'bg-[#FFB5A7] text-white shadow-lg' 
                     : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
                   }
                 `}
@@ -58,7 +63,11 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             {/* Completion, Community and Settings Links */}
             <Link
               href={`${basePath}/avslutning`}
-              className="px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all bg-primary text-white hover:bg-secondary flex-shrink-0"
+              className={`px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                isOnCompletion 
+                  ? 'bg-[#FFB5A7] text-white shadow-lg' 
+                  : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
+              }`}
             >
               <span className="flex items-center gap-1">
                 <FiAward className="w-4 h-4" />
@@ -68,7 +77,11 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             
             <Link
               href="/dashboard/community"
-              className="px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4] flex-shrink-0"
+              className={`px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                isOnCommunity 
+                  ? 'bg-[#FFB5A7] text-white shadow-lg' 
+                  : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
+              }`}
             >
               <span className="flex items-center gap-1">
                 <FiUsers className="w-4 h-4" />
@@ -78,7 +91,11 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             
             <Link
               href="/dashboard/settings"
-              className="px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4] flex-shrink-0"
+              className={`px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                isOnSettings 
+                  ? 'bg-[#FFB5A7] text-white shadow-lg' 
+                  : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
+              }`}
             >
               <span className="flex items-center gap-1">
                 <FiSettings className="w-4 h-4" />

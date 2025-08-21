@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stripe Test Checkout</title>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+    .card { border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 8px; }
+    .test-card { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 4px; }
+    button { background: #014421; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #112A12; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Stripe Test Checkout</h1>
+  
+  <div class="card">
+    <h2>Test Cards</h2>
+    
+      <div class="test-card">
+        <strong>Successful payment</strong><br>
+        Number: 4242 4242 4242 4242<br>
+        CVC: 123, Exp: 12/34
+      </div>
+    
+      <div class="test-card">
+        <strong>Card declined</strong><br>
+        Number: 4000 0000 0000 0002<br>
+        CVC: 123, Exp: 12/34
+      </div>
+    
+      <div class="test-card">
+        <strong>Insufficient funds</strong><br>
+        Number: 4000 0000 0000 9995<br>
+        CVC: 123, Exp: 12/34
+      </div>
+    
+      <div class="test-card">
+        <strong>Requires 3D Secure authentication</strong><br>
+        Number: 4000 0000 0000 3220<br>
+        CVC: 123, Exp: 12/34
+      </div>
+    
+      <div class="test-card">
+        <strong>Swedish card (for local testing)</strong><br>
+        Number: 4000 0075 2000 0008<br>
+        CVC: 123, Exp: 12/34
+      </div>
+    
+  </div>
+
+  <div class="card">
+    <h2>Quick Test</h2>
+    <button onclick="testPayment()">Create Test Payment</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function testPayment() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = 'Creating payment...';
+      
+      try {
+        const response = await fetch('/api/orders/create-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({"items":[{"id":"functional-basics","name":"Functional Basics","price":299,"quantity":1,"type":"course"}],"paymentMethod":"stripe","customerEmail":"test@example.com","customerName":"Test Användare"})
+        });
+        
+        const data = await response.json();
+        resultDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+        
+        if (data.redirectUrl) {
+          resultDiv.innerHTML += '<br><a href="' + data.redirectUrl + '">Go to payment page</a>';
+        }
+      } catch (error) {
+        resultDiv.innerHTML = 'Error: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>

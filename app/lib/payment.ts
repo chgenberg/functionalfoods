@@ -72,18 +72,22 @@ export class PaymentService {
 
   async processPayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
-      // In development/testing, simulate payment
-      if (!this.isProduction) {
-        return this.simulatePayment(request);
-      }
-
-      // In production, use real payment APIs
+      // Always use real payment APIs for Stripe (test mode keys work in development)
       switch (request.paymentMethod) {
         case 'klarna':
+          // In development/testing, simulate Klarna payment
+          if (!this.isProduction) {
+            return this.simulatePayment(request);
+          }
           return this.processKlarnaPayment(request);
         case 'swish':
+          // In development/testing, simulate Swish payment
+          if (!this.isProduction) {
+            return this.simulatePayment(request);
+          }
           return this.processSwishPayment(request);
         case 'stripe':
+          // Always use real Stripe API (test keys work in development)
           return this.processStripePayment(request);
         default:
           throw new Error(`Unsupported payment method: ${request.paymentMethod}`);

@@ -365,7 +365,7 @@ export const mealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Grillade köttspett med grekisk sallad och morotstzatziki (482 kcal)",
-          "recipeLink": "/kunskapsbank/recept/grillspett-grekisk-sallad"
+          "recipeLink": "/kunskapsbank/recept/grekisk-sallad-sallad"
         }
       },
       "Lördag": {
@@ -614,7 +614,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Köttfärsbiffar med tomatsallad (588 kcal)",
-          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-mozzarella-tomatsallad"
+          "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-stekt-blomkal"
         }
       },
       "Onsdag": {
@@ -761,7 +761,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Ajvarspett med grekisk sallad och tzatziki (550 kcal)Zucchinikaka med kardemumma (264 kcal)",
-          "recipeLink": "/kunskapsbank/recept/ajvarspett-grekisk-sallad"
+          "recipeLink": "/kunskapsbank/recept/grekisk-sallad-sallad"
         }
       },
       "Söndag": {
@@ -1132,7 +1132,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Hamburgare med grekisk sallad (560 kcal)Mandelkaka med choklad och hallon (385 kcal)",
-          "recipeLink": "/kunskapsbank/recept/mandelkaka-choklad-hallon"
+          "recipeLink": "/kunskapsbank/recept/grekisk-sallad-sallad"
         }
       },
       "Söndag": {

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowLeft, FiCalendar, FiShoppingCart, FiBook, FiTarget,
   FiChevronRight, FiClock, FiUsers, FiCheckCircle, FiDownload,
-  FiStar, FiHeart, FiAward, FiTrendingUp, FiSun, FiLock, FiArrowRight
+  FiStar, FiHeart, FiAward, FiTrendingUp, FiSun, FiLock, FiArrowRight, FiPlay, FiHelpCircle
 } from 'react-icons/fi';
 import { 
   GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal,
@@ -17,6 +17,10 @@ import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getWeekData } from '@/app/data/mealPlans';
+import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
+import VideoModal from '@/app/dashboard/courses/components/VideoModal';
+import DayModal from '@/app/dashboard/courses/components/DayModal';
+import { dayImages } from '@/app/data/dayImages';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 interface TabProps {
@@ -49,11 +53,14 @@ interface WeekDay {
 
 export default function Week2Page() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   // Add current week/day handling to mirror main dashboard
   const [currentWeek, setCurrentWeek] = useState(2);
   const [currentDay, setCurrentDay] = useState(1);
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
+  const weekTitle = "Bygg vidare på grunderna";
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -124,65 +131,29 @@ export default function Week2Page() {
 
   // Hämta centraliserad måltidsdata för vecka 2
   const weekData = getWeekData(2);
-  const mealPlan = weekData?.days || {};
+  
+  // Transformera mealPlan för att använda nummer som nycklar istället för dagnamn
+  const mealPlan: Record<number, DayMeals> = {};
+  if (weekData?.days) {
+    const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+    dayNames.forEach((dayName, index) => {
+      if (weekData.days[dayName]) {
+        mealPlan[index + 1] = weekData.days[dayName];
+      }
+    });
+  }
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
       {/* Hero style header to match dashboard */}
-      <div className="relative h-[300px] md:h-[400px] bg-[#112A12] overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <Image 
-            src="/Ulrika_portratt/udavidssondesktop.png" 
-            alt="Ulrika Davidsson"
-            fill
-            className="object-cover opacity-40"
-            priority
-          />
-        </div>
-        
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-bold text-white mb-4"
-          >
-            Din Functional Foods Resa
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl"
-          >
-            {weekTitle}
-          </motion.p>
-          
-          <motion.button
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            onClick={() => setShowVideoModal(true)}
-            className="bg-[#014421] hover:bg-[#112A12] text-white px-8 py-4 rounded-full font-semibold flex items-center gap-3 transition-all shadow-lg"
-          >
-            <FiPlay className="w-5 h-5" />
-            Se introduktionsvideo
-          </motion.button>
-        </div>
-
-        {/* Help Button */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          onClick={() => setShowHelpGuide(true)}
-          className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors z-10"
-          title="Öppna hjälpguide"
-        >
-          <FiHelpCircle className="w-5 h-5 md:w-6 md:h-6" />
-        </motion.button>
-      </div>
-      </div>
+      {/* Hero Section with Video */}
+      <WeekHeroWithVideo
+        weekNumber={2}
+        weekTitle={weekTitle}
+        weekSubtitle="Etablera starka och hälsosamma matvanor"
+        heroImage="/Ulrika_portratt/udavidssondesktop.png"
+        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
+      />
 
       {/* Course Navigation - After Hero Section */}
       <div className="bg-white shadow-lg">
@@ -199,10 +170,10 @@ export default function Week2Page() {
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3 md:gap-4">
             {getDaysForWeek(2).map((day) => (
-              <div className="min-h-screen bg-[#F3EFE3]">
+              <div 
                 key={day.day}
                 className={`relative p-4 md:p-4 md:p-6 rounded-2xl transition-all ${day.current ? 'bg-[#FFB5A7] shadow-xl scale-105' : day.completed ? 'bg-white hover:shadow-lg' : day.locked ? 'bg-gray-50 opacity-60' : 'bg-white hover:shadow-lg'}`}
-                onClick={() => !day.locked && (window.location.href = `/dashboard/courses/functional-basics/week/2/day/${day.day}`)}
+                onClick={() => !day.locked && setSelectedDay(day.day)}
               >
                 {/* Date tag */}
                 <div className={`
@@ -215,13 +186,37 @@ export default function Week2Page() {
                 <div className="text-center">
                   <span className="text-xs md:text-sm text-gray-600 mb-1">{formatDate(2, day.day)}</span>
                   <h3 className="font-bold text-base md:text-base md:text-lg mb-3">{day.name}</h3>
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}`}>
-                    {day.completed ? (
-                      <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
-                    ) : day.current ? (
-                      <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto overflow-hidden relative ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}`}>
+                    {dayImages["2"]?.[day.day.toString()] ? (
+                      <>
+                        <Image
+                          src={dayImages["2"][day.day.toString()]!}
+                          alt={`Day ${day.day} meal`}
+                          fill
+                          className="object-cover"
+                        />
+                        {day.completed && (
+                          <div className="absolute inset-0 bg-green-600/80 flex items-center justify-center">
+                            <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                          </div>
+                        )}
+                        {day.current && (
+                          <div className="absolute inset-0 bg-[#014421]/20 flex items-center justify-center">
+                            <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
+                          </div>
+                        )}
+                      </>
                     ) : (
-                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      // Fallback to original circles if no image
+                      <>
+                        {day.completed ? (
+                          <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
+                        ) : day.current ? (
+                          <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
+                        ) : (
+                          <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                        )}
+                      </>
                     )}
                   </div>
                   <span className={`text-xs md:text-sm font-medium ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}`}>{day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}</span>
@@ -231,123 +226,62 @@ export default function Week2Page() {
           </div>
         </div>
 
-        {/* New: Weekly Meal Schedule List */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        {/* Weekly Meal Schedule List */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <h3 className="text-xl font-bold text-gray-900 mb-6">Veckans måltider</h3>
-          {Object.entries(mealPlan).map(([dayName, dayMeals]: [string, any]) => (
-            <div key={dayName} className="border-b border-gray-200 pb-4 mb-4 last:border-0">
-              <h4 className="text-lg font-semibold text-[#014421] mb-3">{dayName}</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {dayMeals.breakfast && (
-                  <div className="bg-orange-50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-[#014421]">Frukost</span>
-                      <span className="text-xs text-gray-500 bg-orange-100 px-2 py-0.5 rounded-full">07:00</span>
+          {['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'].map((dayName, index) => {
+            const dayMeals = mealPlan[index + 1];
+            if (!dayMeals) return null;
+            
+            return (
+              <div key={dayName} className="border-b border-gray-200 pb-4 mb-4 last:border-0">
+                <h4 className="text-lg font-semibold text-[#014421] mb-3">{dayName}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {dayMeals.breakfast && (
+                    <div className="bg-orange-50 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-[#014421]">Frukost</span>
+                        <span className="text-xs text-gray-500 bg-orange-100 px-2 py-0.5 rounded-full">07:00</span>
+                      </div>
+                      <p className="text-sm text-gray-700">{dayMeals.breakfast.name}</p>
+                      {dayMeals.breakfast.recipeLink && (
+                        <Link href={dayMeals.breakfast.recipeLink} className="text-sm text-orange-600 hover:underline mt-1 inline-block">Se recept →</Link>
+                      )}
                     </div>
-                    <p className="text-sm text-gray-700">{dayMeals.breakfast.name}</p>
-                    {(dayMeals.breakfast.recipeLink || dayMeals.breakfast.slug) && (
-                      <Link href={dayMeals.breakfast.recipeLink || `/kunskapsbank/recept/${dayMeals.breakfast.slug}` } className="text-sm text-orange-600 hover:underline mt-1 inline-block">Se recept →</Link>
-                    )}
-                  </div>
-                )}
-                {dayMeals.lunch && (
-                  <div className="bg-green-50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-[#014421]">Lunch</span>
-                      <span className="text-xs text-gray-500 bg-green-100 px-2 py-0.5 rounded-full">12:00</span>
+                  )}
+                  {dayMeals.lunch && (
+                    <div className="bg-green-50 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-[#014421]">Lunch</span>
+                        <span className="text-xs text-gray-500 bg-green-100 px-2 py-0.5 rounded-full">12:00</span>
+                      </div>
+                      <p className="text-sm text-gray-700">{dayMeals.lunch.name}</p>
+                      {dayMeals.lunch.recipeLink && (
+                        <Link href={dayMeals.lunch.recipeLink} className="text-sm text-green-600 hover:underline mt-1 inline-block">Se recept →</Link>
+                      )}
                     </div>
-                    <p className="text-sm text-gray-700">{dayMeals.lunch.name}</p>
-                    {(dayMeals.lunch.recipeLink || (dayMeals.lunch.slug && !dayMeals.lunch.name.includes('rester'))) && (
-                      <Link href={dayMeals.lunch.recipeLink || `/kunskapsbank/recept/${dayMeals.lunch.slug}`} className="text-sm text-green-600 hover:underline mt-1 inline-block">Se recept →</Link>
-                    )}
-                  </div>
-                )}
-                {dayMeals.dinner && (
-                  <div className="bg-purple-50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-[#014421]">Middag</span>
-                      <span className="text-xs text-gray-500 bg-purple-100 px-2 py-0.5 rounded-full">18:00</span>
+                  )}
+                  {dayMeals.dinner && (
+                    <div className="bg-purple-50 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-[#014421]">Middag</span>
+                        <span className="text-xs text-gray-500 bg-purple-100 px-2 py-0.5 rounded-full">18:00</span>
+                      </div>
+                      <p className="text-sm text-gray-700">{dayMeals.dinner.name}</p>
+                      {dayMeals.dinner.recipeLink && (
+                        <Link href={dayMeals.dinner.recipeLink} className="text-sm text-purple-600 hover:underline mt-1 inline-block">Se recept →</Link>
+                      )}
                     </div>
-                    <p className="text-sm text-gray-700">{dayMeals.dinner.name}</p>
-                    {(dayMeals.dinner.recipeLink || dayMeals.dinner.slug) && (
-                      <Link href={dayMeals.dinner.recipeLink || `/kunskapsbank/recept/${dayMeals.dinner.slug}`} className="text-sm text-purple-600 hover:underline mt-1 inline-block">Se recept →</Link>
-                    )}
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-8">
-          <motion.div whileHover={{ scale: 1.02 }} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
-            <Link href={`/dashboard/courses/functional-basics/kostschema?view=week&week=2`}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiCalendar className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
-                </div>
-                <FiChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Veckans kostschema</h3>
-              <p className="text-gray-600">Se alla recept och måltider för vecka 2</p>
-            </Link>
-          </motion.div>
 
-          <motion.div whileHover={{ scale: 1.02 }} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
-            <Link href={`/dashboard/courses/functional-basics/inkopslista?week=2`}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
-                </div>
-                <FiChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Inköpslista</h3>
-              <p className="text-gray-600">Allt du behöver för veckans recept</p>
-            </Link>
-          </motion.div>
 
-          <motion.div whileHover={{ scale: 1.02 }} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
-            <Link href="/dashboard/community">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-[#F3EFE3] rounded-full flex items-center justify-center">
-                  <FiUsers className="w-5 h-5 md:w-6 md:h-6 text-[#014421]" />
-                </div>
-                <FiChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Community</h3>
-              <p className="text-gray-600">Dela erfarenheter med andra deltagare</p>
-            </Link>
-          </motion.div>
-        </div>
 
-        {/* Week Materials */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg">
-          <h3 className="text-xl font-bold text-[#014421] mb-6">Veckans material</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <FiBook className="w-5 h-5 text-[#014421]" />
-                <span className="font-medium">Vecka 2 - Arbetsbok (PDF)</span>
-              </div>
-              <FiDownload className="w-5 h-5 text-[#014421]" />
-            </div>
-            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <FiBook className="w-5 h-5 text-[#014421]" />
-                <span className="font-medium">Receptsamling vecka 2</span>
-              </div>
-              <FiDownload className="w-5 h-5 text-[#014421]" />
-            </div>
-            <div className="flex items-center justify-between p-4 bg-[#F3EFE3] rounded-lg hover:bg-[#E8E0D4] transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <FiBook className="w-5 h-5 text-[#014421]" />
-                <span className="font-medium">Bonusmaterial - Extra recept</span>
-              </div>
-              <FiDownload className="w-5 h-5 text-[#014421]" />
-            </div>
-          </div>
-        </div>
 
         {/* Hide old tabbed UI */}
         {false && (
@@ -549,7 +483,123 @@ export default function Week2Page() {
             </div>
           </>
         )}
+              {/* Quick Actions */}
+        <div className="bg-[#F3EFE3] rounded-2xl shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-bold text-[#014421] mb-6">Veckans material</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="bg-[#014421] rounded-full p-3 mr-4">
+                  <FiShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-lg text-[#014421]">Inköpslista</h3>
+              </div>
+              <p className="text-gray-600 mb-4">Skapa inköpslista för veckans måltider</p>
+              <Link href={`/dashboard/courses/functional-basics/inkopslista?week=${currentWeek}`}>
+                                  <button className="w-full bg-[#014421] text-white rounded-lg py-3 hover:bg-[#112A12] transition-colors">
+                    Visa inköpslista
+                  </button>
+              </Link>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="bg-[#FFB5A7] rounded-full p-3 mr-4">
+                  <FiUsers className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-lg text-[#014421]">Community</h3>
+              </div>
+              <p className="text-gray-600 mb-4">Diskutera och dela erfarenheter</p>
+              <Link href="/dashboard/community">
+                <button className="w-full bg-[#FFB5A7] text-white rounded-lg py-3 hover:bg-[#FFA493] transition-colors">
+                  Gå till community
+                </button>
+              </Link>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="bg-[#014421] rounded-full p-3 mr-4">
+                  <FiBook className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-lg text-[#014421]">Bonusmaterial</h3>
+              </div>
+              <p className="text-gray-600 mb-4">Extra recept och tips för veckan</p>
+              <button className="w-full bg-[#014421] text-white rounded-lg py-3 hover:bg-[#112A12] transition-colors">
+                Öppna material
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Day Modal */}
+      {selectedDay && (
+        <DayModal
+          isOpen={selectedDay !== null}
+          onClose={() => setSelectedDay(null)}
+          weekNumber={2}
+          dayNumber={selectedDay}
+          dayName={['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'][selectedDay - 1]}
+          meals={(() => {
+            const dayData = mealPlan[selectedDay] || { breakfast: null, lunch: null, dinner: null };
+            const meals = [];
+            
+            if (dayData.breakfast) {
+              const match = dayData.breakfast.name.match(/\((\d+\s*kcal)\)/);
+              const calories = match ? match[1] : '';
+              const mealName = dayData.breakfast.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              
+              meals.push({
+                mealType: 'Frukost',
+                time: '07:00',
+                meal: mealName,
+                calories: calories,
+                recipeLink: dayData.breakfast.recipeLink
+              });
+            }
+            
+            if (dayData.lunch) {
+              const match = dayData.lunch.name.match(/\((\d+\s*kcal)\)/);
+              const calories = match ? match[1] : '';
+              const mealName = dayData.lunch.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              
+              meals.push({
+                mealType: 'Lunch',
+                time: '12:00',
+                meal: mealName,
+                calories: calories,
+                recipeLink: dayData.lunch.recipeLink
+              });
+            }
+            
+            if (dayData.dinner) {
+              const match = dayData.dinner.name.match(/\((\d+\s*kcal)\)/);
+              const calories = match ? match[1] : '';
+              const mealName = dayData.dinner.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              
+              meals.push({
+                mealType: 'Middag',
+                time: '18:00',
+                meal: mealName,
+                calories: calories,
+                recipeLink: dayData.dinner.recipeLink
+              });
+            }
+            
+            return meals;
+          })()}
+        />
+      )}
+
+      {/* Video Modal - Keep this since WeekHeroWithVideo has its own */}
+      <VideoModal
+        isOpen={showVideoModal}
+        onClose={() => setShowVideoModal(false)}
+        weekNumber={2}
+        weekTitle={weekTitle}
+      />
     </div>
   );
 }

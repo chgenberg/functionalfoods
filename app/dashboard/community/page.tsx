@@ -9,6 +9,8 @@ import {
 } from 'react-icons/fi';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
+import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
+import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 interface ForumCategory {
   id: string;
   name: string;
@@ -228,19 +230,24 @@ export default function CommunityPage() {
   const totalThreads = categories.reduce((sum, cat) => sum + cat._count.threads, 0);
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-        {/* Hero banner */}
-        <div className="relative h-[200px] md:h-[260px] overflow-hidden rounded-2xl">
-          <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="relative z-10 h-full flex items-center p-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-white">Community</h1>
-          </div>
-          <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#F3EFE3] to-transparent" />
-        </div>
+    <div className="min-h-screen bg-[#F3EFE3]">
+      {/* Hero Section with Video */}
+      <WeekHeroWithVideo
+        weekNumber={0}
+        weekTitle="Community"
+        weekSubtitle="Dela dina erfarenheter och lär av andra i vår community"
+        heroImage="/Ulrika_portratt/udavidssondesktop.png"
+        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
+      />
 
-        {/* Dashboard Navigation */}
-        <CourseNavigation courseType="basics" currentWeek={1} />
+      {/* Course Navigation - After Hero Section */}
+      <div className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+          <CourseNavigation courseType="basics" currentWeek={1} />
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
@@ -492,6 +499,15 @@ export default function CommunityPage() {
         )}
       </AnimatePresence>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={false}
+        onClose={() => {}}
+        weekNumber={0}
+        weekTitle="Community"
+        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
+      />
     </div>
   );
 } 

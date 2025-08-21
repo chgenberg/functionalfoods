@@ -6,24 +6,28 @@ import Link from 'next/link';
 import { FiArrowLeft, FiCheck, FiHeart, FiTarget, FiStar, FiBookOpen } from 'react-icons/fi';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
+import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
+import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Hero banner */}
-      <div className="relative h-[260px] md:h-[340px] overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
-        
-        <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-12">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">Kursen avslutad</h1>
-          <p className="text-white/90 text-lg">Stort grattis! Här är din avslutningsfilm och nästa steg</p>
-        </div>
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-[#F3EFE3]/80"></div>
-      </div>
+      {/* Hero Section with Video */}
+      <WeekHeroWithVideo
+        weekNumber={7}
+        weekTitle="Kursen avslutad"
+        weekSubtitle="Stort grattis! Här är din avslutningsfilm och nästa steg"
+        heroImage="/Ulrika_portratt/udavidssondesktop.png"
+        videoUrl="https://player.vimeo.com/video/1058943393"
+      />
 
-      {/* Dashboard menu under hero */}
-      <CourseNavigation courseType="basics" currentWeek={6} />
+      {/* Course Navigation - After Hero Section */}
+      <div className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+          <CourseNavigation courseType="basics" currentWeek={6} />
+        </div>
+      </div>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -165,6 +169,15 @@ export default function CompletionPage() {
           </Link>
         </motion.div>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={false}
+        onClose={() => {}}
+        weekNumber={7}
+        weekTitle="Kursen avslutad"
+        videoUrl="https://player.vimeo.com/video/1058943393"
+      />
     </div>
   );
 } 

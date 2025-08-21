@@ -6,6 +6,8 @@ import { FiUser, FiMail, FiLock, FiSave, FiCheck, FiAlertCircle } from 'react-ic
 import { useRouter } from 'next/navigation';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
+import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
+import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 interface UserData {
   id: string;
   email: string;
@@ -137,18 +139,24 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F3EFE3]"><div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Hero banner */}
-        <div className="relative h-[200px] md:h-[260px] overflow-hidden rounded-2xl mb-4">
-          <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('/Ulrika_portratt/udavidssondesktop.png')" }} />
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="relative z-10 h-full flex items-center p-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-white">Inställningar</h1>
-          </div>
-          <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#F3EFE3] to-transparent" />
-        </div>
+    <div className="min-h-screen bg-[#F3EFE3]">
+      {/* Hero Section with Video */}
+      <WeekHeroWithVideo
+        weekNumber={0}
+        weekTitle="Inställningar"
+        weekSubtitle="Hantera din profil och dina kursinställningar"
+        heroImage="/Ulrika_portratt/udavidssondesktop.png"
+        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
+      />
 
-        <CourseNavigation courseType="basics" currentWeek={1} />
+      {/* Course Navigation - After Hero Section */}
+      <div className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+          <CourseNavigation courseType="basics" currentWeek={1} />
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-[#014421] mb-8">Kontoinställningar</h1>
 
       <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
@@ -304,6 +312,15 @@ export default function SettingsPage() {
         </form>
       </div>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={false}
+        onClose={() => {}}
+        weekNumber={0}
+        weekTitle="Inställningar"
+        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
+      />
     </div>
   );
 } 

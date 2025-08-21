@@ -5,7 +5,7 @@ const OpenAI = require('openai');
 
 const prisma = new PrismaClient();
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || 'your-api-key-here'
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 // Analyze image and get description
@@ -189,8 +189,8 @@ async function reviewAndFixImageMatches() {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Limit to avoid excessive API usage
-    if (reviewedCount >= 20) {
-      console.log('⏸️  Pausing after 20 reviews to avoid excessive API usage');
+    if (reviewedCount >= 50) {
+      console.log('⏸️  Pausing after 50 reviews to avoid excessive API usage');
       break;
     }
   }

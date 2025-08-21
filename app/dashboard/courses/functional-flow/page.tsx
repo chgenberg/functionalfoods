@@ -39,8 +39,9 @@ export default function FunctionalFlowPage() {
       
       const today = new Date();
       const daysDiff = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
-      const calculatedWeek = Math.min(6, Math.max(1, Math.ceil((daysDiff + 1) / 7)));
-      const calculatedDay = Math.min(7, Math.max(1, (daysDiff % 7) + 1));
+      // Always start at week 1 for new users, but allow progression for existing users
+      const calculatedWeek = daysDiff < 0 ? 1 : Math.min(6, Math.max(1, Math.ceil((daysDiff + 1) / 7)));
+      const calculatedDay = daysDiff < 0 ? 1 : Math.min(7, Math.max(1, (daysDiff % 7) + 1));
       
       setCurrentWeek(calculatedWeek);
       setCurrentDay(calculatedDay);
@@ -48,6 +49,8 @@ export default function FunctionalFlowPage() {
       const today = new Date();
       localStorage.setItem('flowStartDate', today.toISOString());
       setCourseStartDate(today);
+      setCurrentWeek(1);
+      setCurrentDay(1);
     }
   }, []);
 
@@ -65,8 +68,8 @@ export default function FunctionalFlowPage() {
     const weekDays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
     
     // Get the selected week's start date
-    const startDate = typeof window !== 'undefined' ? localStorage.getItem('functional-flowStartDate') : null;
-    const courseStart = startDate ? new Date(startDate) : new Date('2024-08-19');
+    const startDate = typeof window !== 'undefined' ? localStorage.getItem('flowStartDate') : null;
+    const courseStart = startDate ? new Date(startDate) : new Date();
     const weekStart = new Date(courseStart);
     weekStart.setDate(courseStart.getDate() + (week - 1) * 7);
     
