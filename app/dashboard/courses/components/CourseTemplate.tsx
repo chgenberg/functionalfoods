@@ -305,17 +305,22 @@ export default function CourseTemplate({
           dayNumber={selectedDay}
           dayName={weekDays.find(d => d.day === selectedDay)?.name || ''}
           meals={(() => {
-            // Map day numbers to Swedish day names
+            // Try both Swedish day names and day1, day2 format
             const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-            const dayKey = dayNames[selectedDay - 1];
-            const dayData = mealPlan.days[dayKey];
+            const swedishDayKey = dayNames[selectedDay - 1];
+            const numberDayKey = `day${selectedDay}`;
+            
+            // Check which format exists in the data
+            let dayData = mealPlan.days[swedishDayKey] || mealPlan.days[numberDayKey];
+            const usedKey = mealPlan.days[swedishDayKey] ? swedishDayKey : numberDayKey;
             
             console.log('DayModal Debug (CourseTemplate):', {
               selectedDay,
-              dayKey,
+              swedishDayKey,
+              numberDayKey,
+              usedKey,
               dayData: !!dayData,
-              mealPlanDays: Object.keys(mealPlan.days),
-              dayDataKeys: dayData ? Object.keys(dayData) : 'No dayData'
+              mealPlanDays: Object.keys(mealPlan.days)
             });
             
             if (!dayData) return [];
