@@ -160,7 +160,7 @@ export default function WeekTemplate({
                     absolute -top-2 -right-2 px-3 py-1 text-xs rounded-full font-medium
                     ${day.current ? 'bg-[#014421] text-white' : 'bg-[#014421] text-white'}
                   `}>
-                    {day.current ? 'Idag' : formatDate(weekNumber, day.day).split('.')[0] + ' ' + formatDate(weekNumber, day.day).split(' ')[1]}
+                    {day.current ? 'Idag' : formatDate(weekNumber, day.day)}
                   </div>
 
                   <div className="text-center">

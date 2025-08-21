@@ -45,10 +45,10 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   }
 
   return (
-    <div className="bg-white shadow-lg border-b-4 border-[#014421] relative z-50">
+    <div className="bg-white shadow-lg border-b-4 border-[#014421] relative z-10">
       <div className="max-w-full mx-auto px-1 md:px-2 py-4">
         {/* Mobile scroll wrapper with gradient indicators */}
-        <div className="relative">
+        <div className="relative overflow-visible">
           <div className="flex items-center justify-center gap-1 md:gap-2 overflow-x-auto scrollbar-hide scroll-smooth">
             {/* Overview Link */}
             <Link

@@ -12,9 +12,14 @@ export default function Week1Page() {
     if (savedStartDate) {
       setCourseStartDate(new Date(savedStartDate));
     } else {
-      const startDate = new Date();
-      localStorage.setItem('flowStartDate', startDate.toISOString());
-      setCourseStartDate(startDate);
+      const today = new Date();
+      const day = today.getDay();
+      const daysUntilMonday = (1 - day + 7) % 7 || 7;
+      const nextMonday = new Date(today);
+      nextMonday.setDate(today.getDate() + daysUntilMonday);
+      nextMonday.setHours(0, 0, 0, 0);
+      localStorage.setItem('flowStartDate', nextMonday.toISOString());
+      setCourseStartDate(nextMonday);
     }
   }, []);
 
