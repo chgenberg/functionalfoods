@@ -90,10 +90,22 @@ export async function GET(
       if (day.dessert?.recipeLink) recipeLinks.add(day.dessert.recipeLink);
     });
     
+    // Extract slugs from recipe links (remove /kunskapsbank/recept/ prefix)
+    const recipeSlugs = Array.from(recipeLinks).map(link => {
+      return link.replace(/^\/kunskapsbank\/recept\//, '');
+    }).filter(slug => slug.length > 0);
+    
+    console.log('Shopping list debug:', {
+      weekKey,
+      recipeLinks: Array.from(recipeLinks),
+      recipeSlugs,
+      courseType
+    });
+    
     // Fetch recipes from database
     const recipes = await prisma.recipe.findMany({
       where: {
-        slug: { in: Array.from(recipeLinks) }
+        slug: { in: recipeSlugs }
       },
       select: {
         title: true,

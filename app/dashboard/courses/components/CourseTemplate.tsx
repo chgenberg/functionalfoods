@@ -149,14 +149,14 @@ export default function CourseTemplate({
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   className={`
-                    relative bg-white rounded-2xl p-4 shadow-lg border-2 transition-all duration-300 cursor-pointer
+                    relative rounded-2xl p-4 shadow-lg border-2 transition-all duration-300 cursor-pointer
                     ${day.current 
-                      ? 'bg-[#014421] shadow-xl scale-105' 
+                      ? 'bg-[#014421] border-[#014421] shadow-xl scale-105' 
                       : day.completed
-                      ? 'bg-white hover:shadow-lg'
+                      ? 'bg-white border-green-200 hover:shadow-lg'
                       : day.locked
-                      ? 'bg-gray-50 opacity-60'
-                      : 'bg-white hover:shadow-lg'
+                      ? 'bg-gray-50 border-gray-200 opacity-60'
+                      : 'bg-white border-gray-200 hover:shadow-lg'
                     }
                   `}
                 >
