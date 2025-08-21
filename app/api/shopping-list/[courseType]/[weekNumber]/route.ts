@@ -117,6 +117,8 @@ export async function GET(
     // Parse and aggregate ingredients
     const ingredientMap = new Map<string, { amount: number; unit: string; category: string }>();
     
+    console.log('Found recipes:', recipes.map(r => ({ title: r.title, slug: r.slug, hasIngredients: !!r.ingredients })));
+    
     recipes.forEach(recipe => {
       if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
         recipe.ingredients.forEach((ingredient: any) => {
