@@ -17,7 +17,7 @@ import { FaLeaf } from 'react-icons/fa';
 import { CalendarView } from '../components/CalendarView';
 import { GoalsSection } from '../components/GoalsSection';
 import { getFlowWeekData } from '@/app/data/mealPlans';
-import ShoppingList from '../[week]/ShoppingList';
+// import ShoppingList from '../[week]/ShoppingList'; // Removed - using new shopping list page
 
 interface TabProps {
   id: string;
@@ -139,7 +139,7 @@ export default function Week3Page() {
           </motion.p>
         </div>
       </div>
->
+
       {/* Page Title */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Vecka 3: Flexibilitet & Fasta</h1>
