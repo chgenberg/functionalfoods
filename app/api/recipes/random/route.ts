@@ -5,10 +5,6 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    if (!process.env.DATABASE_URL) {
-      // Static fallback
-      return NextResponse.json({ recipes: sampleFallback() });
-    }
     const freeRecipes = await prisma.recipe.findMany({
       where: {
         status: 'PUBLISHED',
