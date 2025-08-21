@@ -117,7 +117,7 @@ export default function CourseTemplate({
       {/* Course Navigation - After Hero Section */}
       <div className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
-          <CourseNavigation courseType={courseType} currentWeek={currentWeek} />
+          <CourseNavigation courseType={courseType} currentWeek={1} />
         </div>
       </div>
 

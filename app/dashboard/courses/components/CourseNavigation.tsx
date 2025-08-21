@@ -23,15 +23,25 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
     { number: 6, title: courseType === 'basics' ? "Att komma igång" : "Personlig optimering" }
   ];
 
-  // Determine active week from URL
-  const activeWeek = pathname.includes('/week/') 
-    ? parseInt(pathname.split('/week/')[1].split('/')[0]) 
-    : currentWeek;
-    
   // Check if we're on specific pages
   const isOnCompletion = pathname.includes('/avslutning');
   const isOnCommunity = pathname.includes('/community');
   const isOnSettings = pathname.includes('/settings');
+  const isOnShoppingList = pathname.includes('/inkopslista');
+
+  // Determine active week from URL
+  let activeWeek = currentWeek;
+  
+  if (pathname.includes('/week/')) {
+    // We're on a specific week page
+    activeWeek = parseInt(pathname.split('/week/')[1].split('/')[0]);
+  } else if (pathname.includes(`/functional-${courseType}`) && !isOnCompletion && !isOnCommunity && !isOnSettings && !isOnShoppingList) {
+    // We're on the main course page (which is Week 1)
+    activeWeek = 1;
+  } else if (isOnShoppingList) {
+    // We're on shopping list - use currentWeek passed as prop
+    activeWeek = currentWeek || 1;
+  }
 
   return (
     <div className="bg-white shadow-lg border-b-4 border-[#014421] relative z-50">
