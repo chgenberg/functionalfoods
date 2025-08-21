@@ -1,8 +1,9 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiClock, FiShoppingCart } from 'react-icons/fi';
 import Link from 'next/link';
+import { FiX, FiClock, FiExternalLink, FiInfo, FiCheckCircle } from 'react-icons/fi';
+import { useState } from 'react';
 
 interface Meal {
   mealType: string;
@@ -29,18 +30,47 @@ export default function DayModal({
   dayName,
   meals
 }: DayModalProps) {
+  const [hoveredMeal, setHoveredMeal] = useState<number | null>(null);
+  const [completedMeals, setCompletedMeals] = useState<number[]>([]);
+
   const getMealIcon = (mealType: string) => {
     switch (mealType.toLowerCase()) {
       case 'frukost':
-        return '🌅';
+        return '🥐';
       case 'lunch':
-        return '🌞';
+        return '🥗';
       case 'middag':
-        return '🌙';
-      default:
         return '🍽️';
+      default:
+        return '🍴';
     }
   };
+
+  const getMealGradient = (mealType: string) => {
+    switch (mealType.toLowerCase()) {
+      case 'frukost':
+        return 'from-orange-100 to-yellow-100';
+      case 'lunch':
+        return 'from-green-100 to-emerald-100';
+      case 'middag':
+        return 'from-purple-100 to-pink-100';
+      default:
+        return 'from-gray-100 to-gray-200';
+    }
+  };
+
+  const toggleMealComplete = (index: number) => {
+    setCompletedMeals(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  const totalCalories = meals.reduce((total, meal) => {
+    const match = meal.calories.match(/(\d+)/);
+    return total + (match ? parseInt(match[1]) : 0);
+  }, 0);
 
   return (
     <AnimatePresence>
@@ -49,84 +79,219 @@ export default function DayModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-[#014421] to-[#116530] text-white p-4 sm:p-6 flex items-center justify-between">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold">Vecka {weekNumber} - {dayName}</h2>
-                <p className="text-white/80 text-sm sm:text-base mt-1">Dag {dayNumber}</p>
+            {/* Modal Header with Gradient */}
+            <div className="relative bg-gradient-to-br from-[#014421] via-[#116530] to-[#1a7f3d] text-white p-6 sm:p-8">
+              <div className="absolute inset-0 bg-black/10"></div>
+              <div className="relative z-10">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <motion.h2 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="text-2xl sm:text-3xl font-bold mb-2"
+                    >
+                      {dayName}
+                    </motion.h2>
+                    <motion.p 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="text-white/90 text-sm sm:text-base"
+                    >
+                      Vecka {weekNumber} • Dag {dayNumber}
+                    </motion.p>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={onClose}
+                    className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                  >
+                    <FiX className="text-2xl" />
+                  </motion.button>
+                </div>
+
+                {/* Progress and Total Calories */}
+                <div className="mt-6 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="text-lg" />
+                    <span className="text-sm text-white/90">
+                      {completedMeals.length} av {meals.length} måltider genomförda
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/90">
+                    Totalt: <span className="font-semibold">{totalCalories} kcal</span>
+                  </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-white/80 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(completedMeals.length / meals.length) * 100}%` }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  />
+                </div>
               </div>
-              <button
-                onClick={onClose}
-                className="p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition flex-shrink-0"
-              >
-                <FiX className="text-xl sm:text-2xl" />
-              </button>
             </div>
 
             {/* Meals Container */}
-            <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-120px)] sm:max-h-[calc(85vh-120px)]">
-              <div className="space-y-4 sm:space-y-6">
+            <div className="p-6 sm:p-8 overflow-y-auto max-h-[calc(90vh-240px)]">
+              <div className="space-y-4">
                 {meals.map((meal, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-gradient-to-r from-[#F3EFE3]/50 to-[#F8F5EE]/50 rounded-xl p-4 sm:p-6 shadow-md hover:shadow-lg transition-shadow"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1, type: "spring", stiffness: 200 }}
+                    onMouseEnter={() => setHoveredMeal(index)}
+                    onMouseLeave={() => setHoveredMeal(null)}
+                    className={`relative rounded-2xl p-5 sm:p-6 transition-all duration-300 cursor-pointer
+                      ${completedMeals.includes(index) 
+                        ? 'bg-green-50 border-2 border-green-200' 
+                        : `bg-gradient-to-r ${getMealGradient(meal.mealType)} hover:shadow-lg`
+                      }
+                    `}
+                    onClick={() => toggleMealComplete(index)}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl">{getMealIcon(meal.mealType)}</span>
-                        <div>
-                          <h3 className="text-lg font-semibold text-[#112A12]">{meal.mealType}</h3>
-                          <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-                            <FiClock className="text-sm" />
-                            <span>{meal.time}</span>
+                    {/* Completed Checkmark */}
+                    <AnimatePresence>
+                      {completedMeals.includes(index) && (
+                        <motion.div
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0, rotate: 180 }}
+                          className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-1"
+                        >
+                          <FiCheckCircle className="text-xl" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-4">
+                        {/* Meal Icon */}
+                        <motion.div 
+                          className="text-4xl"
+                          animate={{ 
+                            scale: hoveredMeal === index ? 1.2 : 1,
+                            rotate: hoveredMeal === index ? [0, -10, 10, -10, 0] : 0
+                          }}
+                        >
+                          {getMealIcon(meal.mealType)}
+                        </motion.div>
+                        
+                        <div className="flex-1">
+                          <div className="flex items-baseline gap-3 mb-2">
+                            <h3 className="text-lg font-bold text-gray-900">
+                              {meal.mealType}
+                            </h3>
+                            <div className="flex items-center gap-1 text-sm text-gray-600">
+                              <FiClock className="text-xs" />
+                              <span>{meal.time}</span>
+                            </div>
                           </div>
+                          
+                          <p className={`text-gray-800 font-medium transition-all
+                            ${completedMeals.includes(index) ? 'line-through opacity-60' : ''}
+                          `}>
+                            {meal.meal}
+                          </p>
+                          
+                          {meal.recipeLink && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.2 }}
+                              className="mt-3"
+                            >
+                              <Link
+                                href={meal.recipeLink}
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center gap-2 text-[#014421] hover:text-[#116530] 
+                                  transition-all text-sm font-medium group"
+                              >
+                                <span className="underline underline-offset-2 group-hover:underline-offset-4">
+                                  Se receptet
+                                </span>
+                                <FiExternalLink className="text-base group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                              </Link>
+                            </motion.div>
+                          )}
                         </div>
                       </div>
-                      <span className="text-sm font-medium text-[#014421] bg-[#014421]/10 px-3 py-1 rounded-full">
-                        {meal.calories}
-                      </span>
-                    </div>
-                    
-                    <p className="text-gray-800 font-medium mb-3">{meal.meal}</p>
-                    
-                    {meal.recipeLink && (
-                      <Link
-                        href={meal.recipeLink}
-                        className="inline-flex items-center gap-2 text-[#014421] hover:text-[#116530] transition-colors text-sm font-medium"
+
+                      {/* Calories Badge */}
+                      <motion.div
+                        animate={{ scale: hoveredMeal === index ? 1.1 : 1 }}
+                        className={`px-4 py-2 rounded-full font-semibold text-sm transition-colors
+                          ${completedMeals.includes(index)
+                            ? 'bg-green-200 text-green-800'
+                            : 'bg-white/80 text-gray-700'
+                          }
+                        `}
                       >
-                        <span>Se recept</span>
-                        <span className="text-lg">→</span>
-                      </Link>
-                    )}
+                        {meal.calories}
+                      </motion.div>
+                    </div>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Shopping List Button */}
+              {/* Tips Section */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="mt-8 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-8 p-5 bg-blue-50 rounded-2xl border border-blue-100"
               >
-                <button className="inline-flex items-center gap-2 bg-[#014421] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg hover:bg-[#116530] transition-colors shadow-lg text-sm sm:text-base">
-                  <FiShoppingCart />
-                  <span>Skapa inköpslista för denna dag</span>
-                </button>
+                <div className="flex items-start gap-3">
+                  <FiInfo className="text-blue-500 text-xl flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Tips för dagen</h4>
+                    <p className="text-sm text-gray-700">
+                      Klicka på varje måltid för att markera den som genomförd. 
+                      Glöm inte att dricka tillräckligt med vatten mellan måltiderna!
+                    </p>
+                  </div>
+                </div>
               </motion.div>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
+              <div className="flex items-center justify-between">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onClose}
+                  className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium 
+                    rounded-full transition-colors"
+                >
+                  Stäng
+                </motion.button>
+                
+                <Link 
+                  href={`/dashboard/courses/shopping-list?week=${weekNumber}`}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#014421] hover:bg-[#116530] 
+                    text-white font-medium rounded-full transition-colors group"
+                >
+                  <span>Se inköpslista</span>
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </Link>
+              </div>
             </div>
           </motion.div>
         </motion.div>
