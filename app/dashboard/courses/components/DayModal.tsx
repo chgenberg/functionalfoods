@@ -87,11 +87,11 @@ export default function DayModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header with Gradient */}
-            <div className="relative bg-gradient-to-br from-[#014421] via-[#116530] to-[#1a7f3d] text-white p-6 sm:p-8">
+            <div className="relative bg-gradient-to-br from-[#014421] via-[#116530] to-[#1a7f3d] text-white p-4 sm:p-6">
               <div className="absolute inset-0 bg-black/10"></div>
               <div className="relative z-10">
                 <div className="flex items-start justify-between">
@@ -123,7 +123,7 @@ export default function DayModal({
                 </div>
 
                 {/* Progress and Total Calories */}
-                <div className="mt-6 flex items-center justify-between">
+                <div className="mt-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <FiCheckCircle className="text-lg" />
                     <span className="text-sm text-white/90">
@@ -136,7 +136,7 @@ export default function DayModal({
                 </div>
 
                 {/* Progress Bar */}
-                <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden">
+                <div className="mt-2 h-2 bg-white/20 rounded-full overflow-hidden">
                   <motion.div 
                     className="h-full bg-white/80 rounded-full"
                     initial={{ width: 0 }}
@@ -148,8 +148,8 @@ export default function DayModal({
             </div>
 
             {/* Meals Container */}
-            <div className="p-6 sm:p-8 overflow-y-auto max-h-[calc(90vh-240px)]">
-              <div className="space-y-4">
+            <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(85vh-280px)]">
+              <div className="space-y-3">
                 {meals.map((meal, index) => (
                   <motion.div
                     key={index}
@@ -158,7 +158,7 @@ export default function DayModal({
                     transition={{ delay: index * 0.1, type: "spring", stiffness: 200 }}
                     onMouseEnter={() => setHoveredMeal(index)}
                     onMouseLeave={() => setHoveredMeal(null)}
-                    className={`relative rounded-2xl p-5 sm:p-6 transition-all duration-300 cursor-pointer
+                    className={`relative rounded-2xl p-4 sm:p-5 transition-all duration-300 cursor-pointer
                       ${completedMeals.includes(index) 
                         ? 'bg-green-50 border-2 border-green-200' 
                         : `bg-gradient-to-r ${getMealGradient(meal.mealType)} hover:shadow-lg`
@@ -250,28 +250,24 @@ export default function DayModal({
                 ))}
               </div>
 
-              {/* Tips Section */}
+              {/* Tips Section - Compact */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="mt-8 p-5 bg-blue-50 rounded-2xl border border-blue-100"
+                className="mt-3 p-2 bg-blue-50 rounded-lg border border-blue-100"
               >
-                <div className="flex items-start gap-3">
-                  <FiInfo className="text-blue-500 text-xl flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Tips för dagen</h4>
-                    <p className="text-sm text-gray-700">
-                      Klicka på varje måltid för att markera den som genomförd. 
-                      Glöm inte att dricka tillräckligt med vatten mellan måltiderna!
-                    </p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <FiInfo className="text-blue-500 text-lg flex-shrink-0" />
+                  <p className="text-xs text-gray-700">
+                    <span className="font-medium">Tips:</span> Klicka på måltider för att markera som genomförda
+                  </p>
                 </div>
               </motion.div>
             </div>
 
             {/* Bottom Actions */}
-            <div className="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
+            <div className="border-t border-gray-200 p-3 sm:p-4 bg-gray-50">
               <div className="flex items-center justify-between">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
