@@ -75,20 +75,39 @@ export async function GET(
       ? mealPlans[weekKey]
       : flowMealPlans[weekKey];
       
+    console.log(`Debug: courseType=${courseType}, weekKey=${weekKey}, weekMeals exists=${!!weekMeals}`);
+    if (weekMeals) {
+      console.log('Days keys:', Object.keys(weekMeals.days));
+    }
+      
     if (!weekMeals || !weekMeals.days) {
+      console.log('Week not found:', { courseType, weekKey, hasWeekMeals: !!weekMeals });
       return NextResponse.json({ error: 'Week not found' }, { status: 404 });
     }
     
     // Collect all recipe links from the week
     const recipeLinks = new Set<string>();
     
-    Object.values(weekMeals.days).forEach(day => {
-      if (day.breakfast?.recipeLink) recipeLinks.add(day.breakfast.recipeLink);
-      if (day.lunch?.recipeLink) recipeLinks.add(day.lunch.recipeLink);
-      if (day.dinner?.recipeLink) recipeLinks.add(day.dinner.recipeLink);
+    // Handle both day1/day2 format (basics) and Måndag/Tisdag format (flow)
+    Object.entries(weekMeals.days).forEach(([dayKey, day]) => {
+      console.log(`Processing day: ${dayKey}`, day);
+      if (day.breakfast?.recipeLink) {
+        console.log('Adding breakfast:', day.breakfast.recipeLink);
+        recipeLinks.add(day.breakfast.recipeLink);
+      }
+      if (day.lunch?.recipeLink) {
+        console.log('Adding lunch:', day.lunch.recipeLink);
+        recipeLinks.add(day.lunch.recipeLink);
+      }
+      if (day.dinner?.recipeLink) {
+        console.log('Adding dinner:', day.dinner.recipeLink);
+        recipeLinks.add(day.dinner.recipeLink);
+      }
       if (day.snack?.recipeLink) recipeLinks.add(day.snack.recipeLink);
       if (day.dessert?.recipeLink) recipeLinks.add(day.dessert.recipeLink);
     });
+    
+    console.log('Recipe links found:', Array.from(recipeLinks));
     
     // Fetch recipes from database
     const recipes = await prisma.recipe.findMany({
