@@ -124,7 +124,7 @@ export default function Week2Page() {
           </motion.p>
         </div>
       </div>
->
+
       {/* Page Title */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Vecka 2: Bygg starkare vanor</h1>

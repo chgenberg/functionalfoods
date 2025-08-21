@@ -228,7 +228,7 @@ export default function Week5Page() {
           </motion.p>
         </div>
       </div>
->
+
       {/* Page Title */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Vecka 5: Flexibilitet och egna val</h1>
