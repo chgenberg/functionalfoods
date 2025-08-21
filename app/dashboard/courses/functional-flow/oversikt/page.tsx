@@ -102,9 +102,7 @@ export default function FunctionalFlowOverview() {
                   `}
                   onClick={() => {
                     if (status !== 'locked') {
-                      window.location.href = weekNumber === 1 
-                        ? '/dashboard/courses/functional-flow' 
-                        : `/dashboard/courses/functional-flow/week/${weekNumber}`;
+                      window.location.href = `/dashboard/courses/functional-flow/week/${weekNumber}`;
                     }
                   }}
                 >

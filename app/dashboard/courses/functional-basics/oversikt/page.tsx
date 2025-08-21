@@ -102,9 +102,7 @@ export default function FunctionalBasicsOverview() {
                   `}
                   onClick={() => {
                     if (status !== 'locked') {
-                      window.location.href = weekNumber === 1 
-                        ? '/dashboard/courses/functional-basics' 
-                        : `/dashboard/courses/functional-basics/week/${weekNumber}`;
+                      window.location.href = `/dashboard/courses/functional-basics/week/${weekNumber}`;
                     }
                   }}
                 >
