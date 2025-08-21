@@ -53,6 +53,15 @@ export default function WeekTemplate({
   // Get current week's meal plan
   const weekKey = `week${weekNumber}`;
   const mealPlan = mealPlans[weekKey];
+  
+  // Debug logging
+  console.log('WeekTemplate Debug:', {
+    weekNumber,
+    weekKey,
+    mealPlan: !!mealPlan,
+    mealPlansKeys: Object.keys(mealPlans),
+    mealPlanDays: mealPlan ? Object.keys(mealPlan.days) : 'No mealPlan'
+  });
 
   // Generate days for current week
   const getDaysForWeek = (weekNum: number): WeekDay[] => {
@@ -286,6 +295,15 @@ export default function WeekTemplate({
             const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
             const dayKey = dayNames[selectedDay - 1];
             const dayData = mealPlan.days[dayKey];
+            
+            console.log('DayModal Debug (WeekTemplate):', {
+              selectedDay,
+              dayKey,
+              dayData: !!dayData,
+              mealPlanDays: Object.keys(mealPlan.days),
+              dayDataKeys: dayData ? Object.keys(dayData) : 'No dayData'
+            });
+            
             if (!dayData) return [];
             
             const meals: any[] = [];
