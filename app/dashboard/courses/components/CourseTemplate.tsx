@@ -160,13 +160,7 @@ export default function CourseTemplate({
                     }
                   `}
                 >
-                  {/* Date tag */}
-                  <div className={`
-                    absolute -top-2 -right-2 px-3 py-1 text-xs rounded-full font-medium
-                    ${day.current ? 'bg-[#014421] text-white' : 'bg-[#014421] text-white'}
-                  `}>
-                    {day.current ? 'Idag' : formatDate(currentWeek, day.day)}
-                  </div>
+
 
                   <div className="text-center">
                     <span className={`text-xs md:text-sm mb-1 ${day.current ? 'text-white' : 'text-gray-600'}`}>{formatDate(currentWeek, day.day)}</span>
