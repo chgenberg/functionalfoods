@@ -1,0 +1,544 @@
+{
+  "items": [
+    {
+      "name": "banan",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "gul lök",
+      "amount": "1.5",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "vitlöksklyfta",
+      "amount": "6",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "salladslök",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "röd paprika",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "gul paprika",
+      "amount": "0.25",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "aubergine",
+      "amount": "0.25",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "mango",
+      "amount": "0.25",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "squash",
+      "amount": "0.2",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "purjolök",
+      "amount": "10",
+      "unit": "cm",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "soltorkade tomater",
+      "amount": "3",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "champinjoner",
+      "amount": "5",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "cocktailtomater",
+      "amount": "5",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "lime",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "rucolasallad",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "citron",
+      "amount": "0.75",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "färsk ingefära",
+      "amount": "1.5",
+      "unit": "cm",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "röd chili",
+      "amount": "1.5",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "färsk koriander",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "basilikakvistar",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "ägg",
+      "amount": "6",
+      "unit": "st",
+      "category": "Mejeri"
+    },
+    {
+      "name": "olivolja",
+      "amount": "4.5",
+      "unit": "msk",
+      "category": "Skafferi"
+    },
+    {
+      "name": "smör",
+      "amount": "3",
+      "unit": "msk",
+      "category": "Mejeri"
+    },
+    {
+      "name": "granatäpplekärnor",
+      "amount": "3",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "furikake",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "keso",
+      "amount": "4",
+      "unit": "dl",
+      "category": "Mejeri"
+    },
+    {
+      "name": "pekannötter",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "rapsolja",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "yoghurt",
+      "amount": "1",
+      "unit": "dl",
+      "category": "Mejeri"
+    },
+    {
+      "name": "solroskärnor",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "pumpafrön",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "hampafrön",
+      "amount": "1.5",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "sesamfrön",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "salt",
+      "amount": "8",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "havregryn",
+      "amount": "5",
+      "unit": "dl",
+      "category": "Skafferi"
+    },
+    {
+      "name": "kardemumma",
+      "amount": "1.5",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "kokosflingor",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "mandelmjölk",
+      "amount": "1",
+      "unit": "dl",
+      "category": "Mejeri"
+    },
+    {
+      "name": "örtagårdskrydda",
+      "amount": "1.5",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "hackad färsk basilika",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "garam masala",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "paprikapulver",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "srirachasås",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "torkade röda linser",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "malen kanel",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "curry",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "ketjap manis",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "cornichons",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "syltlök",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "lingonsylt",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "vit quinoa",
+      "amount": "1",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "clementin eller apelsin",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "hönsbuljongtärning",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "köttbuljongtärning",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "majs",
+      "amount": "160",
+      "unit": "g",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "morot",
+      "amount": "4",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "pak choy",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "palsternacka",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "tärnad morot",
+      "amount": "1",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "bakpulver",
+      "amount": "1.5",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "pistagenötter",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "majonnäs",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Skafferi"
+    },
+    {
+      "name": "apelsin",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "kiwi",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "fänkål",
+      "amount": "0.25",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "mynta",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "vatten",
+      "amount": "14",
+      "unit": "dl",
+      "category": "Skafferi"
+    },
+    {
+      "name": "riven färsk ingefära",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "teriyakisås",
+      "amount": "2.5",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "gräddfil",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Mejeri"
+    },
+    {
+      "name": "malen kardemumma",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "spiskummin",
+      "amount": "0.5",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "hackad persilja",
+      "amount": "3",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "brysselkål",
+      "amount": "10",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "haricots verts",
+      "amount": "100",
+      "unit": "g",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "halloumi",
+      "amount": "150",
+      "unit": "g",
+      "category": "Mejeri"
+    },
+    {
+      "name": "frysta blåbär",
+      "amount": "2",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "frysta hallon",
+      "amount": "2",
+      "unit": "st",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "krossade tomater",
+      "amount": "600",
+      "unit": "g",
+      "category": "Skafferi"
+    },
+    {
+      "name": "keso 4%",
+      "amount": "3",
+      "unit": "dl",
+      "category": "Mejeri"
+    },
+    {
+      "name": "grov bulgur",
+      "amount": "3",
+      "unit": "dl",
+      "category": "Skafferi"
+    },
+    {
+      "name": "kycklingfilé",
+      "amount": "300",
+      "unit": "g",
+      "category": "Kött & Fisk"
+    },
+    {
+      "name": "frysta wokgrönsaker",
+      "amount": "300",
+      "unit": "g",
+      "category": "Frukt & Grönt"
+    },
+    {
+      "name": "nötfärs",
+      "amount": "300",
+      "unit": "g",
+      "category": "Kött & Fisk"
+    },
+    {
+      "name": "torskrygg",
+      "amount": "350",
+      "unit": "g",
+      "category": "Kött & Fisk"
+    },
+    {
+      "name": "laxfilé",
+      "amount": "500",
+      "unit": "g",
+      "category": "Kött & Fisk"
+    },
+    {
+      "name": "lammstek",
+      "amount": "800",
+      "unit": "g",
+      "category": "Kött & Fisk"
+    },
+    {
+      "name": "myntakvistar",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "salt och svartpeppar",
+      "amount": "6",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    },
+    {
+      "name": "svartpeppar",
+      "amount": "1",
+      "unit": "st",
+      "category": "Kryddor & Såser"
+    }
+  ]
+}
