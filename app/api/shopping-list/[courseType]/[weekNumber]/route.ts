@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 
 // Kategorier för ingredienser
 const CATEGORIES: Record<string, string[]> = {
-  'Mejeri': ['mjölk', 'ost', 'yoghurt', 'smör', 'grädde', 'kvarg', 'keso', 'crème fraiche', 'fetaost', 'mozzarella', 'parmesan', 'ägg', 'halloumi', 'ricotta', 'mascarpone'],
-  'Kött & Fisk': ['kyckling', 'lax', 'torsk', 'nötkött', 'fläsk', 'kalkon', 'lamm', 'räkor', 'tonfisk', 'bacon', 'köttfärs', 'korv', 'skinka'],
-  'Frukt & Grönt': ['tomat', 'gurka', 'sallad', 'paprika', 'lök', 'vitlök', 'morötter', 'broccoli', 'spenat', 'äpple', 'banan', 'citron', 'lime', 'avokado', 'potatis', 'sötpotatis', 'zucchini', 'aubergine', 'svamp', 'champinjoner', 'sparris', 'blomkål', 'vitkål', 'rödkål'],
-  'Skafferi': ['mjöl', 'pasta', 'ris', 'quinoa', 'bröd', 'havregryn', 'olivolja', 'salt', 'peppar', 'socker', 'bulgur', 'couscous', 'linser', 'bönor', 'kikärtor'],
-  'Kryddor & Såser': ['basilika', 'oregano', 'timjan', 'persilja', 'soja', 'senap', 'vinäger', 'ketchup', 'majonnäs', 'sriracha', 'curry', 'paprikapulver', 'kanel', 'kardemumma'],
+  'Mejeri': ['mjölk', 'ost', 'yoghurt', 'smör', 'grädde', 'kvarg', 'keso', 'crème fraiche', 'fetaost', 'mozzarella', 'parmesan', 'ägg', 'halloumi', 'ricotta', 'mascarpone', 'gräddfil'],
+  'Kött & Fisk': ['kyckling', 'lax', 'torsk', 'nötkött', 'fläsk', 'kalkon', 'lamm', 'räkor', 'tonfisk', 'bacon', 'köttfärs', 'korv', 'skinka', 'nötfärs', 'kycklingfilé', 'kycklinglårfilé', 'kallrökt'],
+  'Frukt & Grönt': ['tomat', 'gurka', 'sallad', 'paprika', 'lök', 'vitlök', 'morötter', 'broccoli', 'spenat', 'äpple', 'banan', 'citron', 'lime', 'avokado', 'potatis', 'sötpotatis', 'zucchini', 'aubergine', 'svamp', 'champinjoner', 'sparris', 'blomkål', 'vitkål', 'rödkål', 'rödlök', 'squash', 'mango', 'ananas', 'sugarsnaps', 'sockerärtor', 'rucola', 'isberg', 'hjärtsallad', 'selleri', 'cocktailtomater', 'bifftomater'],
+  'Skafferi': ['mjöl', 'pasta', 'ris', 'quinoa', 'bröd', 'havregryn', 'olivolja', 'salt', 'peppar', 'socker', 'bulgur', 'couscous', 'linser', 'bönor', 'kikärtor', 'vatten', 'ketomüsli', 'hampafrön', 'solroskärnor', 'pumpafrön', 'sesamfrön', 'mandelmjölk'],
+  'Kryddor & Såser': ['basilika', 'oregano', 'timjan', 'persilja', 'soja', 'senap', 'vinäger', 'ketchup', 'majonnäs', 'sriracha', 'curry', 'paprikapulver', 'kanel', 'kardemumma', 'chili', 'ingefära', 'koriander', 'örter', 'pesto', 'ketjap', 'honung', 'spiskummin'],
   'Övrigt': []
 };
 
@@ -27,19 +27,29 @@ function categorizeIngredient(ingredient: string): string {
 }
 
 function parseIngredientLine(line: string): { name: string; amount: string; unit: string } | null {
-  // Common patterns for ingredient lines
-  // Examples: "2 dl mjölk", "400 g kyckling", "1 msk olivolja"
+  // Enhanced patterns for ingredient lines
+  // Examples: "2 dl mjölk", "400 g kyckling", "1 msk olivolja", "½ dl gräddfil"
   const patterns = [
-    /^(\d+(?:[.,]\d+)?)\s*(dl|ml|l|g|kg|msk|tsk|st|krm)?\s+(.+)$/i,
-    /^(.+?)\s*[:–]\s*(\d+(?:[.,]\d+)?)\s*(dl|ml|l|g|kg|msk|tsk|st|krm)?$/i,
+    // Standard: "2 dl mjölk", "400 g kyckling"
+    /^(\d+(?:[.,]\d+)?|½|¼|¾|1\/2|1\/4|3\/4)\s*(dl|ml|l|g|kg|msk|tsk|st|krm)\s+(.+)$/i,
+    // With fractions: "1/2 dl hampafrön"
+    /^(\d+\/\d+)\s+(dl|ml|l|g|kg|msk|tsk|st|krm)\s+(.+)$/i,
+    // Amount at end: "Mjölk: 2 dl"
+    /^(.+?)\s*[:–]\s*(\d+(?:[.,]\d+)?|½|¼|¾)\s*(dl|ml|l|g|kg|msk|tsk|st|krm)?$/i,
   ];
   
   for (const pattern of patterns) {
     const match = line.trim().match(pattern);
     if (match) {
-      if (pattern === patterns[0]) {
+      if (pattern === patterns[0] || pattern === patterns[1]) {
+        // Convert fractions to decimals
+        let amount = match[1];
+        if (amount === '½' || amount === '1/2') amount = '0.5';
+        else if (amount === '¼' || amount === '1/4') amount = '0.25';
+        else if (amount === '¾' || amount === '3/4') amount = '0.75';
+        
         return {
-          amount: match[1],
+          amount: amount,
           unit: match[2] || 'st',
           name: match[3].trim()
         };
