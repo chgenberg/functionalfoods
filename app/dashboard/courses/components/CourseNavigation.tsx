@@ -28,6 +28,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   const isOnCommunity = pathname.includes('/community');
   const isOnSettings = pathname.includes('/settings');
   const isOnShoppingList = pathname.includes('/inkopslista');
+  const isOnOverview = pathname.includes('/oversikt');
 
   // Determine active week from URL
   let activeWeek = currentWeek;
@@ -35,12 +36,12 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   if (pathname.includes('/week/')) {
     // We're on a specific week page
     activeWeek = parseInt(pathname.split('/week/')[1].split('/')[0]);
-  } else if (pathname.includes(`/functional-${courseType}`) && !isOnCompletion && !isOnCommunity && !isOnSettings && !isOnShoppingList) {
-    // We're on the main course page (which is Week 1)
-    activeWeek = 1;
   } else if (isOnShoppingList) {
     // We're on shopping list - use currentWeek passed as prop
     activeWeek = currentWeek || 1;
+  } else if (!isOnOverview && !isOnCompletion && !isOnCommunity && !isOnSettings) {
+    // We're on the main course page (which redirects to overview)
+    activeWeek = 0;
   }
 
   return (
@@ -49,10 +50,26 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
         {/* Mobile scroll wrapper with gradient indicators */}
         <div className="relative">
           <div className="flex items-center justify-center gap-2 md:gap-3 overflow-x-auto scrollbar-hide scroll-smooth">
+            {/* Overview Link */}
+            <Link
+              href={`${basePath}/oversikt`}
+              className={`
+                px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0
+                ${pathname.includes('/oversikt') 
+                  ? 'bg-[#014421] text-white shadow-lg' 
+                  : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
+                }
+              `}
+            >
+              <span className="flex items-center gap-1">
+                <span>Översikt</span>
+              </span>
+            </Link>
+            
             {weeks.map((week) => (
               <motion.button
                 key={week.number}
-                onClick={() => window.location.href = (week.number === 1 ? `${basePath}` : `${basePath}/week/${week.number}`)}
+                onClick={() => window.location.href = `${basePath}/week/${week.number}`}
                 className={`
                   px-4 py-2 text-sm md:px-5 md:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0
                   ${week.number === activeWeek 

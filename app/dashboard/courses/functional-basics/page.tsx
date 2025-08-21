@@ -1,15 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import CourseTemplate from '@/app/dashboard/courses/components/CourseTemplate';
 import { mealPlans } from '@/app/data/mealPlans';
 
 export default function FunctionalBasicsPage() {
+  const router = useRouter();
   const [currentWeek, setCurrentWeek] = useState(1);
   const [currentDay, setCurrentDay] = useState(1);
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
+    // Redirect to overview page
+    router.push('/dashboard/courses/functional-basics/oversikt');
+    return;
+    
     // Calculate current week and day based on start date
     const savedStartDate = localStorage.getItem('basicsStartDate');
     if (savedStartDate) {
