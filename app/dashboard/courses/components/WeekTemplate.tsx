@@ -155,8 +155,8 @@ export default function WeekTemplate({
                   </div>
 
                   <div className="text-center">
-                    <span className="text-xs md:text-sm text-gray-600 mb-1">{formatDate(weekNumber, day.day)}</span>
-                    <h3 className="font-bold text-sm sm:text-base md:text-lg mb-3">{day.name}</h3>
+                    <span className={`text-xs md:text-sm mb-1 ${day.current ? 'text-white' : 'text-gray-600'}`}>{formatDate(weekNumber, day.day)}</span>
+                    <h3 className={`font-bold text-sm sm:text-base md:text-lg mb-3 ${day.current ? 'text-white' : 'text-gray-900'}`}>{day.name}</h3>
                     <div className={`
                       w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto overflow-hidden relative
                       ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}
@@ -195,7 +195,7 @@ export default function WeekTemplate({
                     </div>
                     <span className={`
                       text-xs md:text-sm font-medium
-                      ${day.completed ? 'text-green-600' : day.current ? 'text-[#112A12]' : 'text-gray-400'}
+                      ${day.completed ? 'text-green-600' : day.current ? 'text-white' : 'text-gray-400'}
                     `}>
                       {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}
                     </span>
