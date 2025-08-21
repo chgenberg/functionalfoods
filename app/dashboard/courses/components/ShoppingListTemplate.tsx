@@ -107,18 +107,546 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
   const totalCount = ingredients.length;
 
   const handlePrint = () => {
-    window.print();
+    const today = new Date().toLocaleDateString('sv-SE');
+    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
+    
+    // Create the same beautiful HTML template for printing
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inköpslista - ${courseName} Vecka ${week}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #ffffff;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #014421;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #014421;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .course-info {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        
+        .date-info {
+            font-size: 14px;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+        
+        .week-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #014421;
+            margin: 20px 0 8px 0;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        
+        .category {
+            margin-bottom: 32px;
+            break-inside: avoid;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #f3efe3 0%, #e8e0d4 100%);
+            padding: 16px 20px;
+            border-radius: 12px 12px 0 0;
+            border-left: 4px solid #014421;
+        }
+        
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #014421;
+            margin-bottom: 4px;
+        }
+        
+        .category-count {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .ingredients-list {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .ingredient-item:last-child {
+            border-bottom: none;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            margin-right: 16px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .checkbox.checked {
+            background-color: #014421;
+            border-color: #014421;
+        }
+        
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .ingredient-name {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .ingredient-amount {
+            font-size: 13px;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+        
+        .tips-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .tips-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+        
+        .tips-list {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+        }
+        
+        @media print {
+            body {
+                padding: 20px;
+            }
+            
+            .category {
+                break-inside: avoid;
+            }
+            
+            .tips-section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Functional Foods</div>
+        <div class="course-info">${courseName}</div>
+        <div class="date-info">Skapad ${today}</div>
+        <div class="week-title">Inköpslista Vecka ${week}</div>
+        <div class="subtitle">Organiserad efter kategori för enkel shopping</div>
+    </div>
+    
+    ${Object.entries(groupedIngredients).map(([category, items]) => `
+        <div class="category">
+            <div class="category-header">
+                <div class="category-title">${category}</div>
+                <div class="category-count">${items.length} ${items.length === 1 ? 'ingrediens' : 'ingredienser'}</div>
+            </div>
+            <div class="ingredients-list">
+                ${items.map(ingredient => `
+                    <div class="ingredient-item">
+                        <div class="checkbox ${ingredient.checked ? 'checked' : ''}"></div>
+                        <div class="ingredient-name">${ingredient.name}</div>
+                        <div class="ingredient-amount">${ingredient.amount} ${ingredient.unit}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('')}
+    
+    <div class="tips-section">
+        <div class="tips-title">💡 Shoppingtips</div>
+        <div class="tips-list">
+            • Börja med kött & fisk och mejeri för bästa kvalitet<br>
+            • Köp frukt & grönt sist för att undvika skador<br>
+            • Kontrollera bäst före-datum på mejeri och kött<br>
+            • Ha denna lista på telefonen för enkel åtkomst i butiken
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-text">
+            Genererad från ${courseName} - Vecka ${week}<br>
+            © ${new Date().getFullYear()} Functional Foods med Ulrika Davidsson
+        </div>
+    </div>
+</body>
+</html>`;
+
+    // Open print window with beautiful template
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      printWindow.focus();
+      
+      // Wait for content to load, then print
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 500);
+    }
   };
 
   const handleExport = () => {
-    const checkedIngredients = ingredients.filter(i => i.checked);
-    const exportText = checkedIngredients.map(i => `${i.name} - ${i.amount} ${i.unit}`).join('\n');
+    const today = new Date().toLocaleDateString('sv-SE');
+    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
     
-    const blob = new Blob([exportText], { type: 'text/plain' });
+    // Create beautiful HTML template for export/print
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inköpslista - ${courseName} Vecka ${week}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #ffffff;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #014421;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #014421;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .course-info {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        
+        .date-info {
+            font-size: 14px;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+        
+        .week-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #014421;
+            margin: 20px 0 8px 0;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        
+        .category {
+            margin-bottom: 32px;
+            break-inside: avoid;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #f3efe3 0%, #e8e0d4 100%);
+            padding: 16px 20px;
+            border-radius: 12px 12px 0 0;
+            border-left: 4px solid #014421;
+        }
+        
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #014421;
+            margin-bottom: 4px;
+        }
+        
+        .category-count {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .ingredients-list {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+        
+        .ingredient-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ingredient-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            margin-right: 16px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .checkbox.checked {
+            background-color: #014421;
+            border-color: #014421;
+        }
+        
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .ingredient-name {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .ingredient-amount {
+            font-size: 13px;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+        
+        .tips-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .tips-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+        
+        .tips-list {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+        }
+        
+        @media print {
+            body {
+                padding: 20px;
+            }
+            
+            .category {
+                break-inside: avoid;
+            }
+            
+            .tips-section {
+                break-inside: avoid;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 16px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .week-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Functional Foods</div>
+        <div class="course-info">${courseName}</div>
+        <div class="date-info">Skapad ${today}</div>
+        <div class="week-title">Inköpslista Vecka ${week}</div>
+        <div class="subtitle">Organiserad efter kategori för enkel shopping</div>
+    </div>
+    
+    ${Object.entries(groupedIngredients).map(([category, items]) => `
+        <div class="category">
+            <div class="category-header">
+                <div class="category-title">${category}</div>
+                <div class="category-count">${items.length} ${items.length === 1 ? 'ingrediens' : 'ingredienser'}</div>
+            </div>
+            <div class="ingredients-list">
+                ${items.map(ingredient => `
+                    <div class="ingredient-item">
+                        <div class="checkbox ${ingredient.checked ? 'checked' : ''}"></div>
+                        <div class="ingredient-name">${ingredient.name}</div>
+                        <div class="ingredient-amount">${ingredient.amount} ${ingredient.unit}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('')}
+    
+    <div class="tips-section">
+        <div class="tips-title">💡 Shoppingtips</div>
+        <div class="tips-list">
+            • Börja med kött & fisk och mejeri för bästa kvalitet<br>
+            • Köp frukt & grönt sist för att undvika skador<br>
+            • Kontrollera bäst före-datum på mejeri och kött<br>
+            • Ha denna lista på telefonen för enkel åtkomst i butiken
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-text">
+            Genererad från ${courseName} - Vecka ${week}<br>
+            © ${new Date().getFullYear()} Functional Foods med Ulrika Davidsson
+        </div>
+    </div>
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `inköpslista-${courseType}-vecka-${week}.txt`;
+    a.download = `inköpslista-${courseType}-vecka-${week}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -341,23 +869,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
         )}
       </div>
 
-      {/* Print styles */}
-      <style jsx global>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          .bg-white.rounded-xl, .bg-white.rounded-xl * {
-            visibility: visible;
-          }
-          .bg-white.rounded-xl {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-          }
-        }
-      `}</style>
+
     </div>
   );
 } 
