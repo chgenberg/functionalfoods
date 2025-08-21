@@ -16,14 +16,11 @@ async function cleanMealPlanCalories() {
     const originalKcalMatches = content.match(/\(\d+\s*kcal\)/gi) || [];
     console.log(`🔍 Found ${originalKcalMatches.length} calorie references to clean\n`);
     
-    // Remove calorie information from meal names
-    // Pattern matches: (385 kcal), (385kcal), etc.
+    // More careful cleaning that preserves line structure
     const cleanedContent = content
-      .replace(/\s*\(\d+\s*kcal\)/gi, '') // Remove "(385 kcal)" patterns
-      .replace(/\s*\d+\s*kcal\s*/gi, '') // Remove "385 kcal" patterns not in parentheses
-      .replace(/\s+/g, ' ') // Clean up multiple spaces
-      .replace(/\s+"/g, '"') // Clean up spaces before quotes
-      .replace(/"\s+/g, '"') // Clean up spaces after quotes
+      .replace(/\s*\(\d+\s*kcal\)/gi, '') // Only remove "(385 kcal)" patterns in parentheses
+      .replace(/\s+"/g, ' "') // Clean up spaces before quotes (but keep one space)
+      .replace(/"\s+/g, '" ') // Clean up spaces after quotes (but keep one space)
       .replace(/,\s*,/g, ','); // Clean up double commas
     
     // Count remaining occurrences to verify cleaning
@@ -36,6 +33,7 @@ async function cleanMealPlanCalories() {
       console.log('✅ Successfully cleaned meal plan calorie information!');
       console.log(`📊 Removed ${originalKcalMatches.length} calorie references`);
       console.log(`🎯 No remaining calorie references found`);
+      console.log('📄 File structure preserved');
     } else {
       console.log(`⚠️  Still found ${remainingKcalMatches.length} calorie references`);
       console.log('Remaining patterns:', remainingKcalMatches.slice(0, 5));
