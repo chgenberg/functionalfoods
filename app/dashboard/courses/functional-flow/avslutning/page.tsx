@@ -5,25 +5,35 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowLeft, FiCheck, FiHeart, FiTarget, FiStar, FiBookOpen } from 'react-icons/fi';
 
-export default function CompletionPage() {
+import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
+import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
+import VideoModal from '@/app/dashboard/courses/components/VideoModal';
+
+export default function FlowCompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard/courses/functional-flow" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <FiArrowLeft className="w-5 h-5" />
-            </Link>
-            <h1 className="text-2xl font-bold text-[#014421]">Kursen avslutad</h1>
-          </div>
+      {/* Hero Section with Video */}
+      <WeekHeroWithVideo
+        weekNumber={7}
+        weekTitle="Kursen avslutad"
+        weekSubtitle="Stort grattis! Här är din avslutningsfilm och nästa steg"
+        heroImage="/Ulrika_portratt/udavidssondesktop.png"
+        videoUrl="https://player.vimeo.com/video/1058943393"
+      />
+
+      {/* Course Navigation - After Hero Section */}
+      <div className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+          <CourseNavigation courseType="flow" currentWeek={6} />
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
+        <h1 className="text-3xl font-bold text-[#014421] text-center mb-8">Kursen avslutad</h1>
+        
         {/* Video Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -32,12 +42,12 @@ export default function CompletionPage() {
         >
           <div className="relative bg-black rounded-2xl overflow-hidden aspect-video shadow-2xl">
             <iframe
-              src="https://player.vimeo.com/video/1084929149"
+              src="https://player.vimeo.com/video/1058943393"
               className="w-full h-full"
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
-              title="Functional Basics Completion"
+              title="Functional Flow Completion"
             />
           </div>
         </motion.div>
@@ -50,7 +60,7 @@ export default function CompletionPage() {
           className="bg-white rounded-2xl shadow-lg p-8 mb-8"
         >
           <div className="flex items-center justify-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#FFB5A7] to-[#FCD5CE] rounded-full flex items-center justify-center">
+            <div className="w-20 h-20 bg-[#014421] rounded-full flex items-center justify-center">
               <FiCheck className="w-10 h-10 text-white" />
             </div>
           </div>
@@ -61,7 +71,7 @@ export default function CompletionPage() {
           
           <div className="space-y-4 text-gray-700 leading-relaxed">
             <p>
-              Nu är du i mål och du har under 6 veckor gett din kropp så mycket mervärdesmat, du har lärt dig laga goda functional foods maträtter och förändrat din hälsa på många plan. Efter att du har följt dessa förberedda veckor med kostscheman och inköpslistor är det dags att ta nästa steg och börja planera själv. Du har fått lärdom och kunskap om hur Functional Foods fungerar och vilka råvaror som bör ingå dagligen i din kost. Jag hoppas också att du känner glädje i köket och tycker att det är roligt att laga din egen mat på ett hälsosamt sätt.
+              Nu har du genomfört Functional Flow och tagit din hälsa till nästa nivå! Under 6 veckor har du fördjupat din kunskap om avancerad näringsoptimering, prestationshöjande kost och antiinflammatoriska livsstilsval. Du har lärt dig att optimera din energi, förbättra återhämtning och skapa en personlig hälsostrategi som fungerar för dig.
             </p>
             
             <p>
@@ -74,10 +84,10 @@ export default function CompletionPage() {
           </div>
 
           <motion.a
-            href="mailto:info@functionalfoods.se?subject=Min upplevelse av Functional Basics"
+            href="mailto:info@functionalfoods.se?subject=Min upplevelse av Functional Flow"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="mt-8 mx-auto flex items-center gap-2 bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all max-w-fit"
+            className="mt-8 mx-auto flex items-center gap-2 bg-gradient-to-r from-[#014421] to-[#027A48] text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all max-w-fit"
           >
             <FiHeart className="w-5 h-5" />
             Berätta vad du tycker och få vår e-bok "Functional Foods" utan kostnad
@@ -89,7 +99,7 @@ export default function CompletionPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-br from-[#014421] to-[#112A12] rounded-2xl shadow-lg p-8 text-white"
+          className="bg-[#014421] rounded-2xl shadow-lg p-8 text-white"
         >
           <div className="flex items-center gap-3 mb-6">
             <FiTarget className="w-8 h-8" />
@@ -114,15 +124,15 @@ export default function CompletionPage() {
             
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
-                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#FFB5A7]" />
+                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
                 <span>Fundera på vad är det som gör att du får en lägre motivation?</span>
               </li>
               <li className="flex items-start gap-2">
-                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#FFB5A7]" />
+                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
                 <span>Hur ska du hantera din situation när du känner dig omotiverad?</span>
               </li>
               <li className="flex items-start gap-2">
-                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#FFB5A7]" />
+                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
                 <span>Har du någon i din närhet som kan stötta dig och peppa dig?</span>
               </li>
             </ul>
@@ -144,9 +154,9 @@ export default function CompletionPage() {
           transition={{ delay: 0.6 }}
           className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4"
         >
-          <Link href="/dashboard/courses/functional-flow" className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all">
-            <h4 className="font-semibold text-[#014421] mb-2">Fortsätt med Flow</h4>
-            <p className="text-sm text-gray-600">Ta din hälsa till nästa nivå</p>
+          <Link href="/dashboard/courses/functional-basics" className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all">
+            <h4 className="font-semibold text-[#014421] mb-2">Repetera Basics</h4>
+            <p className="text-sm text-gray-600">Fräscha upp grunderna</p>
           </Link>
           
           <Link href="/kunskapsbank/recept" className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all">
@@ -160,6 +170,15 @@ export default function CompletionPage() {
           </Link>
         </motion.div>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={false}
+        onClose={() => {}}
+        weekNumber={7}
+        weekTitle="Kursen avslutad"
+        videoUrl="https://player.vimeo.com/video/1058943393"
+      />
     </div>
   );
 } 

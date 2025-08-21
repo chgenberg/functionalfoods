@@ -195,7 +195,7 @@ export default function WeekTemplate({
                     </div>
                     <span className={`
                       text-xs md:text-sm font-medium
-                      ${day.completed ? 'text-green-600' : day.current ? 'text-white' : 'text-gray-400'}
+                      ${day.completed ? 'text-green-600' : day.current ? 'text-white' : 'text-gray-600'}
                     `}>
                       {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}
                     </span>
@@ -282,7 +282,9 @@ export default function WeekTemplate({
           dayNumber={selectedDay}
           dayName={weekDays.find(d => d.day === selectedDay)?.name || ''}
           meals={(() => {
-            const dayKey = `day${selectedDay}`;
+            // Map day numbers to Swedish day names
+            const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+            const dayKey = dayNames[selectedDay - 1];
             const dayData = mealPlan.days[dayKey];
             if (!dayData) return [];
             
