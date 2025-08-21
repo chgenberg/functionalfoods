@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { mealPlans, flowMealPlans, type WeekMealPlan } from '@/app/data/mealPlans';
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -79,6 +81,30 @@ export async function GET(
     const { courseType, weekNumber } = params;
     const weekNum = parseInt(weekNumber);
     
+    // Try curated list first
+    try {
+      const curatedPath = path.join(process.cwd(), 'app', 'data', 'shoppingLists', `curated-${courseType}-week${weekNum}.json`);
+      if (fs.existsSync(curatedPath)) {
+        const parsed = JSON.parse(fs.readFileSync(curatedPath, 'utf-8'));
+        if (parsed && Array.isArray(parsed.items)) {
+          return NextResponse.json({
+            week: weekNum,
+            courseType,
+            recipeCount: -1,
+            ingredients: parsed.items.map((i: any) => ({
+              name: i.name,
+              amount: String(i.amount || ''),
+              unit: i.unit || 'st',
+              category: i.category || 'Övrigt',
+              checked: false
+            })),
+            generatedAt: new Date().toISOString(),
+            source: 'curated'
+          });
+        }
+      }
+    } catch {}
+
     // Get meal plan for the week
     const weekKey = `week${weekNum}`;
     const weekMeals: WeekMealPlan | undefined = courseType === 'basics' 

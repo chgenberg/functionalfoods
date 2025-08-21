@@ -1,165 +1,125 @@
-const { PrismaClient } = require('@prisma/client');
-const { mealPlans } = require('../app/data/mealPlans');
+/*
+  Smart weekly shopping list generator using OpenAI
+  - Reads raw weekly ingredients via existing API /api/shopping-list/[courseType]/[weekNumber]
+  - Asks GPT to normalize, merge, categorize, and standardize units
+  - Saves curated JSON to app/data/shoppingLists/curated-<courseType>-week<week>.json
 
-function extractBaseIngredient(ingredient) {
-  if (!ingredient) return '';
-  
-  // Remove quantities and measurements
-  let base = ingredient
-    .replace(/^\d+[\s\/]*\d*\s*(dl|g|ml|kg|l|tsk|msk|st|cm|%|gram|liter|skivor?|klyftor?|bitar?)\s*/i, '')
-    .replace(/^[½¼¾⅓⅔]\s*(dl|g|ml|kg|l|tsk|msk|st|cm)\s*/i, '')
-    .replace(/^(en|ett|några|lite|stor|liten|färsk|fryst|konserverad|hackad|riven|skivad|torkad)\s+/i, '')
-    .replace(/\s*\([^)]*\)/g, '') // remove parentheses
-    .trim();
-  
-  // Normalize common ingredients
-  const normalizations = {
-    'parmesanost': 'parmesan',
-    'riven parmesan': 'parmesan',
-    'parmesan riven': 'parmesan',
-    'grekisk yoghurt': 'yoghurt',
-    'olivolja extra virgin': 'olivolja',
-    'salt och svartpeppar': 'salt och peppar',
-    'salt och peppar': 'salt och peppar',
-    'vitlöksklyfta': 'vitlök',
-    'vitlöksklyftor': 'vitlök',
-    'gul lök': 'lök',
-    'röd lök': 'lök',
-    'salladslök': 'lök',
-    'cocktailtomater': 'tomater',
-    'krossade tomater': 'tomater',
-    'körsbärstomater': 'tomater'
-  };
-  
-  const lower = base.toLowerCase();
-  for (const [pattern, replacement] of Object.entries(normalizations)) {
-    if (lower.includes(pattern)) {
-      return replacement;
+  Usage examples:
+  OPENAI_API_KEY=... node scripts/generateSmartShoppingLists.js --course basics --weeks 1,2,3
+  OPENAI_API_KEY=... node scripts/generateSmartShoppingLists.js --all
+*/
+
+const fs = require('fs');
+const path = require('path');
+const OpenAI = require('openai');
+
+const API_BASE = process.env.SHOPPING_API_BASE || 'https://ulrika-functional-foods-production.up.railway.app';
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const opts = { course: null, weeks: [], all: false };
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === '--course' && args[i + 1]) {
+      opts.course = args[++i];
+    } else if (a === '--weeks' && args[i + 1]) {
+      opts.weeks = args[++i].split(',').map(s => parseInt(s.trim(), 10)).filter(Boolean);
+    } else if (a === '--all') {
+      opts.all = true;
     }
   }
-  
-  return base;
+  return opts;
 }
 
-function categorizeIngredient(ingredient) {
-  const categories = {
-    'Kött & Fisk': ['kött', 'kyckling', 'lax', 'torsk', 'tonfisk', 'räkor', 'scampi', 'nötfärs', 'köttfärs', 'lammfärs', 'kalkon', 'entrecote', 'lövbiff'],
-    'Mejeri': ['mjölk', 'grädde', 'yoghurt', 'keso', 'ost', 'mozzarella', 'fetaost', 'parmesan', 'brie', 'gorgonzola', 'halloumi', 'burrata', 'chèvre'],
-    'Grönsaker': ['lök', 'vitlök', 'tomater', 'gurka', 'paprika', 'morötter', 'broccoli', 'blomkål', 'spenat', 'rucola', 'sallad', 'avokado'],
-    'Frukt & Bär': ['äpple', 'banan', 'mango', 'ananas', 'jordgubbar', 'hallon', 'blåbär', 'citron', 'lime', 'apelsin', 'vindruvor'],
-    'Torrvaror': ['ris', 'pasta', 'quinoa', 'bulgur', 'havregryn', 'linser', 'kikärtor', 'nötter', 'mandel', 'cashew'],
-    'Kryddor & Såser': ['salt och peppar', 'oregano', 'basilika', 'timjan', 'paprika', 'curry', 'sojasås', 'olivolja', 'vinäger'],
-    'Övrigt': []
-  };
-  
-  const lower = ingredient.toLowerCase();
-  for (const [category, keywords] of Object.entries(categories)) {
-    if (keywords.some(keyword => lower.includes(keyword))) {
-      return category;
-    }
+async function fetchWeeklyIngredients(courseType, week) {
+  const url = `${API_BASE}/api/shopping-list/${courseType}/${week}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+  const data = await res.json();
+  return data.ingredients || [];
+}
+
+function systemPrompt() {
+  return `Du är en expert på att skapa inköpslistor från receptingredienser på svenska.
+Givet en lista med råa ingrediensrader ska du:
+- Slå samman dubbletter och normalisera enheter (g, kg, ml, l, tsk, msk, st)
+- Försök räkna ihop kvantiteter där möjligt
+- Standardisera namn (ex: "vitlöksklyfta", "gul lök", "olivolja")
+- Sätt kategori: Mejeri, Kött & Fisk, Frukt & Grönt, Skafferi, Kryddor & Såser
+- Returnera ENDAST JSON med fält: items: [{ name, amount, unit, category }]
+- amount ska vara ett tal eller bråk i text (ex "0.5" eller "1")
+- unit får vara en av: g, kg, ml, l, tsk, msk, st
+- name ska inte innehålla mängd eller enhet
+`;
+}
+
+function userPrompt(rawIngredients) {
+  const joined = rawIngredients.map(i => {
+    if (typeof i === 'string') return i;
+    const parts = [i.amount, i.unit, i.name].filter(Boolean).join(' ');
+    return parts || i.name || '';
+  }).filter(Boolean).join('\n');
+  return `RAKA INGREDIENSRADER (en per rad):\n${joined}`;
+}
+
+async function curateWeeklyList(courseType, week) {
+  console.log(`\n🛒 Curating ${courseType} week ${week}...`);
+  const raw = await fetchWeeklyIngredients(courseType, week);
+  if (raw.length === 0) {
+    console.log('  ⚠️  No ingredients found. Skipping.');
+    return null;
   }
-  return 'Övrigt';
+
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    temperature: 0.1,
+    messages: [
+      { role: 'system', content: systemPrompt() },
+      { role: 'user', content: userPrompt(raw) }
+    ]
+  });
+
+  const text = completion.choices[0]?.message?.content?.trim() || '';
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    // Try to extract JSON block
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('Failed to parse model JSON');
+    parsed = JSON.parse(match[0]);
+  }
+
+  if (!parsed || !Array.isArray(parsed.items)) {
+    throw new Error('Model did not return items[]');
+  }
+
+  const outDir = path.join(process.cwd(), 'app', 'data', 'shoppingLists');
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+  const outPath = path.join(outDir, `curated-${courseType}-week${week}.json`);
+  fs.writeFileSync(outPath, JSON.stringify(parsed, null, 2), 'utf-8');
+  console.log(`  ✅ Saved ${outPath} (${parsed.items.length} items)`);
+  return parsed;
 }
 
 (async () => {
-  const prisma = new PrismaClient();
   try {
-    // Get the "Functional Basics" course
-    const basicsCourse = await prisma.courseProduct.findFirst({
-      where: { name: { equals: 'Functional Basics', mode: 'insensitive' } }
-    });
+    const opts = parseArgs();
+    const courses = opts.all ? ['basics', 'flow'] : (opts.course ? [opts.course] : ['basics']);
+    const weeks = opts.all ? [1,2,3,4,5,6] : (opts.weeks.length ? opts.weeks : [1]);
 
-    if (!basicsCourse) {
-      console.error('❌ Functional Basics course not found');
-      return;
+    for (const c of courses) {
+      for (const w of weeks) {
+        await curateWeeklyList(c, w);
+        await new Promise(r => setTimeout(r, 1200)); // rate-limit safety
+      }
     }
 
-    console.log(`🛒 Generating smart shopping lists for ${basicsCourse.name}...`);
-
-    for (let week = 1; week <= 6; week++) {
-      console.log(`\n📅 Processing Week ${week}...`);
-      
-      const weekPlan = mealPlans[`week${week}`];
-      if (!weekPlan) {
-        console.log(`⚠️ No meal plan for week ${week}`);
-        continue;
-      }
-
-      const ingredientMap = new Map(); // base ingredient -> count
-      let processedMeals = 0;
-
-      // Process each day in the week
-      for (const [dayName, dayMeals] of Object.entries(weekPlan.days)) {
-        for (const [mealType, meal] of Object.entries(dayMeals)) {
-          if (!meal?.recipeLink || /rester|16:8/i.test(meal.name)) continue;
-          
-          const slug = meal.recipeLink.split('/').pop();
-          const recipe = await prisma.recipe.findUnique({ 
-            where: { slug },
-            select: { ingredients: true, title: true }
-          });
-          
-          if (!recipe) {
-            console.log(`⚠️ Recipe not found: ${slug} (${meal.name})`);
-            continue;
-          }
-
-          processedMeals++;
-          for (const ingredient of recipe.ingredients) {
-            const base = extractBaseIngredient(ingredient);
-            if (base) {
-              ingredientMap.set(base, (ingredientMap.get(base) || 0) + 1);
-            }
-          }
-        }
-      }
-
-      // Create shopping list items with categories
-      const items = Array.from(ingredientMap.entries()).map(([ingredient, count]) => ({
-        ingredient,
-        category: categorizeIngredient(ingredient),
-        count
-      }));
-
-      // Sort by category then alphabetically
-      items.sort((a, b) => {
-        if (a.category !== b.category) return a.category.localeCompare(b.category);
-        return a.ingredient.localeCompare(b.ingredient);
-      });
-
-      // Upsert shopping list
-      const existingList = await prisma.weeklyShoppingList.findUnique({
-        where: { courseId_week: { courseId: basicsCourse.id, week } }
-      });
-
-      if (existingList) {
-        await prisma.shoppingListItem.deleteMany({ where: { listId: existingList.id } });
-      }
-
-      const shoppingList = await prisma.weeklyShoppingList.upsert({
-        where: { courseId_week: { courseId: basicsCourse.id, week } },
-        create: { courseId: basicsCourse.id, week },
-        update: {}
-      });
-
-      if (items.length > 0) {
-        await prisma.shoppingListItem.createMany({
-          data: items.map(item => ({
-            listId: shoppingList.id,
-            ingredient: item.ingredient
-          }))
-        });
-      }
-
-      console.log(`✅ Week ${week}: ${items.length} ingredients from ${processedMeals} meals`);
-      console.log(`   Categories: ${Object.keys(items.reduce((acc, item) => ({ ...acc, [item.category]: true }), {})).join(', ')}`);
-    }
-
-    console.log('\n🎉 Smart shopping lists generated!');
-  } catch (e) {
-    console.error('❌ Shopping list generation failed:', e.message || e);
+    console.log('\n🎉 Done. API will now use curated lists when present.');
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ Error:', err.message);
     process.exit(1);
-  } finally {
-    await prisma.$disconnect();
   }
 })(); 
