@@ -94,9 +94,8 @@ export default function DayModal({
             className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header with Gradient */}
-            <div className="relative bg-gradient-to-br from-[#014421] via-[#116530] to-[#1a7f3d] text-white p-4 sm:p-6">
-              <div className="absolute inset-0 bg-black/10"></div>
+            {/* Modal Header - Solid Green */}
+            <div className="relative bg-[#014421] text-white p-4 sm:p-6">
               <div className="relative z-10">
                 <div className="flex items-start justify-between">
                   <div>

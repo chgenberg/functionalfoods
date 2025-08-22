@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { FiX, FiSend, FiMessageCircle } from 'react-icons/fi';
+import { usePathname } from 'next/navigation';
 import UserProfileSummary from './UserProfileSummary';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
 
@@ -15,12 +16,16 @@ interface Message {
 export default function ChatBot() {
   const { locale } = useLanguage();
   const t = useT();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Check if we're on dashboard page
+  const isDashboardPage = pathname.startsWith('/dashboard/');
 
   useEffect(() => { setIsClient(true); }, []);
 
@@ -98,10 +103,10 @@ export default function ChatBot() {
 
   return (
     <>
-      {/* Chat Button */}
+      {/* Chat Button - Hidden on mobile dashboard */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'}`}
+        className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'} ${isDashboardPage ? 'hidden md:block' : ''}`}
       >
         <FiMessageCircle className="w-6 h-6" />
       </button>
