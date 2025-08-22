@@ -168,11 +168,16 @@ export default function Header() {
         <div className="relative flex items-center h-24 md:h-28">
           {/* Mobile hamburger menu - LEFT SIDE */}
           <div className="lg:hidden">
-            <button type="button" className="relative w-10 h-10 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <div className="w-5 h-5 relative">
-                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-2' : 'top-1'}`}></span>
-                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'top-2'}`}></span>
-                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-2' : 'top-3'}`}></span>
+            <button 
+              type="button" 
+              className="relative w-11 h-11 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 flex items-center justify-center group"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Öppna meny"
+            >
+              <div className="w-6 h-5 relative flex flex-col justify-between">
+                <span className={`block h-0.5 w-full bg-gray-800 transform transition-all duration-300 origin-left ${mobileMenuOpen ? 'rotate-45 translate-x-px' : ''}`}></span>
+                <span className={`block h-0.5 w-full bg-gray-800 transition-all duration-300 ${mobileMenuOpen ? 'opacity-0 scale-x-0' : ''}`}></span>
+                <span className={`block h-0.5 w-full bg-gray-800 transform transition-all duration-300 origin-left ${mobileMenuOpen ? '-rotate-45 translate-x-px' : ''}`}></span>
               </div>
             </button>
           </div>
@@ -241,47 +246,114 @@ export default function Header() {
 
         {mobileMenuOpen && (<div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-fade-in" onClick={() => setMobileMenuOpen(false)} />)}
 
-        <div className={`fixed top-36 md:top-40 left-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <nav className="py-6 px-4 space-y-2 h-full overflow-y-auto">
-            <div className="block lg:hidden mb-4">
+        <div className={`fixed top-0 left-0 bottom-0 w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          {/* Mobile menu header */}
+          <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 flex items-center justify-between">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+              <Image src="/FF_logo.svg" alt="Functional Foods" width={140} height={56} className="h-10 w-auto" />
+            </Link>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center"
+              aria-label="Stäng meny"
+            >
+              <FiX className="w-5 h-5 text-gray-700" />
+            </button>
+          </div>
+
+          <nav className="py-4 px-4 h-full overflow-y-auto mobile-menu-scroll">
+            {/* Language switcher at top */}
+            <div className="mb-6">
               <LanguageSwitcher />
             </div>
-            {menuItems.map((item, index) => (
-              <div key={item.label} className={`animate-fade-in-up`} style={{ animationDelay: `${index * 50}ms` }}>
-                <Link href={item.href} className="flex items-center justify-between px-4 py-3 text-base font-medium text-primary hover:text-accent bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200" onClick={() => setMobileMenuOpen(false)}>
-                  <span>{item.label}</span>
-                  {item.submenu && <FiChevronDown className="w-5 h-5" />}
-                </Link>
-                {item.submenu && (
-                  <div className="mt-1 space-y-1 pl-3">
-                    {item.submenu.map((subItem) => (
-                      <Link key={subItem.label} href={subItem.href} className="block px-4 py-2 text-sm text-text-secondary hover:text-accent bg-white hover:bg-gray-50 rounded-lg transition-all duration-200" onClick={() => setMobileMenuOpen(false)}>
-                        {subItem.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
 
-            <div className="pt-4 mt-4 border-t border-gray-200">
+            {/* Main menu items */}
+            <div className="space-y-1">
+              {menuItems.map((item, index) => (
+                <div key={item.label} className={`animate-fade-in-up`} style={{ animationDelay: `${index * 50}ms` }}>
+                  {item.submenu ? (
+                    <div className="mb-1">
+                      <button
+                        onClick={() => setActiveDropdown(activeDropdown === item.label ? null : item.label)}
+                        className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200"
+                      >
+                        <span>{item.label}</span>
+                        <FiChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${activeDropdown === item.label ? 'rotate-180' : ''}`} />
+                      </button>
+                      <div className={`mt-1 space-y-1 transition-all duration-200 ${activeDropdown === item.label ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+                        {item.submenu.map((subItem) => (
+                          <Link
+                            key={subItem.label}
+                            href={subItem.href}
+                            className="block px-4 py-2.5 pl-8 text-sm text-gray-600 hover:text-[#014421] hover:bg-gray-50 rounded-lg transition-all duration-200"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            {subItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="block px-4 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <span>{item.label}</span>
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* User section */}
+            <div className="mt-8 pt-6 border-t border-gray-200">
               {user ? (
-                <div className="space-y-2">
-                  <Link href="/mina-kurser" className="flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-primary hover:bg-secondary rounded-xl transition-all duration-200" onClick={() => setMobileMenuOpen(false)}>
+                <div className="space-y-3">
+                  <Link
+                    href="/mina-kurser"
+                    className="flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-[#014421] hover:bg-[#116530] rounded-lg transition-all duration-200"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <span>{t('nav.myCourses','Mina kurser')}</span>
                     <FiArrowRight className="w-5 h-5" />
                   </Link>
-                  <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-xl transition-all duration-200">
+                  <Link
+                    href={getDirectDashboardLink(user.email)}
+                    className="flex items-center justify-between px-4 py-3 text-base font-medium text-[#014421] bg-[#014421]/10 hover:bg-[#014421]/20 rounded-lg transition-all duration-200"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>Dashboard</span>
+                    <FiArrowRight className="w-5 h-5" />
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setMobileMenuOpen(false); }}
+                    className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200"
+                  >
                     <span>{t('nav.logout','Logga ut')}</span>
                     <FiLogOut className="w-5 h-5" />
                   </button>
                 </div>
               ) : (
-                <button onClick={() => { setShowLogin(true); setMobileMenuOpen(false); }} className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-primary hover:bg-accent rounded-xl transition-all duration-200">
+                <button
+                  onClick={() => { setShowLogin(true); setMobileMenuOpen(false); }}
+                  className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-[#014421] hover:bg-[#116530] rounded-lg transition-all duration-200"
+                >
                   <span>{t('nav.login','Logga in')}</span>
                   <FiUser className="w-5 h-5" />
                 </button>
               )}
+            </div>
+
+            {/* Bottom section with search */}
+            <div className="mt-6 pb-20">
+              <button
+                onClick={() => { setShowSearch(true); setMobileMenuOpen(false); }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-base font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200"
+              >
+                <FiSearch className="w-5 h-5" />
+                <span>{t('nav.search','Sök')}</span>
+              </button>
             </div>
           </nav>
         </div>
