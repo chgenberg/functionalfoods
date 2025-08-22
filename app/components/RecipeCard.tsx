@@ -55,7 +55,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
               objectPosition: 'center',
               imageOrientation: 'from-image'
             }}
-            unoptimized
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={false}
+            quality={75}
           />
         ) : (
           <div className="w-full h-full bg-background flex items-center justify-center">

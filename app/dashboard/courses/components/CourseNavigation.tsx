@@ -173,24 +173,24 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
       {/* Mobile Bottom Navigation */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
         <div className="relative">
-          {/* Subtle scroll indicators */}
-          <div className="absolute left-0 top-0 bottom-0 w-4 bg-white z-10 flex items-center justify-start pl-1">
-            <div className="w-2 h-2 rounded-full bg-[#014421] opacity-40"></div>
+          {/* Subtle scroll indicators - positioned to not cover content */}
+          <div className="absolute left-0 top-0 bottom-0 w-2 bg-white z-10 flex items-center justify-center">
+            <div className="w-1 h-1 rounded-full bg-[#014421] opacity-40"></div>
           </div>
-          <div className="absolute right-0 top-0 bottom-0 w-4 bg-white z-10 flex items-center justify-end pr-1">
-            <div className="w-2 h-2 rounded-full bg-[#014421] opacity-40"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-2 bg-white z-10 flex items-center justify-center">
+            <div className="w-1 h-1 rounded-full bg-[#014421] opacity-40"></div>
           </div>
           
           <div 
             ref={scrollContainerRef}
-            className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth px-4 py-3"
+            className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth px-2 py-3"
             style={{ scrollSnapType: 'x mandatory' }}
           >
             {/* Overview - Always visible first */}
             <Link
               href={`${basePath}/oversikt`}
               className={`
-                flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all flex-shrink-0 min-w-[70px]
+                flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all flex-shrink-0 min-w-[75px]
                 ${pathname.includes('/oversikt') 
                   ? 'bg-[#014421] text-white' 
                   : 'text-[#014421] hover:bg-[#014421]/10'

@@ -169,9 +169,6 @@ export default function FunctionalFlowOverview() {
 
         </motion.div>
 
-        {/* Info Popup Grid */}
-        <InfoPopupGrid courseType="flow" />
-
         {/* Weeks Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

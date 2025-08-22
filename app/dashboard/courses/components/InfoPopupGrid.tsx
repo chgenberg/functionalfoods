@@ -248,37 +248,89 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
               </div>
 
               {/* Modal Content */}
-              <div className="p-6 overflow-y-auto max-h-[70vh]">
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 200px)' }}>
                 {loading ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
                   </div>
                 ) : (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {content.split('\n').map((paragraph, index) => {
                       const trimmed = paragraph.trim();
                       if (!trimmed) return null;
                       
-                      // Check if it's a heading (all caps or starts with certain patterns)
-                      const isHeading = trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 100;
-                      const isQuestion = trimmed.endsWith('?') && trimmed.length < 200;
+                      // Handle markdown bold formatting
+                      const renderFormattedText = (text: string) => {
+                        const parts = text.split(/(\*\*.*?\*\*)/g);
+                        return parts.map((part, i) => {
+                          if (part.startsWith('**') && part.endsWith('**')) {
+                            return <strong key={i} className="font-bold text-[#014421]">{part.slice(2, -2)}</strong>;
+                          }
+                          return part;
+                        });
+                      };
                       
-                      if (isHeading) {
+                      // Check if it's a main heading (all caps, longer text, or starts with #)
+                      const isMainHeading = (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 100 && !trimmed.includes('?')) || trimmed.startsWith('# ');
+                      
+                      // Check if it's a subheading (starts with ## or ###)
+                      const isSubHeading = trimmed.startsWith('## ') || trimmed.startsWith('### ');
+                      
+                      // Check if it's a question (ends with ?)
+                      const isQuestion = trimmed.endsWith('?') && trimmed.length < 200 && !trimmed.startsWith('#');
+                      
+                      // Check if it's a TIPS section
+                      const isTips = trimmed.startsWith('**TIPS!**') || trimmed.startsWith('TIPS!') || trimmed.startsWith('Tips!');
+                      
+                      // Check if it's a list item
+                      const isListItem = trimmed.startsWith('- ') || trimmed.startsWith('• ') || /^\d+\.\s/.test(trimmed);
+                      
+                      if (isMainHeading) {
+                        const cleanTitle = trimmed.replace(/^#+\s*/, '');
                         return (
-                          <h3 key={index} className="text-xl font-bold text-[#014421] mt-8 mb-4 border-b-2 border-[#014421]/20 pb-2">
-                            {trimmed}
-                          </h3>
+                          <div key={index} className="border-l-4 border-[#014421] pl-4 my-6">
+                            <h3 className="text-xl font-bold text-[#014421] mb-2">
+                              {renderFormattedText(cleanTitle)}
+                            </h3>
+                          </div>
+                        );
+                      } else if (isSubHeading) {
+                        const cleanTitle = trimmed.replace(/^#+\s*/, '');
+                        return (
+                          <h4 key={index} className="text-lg font-semibold text-[#014421] mt-6 mb-3">
+                            {renderFormattedText(cleanTitle)}
+                          </h4>
                         );
                       } else if (isQuestion) {
                         return (
-                          <h4 key={index} className="text-lg font-semibold text-[#014421] mt-6 mb-3">
-                            {trimmed}
-                          </h4>
+                          <div key={index} className="bg-[#014421]/5 rounded-lg p-4 my-4">
+                            <h4 className="text-lg font-semibold text-[#014421] mb-2">
+                              {renderFormattedText(trimmed)}
+                            </h4>
+                          </div>
+                        );
+                      } else if (isTips) {
+                        const cleanTips = trimmed.replace(/^\*\*TIPS!\*\*\s*/i, '').replace(/^TIPS!\s*/i, '');
+                        return (
+                          <div key={index} className="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4">
+                            <p className="text-gray-800 font-medium">
+                              <span className="font-bold text-yellow-700">💡 TIPS!</span> {renderFormattedText(cleanTips)}
+                            </p>
+                          </div>
+                        );
+                      } else if (isListItem) {
+                        return (
+                          <div key={index} className="flex items-start gap-2 mb-2">
+                            <span className="text-[#014421] font-bold mt-1">•</span>
+                            <p className="text-gray-700 leading-relaxed flex-1">
+                              {renderFormattedText(trimmed.replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, ''))}
+                            </p>
+                          </div>
                         );
                       } else {
                         return (
-                          <p key={index} className="text-gray-700 leading-relaxed mb-4">
-                            {trimmed}
+                          <p key={index} className="text-gray-700 leading-relaxed mb-3">
+                            {renderFormattedText(trimmed)}
                           </p>
                         );
                       }
@@ -287,15 +339,15 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
                 )}
               </div>
 
-              {/* Modal Footer */}
-              <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
+              {/* Modal Footer - Always visible */}
+              <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <FiInfo className="w-4 h-4" />
                   <span>Del av Functional Foods kunskapsbank</span>
                 </div>
                 <button
                   onClick={() => setSelectedInfo(null)}
-                  className="px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#116530] transition-colors"
+                  className="px-6 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#116530] transition-colors font-medium"
                 >
                   Stäng
                 </button>

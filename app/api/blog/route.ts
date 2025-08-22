@@ -84,8 +84,23 @@ export async function GET(request: NextRequest) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const adminUser = await prisma.user.findFirst({ where: { role: 'admin' } });
-    if (!adminUser) return NextResponse.json({ error: 'No admin user found' }, { status: 403 });
+    
+    // Find Ulrika Davidsson specifically, or fall back to any admin
+    let authorUser = await prisma.user.findFirst({ 
+      where: { 
+        OR: [
+          { name: 'Ulrika Davidsson' },
+          { email: { contains: 'ulrika' } }
+        ]
+      } 
+    });
+    
+    if (!authorUser) {
+      authorUser = await prisma.user.findFirst({ where: { role: 'admin' } });
+    }
+    
+    if (!authorUser) return NextResponse.json({ error: 'No admin user found' }, { status: 403 });
+    
     const data: any = {
       title: body.title,
       slug: body.slug,
@@ -94,7 +109,7 @@ export async function POST(req: Request) {
       coverImage: body.coverImage,
       published: body.published,
       publishedAt: body.published ? (body.publishedAt ? new Date(body.publishedAt) : new Date()) : null,
-      authorId: adminUser.id,
+      authorId: authorUser.id,
     };
     // Map i18n fields if provided
     ['en','es','de','fr'].forEach((lng) => {
