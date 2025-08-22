@@ -549,6 +549,34 @@ video {
   display: none;
 }
 
+/* Marquee animation improvements */
+.animate-marquee,
+.animate-marquee2 {
+  will-change: transform;
+}
+
+/* Better spacing and performance for mobile marquee */
+@media (max-width: 640px) {
+  .animate-marquee {
+    animation: marquee 60s linear infinite;
+  }
+  
+  .animate-marquee2 {
+    animation: marquee2 60s linear infinite;
+  }
+}
+
+/* Ensure smooth marquee performance */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes marquee2 {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(0%); }
+}
+
 /* Mobile improvements */
 @media (max-width: 768px) {
   /* Ensure content doesn't get hidden behind bottom nav */
