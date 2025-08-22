@@ -32,7 +32,6 @@ export default function SettingsPage() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showHelpGuide, setShowHelpGuide] = useState(false);
 
   useEffect(() => {
     fetchUserData();
