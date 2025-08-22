@@ -57,8 +57,8 @@ export default function CourseTemplate({
 
   useEffect(() => {
     const handler = () => setShowHelpGuide(true);
-    window.addEventListener('open-help-guide', handler as EventListener);
-    return () => window.removeEventListener('open-help-guide', handler as EventListener);
+    window.addEventListener('open-dashboard-help', handler as EventListener);
+    return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);
 
   // Get current week's meal plan
