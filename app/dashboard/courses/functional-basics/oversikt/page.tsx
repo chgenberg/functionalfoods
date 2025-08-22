@@ -6,6 +6,7 @@ import { FiHelpCircle, FiCheck, FiClock, FiLock, FiBookOpen, FiAward, FiCalendar
 import CourseNavigation from '../../components/CourseNavigation';
 import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
+import InfoPopupGrid from '../../components/InfoPopupGrid';
 import { mealPlans } from '@/app/data/mealPlans';
 
 export default function FunctionalBasicsOverview() {
@@ -156,6 +157,9 @@ export default function FunctionalBasicsOverview() {
             </div>
           </div>
         </motion.div>
+
+        {/* Info Popup Grid */}
+        <InfoPopupGrid courseType="basics" />
 
         {/* Weeks Grid */}
         <motion.div

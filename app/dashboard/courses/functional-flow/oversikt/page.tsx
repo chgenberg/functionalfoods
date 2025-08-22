@@ -6,6 +6,7 @@ import { FiHelpCircle, FiCheck, FiClock, FiLock, FiBookOpen, FiAward, FiCalendar
 import CourseNavigation from '../../components/CourseNavigation';
 import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
+import InfoPopupGrid from '../../components/InfoPopupGrid';
 import { flowMealPlans } from '@/app/data/mealPlans';
 
 export default function FunctionalFlowOverview() {
@@ -168,6 +169,9 @@ export default function FunctionalFlowOverview() {
 
         </motion.div>
 
+        {/* Info Popup Grid */}
+        <InfoPopupGrid courseType="flow" />
+
         {/* Weeks Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -276,6 +280,9 @@ export default function FunctionalFlowOverview() {
             </div>
           </div>
         </motion.div>
+
+        {/* Info Popup Grid */}
+        <InfoPopupGrid courseType="flow" />
       </div>
 
       {/* Help Modal */}
