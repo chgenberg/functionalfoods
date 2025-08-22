@@ -75,6 +75,31 @@ export default function FunctionalFlowOverview() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
+        {/* Coaching Button at Top */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          <motion.button
+            onClick={() => setShowCoachingModal(true)}
+            className="bg-[#014421] text-white px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
+            animate={{
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiUsers className="w-5 h-5" />
+            COACHNING OCH FUNCTIONAL FOODS - KLICKA HÄR
+          </motion.button>
+        </motion.div>
+        
         {/* Progress Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -119,19 +144,7 @@ export default function FunctionalFlowOverview() {
               <div className="text-sm text-gray-600">Recept totalt</div>
             </div>
           </div>
-          
-          {/* Coaching Button */}
-          <div className="mt-6 text-center">
-            <motion.button
-              onClick={() => setShowCoachingModal(true)}
-              className="bg-gradient-to-r from-[#014421] to-[#116530] text-white px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FiUsers className="w-5 h-5" />
-              COACHNING OCH FUNCTIONAL FOODS - KLICKA HÄR
-            </motion.button>
-          </div>
+
         </motion.div>
 
         {/* Weeks Grid */}
@@ -313,7 +326,7 @@ export default function FunctionalFlowOverview() {
                   href="https://functional-foods-with-ulrika.mn.co/sign_up?auto_join=true&from=https%3A%2F%2Ffunctional-foods-with-ulrika.mn.co%2F%3Fautojoin%3D1&space_id=17961010"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  className="flex items-center gap-3 p-4 bg-[#014421] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
                   <FiUsers className="w-6 h-6" />
                   <div>
@@ -326,7 +339,7 @@ export default function FunctionalFlowOverview() {
                   href="https://www.instagram.com/functionalfoods.se/?hl=sv"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  className="flex items-center gap-3 p-4 bg-[#F4B4C3] text-[#014421] rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
                   <FiInstagram className="w-6 h-6" />
                   <div>
