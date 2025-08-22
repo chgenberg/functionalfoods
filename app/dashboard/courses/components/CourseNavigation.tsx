@@ -39,11 +39,8 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   } else if (isOnShoppingList) {
     // We're on shopping list - use currentWeek passed as prop
     activeWeek = currentWeek || 1;
-  } else if (isOnOverview || isOnCompletion) {
-    // We're on overview or completion page - no week should be active
-    activeWeek = 0;
-  } else if (!isOnCommunity && !isOnSettings) {
-    // We're on the main course page (which redirects to overview)
+  } else if (isOnOverview || isOnCompletion || isOnSettings || isOnCommunity) {
+    // We're on overview, completion, settings, or community page - no week should be active
     activeWeek = 0;
   }
 
