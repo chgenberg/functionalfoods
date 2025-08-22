@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiCheckCircle, FiAward, FiUsers, FiSettings, FiHelpCircle } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
 interface CourseNavigationProps {
   courseType: 'basics' | 'flow';
@@ -11,8 +12,27 @@ interface CourseNavigationProps {
 }
 
 export default function CourseNavigation({ courseType, currentWeek = 1 }: CourseNavigationProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const basePath = `/dashboard/courses/functional-${courseType}`;
+  
+  // Auto-scroll to left on mobile when component mounts
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      // Always start from the left on mobile
+      scrollContainerRef.current.scrollLeft = 0;
+      
+      // Also scroll to left when window is resized to mobile
+      const handleResize = () => {
+        if (window.innerWidth < 768 && scrollContainerRef.current) {
+          scrollContainerRef.current.scrollLeft = 0;
+        }
+      };
+      
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [pathname]); // Re-run when pathname changes
   
   const weeks = [
     { number: 1, title: courseType === 'basics' ? "Grunden i Functional Foods" : "Optimera din energi" },
@@ -45,11 +65,33 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   }
 
   return (
-    <div className="bg-white shadow-lg border-b-4 border-[#014421] relative z-10">
+          <div className="bg-white shadow-lg border-b-4 border-[#014421] relative z-10">
       <div className="max-w-full mx-auto px-1 md:px-2 py-4">
-        {/* Mobile scroll wrapper with gradient indicators */}
-        <div className="relative overflow-visible">
-          <div className="flex items-center justify-center gap-1 md:gap-2 overflow-x-auto scrollbar-hide scroll-smooth">
+        {/* Mobile scroll wrapper with scroll indicators */}
+        <div className="relative">
+          {/* Left scroll indicator - More prominent */}
+          <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-white via-white/90 to-transparent z-10 flex items-center justify-start pl-1 md:hidden">
+            <div className="w-7 h-7 rounded-full bg-[#014421] flex items-center justify-center shadow-lg animate-pulse">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </div>
+          </div>
+          
+          {/* Right scroll indicator - More prominent */}
+          <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white via-white/90 to-transparent z-10 flex items-center justify-end pr-1 md:hidden">
+            <div className="w-7 h-7 rounded-full bg-[#014421] flex items-center justify-center shadow-lg animate-pulse">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+          
+          <div 
+            ref={scrollContainerRef}
+            className="dashboard-nav-container flex items-center justify-start gap-1 md:gap-2 overflow-x-auto scrollbar-hide scroll-smooth pl-10 pr-10 md:pl-0 md:pr-0 md:justify-center" 
+            style={{ scrollSnapType: 'x mandatory' }}
+          >
             {/* Overview Link */}
             <Link
               href={`${basePath}/oversikt`}
@@ -60,6 +102,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                   : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
                 }
               `}
+              style={{ scrollSnapAlign: 'start' }}
             >
               <span className="flex items-center gap-1">
                 <span>Översikt</span>
@@ -77,6 +120,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                     : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
                   }
                 `}
+                style={{ scrollSnapAlign: 'start' }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -95,6 +139,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                   ? 'bg-[#014421] text-white shadow-lg' 
                   : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
               }`}
+              style={{ scrollSnapAlign: 'start' }}
             >
               <span className="flex items-center gap-1">
                 <FiAward className="w-4 h-4" />
@@ -109,6 +154,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                   ? 'bg-[#014421] text-white shadow-lg' 
                   : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
               }`}
+              style={{ scrollSnapAlign: 'start' }}
             >
               <span className="flex items-center gap-1">
                 <FiUsers className="w-4 h-4" />
@@ -123,6 +169,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                   ? 'bg-[#014421] text-white shadow-lg' 
                   : 'bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]'
               }`}
+              style={{ scrollSnapAlign: 'start' }}
             >
               <span className="flex items-center gap-1">
                 <FiSettings className="w-4 h-4" />

@@ -246,13 +246,42 @@ img {
   
   /* Hide scrollbar */
   .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Ensure smooth scrolling on mobile */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
   
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari and Opera */
+  /* Better touch targets for mobile */
+  button, a {
+    min-height: 44px;
   }
+  
+  /* Prevent zoom on form inputs */
+  input[type="text"], 
+  input[type="email"], 
+  input[type="password"], 
+  textarea, 
+  select {
+    font-size: 16px;
+  }
+  
+  /* Dashboard navigation mobile optimizations */
+  .dashboard-nav-container {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+}
   
   .animate-scale-in {
     animation: scale-in 0.3s ease-out forwards;

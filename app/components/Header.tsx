@@ -165,8 +165,20 @@ export default function Header() {
         </div>
       </div>
       <div className="container-custom">
-        <div className="relative flex justify-between items-center h-24 md:h-28">
-          <div className="flex items-center">
+        <div className="relative flex items-center h-24 md:h-28">
+          {/* Mobile hamburger menu - LEFT SIDE */}
+          <div className="lg:hidden">
+            <button type="button" className="relative w-10 h-10 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              <div className="w-5 h-5 relative">
+                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-2' : 'top-1'}`}></span>
+                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'top-2'}`}></span>
+                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-2' : 'top-3'}`}></span>
+              </div>
+            </button>
+          </div>
+
+          {/* Logo - CENTER ON MOBILE, LEFT ON DESKTOP */}
+          <div className="flex-1 lg:flex-none flex justify-center lg:justify-start">
             <Link href="/" className="pointer-events-auto">
               <Image src="/FF_logo.svg" alt="Functional Foods" width={200} height={80} className="h-12 md:h-16 w-auto" priority />
             </Link>
@@ -195,20 +207,7 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Mobile hamburger (shown on small screens) */}
-          <div className="lg:hidden">
-          </div>
-
-          <div className="lg:hidden">
-            <button type="button" className="relative w-10 h-10 rounded-full bg-primary/5 hover:bg-primary/10 transition-all duration-300 flex items-center justify-center" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <div className="w-5 h-5 relative">
-                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-2' : 'top-1'}`}></span>
-                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'top-2'}`}></span>
-                <span className={`absolute block h-0.5 w-5 bg-primary transform transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-2' : 'top-3'}`}></span>
-              </div>
-            </button>
-          </div>
-
+          {/* Right side actions */}
           <div className="flex items-center gap-2 sm:gap-4 relative z-[60]">
             <button className="rounded-full p-2 hover:bg-primary/10 transition" aria-label={t('nav.search','Sök')} onClick={()=>setShowSearch(true)}>
               <FiSearch className="w-5 h-5 text-primary" />

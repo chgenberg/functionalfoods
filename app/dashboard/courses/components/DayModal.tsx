@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { FiX, FiClock, FiExternalLink, FiInfo, FiCheckCircle, FiStar } from 'react-icons/fi';
+import { FiX, FiClock, FiExternalLink, FiInfo, FiCheckCircle, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { useState } from 'react';
 import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 
@@ -91,7 +91,7 @@ export default function DayModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden"
+            className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header with Gradient */}
@@ -323,22 +323,23 @@ export default function DayModal({
 
             {/* Bottom Actions */}
             <div className="border-t border-gray-200 p-3 sm:p-4 bg-gray-50">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:justify-between">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={onClose}
-                  className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium 
-                    rounded-full transition-colors"
+                  className="w-full sm:w-auto px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium 
+                    rounded-full transition-colors order-2 sm:order-1"
                 >
                   Stäng
                 </motion.button>
                 
                 <Link 
-                  href={`/dashboard/courses/shopping-list?week=${weekNumber}`}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#014421] hover:bg-[#116530] 
-                    text-white font-medium rounded-full transition-colors group"
+                  href={`/dashboard/courses/functional-${courseType}/inkopslista?week=${weekNumber}`}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#014421] hover:bg-[#116530] 
+                    text-white font-medium rounded-full transition-colors group order-1 sm:order-2"
                 >
+                  <FiShoppingCart className="w-4 h-4" />
                   <span>Se inköpslista</span>
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </Link>

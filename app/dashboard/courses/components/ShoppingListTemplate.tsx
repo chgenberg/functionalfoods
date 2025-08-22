@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiArrowLeft, FiPrinter, FiDownload, FiCheck, FiSearch, FiShoppingCart, FiChevronDown } from 'react-icons/fi';
+import { FiArrowLeft, FiPrinter, FiDownload, FiCheck, FiSearch, FiShoppingCart, FiChevronDown, FiShare, FiSmartphone } from 'react-icons/fi';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 
@@ -44,11 +44,17 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
     setLoading(true);
     
     try {
+      console.log(`🛒 Fetching shopping list for ${courseType} week ${week}`);
       const response = await fetch(`/api/shopping-list/${courseType}/${week}`);
+      console.log(`📡 API Response status: ${response.status}`);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log(`📦 API Data:`, data);
         setIngredients(data.ingredients || []);
+        console.log(`✅ Set ${data.ingredients?.length || 0} ingredients`);
       } else {
+        console.error(`❌ API Error: ${response.status} ${response.statusText}`);
         // Fallback to mock data if API fails
         const mockIngredients: Ingredient[] = [
           { name: 'Mjölk', amount: '2', unit: 'liter', category: 'Mejeri', checked: false },
@@ -58,15 +64,17 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
           { name: 'Olivolja', amount: '1', unit: 'flaska', category: 'Skafferi', checked: false }
         ];
         setIngredients(mockIngredients);
+        console.log(`🔄 Using fallback data with ${mockIngredients.length} items`);
       }
     } catch (error) {
-      console.error('Error fetching shopping list:', error);
+      console.error('🚨 Error fetching shopping list:', error);
       // Use mock data as fallback
       const mockIngredients: Ingredient[] = [
         { name: 'Mjölk', amount: '2', unit: 'liter', category: 'Mejeri', checked: false },
         { name: 'Ägg', amount: '12', unit: 'st', category: 'Mejeri', checked: false }
       ];
       setIngredients(mockIngredients);
+      console.log(`🔄 Using error fallback data with ${mockIngredients.length} items`);
     } finally {
       setLoading(false);
     }
@@ -704,8 +712,8 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
 
       {/* Page Title and Actions */}
       <div className="bg-white border-b print:hidden">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <Link
                 href={`/dashboard/courses/functional-${courseType}/week/${week}`}
@@ -714,43 +722,45 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                 <FiArrowLeft className="w-4 h-4 mr-1" />
                 Tillbaka till vecka {week}
               </Link>
-              <h1 className="text-3xl font-bold text-[#014421]">
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#014421]">
                 Handla smart
               </h1>
-              <p className="text-gray-600 mt-1">Organiserad inköpslista för hela veckan</p>
+              <p className="text-gray-600 mt-1 text-sm sm:text-base">Organiserad inköpslista för hela veckan</p>
             </div>
-            <div className="flex items-center gap-3">
+            
+            {/* Mobile-optimized action buttons */}
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={handlePrint}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
                 title="Skriv ut"
               >
-                <FiPrinter className="w-5 h-5" />
-                <span className="hidden sm:inline">Skriv ut</span>
+                <FiPrinter className="w-4 h-4" />
+                <span>Skriv ut</span>
               </button>
               <button
                 onClick={handleShare}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
                 title="Dela/Kopiera"
               >
-                <FiDownload className="w-5 h-5" />
-                <span className="hidden sm:inline">Dela</span>
+                <FiShare className="w-4 h-4" />
+                <span>Dela</span>
               </button>
               <button
                 onClick={handleiOSShortcuts}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
-                title="Skicka till iPhone Påminnelser (genom Genvägar)"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
+                title="Skicka till iPhone Påminnelser"
               >
-                <FiDownload className="w-5 h-5" />
-                <span className="hidden sm:inline">iPhone</span>
+                <FiSmartphone className="w-4 h-4" />
+                <span className="hidden xs:inline">iPhone</span>
               </button>
               <button
                 onClick={handleExport}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors"
-                title="Exportera"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors text-sm"
+                title="Ladda ner som HTML"
               >
-                <FiDownload className="w-5 h-5" />
-                <span className="hidden sm:inline">Ladda ner</span>
+                <FiDownload className="w-4 h-4" />
+                <span>Ladda ner</span>
               </button>
             </div>
           </div>

@@ -303,10 +303,10 @@ export default function FunctionalBasicsOverview() {
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8"
+            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-8"
           >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">COACHNING OCH FUNCTIONAL FOODS PÅ SOCIALA MEDIER</h2>
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-lg sm:text-2xl font-bold text-gray-900 pr-4">COACHNING OCH FUNCTIONAL FOODS PÅ SOCIALA MEDIER</h2>
               <button
                 onClick={() => setShowCoachingModal(false)}
                 className="text-gray-500 hover:text-gray-700 transition-colors"
