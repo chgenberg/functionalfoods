@@ -9,6 +9,7 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
+import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
 export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
 
@@ -178,6 +179,30 @@ export default function CompletionPage() {
           className="mt-8"
         >
           <FavoriteRecipesPDF courseType="basics" />
+        </motion.div>
+
+        {/* Course Review Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0 }}
+          className="mt-8"
+        >
+          <CourseReviewForm 
+            courseId="functional-basics"
+            courseName="Functional Basics"
+            onSubmitSuccess={() => {
+              // Trigger completion email
+              fetch('/api/courses/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  userId: 'current-user', // This should come from auth
+                  courseId: 'functional-basics'
+                })
+              }).catch(console.error);
+            }}
+          />
         </motion.div>
       </div>
 

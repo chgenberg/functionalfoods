@@ -9,6 +9,7 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
+import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
 
 export default function FlowCompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
@@ -179,6 +180,30 @@ export default function FlowCompletionPage() {
           className="mt-8"
         >
           <FavoriteRecipesPDF courseType="flow" />
+        </motion.div>
+
+        {/* Course Review Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0 }}
+          className="mt-8"
+        >
+          <CourseReviewForm 
+            courseId="functional-flow"
+            courseName="Functional Flow"
+            onSubmitSuccess={() => {
+              // Trigger completion email
+              fetch('/api/courses/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  userId: 'current-user', // This should come from auth
+                  courseId: 'functional-flow'
+                })
+              }).catch(console.error);
+            }}
+          />
         </motion.div>
       </div>
 

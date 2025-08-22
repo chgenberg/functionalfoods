@@ -380,6 +380,64 @@ export class EmailService {
   }
 
   // Send password reset email
+  async sendCourseReviewRequest(data: { email: string; name: string; courseId: string; courseName: string; userId: string }): Promise<boolean> {
+    const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL}/review?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}`;
+    
+    const html = `
+      <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff;">
+        <div style="background: linear-gradient(135deg, #014421 0%, #116530 100%); color: white; padding: 40px 30px; text-align: center; border-radius: 20px 20px 0 0;">
+          <h1 style="margin: 0; font-size: 28px; font-weight: bold;">🎉 Grattis ${data.name}!</h1>
+          <p style="margin: 15px 0 0 0; font-size: 18px; opacity: 0.9;">Du har genomfört ${data.courseName}!</p>
+        </div>
+        
+        <div style="padding: 40px 30px; background: #fff;">
+          <h2 style="color: #014421; font-size: 24px; margin-bottom: 20px; text-align: center;">Hur upplevde du kursen?</h2>
+          
+          <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+            Vi hoppas att ${data.courseName} har gett dig värdefulla kunskaper och verktyg för din hälsoresa. 
+            Din feedback är ovärderlig för oss och hjälper andra att fatta rätt beslut.
+          </p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${reviewLink}" 
+               style="display: inline-block; background: #014421; color: white; padding: 15px 30px; 
+                      border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 16px;
+                      box-shadow: 0 4px 15px rgba(1, 68, 33, 0.3);">
+              ⭐ Lämna din recension
+            </a>
+          </div>
+          
+          <div style="background: #F7F1E8; padding: 20px; border-radius: 15px; margin: 25px 0;">
+            <h3 style="color: #014421; font-size: 16px; margin-bottom: 10px;">💡 Din recension hjälper till att:</h3>
+            <ul style="color: #666; margin: 0; padding-left: 20px;">
+              <li>Förbättra kursinnehållet för framtida deltagare</li>
+              <li>Hjälpa andra att förstå vad kursen erbjuder</li>
+              <li>Bygga vår community av hälsointresserade</li>
+            </ul>
+          </div>
+          
+          <p style="color: #888; font-size: 14px; text-align: center; margin-top: 30px;">
+            Det tar bara 2-3 minuter och betyder mycket för oss! 🙏
+          </p>
+        </div>
+        
+        <div style="background: #F3EFE3; padding: 30px; text-align: center; border-radius: 0 0 20px 20px;">
+          <p style="color: #666; font-size: 14px; margin: 0;">
+            © ${new Date().getFullYear()} Functional Foods med Ulrika Davidsson
+          </p>
+        </div>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: data.email,
+      toName: data.name,
+      subject: `🎉 Grattis! Hur upplevde du ${data.courseName}?`,
+      html,
+      tags: ['course-completion', 'review-request']
+    });
+  }
+
   async sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
     const resetLink = `https://functionalfoods.se/reset-password?token=${resetToken}`;
     
