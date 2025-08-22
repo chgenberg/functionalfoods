@@ -11,6 +11,7 @@ import {
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
+import HelpGuide from '@/app/components/HelpGuide';
 interface ForumCategory {
   id: string;
   name: string;
@@ -154,11 +155,22 @@ export default function CommunityPage() {
     categoryId: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [showHelpGuide, setShowHelpGuide] = useState(false);
 
   useEffect(() => {
     fetchCategories();
     fetchThreads();
   }, [selectedCategory, searchTerm, sortBy]);
+
+  // Listen for help button clicks
+  useEffect(() => {
+    const handler = () => {
+      console.log('Dashboard help event received in Community!');
+      setShowHelpGuide(true);
+    };
+    window.addEventListener('open-dashboard-help', handler as EventListener);
+    return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
+  }, []);
 
   const fetchCategories = async () => {
     try {
@@ -499,6 +511,12 @@ export default function CommunityPage() {
         )}
       </AnimatePresence>
       </div>
+
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpGuide} 
+        onClose={() => setShowHelpGuide(false)} 
+      />
 
       {/* Video Modal */}
       <VideoModal

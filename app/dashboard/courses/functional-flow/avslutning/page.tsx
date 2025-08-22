@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowLeft, FiCheck, FiHeart, FiTarget, FiStar, FiBookOpen } from 'react-icons/fi';
@@ -10,9 +10,21 @@ import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVi
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
 import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
+import HelpGuide from '@/app/components/HelpGuide';
 
-export default function FlowCompletionPage() {
+export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
+  const [showHelpGuide, setShowHelpGuide] = useState(false);
+
+  // Listen for help button clicks
+  useEffect(() => {
+    const handler = () => {
+      console.log('Dashboard help event received in Flow Completion!');
+      setShowHelpGuide(true);
+    };
+    window.addEventListener('open-dashboard-help', handler as EventListener);
+    return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
@@ -206,6 +218,12 @@ export default function FlowCompletionPage() {
           />
         </motion.div>
       </div>
+
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpGuide} 
+        onClose={() => setShowHelpGuide(false)} 
+      />
 
       {/* Video Modal */}
       <VideoModal

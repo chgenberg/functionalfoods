@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
+import HelpGuide from '@/app/components/HelpGuide';
 interface UserData {
   id: string;
   email: string;
@@ -23,6 +24,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [showHelpGuide, setShowHelpGuide] = useState(false);
   
   // Form fields
   const [name, setName] = useState('');
@@ -30,9 +32,30 @@ export default function SettingsPage() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showHelpGuide, setShowHelpGuide] = useState(false);
 
   useEffect(() => {
     fetchUserData();
+  }, []);
+
+  // Listen for help button clicks
+  useEffect(() => {
+    const handler = () => {
+      console.log('Dashboard help event received in Settings!');
+      setShowHelpGuide(true);
+    };
+    window.addEventListener('open-dashboard-help', handler as EventListener);
+    return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
+  }, []);
+
+  // Listen for help button clicks
+  useEffect(() => {
+    const handler = () => {
+      console.log('Dashboard help event received in Settings!');
+      setShowHelpGuide(true);
+    };
+    window.addEventListener('open-dashboard-help', handler as EventListener);
+    return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);
 
   const fetchUserData = async () => {
@@ -312,6 +335,12 @@ export default function SettingsPage() {
         </form>
       </div>
       </div>
+
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpGuide} 
+        onClose={() => setShowHelpGuide(false)} 
+      />
 
       {/* Video Modal */}
       <VideoModal
