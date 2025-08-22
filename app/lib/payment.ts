@@ -93,7 +93,9 @@ export class PaymentService {
           throw new Error(`Unsupported payment method: ${request.paymentMethod}`);
       }
     } catch (error) {
-      console.error('Payment processing error:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Payment processing error:', error);
+      }
       return {
         success: false,
         status: 'failed',

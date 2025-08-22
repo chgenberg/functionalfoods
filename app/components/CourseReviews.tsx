@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiStar, FiUser, FiCalendar, FiThumbsUp, FiX } from 'react-icons/fi';
+import { FiStar, FiUser, FiCalendar, FiThumbsUp, FiX, FiAlertCircle } from 'react-icons/fi';
+import { useErrorHandler } from '../lib/errorHandler';
 
 interface Review {
   id: string;
@@ -19,22 +20,33 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { withErrorHandling } = useErrorHandler();
 
   useEffect(() => {
     const loadReviews = async () => {
-      try {
-        const res = await fetch(`/api/reviews?courseId=${courseId}&status=APPROVED`);
-        const data = await res.json();
-        const reviewList = data.reviews || [];
+      const result = await withErrorHandling(
+        async () => {
+          const res = await fetch(`/api/reviews?courseId=${courseId}&status=APPROVED`);
+          if (!res.ok) {
+            throw new Error(`Failed to fetch reviews: ${res.status}`);
+          }
+          const data = await res.json();
+          return data.reviews || [];
+        },
+        'CourseReviews.loadReviews',
+        (errorMessage) => setError(errorMessage)
+      );
+
+      if (result) {
+        const reviewList = result;
         setReviews(limit && limit > 0 ? reviewList.slice(0, limit) : reviewList);
-      } catch (error) {
-        console.error('Failed to load reviews:', error);
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
+
     loadReviews();
-  }, [courseId, limit]);
+  }, [courseId, limit, withErrorHandling]);
 
   if (loading) {
     return (
@@ -53,6 +65,26 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+            <FiAlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-red-800 mb-2">Kunde inte ladda recensioner</h3>
+            <p className="text-red-600 text-sm">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+            >
+              Försök igen
+            </button>
           </div>
         </div>
       </section>
@@ -214,18 +246,22 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
 
       {/* Review Modal */}
       {selectedReview && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedReview(null)}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Kursrecension</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Kursrecension</h3>
               <button
                 onClick={() => setSelectedReview(null)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Stäng"
               >
                 <FiX className="w-6 h-6 text-gray-500" />
               </button>

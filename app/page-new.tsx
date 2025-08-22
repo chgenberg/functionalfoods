@@ -66,7 +66,6 @@ export default function Home() {
   }, [testimonials.length]);
 
   const handleQuizComplete = (answers: Record<number, string>) => {
-    console.log('Quiz completed with answers:', answers);
     setQuizResults(answers);
     setShowQuiz(false);
   };

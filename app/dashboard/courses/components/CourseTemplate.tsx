@@ -57,7 +57,6 @@ export default function CourseTemplate({
 
   useEffect(() => {
     const handler = () => {
-      console.log('Dashboard help event received!');
       setShowHelpGuide(true);
     };
     window.addEventListener('open-dashboard-help', handler as EventListener);
@@ -68,14 +67,10 @@ export default function CourseTemplate({
   const weekKey = `week${currentWeek}`;
   const mealPlan = mealPlans[weekKey];
   
-  // Debug logging
-  console.log('CourseTemplate Debug:', {
-    currentWeek,
-    weekKey,
-    mealPlan: !!mealPlan,
-    mealPlansKeys: Object.keys(mealPlans),
-    mealPlanDays: mealPlan ? Object.keys(mealPlan.days) : 'No mealPlan'
-  });
+  // Validate meal plan data
+  if (!mealPlan && process.env.NODE_ENV === 'development') {
+    console.warn(`No meal plan found for ${weekKey}. Available keys:`, Object.keys(mealPlans));
+  }
 
   // Generate days for current week
   const getDaysForWeek = (weekNum: number): WeekDay[] => {

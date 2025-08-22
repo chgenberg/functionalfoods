@@ -52,7 +52,6 @@ export default function WeekTemplate({
 
   useEffect(() => {
     const handler = () => {
-      console.log('Dashboard help event received in WeekTemplate!');
       setShowHelpGuide(true);
     };
     window.addEventListener('open-dashboard-help', handler as EventListener);
@@ -63,14 +62,10 @@ export default function WeekTemplate({
   const weekKey = `week${weekNumber}`;
   const mealPlan = mealPlans[weekKey];
   
-  // Debug logging
-  console.log('WeekTemplate Debug:', {
-    weekNumber,
-    weekKey,
-    mealPlan: !!mealPlan,
-    mealPlansKeys: Object.keys(mealPlans),
-    mealPlanDays: mealPlan ? Object.keys(mealPlan.days) : 'No mealPlan'
-  });
+  // Validate meal plan data
+  if (!mealPlan && process.env.NODE_ENV === 'development') {
+    console.warn(`No meal plan found for ${weekKey}. Available keys:`, Object.keys(mealPlans));
+  }
 
   // Generate days for current week
   const getDaysForWeek = (weekNum: number): WeekDay[] => {

@@ -5,6 +5,7 @@ import { FiX, FiSend, FiMessageCircle } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
 import UserProfileSummary from './UserProfileSummary';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
+import { useErrorHandler } from '../lib/errorHandler';
 
 interface Message {
   id: string;
@@ -23,6 +24,7 @@ export default function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { withErrorHandling } = useErrorHandler();
 
   // Check if we're on dashboard page
   const isDashboardPage = pathname.startsWith('/dashboard/');
@@ -67,32 +69,40 @@ export default function ChatBot() {
     setInputValue('');
     setIsLoading(true);
 
-    try {
-      const token = localStorage.getItem('token');
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+    const result = await withErrorHandling(
+      async () => {
+        const token = localStorage.getItem('token');
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      const response = await fetch('/api/personalized-chat', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ message: userMessage.text, locale })
-      });
+        const response = await fetch('/api/personalized-chat', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ message: userMessage.text, locale })
+        });
 
-      if (!response.ok) throw new Error('Failed to get response');
-      const data = await response.json();
-      const botMessage: Message = { id: (Date.now() + 1).toString(), text: data.message, sender: 'bot', timestamp: new Date() };
+        if (!response.ok) throw new Error('Failed to get response');
+        const data = await response.json();
+        return data.message;
+      },
+      'ChatBot.sendMessage',
+      (errorMessage) => {
+        const errorMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          text: errorMessage || t('chat.error','Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se'),
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, errorMsg]);
+      }
+    );
+
+    if (result) {
+      const botMessage: Message = { id: (Date.now() + 1).toString(), text: result, sender: 'bot', timestamp: new Date() };
       setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: t('chat.error','Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se'),
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   const exampleQuestions: string[] = [
@@ -103,16 +113,17 @@ export default function ChatBot() {
 
   return (
     <>
-      {/* Chat Button - Hidden on mobile dashboard */}
+      {/* Chat Button - Now visible on mobile too */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'} ${isDashboardPage ? 'hidden md:block' : ''}`}
+        className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'}`}
+        aria-label="Öppna chat"
       >
-        <FiMessageCircle className="w-6 h-6" />
+        <FiMessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
 
-      {/* Chat Window */}
-      <div className={`fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col transform transition-all duration-300 ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+      {/* Chat Window - Responsive */}
+      <div className={`fixed inset-4 sm:bottom-6 sm:right-6 sm:inset-auto z-50 sm:w-96 sm:h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col transform transition-all duration-300 ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
         {/* Header */}
         <div className="bg-primary text-white p-4 rounded-t-2xl flex items-center justify-between">
           <div className="flex items-center gap-3">

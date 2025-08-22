@@ -1,3 +1,22 @@
+import { generateMetadata as generateSEOMetadata } from '../../lib/seo';
+
+export const metadata = generateSEOMetadata({
+  title: 'Functional Basics - Grundkurs i Functional Foods',
+  description: 'Lär dig grunderna i functional foods med Ulrika Davidsson. En 6-veckors kurs som ger dig kunskapen att optimera din hälsa genom mat. Perfekt för nybörjare.',
+  keywords: [
+    'functional basics',
+    'grundkurs',
+    'functional foods',
+    'näringslära',
+    'hälsokost',
+    'Ulrika Davidsson',
+    'onlinekurs',
+    'hälsa'
+  ],
+  url: '/utbildning/functional-basics',
+  type: 'article'
+});
+
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';

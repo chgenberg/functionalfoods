@@ -1,8 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { redirect } from 'next/navigation';
 
 export default function VideoTest() {
+  // Redirect to home in production
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') {
+      redirect('/');
+    }
+  }, []);
   const [logs, setLogs] = useState<string[]>([]);
   const [videosInfo, setVideosInfo] = useState<any[]>([]);
 

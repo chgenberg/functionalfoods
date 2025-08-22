@@ -35,7 +35,9 @@ export default function ContactFormCompact() {
         alert(result.error || t('newsletter.error','Något gick fel. Försök igen senare.'));
       }
     } catch (error) {
-      console.error('Submit error:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Submit error:', error);
+      }
       alert(t('newsletter.genericError','Ett fel uppstod. Försök igen senare.'));
     } finally {
       setIsSubmitting(false);

@@ -66,33 +66,24 @@ function LoginForm() {
                 // Find which courses the user owns
                 const ownedCourses = purchases.map((p: any) => p.course.name);
                 
-                console.log('Debug - User email:', email);
-                console.log('Debug - Owned courses:', ownedCourses);
-                
                 if (ownedCourses.includes('Functional Flow') && !ownedCourses.includes('Functional Basics')) {
                   // Only Flow course
-                  console.log('Debug - Redirecting to Flow (only)');
                   router.push('/dashboard/courses/functional-flow');
                 } else if (ownedCourses.includes('Functional Basics') && !ownedCourses.includes('Functional Flow')) {
                   // Only Basic course
-                  console.log('Debug - Redirecting to Basic (only)');
                   router.push('/dashboard/courses/functional-basics');
                 } else if (ownedCourses.includes('Functional Flow')) {
                   // If they have both, prioritize Flow (advanced course)
-                  console.log('Debug - Redirecting to Flow (priority)');
                   router.push('/dashboard/courses/functional-flow');
                 } else if (ownedCourses.includes('Functional Basics')) {
                   // Fallback to Basic
-                  console.log('Debug - Redirecting to Basic (fallback)');
                   router.push('/dashboard/courses/functional-basics');
                 } else {
                   // Has purchases but not these specific courses
-                  console.log('Debug - Redirecting to mina-kurser (other purchases)');
                   router.push('/mina-kurser');
                 }
               } else {
                 // No courses purchased
-                console.log('Debug - Redirecting to mina-kurser (no purchases)');
                 router.push('/mina-kurser');
               }
             } else {
