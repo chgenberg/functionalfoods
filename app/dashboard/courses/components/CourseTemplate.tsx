@@ -366,6 +366,7 @@ export default function CourseTemplate({
             
             return meals;
           })()}
+          courseType={courseType}
         />
       )}
     </>

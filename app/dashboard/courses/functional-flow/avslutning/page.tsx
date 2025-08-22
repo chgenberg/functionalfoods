@@ -8,6 +8,7 @@ import { FiArrowLeft, FiCheck, FiHeart, FiTarget, FiStar, FiBookOpen } from 'rea
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
+import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
 
 export default function FlowCompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
@@ -168,6 +169,16 @@ export default function FlowCompletionPage() {
             <h4 className="font-semibold text-[#014421] mb-2">Gå med i community</h4>
             <p className="text-sm text-gray-600">Dela dina erfarenheter</p>
           </Link>
+        </motion.div>
+
+        {/* Favorite Recipes Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="mt-8"
+        >
+          <FavoriteRecipesPDF courseType="flow" />
         </motion.div>
       </div>
 

@@ -352,6 +352,7 @@ export default function WeekTemplate({
             
             return meals;
           })()}
+          courseType={courseType}
         />
       )}
     </>

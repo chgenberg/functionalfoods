@@ -2,8 +2,9 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { FiX, FiClock, FiExternalLink, FiInfo, FiCheckCircle } from 'react-icons/fi';
+import { FiX, FiClock, FiExternalLink, FiInfo, FiCheckCircle, FiStar } from 'react-icons/fi';
 import { useState } from 'react';
+import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 
 interface Meal {
   mealType: string;
@@ -20,6 +21,7 @@ interface DayModalProps {
   dayNumber: number;
   dayName: string;
   meals: Meal[];
+  courseType: 'basics' | 'flow';
 }
 
 export default function DayModal({
@@ -28,10 +30,12 @@ export default function DayModal({
   weekNumber,
   dayNumber,
   dayName,
-  meals
+  meals,
+  courseType
 }: DayModalProps) {
   const [hoveredMeal, setHoveredMeal] = useState<number | null>(null);
   const [completedMeals, setCompletedMeals] = useState<number[]>([]);
+  const { toggleFavorite, isFavorite } = useFavoriteRecipes();
 
   const getMealIcon = (mealType: string) => {
     switch (mealType.toLowerCase()) {
@@ -233,18 +237,69 @@ export default function DayModal({
                         </div>
                       </div>
 
-                      {/* Calories Badge */}
-                      <motion.div
-                        animate={{ scale: hoveredMeal === index ? 1.1 : 1 }}
-                        className={`px-4 py-2 rounded-full font-semibold text-sm transition-colors
-                          ${completedMeals.includes(index)
-                            ? 'bg-green-200 text-green-800'
-                            : 'bg-white/80 text-gray-700'
-                          }
-                        `}
-                      >
-                        {meal.calories}
-                      </motion.div>
+                      <div className="flex items-center gap-2">
+                        {/* Star Button */}
+                        <motion.button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const recipeData = {
+                              name: meal.meal,
+                              recipeLink: meal.recipeLink,
+                              courseType,
+                              weekNumber,
+                              dayName,
+                              mealType: meal.mealType.toLowerCase() as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert'
+                            };
+                            toggleFavorite(recipeData);
+                          }}
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.9 }}
+                          className={`p-2 rounded-full transition-all ${
+                            isFavorite({
+                              name: meal.meal,
+                              recipeLink: meal.recipeLink,
+                              courseType,
+                              weekNumber,
+                              dayName,
+                              mealType: meal.mealType.toLowerCase() as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert'
+                            })
+                              ? 'bg-yellow-400 text-yellow-800 shadow-lg'
+                              : 'bg-white/60 text-gray-600 hover:bg-yellow-50 hover:text-yellow-600'
+                          }`}
+                          title={isFavorite({
+                            name: meal.meal,
+                            recipeLink: meal.recipeLink,
+                            courseType,
+                            weekNumber,
+                            dayName,
+                            mealType: meal.mealType.toLowerCase() as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert'
+                          }) ? 'Ta bort från favoriter' : 'Lägg till i favoriter'}
+                        >
+                          <FiStar className={`text-lg ${
+                            isFavorite({
+                              name: meal.meal,
+                              recipeLink: meal.recipeLink,
+                              courseType,
+                              weekNumber,
+                              dayName,
+                              mealType: meal.mealType.toLowerCase() as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert'
+                            }) ? 'fill-current' : ''
+                          }`} />
+                        </motion.button>
+
+                        {/* Calories Badge */}
+                        <motion.div
+                          animate={{ scale: hoveredMeal === index ? 1.1 : 1 }}
+                          className={`px-4 py-2 rounded-full font-semibold text-sm transition-colors
+                            ${completedMeals.includes(index)
+                              ? 'bg-green-200 text-green-800'
+                              : 'bg-white/80 text-gray-700'
+                            }
+                          `}
+                        >
+                          {meal.calories}
+                        </motion.div>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
