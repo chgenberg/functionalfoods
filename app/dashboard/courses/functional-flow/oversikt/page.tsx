@@ -259,13 +259,7 @@ export default function FunctionalFlowOverview() {
         </div>
       )}
 
-      {/* Floating Help Button */}
-      <button
-        onClick={() => setShowHelpModal(true)}
-        className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
-      >
-        <FiHelpCircle className="w-6 h-6" />
-      </button>
+
     </div>
   );
 } 

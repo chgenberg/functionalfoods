@@ -50,6 +50,12 @@ export default function WeekTemplate({
   const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
+  useEffect(() => {
+    const handler = () => setShowHelpGuide(true);
+    window.addEventListener('open-help-guide', handler as EventListener);
+    return () => window.removeEventListener('open-help-guide', handler as EventListener);
+  }, []);
+
   // Get current week's meal plan
   const weekKey = `week${weekNumber}`;
   const mealPlan = mealPlans[weekKey];

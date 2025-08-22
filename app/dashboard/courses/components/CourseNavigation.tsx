@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { FiCheckCircle, FiAward, FiUsers, FiSettings } from 'react-icons/fi';
+import { FiCheckCircle, FiAward, FiUsers, FiSettings, FiHelpCircle } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
 
 interface CourseNavigationProps {
@@ -133,6 +133,18 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                 <span className="sm:hidden">Inst.</span>
               </span>
             </Link>
+
+            {/* Small Help icon button */}
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-help-guide'))}
+              className="px-3 py-2 text-sm rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 bg-[#F3EFE3] text-[#014421] hover:bg-[#E8E0D4]"
+              title="Hjälp"
+            >
+              <span className="flex items-center gap-1">
+                <FiHelpCircle className="w-4 h-4" />
+                <span className="hidden md:inline">Hjälp</span>
+              </span>
+            </button>
           </div>
           
           {/* Mobile scroll indicators */}
