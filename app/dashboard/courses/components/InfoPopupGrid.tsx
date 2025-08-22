@@ -151,56 +151,15 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
       const response = await fetch(`/api/scraped-content/${item.filename}`);
       if (response.ok) {
         const text = await response.text();
-        // Clean up the content - remove header navigation and keep main content
+        
+        // The files are already cleaned, just extract content after separator
         let cleanContent = text;
         
-        // Remove everything before the main title/content
         if (text.includes('--------------------------------------------------------------------------------')) {
           const parts = text.split('--------------------------------------------------------------------------------');
           if (parts.length > 1) {
             cleanContent = parts[1].trim();
           }
-        }
-        
-        // Remove navigation menu items at the beginning
-        cleanContent = cleanContent
-          .replace(/^.*Prenumerera\s*/, '')
-          .replace(/^.*Logga in\s*/, '')
-          .replace(/^.*Hem\s*/, '')
-          .replace(/^.*Kursutbud\s*/, '')
-          .replace(/^.*Artiklar\s*/, '')
-          .replace(/^.*Recept\s*/, '')
-          .replace(/^.*Kontakt\s*/, '')
-          .replace(/^.*Om oss\s*/, '')
-          .replace(/^.*0\s*/, '')
-          .replace(/^.*Functional foods\s*/, '')
-          .replace(/^(Hem|Kursutbud|Artiklar|Recept|Kontakt|Om oss)\s*/gm, '')
-          .trim();
-        
-        // Find the actual content start (usually after the main title)
-        const lines = cleanContent.split('\n');
-        const contentStart = lines.findIndex(line => 
-          line.includes('BYTA RÅVAROR') || 
-          line.includes('Dags att komma igång') ||
-          line.includes('Måldokument') ||
-          line.includes('Functional foods') ||
-          line.includes('Reflektion') ||
-          line.includes('Fördelarna') ||
-          line.includes('Att äta ute') ||
-          line.includes('Benbuljong') ||
-          line.includes('Att välja') ||
-          line.includes('Ersättning') ||
-          line.includes('Vad är') ||
-          line.includes('3 steg') ||
-          line.includes('Motivation') ||
-          line.includes('Ät mer') ||
-          line.includes('Naturens') ||
-          line.includes('Drycker') ||
-          line.includes('Periodisk')
-        );
-        
-        if (contentStart > -1) {
-          cleanContent = lines.slice(contentStart).join('\n').trim();
         }
         
         setContent(cleanContent);
