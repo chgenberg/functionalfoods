@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { FiHelpCircle, FiCheck, FiClock, FiLock, FiBookOpen, FiAward, FiCalendar, FiTrendingUp, FiUsers, FiInstagram } from 'react-icons/fi';
 import CourseNavigation from '../../components/CourseNavigation';
 import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
+import HelpGuide from '@/app/components/HelpGuide';
 import { mealPlans } from '@/app/data/mealPlans';
 
 export default function FunctionalBasicsOverview() {
@@ -28,6 +29,16 @@ export default function FunctionalBasicsOverview() {
       setCurrentWeek(calculatedWeek);
       setCurrentDay(calculatedDay);
     }
+  }, []);
+
+  // Listen for help button clicks
+  useEffect(() => {
+    const handler = () => {
+      console.log('Dashboard help event received in Overview!');
+      setShowHelpModal(true);
+    };
+    window.addEventListener('open-dashboard-help', handler as EventListener);
+    return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);
 
   const totalDays = 42; // 6 weeks * 7 days
@@ -360,6 +371,11 @@ export default function FunctionalBasicsOverview() {
         </div>
       )}
 
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpModal} 
+        onClose={() => setShowHelpModal(false)} 
+      />
 
     </div>
   );

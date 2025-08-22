@@ -51,7 +51,10 @@ export default function WeekTemplate({
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   useEffect(() => {
-    const handler = () => setShowHelpGuide(true);
+    const handler = () => {
+      console.log('Dashboard help event received in WeekTemplate!');
+      setShowHelpGuide(true);
+    };
     window.addEventListener('open-dashboard-help', handler as EventListener);
     return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);

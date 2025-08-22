@@ -133,17 +133,24 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
 
             {/* Help button - Dark green with ? symbol */}
             <button
-              onClick={() => window.dispatchEvent(new CustomEvent('open-dashboard-help'))}
-              className="w-8 h-8 rounded-full bg-[#014421] text-white hover:bg-[#116530] transition-all flex-shrink-0 flex items-center justify-center font-bold text-lg shadow-md hover:shadow-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Help button clicked!');
+                window.dispatchEvent(new CustomEvent('open-dashboard-help'));
+              }}
+              className="w-10 h-10 rounded-full bg-[#014421] text-white hover:bg-[#116530] transition-all flex-shrink-0 flex items-center justify-center font-bold text-lg shadow-md hover:shadow-lg relative z-30 cursor-pointer"
               title="Hjälp med dashboard"
+              type="button"
+              style={{ minWidth: '40px', minHeight: '40px' }}
             >
               ?
             </button>
           </div>
           
           {/* Mobile scroll indicators */}
-          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#F3EFE3] to-transparent pointer-events-none md:hidden" />
-          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#F3EFE3] to-transparent pointer-events-none md:hidden" />
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#F3EFE3] to-transparent pointer-events-none md:hidden z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#F3EFE3] to-transparent pointer-events-none md:hidden z-10" />
         </div>
       </div>
     </div>
