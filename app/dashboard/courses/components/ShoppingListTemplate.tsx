@@ -106,6 +106,31 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
   const checkedCount = ingredients.filter(i => i.checked).length;
   const totalCount = ingredients.length;
 
+  const buildListText = () => {
+    return ingredients.map(i => `${i.name} — ${i.amount} ${i.unit}`.trim()).join("\n");
+  };
+
+  const handleShare = async () => {
+    const text = buildListText();
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `Inköpslista vecka ${week}`, text });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        alert('Listan kopierades till urklipp. Klistra in den i valfri inköpsapp.');
+      }
+    } catch (e) {
+      console.error('Share failed', e);
+    }
+  };
+
+  const handleiOSShortcuts = () => {
+    // Requires a Shortcut named "Ulrika Inköpslista" that takes Text input and creates Reminders from each line
+    const text = buildListText();
+    const url = `shortcuts://run-shortcut?name=${encodeURIComponent('Ulrika Inköpslista')}&input=${encodeURIComponent(text)}`;
+    window.location.href = url;
+  };
+
   const handlePrint = () => {
     const today = new Date().toLocaleDateString('sv-SE');
     const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
@@ -702,6 +727,22 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
               >
                 <FiPrinter className="w-5 h-5" />
                 <span className="hidden sm:inline">Skriv ut</span>
+              </button>
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+                title="Dela/Kopiera"
+              >
+                <FiDownload className="w-5 h-5" />
+                <span className="hidden sm:inline">Dela</span>
+              </button>
+              <button
+                onClick={handleiOSShortcuts}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+                title="Skicka till iPhone Påminnelser (genom Genvägar)"
+              >
+                <FiDownload className="w-5 h-5" />
+                <span className="hidden sm:inline">iPhone</span>
               </button>
               <button
                 onClick={handleExport}
