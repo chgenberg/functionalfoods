@@ -170,14 +170,14 @@ export default function Header() {
           <div className="lg:hidden">
             <button 
               type="button" 
-              className="relative w-11 h-11 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 flex items-center justify-center group"
+              className="relative w-11 h-11 rounded-lg bg-[#014421] hover:bg-[#116530] transition-all duration-300 flex items-center justify-center group shadow-sm"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Öppna meny"
             >
               <div className="w-6 h-5 relative flex flex-col justify-between">
-                <span className={`block h-0.5 w-full bg-gray-800 transform transition-all duration-300 origin-left ${mobileMenuOpen ? 'rotate-45 translate-x-px' : ''}`}></span>
-                <span className={`block h-0.5 w-full bg-gray-800 transition-all duration-300 ${mobileMenuOpen ? 'opacity-0 scale-x-0' : ''}`}></span>
-                <span className={`block h-0.5 w-full bg-gray-800 transform transition-all duration-300 origin-left ${mobileMenuOpen ? '-rotate-45 translate-x-px' : ''}`}></span>
+                <span className={`block h-0.5 w-full bg-white transform transition-all duration-300 origin-left ${mobileMenuOpen ? 'rotate-45 translate-x-px' : ''}`}></span>
+                <span className={`block h-0.5 w-full bg-white transition-all duration-300 ${mobileMenuOpen ? 'opacity-0 scale-x-0' : ''}`}></span>
+                <span className={`block h-0.5 w-full bg-white transform transition-all duration-300 origin-left ${mobileMenuOpen ? '-rotate-45 translate-x-px' : ''}`}></span>
               </div>
             </button>
           </div>

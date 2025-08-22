@@ -94,7 +94,7 @@ export default function FunctionalFlowOverview() {
       <CourseNavigation courseType="flow" currentWeek={currentWeek} />
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
         
         {/* Coaching Button at Top */}
         <motion.div
