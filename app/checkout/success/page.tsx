@@ -17,78 +17,63 @@ function CheckoutSuccessContent() {
   const router = useRouter();
 
   useEffect(() => {
-    const verifyPayment = async () => {
+    const verify = async () => {
       try {
-        // Get payment_intent from URL parameters (Stripe adds this)
+        const sessionId = searchParams?.get('session_id');
         const paymentIntentId = searchParams?.get('payment_intent');
-        const paymentIntentClientSecret = searchParams?.get('payment_intent_client_secret');
-        
-        if (!paymentIntentId) {
-          setError('Ingen betalningsinformation hittades. Betalningen kan inte verifieras.');
-          setIsVerifying(false);
-          return;
-        }
 
-        // Verify payment with our backend
-        const response = await fetch(`/api/verify-payment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            paymentIntentId,
-            paymentMethod: 'stripe'
-          })
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.success && result.status === 'succeeded') {
-          // Payment verified successfully
-          setPaymentVerified(true);
-          clearCart(); // Only clear cart if payment is verified
-          
-          // Check if user is logged in
-          const userStr = localStorage.getItem('user');
-          if (userStr) {
-            setUser(JSON.parse(userStr));
+        if (sessionId) {
+          const res = await fetch(`/api/checkout/verify?session_id=${encodeURIComponent(sessionId)}`);
+          const data = await res.json();
+          if (res.ok && (data.payment_status === 'paid' || data.status === 'complete')) {
+            setPaymentVerified(true);
+            clearCart();
+          } else {
+            setError(data.error || 'Betalningen kunde inte verifieras.');
           }
-
-          // Check if this is a new user
-          const newUserParam = searchParams?.get('new');
-          setIsNewUser(newUserParam === 'true');
+        } else if (paymentIntentId) {
+          // Fallback for PaymentIntent flow
+          const response = await fetch(`/api/verify-payment`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentIntentId, paymentMethod: 'stripe' })
+          });
+          const result = await response.json();
+          if (response.ok && result.success && result.status === 'succeeded') {
+            setPaymentVerified(true);
+            clearCart();
+          } else {
+            setError(result.error || 'Betalningen kunde inte verifieras.');
+          }
         } else {
-          setError(result.error || 'Betalningen kunde inte verifieras.');
+          setError('Ingen betalningsinformation hittades.');
         }
+
+        const userStr = localStorage.getItem('user');
+        if (userStr) setUser(JSON.parse(userStr));
+        const newUserParam = searchParams?.get('new');
+        setIsNewUser(newUserParam === 'true');
       } catch (err) {
-        console.error('Payment verification error:', err);
         setError('Ett fel uppstod vid verifiering av betalningen.');
       } finally {
         setIsVerifying(false);
       }
     };
 
-    verifyPayment();
+    verify();
   }, [clearCart, searchParams]);
 
-  // Loading state
   if (isVerifying) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#1a4324] mx-auto mb-6"></div>
-          <h1 className="text-xl font-semibold text-gray-800 mb-2">
-            Verifierar din betalning...
-          </h1>
-          <p className="text-gray-600">
-            Vänligen vänta medan vi bekräftar din beställning.
-          </p>
+          <h1 className="text-xl font-semibold text-gray-800 mb-2">Verifierar din betalning...</h1>
+          <p className="text-gray-600">Vänligen vänta medan vi bekräftar din beställning.</p>
         </div>
       </div>
     );
   }
 
-  // Error state - payment not verified
   if (!paymentVerified || error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
@@ -96,57 +81,27 @@ function CheckoutSuccessContent() {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <FiAlertTriangle className="w-8 h-8 text-red-600" />
           </div>
-          
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            Betalning ej verifierad
-          </h1>
-          
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Betalning ej verifierad</h1>
           <div className="space-y-3 mb-6">
-            <p className="text-gray-600">
-              {error || 'Vi kunde inte verifiera din betalning. Ingen beställning har genomförts.'}
-            </p>
-            
+            <p className="text-gray-600">{error || 'Vi kunde inte verifiera din betalning. Ingen beställning har genomförts.'}</p>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-700">
-                Om du tror att du har blivit debiterad men inte fått tillgång till dina kurser, 
-                kontakta vår kundtjänst så hjälper vi dig.
-              </p>
+              <p className="text-sm text-yellow-700">Om du tror att du har blivit debiterad men inte fått tillgång, kontakta kundtjänst.</p>
             </div>
           </div>
-
           <div className="space-y-4">
-            <Link
-              href="/checkout"
-              className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium"
-            >
-              Försök igen
-            </Link>
-            
-            <Link
-              href="/kontakt"
-              className="block w-full border-2 border-[#1a4324] text-[#1a4324] text-center py-3 rounded-lg hover:bg-[#1a4324] hover:text-white transition-colors font-medium"
-            >
-              Kontakta kundtjänst
-            </Link>
+            <Link href="/checkout" className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium">Försök igen</Link>
+            <Link href="/kontakt" className="block w-full border-2 border-[#1a4324] text-[#1a4324] text-center py-3 rounded-lg hover:bg-[#1a4324] hover:text-white transition-colors font-medium">Kontakta kundtjänst</Link>
           </div>
         </div>
       </div>
     );
   }
 
-  // Success state - payment verified
   const getDirectCourseLink = () => {
     if (!user) return '/login';
-    
-    // Smart redirect based on user's purchases or email
-    if (user.email === 'basics@test.se' || user.email === 'basiconly@test.se') {
-      return '/dashboard/courses/functional-basics';
-    } else if (user.email === 'flow@test.se' || user.email === 'flowonly@test.se') {
-      return '/dashboard/courses/functional-flow';
-    } else {
-      // For new purchases, redirect to dashboard which will auto-redirect to the right course
-      return '/dashboard';
-    }
+    if (user.email === 'basics@test.se' || user.email === 'basiconly@test.se') return '/dashboard/courses/functional-basics';
+    if (user.email === 'flow@test.se' || user.email === 'flowonly@test.se') return '/dashboard/courses/functional-flow';
+    return '/dashboard';
   };
 
   return (
@@ -155,78 +110,32 @@ function CheckoutSuccessContent() {
         <div className="w-16 h-16 bg-background-secondary rounded-full flex items-center justify-center mx-auto mb-6">
           <FiCheckCircle className="w-8 h-8 text-primary" />
         </div>
-        
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
-          {isNewUser ? 'Välkommen till Functional Foods!' : 'Tack för ditt köp!'}
-        </h1>
-        
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">{isNewUser ? 'Välkommen till Functional Foods!' : 'Tack för ditt köp!'}</h1>
         <div className="space-y-3 mb-6">
           {isNewUser ? (
             <>
-              <p className="text-gray-600">
-                Ditt köp är genomfört och ett konto har skapats åt dig.
-              </p>
+              <p className="text-gray-600">Ditt köp är genomfört och ett konto har skapats åt dig.</p>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-blue-800 font-medium mb-2">
-                  <FiMail className="w-4 h-4" />
-                  Viktigt!
-                </div>
-                <p className="text-sm text-blue-700">
-                  Vi har skickat dina inloggningsuppgifter till din e-post. 
-                  Kontrollera även skräppost-mappen om du inte hittar mejlet.
-                </p>
+                <div className="flex items-center gap-2 text-blue-800 font-medium mb-2"><FiMail className="w-4 h-4" />Viktigt!</div>
+                <p className="text-sm text-blue-700">Vi har skickat dina inloggningsuppgifter till din e-post.</p>
               </div>
             </>
           ) : (
-            <p className="text-gray-600">
-              Din beställning är bekräftad och du har nu tillgång till ditt kursmaterial.
-            </p>
+            <p className="text-gray-600">Din beställning är bekräftad och du har nu tillgång till ditt kursmaterial.</p>
           )}
-          
-          {user && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600">
-                Inloggad som: <span className="font-medium">{user.email}</span>
-              </p>
-            </div>
-          )}
+          {user && (<div className="bg-gray-50 rounded-lg p-4"><p className="text-sm text-gray-600">Inloggad som: <span className="font-medium">{user.email}</span></p></div>)}
         </div>
-
         <div className="space-y-4">
           {user ? (
             <>
-              <Link
-                href={getDirectCourseLink()}
-                className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium flex items-center justify-center gap-2"
-              >
-                <FiPlay className="w-5 h-5" />
-                {isNewUser ? 'Kom igång med din kurs' : 'Fortsätt till din kurs'}
-              </Link>
-              
-              <Link
-                href="/utbildning"
-                className="block w-full border-2 border-[#1a4324] text-[#1a4324] text-center py-3 rounded-lg hover:bg-[#1a4324] hover:text-white transition-colors font-medium flex items-center justify-center gap-2"
-              >
-                <FiBook className="w-5 h-5" />
-                Utforska fler kurser
-              </Link>
+              <Link href={getDirectCourseLink()} className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium flex items-center justify-center gap-2"><FiPlay className="w-5 h-5" />{isNewUser ? 'Kom igång med din kurs' : 'Fortsätt till din kurs'}</Link>
+              <Link href="/utbildning" className="block w-full border-2 border-[#1a4324] text-[#1a4324] text-center py-3 rounded-lg hover:bg-[#1a4324] hover:text-white transition-colors font-medium flex items-center justify-center gap-2"><FiBook className="w-5 h-5" />Utforska fler kurser</Link>
             </>
           ) : (
-            <Link
-              href="/login"
-              className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium"
-            >
-              Logga in för att komma åt dina kurser
-            </Link>
+            <Link href="/login" className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium">Logga in för att komma åt dina kurser</Link>
           )}
         </div>
-
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
-            <GiSparkles className="w-4 h-4" />
-            Din resa mot bättre hälsa börjar nu!
-          </p>
-        </div>
+        <div className="mt-8 pt-6 border-t border-gray-200"><p className="text-sm text-gray-500 flex items-center justify-center gap-2"><GiSparkles className="w-4 h-4" />Din resa mot bättre hälsa börjar nu!</p></div>
       </div>
     </div>
   );

@@ -6,7 +6,8 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/hooks/useAuth';
 
-const stripePromise = loadStripe("pk_live_51QiFDdRuyBZ0rbp2CBhIBktFUmB9I5jU0rfucntPEgFjz68jxIyaH1uWY0su4uMU812wH7cZO6ZIzGAd5u7NpcLR00IBd7C8io");
+const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
+const stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null as any);
 
 function CheckoutForm() {
   const stripe = useStripe();
@@ -34,7 +35,7 @@ function CheckoutForm() {
     });
 
     if (error) {
-      if (error.type === "card_error" || error.type === "validation_error") {
+      if (error.type === 'card_error' || error.type === 'validation_error') {
         setMessage(error.message || 'Ett fel uppstod med din betalning.');
       } else {
         setMessage('Ett oväntat fel uppstod.');
@@ -45,34 +46,11 @@ function CheckoutForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">Kortbetalning</h2>
-        <PaymentElement 
-          options={{
-            layout: 'tabs'
-          }}
-        />
-      </div>
-      
-      {message && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800">{message}</p>
-        </div>
-      )}
-
-      <button
-        disabled={isLoading || !stripe || !elements}
-        className="w-full bg-[#1a4324] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#9dc46d] hover:text-[#1a4324] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        {isLoading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-            Bearbetar betalning...
-          </div>
-        ) : (
-          'Betala nu'
-        )}
+    <form onSubmit={handleSubmit} className="bg-white rounded-xl p-4">
+      <PaymentElement />
+      {message && <div className="text-red-600 text-sm mt-3">{message}</div>}
+      <button disabled={!stripe || isLoading} className="mt-4 w-full bg-[#1a4324] text-white py-3 rounded-lg disabled:opacity-60">
+        {isLoading ? 'Bearbetar...' : 'Betala nu'}
       </button>
     </form>
   );
@@ -89,7 +67,7 @@ function StripePageContent() {
     }
   }, [clientSecret, router]);
 
-  if (!clientSecret) {
+  if (!clientSecret || !publishableKey) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1a4324]"></div>
@@ -126,9 +104,7 @@ function StripePageContent() {
         </Elements>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
-            🔒 Säker betalning med 256-bitars SSL-kryptering
-          </p>
+          <p className="text-sm text-gray-500">🔒 Säker betalning med 256-bitars SSL-kryptering</p>
         </div>
       </div>
     </div>
@@ -136,13 +112,5 @@ function StripePageContent() {
 }
 
 export default function StripePage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1a4324]"></div>
-      </div>
-    }>
-      <StripePageContent />
-    </Suspense>
-  );
+  return <StripePageContent />;
 } 

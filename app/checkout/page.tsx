@@ -27,121 +27,44 @@ export default function Checkout() {
   });
 
   useEffect(() => {
-    // Check if user is logged in
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
-    
-    if (token && userStr) {
-      setUser(JSON.parse(userStr));
-    } else {
-      setGuestMode(true);
-    }
+    if (token && userStr) setUser(JSON.parse(userStr)); else setGuestMode(true);
   }, []);
 
-  const getRedirectPath = () => {
-    // Check if there's a functional-basics course in the cart
-    const hasFunctionalBasics = items.some(item => item.id === 'functional-basics');
-    const hasFunctionalFlow = items.some(item => item.id === 'functional-flow');
-    
-    if (hasFunctionalBasics && !hasFunctionalFlow) {
-      return '/dashboard/courses/functional-basics';
-    } else if (hasFunctionalFlow && !hasFunctionalBasics) {
-      return '/dashboard/courses/functional-flow';
-    } else if (hasFunctionalFlow) {
-      // If both or just flow, prioritize flow
-      return '/dashboard/courses/functional-flow';
-    } else {
-      return '/dashboard';
-    }
-  };
-
   const validateGuestForm = () => {
-    if (!customerInfo.name.trim()) {
-      setError('Namn är obligatoriskt');
-      return false;
-    }
-    if (!customerInfo.email.trim()) {
-      setError('E-post är obligatoriskt');
-      return false;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerInfo.email)) {
-      setError('Ange en giltig e-postadress');
-      return false;
-    }
+    if (!customerInfo.name.trim()) { setError('Namn är obligatoriskt'); return false; }
+    if (!customerInfo.email.trim()) { setError('E-post är obligatoriskt'); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerInfo.email)) { setError('Ange en giltig e-postadress'); return false; }
     return true;
   };
 
-
-
   const paymentMethods = [
-    {
-      id: 'stripe',
-      name: 'Kortbetalning',
-      description: 'Betala säkert med Visa, Mastercard eller American Express',
-      icon: <FaCreditCard className="text-2xl" />,
-      enabled: true,
-      badge: 'Säker betalning'
-    }
+    { id: 'stripe', name: 'Kortbetalning', description: 'Betala säkert med Visa, Mastercard eller American Express', icon: <FaCreditCard className="text-2xl" />, enabled: true, badge: 'Säker betalning' }
   ];
 
   const handleCheckout = async () => {
     setIsProcessing(true);
     setError('');
 
-    if (guestMode && !validateGuestForm()) {
-      setIsProcessing(false);
-      return;
-    }
+    if (guestMode && !validateGuestForm()) { setIsProcessing(false); return; }
 
     try {
-      const token = localStorage.getItem('token');
-      
-      const requestBody: any = {
-        items: items,
-        paymentMethod: selectedPayment,
-        customerInfo: guestMode ? {
-          name: customerInfo.name.trim(),
-          email: customerInfo.email.trim().toLowerCase()
-        } : null,
-        createAccount: guestMode ? customerInfo.createAccount : null
-      };
+      if (selectedPayment !== 'stripe') {
+        throw new Error('Välj kortbetalning för att fortsätta');
+      }
 
-      const response = await fetch('/api/purchases', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` })
-        },
-        body: JSON.stringify(requestBody)
+      // Create Checkout Session
+      const res = await fetch('/api/checkout', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, customer: { email: guestMode ? customerInfo.email : user?.email, name: guestMode ? customerInfo.name : user?.name } })
       });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Kunde inte initiera betalning');
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Något gick fel med betalningen');
-      }
-
-      // Handle different response types
-      if (data.requiresRedirect && data.redirectUrl) {
-        // For Stripe, redirect to payment page
-        if (selectedPayment === 'stripe') {
-          window.location.href = data.redirectUrl;
-        } else {
-          // For other payment methods that need external redirect
-          window.location.href = data.redirectUrl;
-        }
-      } else if (data.success) {
-        // Payment completed immediately
-        if (data.token && data.user) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
-        clearCart();
-        router.push('/checkout/success?new=' + (data.user?.isNewUser ? 'true' : 'false'));
-      }
+      window.location.href = data.url;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Något gick fel med betalningen');
-    } finally {
       setIsProcessing(false);
     }
   };
