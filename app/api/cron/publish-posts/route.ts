@@ -12,12 +12,11 @@ export async function GET() {
     const prisma = new PrismaClient();
     const now = new Date();
 
-    // Hitta alla inlägg som är schemalagda att publiceras nu eller tidigare
-    // och som fortfarande har status 'scheduled'.
+    // Hitta alla inlägg som inte är publicerade än men har ett publishedAt datum som har passerat
     const postsToPublish = await prisma.blogPost.findMany({
       where: {
-        status: 'scheduled',
-        scheduledAt: {
+        published: false,
+        publishedAt: {
           lte: now,
         },
       },
@@ -27,7 +26,7 @@ export async function GET() {
       return NextResponse.json({ message: 'Inga inlägg att publicera.' });
     }
 
-    // Uppdatera status för dessa inlägg till 'published'
+    // Uppdatera published status för dessa inlägg
     const updatedPosts = await prisma.blogPost.updateMany({
       where: {
         id: {
@@ -35,8 +34,7 @@ export async function GET() {
         },
       },
       data: {
-        status: 'published',
-        publishedAt: now,
+        published: true,
       },
     });
 

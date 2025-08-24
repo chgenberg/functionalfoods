@@ -29,7 +29,7 @@ function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/checkout/success`,
+        return_url: `${typeof window !== 'undefined' ? window.location.origin : 'https://functionalfoods.se'}/checkout/success`,
         receipt_email: user?.email,
       },
     });
@@ -112,5 +112,13 @@ function StripePageContent() {
 }
 
 export default function StripePage() {
-  return <StripePageContent />;
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1a4324]"></div>
+      </div>
+    }>
+      <StripePageContent />
+    </Suspense>
+  );
 } 

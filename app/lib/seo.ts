@@ -54,6 +54,7 @@ export function generateMetadata(config: SEOConfig = {}): Metadata {
     : `${DEFAULT_CONFIG.siteUrl}${image}`;
 
   const metadata: Metadata = {
+    metadataBase: new URL(DEFAULT_CONFIG.siteUrl),
     title: fullTitle,
     description,
     keywords: keywords.length > 0 ? keywords.join(', ') : undefined,
