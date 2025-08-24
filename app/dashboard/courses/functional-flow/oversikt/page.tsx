@@ -97,31 +97,6 @@ export default function FunctionalFlowOverview() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
         
-        {/* Coaching Button at Top */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <motion.button
-            onClick={() => setShowCoachingModal(true)}
-            className="bg-[#014421] text-white px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
-            animate={{
-              scale: [1, 1.05, 1],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FiUsers className="w-5 h-5" />
-            COACHNING OCH FUNCTIONAL FOODS - KLICKA HÄR
-          </motion.button>
-        </motion.div>
-        
         {/* Progress Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -167,6 +142,32 @@ export default function FunctionalFlowOverview() {
             </div>
           </div>
 
+        </motion.div>
+
+        {/* Coaching Button after Progress */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-center mb-8"
+        >
+          <motion.button
+            onClick={() => setShowCoachingModal(true)}
+            className="bg-[#014421] text-white px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
+            animate={{
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiUsers className="w-5 h-5" />
+            COACHNING OCH FUNCTIONAL FOODS - KLICKA HÄR
+          </motion.button>
         </motion.div>
 
         {/* Weeks Grid */}
