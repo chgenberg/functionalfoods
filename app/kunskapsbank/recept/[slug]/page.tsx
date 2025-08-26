@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowLeft, FiClock, FiUsers, FiHeart, FiShare2, FiBookmark, 
-  FiCheck, FiPlus, FiMinus, FiPrinter, FiShoppingCart, FiX,
+  FiCheck, FiPlus, FiMinus, FiPrinter, FiX,
   FiChevronDown, FiChevronUp, FiStar, FiCamera
 } from 'react-icons/fi';
 import { useAuth } from '../../../hooks/useAuth';
@@ -468,7 +468,7 @@ export default function RecipePage() {
               <div className="lg:col-span-1 print-break">
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                   <span className="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center text-orange-600">
-                    <FiShoppingCart className="w-5 h-5" />
+                    <FiBookmark className="w-5 h-5" />
                   </span>
                   {t('recipes.detail.ingredients','Ingredienser')}
                 </h2>
@@ -535,15 +535,7 @@ export default function RecipePage() {
                   ))}
                 </div>
 
-                {/* Add to Shopping List Button - No Print */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-6 w-full flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-3 rounded-lg hover:bg-orange-600 transition-colors no-print"
-                >
-                  <FiShoppingCart />
-                  <span className="font-medium">Lägg till i inköpslista</span>
-                </motion.button>
+
 
 
               </div>
