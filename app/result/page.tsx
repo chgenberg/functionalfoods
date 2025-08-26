@@ -6,7 +6,7 @@ import MicronutrientQuestionModal from "../components/MicronutrientQuestionModal
 import { AnalysisResult } from '../types';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCheckCircle, FiAlertCircle, FiTrendingUp, FiHeart, FiShield, FiActivity, FiDroplet, FiSun, FiMoon, FiCoffee, FiHome, FiArrowRight, FiDownload, FiBook, FiMapPin, FiMessageSquare } from 'react-icons/fi';
+import { FiCheckCircle, FiAlertCircle, FiTrendingUp, FiHeart, FiShield, FiActivity, FiDroplet, FiSun, FiMoon, FiCoffee, FiHome, FiArrowRight, FiDownload, FiBook, FiMapPin, FiMessageSquare, FiHelpCircle } from 'react-icons/fi';
 
 // Färg för siluetten och chattbubblor
 const bubbleColor = "#f3f4f6"; // Samma som siluetten/landningssidan
@@ -441,12 +441,10 @@ function ResultPageContent() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-white mb-2">
-                  {healthScore > 70 ? 'Functional Flow' : 'Functional Basics'}
+                  Functional Flow
                 </h3>
                 <p className="text-white/80 mb-4">
-                  {healthScore > 70 
-                    ? 'Eftersom du redan har en god hälsobas rekommenderar vi Functional Flow - en avancerad kurs för dig som vill optimera din hälsa ytterligare och nå nya nivåer av välbefinnande.'
-                    : 'Vi rekommenderar Functional Basics - en grundläggande kurs som ger dig alla verktyg du behöver för att bygga en stark hälsofundament och förbättra din livskvalitet steg för steg.'}
+                  Baserat på din hälsoprofil rekommenderar vi Functional Flow - vår omfattande kurs som ger dig alla verktyg för att optimera din hälsa och nå nya nivåer av välbefinnande genom funktionell kost och livsstil.
                 </p>
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2">
@@ -467,7 +465,7 @@ function ResultPageContent() {
                   </div>
                 </div>
                 <Link
-                  href={healthScore > 70 ? '/utbildning/functional-flow' : '/utbildning/functional-basics'}
+                  href="/utbildning/functional-flow"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-secondary transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Läs mer om kursen
@@ -530,6 +528,25 @@ function ResultPageContent() {
               och ersätter inte professionell medicinsk rådgivning. Konsultera alltid läkare innan du gör 
               större förändringar i din livsstil eller börjar med nya tillskott.
             </p>
+          </div>
+        </motion.div>
+
+        {/* AI Disclaimer */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6 }}
+          className="mt-8 text-center"
+        >
+          <div className="flex items-center justify-center gap-2 text-white/70 text-sm">
+            <Link 
+              href="/ai-policy" 
+              className="inline-flex items-center gap-1 hover:text-white transition-colors"
+              title="Läs vår AI Policy"
+            >
+              <FiHelpCircle className="w-4 h-4" />
+              <span>*AI genererad plan</span>
+            </Link>
           </div>
         </motion.div>
       </div>

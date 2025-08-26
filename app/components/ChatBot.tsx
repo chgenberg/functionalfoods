@@ -1,10 +1,11 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { FiX, FiSend, FiMessageCircle } from 'react-icons/fi';
+import { FiX, FiSend, FiMessageCircle, FiHelpCircle } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
 import UserProfileSummary from './UserProfileSummary';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
+import Link from 'next/link';
 import { useErrorHandler } from '../lib/errorHandler';
 
 interface Message {
@@ -201,6 +202,18 @@ export default function ChatBot() {
             <button onClick={handleSendMessage} disabled={!inputValue.trim() || isLoading} className={`p-2 rounded-full transition-all ${inputValue.trim() && !isLoading ? 'bg-primary text-white hover:bg-primary' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
               <FiSend className="w-5 h-5" />
             </button>
+          </div>
+          
+          {/* AI Policy Link */}
+          <div className="mt-2 text-center">
+            <Link 
+              href="/ai-policy" 
+              className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 text-xs transition-colors"
+              title="Läs vår AI Policy"
+            >
+              <FiHelpCircle className="w-3 h-3" />
+              <span>AI-assisterad rådgivning - Läs vår AI Policy</span>
+            </Link>
           </div>
         </div>
       </div>

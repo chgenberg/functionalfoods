@@ -1,6 +1,8 @@
 // app/components/AIChatBox.tsx
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import { FiHelpCircle } from "react-icons/fi";
 
 export default function AIChatBox({ analysis }: { analysis: any }) {
   const [messages, setMessages] = useState([
@@ -84,6 +86,18 @@ export default function AIChatBox({ analysis }: { analysis: any }) {
         >
           {loading ? "..." : "Send"}
         </button>
+      </div>
+      
+      {/* AI Policy Link */}
+      <div className="mt-3 text-center">
+        <Link 
+          href="/ai-policy" 
+          className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 text-xs transition-colors"
+          title="Läs vår AI Policy"
+        >
+          <FiHelpCircle className="w-3 h-3" />
+          <span>AI-assisterad rådgivning - Läs vår AI Policy</span>
+        </Link>
       </div>
     </div>
   );

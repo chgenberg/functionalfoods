@@ -33,6 +33,7 @@ export default function Footer() {
       { label: t('footer.links.personal','Personuppgifter'), href: '/personuppgifter' },
       { label: t('footer.links.privacy','Integritetspolicy'), href: '/integritetspolicy' },
       { label: t('footer.links.cookie','Cookie-policy'), href: '/cookie-policy' },
+      { label: t('footer.links.aiPolicy','AI Policy'), href: '/ai-policy' },
     ],
   };
 
