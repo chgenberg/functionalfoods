@@ -6,15 +6,87 @@ import path from 'path';
 
 const prisma = new PrismaClient();
 
+// Ingredienser som ska filtreras bort från inköpslistan
+const EXCLUDED_INGREDIENTS = [
+  'vatten',
+  'kranvatten',
+  'ljummet vatten',
+  'kallt vatten',
+  'varmt vatten',
+  'egenbakat',
+  'hemgjord',
+  'hemgjort',
+  'färdiglagad',
+  'färdiglagat',
+  'färdigkokt',
+  'kokat',
+  'tillagad',
+  'tillagat',
+  'uppvärmd',
+  'uppvärmt',
+  'rest',
+  'rester',
+  'kvar',
+  'sparad',
+  'sparat'
+];
+
+// Synonymer för ingredienser som ska slås samman
+const INGREDIENT_SYNONYMS: Record<string, string> = {
+  'blomkålshuvud': 'blomkål',
+  'blomkålsbit': 'blomkål',
+  'färsk mango': 'mango',
+  'mango färsk': 'mango',
+  'grekisk yoghurt': 'grekisk yoghurt',
+  'grekisk naturell yoghurt': 'grekisk yoghurt',
+  'naturell grekisk yoghurt': 'grekisk yoghurt',
+  'persiljekvist': 'persilja',
+  'färsk persilja': 'persilja',
+  'citronklyfta': 'citron',
+  'citronskiva': 'citron',
+  'vitlöksklyfta': 'vitlök',
+  'vitlökstår': 'vitlök',
+  'salladslök': 'lök',
+  'gul lök': 'lök',
+  'gul paprika': 'paprika',
+  'röd paprika': 'paprika',
+  'grön paprika': 'paprika',
+  'isbergssalladshuvud': 'isbergssallad',
+  'ruccolasallad': 'ruccola',
+  'salt och svartpeppar': 'salt och peppar',
+  'salt och peppar': 'salt och peppar'
+};
+
 // Kategorier för ingredienser
 const CATEGORIES: Record<string, string[]> = {
   'Mejeri': ['mjölk', 'ost', 'yoghurt', 'smör', 'grädde', 'kvarg', 'keso', 'crème fraiche', 'fetaost', 'mozzarella', 'parmesan', 'ägg', 'halloumi', 'ricotta', 'mascarpone', 'gräddfil'],
   'Kött & Fisk': ['kyckling', 'lax', 'torsk', 'nötkött', 'fläsk', 'kalkon', 'lamm', 'räkor', 'tonfisk', 'bacon', 'köttfärs', 'korv', 'skinka', 'nötfärs', 'kycklingfilé', 'kycklinglårfilé', 'kallrökt'],
   'Frukt & Grönt': ['tomat', 'gurka', 'sallad', 'paprika', 'lök', 'vitlök', 'morötter', 'broccoli', 'spenat', 'äpple', 'banan', 'citron', 'lime', 'avokado', 'potatis', 'sötpotatis', 'zucchini', 'aubergine', 'svamp', 'champinjoner', 'sparris', 'blomkål', 'vitkål', 'rödkål', 'rödlök', 'squash', 'mango', 'ananas', 'sugarsnaps', 'sockerärtor', 'rucola', 'isberg', 'hjärtsallad', 'selleri', 'cocktailtomater', 'bifftomater'],
-  'Skafferi': ['mjöl', 'pasta', 'ris', 'quinoa', 'bröd', 'havregryn', 'olivolja', 'salt', 'peppar', 'socker', 'bulgur', 'couscous', 'linser', 'bönor', 'kikärtor', 'vatten', 'ketomüsli', 'hampafrön', 'solroskärnor', 'pumpafrön', 'sesamfrön', 'mandelmjölk'],
+  'Skafferi': ['mjöl', 'pasta', 'ris', 'quinoa', 'bröd', 'havregryn', 'olivolja', 'salt', 'peppar', 'socker', 'bulgur', 'couscous', 'linser', 'bönor', 'kikärtor', 'ketomüsli', 'hampafrön', 'solroskärnor', 'pumpafrön', 'sesamfrön', 'mandelmjölk'],
   'Kryddor & Såser': ['basilika', 'oregano', 'timjan', 'persilja', 'soja', 'senap', 'vinäger', 'ketchup', 'majonnäs', 'sriracha', 'curry', 'paprikapulver', 'kanel', 'kardemumma', 'chili', 'ingefära', 'koriander', 'örter', 'pesto', 'ketjap', 'honung', 'spiskummin'],
   'Övrigt': []
 };
+
+function shouldExcludeIngredient(ingredient: string): boolean {
+  const lowerIngredient = ingredient.toLowerCase().trim();
+  
+  return EXCLUDED_INGREDIENTS.some(excluded => 
+    lowerIngredient.includes(excluded.toLowerCase())
+  );
+}
+
+function normalizeIngredientName(ingredient: string): string {
+  const lowerIngredient = ingredient.toLowerCase().trim();
+  
+  // Check for synonyms first
+  for (const [synonym, canonical] of Object.entries(INGREDIENT_SYNONYMS)) {
+    if (lowerIngredient.includes(synonym.toLowerCase())) {
+      return canonical;
+    }
+  }
+  
+  return ingredient.trim();
+}
 
 function categorizeIngredient(ingredient: string): string {
   const lowerIngredient = ingredient.toLowerCase();
@@ -87,17 +159,55 @@ export async function GET(
       if (fs.existsSync(curatedPath)) {
         const parsed = JSON.parse(fs.readFileSync(curatedPath, 'utf-8'));
         if (parsed && Array.isArray(parsed.items)) {
+          // Process curated items to remove duplicates and excluded ingredients
+          const ingredientMap = new Map<string, { amount: number; unit: string; category: string }>();
+          
+          parsed.items.forEach((item: any) => {
+            const normalizedName = normalizeIngredientName(item.name || '');
+            if (shouldExcludeIngredient(normalizedName)) {
+              return; // Skip excluded ingredients
+            }
+            
+            const key = `${normalizedName.toLowerCase()}_${item.unit || 'st'}`;
+            const existing = ingredientMap.get(key);
+            const amount = parseFloat(String(item.amount)) || 1;
+            
+            if (existing) {
+              existing.amount += amount;
+            } else {
+              ingredientMap.set(key, {
+                amount: amount,
+                unit: item.unit || 'st',
+                category: item.category || categorizeIngredient(normalizedName)
+              });
+            }
+          });
+          
+          // Convert to array format
+          const ingredients = Array.from(ingredientMap.entries()).map(([key, data]) => {
+            const [name] = key.split('_');
+            return {
+              name: name.charAt(0).toUpperCase() + name.slice(1),
+              amount: data.amount.toString(),
+              unit: data.unit,
+              category: data.category,
+              checked: false
+            };
+          });
+          
+          // Sort by category and name
+          ingredients.sort((a, b) => {
+            if (a.category !== b.category) {
+              return a.category.localeCompare(b.category);
+            }
+            return a.name.localeCompare(b.name);
+          });
+          
           return NextResponse.json({
             week: weekNum,
             courseType,
             recipeCount: -1,
-            ingredients: parsed.items.map((i: any) => ({
-              name: i.name,
-              amount: String(i.amount || ''),
-              unit: i.unit || 'st',
-              category: i.category || 'Övrigt',
-              checked: false
-            })),
+            ingredients,
             generatedAt: new Date().toISOString(),
             source: 'curated'
           });
@@ -161,7 +271,11 @@ export async function GET(
           if (typeof ingredient === 'string') {
             const parsed = parseIngredientLine(ingredient);
             if (parsed) {
-              const key = `${parsed.name.toLowerCase()}_${parsed.unit}`;
+              const normalizedName = normalizeIngredientName(parsed.name);
+              if (shouldExcludeIngredient(normalizedName)) {
+                return; // Skip excluded ingredients
+              }
+              const key = `${normalizedName.toLowerCase()}_${parsed.unit}`;
               const existing = ingredientMap.get(key);
               
               if (existing) {
@@ -170,7 +284,7 @@ export async function GET(
                 ingredientMap.set(key, {
                   amount: parseFloat(parsed.amount) || 1,
                   unit: parsed.unit,
-                  category: categorizeIngredient(parsed.name)
+                  category: categorizeIngredient(normalizedName)
                 });
               }
             }
