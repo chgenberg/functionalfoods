@@ -11,7 +11,6 @@ import {
   FiChevronDown, FiChevronUp, FiStar, FiCamera
 } from 'react-icons/fi';
 import { useAuth } from '../../../hooks/useAuth';
-import RandomRecipes from '../../../components/RandomRecipes';
 import { GiCookingPot } from 'react-icons/gi';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 
@@ -696,10 +695,7 @@ export default function RecipePage() {
             )}
           </div>
 
-          {/* Related Recipes - No Print */}
-          <div className="mt-12 no-print">
-            <RandomRecipes excludeId={recipe.id} />
-          </div>
+
         </div>
       </div>
     </>

@@ -132,18 +132,46 @@ export default function DayModal({
     
     // If it's a "rester" meal, try to find the original recipe
     if (meal.meal.toLowerCase().includes('rester')) {
-      const originalMealName = meal.meal.replace(/\s*rester\s*/gi, '').trim();
+      let originalMealName = meal.meal;
       
-      // Create a slug from the original meal name
-      const slug = originalMealName
-        .toLowerCase()
-        .replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match))
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
+      // Handle different patterns of "rester" meals
+      // Pattern 1: "Meal name rester" (simple case)
+      originalMealName = originalMealName.replace(/\s+rester\s*$/gi, '');
       
-      return `/kunskapsbank/recept/${slug}`;
+      // Pattern 2: "Meal name rester från frysen/fysen" 
+      originalMealName = originalMealName.replace(/\s+rester\s+från\s+(frysen|fysen)\s*$/gi, '');
+      
+      // Pattern 3: "Meal name från fysenrester" (compound case)
+      originalMealName = originalMealName.replace(/\s+från\s+(fysen|frysen)rester\s*$/gi, '');
+      
+      // Pattern 4: "Meal name1 och meal name2rester" (compound with och)
+      originalMealName = originalMealName.replace(/rester\s*$/gi, '');
+      
+      // Clean up any trailing "och [something]" that might be part of rester description
+      originalMealName = originalMealName.replace(/\s+och\s+[^,]*rester.*$/gi, '');
+      
+      // Remove any remaining "från fysen/frysen" references
+      originalMealName = originalMealName.replace(/\s+från\s+(fysen|frysen)\s*$/gi, '');
+      
+      // Clean up extra whitespace and trim
+      originalMealName = originalMealName.replace(/\s+/g, ' ').trim();
+      
+      // If we still have a valid meal name, create a slug
+      if (originalMealName && originalMealName.length > 3) {
+        // Create a slug from the original meal name
+        const slug = originalMealName
+          .toLowerCase()
+          .replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match))
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-+|-+$/g, '') // Remove leading/trailing dashes
+          .trim();
+        
+        if (slug && slug.length > 2) {
+          return `/kunskapsbank/recept/${slug}`;
+        }
+      }
     }
     
     return null;
