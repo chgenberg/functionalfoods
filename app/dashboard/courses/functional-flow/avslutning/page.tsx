@@ -161,28 +161,7 @@ export default function CompletionPage() {
           </div>
         </motion.div>
 
-        {/* Next Steps */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4"
-        >
-          <Link href="/dashboard/courses/functional-basics" className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all">
-            <h4 className="font-semibold text-[#014421] mb-2">Repetera Basics</h4>
-            <p className="text-sm text-gray-600">Fräscha upp grunderna</p>
-          </Link>
-          
-          <Link href="/kunskapsbank/recept" className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all">
-            <h4 className="font-semibold text-[#014421] mb-2">Utforska recept</h4>
-            <p className="text-sm text-gray-600">Hitta nya favoriträtter</p>
-          </Link>
-          
-          <Link href="/dashboard/community" className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all">
-            <h4 className="font-semibold text-[#014421] mb-2">Gå med i community</h4>
-            <p className="text-sm text-gray-600">Dela dina erfarenheter</p>
-          </Link>
-        </motion.div>
+
 
         {/* Favorite Recipes Section */}
         <motion.div 
