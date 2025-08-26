@@ -217,7 +217,7 @@ export default function MobileMenu({
                     className="flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-[#014421] hover:bg-[#116530] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
                     onClick={handleLinkClick}
                   >
-                    <span>{t('nav.myCourses','Mina kurser')}</span>
+                    <span>{t('nav.myCourses','Mitt konto')}</span>
                     <FiArrowRight className="w-5 h-5" />
                   </Link>
                   <Link

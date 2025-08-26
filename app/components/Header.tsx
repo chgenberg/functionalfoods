@@ -224,7 +224,7 @@ export default function Header() {
             </button>
             {user ? (
               <div className="hidden md:flex items-center gap-2">
-                <Link href="/mina-kurser" className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors text-sm font-medium">{t('nav.myCourses','Mina kurser')}</Link>
+                <Link href="/mina-kurser" className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors text-sm font-medium">{t('nav.myCourses','Mitt konto')}</Link>
                 <button onClick={logout} className="px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors text-sm font-medium">{t('nav.logout','Logga ut')}</button>
               </div>
             ) : (
