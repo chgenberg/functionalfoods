@@ -124,6 +124,31 @@ export default function DayModal({
     }
   };
 
+  // Function to find original recipe link for "rester" meals
+  const getRecipeLink = (meal: Meal) => {
+    if (meal.recipeLink) {
+      return meal.recipeLink;
+    }
+    
+    // If it's a "rester" meal, try to find the original recipe
+    if (meal.meal.toLowerCase().includes('rester')) {
+      const originalMealName = meal.meal.replace(/\s*rester\s*/gi, '').trim();
+      
+      // Create a slug from the original meal name
+      const slug = originalMealName
+        .toLowerCase()
+        .replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match))
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+      
+      return `/kunskapsbank/recept/${slug}`;
+    }
+    
+    return null;
+  };
+
   const totalCalories = meals.reduce((total, meal) => {
     const match = meal.calories.match(/(\d+)/);
     return total + (match ? parseInt(match[1]) : 0);
@@ -263,10 +288,17 @@ export default function DayModal({
                           <p className={`text-gray-800 font-medium transition-all
                             ${completedMeals.includes(index) ? 'line-through opacity-60' : ''}
                           `}>
-                            {meal.meal}
+                            {meal.meal.toLowerCase().includes('rester') ? (
+                              <span>
+                                {meal.meal.replace(/\s*rester\s*/gi, ' ')}
+                                <span className="font-bold text-[#014421]">rester</span>
+                              </span>
+                            ) : (
+                              meal.meal
+                            )}
                           </p>
                           
-                          {meal.recipeLink && (
+                          {getRecipeLink(meal) && (
                             <motion.div
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
@@ -274,13 +306,13 @@ export default function DayModal({
                               className="mt-3"
                             >
                               <Link
-                                href={meal.recipeLink}
+                                href={getRecipeLink(meal)!}
                                 onClick={(e) => e.stopPropagation()}
                                 className="inline-flex items-center gap-2 text-[#014421] hover:text-[#116530] 
                                   transition-all text-sm font-medium group"
                               >
                                 <span className="underline underline-offset-2 group-hover:underline-offset-4">
-                                  Se receptet
+                                  {meal.meal.toLowerCase().includes('rester') ? 'Se ursprungsreceptet' : 'Se receptet'}
                                 </span>
                                 <FiExternalLink className="text-base group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                               </Link>
@@ -296,7 +328,7 @@ export default function DayModal({
                             e.stopPropagation();
                             const recipeData = {
                               name: meal.meal,
-                              recipeLink: meal.recipeLink,
+                              recipeLink: getRecipeLink(meal) || undefined,
                               courseType,
                               weekNumber,
                               dayName,
@@ -309,7 +341,7 @@ export default function DayModal({
                           className={`p-2 rounded-full transition-all ${
                             isFavorite({
                               name: meal.meal,
-                              recipeLink: meal.recipeLink,
+                              recipeLink: getRecipeLink(meal) || undefined,
                               courseType,
                               weekNumber,
                               dayName,
@@ -320,7 +352,7 @@ export default function DayModal({
                           }`}
                           title={isFavorite({
                             name: meal.meal,
-                            recipeLink: meal.recipeLink,
+                            recipeLink: getRecipeLink(meal) || undefined,
                             courseType,
                             weekNumber,
                             dayName,
@@ -330,7 +362,7 @@ export default function DayModal({
                           <FiStar className={`text-lg ${
                             isFavorite({
                               name: meal.meal,
-                              recipeLink: meal.recipeLink,
+                              recipeLink: getRecipeLink(meal) || undefined,
                               courseType,
                               weekNumber,
                               dayName,
