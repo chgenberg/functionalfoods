@@ -2,158 +2,158 @@
   "items": [
     {
       "name": "äpple",
-      "amount": "1",
+      "amount": 4,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "hjärtsallad",
-      "amount": "1",
+      "amount": 1,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "salladslök",
-      "amount": "1",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "sötpotatis",
-      "amount": "1",
-      "unit": "st",
+      "amount": 2,
+      "unit": "kg",
       "category": "Frukt & Grönt"
     },
     {
       "name": "vitlöksklyfta",
-      "amount": "3",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "gul lök",
-      "amount": "0.5",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "rödlök",
-      "amount": "1.75",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "mango",
-      "amount": "1",
+      "amount": 1,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "paprika",
-      "amount": "0.5",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "cocktailtomater",
-      "amount": "10",
+      "amount": 4,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "tomater",
-      "amount": "2",
+      "amount": 4,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "soltorkade tomater",
-      "amount": "3",
-      "unit": "skivor",
-      "category": "Frukt & Grönt"
-    },
-    {
-      "name": "skogschampinjoner",
-      "amount": "4",
+      "amount": 4,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
+      "name": "skogschampinjoner",
+      "amount": 250,
+      "unit": "g",
+      "category": "Frukt & Grönt"
+    },
+    {
       "name": "gurka",
-      "amount": "5",
-      "unit": "cm",
+      "amount": 1,
+      "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "citron",
-      "amount": "1",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "gräslök",
-      "amount": "1",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "grillad kyckling",
-      "amount": "300",
+      "amount": 500,
       "unit": "g",
       "category": "Kött & Fisk"
     },
     {
       "name": "basilika",
-      "amount": "1",
-      "unit": "kruka",
+      "amount": 20,
+      "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
       "name": "persilja",
-      "amount": "3",
-      "unit": "kruka",
+      "amount": 20,
+      "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
       "name": "röd chili",
-      "amount": "0.5",
+      "amount": 2,
       "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "ingefära",
-      "amount": "2",
-      "unit": "cm",
+      "amount": 50,
+      "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
       "name": "koriander",
-      "amount": "1",
-      "unit": "st",
+      "amount": 20,
+      "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
       "name": "timjan",
-      "amount": "1",
-      "unit": "st",
+      "amount": 10,
+      "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
       "name": "kokt ägg",
-      "amount": "6",
+      "amount": 12,
       "unit": "st",
       "category": "Mejeri"
     },
     {
       "name": "ägg",
-      "amount": "2",
+      "amount": 12,
       "unit": "st",
       "category": "Mejeri"
     },
     {
       "name": "grekisk yoghurt",
-      "amount": "1",
-      "unit": "st",
+      "amount": 5,
+      "unit": "dl",
       "category": "Mejeri"
     },
     {
@@ -164,14 +164,14 @@
     },
     {
       "name": "olivolja",
-      "amount": "3.5",
-      "unit": "msk",
+      "amount": 5,
+      "unit": "dl",
       "category": "Skafferi"
     },
     {
       "name": "majonnäs",
-      "amount": "2",
-      "unit": "st",
+      "amount": 250,
+      "unit": "g",
       "category": "Skafferi"
     },
     {
@@ -194,38 +194,38 @@
     },
     {
       "name": "solroskärnor",
-      "amount": "1",
-      "unit": "st",
+      "amount": 200,
+      "unit": "g",
       "category": "Skafferi"
     },
     {
       "name": "pumpafrön",
-      "amount": "4",
-      "unit": "st",
+      "amount": 200,
+      "unit": "g",
       "category": "Skafferi"
     },
     {
       "name": "hampafrön",
-      "amount": "1.5",
-      "unit": "st",
+      "amount": 200,
+      "unit": "g",
       "category": "Skafferi"
     },
     {
       "name": "sesamfrön",
-      "amount": "1",
-      "unit": "st",
+      "amount": 100,
+      "unit": "g",
       "category": "Skafferi"
     },
     {
       "name": "salt",
-      "amount": "1",
-      "unit": "st",
+      "amount": 500,
+      "unit": "g",
       "category": "Kryddor & Såser"
     },
     {
       "name": "smör",
-      "amount": "2",
-      "unit": "st",
+      "amount": 500,
+      "unit": "g",
       "category": "Mejeri"
     },
     {
@@ -260,20 +260,20 @@
     },
     {
       "name": "fetaost",
-      "amount": "150",
+      "amount": 200,
       "unit": "g",
       "category": "Mejeri"
     },
     {
       "name": "broccoli",
-      "amount": "100",
-      "unit": "g",
+      "amount": 1,
+      "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
       "name": "blomkål",
-      "amount": "100",
-      "unit": "g",
+      "amount": 1,
+      "unit": "st",
       "category": "Frukt & Grönt"
     },
     {
@@ -284,8 +284,8 @@
     },
     {
       "name": "sockerärtor",
-      "amount": "100",
-      "unit": "g",
+      "amount": 1,
+      "unit": "kg",
       "category": "Frukt & Grönt"
     },
     {
@@ -296,14 +296,14 @@
     },
     {
       "name": "bladspenat",
-      "amount": "20",
+      "amount": 200,
       "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
       "name": "grön sparris",
-      "amount": "250",
-      "unit": "g",
+      "amount": 1,
+      "unit": "kg",
       "category": "Frukt & Grönt"
     },
     {
@@ -314,8 +314,8 @@
     },
     {
       "name": "keso",
-      "amount": "300",
-      "unit": "g",
+      "amount": 4,
+      "unit": "dl",
       "category": "Mejeri"
     },
     {
@@ -338,7 +338,7 @@
     },
     {
       "name": "torskrygg",
-      "amount": "300",
+      "amount": 400,
       "unit": "g",
       "category": "Kött & Fisk"
     },
@@ -350,8 +350,8 @@
     },
     {
       "name": "havregryn",
-      "amount": "4",
-      "unit": "st",
+      "amount": 500,
+      "unit": "g",
       "category": "Skafferi"
     },
     {
@@ -380,7 +380,7 @@
     },
     {
       "name": "laxfilé",
-      "amount": "600",
+      "amount": 400,
       "unit": "g",
       "category": "Kött & Fisk"
     },
@@ -404,20 +404,20 @@
     },
     {
       "name": "saltade jordnötter",
-      "amount": "2",
-      "unit": "st",
+      "amount": 500,
+      "unit": "g",
       "category": "Skafferi"
     },
     {
       "name": "salt",
-      "amount": "5",
-      "unit": "st",
+      "amount": 500,
+      "unit": "g",
       "category": "Kryddor & Såser"
     },
     {
       "name": "svartpeppar",
-      "amount": "5",
-      "unit": "st",
+      "amount": 50,
+      "unit": "g",
       "category": "Kryddor & Såser"
     }
   ]

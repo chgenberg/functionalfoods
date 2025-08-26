@@ -202,9 +202,21 @@ export default function RecipePage() {
     if (!ingredient || servings === originalServings) return ingredient;
 
     const ratio = servings / originalServings;
-    const regex = /(\d+(?:[.,]\d+)?)\s*(dl|ml|l|kg|g|mg|msk|tsk|krm|st|stk)?/gi;
+    // Updated regex to avoid scaling percentages (%) and other non-quantity numbers
+    // Only scale numbers that are followed by measurement units or are standalone quantities
+    const regex = /(\d+(?:[.,]\d+)?)\s*(dl|ml|l|kg|g|mg|msk|tsk|krm|st|stk|styck|stycken|klyftor|klyva|skivor|skiva)(?!\s*%)/gi;
     
     return ingredient.replace(regex, (match, amount, unit) => {
+      // Skip if this looks like a percentage or temperature
+      if (ingredient.includes('%') && match.includes(amount)) {
+        // Check if this number is part of a percentage
+        const matchIndex = ingredient.indexOf(match);
+        const afterMatch = ingredient.substring(matchIndex + match.length, matchIndex + match.length + 5);
+        if (afterMatch.includes('%')) {
+          return match; // Don't scale percentages
+        }
+      }
+      
       const num = parseFloat(amount.replace(',', '.'));
       const scaled = num * ratio;
       
