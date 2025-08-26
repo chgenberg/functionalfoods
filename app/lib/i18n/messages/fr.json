@@ -222,7 +222,7 @@
   "sources.type.book": "Livre",
   "sources.doi": "DOI",
   "sources.pmid": "PMID",
-  "sources.copy": "Copier la citation",
+  "sources.copy": "Copier la source",
   "sources.copied": "Copié !",
   "sources.readMore": "En savoir plus",
   "sources.empty.title": "Aucune source trouvée",

@@ -208,7 +208,7 @@
   "sources.type.book": "Buch",
   "sources.doi": "DOI",
   "sources.pmid": "PMID",
-  "sources.copy": "Zitat kopieren",
+  "sources.copy": "Quelle kopieren",
   "sources.copied": "Kopiert!",
   "sources.readMore": "Mehr lesen",
   "sources.empty.title": "Keine Quellen gefunden",

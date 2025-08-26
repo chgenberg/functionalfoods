@@ -610,10 +610,21 @@ export default function KallorPage() {
   });
 
   const copyToClipboard = (source: Source) => {
-    const citation = `${source.authors.join(', ')} (${source.year}). ${source.title}. ${source.journal}.${source.doi ? ` DOI: ${source.doi}` : ''}${source.pmid ? ` PMID: ${source.pmid}` : ''}`;
-    navigator.clipboard.writeText(citation);
-    setCopiedId(source.id);
-    setTimeout(() => setCopiedId(null), 2000);
+    // Prioritera URL, sedan DOI, sedan PMID
+    let urlToCopy = '';
+    if (source.url) {
+      urlToCopy = source.url;
+    } else if (source.doi) {
+      urlToCopy = `https://doi.org/${source.doi}`;
+    } else if (source.pmid) {
+      urlToCopy = `https://pubmed.ncbi.nlm.nih.gov/${source.pmid}/`;
+    }
+    
+    if (urlToCopy) {
+      navigator.clipboard.writeText(urlToCopy);
+      setCopiedId(source.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
   };
 
   const getCategoryStats = () => {
@@ -842,22 +853,24 @@ export default function KallorPage() {
 
                       {/* Actions */}
                       <div className="flex flex-col gap-2 lg:flex-shrink-0">
-                        <button
-                          onClick={() => copyToClipboard(source)}
-                          className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                        >
-                          {copiedId === source.id ? (
-                            <>
-                              <FiCheck className="w-4 h-4 text-primary" />
-                              <span className="text-primary">{t('sources.copied','Kopierad!')}</span>
-                            </>
-                          ) : (
-                            <>
-                              <FiCopy className="w-4 h-4" />
-                              <span>{t('sources.copy','Kopiera citat')}</span>
-                            </>
-                          )}
-                        </button>
+                        {(source.url || source.doi || source.pmid) && (
+                          <button
+                            onClick={() => copyToClipboard(source)}
+                            className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                          >
+                            {copiedId === source.id ? (
+                              <>
+                                <FiCheck className="w-4 h-4 text-primary" />
+                                <span className="text-primary">{t('sources.copied','Kopierad!')}</span>
+                              </>
+                            ) : (
+                              <>
+                                <FiCopy className="w-4 h-4" />
+                                <span>{t('sources.copy','Kopiera källa')}</span>
+                              </>
+                            )}
+                          </button>
+                        )}
                         
                         {(source.url || source.doi) && (
                           <a

@@ -229,7 +229,7 @@
   "sources.type.book": "Book",
   "sources.doi": "DOI",
   "sources.pmid": "PMID",
-  "sources.copy": "Copy citation",
+  "sources.copy": "Copy source",
   "sources.copied": "Copied!",
   "sources.readMore": "Read more",
   "sources.empty.title": "No sources found",
