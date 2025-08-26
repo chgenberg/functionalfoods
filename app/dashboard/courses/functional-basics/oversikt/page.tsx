@@ -7,6 +7,7 @@ import CourseNavigation from '../../components/CourseNavigation';
 import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
 import InfoPopupGrid from '../../components/InfoPopupGrid';
+import CompleteCourseDownload from '../../components/CompleteCourseDownload';
 import { mealPlans } from '@/app/data/mealPlans';
 
 export default function FunctionalBasicsOverview() {
@@ -161,6 +162,9 @@ export default function FunctionalBasicsOverview() {
 
         {/* Info Popup Grid */}
         <InfoPopupGrid courseType="basics" />
+
+        {/* Complete Course Download */}
+        <CompleteCourseDownload courseType="basics" />
 
         {/* Weeks Grid */}
         <motion.div
