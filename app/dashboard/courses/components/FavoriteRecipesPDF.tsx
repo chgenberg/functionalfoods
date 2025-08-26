@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiStar, FiDownload, FiHeart, FiClock, FiCalendar } from 'react-icons/fi';
 import { useFavoriteRecipes, FavoriteRecipe } from '@/app/hooks/useFavoriteRecipes';
@@ -9,6 +10,7 @@ interface FavoriteRecipesPDFProps {
 }
 
 export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFProps) {
+  const [isGenerating, setIsGenerating] = useState(false);
   const { getFavoritesByCoursetype } = useFavoriteRecipes();
   const favorites = getFavoritesByCoursetype(courseType);
   const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
@@ -23,11 +25,247 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
     return acc;
   }, {} as Record<string, FavoriteRecipe[]>);
 
-  const generatePDF = () => {
+  const generatePDF = async () => {
+    setIsGenerating(true);
+    
+    try {
+      // Dynamically import jsPDF to avoid SSR issues
+      const { jsPDF } = await import('jspdf');
+      
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const today = new Date().toLocaleDateString('sv-SE');
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 20;
+      let yPosition = margin;
+
+      // Helper function to add text with word wrapping
+      const addText = (text: string, x: number, y: number, maxWidth: number, fontSize: number = 12, isBold: boolean = false) => {
+        doc.setFontSize(fontSize);
+        if (isBold) {
+          doc.setFont('helvetica', 'bold');
+        } else {
+          doc.setFont('helvetica', 'normal');
+        }
+        
+        const lines = doc.splitTextToSize(text, maxWidth);
+        doc.text(lines, x, y);
+        return y + (lines.length * fontSize * 0.4);
+      };
+
+      // Helper function to check if we need a new page
+      const checkNewPage = (requiredSpace: number) => {
+        if (yPosition + requiredSpace > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin;
+          return true;
+        }
+        return false;
+      };
+
+      // Cover Page
+      // Background gradient effect (simulated with rectangles)
+      doc.setFillColor(1, 68, 33); // #014421
+      doc.rect(0, 0, pageWidth, pageHeight, 'F');
+      
+      // Add subtle pattern overlay
+      doc.setFillColor(255, 255, 255, 0.05);
+      for (let i = 0; i < pageWidth; i += 10) {
+        for (let j = 0; j < pageHeight; j += 10) {
+          if ((i + j) % 20 === 0) {
+            doc.circle(i, j, 1, 'F');
+          }
+        }
+      }
+
+      // Title
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(32);
+      doc.setFont('helvetica', 'bold');
+      const title = 'Mina Favoritrecept';
+      const titleWidth = doc.getTextWidth(title);
+      doc.text(title, (pageWidth - titleWidth) / 2, 80);
+
+      // Subtitle
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'normal');
+      const subtitle = `${courseName} - Personlig samling`;
+      const subtitleWidth = doc.getTextWidth(subtitle);
+      doc.text(subtitle, (pageWidth - subtitleWidth) / 2, 100);
+
+      // Stats boxes
+      const statsY = 130;
+      const boxWidth = 50;
+      const boxHeight = 30;
+      const statsData = [
+        { label: 'Recept', value: favorites.length.toString() },
+        { label: 'Veckor', value: Object.keys(favoritesByWeek).length.toString() },
+        { label: 'Måltidstyper', value: new Set(favorites.map(f => f.mealType)).size.toString() }
+      ];
+
+      statsData.forEach((stat, index) => {
+        const x = (pageWidth - (statsData.length * boxWidth + (statsData.length - 1) * 10)) / 2 + index * (boxWidth + 10);
+        
+        // Box background
+        doc.setFillColor(255, 255, 255, 0.1);
+        doc.roundedRect(x, statsY, boxWidth, boxHeight, 5, 5, 'F');
+        
+        // Value
+        doc.setFontSize(24);
+        doc.setFont('helvetica', 'bold');
+        const valueWidth = doc.getTextWidth(stat.value);
+        doc.text(stat.value, x + (boxWidth - valueWidth) / 2, statsY + 15);
+        
+        // Label
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        const labelWidth = doc.getTextWidth(stat.label);
+        doc.text(stat.label, x + (boxWidth - labelWidth) / 2, statsY + 25);
+      });
+
+      // Date
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      const dateText = `Genererad: ${today}`;
+      const dateWidth = doc.getTextWidth(dateText);
+      doc.text(dateText, (pageWidth - dateWidth) / 2, pageHeight - 30);
+
+      // New page for content
+      doc.addPage();
+      yPosition = margin;
+
+      // Reset text color for content pages
+      doc.setTextColor(26, 26, 26); // #1a1a1a
+
+      // Header
+      doc.setFillColor(1, 68, 33);
+      doc.rect(0, 0, pageWidth, 40, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      const headerText = 'Mina Favoritrecept';
+      const headerWidth = doc.getTextWidth(headerText);
+      doc.text(headerText, (pageWidth - headerWidth) / 2, 25);
+
+      yPosition = 60;
+      doc.setTextColor(26, 26, 26);
+
+      if (favorites.length === 0) {
+        // No favorites message
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'normal');
+        const noFavText = 'Inga favoritrecept ännu. Stjärnmarkera recept i dina måltidsplaner för att samla dem här!';
+        const textWidth = doc.getTextWidth(noFavText);
+        doc.text(noFavText, (pageWidth - Math.min(textWidth, pageWidth - 2 * margin)) / 2, yPosition + 40);
+      } else {
+        // Group and display favorites by week
+        const sortedWeeks = Object.entries(favoritesByWeek).sort(([a], [b]) => {
+          const weekA = parseInt(a.split(' ')[1]);
+          const weekB = parseInt(b.split(' ')[1]);
+          return weekA - weekB;
+        });
+
+        for (const [weekName, weekRecipes] of sortedWeeks) {
+          checkNewPage(30);
+
+          // Week header
+          doc.setFillColor(248, 249, 250); // Light gray background
+          doc.rect(margin, yPosition - 5, pageWidth - 2 * margin, 20, 'F');
+          
+          doc.setFontSize(16);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(1, 68, 33);
+          doc.text(weekName, margin + 5, yPosition + 8);
+          
+          yPosition += 25;
+          doc.setTextColor(26, 26, 26);
+
+          // Recipes in this week
+          for (const recipe of weekRecipes) {
+            checkNewPage(25);
+
+            // Recipe card background
+            doc.setFillColor(248, 249, 250);
+            doc.roundedRect(margin, yPosition - 2, pageWidth - 2 * margin, 20, 2, 2, 'F');
+
+            // Star icon (simulated with text)
+            doc.setFontSize(12);
+            doc.setTextColor(255, 193, 7); // Gold color
+            doc.text('★', margin + 5, yPosition + 8);
+
+            // Recipe name
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(26, 26, 26);
+            yPosition = addText(recipe.name, margin + 15, yPosition + 8, pageWidth - 2 * margin - 60, 12, true);
+
+            // Meta information
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(108, 117, 125);
+            const metaText = `${recipe.dayName} • ${getMealTypeSwedish(recipe.mealType)}`;
+            doc.text(metaText, margin + 15, yPosition + 2);
+
+            // Recipe link (if available)
+            if (recipe.recipeLink) {
+              doc.setFontSize(9);
+              doc.setTextColor(0, 102, 204);
+              const linkText = `functionalfoods.se${recipe.recipeLink}`;
+              doc.text(linkText, margin + 15, yPosition + 8);
+            }
+
+            yPosition += 15;
+          }
+
+          yPosition += 10; // Space between weeks
+        }
+      }
+
+      // Footer on last page
+      const footerY = pageHeight - 40;
+      doc.setFillColor(1, 68, 33);
+      doc.rect(0, footerY, pageWidth, 40, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      const footerTitle = 'Ulrika Functional Foods';
+      const footerTitleWidth = doc.getTextWidth(footerTitle);
+      doc.text(footerTitle, (pageWidth - footerTitleWidth) / 2, footerY + 15);
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      const footerSubtext = 'Din personliga guide till hälsosam mat och välmående';
+      const footerSubtextWidth = doc.getTextWidth(footerSubtext);
+      doc.text(footerSubtext, (pageWidth - footerSubtextWidth) / 2, footerY + 25);
+
+      const footerInfo = `© ${new Date().getFullYear()} Ulrika Functional Foods • functionalfoods.se`;
+      const footerInfoWidth = doc.getTextWidth(footerInfo);
+      doc.text(footerInfo, (pageWidth - footerInfoWidth) / 2, footerY + 32);
+
+      // Save the PDF
+      const fileName = `Mina-Favoritrecept-${courseName.replace(' ', '-')}-${today.replace(/\//g, '-')}.pdf`;
+      doc.save(fileName);
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      // Fallback to the old HTML method if PDF generation fails
+      generateHTMLFallback();
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const generateHTMLFallback = () => {
+    // Keep the old HTML method as fallback
     const today = new Date().toLocaleDateString('sv-SE');
     
-    // favoritesByWeek is now available from component scope
-
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="sv">
@@ -36,7 +274,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mina Favoritrecept - ${courseName}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
         
         * {
             margin: 0;
@@ -47,326 +285,206 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-            color: #1f2937;
+            color: #1a1a1a;
             background: #ffffff;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
+            margin: 0;
+            padding: 20px;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 50px;
-            padding-bottom: 30px;
-            border-bottom: 3px solid #014421;
-        }
-        
-        .logo {
-            font-size: 32px;
-            font-weight: 700;
-            color: #014421;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        
-        .course-info {
-            font-size: 18px;
-            color: #6b7280;
-            margin-bottom: 4px;
-        }
-        
-        .date-info {
-            font-size: 14px;
-            color: #9ca3af;
-            font-weight: 400;
-        }
-        
-        .title {
-            font-size: 28px;
-            font-weight: 600;
-            color: #014421;
-            margin: 20px 0 8px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-        
-        .star-icon {
-            color: #fbbf24;
-            font-size: 24px;
-        }
-        
-        .subtitle {
-            font-size: 16px;
-            color: #6b7280;
-            margin-bottom: 30px;
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
             margin-bottom: 40px;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #014421 0%, #116530 100%);
+            color: white;
+            border-radius: 15px;
         }
         
-        .stat {
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
         }
         
         .stat-number {
-            font-size: 24px;
+            font-size: 2rem;
             font-weight: 700;
-            color: #014421;
+            margin-bottom: 5px;
         }
         
         .stat-label {
-            font-size: 12px;
-            color: #6b7280;
-            font-weight: 500;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
         }
         
         .week-section {
             margin-bottom: 40px;
-            break-inside: avoid;
-        }
-        
-        .week-header {
-            background: linear-gradient(135deg, #f3efe3 0%, #e8e0d4 100%);
-            padding: 20px;
-            border-radius: 12px 12px 0 0;
-            border-left: 4px solid #014421;
         }
         
         .week-title {
-            font-size: 20px;
+            font-size: 1.5rem;
             font-weight: 600;
             color: #014421;
-            margin-bottom: 4px;
-        }
-        
-        .week-count {
-            font-size: 14px;
-            color: #6b7280;
-            font-weight: 500;
-        }
-        
-        .recipes-list {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-top: none;
-            border-radius: 0 0 12px 12px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
         }
         
         .recipe-item {
-            display: flex;
-            align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        
-        .recipe-item:last-child {
-            border-bottom: none;
-        }
-        
-        .recipe-star {
-            color: #fbbf24;
-            margin-right: 16px;
-            font-size: 18px;
-        }
-        
-        .recipe-content {
-            flex: 1;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #014421;
         }
         
         .recipe-name {
-            font-size: 16px;
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 4px;
+            font-size: 1.1rem;
+            color: #014421;
+            margin-bottom: 8px;
         }
         
         .recipe-meta {
-            font-size: 13px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 8px;
         }
         
-        .meal-badge {
-            background: #f3f4f6;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 500;
-            color: #6b7280;
+        .recipe-link {
+            font-size: 0.85rem;
+            color: #0066cc;
+            font-family: monospace;
+        }
+        
+        .no-favorites {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
         }
         
         .footer {
             margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid #e5e7eb;
+            padding: 30px;
+            background: linear-gradient(135deg, #014421 0%, #116530 100%);
+            color: white;
             text-align: center;
-        }
-        
-        .footer-text {
-            font-size: 12px;
-            color: #9ca3af;
-            line-height: 1.4;
-        }
-        
-        .tips-section {
-            margin-top: 40px;
-            padding: 20px;
-            background: #fef3c7;
-            border-radius: 12px;
-            border-left: 4px solid #f59e0b;
-        }
-        
-        .tips-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #92400e;
-            margin-bottom: 8px;
-        }
-        
-        .tips-list {
-            font-size: 14px;
-            color: #78350f;
-            line-height: 1.5;
+            border-radius: 15px;
         }
         
         @media print {
-            body {
-                padding: 20px;
-            }
-            
-            .week-section {
-                break-inside: avoid;
-            }
-            
-            .tips-section {
-                break-inside: avoid;
-            }
+            body { margin: 0; padding: 10px; }
+            .header, .footer { background: #014421 !important; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">Functional Foods</div>
-        <div class="course-info">${courseName}</div>
-        <div class="date-info">Skapad ${today}</div>
-        <div class="title">
-            <span class="star-icon">⭐</span>
-            Mina Favoritrecept
-            <span class="star-icon">⭐</span>
-        </div>
-        <div class="subtitle">Dina utvalda recept från kursen</div>
-    </div>
-    
-    <div class="stats">
-        <div class="stat">
-            <div class="stat-number">${favorites.length}</div>
-            <div class="stat-label">Favoritrecept</div>
-        </div>
-        <div class="stat">
-            <div class="stat-number">${Object.keys(favoritesByWeek).length}</div>
-            <div class="stat-label">Veckor</div>
-        </div>
-        <div class="stat">
-            <div class="stat-number">${new Set(favorites.map(f => f.mealType)).size}</div>
-            <div class="stat-label">Måltidstyper</div>
-        </div>
-    </div>
-    
-    ${Object.entries(favoritesByWeek)
-      .sort(([a], [b]) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]))
-      .map(([week, recipes]) => `
-        <div class="week-section">
-            <div class="week-header">
-                <div class="week-title">${week}</div>
-                <div class="week-count">${recipes.length} ${recipes.length === 1 ? 'recept' : 'recept'}</div>
+        <h1>Mina Favoritrecept</h1>
+        <div class="subtitle">${courseName} - Personlig samling</div>
+        <div style="font-size: 0.9rem; opacity: 0.7;">Genererad: ${today}</div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">${favorites.length}</div>
+                <div class="stat-label">Recept</div>
             </div>
-            <div class="recipes-list">
-                ${recipes.map(recipe => `
-                    <div class="recipe-item">
-                        <div class="recipe-star">⭐</div>
-                        <div class="recipe-content">
-                            <div class="recipe-name">${recipe.name}</div>
-                            <div class="recipe-meta">
-                                <span class="meal-badge">${getMealTypeSwedish(recipe.mealType)}</span>
-                                <span>${recipe.dayName}</span>
-                                <span>Tillagd ${new Date(recipe.addedAt).toLocaleDateString('sv-SE')}</span>
-                            </div>
+            <div class="stat-card">
+                <div class="stat-number">${Object.keys(favoritesByWeek).length}</div>
+                <div class="stat-label">Veckor</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${new Set(favorites.map(f => f.mealType)).size}</div>
+                <div class="stat-label">Måltidstyper</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">
+        ${favorites.length === 0 ? `
+            <div class="no-favorites">
+                <h2>Inga favoritrecept ännu</h2>
+                <p>Stjärnmarkera recept i dina måltidsplaner för att samla dem här!</p>
+            </div>
+        ` : `
+            ${Object.entries(favoritesByWeek)
+              .sort(([a], [b]) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]))
+              .map(([week, recipes]) => `
+                <div class="week-section">
+                    <h2 class="week-title">${week}</h2>
+                    ${recipes.map(recipe => `
+                        <div class="recipe-item">
+                            <div class="recipe-name">★ ${recipe.name}</div>
+                            <div class="recipe-meta">${recipe.dayName} • ${getMealTypeSwedish(recipe.mealType)}</div>
+                            ${recipe.recipeLink ? `<div class="recipe-link">functionalfoods.se${recipe.recipeLink}</div>` : ''}
                         </div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `).join('')}
-    
-    ${favorites.length === 0 ? `
-        <div style="text-align: center; padding: 60px 20px; color: #6b7280;">
-            <div style="font-size: 48px; margin-bottom: 20px;">⭐</div>
-            <h3 style="font-size: 20px; margin-bottom: 8px; color: #374151;">Inga favoritrecept ännu</h3>
-            <p>Markera dina favoritrecept med stjärnor under kursens gång!</p>
-        </div>
-    ` : ''}
-    
-    <div class="tips-section">
-        <div class="tips-title">💡 Tips för dina favoritrecept</div>
-        <div class="tips-list">
-            • Spara denna PDF för framtida matlagning<br>
-            • Alla recept finns även på hemsidan under Kunskapsbank > Recept<br>
-            • Fortsätt använda dessa recept för att behålla dina hälsovanor<br>
-            • Dela gärna med familj och vänner som också vill äta hälsosamt
-        </div>
+                    `).join('')}
+                </div>
+              `).join('')}
+        `}
     </div>
     
     <div class="footer">
-        <div class="footer-text">
-            Dina favoritrecept från ${courseName}<br>
-            © ${new Date().getFullYear()} Functional Foods med Ulrika Davidsson
-        </div>
+        <h3>Ulrika Functional Foods</h3>
+        <p>Din personliga guide till hälsosam mat och välmående</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
+            © ${new Date().getFullYear()} Ulrika Functional Foods • functionalfoods.se
+        </p>
     </div>
-    
-    <script>
-        function getMealTypeSwedish(mealType) {
-            switch(mealType) {
-                case 'breakfast': return 'Frukost';
-                case 'lunch': return 'Lunch'; 
-                case 'dinner': return 'Middag';
-                case 'snack': return 'Mellanmål';
-                case 'dessert': return 'Efterrätt';
-                default: return mealType;
-            }
-        }
-    </script>
 </body>
 </html>`;
 
-    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mina-favoritrecept-${courseType}-${today}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
+    
+    const printWindow = window.open(url, '_blank');
+    if (printWindow) {
+      printWindow.onload = () => {
+        setTimeout(() => {
+          printWindow.print();
+        }, 500);
+      };
+    }
+    
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
   };
 
-  const getMealTypeSwedish = (mealType: string) => {
-    switch(mealType) {
-      case 'breakfast': return 'Frukost';
-      case 'lunch': return 'Lunch'; 
-      case 'dinner': return 'Middag';
-      case 'snack': return 'Mellanmål';
-      case 'dessert': return 'Efterrätt';
-      default: return mealType;
-    }
+  const getMealTypeSwedish = (mealType: string): string => {
+    const translations: Record<string, string> = {
+      'breakfast': 'Frukost',
+      'lunch': 'Lunch', 
+      'dinner': 'Middag',
+      'snack': 'Mellanmål'
+    };
+    return translations[mealType] || mealType;
   };
 
   if (favorites.length === 0) {
@@ -374,18 +492,19 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-8 text-center border border-yellow-200"
+        transition={{ delay: 0.2 }}
+        className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-6 border border-yellow-200"
       >
-        <div className="text-6xl mb-4">⭐</div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          Inga favoritrecept ännu
-        </h3>
-        <p className="text-gray-600 mb-4">
-          Markera dina favoritrecept med stjärnor under kursens gång!
-        </p>
-        <p className="text-sm text-gray-500">
-          Klicka på stjärnan ⭐ bredvid måltider i dag-popupen för att spara dem som favoriter
-        </p>
+        <div className="text-center">
+          <FiHeart className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Inga favoritrecept ännu</h3>
+          <p className="text-gray-600 mb-4">
+            Stjärnmarkera recept i dina måltidsplaner för att samla dem här!
+          </p>
+          <div className="text-sm text-gray-500">
+            Klicka på ⭐ bredvid måltider för att lägga till dem som favoriter
+          </div>
+        </div>
       </motion.div>
     );
   }
@@ -394,33 +513,40 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6 sm:p-8 border border-yellow-200"
+      transition={{ delay: 0.2 }}
+      className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-6 border border-yellow-200"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="bg-yellow-400 p-3 rounded-full">
-            <FiStar className="text-yellow-800 text-xl" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">
-              Mina Favoritrecept
-            </h3>
-            <p className="text-gray-600 text-sm">
-              {favorites.length} recept från {courseName}
-            </p>
-          </div>
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+            <FiHeart className="text-red-500" />
+            Mina Favoritrecept
+          </h3>
+          <p className="text-gray-600 text-sm">
+            {favorites.length} recept från {courseName}
+          </p>
         </div>
         
         <motion.button
           onClick={generatePDF}
+          disabled={isGenerating}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 bg-[#014421] text-white px-4 py-2 rounded-lg hover:bg-[#116530] transition-colors font-medium"
+          className="flex items-center gap-2 bg-[#014421] text-white px-4 py-2 rounded-lg hover:bg-[#116530] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <FiDownload className="text-lg" />
-          <span className="hidden sm:inline">Ladda ner PDF</span>
-          <span className="sm:hidden">PDF</span>
+          {isGenerating ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <span className="hidden sm:inline">Genererar PDF...</span>
+            </>
+          ) : (
+            <>
+              <FiDownload className="text-lg" />
+              <span className="hidden sm:inline">Ladda ner PDF</span>
+              <span className="sm:hidden">PDF</span>
+            </>
+          )}
         </motion.button>
       </div>
 
