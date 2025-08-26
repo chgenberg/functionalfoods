@@ -13,18 +13,20 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
   const favorites = getFavoritesByCoursetype(courseType);
   const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
 
+  // Group favorites by week - moved to component level
+  const favoritesByWeek = favorites.reduce((acc, fav) => {
+    const weekKey = `Vecka ${fav.weekNumber}`;
+    if (!acc[weekKey]) {
+      acc[weekKey] = [];
+    }
+    acc[weekKey].push(fav);
+    return acc;
+  }, {} as Record<string, FavoriteRecipe[]>);
+
   const generatePDF = () => {
     const today = new Date().toLocaleDateString('sv-SE');
     
-    // Group favorites by week
-    const favoritesByWeek = favorites.reduce((acc, fav) => {
-      const weekKey = `Vecka ${fav.weekNumber}`;
-      if (!acc[weekKey]) {
-        acc[weekKey] = [];
-      }
-      acc[weekKey].push(fav);
-      return acc;
-    }, {} as Record<string, FavoriteRecipe[]>);
+    // favoritesByWeek is now available from component scope
 
     const htmlContent = `
 <!DOCTYPE html>

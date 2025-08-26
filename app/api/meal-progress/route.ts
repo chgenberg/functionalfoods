@@ -7,11 +7,12 @@ const prisma = new PrismaClient();
 // Get meal progress for a user
 export async function GET(req: NextRequest) {
   try {
-    const token = req.cookies.get('token')?.value;
-    if (!token) {
+    const authorization = req.headers.get('authorization');
+    if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const token = authorization.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const { searchParams } = new URL(req.url);
     const courseType = searchParams.get('courseType');
@@ -41,11 +42,12 @@ export async function GET(req: NextRequest) {
 // Toggle meal completion
 export async function POST(req: NextRequest) {
   try {
-    const token = req.cookies.get('token')?.value;
-    if (!token) {
+    const authorization = req.headers.get('authorization');
+    if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const token = authorization.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const { courseType, weekNumber, dayNumber, mealIndex } = await req.json();
 

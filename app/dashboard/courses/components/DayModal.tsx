@@ -156,20 +156,84 @@ export default function DayModal({
       // Clean up extra whitespace and trim
       originalMealName = originalMealName.replace(/\s+/g, ' ').trim();
       
-      // If we still have a valid meal name, create a slug
-      if (originalMealName && originalMealName.length > 3) {
-        // Create a slug from the original meal name
-        const slug = originalMealName
-          .toLowerCase()
-          .replace(/[åäö]/g, (match) => ({ 'å': 'a', 'ä': 'a', 'ö': 'o' }[match] || match))
-          .replace(/[^a-z0-9\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-+|-+$/g, '') // Remove leading/trailing dashes
-          .trim();
+      // Mapping of meal names to actual recipe slugs
+      const mealToSlugMapping: Record<string, string> = {
+        // Basics meals
+        'Het ratatouille': '/kunskapsbank/recept/het-ratatouille',
+        'Squashspagetti med köttfärssås': '/kunskapsbank/recept/squashspagetti-kottfarssas',
+        'Pokébowl med kyckling': '/kunskapsbank/recept/poke-bowl-kyckling',
+        'Köttfärsbiffar med stekt blomkål': '/kunskapsbank/recept/kottfarsbiffar-stekt-blomkal',
+        'Kycklinggryta med bakad spetskål': '/kunskapsbank/recept/kycklinggryta-roda-linser',
+        'Ugnsbakad tomat med köttfärs': '/kunskapsbank/recept/ugnsbakad-tomat-kottfars',
+        'Nudelsoppa med grönsaker': '/kunskapsbank/recept/nudelsoppa-gronsaker-soppa',
+        'Torskrygg med ägghack och sparris': '/kunskapsbank/recept/torskrygg-agghack-sparris',
+        'Turkiska lammfärsspett med raita och sallad': '/kunskapsbank/recept/turkiska-lammfarsspett-raita-sallad',
+        'Kycklingröra med örter och tomat': '/kunskapsbank/recept/kycklingrora-orter-tomat',
+        'Lax med fetaost och rostade rotfrukter och brysselkål': '/kunskapsbank/recept/lax-fetaost-rostade',
+        'Kycklingfylld aubergine': '/kunskapsbank/recept/kycklingfylld-aubergine',
+        'Rökt lax med blomkålssallad och citronyoghurt': '/kunskapsbank/recept/rokt-lax-blomkalssallad-citronyoghurt',
+        'Vegetarisk currygryta med panéer': '/kunskapsbank/recept/vegetarisk-currygryta-paneer',
+        'Högrevsburgare med hummus': '/kunskapsbank/recept/hogrevsburgare-hummus',
+        'Ugnsbakad kyckling med tzatziki och sallad': '/kunskapsbank/recept/ugnsbakad-kyckling-tzatziki-sallad',
+        'Lax med waldorfsallad': '/kunskapsbank/recept/lax-waldorfsallad-sallad',
+        'Grekiska köttbullar i tomatsås med rostad sötpotatis': '/kunskapsbank/recept/grekiska-kottbullar-tomatsas-rostad',
+        'Kycklinggryta med röda linser': '/kunskapsbank/recept/kycklinggryta-roda-linser',
+        'Laxsallad med vindruvor': '/kunskapsbank/recept/laxsallad-vindruvor-sallad',
+        'Grillade köttspett med grekisk sallad och morotstzatziki': '/kunskapsbank/recept/grillade-kottspett-grekisk-sallad',
+        'Torsk från mellanöstern': '/kunskapsbank/recept/torsk-mellanostern',
+        'Japansk kycklingfärswok med groddar': '/kunskapsbank/recept/japansk-kycklingfarswok-groddar',
+        'Grekisk sallad med fetaost': '/kunskapsbank/recept/grekisk-sallad-sallad',
+        'Köttfärslimpa med ajvar och rostad sötpotatis': '/kunskapsbank/recept/kottfarslimpa-ajvar-rostad',
+        'Skaldjursgryta med torsk i gul curry': '/kunskapsbank/recept/skaldjursgryta-torsk-gul',
+        'Kycklingjärpar med linssallad': '/kunskapsbank/recept/kycklingjarpar-linssallad-sallad',
+        'Laxfilé med ratatouille': '/kunskapsbank/recept/laxfile-ratatouille',
+        'Grönsakswok med kyckling': '/kunskapsbank/recept/gronsakswok-kyckling',
+        'Köttfärspytt med italienska smaker': '/kunskapsbank/recept/kottfarspytt-italienska-smaker',
+        'Indisk laxgryta med röda linser': '/kunskapsbank/recept/indisk-laxgryta-roda',
+        'Quinoasallad med stekt halloumi': '/kunskapsbank/recept/quinoasallad-stekt-halloumi',
+        'Torsk teriyaki med grönsaker': '/kunskapsbank/recept/torsk-teriyaki-gronsaker',
+        'Lammgryta med plommon och bulgur': '/kunskapsbank/recept/lammgryta-plommon-bulgur',
         
-        if (slug && slug.length > 2) {
-          return `/kunskapsbank/recept/${slug}`;
+        // Flow meals
+        'Linssoppa från medelhavet': '/kunskapsbank/recept/linssoppa-medelhavet-soppa',
+        'Kycklingburgare med papayasallad': '/kunskapsbank/recept/kycklingburgare-papayasallad-sallad',
+        'Köttfärsbiffar med tomatsallad': '/kunskapsbank/recept/kottfarsbiffar-tomatsallad-sallad',
+        'Laxgratäng med scampi och broccoli': '/kunskapsbank/recept/laxgratang-broccoli-scampi',
+        'Kycklinggryta från medelhavet': '/kunskapsbank/recept/kycklinggryta-medelhavet-gryta',
+        'Fänkålssallad med grapefrukt och burrata': '/kunskapsbank/recept/fankalssallad-grapefrukt-burrata',
+        'Entrecote med haricot verts och bearnaisesås': '/kunskapsbank/recept/stek-torsk-bearnaisesas',
+        'Grönsakswok med tonfisk och ägg': '/kunskapsbank/recept/gronsakswok-tonfisk-agg',
+        'Lövbiffsgryta med champinjoner och grönsaksspagetti': '/kunskapsbank/recept/lovbiffsgryta-champinjoner-gronsaksspagetti',
+        'Lax med rödbetssallad': '/kunskapsbank/recept/lax-rodbetssallad-sallad',
+        'Kycklingpizza': '/kunskapsbank/recept/kycklingpizza',
+        'Spenatsoppa med rostade pumpafrön': '/kunskapsbank/recept/spenatsoppa-rostade-pumpafrön',
+        'Fisktaco med mangosalsa och sesamsås': '/kunskapsbank/recept/fisktaco-mangosalsa-sesamsas',
+        'Ajvarspett med grekisk sallad och tzatziki': '/kunskapsbank/recept/ajvarspett-grekisk-sallad',
+        'Färgstark fetaostsallad': '/kunskapsbank/recept/fargstark-fetaostsallad-sallad',
+        'Nötfärstimbaler med chévreost och soltorkad tomat': '/kunskapsbank/recept/notfarstimbaler-chevreost-soltorkad',
+        'Laxsallad med fetaost': '/kunskapsbank/recept/laxsallad-fetaost-sallad',
+        'Torsk med guacamole och sötpotatis': '/kunskapsbank/recept/torsk-guacamole-sotpotatis',
+        'Biff med nudelsallad och jordnötssås': '/kunskapsbank/recept/biff-nudelsallad-jordnotssas',
+        'Morotssoppa med ingefära och rostade kikärtor': '/kunskapsbank/recept/morotssoppa-ingefara-rostade',
+        'Grönsakswok med kycklingfärs': '/kunskapsbank/recept/gronsakswok-kycklingfars',
+        'Ugnsbakad blomkål med ratatouille': '/kunskapsbank/recept/ugnsbakad-blomkal-ratatouille',
+        'Lövbiffsrullader med brie, pesto och rödbetor': '/kunskapsbank/recept/lovbiffsrullader-brie-pesto',
+        'Torsk med saffranssås': '/kunskapsbank/recept/torsk-saffranssas',
+        'Kycklingrullader med gorgonzola': '/kunskapsbank/recept/kycklingrullader-gorgonzola',
+        'Valnötslax med fetaostcrème': '/kunskapsbank/recept/valnotslax-fetaostcreme',
+        'Zucchiniplättar med yoghurtsås': '/kunskapsbank/recept/yoghurtsas-zucchiniplättar'
+      };
+      
+      // Check if we have a direct mapping
+      if (mealToSlugMapping[originalMealName]) {
+        return mealToSlugMapping[originalMealName];
+      }
+      
+      // If no direct mapping found, try to find a partial match
+      for (const [mealName, slug] of Object.entries(mealToSlugMapping)) {
+        if (mealName.toLowerCase().includes(originalMealName.toLowerCase()) || 
+            originalMealName.toLowerCase().includes(mealName.toLowerCase())) {
+          return slug;
         }
       }
     }
