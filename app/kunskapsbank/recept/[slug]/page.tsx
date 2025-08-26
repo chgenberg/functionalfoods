@@ -6,11 +6,12 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FiArrowLeft, FiClock, FiUsers, FiHeart, FiShare2, FiBookmark, 
+  FiArrowLeft, FiClock, FiUsers, FiHeart, FiBookmark,
   FiCheck, FiPlus, FiMinus, FiPrinter, FiX,
   FiChevronDown, FiChevronUp, FiStar, FiCamera
 } from 'react-icons/fi';
 import { useAuth } from '../../../hooks/useAuth';
+import { useFavoriteRecipes } from '../../../hooks/useFavoriteRecipes';
 import { GiCookingPot } from 'react-icons/gi';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 
@@ -55,8 +56,7 @@ export default function RecipePage() {
   const [servings, setServings] = useState(4);
   const [checkedIngredients, setCheckedIngredients] = useState<number[]>([]);
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const { toggleFavorite, isFavorite } = useFavoriteRecipes();
   const [nutrition, setNutrition] = useState<any>(null);
   const [nutritionLoading, setNutritionLoading] = useState(false);
   const [showNutrition, setShowNutrition] = useState(false);
@@ -195,6 +195,35 @@ export default function RecipePage() {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleToggleFavorite = () => {
+    if (!recipe) return;
+    
+    // Create a favorite recipe object
+    const favoriteRecipe = {
+      name: recipe.title,
+      recipeLink: `/kunskapsbank/recept/${recipe.slug}`,
+      courseType: 'basics' as const, // Default to basics, could be improved with context
+      weekNumber: 1, // Default values since we don't have course context
+      dayName: 'Måndag',
+      mealType: 'lunch' as const
+    };
+    
+    toggleFavorite(favoriteRecipe);
+  };
+
+  const isRecipeFavorite = () => {
+    if (!recipe) return false;
+    
+    return isFavorite({
+      name: recipe.title,
+      recipeLink: `/kunskapsbank/recept/${recipe.slug}`,
+      courseType: 'basics' as const,
+      weekNumber: 1,
+      dayName: 'Måndag',
+      mealType: 'lunch' as const
+    });
   };
 
   const scaleIngredient = (ingredient: string, originalServings: number = 4) => {
@@ -434,30 +463,13 @@ export default function RecipePage() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsLiked(!isLiked)}
+                    onClick={handleToggleFavorite}
                     className={`p-3 rounded-full transition-colors ${
-                      isLiked ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-500'
+                      isRecipeFavorite() ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-500'
                     }`}
+                    title={isRecipeFavorite() ? 'Ta bort från favoriter' : 'Lägg till i favoriter'}
                   >
-                    <FiHeart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsBookmarked(!isBookmarked)}
-                    className={`p-3 rounded-full transition-colors ${
-                      isBookmarked ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-500'
-                    }`}
-                  >
-                    <FiBookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleShare}
-                    className="p-3 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-500 transition-colors"
-                  >
-                    <FiShare2 className="w-5 h-5" />
+                    <FiHeart className={`w-5 h-5 ${isRecipeFavorite() ? 'fill-current' : ''}`} />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
