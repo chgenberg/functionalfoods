@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { FiShoppingCart, FiMenu, FiX, FiChevronDown, FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiLogOut, FiSearch } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -11,6 +12,7 @@ import { useAuth } from '../hooks/useAuth';
 
 export default function Header() {
   const t = useT();
+  const pathname = usePathname();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -30,6 +32,9 @@ export default function Header() {
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const { user, logout } = useAuth();
+
+  // Check if we're on a course page
+  const isCoursePage = pathname?.startsWith('/dashboard/courses/') || false;
 
   const getDirectDashboardLink = (email: string) => {
     if (email === 'basics@test.se' || email === 'basiconly@test.se') return '/dashboard/courses/functional-basics';
@@ -136,24 +141,25 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'}`}>
-      {/* Top announcement bar */}
-      <div className="w-full text-white text-xs sm:text-sm" style={{ backgroundColor: '#112A12' }}>
-        <div className="container-custom">
-          <div className="relative overflow-hidden h-8 sm:h-10 flex items-center">
-            <div className="animate-marquee whitespace-nowrap flex items-center">
-              <Link href="/utbildning" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                <span className="text-xs sm:text-sm">🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
-              </Link>
-              <Link href="/kunskapsbank/recept" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                <span className="text-xs sm:text-sm">🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
-              </Link>
-              <Link href="/kunskapsbank/kallor" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                <span className="text-xs sm:text-sm">🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
-              </Link>
-              {/* Extra spacing for smooth loop */}
-              <div className="w-16 sm:w-24"></div>
-            </div>
-            <div className="animate-marquee2 whitespace-nowrap absolute left-full flex items-center">
+      {/* Top announcement bar - Hidden on course pages */}
+      {!isCoursePage && (
+        <div className="w-full text-white text-xs sm:text-sm" style={{ backgroundColor: '#112A12' }}>
+          <div className="container-custom">
+            <div className="relative overflow-hidden h-8 sm:h-10 flex items-center">
+              <div className="animate-marquee whitespace-nowrap flex items-center">
+                <Link href="/utbildning" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
+                  <span className="text-xs sm:text-sm">🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
+                </Link>
+                <Link href="/kunskapsbank/recept" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
+                  <span className="text-xs sm:text-sm">🍽️ {t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
+                </Link>
+                <Link href="/kunskapsbank/kallor" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
+                  <span className="text-xs sm:text-sm">🔎 {t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
+                </Link>
+                {/* Extra spacing for smooth loop */}
+                <div className="w-16 sm:w-24"></div>
+              </div>
+              <div className="animate-marquee2 whitespace-nowrap absolute left-full flex items-center">
               <Link href="/utbildning" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
                 <span className="text-xs sm:text-sm">🌿 {t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')} </span>
               </Link>
@@ -169,6 +175,7 @@ export default function Header() {
           </div>
         </div>
       </div>
+      )}
       <div className="container-custom">
         <div className="relative flex items-center h-24 md:h-28">
           {/* Mobile hamburger menu - LEFT SIDE */}

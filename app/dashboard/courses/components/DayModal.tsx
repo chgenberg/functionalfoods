@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { FiX, FiClock, FiExternalLink, FiInfo, FiCheckCircle, FiStar, FiShoppingCart } from 'react-icons/fi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 
 interface Meal {
@@ -35,7 +35,36 @@ export default function DayModal({
 }: DayModalProps) {
   const [hoveredMeal, setHoveredMeal] = useState<number | null>(null);
   const [completedMeals, setCompletedMeals] = useState<number[]>([]);
+  const [loading, setLoading] = useState(false);
   const { toggleFavorite, isFavorite } = useFavoriteRecipes();
+
+  // Load meal progress when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      loadMealProgress();
+    }
+  }, [isOpen, weekNumber, dayNumber, courseType]);
+
+  const loadMealProgress = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `/api/meal-progress?courseType=${courseType}&weekNumber=${weekNumber}&dayNumber=${dayNumber}`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        const completedIndices = data.progress
+          .filter((p: any) => p.completed)
+          .map((p: any) => p.mealIndex);
+        setCompletedMeals(completedIndices);
+      }
+    } catch (error) {
+      console.error('Error loading meal progress:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getMealIcon = (mealType: string) => {
     switch (mealType.toLowerCase()) {
@@ -63,12 +92,36 @@ export default function DayModal({
     }
   };
 
-  const toggleMealComplete = (index: number) => {
-    setCompletedMeals(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+  const toggleMealComplete = async (index: number) => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/meal-progress', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          courseType,
+          weekNumber,
+          dayNumber,
+          mealIndex: index,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update local state based on server response
+        setCompletedMeals(prev => 
+          data.progress.completed
+            ? [...prev.filter(i => i !== index), index]
+            : prev.filter(i => i !== index)
+        );
+      }
+    } catch (error) {
+      console.error('Error toggling meal progress:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const totalCalories = meals.reduce((total, meal) => {
