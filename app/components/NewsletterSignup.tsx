@@ -90,7 +90,7 @@ export default function NewsletterSignup({
             <button
               type="submit"
               disabled={status === 'loading' || !email}
-              className="px-4 py-2 bg-[#1a4324] text-white rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="px-4 py-2 bg-[#FF7e70] text-white rounded-lg hover:bg-[#e56b5e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'loading' ? (
                 <FiLoader className="w-5 h-5 animate-spin" />
@@ -165,7 +165,7 @@ export default function NewsletterSignup({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('newsletter.emailPlaceholder','din@email.se')}
                 className="w-full px-6 py-4 rounded-2xl bg-white text-gray-800 placeholder-gray-500 
-                         border-2 border-[#F3EFE3] focus:border-[#da695c]
+                         border-2 border-[#F3EFE3] focus:border-[#93C560]
                          transition-all duration-300 outline-none shadow-lg group-hover:shadow-xl"
                 required
               />
@@ -182,7 +182,7 @@ export default function NewsletterSignup({
                 id="privacy-checkbox-hero-new"
                 checked={privacyAccepted}
                 onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                className="w-5 h-5 rounded border-2 border-[#112A12]/30 bg-transparent checked:bg-[#da695c] checked:border-[#da695c] focus:ring-2 focus:ring-[#da695c] focus:ring-offset-0 cursor-pointer transition-all duration-300"
+                className="w-5 h-5 rounded border-2 border-[#112A12]/30 bg-transparent checked:bg-[#93C560] checked:border-[#93C560] focus:ring-2 focus:ring-[#93C560] focus:ring-offset-0 cursor-pointer transition-all duration-300"
                 required
               />
               <span className="text-[#112A12]/80 text-sm flex-1 select-none">
@@ -202,7 +202,7 @@ export default function NewsletterSignup({
               disabled={status === 'loading' || !email || !privacyAccepted}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full px-8 py-4 bg-[#da695c] text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#c85e52] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 group"
+              className="w-full px-8 py-4 bg-[#FF7e70] text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#e56b5e] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 group"
             >
               {status === 'loading' ? (
                 <>

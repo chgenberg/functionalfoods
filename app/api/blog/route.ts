@@ -59,6 +59,14 @@ export async function GET(request: NextRequest) {
       content: pick(p, 'content', lang),
     }));
 
+    const headers = new Headers();
+    const isPublicList = !searchParams.get('draft') && (published === 'true' || published === null);
+    if (isPublicList) {
+      headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600');
+    } else {
+      headers.set('Cache-Control', 'no-store');
+    }
+
     return NextResponse.json({
       posts: localized,
       pagination: {
@@ -68,7 +76,7 @@ export async function GET(request: NextRequest) {
         totalPages: Math.ceil(totalPosts / limit),
         hasMore: (page * limit) < totalPosts
       }
-    });
+    }, { headers });
 
   } catch (error) {
     console.error('Error in blog API:', error);

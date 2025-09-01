@@ -44,8 +44,8 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
       onClick={handleAddToCart}
       className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 ${
         isAdded
-          ? 'bg-primary text-white shadow-lg'
-          : 'bg-primary text-white hover:bg-primary/90 shadow-md hover:shadow-lg'
+          ? 'bg-[#FF7e70] text-white shadow-lg'
+          : 'bg-[#FF7e70] text-white hover:bg-[#e56b5e] shadow-md hover:shadow-lg'
       }`}
     >
       <FiShoppingCart className={`w-5 h-5 transition-transform duration-300 ${isAdded ? 'rotate-12' : ''}`} />

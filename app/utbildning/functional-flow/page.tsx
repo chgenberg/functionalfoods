@@ -455,7 +455,7 @@ export default function FunctionalFlowPage() {
         </AnimatePresence>
 
         {/* CTA Section - Updated with Flow branding */}
-        <div className="rounded-2xl p-8 text-white text-center" style={{ backgroundColor: '#1a4324' }}>
+        <div className="rounded-2xl p-8 text-white text-center" style={{ backgroundColor: '#014421' }}>
           <h3 className="text-2xl font-bold mb-4">Redo för nästa nivå?</h3>
           <p className="text-lg mb-6 text-white/90">
             Ta din hälsa till nya höjder med avancerad functional foods

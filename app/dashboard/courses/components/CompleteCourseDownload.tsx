@@ -14,12 +14,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
   const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
   const courseData = courseType === 'basics' ? mealPlans : flowMealPlans;
 
-  // Count total recipes and meals
-  const totalRecipes = Object.values(courseData).reduce((total, week) => {
-    return total + Object.values(week.days).reduce((weekTotal, day) => {
-      return weekTotal + Object.values(day as DayMeals).filter((meal: MealItem) => meal.recipeLink).length;
-    }, 0);
-  }, 0);
+  // Count total meals
 
   const totalMeals = Object.values(courseData).reduce((total, week) => {
     return total + Object.values(week.days).reduce((weekTotal, day) => {
@@ -33,26 +28,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
     try {
       const today = new Date().toLocaleDateString('sv-SE');
       
-      // Collect all unique recipes
-      const uniqueRecipes = new Map();
-      Object.values(courseData).forEach((week, weekIndex) => {
-        Object.entries(week.days).forEach(([dayName, dayMeals]) => {
-          Object.entries(dayMeals as DayMeals).forEach(([mealType, meal]) => {
-            if (meal.recipeLink && !meal.name.toLowerCase().includes('rester')) {
-              const recipeKey = meal.recipeLink;
-              if (!uniqueRecipes.has(recipeKey)) {
-                uniqueRecipes.set(recipeKey, {
-                  name: meal.name,
-                  link: meal.recipeLink,
-                  week: weekIndex + 1,
-                  day: dayName,
-                  mealType: mealType
-                });
-              }
-            }
-          });
-        });
-      });
+
 
       const htmlContent = `
 <!DOCTYPE html>
@@ -60,9 +36,9 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Komplett Kurspaket - ${courseName}</title>
+    <title>Kostscheman - ${courseName}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
         
         * {
             margin: 0;
@@ -71,7 +47,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
             color: #1a1a1a;
             background: #ffffff;
@@ -117,9 +93,9 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         }
         
         .cover-page h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Work Sans', sans-serif;
             font-size: 4rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 20px;
             position: relative;
             z-index: 1;
@@ -175,7 +151,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         }
         
         .page-header h2 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Work Sans', sans-serif;
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 10px;
@@ -196,7 +172,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         }
         
         .toc h2 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Work Sans', sans-serif;
             font-size: 2rem;
             color: #014421;
             margin-bottom: 30px;
@@ -239,9 +215,9 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         }
         
         .week-number {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Work Sans', sans-serif;
             font-size: 3rem;
-            font-weight: 700;
+            font-weight: 800;
             color: #014421;
             margin-bottom: 10px;
         }
@@ -321,112 +297,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             line-height: 1.4;
         }
         
-        /* Recipe Section */
-        .recipes-section {
-            margin-top: 80px;
-            page-break-before: always;
-        }
-        
-        .recipes-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        
-        .recipes-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            color: #014421;
-            margin-bottom: 10px;
-        }
-        
-        .recipes-header p {
-            font-size: 1.1rem;
-            color: #6c757d;
-        }
-        
-        .recipe-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-        }
-        
-        .recipe-card {
-            background: white;
-            border: 2px solid #f0f0f0;
-            border-radius: 15px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .recipe-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #014421 0%, #116530 100%);
-        }
-        
-        .recipe-number {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 40px;
-            height: 40px;
-            background: #014421;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        
-        .recipe-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #014421;
-            margin-bottom: 10px;
-            margin-right: 50px;
-        }
-        
-        .recipe-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .recipe-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-        
-        .recipe-meta-icon {
-            width: 16px;
-            height: 16px;
-            opacity: 0.6;
-        }
-        
-        .recipe-link {
-            font-size: 0.8rem;
-            color: #0066cc;
-            background: #e8f4ff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-family: 'Monaco', 'Courier New', monospace;
-            word-break: break-all;
-            display: block;
-            text-decoration: none;
-            border: 1px solid #b3d9ff;
-        }
+
         
         /* Footer */
         .footer {
@@ -441,9 +312,9 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         }
         
         .footer-logo {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Work Sans', sans-serif;
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 20px;
         }
         
@@ -474,14 +345,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
                 grid-template-columns: repeat(3, 1fr);
                 gap: 15px;
             }
-            .recipe-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
             .week-section {
-                page-break-inside: avoid;
-            }
-            .recipe-card {
                 page-break-inside: avoid;
             }
         }
@@ -496,16 +360,12 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
     <!-- Cover Page -->
     <div class="cover-page">
         <h1>${courseName}</h1>
-        <div class="subtitle">Komplett kurspaket med alla recept och kostscheman</div>
+        <div class="subtitle">Komplett kostschema för alla veckor</div>
         
         <div class="cover-stats">
             <div class="cover-stat">
                 <div class="cover-stat-number">${Object.keys(courseData).length}</div>
                 <div class="cover-stat-label">Veckor</div>
-            </div>
-            <div class="cover-stat">
-                <div class="cover-stat-number">${uniqueRecipes.size}</div>
-                <div class="cover-stat-label">Unika Recept</div>
             </div>
             <div class="cover-stat">
                 <div class="cover-stat-number">${totalMeals}</div>
@@ -529,10 +389,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
                 </div>
               `;
             }).join('')}
-            <div class="toc-item">
-                <div class="toc-title">Alla recept i kursen</div>
-                <div class="toc-page">Sida ${Object.keys(courseData).length + 3}</div>
-            </div>
+
         </div>
         
         <!-- Weekly Meal Plans -->
@@ -569,39 +426,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
           `;
         }).join('')}
         
-        <!-- Recipe Collection -->
-        <div class="recipes-section">
-            <div class="recipes-header">
-                <h2>Receptsamling</h2>
-                <p>Alla ${uniqueRecipes.size} unika recept från kursen</p>
-            </div>
-            
-            <div class="recipe-grid">
-                ${Array.from(uniqueRecipes.values()).map((recipe, index) => `
-                    <div class="recipe-card">
-                        <div class="recipe-number">${index + 1}</div>
-                        <div class="recipe-name">${recipe.name}</div>
-                        <div class="recipe-meta">
-                            <div class="recipe-meta-item">
-                                <svg class="recipe-meta-icon" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 6h12v10H4V6z"/>
-                                </svg>
-                                Vecka ${recipe.week}
-                            </div>
-                            <div class="recipe-meta-item">
-                                <svg class="recipe-meta-icon" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                </svg>
-                                ${getMealTypeSwedish(recipe.mealType)}
-                            </div>
-                        </div>
-                        <a href="https://functionalfoods.se${recipe.link}" class="recipe-link">
-                            functionalfoods.se${recipe.link}
-                        </a>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
+
     </div>
     
     <!-- Footer -->
@@ -667,7 +492,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             Komplett Kurspaket
           </h3>
           <p className="text-white/80 text-lg">
-            Ladda ner alla recept och kostscheman som en snygg PDF
+            Ladda ner alla kostscheman som en snygg PDF
           </p>
         </div>
       </div>
@@ -679,8 +504,8 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
           <div className="text-sm text-white/70">Veckor</div>
         </div>
         <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold mb-1">{totalRecipes}</div>
-          <div className="text-sm text-white/70">Recept</div>
+          <div className="text-2xl font-bold mb-1">{Object.keys(courseData).length * 7}</div>
+          <div className="text-sm text-white/70">Dagar</div>
         </div>
         <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
           <div className="text-2xl font-bold mb-1">{totalMeals}</div>
@@ -700,7 +525,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         </div>
         <div className="flex items-center gap-3">
           <FiUser className="text-xl text-white/80" />
-          <span className="text-white/90">Kompletta receptsamling</span>
+          <span className="text-white/90">Detaljerade måltidsplaner</span>
         </div>
         <div className="flex items-center gap-3">
           <FiBook className="text-xl text-white/80" />
@@ -708,7 +533,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         </div>
         <div className="flex items-center gap-3">
           <FiFileText className="text-xl text-white/80" />
-          <span className="text-white/90">Direktlänkar till recept</span>
+          <span className="text-white/90">Enkel veckoöversikt</span>
         </div>
       </div>
 
@@ -728,7 +553,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         ) : (
           <>
             <FiDownload className="text-xl" />
-            <span>Ladda ner komplett kurspaket (PDF)</span>
+            <span>Ladda ner kostscheman (PDF)</span>
           </>
         )}
       </motion.button>

@@ -27,8 +27,19 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const courseId = searchParams.get('courseId') || undefined;
     const status = searchParams.get('status') || undefined;
+
     const reviews = await prisma.courseReview.findMany({ where: { courseId, status }, orderBy: { createdAt: 'desc' } });
-    return NextResponse.json({ reviews });
+
+    const headers = new Headers();
+    if (status === 'APPROVED') {
+      // Publicly cache approved reviews at the CDN edge for 5 minutes
+      headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
+    } else {
+      // No caching for non-approved/admin queries
+      headers.set('Cache-Control', 'no-store');
+    }
+
+    return NextResponse.json({ reviews }, { headers });
   } catch (e) {
     return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });
   } finally {

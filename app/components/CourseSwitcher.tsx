@@ -121,9 +121,9 @@ export default function CourseSwitcher() {
           transform hover:scale-105
         `}
         style={{
-          background: currentCourse.id === 'functional-flow' ? '#1a4324' : 
-                     currentCourse.id === 'functional-basics' ? 'linear-gradient(to right, #10b981, #0d9488)' : 
-                     '#1a4324'
+          background: currentCourse.id === 'functional-flow' ? '#014421' : 
+                     currentCourse.id === 'functional-basics' ? 'linear-gradient(to right, #014421, #116530)' : 
+                     '#014421'
         }}
       >
         <span className="text-xl">{currentCourse.icon}</span>

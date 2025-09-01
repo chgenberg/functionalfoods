@@ -96,7 +96,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
           {defaultTasks.map(t => (
             <label key={t.id} className="flex items-center gap-2 text-sm bg-gray-50 hover:bg-gray-100 rounded-lg px-3 py-2 cursor-pointer">
-              <input type="checkbox" checked={!!miniChecklist[t.id]} onChange={() => setMiniChecklist(prev=>({ ...prev, [t.id]: !prev[t.id] }))} className="accent-[#da695c]" />
+              <input type="checkbox" checked={!!miniChecklist[t.id]} onChange={() => setMiniChecklist(prev=>({ ...prev, [t.id]: !prev[t.id] }))} className="accent-[#93C560]" />
               <span className={miniChecklist[t.id] ? 'line-through text-gray-500' : 'text-gray-800'}>{t.label}</span>
             </label>
           ))}

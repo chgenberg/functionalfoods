@@ -39,19 +39,19 @@ export async function GET() {
     }
 
     if (pool.length === 0) {
-      return NextResponse.json({ recipes: sampleFallback() });
+      return NextResponse.json({ recipes: sampleFallback() }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
     }
 
     const count = Math.min(20, pool.length); // Increased from 10 to 20
     const shuffled = pool.sort(() => 0.5 - Math.random());
     const randomRecipes = shuffled.slice(0, count);
 
-    return NextResponse.json({ recipes: randomRecipes });
+    return NextResponse.json({ recipes: randomRecipes }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
   } catch (error) {
     console.error('Error fetching random recipes:', error);
     return NextResponse.json(
       { recipes: sampleFallback() },
-      { status: 200 }
+      { status: 200, headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } }
     );
   }
 }

@@ -246,6 +246,15 @@ export async function GET(request: NextRequest) {
       visible: await prisma.recipe.count({ where: { status: 'PUBLISHED' } })
     };
 
+    const headers = new Headers();
+    // Public list queries (no auth, only published+free) can be cached at CDN for 60s
+    const isPublicList = !userId && !slug && (!status || status === 'published') && !search;
+    if (isPublicList) {
+      headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600');
+    } else {
+      headers.set('Cache-Control', 'no-store');
+    }
+
     return NextResponse.json({
       recipes: formattedRecipes,
       pagination: {
@@ -257,7 +266,7 @@ export async function GET(request: NextRequest) {
       },
       categories: allCategories.sort(),
       statistics
-    });
+    }, { headers });
 
   } catch (error) {
     console.error('Error in recipes API:', error);

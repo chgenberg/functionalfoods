@@ -231,7 +231,7 @@ export default function Sok() {
                     {!userHasAccess && (
                       <Link
                         href="/utbildning"
-                        className="text-sm bg-accent text-white px-4 py-2 rounded-lg hover:bg-primary-light transition-all"
+                        className="text-sm bg-[#FF7e70] text-white px-4 py-2 rounded-lg hover:bg-[#e56b5e] transition-all"
                       >
                         Köp kurs för alla recept
                       </Link>

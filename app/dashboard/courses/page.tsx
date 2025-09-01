@@ -258,7 +258,7 @@ export default function CoursesPage() {
 
                     <Link
                       href="/utbildning"
-                      className="block w-full text-center bg-gray-100 text-gray-600 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                      className="block w-full text-center bg-[#FF7e70] text-white py-3 rounded-lg font-medium hover:bg-[#e56b5e] transition-colors"
                     >
                       Köp kurs
                     </Link>

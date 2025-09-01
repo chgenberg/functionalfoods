@@ -85,7 +85,7 @@ export default function Cart() {
         </div>
         <Link
           href="/checkout"
-          className="block w-full bg-primary text-white text-center py-3 rounded-lg hover:bg-primary/90 transition-colors"
+          className="block w-full bg-[#FF7e70] text-white text-center py-3 rounded-lg hover:bg-[#e56b5e] transition-colors"
         >
           Gå till kassan
         </Link>

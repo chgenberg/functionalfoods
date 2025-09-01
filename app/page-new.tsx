@@ -244,9 +244,9 @@ export default function Home() {
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 transition-transform" style={{ backgroundColor: feature.color }}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800 group-hover:text-[#1a4324] transition-colors">{feature.title}</h3>
+                <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800 group-hover:text-[#014421] transition-colors">{feature.title}</h3>
                 <p className="text-gray-600 leading-relaxed text-sm md:text-base">{feature.description}</p>
-                <div className="mt-4 text-[#9dc46d] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-sm">
+                                  <div className="mt-4 text-[#93C560] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-sm">
                   <span>{t('common.readMore','Läs mer')}</span>
                   <FiArrowRight className="w-4 h-4" />
                 </div>
@@ -404,7 +404,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuiz(true)}
-              className="bg-[#da695c] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#c85e52] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
+              className="bg-[#FF7e70] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#e56b5e] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
               {t('cta.button')}
               <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -423,7 +423,7 @@ export default function Home() {
       {showGeoSuggest && suggestedLocale && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-xl border border-[#F3EFE3] rounded-2xl px-4 py-3 flex items-center gap-3 z-50">
           <span className="text-sm text-[#112A12]">{t('home.geo.seeLang','Vi ser att ditt språk kan vara ')}{suggestedLocale.toUpperCase()}. {t('home.geo.question','Vill du byta?')}</span>
-          <button className="px-3 py-1.5 rounded-lg bg-[#da695c] text-white text-sm" onClick={() => { setLocale(suggestedLocale); setShowGeoSuggest(false); }}>{t('home.geo.switch','Byt')}</button>
+          <button className="px-3 py-1.5 rounded-lg bg-[#93C560] text-white text-sm" onClick={() => { setLocale(suggestedLocale); setShowGeoSuggest(false); }}>{t('home.geo.switch','Byt')}</button>
           <button className="px-3 py-1.5 rounded-lg bg-[#F3EFE3] text-[#112A12] text-sm" onClick={() => setShowGeoSuggest(false)}>{t('home.geo.noThanks','Nej tack')}</button>
         </div>
       )}

@@ -9,6 +9,21 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
 
 const prisma = new PrismaClient();
 
+// Basic per-IP rate limiter (best effort). Replace with Upstash for production scale.
+const RL_WINDOW_MS = 60_000;
+const RL_MAX = 30;
+const rlMap: Map<string, number[]> = new Map();
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const windowStart = now - RL_WINDOW_MS;
+  const arr = rlMap.get(ip) || [];
+  const recent = arr.filter((t) => t > windowStart);
+  if (recent.length >= RL_MAX) { rlMap.set(ip, recent); return true; }
+  recent.push(now);
+  rlMap.set(ip, recent);
+  return false;
+}
+
 // Läs in kursinformation
 async function getCourseInfo() {
   try {
@@ -145,17 +160,22 @@ export async function POST(request: Request) {
     console.error('Missing OPENAI_API_KEY');
     return NextResponse.json(
       { message: "<p>Konfigurationsfel. Vänligen kontakta support.</p>" },
-      { status: 500 }
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 
   try {
-    const { message } = await request.json();
+    const ip = (request.headers as any).get?.('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (rateLimited(ip)) {
+      return NextResponse.json({ message: '<p>För många förfrågningar, försök igen senare.</p>' }, { status: 429, headers: { 'Retry-After': '60', 'Cache-Control': 'no-store' } });
+    }
+
+    const { message } = await (request as any).json();
     
     if (!message || typeof message !== 'string') {
       return NextResponse.json(
         { message: "<p>Ogiltig förfrågan. Vänligen försök igen.</p>" },
-        { status: 400 }
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
       );
     }
     
@@ -209,34 +229,29 @@ VIKTIGA REGLER:
 17. Ge konkreta förslag på functional foods från vår råvarudatabas
 18. VIKTIGT: Använd ALDRIG markdown-länkar som [text](http://...) - skriv bara texten`;
 
-    const completion = await chatWithFallback(openai, {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
+
+    const completion = await openai.chat.completions.create({
+      model: resolveModel('gpt-5-mini'),
       messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: message }
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: message }
       ],
-      max_tokens: 1000,
-      temperature: 0.7,
-      stop: null,
-    });
+      max_tokens: 700,
+      timeout: 25_000 as any,
+      signal: controller.signal as any,
+    } as any).finally(() => clearTimeout(timeout));
 
-    let response = completion.choices[0].message.content || "Ursäkta, jag kunde inte generera ett svar just nu.";
-    
-    // Säkerställ att svaret slutar med en komplett mening
-    const lastChar = response.trim().slice(-1);
-    if (!['.', '!', '?', ':', '😊', '🌱', '💚'].includes(lastChar)) {
-      // Om svaret inte slutar med punktuation, lägg till punkt
-      response = response.trim() + '.';
-    }
-    
-    // Konvertera text till HTML
-    const htmlResponse = formatToHtml(response);
+    const reply = (completion as any).choices?.[0]?.message?.content || '<p>Något gick fel.</p>';
 
-    return NextResponse.json({ message: htmlResponse });
+    return NextResponse.json({ message: reply }, { headers: { 'Cache-Control': 'no-store' } });
+
   } catch (error) {
     console.error('Chat error:', error);
     return NextResponse.json(
-      { message: "<p>Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se</p>" },
-      { status: 500 }
+      { message: "<p>Något gick fel. Försök igen senare.</p>" },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   } finally {
     await prisma.$disconnect();

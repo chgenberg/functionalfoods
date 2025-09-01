@@ -298,7 +298,7 @@ function LoginForm() {
               className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform ${
                 loading 
                   ? 'bg-gray-300 cursor-not-allowed' 
-                  : 'bg-primary text-white hover:bg-secondary hover:scale-[1.02] shadow-lg'
+                  : 'bg-[#FF7e70] text-white hover:bg-[#e56b5e] hover:scale-[1.02] shadow-lg'
               }`}
             >
               {loading ? (

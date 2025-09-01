@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { verify } from 'jsonwebtoken';
+import { createRateLimiter } from '@/app/lib/ratelimit';
+import { cacheGet, cacheSet } from '@/app/lib/cache';
 
 export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
+
+const rl = createRateLimiter('api:search', { requests: 120, window: '60 s' });
 
 interface SearchResult {
   id: string;
@@ -58,6 +62,12 @@ function calculateRelevance(
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    const { success, retryAfter } = await rl.limit(`ip:${ip}`);
+    if (!success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(retryAfter / 1000)) } });
+    }
+
     const query = request.nextUrl.searchParams.get('q');
     const type = request.nextUrl.searchParams.get('type') || 'all';
     
@@ -66,6 +76,13 @@ export async function GET(request: NextRequest) {
         { results: [], message: 'Sökterm måste vara minst 2 tecken' },
         { status: 400 }
       );
+    }
+
+    // Cache by query + type for 30s (guests and general data)
+    const cacheKey = `search:${type}:${query.toLowerCase()}`;
+    const cached = await cacheGet<{ results: SearchResult[]; total: number }>(cacheKey);
+    if (cached) {
+      return NextResponse.json({ ...cached, query }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
     }
 
     let hasAccess = false;
@@ -230,11 +247,17 @@ export async function GET(request: NextRequest) {
     
     const limitedResults = allResults.slice(0, 20);
 
+    // Write-through cache for 30 seconds
+    await cacheSet(cacheKey, { results: limitedResults, total: allResults.length }, 30);
+
+    const headers = new Headers();
+    headers.set('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=300');
+
     return NextResponse.json({
       results: limitedResults,
       total: allResults.length,
       query,
-    });
+    }, { headers });
 
   } catch (error) {
     console.error('Search error:', error);

@@ -283,7 +283,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
             color: #1a1a1a;
             background: #ffffff;

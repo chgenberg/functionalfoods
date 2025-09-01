@@ -50,14 +50,14 @@ export default function CartPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/utbildning" 
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a4324] text-white rounded-xl font-semibold hover:bg-[#9dc46d] hover:text-[#1a4324] transform hover:scale-[1.02] transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#FF7e70] text-white rounded-xl font-semibold hover:bg-[#e56b5e] transform hover:scale-[1.02] transition-all"
                 >
                   <GiSparkles className="w-5 h-5" />
                   Utforska kurser
                 </Link>
                 <Link 
                   href="/" 
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-xl font-semibold border-2 border-gray-200 hover:border-[#9dc46d] hover:shadow-md transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-xl font-semibold border-2 border-gray-200 hover:border-[#93C560] hover:shadow-md transition-all"
                 >
                   <FiArrowLeft className="w-5 h-5" />
                   Tillbaka till startsidan
@@ -77,11 +77,11 @@ export default function CartPage() {
         {/* Header */}
         <div className="mb-8">
           {/* Back button */}
-          <Link href="/" className="inline-flex items-center text-[#1a4324] hover:text-[#9dc46d] mb-4 transition-colors group">
+          <Link href="/" className="inline-flex items-center text-[#014421] hover:text-[#93C560] mb-4 transition-colors group">
             <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
             Fortsätt handla
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1a4324]">
+                      <h1 className="text-3xl md:text-4xl font-bold text-[#014421]">
             Din varukorg
           </h1>
         </div>
@@ -100,7 +100,7 @@ export default function CartPage() {
                   <div className="flex flex-col sm:flex-row gap-6">
                     {/* Course/Product Image */}
                     <div className="flex-shrink-0">
-                      <div className="w-full sm:w-32 h-32 bg-[#1a4324] rounded-lg flex items-center justify-center shadow-inner">
+                      <div className="w-full sm:w-32 h-32 bg-[#014421] rounded-lg flex items-center justify-center shadow-inner">
                         {item.type === 'course' ? (
                           <GiSparkles className="w-16 h-16 text-white" />
                         ) : (
@@ -126,7 +126,7 @@ export default function CartPage() {
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
                               disabled={item.quantity <= 1}
-                              className="p-2 hover:bg-[#9dc46d]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              className="p-2 hover:bg-[#93C560]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                               <FiMinus className="w-4 h-4" />
                             </button>
@@ -135,7 +135,7 @@ export default function CartPage() {
                             </span>
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="p-2 hover:bg-[#9dc46d]/20 transition-colors"
+                              className="p-2 hover:bg-[#93C560]/20 transition-colors"
                             >
                               <FiPlus className="w-4 h-4" />
                             </button>
@@ -171,8 +171,8 @@ export default function CartPage() {
             <div className="bg-white rounded-xl shadow-md p-6 mt-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-[#9dc46d]/20 rounded-lg">
-                    <FiTruck className="w-6 h-6 text-[#1a4324]" />
+                  <div className="p-3 bg-[#93C560]/20 rounded-lg">
+                    <FiTruck className="w-6 h-6 text-[#014421]" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">Omedelbar tillgång</p>
@@ -180,8 +180,8 @@ export default function CartPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-[#9dc46d]/20 rounded-lg">
-                    <FiShield className="w-6 h-6 text-[#1a4324]" />
+                  <div className="p-3 bg-[#93C560]/20 rounded-lg">
+                    <FiShield className="w-6 h-6 text-[#014421]" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">Säker betalning</p>
@@ -189,8 +189,8 @@ export default function CartPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-[#9dc46d]/20 rounded-lg">
-                    <FiClock className="w-6 h-6 text-[#1a4324]" />
+                  <div className="p-3 bg-[#93C560]/20 rounded-lg">
+                    <FiClock className="w-6 h-6 text-[#014421]" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">Livstids tillgång</p>
@@ -204,7 +204,7 @@ export default function CartPage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-8">
-              <div className="bg-[#1a4324] p-6 text-white">
+              <div className="bg-[#014421] p-6 text-white">
                 <h2 className="text-2xl font-bold">Sammanfattning</h2>
               </div>
               
@@ -222,7 +222,7 @@ export default function CartPage() {
                   <div className="border-t pt-3">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-bold text-gray-800">Totalt att betala</span>
-                      <span className="text-2xl font-bold text-[#1a4324]">{total.toLocaleString()} kr</span>
+                      <span className="text-2xl font-bold text-[#014421]">{total.toLocaleString()} kr</span>
                     </div>
                   </div>
                 </div>
@@ -230,7 +230,7 @@ export default function CartPage() {
                 {/* Checkout button */}
                 <Link 
                   href="/checkout"
-                  className="w-full bg-[#1a4324] text-white py-4 px-6 rounded-xl font-semibold hover:bg-[#9dc46d] hover:text-[#1a4324] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-[#FF7e70] text-white py-4 px-6 rounded-xl font-semibold hover:bg-[#e56b5e] transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   <FiCreditCard className="w-5 h-5" />
                   Gå till kassan
@@ -240,15 +240,15 @@ export default function CartPage() {
                 <div className="mt-6 pt-6 border-t">
                   <p className="text-sm text-gray-600 mb-3">Säker betalning</p>
                   <div className="flex items-center gap-3 justify-center flex-wrap">
-                    <div className="px-3 py-2 bg-[#9dc46d]/10 rounded-lg text-sm font-medium flex items-center gap-2 text-[#1a4324]">
+                    <div className="px-3 py-2 bg-[#93C560]/10 rounded-lg text-sm font-medium flex items-center gap-2 text-[#014421]">
                       <FiCreditCard className="w-4 h-4" />
                       Visa
                     </div>
-                    <div className="px-3 py-2 bg-[#9dc46d]/10 rounded-lg text-sm font-medium flex items-center gap-2 text-[#1a4324]">
+                    <div className="px-3 py-2 bg-[#93C560]/10 rounded-lg text-sm font-medium flex items-center gap-2 text-[#014421]">
                       <FiCreditCard className="w-4 h-4" />
                       Mastercard
                     </div>
-                    <div className="px-3 py-2 bg-[#9dc46d]/10 rounded-lg text-sm font-medium flex items-center gap-2 text-[#1a4324]">
+                    <div className="px-3 py-2 bg-[#93C560]/10 rounded-lg text-sm font-medium flex items-center gap-2 text-[#014421]">
                       <FiCreditCard className="w-4 h-4" />
                       Amex
                     </div>

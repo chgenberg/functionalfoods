@@ -197,7 +197,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
               </button>
               <a
                 href="/utbildning"
-                className="block text-center text-primary hover:text-secondary text-sm font-medium"
+                className="block text-center bg-[#FF7e70] text-white px-4 py-2 rounded-lg hover:bg-[#e56b5e] text-sm font-medium transition-colors"
               >
                 Köp kurs för tillgång →
               </a>

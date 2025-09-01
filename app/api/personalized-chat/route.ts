@@ -12,6 +12,21 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 }) : null;
 
+// Simple per-IP rate limiter (best effort). Consider Upstash for production.
+const RL_WINDOW_MS = 60_000;
+const RL_MAX = 30; // 30 req/min per IP
+const rlMap: Map<string, number[]> = new Map();
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const start = now - RL_WINDOW_MS;
+  const arr = rlMap.get(ip) || [];
+  const recent = arr.filter((t) => t > start);
+  if (recent.length >= RL_MAX) { rlMap.set(ip, recent); return true; }
+  recent.push(now);
+  rlMap.set(ip, recent);
+  return false;
+}
+
 function getUserIdFromToken(token: string) {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
@@ -123,8 +138,8 @@ function formatToHtml(text: string): string {
     // Hantera listor som börjar med - eller •
     if (formattedParagraph.includes('\n-') || formattedParagraph.includes('\n•')) {
       const lines = formattedParagraph.split('\n');
-      let listItems = [];
-      let regularText = [];
+      let listItems = [] as string[];
+      let regularText = [] as string[];
       
       for (const line of lines) {
         if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
@@ -159,23 +174,28 @@ export async function POST(request: NextRequest) {
     console.error('Missing OPENAI_API_KEY');
     return NextResponse.json(
       { message: "<p>Konfigurationsfel. Vänligen kontakta support.</p>" },
-      { status: 500 }
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (rateLimited(ip)) {
+      return NextResponse.json({ message: '<p>För många förfrågningar, försök igen senare.</p>' }, { status: 429, headers: { 'Retry-After': '60', 'Cache-Control': 'no-store' } });
+    }
+
     const { message, locale } = await request.json();
     
     if (!message || typeof message !== 'string') {
       return NextResponse.json(
         { message: "<p>Ogiltig förfrågan. Vänligen försök igen.</p>" },
-        { status: 400 }
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
       );
     }
 
     // Hämta användare från token
     const authorization = request.headers.get('authorization');
-    let userId = null;
+    let userId = null as string | null;
     let user: any = null;
     let userContext = '';
 
@@ -374,12 +394,12 @@ ${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och
       }
     }
 
-    return NextResponse.json({ message: htmlResponse });
+    return NextResponse.json({ message: htmlResponse }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     console.error('Chat error:', error);
     return NextResponse.json(
       { message: "<p>Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se</p>" },
-      { status: 500 }
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   } finally {
     await prisma.$disconnect();
