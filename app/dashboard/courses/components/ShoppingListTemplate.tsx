@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { ArrowLeft, Printer, Download, Check, Search, ShoppingCart, ChevronDown, Share, Smartphone, Minus, Plus } from 'lucide-react';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
@@ -35,17 +36,18 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+  const [servings, setServings] = useState<number>(4);
 
   useEffect(() => {
     generateShoppingList();
-  }, [week, courseType]);
+  }, [week, courseType, servings]);
 
   const generateShoppingList = async () => {
     setLoading(true);
     
     try {
-      console.log(`🛒 Fetching shopping list for ${courseType} week ${week}`);
-      const response = await fetch(`/api/shopping-list/${courseType}/${week}`);
+      console.log(`🛒 Fetching shopping list for ${courseType} week ${week}, servings ${servings}`);
+      const response = await fetch(`/api/shopping-list/${courseType}/${week}?servings=${servings}`);
       console.log(`📡 API Response status: ${response.status}`);
       
       if (response.ok) {
@@ -115,7 +117,9 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
   const totalCount = ingredients.length;
 
   const buildListText = () => {
-    return ingredients.map(i => `${i.name} — ${i.amount} ${i.unit}`.trim()).join("\n");
+    const header = `Inköpslista • Vecka ${week} • ${courseType === 'basics' ? 'Basics' : 'Flow'} • ${servings} portioner`;
+    const body = ingredients.map(i => `${i.name} — ${i.amount} ${i.unit}`.trim()).join("\n");
+    return `${header}\n\n${body}`;
   };
 
   const handleShare = async () => {
@@ -347,7 +351,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
 <body>
     <div class="header">
         <div class="logo">Functional Foods</div>
-        <div class="course-info">${courseName}</div>
+        <div class="course-info">${courseName} • ${servings} portioner</div>
         <div class="date-info">Skapad ${today}</div>
         <div class="week-title">Inköpslista Vecka ${week}</div>
         <div class="subtitle">Organiserad efter kategori för enkel shopping</div>
@@ -419,7 +423,6 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
     <title>Inköpslista - ${courseName} Vecka ${week}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-import { ArrowLeft, Printer, Download, Check, Search, ShoppingCart, ChevronDown, Share, Smartphone } from 'lucide-react';
         
         * {
             margin: 0;
@@ -633,7 +636,7 @@ import { ArrowLeft, Printer, Download, Check, Search, ShoppingCart, ChevronDown,
 <body>
     <div class="header">
         <div class="logo">Functional Foods</div>
-        <div class="course-info">${courseName}</div>
+        <div class="course-info">${courseName} • ${servings} portioner</div>
         <div class="date-info">Skapad ${today}</div>
         <div class="week-title">Inköpslista Vecka ${week}</div>
         <div class="subtitle">Organiserad efter kategori för enkel shopping</div>
@@ -731,6 +734,24 @@ import { ArrowLeft, Printer, Download, Check, Search, ShoppingCart, ChevronDown,
             
             {/* Mobile-optimized action buttons */}
             <div className="flex items-center gap-2 flex-wrap">
+              {/* Servings selector */}
+              <div className="flex items-center gap-2 bg-[#F3EFE3] rounded-full px-3 py-1.5">
+                <button
+                  onClick={() => setServings(prev => Math.max(1, prev - 1))}
+                  className="w-8 h-8 rounded-full bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center"
+                  aria-label="Minska portioner"
+                >
+                  <Minus className="w-4 h-4 text-[#014421]" />
+                </button>
+                <span className="min-w-[2ch] text-center font-bold text-[#014421]">{servings}</span>
+                <button
+                  onClick={() => setServings(prev => prev + 1)}
+                  className="w-8 h-8 rounded-full bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center"
+                  aria-label="Öka portioner"
+                >
+                  <Plus className="w-4 h-4 text-[#014421]" />
+                </button>
+              </div>
               <button
                 onClick={handlePrint}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
