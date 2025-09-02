@@ -169,24 +169,7 @@ export default function Home() {
                 alt="Ulrika Davidsson"
                 className="rounded-3xl shadow-2xl w-full h-auto"
               />
-              
-              <div className="absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 max-w-xs">
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl" style={{ backgroundColor: '#112A12' }}>
-                    UD
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-800">Ulrika Davidsson</p>
-                    <p className="text-sm text-gray-600">"Bästa kursen jag har gått - Lisa J"</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-4 h-4" color="#FFE135" />
-                  ))}
-                  <span className="text-gray-600 text-sm ml-2">{t('home.ud.experience','25+ års erfarenhet')}</span>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>

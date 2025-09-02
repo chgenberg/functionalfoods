@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiStar, FiUser, FiCalendar, FiThumbsUp, FiX, FiAlertCircle } from 'react-icons/fi';
+import { Star, User, Calendar, ThumbsUp, X, AlertCircle } from 'lucide-react';
 import { useErrorHandler } from '../lib/errorHandler';
 
 interface Review {
