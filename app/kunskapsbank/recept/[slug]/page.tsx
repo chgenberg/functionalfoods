@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, Clock, Heart, Minus, Plus, Printer, Star, Users, X, Camera } from 'lucide-react';
 
 import { useAuth } from '../../../hooks/useAuth';
 import { useFavoriteRecipes } from '../../../hooks/useFavoriteRecipes';
@@ -351,7 +352,6 @@ export default function RecipePage() {
           }
           .no-print {
             display: none !important;
-import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, Clock, Heart, Minus, Plus, Printer, Star, Users, X } from 'lucide-react';
           }
           .print-break {
             page-break-inside: avoid;
@@ -408,7 +408,7 @@ import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, Clock, Heart, Minus
                 </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">
-                  <FiCamera className="w-20 h-20 text-orange-300" />
+                  <Camera className="w-20 h-20 text-orange-300" />
                 </div>
               )}
 

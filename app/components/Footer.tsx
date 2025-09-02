@@ -47,7 +47,7 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center mb-6">
               <Image 
-                src="/FF_logo_white.svg" 
+                src="/FF_logo.svg" 
                 alt="Functional Foods" 
                 width={200} 
                 height={80} 
