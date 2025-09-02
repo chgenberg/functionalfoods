@@ -13,7 +13,8 @@
     "recipes:set-access": "node scripts/set-recipe-access-by-mealplans.js",
     "images:rematch": "node scripts/rematch-recipe-images.js",
     "images:rematch:apply": "node scripts/rematch-recipe-images.js --apply",
-    "images:check": "node scripts/check-recipe-images.js"
+    "images:check": "node scripts/check-recipe-images.js",
+    "recipes:fix-links": "node scripts/fix-recipe-links.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
