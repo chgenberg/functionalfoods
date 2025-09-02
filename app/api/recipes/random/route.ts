@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const hasDb = !!process.env.DATABASE_URL;
+const prisma: PrismaClient | null = hasDb ? new PrismaClient() : null;
 
 export async function GET() {
   try {
+    if (!hasDb || !prisma) {
+      return NextResponse.json(
+        { recipes: sampleFallback() },
+        { status: 200, headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } }
+      );
+    }
+
     const freeRecipes = await prisma.recipe.findMany({
       where: {
         status: 'PUBLISHED',
