@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { FiArrowLeft, FiTrash2, FiShoppingBag, FiMinus, FiPlus, FiCreditCard, FiTruck, FiShield, FiClock, FiBook, FiLock } from 'react-icons/fi';
+import { ArrowLeft, Trash2, ShoppingBag, Minus, Plus, CreditCard, Truck, Shield, Clock, Book, Lock } from 'lucide-react';
 import { GiSparkles } from 'react-icons/gi';
 import Image from 'next/image';
 import { useState } from 'react';

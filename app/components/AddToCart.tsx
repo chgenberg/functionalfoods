@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from '../context/CartContext';
-import { FiShoppingCart, FiLoader } from 'react-icons/fi';
+import { ShoppingCart, Loader } from 'lucide-react';
 import { useState } from 'react';
 
 interface AddToCartProps {
@@ -33,7 +33,7 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
         disabled
         className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gray-200 text-gray-400 cursor-not-allowed"
       >
-        <FiLoader className="w-5 h-5 animate-spin" />
+        <Loader className="w-5 h-5 animate-spin" />
         Laddar...
       </button>
     );
@@ -48,7 +48,7 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
           : 'bg-[#FF7e70] text-white hover:bg-[#e56b5e] shadow-md hover:shadow-lg'
       }`}
     >
-      <FiShoppingCart className={`w-5 h-5 transition-transform duration-300 ${isAdded ? 'rotate-12' : ''}`} />
+      <ShoppingCart className={`w-5 h-5 transition-transform duration-300 ${isAdded ? 'rotate-12' : ''}`} />
       {isAdded ? 'Tillagd i varukorg' : 'Lägg i varukorg'}
     </button>
   );

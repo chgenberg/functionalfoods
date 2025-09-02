@@ -1,29 +1,20 @@
 "use client";
 import { useCart } from '../context/CartContext';
-import { FiTrash2, FiPlus, FiMinus } from 'react-icons/fi';
-import Image from 'next/image';
+import { X, Minus, Plus, ShoppingCart, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Cart() {
-  const { items, removeItem, updateQuantity, total, isLoaded } = useCart();
-
-  if (!isLoaded) {
-    return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
-        <p className="text-gray-600">Laddar varukorg...</p>
-      </div>
-    );
-  }
+  const { items, total, removeItem, updateQuantity, clearCart } = useCart();
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center p-8">
-        <h2 className="text-2xl font-semibold mb-4">Din varukorg är tom</h2>
-        <p className="text-gray-600 mb-6">Lägg till kurser eller böcker för att komma igång</p>
-        <Link 
+      <div className="p-6 text-center">
+        <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Din varukorg är tom</h3>
+        <p className="text-gray-600 mb-4">Lägg till kurser eller produkter för att komma igång</p>
+        <Link
           href="/utbildning"
-          className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
         >
           Utforska kurser
         </Link>
@@ -32,48 +23,47 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-[400px] p-8">
-      <h2 className="text-2xl font-semibold mb-6">Din varukorg</h2>
-      <div className="space-y-4">
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold">Varukorg ({items.length})</h2>
+        <button
+          onClick={clearCart}
+          className="text-sm text-gray-500 hover:text-red-600 transition-colors"
+        >
+          Rensa alla
+        </button>
+      </div>
+      
+      <div className="space-y-4 mb-6">
         {items.map((item) => (
-          <div key={item.id} className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
-            {item.image && (
-              <div className="relative w-20 h-20">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  fill
-                  className="object-cover rounded-md"
-                />
-              </div>
-            )}
+          <div key={item.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
             <div className="flex-1">
-              <h3 className="font-medium">{item.name}</h3>
-              <p className="text-sm text-gray-600">{item.type === 'course' ? 'Kurs' : 'Bok'}</p>
+              <h3 className="font-medium text-gray-900">{item.name}</h3>
+              <p className="text-sm text-gray-600">{item.price} kr</p>
             </div>
+            
             <div className="flex items-center gap-2">
               <button
-                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                className="p-1 hover:bg-gray-100 rounded"
+                onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                className="p-1 rounded hover:bg-gray-200 transition-colors"
+                disabled={item.quantity <= 1}
               >
-                <FiMinus className="w-4 h-4" />
+                <Minus className="w-4 h-4" />
               </button>
-              <span className="w-8 text-center">{item.quantity}</span>
+              <span className="w-8 text-center font-medium">{item.quantity}</span>
               <button
                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                className="p-1 hover:bg-gray-100 rounded"
+                className="p-1 rounded hover:bg-gray-200 transition-colors"
               >
-                <FiPlus className="w-4 h-4" />
+                <Plus className="w-4 h-4" />
               </button>
             </div>
-            <div className="w-24 text-right">
-              <p className="font-medium">{item.price * item.quantity} kr</p>
-            </div>
+            
             <button
               onClick={() => removeItem(item.id)}
-              className="p-2 hover:bg-red-50 rounded text-red-600"
+              className="p-2 text-red-500 hover:bg-red-50 rounded transition-colors"
             >
-              <FiTrash2 className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         ))}

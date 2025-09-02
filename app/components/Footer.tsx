@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiArrowRight } from 'react-icons/fi';
+import { ArrowRight } from 'lucide-react';
 import { FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
@@ -38,51 +38,86 @@ export default function Footer() {
   };
 
   return (
-    <footer className="text-white relative" style={{ backgroundColor: '#112A12' }}>
-      <div className="container-custom py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          <div className="lg:col-span-2">
-            <Link href="/" className="inline-block mb-6">
-              <Image src="/FunctionalLogo.png" alt="Functional Foods" width={160} height={64} className="h-16 w-auto brightness-0 invert" style={{ height: "auto" }} />
-            </Link>
-            <p className="text-gray-400 mb-6 max-w-sm">
-              {t('footer.about','Vi hjälper dig att förbättra din hälsa genom funktionell kost och livsstil. Upptäck kraften i mervärdesmat för långsiktigt välmående.')}
+    <footer className="text-white relative"
+      style={{ background: 'linear-gradient(135deg, #014421 0%, #116530 100%)' }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand section */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center mb-6">
+              <Image 
+                src="/FF_logo_white.svg" 
+                alt="Functional Foods" 
+                width={200} 
+                height={80} 
+                className="h-12 w-auto"
+              />
+            </div>
+            <p className="text-white/80 mb-6 leading-relaxed">
+              {t('footer.description','Din personliga guide till hälsosam mat och välmående genom vetenskapligt grundade functional foods.')}
             </p>
             <div className="flex space-x-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200">
-                <FaInstagram className="w-5 h-5" />
+              <a href="https://instagram.com/functionalfoods" className="text-white/60 hover:text-white transition-colors">
+                <FaInstagram className="w-6 h-6" />
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200">
-                <FaFacebook className="w-5 h-5" />
+              <a href="https://facebook.com/functionalfoods" className="text-white/60 hover:text-white transition-colors">
+                <FaFacebook className="w-6 h-6" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200">
-                <FaLinkedin className="w-5 h-5" />
+              <a href="https://linkedin.com/company/functionalfoods" className="text-white/60 hover:text-white transition-colors">
+                <FaLinkedin className="w-6 h-6" />
               </a>
             </div>
           </div>
 
+          {/* Utbildning */}
           <div>
-            <h3 className="text-lg font-medium mb-4">{t('footer.heading.education','Utbildning')}</h3>
-            <ul className="space-y-3 pointer-events-auto">
+            <h3 className="font-bold text-lg mb-4">{t('footer.sections.education','Utbildning')}</h3>
+            <ul className="space-y-2">
               {footerLinks.utbildning.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group">
+                  <Link 
+                    href={link.href} 
+                    className="text-white/70 hover:text-white transition-colors duration-200 flex items-center group"
+                  >
                     <span>{link.label}</span>
-                    <FiArrowRight className="w-4 h-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                    <ArrowRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" />
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Kunskapsbank */}
           <div>
-            <h3 className="text-lg font-medium mb-4">{t('footer.heading.knowledge','Kunskapsbank')}</h3>
-            <ul className="space-y-3 pointer-events-auto">
+            <h3 className="font-bold text-lg mb-4">{t('footer.sections.knowledge','Kunskapsbank')}</h3>
+            <ul className="space-y-2">
               {footerLinks.kunskapsbank.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group">
+                  <Link 
+                    href={link.href} 
+                    className="text-white/70 hover:text-white transition-colors duration-200 flex items-center group"
+                  >
                     <span>{link.label}</span>
-                    <FiArrowRight className="w-4 h-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                    <ArrowRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Juridisk */}
+          <div>
+            <h3 className="font-bold text-lg mb-4">{t('footer.sections.legal','Juridiskt')}</h3>
+            <ul className="space-y-2">
+              {footerLinks.juridisk.map((link) => (
+                <li key={link.href}>
+                  <Link 
+                    href={link.href} 
+                    className="text-white/70 hover:text-white transition-colors duration-200 flex items-center group"
+                  >
+                    <span>{link.label}</span>
+                    <ArrowRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" />
                   </Link>
                 </li>
               ))}
@@ -90,27 +125,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">
-              © {currentYear} Functional Foods. {t('footer.rights','Alla rättigheter förbehållna.')}
-            </p>
-            <div className="flex flex-wrap justify-center gap-6 items-center">
-              {footerLinks.juridisk.map((link) => (
-                <Link key={link.href} href={link.href} className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
-                  {link.label}
-                </Link>
-              ))}
-              <Link href="/admin/login" className="text-gray-400 hover:text-white text-sm transition-colors duration-200 focus:outline-none ml-4">
-                {t('footer.admin','Admin')}
-              </Link>
-              {user ? (
-                <>
-                  <span className="text-white text-xs ml-4">{t('footer.welcome','Välkommen')}{user.name ? `, ${user.name.split(' ')[0]}` : ''}!</span>
-                  <button onClick={logout} className="ml-2 px-3 py-1 rounded bg-slate-900 text-white hover:bg-slate-700 transition text-xs">{t('footer.logout','Logga ut')}</button>
-                </>
-              ) : null}
-            </div>
+        {/* Bottom section */}
+        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-white/60 text-sm mb-4 md:mb-0">
+            © {currentYear} {t('footer.copyright','Functional Foods. Alla rättigheter förbehållna.')}
+          </p>
+          <div className="flex items-center space-x-6">
+            <Link href="/kontakt/formular" className="text-white/70 hover:text-white text-sm transition-colors">
+              {t('footer.contact','Kontakta oss')}
+            </Link>
+            <Link href="/kontakt/faq" className="text-white/70 hover:text-white text-sm transition-colors">
+              FAQ
+            </Link>
           </div>
         </div>
       </div>

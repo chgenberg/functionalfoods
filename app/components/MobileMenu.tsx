@@ -218,7 +218,7 @@ export default function MobileMenu({
                     onClick={handleLinkClick}
                   >
                     <span>{t('nav.myCourses','Mitt konto')}</span>
-                    <FiArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-5 h-5" />
                   </Link>
                   <Link
                     href={getDirectDashboardLink(user.email)}
@@ -226,14 +226,14 @@ export default function MobileMenu({
                     onClick={handleLinkClick}
                   >
                     <span>Dashboard</span>
-                    <FiArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-5 h-5" />
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                   >
                     <span>{t('nav.logout','Logga ut')}</span>
-                    <FiLogOut className="w-5 h-5" />
+                    <LogOut className="w-5 h-5" />
                   </button>
                 </motion.div>
               ) : (
@@ -244,7 +244,7 @@ export default function MobileMenu({
                   className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-[#014421] hover:bg-[#116530] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
                 >
                   <span>{t('nav.login','Logga in')}</span>
-                  <FiUser className="w-5 h-5" />
+                  <User className="w-5 h-5" />
                 </motion.button>
               )}
             </div>
