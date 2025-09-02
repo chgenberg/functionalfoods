@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "import:recipes": "node scripts/import-recipes-from-csv.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
