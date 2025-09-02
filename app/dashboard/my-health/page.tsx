@@ -121,10 +121,10 @@ export default function MyHealthPage() {
       
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <MetricCard icon={FiTarget} label="Steg" value="10,283" unit="" color="from-green-500 to-green-600"/>
-          <MetricCard icon={FiMoon} label="Sömn" value="7h 45m" unit="" color="from-blue-500 to-blue-600"/>
-          <MetricCard icon={FiHeart} label="Puls" value="55-120" unit="bpm" color="from-red-500 to-red-600"/>
-          <MetricCard icon={FiAward} label="Stressnivå" value="Låg" unit="" color="from-yellow-500 to-yellow-600"/>
+                      <MetricCard icon={Target} label="Steg" value="10,283" unit="" color="from-green-500 to-green-600"/>
+            <MetricCard icon={Moon} label="Sömn" value="7h 45m" unit="" color="from-blue-500 to-blue-600"/>
+            <MetricCard icon={Heart} label="Puls" value="55-120" unit="bpm" color="from-red-500 to-red-600"/>
+            <MetricCard icon={Award} label="Stressnivå" value="Låg" unit="" color="from-yellow-500 to-yellow-600"/>
       </div>
 
       {/* Charts */}

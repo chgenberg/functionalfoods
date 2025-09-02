@@ -146,7 +146,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{totalActiveGoals}</p>
             </div>
             <div className="bg-orange-100 rounded-lg p-3">
-              <FiFlag className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
+              <Flag className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
             </div>
           </div>
         </div>
@@ -314,7 +314,7 @@ export default function GoalsPage() {
             { category: 'nutrition', label: 'Näring', icon: Target, color: 'green' },
             { category: 'health', label: 'Hälsa', icon: Star, color: 'purple' },
             { category: 'exercise', label: 'Träning', icon: TrendingUp, color: 'orange' },
-            { category: 'general', label: 'Allmänt', icon: FiFlag, color: 'gray' }
+            { category: 'general', label: 'Allmänt', icon: Flag, color: 'gray' }
           ].map(({ category, label, icon: Icon, color }) => {
             const categoryGoals = Object.values(PREDEFINED_GOALS).flat().filter(g => g.category === category);
             const activeCategoryGoals = goals.filter(g => g.category === category);

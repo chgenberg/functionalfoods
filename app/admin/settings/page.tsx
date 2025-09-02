@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Save, Info, Lock, CreditCard, User, Eye, EyeOff } from 'lucide-react';
+import { Save, Info, Lock, CreditCard, User, Eye, EyeOff, Bell } from 'lucide-react';
 
 const SettingsCard = ({ title, subtitle, children }: { title: string, subtitle?: string, children: React.ReactNode }) => (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300">
@@ -46,7 +46,7 @@ export default function AdminSettingsPage() {
   const tabs = [
     { id: 'general', label: 'Allmänt', icon: Info },
     { id: 'security', label: 'Säkerhet', icon: Lock },
-    { id: 'notifications', label: 'Notiser', icon: FiBell },
+    { id: 'notifications', label: 'Notiser', icon: Bell },
   ];
 
   const renderContent = () => {

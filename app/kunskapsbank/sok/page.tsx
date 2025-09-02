@@ -153,7 +153,7 @@ export default function Sok() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Link */}
         <Link href="/kunskapsbank" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors font-medium">
-          <FiArrowLeft className="w-5 h-5 mr-2" />
+          <ArrowLeft className="w-5 h-5 mr-2" />
           Tillbaka till kunskapsbank
         </Link>
 
@@ -178,7 +178,7 @@ export default function Sok() {
                 placeholder="Sök efter recept, råvaror, ingredienser..."
                 className="w-full px-6 py-4 pl-14 rounded-2xl bg-background-secondary shadow-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:shadow-xl transition-all duration-200 border-2 border-border"
               />
-              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
               {searchQuery.length > 0 && (
                 <button
                   type="button"
@@ -309,19 +309,19 @@ export default function Sok() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
                     <Link href="/kunskapsbank/recept" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
-                      <FiBookOpen className="w-8 h-8 text-accent mx-auto mb-3" />
+                      <BookOpen className="w-8 h-8 text-accent mx-auto mb-3" />
                       <h4 className="font-semibold text-text-primary group-hover:text-primary">Recept</h4>
                     </Link>
                     <Link href="/kunskapsbank/ingredienser" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
-                      <FiPackage className="w-8 h-8 text-accent mx-auto mb-3" />
+                      <Package className="w-8 h-8 text-accent mx-auto mb-3" />
                       <h4 className="font-semibold text-text-primary group-hover:text-primary">Råvaror</h4>
                     </Link>
                     <Link href="/kunskapsbank/blogg" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
-                      <FiUser className="w-8 h-8 text-accent mx-auto mb-3" />
+                      <User className="w-8 h-8 text-accent mx-auto mb-3" />
                       <h4 className="font-semibold text-text-primary group-hover:text-primary">Artiklar</h4>
                     </Link>
                     <Link href="/kontakt/faq" className="group bg-background-secondary rounded-xl p-6 text-center hover:shadow-lg transition-all">
-                      <FiTag className="w-8 h-8 text-accent mx-auto mb-3" />
+                      <Tag className="w-8 h-8 text-accent mx-auto mb-3" />
                       <h4 className="font-semibold text-text-primary group-hover:text-primary">FAQ</h4>
                     </Link>
                   </div>

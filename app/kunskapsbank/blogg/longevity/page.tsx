@@ -58,7 +58,7 @@ export default function LongevityBlogPost() {
               <Share2 className="w-5 h-5 text-text-secondary" />
             </button>
             <button className="p-3 rounded-full bg-background-secondary hover:bg-gray-200 transition-colors">
-              <FiBookmark className="w-5 h-5 text-text-secondary" />
+              <Bookmark className="w-5 h-5 text-text-secondary" />
             </button>
           </div>
 
