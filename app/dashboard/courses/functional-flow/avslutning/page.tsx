@@ -10,7 +10,7 @@ import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
 import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
 import HelpGuide from '@/app/components/HelpGuide';
-import { ArrowLeft, Check, Heart, Target, Star, BookOpen } from 'lucide-react';
+import { ArrowLeft, Check, Star, Target, BookOpen } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -105,7 +105,7 @@ export default function CompletionPage() {
             whileTap={{ scale: 0.95 }}
             className="mt-8 mx-auto flex items-center gap-2 bg-gradient-to-r from-[#014421] to-[#027A48] text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all max-w-fit"
           >
-            <Heart className="w-5 h-5" />
+            <Star className="w-5 h-5" />
             Berätta vad du tycker och få vår e-bok "Functional Foods" utan kostnad
           </motion.a>
         </motion.div>
