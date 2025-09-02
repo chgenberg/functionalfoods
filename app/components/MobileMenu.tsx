@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiChevronDown, FiArrowRight, FiUser, FiLogOut, FiSearch } from 'react-icons/fi';
+import { X, ChevronDown, ArrowRight, User, LogOut, Search } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useT } from '../lib/i18n/LanguageProvider';
 
@@ -113,7 +113,7 @@ export default function MobileMenu({
                 className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center"
                 aria-label="Stäng meny"
               >
-                <FiX className="w-5 h-5 text-gray-700" />
+                <X className="w-5 h-5 text-gray-700" />
               </button>
             </div>
 
@@ -146,7 +146,7 @@ export default function MobileMenu({
                               animate={{ rotate: activeDropdown === item.label ? 180 : 0 }}
                               transition={{ duration: 0.2 }}
                             >
-                              <FiChevronDown className="w-5 h-5 text-gray-400" />
+                              <ChevronDown className="w-5 h-5 text-gray-400" />
                             </motion.div>
                           </button>
                           <AnimatePresence>
@@ -199,7 +199,7 @@ export default function MobileMenu({
                 onClick={() => { onSearch(); onClose(); }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 text-base font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 mb-4"
               >
-                <FiSearch className="w-5 h-5" />
+                <Search className="w-5 h-5" />
                 <span>{t('nav.search','Sök')}</span>
               </button>
             </div>
