@@ -24,10 +24,19 @@ function basenameNoExt(p) {
   return base ? base.replace(/\.(jpg|jpeg|png|webp)$/i, '') : '';
 }
 
+const STOP = new Set(['med','och','eller','fran','från','i','en','ett','att','av','till','for','för']);
 function tokenize(str) {
   return normalizeSwedish(str)
     .split(' ')
-    .filter(w => w && w.length > 2 && !['med', 'och', 'eller', 'fran', 'från', 'i', 'en', 'ett'].includes(w));
+    .filter(w => w && w.length > 2 && !STOP.has(w));
+}
+
+function tokenOverlap(aTokens, bTokens) {
+  const a = new Set(aTokens);
+  const b = new Set(bTokens);
+  let c = 0;
+  for (const t of a) if (b.has(t)) c++;
+  return c;
 }
 
 function scoreCandidate(title, featuredBase, candidateName) {
@@ -35,26 +44,30 @@ function scoreCandidate(title, featuredBase, candidateName) {
   const normTitle = normalizeSwedish(title);
   const normFeat = normalizeSwedish(featuredBase);
 
-  // 1) Exact featured filename match
-  if (normFeat && normCand === normFeat) return 1.0;
-  // 2) Exact title match
-  if (normCand === normTitle) return 0.95;
-
-  // 3) Token overlap
   const tTitle = tokenize(title);
   const tCand = tokenize(candidateName);
-  const common = tTitle.filter(w => tCand.includes(w));
-  const jaccard = common.length / Math.max(1, new Set([...tTitle, ...tCand]).size);
+  const overlap = tokenOverlap(tTitle, tCand);
+  const unionSize = new Set([...tTitle, ...tCand]).size || 1;
+  const jaccard = overlap / unionSize;
 
-  // 4) String similarity
+  // Prefer exact featured match only if it shares at least one meaningful token with title
+  if (normFeat && normCand === normFeat) {
+    return overlap >= 1 ? 1.0 : 0.7;
+  }
+
+  // Exact title match
+  if (normCand === normTitle) return 0.95;
+
+  // String similarity signals
   const simTitle = stringSimilarity.compareTwoStrings(normTitle, normCand);
   const simFeat = normFeat ? stringSimilarity.compareTwoStrings(normFeat, normCand) : 0;
 
-  // Weighted score
-  return Math.max(
-    jaccard * 0.6 + simTitle * 0.4,
-    simFeat * 0.9
-  );
+  // Coverage: how much of title tokens are included in candidate
+  const coverage = tTitle.length ? Math.min(1, overlap / Math.max(1, tTitle.length - 1)) : 0;
+
+  // Weighted score with extra weight for coverage
+  const composite = jaccard * 0.45 + simTitle * 0.35 + coverage * 0.2;
+  return Math.max(composite, simFeat * 0.85);
 }
 
 function parseTSV(content) {
@@ -92,7 +105,7 @@ async function main() {
     for (const row of csvRows) {
       const title = (row.title || '').trim();
       const featured = basenameNoExt(row.featured_image_path || '');
-      titleToFeatured.set(title, featured);
+      if (title) titleToFeatured.set(title, featured);
     }
 
     const dbRecipes = await prisma.recipe.findMany({ select: { id: true, title: true, slug: true, imageUrl: true } });
@@ -104,14 +117,17 @@ async function main() {
     for (const r of dbRecipes) {
       const featuredBase = titleToFeatured.get(r.title) || '';
 
-      // Current best guess
-      let best = { file: null, score: 0 };
+      let best = { file: null, score: 0, overlap: 0 };
+      const titleTokens = tokenize(r.title);
       for (const base of imageBaseNames) {
         const s = scoreCandidate(r.title, featuredBase, base);
-        if (s > best.score) best = { file: base, score: s };
+        const ov = tokenOverlap(titleTokens, tokenize(base));
+        if (s > best.score || (Math.abs(s - best.score) < 0.02 && ov > best.overlap)) {
+          best = { file: base, score: s, overlap: ov };
+        }
       }
 
-      if (!best.file || best.score < 0.55) {
+      if (!best.file || best.score < 0.6) {
         missing++;
         continue;
       }
@@ -129,12 +145,14 @@ async function main() {
         continue;
       }
 
+      const suspicious = best.overlap === 0;
+
       if (r.imageUrl !== targetUrl) {
         if (apply) {
           await prisma.recipe.update({ where: { id: r.id }, data: { imageUrl: targetUrl, imageAlt: r.title } });
         }
         changed++;
-        console.log(`${apply ? 'Updated' : 'Would update'}: ${r.slug} -> ${targetUrl} (score ${best.score.toFixed(2)})`);
+        console.log(`${apply ? 'Updated' : 'Would update'}: ${r.slug} -> ${targetUrl} (score ${best.score.toFixed(2)}${suspicious ? ', LOW-OVERLAP' : ''})`);
       } else {
         unchanged++;
       }
