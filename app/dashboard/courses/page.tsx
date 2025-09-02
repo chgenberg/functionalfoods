@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { 
-  FiBook, FiCalendar, FiUsers, FiAward, FiChevronRight,
-  FiClock, FiCheckCircle, FiLock, FiStar, FiArrowRight
-} from 'react-icons/fi';
+  BookOpen, Clock, User, TrendingUp, Loader, Calendar, ArrowRight, PlayCircle, Lock, Unlock
+} from 'lucide-react';
 import { GiFruitBowl, GiHealthNormal } from 'react-icons/gi';
 import { useAuth } from '@/app/hooks/useAuth';
 
@@ -144,7 +143,7 @@ export default function CoursesPage() {
                           <h3 className="text-2xl font-bold mb-1">{course.title}</h3>
                           <p className="opacity-90">{course.description}</p>
                         </div>
-                        <FiArrowRight className="w-6 h-6 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="w-6 h-6 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                       </div>
                     </div>
 
@@ -152,11 +151,11 @@ export default function CoursesPage() {
                     <div className="p-6">
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div className="flex items-center gap-2 text-text-secondary">
-                          <FiCalendar className="w-4 h-4" />
+                          <Calendar className="w-4 h-4" />
                           <span className="text-sm">{course.duration}</span>
                         </div>
                         <div className="flex items-center gap-2 text-text-secondary">
-                          <FiBook className="w-4 h-4" />
+                          <BookOpen className="w-4 h-4" />
                           <span className="text-sm">{course.modules} moduler</span>
                         </div>
                       </div>
@@ -198,10 +197,10 @@ export default function CoursesPage() {
                       <div className="flex items-center justify-between">
                         <Link href={`${course.link}/kostschema?view=week&week=1`} className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">
                           Fortsätt
-                          <FiChevronRight />
+                          <ArrowRight />
                         </Link>
                         <span className={`text-primary font-medium flex items-center gap-1`}>
-                          <FiCheckCircle />
+                          <Unlock />
                           Aktiv
                         </span>
                       </div>
@@ -247,11 +246,11 @@ export default function CoursesPage() {
                   <div className="p-6">
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="flex items-center gap-2 text-text-secondary">
-                        <FiCalendar className="w-4 h-4" />
+                        <Calendar className="w-4 h-4" />
                         <span className="text-sm">{course.duration}</span>
                       </div>
                       <div className="flex items-center gap-2 text-text-secondary">
-                        <FiBook className="w-4 h-4" />
+                        <BookOpen className="w-4 h-4" />
                         <span className="text-sm">{course.modules} moduler</span>
                       </div>
                     </div>
@@ -268,7 +267,7 @@ export default function CoursesPage() {
                 {/* Lock Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="bg-white rounded-full p-4 shadow-lg">
-                    <FiLock className="w-8 h-8 text-gray-400" />
+                    <Lock className="w-8 h-8 text-gray-400" />
                   </div>
                 </div>
               </motion.div>
@@ -280,14 +279,14 @@ export default function CoursesPage() {
       {/* If no courses at all */}
       {courses.length === 0 && (
         <div className="text-center py-12">
-          <FiBook className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-700 mb-2">Inga kurser ännu</h3>
           <p className="text-gray-500 mb-6">Utforska vårt kursutbud och börja din hälsoresa idag!</p>
           <Link
             href="/utbildning"
             className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors"
           >
-            <FiBook />
+            <BookOpen />
             Utforska kurser
           </Link>
         </div>

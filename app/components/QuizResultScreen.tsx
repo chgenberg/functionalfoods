@@ -1,7 +1,10 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiRefreshCw, FiStar, FiTrendingUp, FiHeart, FiZap, FiShield, FiCheckCircle, FiArrowRight, FiTarget, FiActivity, FiBookOpen, FiAlertTriangle, FiPhone, FiChevronRight, FiMail } from 'react-icons/fi';
+import { GiFruitBowl, GiMeal, GiMeat, GiGrainBundle, GiNutBolt, GiMilkCarton, GiWheat, GiCoffeeCup, GiChocolateBar, GiSaltShaker } from 'react-icons/gi';
+import { CheckCircle, AlertCircle, TrendingUp, Zap, RefreshCw, ChevronRight, Mail, Heart, Target, Brain, Activity, Coffee, Moon, Sun, Star, BookOpen, Phone } from 'lucide-react';
+import Link from 'next/link';
 import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
 import RadarChart from './RadarChart';
@@ -284,11 +287,11 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   };
 
   const healthAreas = [
-    { key: 'energi', label: 'Energi', icon: FiZap, color: '#fbbf24' },
-    { key: 'sömn', label: 'Sömn', icon: FiShield, color: '#a855f7' },
-    { key: 'stress', label: 'Stress', icon: FiHeart, color: '#f472b6' },
-    { key: 'kost', label: 'Kost', icon: FiTarget, color: '#22c55e' },
-    { key: 'motion', label: 'Motion', icon: FiActivity, color: '#3b82f6' }
+    { key: 'energi', label: 'Energi', icon: Zap, color: '#fbbf24' },
+    { key: 'sömn', label: 'Sömn', icon: Moon, color: '#a855f7' },
+    { key: 'stress', label: 'Stress', icon: Heart, color: '#f472b6' },
+    { key: 'kost', label: 'Kost', icon: Target, color: '#22c55e' },
+    { key: 'motion', label: 'Motion', icon: Activity, color: '#3b82f6' }
   ];
 
   const domainTips: Record<string, string[]> = {
@@ -363,7 +366,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
               onClick={onRestart}
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
-              <FiRefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4" />
               <span className="text-xs md:text-sm hidden sm:inline">{t('quiz.restart','Gör om test')}</span>
             </motion.button>
           </div>
@@ -552,9 +555,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                     {/* Quick Actions Grid */}
                     <div className="grid md:grid-cols-3 gap-4">
                       {[
-                        { icon: FiActivity, title: "Daglig aktivitet", desc: "30 min rörelse", color: "from-blue-500 to-blue-600" },
-                        { icon: FiHeart, title: "Hjärthälsa", desc: "Omega-3 dagligen", color: "from-red-500 to-red-600" },
-                        { icon: FiZap, title: "Energinivåer", desc: "B-vitaminer", color: "from-yellow-500 to-yellow-600" }
+                        { icon: Activity, title: "Daglig aktivitet", desc: "30 min rörelse", color: "from-blue-500 to-blue-600" },
+                        { icon: Heart, title: "Hjärthälsa", desc: "Omega-3 dagligen", color: "from-red-500 to-red-600" },
+                        { icon: Zap, title: "Energinivåer", desc: "B-vitaminer", color: "from-yellow-500 to-yellow-600" }
                       ].map((action, index) => (
                         <motion.div
                           key={index}
@@ -588,7 +591,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         <div className="flex gap-6">
                           <div className="flex-shrink-0">
                             <div className="w-12 h-12 bg-background-secondary rounded-xl flex items-center justify-center">
-                              <FiCheckCircle className="w-6 h-6 text-primary" />
+                              <CheckCircle className="w-6 h-6 text-primary" />
                             </div>
                           </div>
                           <div className="flex-1">
@@ -600,7 +603,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                             <details className="group">
                               <summary className="cursor-pointer text-primary hover:text-secondary font-medium text-sm flex items-center gap-2">
                                 <span>Hur du använder det</span>
-                                <FiChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform" />
+                                <ChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform" />
                               </summary>
                               <div className="mt-4 pl-6 border-l-2 border-green-100">
                                 <div 
@@ -702,7 +705,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         className="inline-flex items-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors"
                       >
                         <span>{t('quiz.startFlow','Starta Functional Flow')}</span>
-                        <FiArrowRight className="w-5 h-5" />
+                        <ChevronRight className="w-5 h-5" />
                       </motion.button>
                     </div>
                   </div>
@@ -723,7 +726,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         onClick={() => window.location.href = '/utbildning/functional-flow'}
                         className="bg-primary text-white px-6 py-4 rounded-xl font-medium hover:bg-secondary transition-colors flex items-center justify-center gap-2"
                       >
-                        <FiStar className="w-5 h-5" />
+                        <Star className="w-5 h-5" />
                         <span>{t('quiz.flow','Functional Flow')}</span>
                       </motion.button>
                       
@@ -751,7 +754,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           transition={{ delay: index * 0.1 }}
                           className="flex gap-4 p-4 bg-blue-50 rounded-xl"
                         >
-                          <FiBookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                           <div 
                             className="text-gray-700 text-sm space-y-2"
                             dangerouslySetInnerHTML={{ __html: reference.replace(/\n+/g, '<br/>') }}
@@ -775,7 +778,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                             transition={{ delay: index * 0.1 }}
                             className="flex gap-4 p-4 bg-orange-50 rounded-xl border border-orange-100"
                           >
-                            <FiAlertTriangle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                            <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
                             <div 
                               className="text-gray-700 space-y-2"
                               dangerouslySetInnerHTML={{ __html: warning.replace(/\. /g, '.<br/><br/>') }}
@@ -787,7 +790,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
                     <div className="bg-red-50 rounded-2xl p-6 border border-red-100">
                       <div className="flex items-center gap-3 mb-3">
-                        <FiPhone className="w-6 h-6 text-red-600" />
+                        <Phone className="w-6 h-6 text-red-600" />
                         <h3 className="text-lg font-medium text-gray-900">{t('quiz.emergency','Vid akuta besvär')}</h3>
                       </div>
                       <p className="text-gray-700">
@@ -810,7 +813,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           className="flex gap-4"
                         >
                           <div className="w-10 h-10 bg-background-secondary rounded-lg flex items-center justify-center flex-shrink-0">
-                            <FiTrendingUp className="w-5 h-5 text-primary" />
+                            <TrendingUp className="w-5 h-5 text-primary" />
                           </div>
                           <div 
                             className="text-gray-700 text-sm space-y-2"
@@ -847,7 +850,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
               <div className="mt-6 flex justify-end">
                 <button onClick={goNextTab} className="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-medium hover:bg-secondary transition-colors">
                   {currentTabIndex < orderedTabIds.length - 1 ? t('quiz.next','Nästa') : t('quiz.toOverview','Till översikt')}
-                  <FiArrowRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>

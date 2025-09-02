@@ -3,6 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Clock, Users, ChefHat, Lock, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface Recipe {
   id: string;

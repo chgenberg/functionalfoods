@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiFilter, FiGrid, FiList, FiX, FiCheck } from 'react-icons/fi';
+import { Search, Filter, Grid, List, X, Check } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 
@@ -249,7 +249,7 @@ const RecipesPage = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search with Autocomplete */}
             <div className="flex-1 relative" ref={searchRef}>
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder={t('recipes.list.search.placeholder','Sök recept eller ingredienser...')}
@@ -274,7 +274,7 @@ const RecipesPage = () => {
                         onClick={() => selectSuggestion(suggestion)}
                         className="w-full px-4 py-3 text-left hover:bg-orange-50 transition-colors flex items-center gap-2"
                       >
-                        <FiSearch className="w-4 h-4 text-gray-400" />
+                        <Search className="w-4 h-4 text-gray-400" />
                         <span className="text-gray-700">{suggestion}</span>
                       </button>
                     ))}
@@ -292,7 +292,7 @@ const RecipesPage = () => {
                   : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
               }`}
             >
-              <FiFilter className="w-5 h-5" />
+              <Filter className="w-5 h-5" />
               <span>{t('recipes.list.filters.button','Filter')}</span>
               {(selectedCategory !== 'all' || selectedStatus !== 'all') && (
                 <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">
@@ -311,7 +311,7 @@ const RecipesPage = () => {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                <FiGrid className="w-5 h-5" />
+                <Grid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
@@ -321,7 +321,7 @@ const RecipesPage = () => {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                <FiList className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -389,7 +389,7 @@ const RecipesPage = () => {
                               color: 'white'
                             } : {}}
                           >
-                            {selectedStatus === option.value && <FiCheck className="w-3 h-3" />}
+                            {selectedStatus === option.value && <Check className="w-3 h-3" />}
                             {option.label}
                           </button>
                         ))}
@@ -406,7 +406,7 @@ const RecipesPage = () => {
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
                             {t('recipes.list.filters.searchLabel','Sökning:')} "{searchQuery}"
                             <button onClick={() => setSearchQuery('')} className="hover:text-orange-900">
-                              <FiX className="w-3 h-3" />
+                              <X className="w-3 h-3" />
                             </button>
                           </span>
                         )}
@@ -414,7 +414,7 @@ const RecipesPage = () => {
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
                             {selectedCategory}
                             <button onClick={() => setSelectedCategory('all')} className="hover:text-orange-900">
-                              <FiX className="w-3 h-3" />
+                              <X className="w-3 h-3" />
                             </button>
                           </span>
                         )}
@@ -422,7 +422,7 @@ const RecipesPage = () => {
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
                             {selectedStatus === 'free' ? t('recipes.list.filters.typeFree','Gratis') : t('recipes.list.filters.typePremium','Premium')}
                             <button onClick={() => setSelectedStatus('all')} className="hover:text-orange-900">
-                              <FiX className="w-3 h-3" />
+                              <X className="w-3 h-3" />
                             </button>
                           </span>
                         )}

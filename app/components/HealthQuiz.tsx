@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowRight, FiArrowLeft, FiX, FiCheckCircle } from 'react-icons/fi';
+import { ChevronLeft, ChevronRight, X, Check, Clock, Activity, Target, Moon, Heart, AlertCircle, Coffee, Brain, Zap } from 'lucide-react';
 import Image from 'next/image';
 import QuizResultScreen from './QuizResultScreen';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
@@ -560,7 +560,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     className="mt-4 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 inline-flex items-center gap-2"
                   >
                     <span>{t('quiz.start','Starta Ditt Personliga Quiz')}</span>
-                    <FiArrowRight className="w-5 h-5" />
+                    <ChevronRight className="w-5 h-5" />
                   </motion.button>
                   <p className="text-gray-500 mt-3 text-xs">{t('quiz.badge','10 smarta frågor • Kostnadsfritt')}</p>
                 </div>
@@ -689,7 +689,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   onClick={onClose}
                   className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 hover:bg-gray-100 rounded-full"
                 >
-                  <FiX className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               )}
             </div>
@@ -765,7 +765,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                           transition={{ type: "spring", stiffness: 200 }}
                           className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow-lg"
                         >
-                          <FiCheckCircle className="w-3.5 h-3.5 text-white" />
+                          <Check className="w-3.5 h-3.5 text-white" />
                         </motion.div>
                       )}
                       
@@ -803,7 +803,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     onClick={goToPrevious}
                     className="flex items-center space-x-1.5 text-gray-600 hover:text-gray-800 transition-colors text-sm"
                     >
-                    <FiArrowLeft className="w-3.5 h-3.5" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
                     <span>{t('quiz.back','Tillbaka')}</span>
                   </motion.button>
                 ) : (

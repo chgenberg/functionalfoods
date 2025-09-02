@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiArrowRight, FiBook, FiUsers, FiHeart, FiZap, FiTarget, FiAward, FiCheck, FiPlay } from "react-icons/fi";
-import { FaStar } from "react-icons/fa";
+import { ArrowRight, Book, Users, Heart, Zap, Target, Award, Check, Play, Star } from "lucide-react";
 import { GiFruitBowl, GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
@@ -133,43 +132,34 @@ export default function Home() {
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
-              <h1 className="text-4xl md:text-6xl font-light text-white mb-6 leading-tight drop-shadow-lg">
-                {t('hero.titleTop')}
-                <span className="block text-white font-bold drop-shadow-lg">
-                  {t('hero.titleBottom')}
+          <div className="flex items-center justify-center min-h-[600px]">
+            <div className="text-center max-w-4xl">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
+                UPPTÄCK KRAFTEN I
+                <span className="block text-white mt-2 drop-shadow-lg">
+                  FUNCTIONAL FOODS
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed drop-shadow-lg">
-                {t('hero.subtitle')}
+              <p className="text-xl md:text-2xl lg:text-3xl text-white/90 mb-12 leading-relaxed drop-shadow-lg">
+                Mat som medicin för kropp och själ
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => setShowQuiz(true)}
-                  className="bg-primary hover:bg-secondary text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3"
+                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3"
                 >
                   {t('home.startQuiz','Starta Hälsoquiz')}
-                  <FiArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-5 h-5" />
                 </button>
                 <Link
                   href="/utbildning"
                   className="bg-white/90 border-2 border-white/30 text-gray-700 px-8 py-5 rounded-full font-semibold text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
                 >
-                  <FiBook className="w-5 h-5" />
+                  <Book className="w-5 h-5" />
                   {t('home.ourCourses','Våra kurser')}
                 </Link>
               </div>
-            </div>
-
-            <div className="relative">
-              <img
-                src="/Hem/Gronsakswok.jpg"
-                alt="Ulrika Davidsson"
-                className="rounded-3xl shadow-2xl w-full h-auto"
-              />
-
             </div>
           </div>
         </div>
@@ -202,13 +192,13 @@ export default function Home() {
                 color: "#014421"
               },
               {
-                icon: <FiTarget className="w-8 h-8 text-white" />,
+                icon: <Target className="w-8 h-8 text-white" />,
                 title: t('home.features.card.personalized.title','Personaliserat'),
                 description: t('home.features.card.personalized.desc','Anpassat efter dina unika behov och mål'),
                 color: "#112A12"
               },
               {
-                icon: <FiZap className="w-8 h-8 text-white" />,
+                icon: <Zap className="w-8 h-8 text-white" />,
                 title: t('home.features.card.fast.title','Snabba resultat'),
                 description: t('home.features.card.fast.desc','Känn skillnad redan efter några veckor'),
                 color: "#014421"
@@ -231,7 +221,7 @@ export default function Home() {
                 <p className="text-gray-600 leading-relaxed text-sm md:text-base">{feature.description}</p>
                                   <div className="mt-4 text-[#93C560] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-sm">
                   <span>{t('common.readMore','Läs mer')}</span>
-                  <FiArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" />
                 </div>
               </motion.div>
             ))}
@@ -297,7 +287,7 @@ export default function Home() {
                 </div>
                 {index < 3 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                    <FiArrowRight className="w-6 h-6 text-gray-400" />
+                    <ArrowRight className="w-6 h-6 text-gray-400" />
                   </div>
                 )}
               </motion.div>
@@ -330,7 +320,7 @@ export default function Home() {
               >
                 <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
                   {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-5 h-5 md:w-6 md:h-6" color="#FFE135" />
+                    <Star key={i} className="w-5 h-5 md:w-6 md:h-6 text-[#FFE135] fill-current" />
                   ))}
                 </div>
                 <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
@@ -390,7 +380,7 @@ export default function Home() {
               className="bg-[#FF7e70] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#e56b5e] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
               {t('cta.button')}
-              <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+              <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </motion.button>
           </motion.div>
         </div>
