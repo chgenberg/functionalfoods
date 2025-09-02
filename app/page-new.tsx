@@ -233,8 +233,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="relative h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-lg group">
             <img
-              src="/Ulrika_portratt/Ulrika1.jpeg"
-              alt="Ulrika Davidsson"
+              src="/Hem/hero_image.png"
+              alt="Functional Foods"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               loading="lazy"
             />
