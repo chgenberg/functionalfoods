@@ -9,7 +9,8 @@
     "lint": "next lint",
     "import:recipes": "node scripts/import-recipes-from-csv.js",
     "align:mealplan-slugs": "node scripts/align-mealplan-slugs.js",
-    "check:mealplan-links": "node scripts/check-mealplan-links.js"
+    "check:mealplan-links": "node scripts/check-mealplan-links.js",
+    "recipes:set-access": "node scripts/set-recipe-access-by-mealplans.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
