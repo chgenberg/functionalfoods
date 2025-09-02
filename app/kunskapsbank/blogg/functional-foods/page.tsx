@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Clock, Calendar, Share2 } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Bookmark } from 'lucide-react';
 
 export default function FunctionalFoodsBlogPost() {
   return (

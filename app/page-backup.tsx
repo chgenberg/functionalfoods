@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiArrowRight, FiBook, FiUsers, FiHeart, FiZap, FiTarget, FiAward, FiCheck, FiPlay, FiStar } from "react-icons/fi";
 import { GiFruitBowl, GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
 import QuizResultScreen from "./components/QuizResultScreen";
 import NewsletterSignup from "./components/NewsletterSignup";
 import ArticleQuickAccess from "./components/ArticleQuickAccess";
+import { ArrowRight, Book, Star } from 'lucide-react';
 
 export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
@@ -249,13 +249,13 @@ export default function Home() {
                   className="group bg-primary text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl hover:bg-secondary transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
             >
               Starta Hälsoquiz
-                  <FiArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
                 <Link
                   href="/utbildning"
                   className="bg-white/90 backdrop-blur-sm border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-primary hover:text-primary hover:bg-white transition-all flex items-center justify-center gap-3"
                 >
-                  <FiBook className="w-4 h-4 md:w-5 md:h-5" />
+                  <Book className="w-4 h-4 md:w-5 md:h-5" />
                   Våra kurser
                 </Link>
               </div>
@@ -319,7 +319,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-1 text-yellow-400">
                     {[...Array(5)].map((_, i) => (
-                      <FiStar key={i} className="w-3 h-3 md:w-4 md:h-4 fill-current" />
+                      <Star key={i} className="w-3 h-3 md:w-4 md:h-4 fill-current" />
                     ))}
                     <span className="text-gray-600 text-xs md:text-sm ml-2">25+ års erfarenhet</span>
                   </div>
@@ -419,7 +419,7 @@ export default function Home() {
                 </div>
                 {index < 3 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                    <FiArrowRight className="w-6 h-6 text-gray-400" />
+                    <ArrowRight className="w-6 h-6 text-gray-400" />
                   </div>
                 )}
               </motion.div>
@@ -453,7 +453,7 @@ export default function Home() {
               >
                 <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
                   {[...Array(5)].map((_, i) => (
-                    <FiStar key={i} className="w-5 h-5 md:w-6 md:h-6 text-yellow-400 fill-current" />
+                    <Star key={i} className="w-5 h-5 md:w-6 md:h-6 text-yellow-400 fill-current" />
                   ))}
                 </div>
                 <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
@@ -516,7 +516,7 @@ export default function Home() {
               className="bg-white text-primary px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-gray-100 transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3"
             >
               Starta ditt quiz nu
-              <FiArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+              <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </motion.button>
           </motion.div>
         </div>

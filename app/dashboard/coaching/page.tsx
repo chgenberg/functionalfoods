@@ -1,10 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { 
-  FiCalendar, FiClock, FiVideo, FiMessageCircle, FiUser, FiStar,
-  FiArrowLeft, FiPhone, FiMail, FiCheckCircle, FiPlus, FiSend
-} from "react-icons/fi";
+import { ArrowLeft, Calendar, CheckCircle, Clock, Mail, MessageCircle, Phone, Plus, Send, Star, User, Video } from 'lucide-react';
 import Image from 'next/image';
 
 const coach = {
@@ -181,7 +178,7 @@ export default function CoachingPage() {
                     <div className="space-y-4 animate-fade-in">
                         <div className="bg-background border-l-4 border-primary p-4 rounded-r-lg">
                             <div className="flex items-center gap-3">
-                                <FiCheckCircle className="text-primary w-6 h-6" />
+                                <CheckCircle className="text-primary w-6 h-6" />
                                 <div>
                                     <p className="font-bold text-secondary">Bokning bekräftad!</p>
                                     <p className="text-sm text-secondary">{`${selectedSlot.date} kl. ${selectedSlot.time}`}</p>
@@ -192,7 +189,7 @@ export default function CoachingPage() {
                     </div>
                 ) : (
                     <div className="text-center py-8">
-                        <FiCalendar className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                        <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-2" />
                         <p className="text-gray-500">Du har inga kommande bokningar.</p>
                     </div>
                 )}

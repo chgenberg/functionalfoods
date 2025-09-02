@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FiArrowLeft, FiSend, FiUser, FiMail } from "react-icons/fi";
+import { ArrowLeft, Send, User, Mail } from 'lucide-react';
 import { useT } from "@/app/lib/i18n/LanguageProvider";
 
 export default function AdressPage() {
@@ -67,7 +67,7 @@ export default function AdressPage() {
           prefetch={false}
           className="inline-flex items-center text-text-secondary hover:text-primary mb-6 transition-colors"
         >
-          <FiArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="w-4 h-4 mr-2" />
           {t('contact.backHome','Tillbaka till förstasidan')}
         </Link>
 
@@ -135,7 +135,7 @@ export default function AdressPage() {
                   {t('contact.name','Namn')}
                 </label>
                 <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     id="namn"
                     type="text"
@@ -153,7 +153,7 @@ export default function AdressPage() {
                   {t('contact.email','E-post')}
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     id="email"
                     type="email"
@@ -207,7 +207,7 @@ export default function AdressPage() {
                 ) : (
                   <>
                     {t('contact.send','Skicka meddelande')}
-                    <FiSend className="w-5 h-5" />
+                    <Send className="w-5 h-5" />
                   </>
                 )}
               </button>

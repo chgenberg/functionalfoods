@@ -1,4 +1,5 @@
 'use client';
+import { FileText, Image, Video, Download, Search, Filter } from 'lucide-react';
 
 const downloadableFiles = [
   {

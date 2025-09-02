@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, Edit, Trash2, Users, Clock, Book, TrendingUp, Award, Calendar, Eye } from 'lucide-react';
+import { Award, Book, Calendar, Clock, Edit, Eye, Filter, Plus, Search, Trash2, TrendingUp, Users } from 'lucide-react';
 
 interface Course {
   id: string;

@@ -2,8 +2,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FiArrowRight, FiBook, FiStar } from "react-icons/fi";
-
+import { ArrowRight, Book, Star } from 'lucide-react';
 interface HeroSectionProps {
   onQuizStart: () => void;
 }
@@ -97,13 +96,13 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                 className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
               >
                 Starta Hälsoquiz
-                <FiArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
               <Link
                 href="/utbildning"
                 className="bg-white border-2 border-gray-200 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-3"
               >
-                <FiBook className="w-4 h-4 md:w-5 md:h-5" />
+                <Book className="w-4 h-4 md:w-5 md:h-5" />
                 Våra kurser
               </Link>
             </div>
@@ -172,7 +171,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                 </div>
                 <div className="flex items-center gap-1 text-yellow-400">
                   {[...Array(5)].map((_, i) => (
-                    <FiStar key={i} className="w-3 h-3 md:w-4 md:h-4 fill-current" />
+                    <Star key={i} className="w-3 h-3 md:w-4 md:h-4 fill-current" />
                   ))}
                   <span className="text-gray-600 text-xs md:text-sm ml-2">25+ års erfarenhet</span>
                 </div>

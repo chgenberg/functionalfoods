@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FiArrowLeft, FiPlayCircle, FiPauseCircle, FiClock, FiHeadphones } from "react-icons/fi";
+import { ArrowLeft, PlayCircle, PauseCircle, Clock, Headphones } from 'lucide-react';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface Episode {
@@ -62,13 +62,13 @@ export default function PodcastsPage() {
     <main className="min-h-screen" style={{ backgroundColor: "#fffdf3" }}>
       <div className="container-custom section-padding">
         <Link href="/kunskapsbank" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors">
-          <FiArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="w-4 h-4 mr-2" />
           {t('podcasts.back','Tillbaka till Kunskapsbank')}
         </Link>
 
         <div className="max-w-3xl mx-auto text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4">
-            <FiHeadphones className="w-4 h-4" />
+            <Headphones className="w-4 h-4" />
             <span>{t('podcasts.badge','Lyssna och lär')}</span>
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight">{t('podcasts.title','Poddar')}</h1>
@@ -92,7 +92,7 @@ export default function PodcastsPage() {
                 <h2 className="text-xl font-semibold text-primary mb-2">{ep.title}</h2>
                 <p className="text-text-secondary text-sm mb-4">{ep.description}</p>
                 <div className="flex items-center justify-between text-sm text-text-secondary mb-4">
-                  <span className="inline-flex items-center gap-1"><FiClock className="w-4 h-4" /> {ep.duration}</span>
+                  <span className="inline-flex items-center gap-1"><Clock className="w-4 h-4" /> {ep.duration}</span>
                   <span>{new Date(ep.date).toLocaleDateString(dateLocale)}</span>
                 </div>
 
@@ -104,9 +104,9 @@ export default function PodcastsPage() {
                       aria-label={t('podcasts.playPause','Spela/Pausa')}
                     >
                       {currentId === ep.id && audioRefs.current[ep.id] && !audioRefs.current[ep.id]!.paused ? (
-                        <FiPauseCircle className="w-7 h-7" />
+                        <PauseCircle className="w-7 h-7" />
                       ) : (
-                        <FiPlayCircle className="w-7 h-7" />
+                        <PlayCircle className="w-7 h-7" />
                       )}
                     </button>
 

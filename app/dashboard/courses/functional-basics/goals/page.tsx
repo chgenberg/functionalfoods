@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 import { useGoals, Goal } from '@/app/hooks/useGoals';
 import Link from 'next/link';
-import { Target, CheckCircle, Calendar, TrendingUp, Award, Star, Clock, Filter, ArrowRight } from 'lucide-react';
+import { Target, CheckCircle, Calendar, TrendingUp, Award, Star, Clock, Filter, ArrowRight, Flag } from 'lucide-react';
 
 // Samma fördefinierade mål som i huvudsidan
 const PREDEFINED_GOALS = {

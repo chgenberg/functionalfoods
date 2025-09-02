@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, User, Calendar, ThumbsUp, X, AlertCircle } from 'lucide-react';
+import { AlertCircle, Calendar, Star, ThumbsUp, User, X } from 'lucide-react';
 import { useErrorHandler } from '../lib/errorHandler';
 
 interface Review {
@@ -213,7 +213,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
                 <div>
                   <div className="font-medium text-gray-900">{getDisplayName(review)}</div>
                   <div className="text-sm text-gray-500 flex items-center gap-1">
-                    <FiCalendar className="w-3 h-3" />
+                    <Calendar className="w-3 h-3" />
                     {new Date(review.createdAt).toLocaleDateString('sv-SE', { 
                       year: 'numeric', 
                       month: 'long' 
@@ -271,7 +271,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
             <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map(star => (
-                  <FiStar
+                  <Star
                     key={star}
                     className={`w-6 h-6 ${
                       star <= (selectedReview.rating || 5) ? 'text-yellow-400 fill-current' : 'text-gray-300'
@@ -295,7 +295,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
             {/* Reviewer Info */}
             <div className="flex items-center gap-3 pt-6 border-t border-gray-200">
               <div className="w-12 h-12 bg-[#014421] rounded-full flex items-center justify-center">
-                <FiUser className="w-6 h-6 text-white" />
+                <User className="w-6 h-6 text-white" />
               </div>
               <div>
                 <div className="font-medium text-gray-900">{getDisplayName(selectedReview)}</div>

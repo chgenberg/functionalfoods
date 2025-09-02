@@ -2,11 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { 
-  FiPlay, FiDownload, FiBook, FiChevronLeft, FiCheckCircle,
-  FiClock, FiUsers, FiStar, FiHeart, FiShare2, FiFileText,
-  FiVideo, FiPlayCircle, FiPause, FiSkipForward, FiVolume2
-} from "react-icons/fi";
+import { Book, CheckCircle, ChevronLeft, Clock, Download, FileText, Heart, Pause, Play, PlayCircle, Share2, SkipForward, Star, Users, Video, Volume2 } from 'lucide-react';
 
 interface Lesson {
   id: number;
@@ -91,10 +87,10 @@ export default function CoursePage() {
 
   const getLessonIcon = (type: string) => {
     switch (type) {
-      case 'video': return FiPlay;
-      case 'pdf': return FiFileText;
-      case 'recipe': return FiBook;
-      default: return FiFileText;
+      case 'video': return Play;
+      case 'pdf': return FileText;
+      case 'recipe': return Book;
+      default: return FileText;
     }
   };
 
@@ -149,7 +145,7 @@ export default function CoursePage() {
               href="/mina-kurser" 
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <FiChevronLeft className="w-5 h-5 text-gray-600" />
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
             </Link>
             <div>
               <h1 className="text-xl font-bold text-gray-800">{course.name}</h1>
@@ -187,7 +183,7 @@ export default function CoursePage() {
                 <div className="aspect-video bg-gray-900 rounded-lg mb-4 relative overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center text-white">
-                      <FiPlayCircle className="w-16 h-16 mx-auto mb-4 opacity-80" />
+                      <PlayCircle className="w-16 h-16 mx-auto mb-4 opacity-80" />
                       <p className="text-lg font-medium">Video Player</p>
                       <p className="text-sm opacity-80">Lektion {playingVideo} spelas</p>
                     </div>
@@ -197,17 +193,17 @@ export default function CoursePage() {
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
                     <div className="flex items-center gap-4 text-white">
                       <button className="p-2 rounded-full hover:bg-white/20 transition-colors">
-                        <FiPause className="w-5 h-5" />
+                        <Pause className="w-5 h-5" />
                       </button>
                       <button className="p-2 rounded-full hover:bg-white/20 transition-colors">
-                        <FiSkipForward className="w-5 h-5" />
+                        <SkipForward className="w-5 h-5" />
                       </button>
                       <div className="flex-1 h-1 bg-white/30 rounded-full">
                         <div className="w-1/3 h-1 bg-white rounded-full"></div>
                       </div>
                       <span className="text-sm">8:32 / 18:45</span>
                       <button className="p-2 rounded-full hover:bg-white/20 transition-colors">
-                        <FiVolume2 className="w-5 h-5" />
+                        <Volume2 className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
@@ -287,7 +283,7 @@ export default function CoursePage() {
                                       : 'bg-gray-100'
                               }`}>
                                 {isCompleted ? (
-                                  <FiCheckCircle className={`w-5 h-5 text-primary`} />
+                                  <CheckCircle className={`w-5 h-5 text-primary`} />
                                 ) : (
                                   <Icon className={`w-5 h-5 ${
                                     lesson.type === 'video' 
@@ -302,7 +298,7 @@ export default function CoursePage() {
                               <div className="flex-1">
                                 <h4 className="font-medium text-gray-800">{lesson.title}</h4>
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <FiClock className="w-4 h-4" />
+                                  <Clock className="w-4 h-4" />
                                   {lesson.duration}
                                   <span className="text-gray-400">•</span>
                                   <span className="capitalize">{lesson.type === 'recipe' ? 'Recept' : lesson.type === 'pdf' ? 'PDF' : 'Video'}</span>
@@ -311,7 +307,7 @@ export default function CoursePage() {
 
                               {lesson.type === 'pdf' && (
                                 <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <FiDownload className="w-5 h-5 text-gray-600" />
+                                  <Download className="w-5 h-5 text-gray-600" />
                                 </button>
                               )}
                             </div>
@@ -365,23 +361,23 @@ export default function CoursePage() {
               <div className="space-y-3">
                 {courseId === 'functional-basics' && (
                   <Link href="/dashboard/courses/functional-basics" className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <FiBook className="w-5 h-5 text-primary" />
+                    <Book className="w-5 h-5 text-primary" />
                     <span className="font-medium text-gray-800">Kursmaterial</span>
                   </Link>
                 )}
                 
                 <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <FiDownload className="w-5 h-5 text-blue-600" />
+                  <Download className="w-5 h-5 text-blue-600" />
                   <span className="font-medium text-gray-800">Ladda ner allt material</span>
                 </button>
                 
                 <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <FiUsers className="w-5 h-5 text-primary" />
+                  <Users className="w-5 h-5 text-primary" />
                   <span className="font-medium text-gray-800">Gå med i kursforum</span>
                 </button>
                 
                 <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <FiShare2 className="w-5 h-5 text-purple-600" />
+                  <Share2 className="w-5 h-5 text-purple-600" />
                   <span className="font-medium text-gray-800">Dela med vänner</span>
                 </button>
               </div>
@@ -393,7 +389,7 @@ export default function CoursePage() {
               <div className="flex justify-center gap-2 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button key={star} className="p-1">
-                    <FiStar className="w-6 h-6 text-yellow-400 fill-current" />
+                    <Star className="w-6 h-6 text-yellow-400 fill-current" />
                   </button>
                 ))}
               </div>

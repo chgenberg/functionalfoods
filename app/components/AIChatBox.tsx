@@ -2,8 +2,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { FiHelpCircle } from "react-icons/fi";
-
 export default function AIChatBox({ analysis }: { analysis: any }) {
   const [messages, setMessages] = useState([
     { role: "system", text: "You can now ask follow-up questions about your health analysis." }

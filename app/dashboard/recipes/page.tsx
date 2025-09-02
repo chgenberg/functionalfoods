@@ -1,10 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { 
-  FiSearch, FiFilter, FiHeart, FiClock, FiUsers, FiStar,
-  FiChevronLeft, FiBookOpen, FiDownload, FiShare2, FiTag
-} from "react-icons/fi";
+import { BookOpen, ChevronLeft, Clock, Download, Filter, Heart, Search, Share2, Star, Tag, Users } from 'lucide-react';
 
 export default function RecipesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -143,7 +140,7 @@ export default function RecipesPage() {
               href="/dashboard" 
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <FiChevronLeft className="w-5 h-5 text-gray-600" />
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
             </Link>
             <div>
               <h1 className="text-xl font-bold text-gray-800">Receptsamling</h1>
@@ -158,7 +155,7 @@ export default function RecipesPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Sök recept, ingredienser eller taggar..."
@@ -171,7 +168,7 @@ export default function RecipesPage() {
               onClick={() => setShowFilters(!showFilters)}
               className="px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
-              <FiFilter className="w-5 h-5 text-gray-600" />
+              <Filter className="w-5 h-5 text-gray-600" />
               Filter
             </button>
           </div>
@@ -247,7 +244,7 @@ export default function RecipesPage() {
                   onClick={() => toggleSaveRecipe(recipe.id)}
                   className="absolute top-4 right-4 p-2 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-colors z-10"
                 >
-                  <FiHeart 
+                  <Heart 
                     className={`w-5 h-5 ${
                       savedRecipes.includes(recipe.id) 
                         ? 'text-red-500 fill-current' 
@@ -278,15 +275,15 @@ export default function RecipesPage() {
                 {/* Recipe Stats */}
                 <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                   <div className="flex items-center gap-1">
-                    <FiClock className="w-4 h-4" />
+                    <Clock className="w-4 h-4" />
                     {recipe.prepTime}
                   </div>
                   <div className="flex items-center gap-1">
-                    <FiUsers className="w-4 h-4" />
+                    <Users className="w-4 h-4" />
                     {recipe.servings} port
                   </div>
                   <div className="flex items-center gap-1">
-                    <FiStar className="w-4 h-4 text-yellow-500" />
+                    <Star className="w-4 h-4 text-yellow-500" />
                     {recipe.rating}
                   </div>
                 </div>
@@ -311,10 +308,10 @@ export default function RecipesPage() {
                     Visa recept
                   </button>
                   <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <FiDownload className="w-5 h-5 text-gray-600" />
+                    <Download className="w-5 h-5 text-gray-600" />
                   </button>
                   <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <FiShare2 className="w-5 h-5 text-gray-600" />
+                    <Share2 className="w-5 h-5 text-gray-600" />
                   </button>
                 </div>
               </div>
@@ -325,7 +322,7 @@ export default function RecipesPage() {
         {/* Empty State */}
         {filteredRecipes.length === 0 && (
           <div className="text-center py-12">
-            <FiBookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-800 mb-2">Inga recept hittades</h3>
             <p className="text-gray-600 mb-4">Prova att ändra dina sökkriterier eller filter</p>
             <button 

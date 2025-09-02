@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { ArrowLeft, Trash2, ShoppingBag, Minus, Plus, CreditCard, Truck, Shield, Clock, Book, Lock } from 'lucide-react';
+import { ArrowLeft, Book, Clock, CreditCard, Lock, Minus, Plus, Shield, ShoppingBag, Trash2, Truck } from 'lucide-react';
 import { GiSparkles } from 'react-icons/gi';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -59,7 +59,7 @@ export default function CartPage() {
                   href="/" 
                   className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-xl font-semibold border-2 border-gray-200 hover:border-[#93C560] hover:shadow-md transition-all"
                 >
-                  <FiArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-5 h-5" />
                   Tillbaka till startsidan
                 </Link>
               </div>
@@ -78,7 +78,7 @@ export default function CartPage() {
         <div className="mb-8">
           {/* Back button */}
           <Link href="/" className="inline-flex items-center text-[#014421] hover:text-[#93C560] mb-4 transition-colors group">
-            <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />
             Fortsätt handla
           </Link>
                       <h1 className="text-3xl md:text-4xl font-bold text-[#014421]">
@@ -104,7 +104,7 @@ export default function CartPage() {
                         {item.type === 'course' ? (
                           <GiSparkles className="w-16 h-16 text-white" />
                         ) : (
-                          <FiBook className="w-16 h-16 text-white" />
+                          <Book className="w-16 h-16 text-white" />
                         )}
                       </div>
                     </div>
@@ -137,7 +137,7 @@ export default function CartPage() {
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
                               className="p-2 hover:bg-[#93C560]/20 transition-colors"
                             >
-                              <FiPlus className="w-4 h-4" />
+                              <Plus className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
@@ -190,7 +190,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-[#93C560]/20 rounded-lg">
-                    <FiClock className="w-6 h-6 text-[#014421]" />
+                    <Clock className="w-6 h-6 text-[#014421]" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">Livstids tillgång</p>
@@ -254,7 +254,7 @@ export default function CartPage() {
                     </div>
                   </div>
                   <div className="mt-3 flex items-center justify-center text-xs text-gray-500">
-                    <FiLock className="w-3 h-3 mr-1" />
+                    <Lock className="w-3 h-3 mr-1" />
                     256-bit SSL-kryptering
                   </div>
                 </div>

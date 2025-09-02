@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 import Link from 'next/link';
-import { ArrowLeft, Clock, BookOpen, Heart, Share2, Printer, CheckCircle } from 'lucide-react';
+import { ArrowLeft, BookOpen, Bookmark, CheckCircle, Clock, Heart, Printer, Share2 } from 'lucide-react';
 
 interface ArticleData {
   title: string;
@@ -349,7 +349,7 @@ export default function ArticlePage() {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                <FiBookmark className="w-5 h-5" />
+                <Bookmark className="w-5 h-5" />
               </button>
               
               <button className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">

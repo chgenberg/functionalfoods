@@ -351,7 +351,7 @@ export default function RecipePage() {
           }
           .no-print {
             display: none !important;
-import { ArrowLeft, Clock, Users, Heart, Check, Plus, Minus, Printer, X, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, Clock, Heart, Minus, Plus, Printer, Star, Users, X } from 'lucide-react';
           }
           .print-break {
             page-break-inside: avoid;
@@ -488,7 +488,7 @@ import { ArrowLeft, Clock, Users, Heart, Check, Plus, Minus, Printer, X, Chevron
               <div className="lg:col-span-1 print-break">
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                   <span className="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center text-orange-600">
-                    <FiBookmark className="w-5 h-5" />
+                    <Bookmark className="w-5 h-5" />
                   </span>
                   {t('recipes.detail.ingredients','Ingredienser')}
                 </h2>

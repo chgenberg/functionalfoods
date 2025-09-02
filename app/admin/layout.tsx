@@ -2,20 +2,15 @@
 import { useState, ReactNode, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  FiHome, FiUsers, FiBookOpen, FiDollarSign, FiSettings, FiLogOut,
-  FiMenu, FiX, FiFileText, FiVideo, FiShoppingBag, FiBarChart, FiTag
-} from "react-icons/fi";
-
 const menuItems = [
   { icon: FiHome, label: "Översikt", href: "/admin" },
-  { icon: FiUsers, label: "Användare", href: "/admin/users" },
-  { icon: FiBookOpen, label: "Kurser", href: "/admin/courses" },
-  { icon: FiFileText, label: "Blogg", href: "/admin/blog" },
-  { icon: FiVideo, label: "Recept", href: "/admin/recipes" },
+  { icon: Users, label: "Användare", href: "/admin/users" },
+  { icon: BookOpen, label: "Kurser", href: "/admin/courses" },
+  { icon: FileText, label: "Blogg", href: "/admin/blog" },
+  { icon: Video, label: "Recept", href: "/admin/recipes" },
   { icon: FiShoppingBag, label: "Beställningar", href: "/admin/orders" },
   { icon: FiBarChart, label: "Försäljning", href: "/admin/sales" },
-  { icon: FiTag, label: "Rabattkoder", href: "/admin/coupons" },
+  { icon: Tag, label: "Rabattkoder", href: "/admin/coupons" },
   { icon: FiSettings, label: "Inställningar", href: "/admin/settings" },
 ];
 

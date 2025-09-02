@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 import Link from 'next/link';
-import { Book, FileText, Users, Settings, TrendingUp, Plus, Edit3, Trash2, Eye, Calendar, Coffee, ShoppingBag, Activity } from 'lucide-react';
+import { Activity, Book, Calendar, Coffee, Edit3, Eye, FileText, Plus, Settings, ShoppingBag, Trash2, TrendingUp, Users } from 'lucide-react';
 
 interface AdminStats {
   totalCourses: number;
