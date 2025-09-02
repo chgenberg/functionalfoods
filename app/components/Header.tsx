@@ -81,7 +81,9 @@ export default function Header() {
       { label: t('nav.search','Sök'), href: "/kunskapsbank/sok" },
       { label: t('nav.podcasts','Poddar'), href: "/kunskapsbank/poddar" },
     ] },
-    { label: t('nav.about','Om oss'), href: "/kontakt/adress" },
+    { label: t('nav.about','Om oss'), href: "/om-oss", submenu: [
+      { label: t('nav.contact','Kontakta oss'), href: "/om-oss/kontakta-oss" },
+    ] },
   ];
 
   const handleLogin = async (e: React.FormEvent) => {

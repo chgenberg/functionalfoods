@@ -131,7 +131,7 @@ export default function Footer() {
             © {currentYear} {t('footer.copyright','Functional Foods. Alla rättigheter förbehållna.')}
           </p>
           <div className="flex items-center space-x-6">
-            <Link href="/kontakt/formular" className="text-white/70 hover:text-white text-sm transition-colors">
+            <Link href="/om-oss/kontakta-oss" className="text-white/70 hover:text-white text-sm transition-colors">
               {t('footer.contact','Kontakta oss')}
             </Link>
             <Link href="/kontakt/faq" className="text-white/70 hover:text-white text-sm transition-colors">
