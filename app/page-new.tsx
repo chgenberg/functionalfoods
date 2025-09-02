@@ -177,7 +177,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">Ulrika Davidsson</p>
-                    <p className="text-sm text-gray-600">{t('home.ud.role','Functional Foods Expert')}</p>
+                    <p className="text-sm text-gray-600">"Bästa kursen jag har gått - Lisa J"</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">

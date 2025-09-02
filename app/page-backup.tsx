@@ -314,7 +314,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-800 text-sm md:text-base">Ulrika Davidsson</p>
-                      <p className="text-xs md:text-sm text-gray-600">Functional Foods Expert</p>
+                      <p className="text-xs md:text-sm text-gray-600">"Bästa kursen jag har gått - Lisa J"</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 text-yellow-400">

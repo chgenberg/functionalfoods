@@ -78,7 +78,7 @@ export default function Header() {
       { label: t('nav.search','Sök'), href: "/kunskapsbank/sok" },
       { label: t('nav.podcasts','Poddar'), href: "/kunskapsbank/poddar" },
     ] },
-    { label: t('nav.contact','KONTAKT'), href: "/kontakt/adress" },
+    { label: t('nav.about','OM OSS'), href: "/kontakt/adress" },
   ];
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -163,7 +163,7 @@ export default function Header() {
           {/* Logo - CENTER ON MOBILE, LEFT ON DESKTOP */}
           <div className="flex-1 lg:flex-none flex justify-center lg:justify-start">
             <Link href="/" className="pointer-events-auto">
-              <Image src="/FF_logo.svg" alt="Functional Foods" width={200} height={80} className="h-12 md:h-16 w-auto" priority />
+              <Image src="/FF_logo.svg" alt="Functional Foods" width={240} height={96} className="h-16 md:h-20 w-auto" priority />
             </Link>
           </div>
 
@@ -171,7 +171,7 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-6 ml-6">
             {menuItems.map((item) => (
               <div key={item.label} className="relative group" onMouseEnter={() => setActiveDropdown(item.label)} onMouseLeave={() => setActiveDropdown(null)}>
-                <Link href={item.href} className="flex items-center space-x-1 text-primary hover:text-accent px-2 py-2 text-sm font-semibold tracking-wide transition-colors duration-200">
+                <Link href={item.href} className="flex items-center space-x-1 text-black hover:text-[#014421] px-2 py-2 text-sm font-semibold tracking-wide transition-colors duration-200">
                   <span>{item.label}</span>
                   {item.submenu && (<FiChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === item.label ? 'rotate-180' : ''}`} />)}
                 </Link>
@@ -179,7 +179,7 @@ export default function Header() {
                   <div className={`absolute left-0 mt-2 min-w-[14rem] rounded-xl shadow-xl bg-white ring-1 ring-black/5 transition-all duration-200 ${activeDropdown === item.label ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-2 invisible'}`}>
                     <div className="py-2" role="menu">
                       {item.submenu.map((subItem) => (
-                        <Link key={subItem.label} href={subItem.href} className="block px-4 py-2.5 text-sm text-text-secondary hover:bg-background-secondary hover:text-accent transition-colors duration-200" role="menuitem">
+                        <Link key={subItem.label} href={subItem.href} className="block px-4 py-2.5 text-sm text-black hover:bg-background-secondary hover:text-[#014421] transition-colors duration-200" role="menuitem">
                           {subItem.label}
                         </Link>
                       ))}

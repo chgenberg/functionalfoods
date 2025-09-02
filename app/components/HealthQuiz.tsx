@@ -612,7 +612,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl p-4 cursor-default"
                   >
                     <p className="text-sm font-semibold text-gray-800">Ulrika Davidsson</p>
-                    <p className="text-xs text-gray-600">Functional Foods Expert</p>
+                    <p className="text-xs text-gray-600">"Bästa kursen jag har gått - Lisa J"</p>
                   </motion.div>
 
                   <motion.div
