@@ -224,7 +224,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
 
               {/* Read More Indicator */}
               <div className="mt-3 text-[#014421] text-sm font-medium flex items-center gap-1">
-                <FiThumbsUp className="w-4 h-4" />
+                <ThumbsUp className="w-4 h-4" />
                 Klicka för att läsa mer
               </div>
             </motion.div>
@@ -263,7 +263,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
                 aria-label="Stäng"
               >
-                <FiX className="w-6 h-6 text-gray-500" />
+                <X className="w-6 h-6 text-gray-500" />
               </button>
             </div>
 

@@ -2,16 +2,17 @@
 import { useState, ReactNode, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
+import { Home, Users, BookOpen, FileText, Video, ShoppingBag, BarChart3, Tag, Settings, LogOut, Menu } from 'lucide-react';
 const menuItems = [
-  { icon: FiHome, label: "Översikt", href: "/admin" },
+  { icon: Home, label: "Översikt", href: "/admin" },
   { icon: Users, label: "Användare", href: "/admin/users" },
   { icon: BookOpen, label: "Kurser", href: "/admin/courses" },
   { icon: FileText, label: "Blogg", href: "/admin/blog" },
   { icon: Video, label: "Recept", href: "/admin/recipes" },
-  { icon: FiShoppingBag, label: "Beställningar", href: "/admin/orders" },
-  { icon: FiBarChart, label: "Försäljning", href: "/admin/sales" },
+  { icon: ShoppingBag, label: "Beställningar", href: "/admin/orders" },
+  { icon: BarChart3, label: "Försäljning", href: "/admin/sales" },
   { icon: Tag, label: "Rabattkoder", href: "/admin/coupons" },
-  { icon: FiSettings, label: "Inställningar", href: "/admin/settings" },
+  { icon: Settings, label: "Inställningar", href: "/admin/settings" },
 ];
 
 function SidebarContent() {
@@ -68,7 +69,7 @@ function SidebarContent() {
                 onClick={handleLogout} 
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all duration-200 group"
               >
-                <FiLogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 <span className="font-medium text-sm">Logga ut</span>
               </button>
             </div>
@@ -120,7 +121,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         onClick={() => setSidebarOpen(true)} 
                         className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                        <FiMenu className="h-6 w-6" />
+                        <Menu className="h-6 w-6" />
                     </button>
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">

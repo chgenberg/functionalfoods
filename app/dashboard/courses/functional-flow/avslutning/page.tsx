@@ -12,6 +12,8 @@ import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewFor
 import HelpGuide from '@/app/components/HelpGuide';
 import { ArrowLeft, Check, Heart, Target, Star, BookOpen } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
   const [showHelpGuide, setShowHelpGuide] = useState(false);

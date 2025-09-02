@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { mealPlans, flowMealPlans, WeekMealPlan, DayMeals, MealItem } from '@/app/data/mealPlans';
+import { Download, Book, Calendar, User, FileText, Package } from 'lucide-react';
 
 interface CompleteCourseDownloadProps {
   courseType: 'basics' | 'flow';
@@ -37,7 +38,6 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
     <title>Kostscheman - ${courseName}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
-import { Download, Book, Calendar, User, FileText, Package } from 'lucide-react';
         
         * {
             margin: 0;
