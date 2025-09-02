@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiChevronRight, FiPlay, FiCalendar, FiShoppingCart, FiUsers, FiDroplet, FiHeart, FiTarget, FiClock } from 'react-icons/fi';
+
 import { GiMeal, GiWaterBottle, GiCookingPot, GiTargetArrows } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, CheckCircle, ChevronRight, Play, Calendar, ShoppingCart, Users, Droplet, Heart, Target, Clock } from 'lucide-react';
 
 interface ChecklistItem {
   id: string;
@@ -31,13 +32,13 @@ export default function DagsAttKommaIgangPage() {
     {
       id: 'planera',
       text: 'Planera när du ska starta och välj en lämplig vecka',
-      icon: FiCalendar,
+      icon: Calendar,
       tips: ['Välj en vecka utan stora evenemang', 'Starta helst på en måndag', 'Markera i kalendern']
     },
     {
       id: 'handla',
       text: 'Handla hem allt du behöver för första veckan',
-      icon: FiShoppingCart,
+      icon: ShoppingCart,
       tips: ['Använd inköpslistan', 'Handla på helgen', 'Köp färska råvaror']
     },
     {
@@ -55,13 +56,13 @@ export default function DagsAttKommaIgangPage() {
     {
       id: 'berätta',
       text: 'Berätta för din omgivning om din hälsoresa',
-      icon: FiUsers,
+      icon: Users,
       tips: ['Be om stöd', 'Inspirera andra', 'Hitta en träningskompis']
     },
     {
       id: 'träning',
       text: 'Planera för daglig rörelse (minst 15 min)',
-      icon: FiHeart,
+      icon: Heart,
       tips: ['Boka in i kalendern', 'Välj aktiviteter du gillar', 'Börja försiktigt']
     }
   ];
@@ -70,7 +71,7 @@ export default function DagsAttKommaIgangPage() {
     {
       id: 'vanor',
       title: 'Nya vanor tar tid',
-      icon: FiClock,
+      icon: Clock,
       content: 'Det kan kännas som mycket att tänka på i början, men med kostscheman, recept och inköpslistor har vi förenklat allt för dig. Efter några dagar blir det naturligt!',
       color: 'from-purple-400 to-pink-400'
     },
@@ -84,14 +85,14 @@ export default function DagsAttKommaIgangPage() {
     {
       id: 'socialt',
       title: 'Sociala situationer',
-      icon: FiUsers,
+      icon: Users,
       content: 'Vid restaurangbesök eller bjudningar - planera i förväg! Ta med egen mat eller välj grönsaker och protein. Förklara att du följer ett speciellt kostschema.',
       color: 'from-green-400 to-teal-400'
     },
     {
       id: 'flexibilitet',
       title: '100% är inte ett måste',
-      icon: FiTarget,
+      icon: Target,
       content: 'Du kan byta måltider och anpassa recept efter dina favoriter. Håll dig till Functional Foods-principer med naturliga råvaror, kryddor och örter.',
       color: 'from-orange-400 to-red-400'
     }
@@ -121,7 +122,7 @@ export default function DagsAttKommaIgangPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
-            <FiArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
         </div>
@@ -134,7 +135,7 @@ export default function DagsAttKommaIgangPage() {
         >
           <div className="flex items-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mr-4">
-              <FiPlay className="w-8 h-8 text-white" />
+              <Play className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Dags att komma igång!</h1>
@@ -207,7 +208,7 @@ export default function DagsAttKommaIgangPage() {
                           : 'border-gray-300 hover:border-primary'
                       }`}
                     >
-                      {isChecked && <FiCheckCircle className="w-full h-full text-white" />}
+                      {isChecked && <CheckCircle className="w-full h-full text-white" />}
                     </button>
                     
                     <div className="flex-grow">
@@ -224,7 +225,7 @@ export default function DagsAttKommaIgangPage() {
                             onClick={() => toggleTip(item.id)}
                             className="text-primary hover:text-primary-dark transition-colors"
                           >
-                            <FiChevronRight className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                            <ChevronRight className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                           </button>
                         )}
                       </div>
@@ -295,15 +296,15 @@ export default function DagsAttKommaIgangPage() {
             <h3 className="text-xl font-semibold mb-3">Kom ihåg:</h3>
             <ul className="space-y-2">
               <li className="flex items-start">
-                <FiCheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span>Fokusera på att vara nöjd med dig själv dag efter dag</span>
               </li>
               <li className="flex items-start">
-                <FiCheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span>Om du tar ut svängarna någon dag - inget dåligt samvete!</span>
               </li>
               <li className="flex items-start">
-                <FiCheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span>Du har tagit beslutet att förändra din hälsa - det kommer du aldrig ångra!</span>
               </li>
             </ul>
@@ -324,7 +325,7 @@ export default function DagsAttKommaIgangPage() {
               <Link href="/dashboard/courses/functional-basics/material/att-valja-ratt-proteiner" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Nästa modul: Att välja rätt proteiner
-                <FiChevronRight className="ml-1" />
+                <ChevronRight className="ml-1" />
               </Link>
             </div>
             <GiTargetArrows className="w-16 h-16 text-primary opacity-20" />

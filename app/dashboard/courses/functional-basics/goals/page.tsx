@@ -2,13 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  FiTarget, FiCheckCircle, FiCalendar, FiTrendingUp,
-  FiAward, FiStar, FiClock, FiFlag,
-  FiFilter, FiArrowRight
-} from 'react-icons/fi';
+
 import { useGoals, Goal } from '@/app/hooks/useGoals';
 import Link from 'next/link';
+import { Target, CheckCircle, Calendar, TrendingUp, Award, Star, Clock, Filter, ArrowRight } from 'lucide-react';
 
 // Samma fördefinierade mål som i huvudsidan
 const PREDEFINED_GOALS = {
@@ -123,7 +120,7 @@ export default function GoalsPage() {
           href="/dashboard/courses/functional-basics"
           className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm"
         >
-          <FiArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-4 h-4" />
           <span>Tillbaka till kursen</span>
         </Link>
       </div>
@@ -137,7 +134,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{totalPredefinedGoals}</p>
             </div>
             <div className="bg-blue-100 rounded-lg p-3">
-              <FiTarget className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
+              <Target className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
           </div>
         </div>
@@ -161,7 +158,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{completedGoals}</p>
             </div>
             <div className="bg-background-secondary rounded-lg p-3">
-              <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+              <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
           </div>
         </div>
@@ -173,7 +170,7 @@ export default function GoalsPage() {
               <p className="text-2xl font-bold text-gray-900">{Math.round(completionRate)}%</p>
             </div>
             <div className="bg-purple-100 rounded-lg p-3">
-              <FiTrendingUp className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
+              <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
             </div>
           </div>
         </div>
@@ -233,7 +230,7 @@ export default function GoalsPage() {
                         className="text-orange-600 hover:text-orange-700 font-medium text-sm flex items-center space-x-1"
                       >
                         <span>Gå till vecka</span>
-                        <FiArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4" />
                       </Link>
                     </div>
                   </div>
@@ -282,14 +279,14 @@ export default function GoalsPage() {
                                 
                                 {isCompleted && (
                                   <div className="flex items-center space-x-1">
-                                    <FiCheckCircle className="w-4 h-4 text-primary" />
+                                    <CheckCircle className="w-4 h-4 text-primary" />
                                     <span className="text-xs text-primary">Klar</span>
                                   </div>
                                 )}
                                 
                                 {isActive && !isCompleted && (
                                   <div className="flex items-center space-x-1">
-                                    <FiClock className="w-4 h-4 text-orange-600" />
+                                    <Clock className="w-4 h-4 text-orange-600" />
                                     <span className="text-xs text-orange-600">Aktiv</span>
                                   </div>
                                 )}
@@ -313,10 +310,10 @@ export default function GoalsPage() {
         
         <div className="grid md:grid-cols-5 gap-6">
           {[
-            { category: 'weekly', label: 'Veckomål', icon: FiCalendar, color: 'blue' },
-            { category: 'nutrition', label: 'Näring', icon: FiTarget, color: 'green' },
-            { category: 'health', label: 'Hälsa', icon: FiStar, color: 'purple' },
-            { category: 'exercise', label: 'Träning', icon: FiTrendingUp, color: 'orange' },
+            { category: 'weekly', label: 'Veckomål', icon: Calendar, color: 'blue' },
+            { category: 'nutrition', label: 'Näring', icon: Target, color: 'green' },
+            { category: 'health', label: 'Hälsa', icon: Star, color: 'purple' },
+            { category: 'exercise', label: 'Träning', icon: TrendingUp, color: 'orange' },
             { category: 'general', label: 'Allmänt', icon: FiFlag, color: 'gray' }
           ].map(({ category, label, icon: Icon, color }) => {
             const categoryGoals = Object.values(PREDEFINED_GOALS).flat().filter(g => g.category === category);

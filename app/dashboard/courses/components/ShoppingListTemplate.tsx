@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiArrowLeft, FiPrinter, FiDownload, FiCheck, FiSearch, FiShoppingCart, FiChevronDown, FiShare, FiSmartphone } from 'react-icons/fi';
+
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 
@@ -419,6 +419,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
     <title>Inköpslista - ${courseName} Vecka ${week}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+import { ArrowLeft, Printer, Download, Check, Search, ShoppingCart, ChevronDown, Share, Smartphone } from 'lucide-react';
         
         * {
             margin: 0;
@@ -719,7 +720,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                 href={`/dashboard/courses/functional-${courseType}/week/${week}`}
                 className="flex items-center text-gray-600 hover:text-[#014421] transition-colors mb-2 text-sm"
               >
-                <FiArrowLeft className="w-4 h-4 mr-1" />
+                <ArrowLeft className="w-4 h-4 mr-1" />
                 Tillbaka till vecka {week}
               </Link>
               <h1 className="text-2xl sm:text-3xl font-bold text-[#014421]">
@@ -735,7 +736,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
                 title="Skriv ut"
               >
-                <FiPrinter className="w-4 h-4" />
+                <Printer className="w-4 h-4" />
                 <span>Skriv ut</span>
               </button>
               <button
@@ -743,7 +744,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
                 title="Dela/Kopiera"
               >
-                <FiShare className="w-4 h-4" />
+                <Share className="w-4 h-4" />
                 <span>Dela</span>
               </button>
               <button
@@ -751,7 +752,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
                 title="Skicka till iPhone Påminnelser"
               >
-                <FiSmartphone className="w-4 h-4" />
+                <Smartphone className="w-4 h-4" />
                 <span className="hidden xs:inline">iPhone</span>
               </button>
               <button
@@ -759,7 +760,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors text-sm"
                 title="Ladda ner som HTML"
               >
-                <FiDownload className="w-4 h-4" />
+                <Download className="w-4 h-4" />
                 <span>Ladda ner</span>
               </button>
             </div>
@@ -773,7 +774,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <FiShoppingCart className="w-5 h-5 text-[#014421]" />
+                <ShoppingCart className="w-5 h-5 text-[#014421]" />
                 <span className="font-medium text-gray-900">
                   {checkedCount} av {totalCount} ingredienser
                 </span>
@@ -797,7 +798,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Sök ingrediens..."
@@ -824,7 +825,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {Object.keys(groupedIngredients).length === 0 ? (
           <div className="bg-white rounded-xl p-12 text-center">
-            <FiShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga ingredienser hittades</h3>
             <p className="text-gray-600">
               {ingredients.length === 0 
@@ -849,7 +850,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                   >
                     <div className="flex items-center gap-3">
                       <div className={`transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>
-                        <FiChevronDown className="w-5 h-5 text-[#014421]" />
+                        <ChevronDown className="w-5 h-5 text-[#014421]" />
                       </div>
                       <h3 className="font-semibold text-[#014421] text-lg">{category}</h3>
                       {allChecked && items.length > 0 && (
@@ -892,7 +893,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
                                 ? 'bg-[#014421] border-[#014421] scale-110' 
                                 : 'border-gray-300 group-hover:border-[#014421]'
                             }`}>
-                              {ingredient.checked && <FiCheck className="w-4 h-4 text-white" />}
+                              {ingredient.checked && <Check className="w-4 h-4 text-white" />}
                             </div>
                             <span className={`flex-1 transition-all ${
                               ingredient.checked 
@@ -919,7 +920,6 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
           </div>
         )}
       </div>
-
 
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiDownload, FiBook, FiCalendar, FiUser, FiFileText, FiPackage } from 'react-icons/fi';
+
 import { mealPlans, flowMealPlans, WeekMealPlan, DayMeals, MealItem } from '@/app/data/mealPlans';
 
 interface CompleteCourseDownloadProps {
@@ -27,8 +27,6 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
     
     try {
       const today = new Date().toLocaleDateString('sv-SE');
-      
-
 
       const htmlContent = `
 <!DOCTYPE html>
@@ -39,6 +37,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
     <title>Kostscheman - ${courseName}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
+import { Download, Book, Calendar, User, FileText, Package } from 'lucide-react';
         
         * {
             margin: 0;
@@ -296,9 +295,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             font-size: 0.95rem;
             line-height: 1.4;
         }
-        
 
-        
         /* Footer */
         .footer {
             margin-top: 100px;
@@ -425,7 +422,6 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             </div>
           `;
         }).join('')}
-        
 
     </div>
     
@@ -488,7 +484,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
       <div className="flex items-start justify-between mb-6">
         <div>
           <h3 className="text-2xl font-bold mb-2 flex items-center gap-3">
-            <FiPackage className="text-3xl" />
+            <Package className="text-3xl" />
             Komplett Kurspaket
           </h3>
           <p className="text-white/80 text-lg">
@@ -520,19 +516,19 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
       {/* Features List */}
       <div className="grid md:grid-cols-2 gap-4 mb-8">
         <div className="flex items-center gap-3">
-          <FiCalendar className="text-xl text-white/80" />
+          <Calendar className="text-xl text-white/80" />
           <span className="text-white/90">Alla 6 veckors kostscheman</span>
         </div>
         <div className="flex items-center gap-3">
-          <FiUser className="text-xl text-white/80" />
+          <User className="text-xl text-white/80" />
           <span className="text-white/90">Detaljerade måltidsplaner</span>
         </div>
         <div className="flex items-center gap-3">
-          <FiBook className="text-xl text-white/80" />
+          <Book className="text-xl text-white/80" />
           <span className="text-white/90">Snygg layout för utskrift</span>
         </div>
         <div className="flex items-center gap-3">
-          <FiFileText className="text-xl text-white/80" />
+          <FileText className="text-xl text-white/80" />
           <span className="text-white/90">Enkel veckoöversikt</span>
         </div>
       </div>
@@ -552,7 +548,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
           </>
         ) : (
           <>
-            <FiDownload className="text-xl" />
+            <Download className="text-xl" />
             <span>Ladda ner kostscheman (PDF)</span>
           </>
         )}

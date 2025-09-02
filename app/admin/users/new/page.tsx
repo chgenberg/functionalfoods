@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FiChevronLeft, FiSave, FiUser, FiMail, FiLock, FiShield } from 'react-icons/fi';
+import { ChevronLeft, Save, User, Mail, Lock, Shield } from 'lucide-react';
 
 export default function NewUserPage() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function NewUserPage() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <Link href="/admin/users" className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <FiChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5" />
             <span>Tillbaka till användare</span>
           </Link>
         </div>
@@ -29,28 +29,28 @@ export default function NewUserPage() {
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Fullständigt namn</label>
                     <div className="relative">
-                        <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input type="text" id="name" placeholder="Anna Andersson" className="input-style pl-12" required />
                     </div>
                 </div>
                  <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">E-postadress</label>
                     <div className="relative">
-                        <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input type="email" id="email" placeholder="anna@email.com" className="input-style pl-12" required />
                     </div>
                 </div>
                  <div>
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Lösenord</label>
                     <div className="relative">
-                        <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input type="password" id="password" placeholder="••••••••" className="input-style pl-12" required />
                     </div>
                 </div>
                 <div>
                   <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">Roll</label>
                    <div className="relative">
-                        <FiShield className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <Shield className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <select id="role" className="input-style pl-12 appearance-none">
                             <option>Kund</option>
                             <option>Admin</option>
@@ -60,7 +60,7 @@ export default function NewUserPage() {
 
                 <div className="border-t pt-6 flex justify-end">
                     <button type="submit" className="flex items-center gap-2 bg-primary hover:bg-accent text-white font-semibold px-5 py-3 rounded-lg transition-colors">
-                      <FiSave className="w-5 h-5"/>
+                      <Save className="w-5 h-5"/>
                       <span>Spara användare</span>
                     </button>
                 </div>

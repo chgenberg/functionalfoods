@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiPlay, FiClock, FiCheckCircle, FiBook, FiDownload,
-  FiTrendingUp, FiAward, FiStar, FiChevronRight, FiUsers,
-  FiShoppingCart, FiCalendar, FiLock, FiArrowRight, FiSettings,
-  FiHelpCircle, FiSun
-} from 'react-icons/fi';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
@@ -16,6 +11,7 @@ import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVi
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
+import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun } from 'lucide-react';
 
 interface WeekDay {
   day: number;
@@ -160,7 +156,6 @@ export default function WeekTemplate({
                   `}
                 >
 
-
                   <div className="text-center">
                     <span className={`text-xs md:text-sm mb-1 ${day.current ? 'text-white' : 'text-gray-600'}`}>{formatDate(weekNumber, day.day)}</span>
                     <h3 className={`font-bold text-sm sm:text-base md:text-lg mb-3 ${day.current ? 'text-white' : 'text-gray-900'}`}>{day.name}</h3>
@@ -178,7 +173,7 @@ export default function WeekTemplate({
                           />
                           {day.completed && (
                             <div className="absolute inset-0 bg-green-600/80 flex items-center justify-center">
-                              <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                              <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
                             </div>
                           )}
                           {day.current && (
@@ -191,7 +186,7 @@ export default function WeekTemplate({
                         // Fallback to original circles if no image
                         <>
                           {day.completed ? (
-                            <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
+                            <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
                           ) : day.current ? (
                             <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
                           ) : (
@@ -231,7 +226,7 @@ export default function WeekTemplate({
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
-                  <FiShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <h3 className="font-bold text-base sm:text-lg text-[#014421]">Inköpslista</h3>
               </div>
@@ -246,7 +241,7 @@ export default function WeekTemplate({
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
-                  <FiUsers className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <h3 className="font-bold text-base sm:text-lg text-[#014421]">Community</h3>
               </div>
@@ -261,7 +256,7 @@ export default function WeekTemplate({
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg sm:col-span-2 md:col-span-1">
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
-                  <FiBook className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
+                  <Book className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <h3 className="font-bold text-base sm:text-lg text-[#014421]">Bonusmaterial</h3>
               </div>

@@ -2,14 +2,11 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  FiChevronLeft, FiChevronRight, FiCalendar, FiClock, 
-  FiStar, FiHeart, FiShoppingCart, FiDownload, FiPrinter,
-  FiSun, FiMoon, FiCoffee, FiCheck, FiPlus
-} from 'react-icons/fi';
+
 import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
 import { getMealForDay, getFlowWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
+import { ChevronLeft, ChevronRight, Calendar, Clock, Star, Heart, ShoppingCart, Download, Printer, Sun, Moon, Coffee, Check, Plus } from 'lucide-react';
 // no next/navigation hooks to avoid suspense in export
 
 // Helper function to generate recipe slug from name
@@ -87,14 +84,14 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
             whileTap={{ scale: 0.9 }}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <FiHeart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-red-500" />
+            <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-red-500" />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <FiShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-primary" />
+            <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-primary" />
           </motion.button>
         </div>
       </div>
@@ -312,7 +309,7 @@ export default function KostschemaPage() {
                 href="/dashboard/courses/functional-flow/inkopslista"
                 className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-all duration-200 shadow-sm"
               >
-                <FiShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="w-5 h-5" />
                 <span className="hidden sm:inline">Visa Inköpslistor</span>
               </Link>
             </div>
@@ -321,7 +318,7 @@ export default function KostschemaPage() {
                 onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
                 className="p-2 rounded-full hover:bg-gray-100"
               >
-                <FiChevronLeft />
+                <ChevronLeft />
               </button>
               <div className="flex items-center gap-3">
                 <h2 className="font-semibold text-lg">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h2>
@@ -355,7 +352,7 @@ export default function KostschemaPage() {
                 onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
                 className="p-2 rounded-full hover:bg-gray-100"
               >
-                <FiChevronRight />
+                <ChevronRight />
               </button>
             </div>
           </div>
@@ -409,11 +406,11 @@ export default function KostschemaPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {currentDayMeals ? (
                       <>
-                        {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
-                        {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
-                        {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
+                        {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={Sun} />}
+                        {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={Coffee} />}
+                        {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={Moon} />}
                         {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
-                        {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
+                        {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={Star} />}
                       </>
                     ) : (
                       <p>Inget kostschema för denna dag.</p>
@@ -442,7 +439,7 @@ export default function KostschemaPage() {
                   href={`/dashboard/courses/functional-flow/inkopslista?week=${selectedWeek}`}
                   className="ml-auto flex items-center gap-2 px-3 py-1 text-xs rounded-full border hover:bg-gray-50"
                 >
-                  <FiShoppingCart className="w-4 h-4" /> Inköpslista v{selectedWeek}
+                  <ShoppingCart className="w-4 h-4" /> Inköpslista v{selectedWeek}
                 </Link>
               </div>
 
@@ -494,11 +491,11 @@ export default function KostschemaPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {currentDayMeals ? (
                       <>
-                        {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={FiSun} />}
-                        {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={FiCoffee} />}
-                        {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={FiMoon} />}
+                        {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={Sun} />}
+                        {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={Coffee} />}
+                        {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={Moon} />}
                         {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
-                        {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={FiStar} />}
+                        {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={Star} />}
                       </>
                     ) : (
                       <p>Inget kostschema för denna dag.</p>

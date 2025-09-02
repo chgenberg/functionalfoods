@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { FiArrowLeft, FiCheck, FiHeart, FiTarget, FiStar, FiBookOpen } from 'react-icons/fi';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
@@ -11,6 +10,7 @@ import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
 import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
 import HelpGuide from '@/app/components/HelpGuide';
+import { ArrowLeft, Check, Heart, Target, Star, BookOpen } from 'lucide-react';
 
 export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
@@ -75,7 +75,7 @@ export default function CompletionPage() {
         >
           <div className="flex items-center justify-center mb-6">
             <div className="w-20 h-20 bg-[#014421] rounded-full flex items-center justify-center">
-              <FiCheck className="w-10 h-10 text-white" />
+              <Check className="w-10 h-10 text-white" />
             </div>
           </div>
           
@@ -103,7 +103,7 @@ export default function CompletionPage() {
             whileTap={{ scale: 0.95 }}
             className="mt-8 mx-auto flex items-center gap-2 bg-gradient-to-r from-[#014421] to-[#027A48] text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all max-w-fit"
           >
-            <FiHeart className="w-5 h-5" />
+            <Heart className="w-5 h-5" />
             Berätta vad du tycker och få vår e-bok "Functional Foods" utan kostnad
           </motion.a>
         </motion.div>
@@ -116,7 +116,7 @@ export default function CompletionPage() {
           className="bg-[#014421] rounded-2xl shadow-lg p-8 text-white"
         >
           <div className="flex items-center gap-3 mb-6">
-            <FiTarget className="w-8 h-8" />
+            <Target className="w-8 h-8" />
             <h3 className="text-2xl font-bold">Motivation och reflektion</h3>
           </div>
           
@@ -132,21 +132,21 @@ export default function CompletionPage() {
 
           <div className="bg-white/10 backdrop-blur rounded-xl p-6">
             <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <FiBookOpen className="w-5 h-5" />
+              <BookOpen className="w-5 h-5" />
               Några frågor du kan ställa till dig själv
             </h4>
             
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
-                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
+                <Star className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
                 <span>Fundera på vad är det som gör att du får en lägre motivation?</span>
               </li>
               <li className="flex items-start gap-2">
-                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
+                <Star className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
                 <span>Hur ska du hantera din situation när du känner dig omotiverad?</span>
               </li>
               <li className="flex items-start gap-2">
-                <FiStar className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
+                <Star className="w-4 h-4 mt-1 flex-shrink-0 text-[#027A48]" />
                 <span>Har du någon i din närhet som kan stötta dig och peppa dig?</span>
               </li>
             </ul>
@@ -160,8 +160,6 @@ export default function CompletionPage() {
             </p>
           </div>
         </motion.div>
-
-
 
         {/* Favorite Recipes Section */}
         <motion.div 

@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
-import { FiArrowLeft, FiLock, FiCreditCard, FiUser, FiMail } from 'react-icons/fi';
+
 import { GiSparkles } from 'react-icons/gi';
 import { useT } from '../lib/i18n/LanguageProvider';
+import { ArrowLeft, Lock, CreditCard, User, Mail } from 'lucide-react';
 
 export default function Checkout() {
   const t = useT();
@@ -91,7 +92,7 @@ export default function Checkout() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/cart" className="inline-flex items-center text-primary hover:text-accent mb-4 transition-colors">
-            <FiArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             {t('checkout.backToCart','Tillbaka till varukorg')}
           </Link>
           <h1 className="text-3xl font-bold text-primary">{t('checkout.title','Slutför ditt köp')}</h1>
@@ -103,7 +104,7 @@ export default function Checkout() {
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="bg-[#014421] p-6 text-white">
                 <h2 className="text-xl font-bold flex items-center gap-2">
-                  <FiUser className="w-5 h-5" />
+                  <User className="w-5 h-5" />
                   {t('checkout.yourDetails','Dina uppgifter')}
                 </h2>
               </div>
@@ -162,7 +163,7 @@ export default function Checkout() {
                 {!guestMode && user && (
                   <div className="bg-[#93C560]/10 border border-[#93C560]/30 rounded-lg p-4">
                     <p className="text-[#014421] flex items-center">
-                      <FiUser className="w-5 h-5 mr-2" />
+                      <User className="w-5 h-5 mr-2" />
                       {t('checkout.loggedInAs','Inloggad som')} <span className="font-semibold ml-1">{user?.email}</span>
                     </p>
                   </div>
@@ -174,7 +175,7 @@ export default function Checkout() {
             <div className="mt-8 bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="bg-[#014421] p-6 text-white">
                 <h2 className="text-xl font-bold flex items-center gap-2">
-                  <FiCreditCard className="w-5 h-5" />
+                  <CreditCard className="w-5 h-5" />
                   {t('checkout.paymentMethod','Betalningsmetod')}
                 </h2>
               </div>
@@ -182,7 +183,7 @@ export default function Checkout() {
               <div className="p-6">
                 {['stripe'].map((method) => {
                   const methodData = {
-                    stripe: { name: 'Kort (Visa, Mastercard, Amex)', icon: FiCreditCard, desc: 'Säker kortbetalning via Stripe' }
+                    stripe: { name: 'Kort (Visa, Mastercard, Amex)', icon: CreditCard, desc: 'Säker kortbetalning via Stripe' }
                   }[method];
 
                   return (
@@ -260,7 +261,7 @@ export default function Checkout() {
 
                   <div className="bg-[#93C560]/10 rounded-lg p-4 mb-6">
                     <div className="flex items-center justify-center space-x-2 text-sm text-[#014421]">
-                      <FiLock className="text-[#014421]" />
+                      <Lock className="text-[#014421]" />
                       <span>{t('checkout.secure','Säker betalning med 256-bit SSL-kryptering')}</span>
                     </div>
                   </div>

@@ -3,10 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { 
-  FiMessageSquare, FiThumbsUp, FiEye, FiSearch, FiEdit, FiFilter,
-  FiPlus, FiClock, FiUser, FiTag, FiTrendingUp, FiStar, FiChevronRight
-} from 'react-icons/fi';
+import { MessageSquare, ThumbsUp, Eye, Search, Edit, Filter, Plus, Clock, User, Tag, TrendingUp, Star, ChevronRight } from 'lucide-react';
 
 interface ForumCategory {
   id: string;
@@ -81,7 +78,7 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
             </span>
             {thread._count.likes > 5 && (
               <span className="flex items-center gap-1 text-xs text-yellow-600">
-                <FiStar className="w-3 h-3" />
+                <Star className="w-3 h-3" />
                 Populär
               </span>
             )}
@@ -99,11 +96,11 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
           
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-0">
             <div className="flex items-center gap-1">
-              <FiUser className="w-3 h-3 sm:w-4 sm:h-4" />
+              <User className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="truncate max-w-[120px] sm:max-w-none">{thread.author.name || thread.author.email.split('@')[0]}</span>
             </div>
             <div className="flex items-center gap-1">
-              <FiClock className="w-3 h-3 sm:w-4 sm:h-4" />
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{timeAgo}</span>
             </div>
           </div>
@@ -112,15 +109,15 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
         <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-2 text-xs sm:text-sm text-gray-600 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-end">
           <div className="flex items-center gap-4 sm:gap-2 sm:flex-col sm:text-right">
             <div className="flex items-center gap-1 sm:gap-2" title="Svar">
-              <FiMessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
               <span className="font-medium">{thread._count.replies}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2" title="Gillningar">
-              <FiThumbsUp className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
               <span className="font-medium">{thread._count.likes}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2" title="Visningar">
-              <FiEye className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
               <span className="font-medium">{thread.views}</span>
             </div>
           </div>
@@ -240,11 +237,11 @@ export default function FunctionalBasicsCommunityPage() {
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-4">
               <div className="flex items-center gap-2">
-                <FiMessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-semibold text-sm sm:text-base">{totalThreads} diskussioner</span>
               </div>
               <div className="flex items-center gap-2">
-                <FiUser className="w-4 h-4 sm:w-5 sm:h-5" />
+                <User className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-semibold text-sm sm:text-base">{threads.length} aktiva</span>
               </div>
             </div>
@@ -255,7 +252,7 @@ export default function FunctionalBasicsCommunityPage() {
             onClick={() => setShowNewThreadModal(true)}
             className="flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-accent text-white rounded-xl hover:bg-primary-light transition-all duration-200 shadow-lg font-semibold text-sm sm:text-base whitespace-nowrap flex-shrink-0"
           >
-            <FiPlus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="hidden sm:inline">Starta diskussion</span>
             <span className="sm:hidden">Ny diskussion</span>
           </motion.button>
@@ -273,7 +270,7 @@ export default function FunctionalBasicsCommunityPage() {
         className="bg-background-secondary rounded-2xl shadow-sm border border-border p-6"
       >
         <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-          <FiTag className="w-5 h-5 text-accent" />
+          <Tag className="w-5 h-5 text-accent" />
           Kategorier
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -339,7 +336,7 @@ export default function FunctionalBasicsCommunityPage() {
           animate={{ opacity: 1, x: 0 }}
           className="relative flex-grow"
         >
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input 
             type="text" 
             placeholder="Sök diskussioner..." 
@@ -353,7 +350,7 @@ export default function FunctionalBasicsCommunityPage() {
           animate={{ opacity: 1, x: 0 }}
           className="relative"
         >
-          <FiFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -410,7 +407,7 @@ export default function FunctionalBasicsCommunityPage() {
             className="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100"
           >
             <div className="w-20 h-20 bg-background-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-              <FiMessageSquare className="w-10 h-10 text-primary" />
+              <MessageSquare className="w-10 h-10 text-primary" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga diskussioner hittades</h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -422,7 +419,7 @@ export default function FunctionalBasicsCommunityPage() {
               onClick={() => setShowNewThreadModal(true)}
                               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:shadow-lg transition-all duration-200 font-semibold"
             >
-              <FiPlus className="w-5 h-5" />
+              <Plus className="w-5 h-5" />
               Starta första diskussionen
             </motion.button>
           </motion.div>
@@ -520,7 +517,7 @@ export default function FunctionalBasicsCommunityPage() {
                             </option>
                           ))}
                         </select>
-                        <FiChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-gray-400 pointer-events-none" />
+                        <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-gray-400 pointer-events-none" />
                       </div>
                     </motion.div>
 
@@ -572,7 +569,7 @@ export default function FunctionalBasicsCommunityPage() {
                       className="bg-background border border-border rounded-xl p-4"
                     >
                       <h4 className="font-semibold text-secondary mb-2 flex items-center gap-2">
-                        <FiStar className="w-4 h-4" />
+                        <Star className="w-4 h-4" />
                         Tips för en bra diskussion
                       </h4>
                       <ul className="text-sm text-secondary space-y-1">
@@ -616,7 +613,7 @@ export default function FunctionalBasicsCommunityPage() {
                           </>
                         ) : (
                           <>
-                            <FiPlus className="w-5 h-5" />
+                            <Plus className="w-5 h-5" />
                             Publicera diskussion
                           </>
                         )}

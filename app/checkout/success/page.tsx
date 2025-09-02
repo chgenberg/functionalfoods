@@ -2,9 +2,10 @@
 import { useCart } from '../../context/CartContext';
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { FiCheckCircle, FiBook, FiPlay, FiMail, FiAlertTriangle } from 'react-icons/fi';
+
 import { GiSparkles } from 'react-icons/gi';
 import Link from 'next/link';
+import { CheckCircle, Book, Play, Mail, AlertTriangle } from 'lucide-react';
 
 function CheckoutSuccessContent() {
   const { clearCart } = useCart();
@@ -79,7 +80,7 @@ function CheckoutSuccessContent() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4 text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FiAlertTriangle className="w-8 h-8 text-red-600" />
+            <AlertTriangle className="w-8 h-8 text-red-600" />
           </div>
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Betalning ej verifierad</h1>
           <div className="space-y-3 mb-6">
@@ -108,7 +109,7 @@ function CheckoutSuccessContent() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
       <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4 text-center animate-fade-in">
         <div className="w-16 h-16 bg-background-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-          <FiCheckCircle className="w-8 h-8 text-primary" />
+          <CheckCircle className="w-8 h-8 text-primary" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800 mb-4">{isNewUser ? 'Välkommen till Functional Foods!' : 'Tack för ditt köp!'}</h1>
         <div className="space-y-3 mb-6">
@@ -116,7 +117,7 @@ function CheckoutSuccessContent() {
             <>
               <p className="text-gray-600">Ditt köp är genomfört och ett konto har skapats åt dig.</p>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-blue-800 font-medium mb-2"><FiMail className="w-4 h-4" />Viktigt!</div>
+                <div className="flex items-center gap-2 text-blue-800 font-medium mb-2"><Mail className="w-4 h-4" />Viktigt!</div>
                 <p className="text-sm text-blue-700">Vi har skickat dina inloggningsuppgifter till din e-post.</p>
               </div>
             </>
@@ -128,8 +129,8 @@ function CheckoutSuccessContent() {
         <div className="space-y-4">
           {user ? (
             <>
-              <Link href={getDirectCourseLink()} className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium flex items-center justify-center gap-2"><FiPlay className="w-5 h-5" />{isNewUser ? 'Kom igång med din kurs' : 'Fortsätt till din kurs'}</Link>
-              <Link href="/utbildning" className="block w-full border-2 border-[#1a4324] text-[#1a4324] text-center py-3 rounded-lg hover:bg-[#1a4324] hover:text-white transition-colors font-medium flex items-center justify-center gap-2"><FiBook className="w-5 h-5" />Utforska fler kurser</Link>
+              <Link href={getDirectCourseLink()} className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium flex items-center justify-center gap-2"><Play className="w-5 h-5" />{isNewUser ? 'Kom igång med din kurs' : 'Fortsätt till din kurs'}</Link>
+              <Link href="/utbildning" className="block w-full border-2 border-[#1a4324] text-[#1a4324] text-center py-3 rounded-lg hover:bg-[#1a4324] hover:text-white transition-colors font-medium flex items-center justify-center gap-2"><Book className="w-5 h-5" />Utforska fler kurser</Link>
             </>
           ) : (
             <Link href="/login" className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium">Logga in för att komma åt dina kurser</Link>

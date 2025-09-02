@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { FiClock, FiUsers } from 'react-icons/fi';
+import { Clock, Users } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -134,13 +134,13 @@ export default function RandomRecipes({ excludeId, count = 3, title = "Fler rece
                   <div className="flex items-center gap-4 text-xs text-gray-500">
                     {recipe.prepTime && (
                       <span className="flex items-center gap-1">
-                        <FiClock className="w-3 h-3" />
+                        <Clock className="w-3 h-3" />
                         {recipe.prepTime}
                       </span>
                     )}
                     {recipe.servings && (
                       <span className="flex items-center gap-1">
-                        <FiUsers className="w-3 h-3" />
+                        <Users className="w-3 h-3" />
                         {recipe.servings} port
                       </span>
                     )}

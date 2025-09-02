@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FiVideo, FiFileText, FiLock, FiLogOut, FiUser, FiDownload, FiPlay } from 'react-icons/fi';
+import { Video, FileText, Lock, LogOut, User, Download, Play } from 'lucide-react';
 
 interface CourseContent {
   videos?: Array<{
@@ -140,14 +140,14 @@ export default function MyCoursesPage() {
             </Link>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-gray-700">
-                <FiUser />
+                <User />
                 <span>{user?.name || user?.email}</span>
               </div>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
               >
-                <FiLogOut />
+                <LogOut />
                 <span>Logga ut</span>
               </button>
             </div>
@@ -160,7 +160,7 @@ export default function MyCoursesPage() {
 
         {purchases.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-            <FiLock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-800 mb-2">Inga kurser ännu</h2>
             <p className="text-gray-600 mb-6">Du har inte köpt några kurser än.</p>
             <Link
@@ -210,7 +210,7 @@ export default function MyCoursesPage() {
                   {selectedCourse.content.videos && selectedCourse.content.videos.length > 0 && (
                     <div className="mb-8">
                       <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <FiVideo className="text-accent" />
+                        <Video className="text-accent" />
                         Kursvideor
                       </h3>
                       <div className="space-y-4">
@@ -223,7 +223,7 @@ export default function MyCoursesPage() {
                                 <p className="text-sm text-gray-500 mt-2">Längd: {video.duration}</p>
                               </div>
                               <button className="bg-accent hover:bg-accent-hover text-white p-3 rounded-lg transition-colors">
-                                <FiPlay />
+                                <Play />
                               </button>
                             </div>
                           </div>
@@ -236,7 +236,7 @@ export default function MyCoursesPage() {
                   {selectedCourse.content.pdfs && selectedCourse.content.pdfs.length > 0 && (
                     <div>
                       <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <FiFileText className="text-accent" />
+                        <FileText className="text-accent" />
                         Kursmaterial
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -248,7 +248,7 @@ export default function MyCoursesPage() {
                                 <p className="text-sm text-gray-500 mt-1">{pdf.pages} sidor</p>
                               </div>
                               <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-lg transition-colors">
-                                <FiDownload />
+                                <Download />
                               </button>
                             </div>
                           </div>

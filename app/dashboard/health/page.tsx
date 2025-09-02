@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FiTrendingUp, FiMoon, FiZap, FiPlus, FiChevronDown } from 'react-icons/fi';
+import { TrendingUp, Moon, Zap, Plus, ChevronDown } from 'lucide-react';
 
 const healthData = [
   { date: 'Mån', energy: 7, sleep: 6, stress: 5 },
@@ -26,7 +26,6 @@ const MetricCard = ({ icon, title, value, unit, color }: { icon: React.ReactNode
     </div>
 );
 
-
 export default function HealthTrackingPage() {
     const [isLogging, setIsLogging] = useState(false);
 
@@ -39,19 +38,19 @@ export default function HealthTrackingPage() {
       
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <MetricCard icon={<FiZap className="text-yellow-600"/>} title="Energinivå" value="8/10" unit="" color="bg-yellow-100" />
-          <MetricCard icon={<FiMoon className="text-blue-600"/>} title="Sömnkvalitet" value="7.5h" unit="inatt" color="bg-blue-100" />
-          <MetricCard icon={<FiTrendingUp className="text-red-600"/>} title="Stressnivå" value="Låg" unit="" color="bg-red-100" />
+          <MetricCard icon={<Zap className="text-yellow-600"/>} title="Energinivå" value="8/10" unit="" color="bg-yellow-100" />
+          <MetricCard icon={<Moon className="text-blue-600"/>} title="Sömnkvalitet" value="7.5h" unit="inatt" color="bg-blue-100" />
+          <MetricCard icon={<TrendingUp className="text-red-600"/>} title="Stressnivå" value="Låg" unit="" color="bg-red-100" />
       </div>
 
       {/* Log New Data Form */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
         <div className="p-6 cursor-pointer flex justify-between items-center" onClick={() => setIsLogging(!isLogging)}>
             <div className="flex items-center gap-3">
-                <FiPlus className="text-primary"/>
+                <Plus className="text-primary"/>
                 <h2 className="text-xl font-bold text-gray-800">Logga dagens mående</h2>
             </div>
-            <FiChevronDown className={`transform transition-transform ${isLogging ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`transform transition-transform ${isLogging ? 'rotate-180' : ''}`} />
         </div>
         {isLogging && (
             <form className="p-6 border-t border-gray-200 space-y-4 animate-fade-in">

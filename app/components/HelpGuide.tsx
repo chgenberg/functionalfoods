@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiCalendar, FiBookOpen, FiShoppingCart, FiSettings, FiUsers, FiAward, FiClock, FiCheckCircle } from 'react-icons/fi';
+import { X, Calendar, BookOpen, ShoppingCart, Settings, Users, Award, Clock, CheckCircle } from 'lucide-react';
 
 interface HelpGuideProps {
   isOpen: boolean;
@@ -48,7 +48,7 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
                 onClick={onClose}
                 className="p-2 rounded-full hover:bg-white/10 transition-colors"
               >
-                <FiX className="w-6 h-6" />
+                <X className="w-6 h-6" />
               </button>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
               {/* Navigation Section */}
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FiCalendar className="w-5 h-5 text-[#014421]" />
+                  <Calendar className="w-5 h-5 text-[#014421]" />
                   Navigation
                 </h3>
                 
@@ -100,13 +100,13 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
               {/* Features Section */}
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FiBookOpen className="w-5 h-5 text-[#014421]" />
+                  <BookOpen className="w-5 h-5 text-[#014421]" />
                   Funktioner
                 </h3>
                 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <FiCalendar className="w-5 h-5 text-[#014421]" />
+                    <Calendar className="w-5 h-5 text-[#014421]" />
                     <div>
                       <div className="font-medium text-gray-900">Daglig meny</div>
                       <div className="text-sm text-gray-600">Klicka på en dag för recept och näringsvärden</div>
@@ -114,7 +114,7 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
                   </div>
                   
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <FiShoppingCart className="w-5 h-5 text-[#014421]" />
+                    <ShoppingCart className="w-5 h-5 text-[#014421]" />
                     <div>
                       <div className="font-medium text-gray-900">Inköpslistor</div>
                       <div className="text-sm text-gray-600">Smarta listor för varje vecka</div>
@@ -122,7 +122,7 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
                   </div>
                   
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <FiCheckCircle className="w-5 h-5 text-[#014421]" />
+                    <CheckCircle className="w-5 h-5 text-[#014421]" />
                     <div>
                       <div className="font-medium text-gray-900">Favoritrecept</div>
                       <div className="text-sm text-gray-600">Stjärnmärk och ladda ner som PDF</div>
@@ -130,7 +130,7 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
                   </div>
                   
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <FiUsers className="w-5 h-5 text-[#014421]" />
+                    <Users className="w-5 h-5 text-[#014421]" />
                     <div>
                       <div className="font-medium text-gray-900">Community</div>
                       <div className="text-sm text-gray-600">Diskutera med andra deltagare</div>
@@ -143,7 +143,7 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
             {/* Status Indicators */}
             <div className="mt-8 p-6 bg-gradient-to-r from-[#F7F1E8] to-[#F3EFE3] rounded-2xl">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <FiClock className="w-5 h-5 text-[#014421]" />
+                <Clock className="w-5 h-5 text-[#014421]" />
                 Statusfärger
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -174,7 +174,7 @@ export default function HelpGuide({ isOpen, onClose }: HelpGuideProps) {
             {/* Quick Tips */}
             <div className="mt-6 p-6 bg-white border-2 border-[#014421]/10 rounded-2xl">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <FiAward className="w-5 h-5 text-[#014421]" />
+                <Award className="w-5 h-5 text-[#014421]" />
                 Snabbtips
               </h3>
               <div className="space-y-2 text-sm text-gray-700">

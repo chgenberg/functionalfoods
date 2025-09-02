@@ -3,13 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { 
-  FiArrowLeft, FiArrowRight, FiClock, FiCheck, FiSun, FiCoffee,
-  FiShoppingCart, FiHeart, FiShare2, FiCalendar
-} from 'react-icons/fi';
+
 import { MdDinnerDining } from 'react-icons/md';
 import { getWeekData } from '@/app/data/mealPlans';
 import Image from 'next/image';
+import { ArrowLeft, ArrowRight, Clock, Check, Sun, Coffee, ShoppingCart, Heart, Share2, Calendar } from 'lucide-react';
 
 export default function Week1Day1Page() {
   const [completedMeals, setCompletedMeals] = useState<string[]>([]);
@@ -31,7 +29,7 @@ export default function Week1Day1Page() {
     {
       type: 'breakfast',
       time: '07:00',
-      icon: FiSun,
+      icon: Sun,
       color: 'from-yellow-400 to-orange-400',
       bgColor: 'bg-gradient-to-br from-yellow-50 to-orange-50',
       meal: dayMeals?.breakfast
@@ -39,7 +37,7 @@ export default function Week1Day1Page() {
     {
       type: 'lunch',
       time: '12:00',
-      icon: FiCoffee,
+      icon: Coffee,
       color: 'from-emerald-400 to-teal-400',
       bgColor: 'bg-gradient-to-br from-emerald-50 to-teal-50',
       meal: dayMeals?.lunch
@@ -72,7 +70,7 @@ export default function Week1Day1Page() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/dashboard/courses/functional-basics" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <FiArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5" />
               </Link>
               <div>
                 <p className="text-sm text-gray-600">Vecka 1 - {weekTitle}</p>
@@ -83,11 +81,11 @@ export default function Week1Day1Page() {
             {/* Navigation */}
             <div className="flex items-center gap-2">
               <Link href="/dashboard/courses/functional-basics/week/1/day/7" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <FiArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5" />
               </Link>
               <span className="text-sm font-medium px-3">Dag 1 av 42</span>
               <Link href="/dashboard/courses/functional-basics/week/1/day/2" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <FiArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </div>
@@ -130,7 +128,7 @@ export default function Week1Day1Page() {
               <p className="text-white/90 text-sm mb-1">Aktuell tid</p>
               <p className="text-3xl font-bold">{currentTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}</p>
             </div>
-            <FiClock className="w-12 h-12 text-white/80" />
+            <Clock className="w-12 h-12 text-white/80" />
           </div>
         </motion.div>
 
@@ -164,7 +162,7 @@ export default function Week1Day1Page() {
                           {mealData.type === 'breakfast' ? 'Frukost' : mealData.type === 'lunch' ? 'Lunch' : 'Middag'}
                         </h3>
                         <p className="text-gray-600 flex items-center gap-2">
-                          <FiClock className="w-4 h-4" />
+                          <Clock className="w-4 h-4" />
                           {mealData.time}
                         </p>
                       </div>
@@ -180,7 +178,7 @@ export default function Week1Day1Page() {
                         }
                       `}
                     >
-                      {isCompleted && <FiCheck className="w-5 h-5 md:w-6 md:h-6" />}
+                      {isCompleted && <Check className="w-5 h-5 md:w-6 md:h-6" />}
                     </button>
                   </div>
                   
@@ -197,11 +195,11 @@ export default function Week1Day1Page() {
                         </Link>
                         
                         <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
-                          <FiHeart className="w-5 h-5 text-gray-600" />
+                          <Heart className="w-5 h-5 text-gray-600" />
                         </button>
                         
                         <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
-                          <FiShare2 className="w-5 h-5 text-gray-600" />
+                          <Share2 className="w-5 h-5 text-gray-600" />
                         </button>
                       </div>
                     )}
@@ -226,7 +224,7 @@ export default function Week1Day1Page() {
                 <h3 className="font-semibold text-lg text-gray-800 mb-1">Dagens inköpslista</h3>
                 <p className="text-gray-600 text-sm">Se alla ingredienser du behöver</p>
               </div>
-              <FiShoppingCart className="w-8 h-8 text-[#014421]" />
+              <ShoppingCart className="w-8 h-8 text-[#014421]" />
             </Link>
           </motion.div>
 
@@ -242,7 +240,7 @@ export default function Week1Day1Page() {
                 <h3 className="font-semibold text-lg text-gray-800 mb-1">Veckans översikt</h3>
                 <p className="text-gray-600 text-sm">Se hela veckans kostschema</p>
               </div>
-              <FiCalendar className="w-8 h-8 text-[#014421]" />
+              <Calendar className="w-8 h-8 text-[#014421]" />
             </Link>
           </motion.div>
         </div>

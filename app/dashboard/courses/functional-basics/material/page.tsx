@@ -2,12 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  FiBook, FiClock, FiArrowRight, FiSearch, FiFilter,
-  FiBookOpen, FiTarget, FiHeart, FiStar, FiAward
-} from 'react-icons/fi';
+
 import { GiMeal, GiFruitBowl, GiHealthNormal, GiWheat, GiMeat } from 'react-icons/gi';
 import Link from 'next/link';
+import { Book, Clock, ArrowRight, Search, Filter, BookOpen, Target, Heart, Star, Award } from 'lucide-react';
 
 interface KnowledgeModule {
   id: string;
@@ -38,7 +36,7 @@ export default function KnowledgeMaterialPage() {
       id: 'functional-foods-topplista',
       title: 'Functional Foods Topplista',
       description: 'De mest kraftfulla livsmedlen för din hälsa',
-      icon: FiStar,
+      icon: Star,
       color: '#112A12',
       readTime: '8 min',
       category: 'Grundläggande'
@@ -47,7 +45,7 @@ export default function KnowledgeMaterialPage() {
       id: 'fordelarna-med-functional-foods',
       title: 'Fördelarna med Functional Foods',
       description: 'Upptäck de omfattande hälsofördelarna',
-      icon: FiHeart,
+      icon: Heart,
       color: '#014421',
       readTime: '10 min',
       category: 'Hälsofördelar'
@@ -56,7 +54,7 @@ export default function KnowledgeMaterialPage() {
       id: 'functional-foods-3-steg-till-ett-friskare-liv',
       title: 'Functional Foods - 3 steg till ett friskare liv',
       description: 'En steg-för-steg guide till bättre hälsa',
-      icon: FiBookOpen,
+      icon: BookOpen,
       color: '#112A12',
       readTime: '12 min',
       category: 'Praktisk guide'
@@ -65,7 +63,7 @@ export default function KnowledgeMaterialPage() {
       id: 'dags-att-komma-igang',
       title: 'Dags att komma igång',
       description: 'Praktiska tips för att starta din resa',
-      icon: FiTarget,
+      icon: Target,
       color: '#014421',
       readTime: '12 min',
       category: 'Praktisk guide'
@@ -101,7 +99,7 @@ export default function KnowledgeMaterialPage() {
       id: 'motivation-och-reflektion',
       title: 'Motivation och reflektion',
       description: 'Verktyg för att hålla motivationen uppe',
-      icon: FiAward,
+      icon: Award,
       color: '#014421',
       readTime: '15 min',
       category: 'Mindset'
@@ -110,7 +108,7 @@ export default function KnowledgeMaterialPage() {
       id: 'functional-foods-som-livsstil',
       title: 'Functional Foods som livsstil',
       description: 'Gör hälsosam mat till en naturlig del av vardagen',
-      icon: FiHeart,
+      icon: Heart,
       color: '#112A12',
       readTime: '6 min',
       category: 'Mindset'
@@ -137,7 +135,7 @@ export default function KnowledgeMaterialPage() {
       id: 'superfoods',
       title: 'Naturens egna hälsobomber',
       description: 'Superfoods som förvandlar din hälsa',
-      icon: FiStar,
+      icon: Star,
       color: '#014421',
       readTime: '8 min',
       category: 'Superfoods'
@@ -155,7 +153,7 @@ export default function KnowledgeMaterialPage() {
       id: 'at-mer-functional-foods-pa-ett-enkelt-satt',
       title: 'Ät mer Functional Foods på ett enkelt sätt',
       description: 'Enkla strategier för att öka näringsintaget',
-      icon: FiBook,
+      icon: Book,
       color: '#014421',
       readTime: '8 min',
       category: 'Praktisk guide'
@@ -173,7 +171,7 @@ export default function KnowledgeMaterialPage() {
       id: 'reflektion-vecka-3',
       title: 'Reflektion vecka 3',
       description: 'Utvärdera dina framsteg och lärdomar',
-      icon: FiBook,
+      icon: Book,
       color: '#014421',
       readTime: '5 min',
       category: 'Reflektion'
@@ -182,7 +180,7 @@ export default function KnowledgeMaterialPage() {
       id: 'fragor-och-svar',
       title: 'Frågor och svar',
       description: 'Svar på vanliga frågor om Functional Foods',
-      icon: FiBook,
+      icon: Book,
       color: '#112A12',
       readTime: '15 min',
       category: 'FAQ'
@@ -191,7 +189,7 @@ export default function KnowledgeMaterialPage() {
       id: 'malsattning-och-planering',
       title: 'Målsättning och planering',
       description: 'Strukturerad planering för hälsomål',
-      icon: FiTarget,
+      icon: Target,
       color: '#014421',
       readTime: '8 min',
       category: 'Planering'
@@ -200,7 +198,7 @@ export default function KnowledgeMaterialPage() {
       id: 'utvardering-och-nasta-steg',
       title: 'Utvärdering och nästa steg',
       description: 'Reflektera och planera framåt',
-      icon: FiAward,
+      icon: Award,
       color: '#112A12',
       readTime: '6 min',
       category: 'Planering'
@@ -281,7 +279,7 @@ export default function KnowledgeMaterialPage() {
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="Sök artiklar..."
@@ -293,7 +291,7 @@ export default function KnowledgeMaterialPage() {
             
             {/* Category Filter */}
             <div className="relative">
-              <FiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -339,13 +337,13 @@ export default function KnowledgeMaterialPage() {
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center text-sm text-gray-500">
-                        <FiClock className="w-4 h-4 mr-1" />
+                        <Clock className="w-4 h-4 mr-1" />
                         <span>{module.readTime}</span>
                       </div>
                       
                       <div className="flex items-center text-primary font-semibold group-hover:text-secondary">
                         <span className="mr-2">Läs mer</span>
-                        <FiArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                     
@@ -370,7 +368,7 @@ export default function KnowledgeMaterialPage() {
             animate={{ opacity: 1 }}
             className="text-center py-12"
           >
-            <FiBook className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <Book className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-600 mb-2">Inga artiklar hittades</h3>
             <p className="text-gray-500">Prova att ändra dina sökkriterier</p>
           </motion.div>
@@ -387,7 +385,7 @@ export default function KnowledgeMaterialPage() {
             href="/dashboard/courses/functional-basics"
                             className="inline-flex items-center px-8 py-4 bg-secondary text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105"
           >
-            <FiArrowRight className="w-5 h-5 mr-2 rotate-180" />
+            <ArrowRight className="w-5 h-5 mr-2 rotate-180" />
             Tillbaka till kursen
           </Link>
         </motion.div>

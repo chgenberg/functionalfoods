@@ -1,7 +1,8 @@
 "use client";
 import { useState } from 'react';
-import { FiMail, FiPhone, FiMapPin, FiSend } from 'react-icons/fi';
+
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
 export default function KontaktFormular() {
   const t = useT();
@@ -40,7 +41,7 @@ export default function KontaktFormular() {
       <div className="container-custom section-padding">
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4">
-            <FiSend className="w-4 h-4" />
+            <Send className="w-4 h-4" />
             <span>{t('contact.replyIn24h','Vi svarar inom 24 timmar')}</span>
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
@@ -56,7 +57,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <FiPhone className="w-5 h-5 text-accent" />
+                  <Phone className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">{t('contact.phone','Telefon')}</h3>
@@ -68,7 +69,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <FiMail className="w-5 h-5 text-accent" />
+                  <Mail className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">{t('contact.email','E-post')}</h3>
@@ -80,7 +81,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <FiMapPin className="w-5 h-5 text-accent" />
+                  <MapPin className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">{t('contact.address','Adress')}</h3>
@@ -92,7 +93,7 @@ export default function KontaktFormular() {
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.5s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <FiSend className="w-5 h-5 text-accent" />
+                  <Send className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-medium text-primary">{t('contact.hours','Öppettider')}</h3>
@@ -109,7 +110,7 @@ export default function KontaktFormular() {
                   <div className="relative">
                     <label htmlFor="namn" className="block text-sm font-medium text-primary mb-2">{t('contact.name','Namn')}</label>
                     <div className="relative">
-                      <FiMail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'namn' ? 'text-accent' : 'text-gray-400'}`} />
+                      <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'namn' ? 'text-accent' : 'text-gray-400'}`} />
                       <input
                         type="text"
                         id="namn"
@@ -127,7 +128,7 @@ export default function KontaktFormular() {
                   <div className="relative">
                     <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">{t('contact.email','E-post')}</label>
                     <div className="relative">
-                      <FiMail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'email' ? 'text-accent' : 'text-gray-400'}`} />
+                      <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'email' ? 'text-accent' : 'text-gray-400'}`} />
                       <input
                         type="email"
                         id="email"
@@ -146,7 +147,7 @@ export default function KontaktFormular() {
                 <div className="relative">
                   <label htmlFor="amne" className="block text-sm font-medium text-primary mb-2">{t('contact.subject','Ämne')}</label>
                   <div className="relative">
-                    <FiSend className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'amne' ? 'text-accent' : 'text-gray-400'}`} />
+                    <Send className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === 'amne' ? 'text-accent' : 'text-gray-400'}`} />
                     <input
                       type="text"
                       id="amne"
@@ -189,7 +190,7 @@ export default function KontaktFormular() {
                     ) : (
                       <>
                         {t('contact.send','Skicka meddelande')}
-                        <FiSend className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        <Send className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </span>
@@ -214,7 +215,7 @@ export default function KontaktFormular() {
             </p>
             <a href="/kontakt/faq" className="btn-secondary inline-flex items-center">
               {t('contact.faqSee','Se vanliga frågor')}
-              <FiSend className="ml-2 w-4 h-4" />
+              <Send className="ml-2 w-4 h-4" />
             </a>
           </div>
         </div>

@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FiBook, FiHeart, FiClock, FiTrendingUp, FiAward, FiStar, FiChevronRight } from 'react-icons/fi';
+
 import Link from 'next/link';
+import { Book, Heart, Clock, TrendingUp, Award, Star, ChevronRight } from 'lucide-react';
 
 interface DayMeals {
   breakfast?: { name: string; recipeLink?: string };
@@ -25,15 +26,15 @@ export function WeekSummary() {
         </p>
         <ul className="space-y-2 mt-4">
           <li className="flex items-start gap-2">
-            <FiStar className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+            <Star className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
             <span>Optimering av näringsupptag genom strategisk måltidsplanering</span>
           </li>
           <li className="flex items-start gap-2">
-            <FiStar className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+            <Star className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
             <span>Avancerade tillagningsmetoder för maximal näringsbevaring</span>
           </li>
           <li className="flex items-start gap-2">
-            <FiStar className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+            <Star className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
             <span>Synergistiska livsmedelskombinationer för förbättrad hälsa</span>
           </li>
         </ul>
@@ -45,19 +46,19 @@ export function WeekSummary() {
 export function KnowledgeSection() {
   const topics = [
     {
-      icon: FiBook,
+      icon: Book,
       title: "Nutrient Timing",
       description: "Lär dig när på dagen olika näringsämnen har maximal effekt",
       link: "/dashboard/courses/functional-flow/week/1/nutrient-timing"
     },
     {
-      icon: FiHeart,
+      icon: Heart,
       title: "Anti-inflammatorisk kost",
       description: "Fördjupning i livsmedel som minskar inflammation",
       link: "/dashboard/courses/functional-flow/week/1/anti-inflammatory"
     },
     {
-      icon: FiClock,
+      icon: Clock,
       title: "Intermittent fasting",
       description: "Introduktion till strategisk fasta för optimal hälsa",
       link: "/dashboard/courses/functional-flow/week/1/intermittent-fasting"
@@ -88,7 +89,7 @@ export function KnowledgeSection() {
               </h4>
               <p className="text-sm text-gray-600 mt-1">{topic.description}</p>
             </div>
-            <FiChevronRight className="w-5 h-5 text-gray-400 group-hover:text-teal-600 mt-2 transition-colors" />
+            <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-teal-600 mt-2 transition-colors" />
           </Link>
         ))}
       </div>
@@ -106,7 +107,7 @@ export function MotivationSection() {
     >
       <div className="flex items-start gap-4">
         <div className="p-3 bg-white rounded-full shadow-md">
-          <FiAward className="w-8 h-8 text-teal-600" />
+          <Award className="w-8 h-8 text-teal-600" />
         </div>
         <div className="flex-1">
           <h3 className="text-xl font-bold mb-2 text-gray-900">Veckans utmaning</h3>
@@ -116,11 +117,11 @@ export function MotivationSection() {
           </p>
           <div className="flex items-center gap-4 text-sm">
             <span className="flex items-center gap-1 text-teal-700">
-              <FiTrendingUp className="w-4 h-4" />
+              <TrendingUp className="w-4 h-4" />
               <span className="font-medium">Svårighetsgrad: Medium</span>
             </span>
             <span className="flex items-center gap-1 text-teal-700">
-              <FiClock className="w-4 h-4" />
+              <Clock className="w-4 h-4" />
               <span className="font-medium">Tid: 7 dagar</span>
             </span>
           </div>
@@ -164,7 +165,7 @@ export function RecipeHighlights({ mealPlan }: { mealPlan: Record<string, DayMea
         {featuredRecipes.map((item, index) => (
           <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
             <div className="p-2 bg-teal-100 rounded-lg">
-              <FiStar className="w-5 h-5 text-teal-700" />
+              <Star className="w-5 h-5 text-teal-700" />
             </div>
             <div className="flex-1">
               <h4 className="font-semibold text-gray-900">

@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiBook, FiCoffee, FiHeart, FiActivity, FiTarget, FiAward, FiChevronRight } from 'react-icons/fi';
+
 import { GiBrain, GiStomach, GiFruitBowl, GiWheat, GiMeal, GiHerbsBundle, GiWaterBottle, GiMeat, GiAlgae } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, CheckCircle, Book, Coffee, Heart, Activity, Target, Award, ChevronRight } from 'lucide-react';
 
 interface FoodCategory {
   id: number;
@@ -65,7 +66,7 @@ export default function VadArFunctionalFoodsPage() {
     {
       id: 6,
       name: 'Omega-3-rika livsmedel',
-      icon: FiHeart,
+      icon: Heart,
       description: 'Essentiella fettsyror för hjärta och hjärna.',
       examples: ['Lax', 'Sardiner', 'Valnötter', 'Chiafrön', 'Hampafrön'],
       color: 'from-red-400 to-pink-400'
@@ -144,7 +145,7 @@ export default function VadArFunctionalFoodsPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard/courses/functional-flow/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
-            <FiArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
         </div>
@@ -219,7 +220,7 @@ export default function VadArFunctionalFoodsPage() {
                         <Icon className="w-8 h-8 text-gray-700 mr-3" />
                         <span className="font-medium text-gray-800">{category.name}</span>
                       </div>
-                      <FiChevronRight className={`w-5 h-5 text-gray-500 transition-transform ${
+                      <ChevronRight className={`w-5 h-5 text-gray-500 transition-transform ${
                         selectedCategory === category.id ? 'rotate-90' : ''
                       }`} />
                     </div>
@@ -328,7 +329,7 @@ export default function VadArFunctionalFoodsPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center"
                 >
-                  <FiAward className="w-16 h-16 mx-auto mb-4" />
+                  <Award className="w-16 h-16 mx-auto mb-4" />
                   <p className="text-2xl font-bold mb-2">Quiz slutfört!</p>
                   <p className="text-lg">Du fick {quizScore} av {quizQuestions.length} rätt!</p>
                 </motion.div>
@@ -351,10 +352,10 @@ export default function VadArFunctionalFoodsPage() {
               <Link href="/dashboard/courses/functional-flow/material/fordelarna-med-functional-foods" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till nästa modul
-                <FiChevronRight className="ml-1" />
+                <ChevronRight className="ml-1" />
               </Link>
             </div>
-            <FiCheckCircle className="w-12 h-12 text-primary" />
+            <CheckCircle className="w-12 h-12 text-primary" />
           </div>
         </motion.div>
       </div>

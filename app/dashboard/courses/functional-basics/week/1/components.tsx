@@ -3,11 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+
 import { 
-  FiCalendar, FiShoppingCart, FiBook, FiChevronRight, 
-  FiClock, FiCheckCircle, FiDownload, FiExternalLink
-} from 'react-icons/fi';
-import { 
+import { Calendar, ShoppingCart, Book, ChevronRight, Clock, CheckCircle, Download, ExternalLink } from 'lucide-react';
   GiFruitBowl, GiMeal, GiCookingPot, GiMeat, 
   GiWheat, GiWaterBottle, GiHerbsBundle
 } from 'react-icons/gi';
@@ -72,7 +70,7 @@ export function GoalsSection({ completedGoals, setCompletedGoals }: {
             'Ta och få hjälp av andra'
           ].map((item, index) => (
             <div key={index} className="flex items-center space-x-2">
-              <FiCheckCircle className="text-primary flex-shrink-0" />
+              <CheckCircle className="text-primary flex-shrink-0" />
               <span className="text-gray-700">{item}</span>
             </div>
           ))}
@@ -223,11 +221,11 @@ export function RecipeHighlights() {
               {/* Action indicator */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-1 text-xs text-gray-500">
-                  <FiClock className="w-3 h-3" />
+                  <Clock className="w-3 h-3" />
                   <span>15 min</span>
                 </div>
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                  <FiChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4" />
                 </div>
               </div>
             </div>
@@ -297,7 +295,7 @@ export function MealPlanSection({
                     )}
                   </div>
                 </div>
-                <FiChevronRight className={`w-5 h-5 text-gray-400 transition-transform ${
+                <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform ${
                   expandedDay === day ? 'rotate-90' : ''
                 }`} />
               </button>
@@ -326,7 +324,7 @@ export function MealPlanSection({
                               className="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center"
                             >
                               {meal.name}
-                              <FiExternalLink className="ml-1 w-3 h-3" />
+                              <ExternalLink className="ml-1 w-3 h-3" />
                             </Link>
                           ) : (
                             <p className="text-sm text-gray-700">{meal.name}</p>
@@ -403,11 +401,11 @@ export function MealPlanSection({
                 {/* Action indicator */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-1 text-xs text-gray-500">
-                    <FiClock className="w-3 h-3" />
+                    <Clock className="w-3 h-3" />
                     <span>20 min</span>
                   </div>
                   <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                    <FiChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-4 h-4" />
                   </div>
                 </div>
               </div>
@@ -555,7 +553,7 @@ export function ShoppingListSection() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold text-gray-900">Inköpslista vecka 1</h2>
           <button className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors">
-            <FiDownload />
+            <Download />
             <span>Ladda ner PDF</span>
           </button>
         </div>
@@ -693,7 +691,7 @@ export function KnowledgeSection() {
                         className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
                       >
                         Läs mer
-                        <FiChevronRight className="ml-1" />
+                        <ChevronRight className="ml-1" />
                       </Link>
                     </div>
                   </div>

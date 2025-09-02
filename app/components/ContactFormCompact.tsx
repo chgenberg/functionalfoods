@@ -1,7 +1,8 @@
 "use client";
 import { useState } from 'react';
-import { FiSend, FiMail, FiMessageSquare } from 'react-icons/fi';
+
 import { useT } from '../lib/i18n/LanguageProvider';
+import { Send, Mail, MessageSquare } from 'lucide-react';
 
 export default function ContactFormCompact() {
   const t = useT();
@@ -48,7 +49,7 @@ export default function ContactFormCompact() {
     <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
       <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="flex items-center gap-2">
-          <FiMessageSquare className="w-5 h-5 text-white" />
+          <MessageSquare className="w-5 h-5 text-white" />
           <h3 className="font-semibold text-white">{t('contact.quick.title','Snabbkontakt')}</h3>
         </div>
         <button className="text-white hover:text-accent transition-colors">
@@ -99,7 +100,7 @@ export default function ContactFormCompact() {
             ) : (
               <>
                 {t('contact.quick.send','Skicka')}
-                <FiSend className="w-4 h-4" />
+                <Send className="w-4 h-4" />
               </>
             )}
           </button>

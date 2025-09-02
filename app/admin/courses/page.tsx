@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiPlus, FiSearch, FiFilter, FiEdit, FiTrash2, FiUsers, FiClock, FiBook, FiTrendingUp, FiAward, FiCalendar, FiMoreVertical, FiEye } from 'react-icons/fi';
+
 import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Search, Filter, Edit, Trash2, Users, Clock, Book, TrendingUp, Award, Calendar, Eye } from 'lucide-react';
 
 interface Course {
   id: string;
@@ -128,7 +129,7 @@ export default function AdminCoursesPage() {
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
               <input
                 type="text"
                 placeholder="Sök kurser..."
@@ -183,7 +184,7 @@ export default function AdminCoursesPage() {
               href="/admin/courses/new"
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              <FiPlus className="text-xl" />
+              <Plus className="text-xl" />
               <span className="hidden sm:inline">Ny kurs</span>
             </Link>
           </div>
@@ -203,12 +204,12 @@ export default function AdminCoursesPage() {
               <p className="text-sm text-gray-600 mb-1">Totalt antal kurser</p>
               <p className="text-3xl font-bold text-gray-900">{courses.length}</p>
               <p className="text-xs text-primary mt-2 flex items-center gap-1">
-                <FiTrendingUp />
+                <TrendingUp />
                 +12% denna månad
               </p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-pink-400 rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <FiBook className="w-7 h-7" />
+              <Book className="w-7 h-7" />
             </div>
           </div>
         </motion.div>
@@ -224,12 +225,12 @@ export default function AdminCoursesPage() {
               <p className="text-sm text-gray-600 mb-1">Aktiva deltagare</p>
               <p className="text-3xl font-bold text-gray-900">156</p>
               <p className="text-xs text-blue-600 mt-2 flex items-center gap-1">
-                <FiUsers />
+                <Users />
                 23 nya denna vecka
               </p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <FiUsers className="w-7 h-7" />
+              <Users className="w-7 h-7" />
             </div>
           </div>
         </motion.div>
@@ -245,12 +246,12 @@ export default function AdminCoursesPage() {
               <p className="text-sm text-gray-600 mb-1">Genomsnittlig längd</p>
               <p className="text-3xl font-bold text-gray-900">6v</p>
               <p className="text-xs text-purple-600 mt-2 flex items-center gap-1">
-                <FiClock />
+                <Clock />
                 Mest populära: 6 veckor
               </p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <FiClock className="w-7 h-7" />
+              <Clock className="w-7 h-7" />
             </div>
           </div>
         </motion.div>
@@ -266,12 +267,12 @@ export default function AdminCoursesPage() {
               <p className="text-sm text-gray-600 mb-1">Slutförandegrad</p>
               <p className="text-3xl font-bold text-gray-900">84%</p>
               <p className="text-xs text-primary mt-2 flex items-center gap-1">
-                <FiAward />
+                <Award />
                 Över genomsnittet
               </p>
             </div>
             <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <FiAward className="w-7 h-7" />
+              <Award className="w-7 h-7" />
             </div>
           </div>
         </motion.div>
@@ -292,14 +293,14 @@ export default function AdminCoursesPage() {
           className="bg-white rounded-2xl shadow-lg p-12 text-center"
         >
           <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FiBook className="w-12 h-12 text-gray-400" />
+            <Book className="w-12 h-12 text-gray-400" />
           </div>
           <p className="text-gray-500 text-lg mb-6">Inga kurser hittades</p>
           <Link
             href="/admin/courses/new"
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            <FiPlus />
+            <Plus />
             Skapa din första kurs
           </Link>
         </motion.div>
@@ -325,7 +326,7 @@ export default function AdminCoursesPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <FiBook className="w-20 h-20 text-white/30" />
+                      <Book className="w-20 h-20 text-white/30" />
                     </div>
                   )}
                   
@@ -350,21 +351,21 @@ export default function AdminCoursesPage() {
                           href={`/admin/courses/${course.id}/edit`}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
                         >
-                          <FiEdit className="text-orange-600" />
+                          <Edit className="text-orange-600" />
                           <span>Redigera</span>
                         </Link>
                         <Link
                           href={`/utbildning/functional-basics`}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
                         >
-                          <FiEye className="text-blue-600" />
+                          <Eye className="text-blue-600" />
                           <span>Förhandsgranska</span>
                         </Link>
                         <button
                           onClick={() => handleDelete(course.id)}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-red-600 w-full text-left"
                         >
-                          <FiTrash2 />
+                          <Trash2 />
                           <span>Ta bort</span>
                         </button>
                       </div>
@@ -384,11 +385,11 @@ export default function AdminCoursesPage() {
                   {/* Meta Info */}
                   <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center gap-1">
-                      <FiClock className="text-gray-400" />
+                      <Clock className="text-gray-400" />
                       <span>{course.duration}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <FiUsers className="text-gray-400" />
+                      <Users className="text-gray-400" />
                       <span>0 deltagare</span>
                     </div>
                   </div>
@@ -413,7 +414,7 @@ export default function AdminCoursesPage() {
                       onClick={() => handleDelete(course.id)}
                       className="px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-colors"
                     >
-                      <FiTrash2 />
+                      <Trash2 />
                     </button>
                   </div>
                 </div>
@@ -494,7 +495,7 @@ export default function AdminCoursesPage() {
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         <div className="flex items-center gap-1">
-                          <FiClock className="text-gray-400" />
+                          <Clock className="text-gray-400" />
                           {course.duration}
                         </div>
                       </td>
@@ -503,7 +504,7 @@ export default function AdminCoursesPage() {
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
                         <div className="flex items-center gap-1">
-                          <FiCalendar className="text-gray-400" />
+                          <Calendar className="text-gray-400" />
                           {new Date(course.createdAt).toLocaleDateString('sv-SE')}
                         </div>
                       </td>
@@ -513,13 +514,13 @@ export default function AdminCoursesPage() {
                             href={`/admin/courses/${course.id}/edit`}
                             className="p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors"
                           >
-                            <FiEdit className="w-4 h-4" />
+                            <Edit className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDelete(course.id)}
                             className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                           >
-                            <FiTrash2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>

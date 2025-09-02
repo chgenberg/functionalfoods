@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { FiPackage, FiCheck, FiX, FiClock, FiDollarSign, FiUser, FiCalendar, FiEye } from 'react-icons/fi';
+import { Package, Check, X, Clock, DollarSign, User, Calendar, Eye } from 'lucide-react';
 
 interface OrderItem {
   id: string;
@@ -168,7 +168,7 @@ export default function AdminOrdersPage() {
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <FiPackage className="w-5 h-5 text-gray-400 mr-2" />
+                        <Package className="w-5 h-5 text-gray-400 mr-2" />
                         <div>
                           <div className="text-sm font-medium text-gray-900">
                             {order.orderNumber}
@@ -182,7 +182,7 @@ export default function AdminOrdersPage() {
                     
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <FiUser className="w-4 h-4 text-gray-400 mr-2" />
+                        <User className="w-4 h-4 text-gray-400 mr-2" />
                         <div>
                           <div className="text-sm font-medium text-gray-900">
                             {order.user.name || 'Ingen namn'}
@@ -206,7 +206,7 @@ export default function AdminOrdersPage() {
                     
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <FiDollarSign className="w-4 h-4 text-gray-400 mr-1" />
+                        <DollarSign className="w-4 h-4 text-gray-400 mr-1" />
                         <span className="text-sm font-medium text-gray-900">
                           {order.totalAmount.toFixed(2)} {order.currency}
                         </span>
@@ -236,7 +236,7 @@ export default function AdminOrdersPage() {
                     
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <FiCalendar className="w-4 h-4 text-gray-400 mr-2" />
+                        <Calendar className="w-4 h-4 text-gray-400 mr-2" />
                         <span className="text-sm text-gray-900">
                           {new Date(order.createdAt).toLocaleDateString('sv-SE')}
                         </span>
@@ -248,7 +248,7 @@ export default function AdminOrdersPage() {
                         onClick={() => setSelectedOrder(order)}
                         className="text-primary hover:text-primary-dark flex items-center"
                       >
-                        <FiEye className="w-4 h-4 mr-1" />
+                        <Eye className="w-4 h-4 mr-1" />
                         Visa
                       </button>
                     </td>
@@ -261,7 +261,7 @@ export default function AdminOrdersPage() {
 
         {filteredOrders.length === 0 && (
           <div className="text-center py-12">
-            <FiPackage className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Inga beställningar</h3>
             <p className="text-gray-500">
               {statusFilter === 'ALL' 
@@ -286,7 +286,7 @@ export default function AdminOrdersPage() {
                   onClick={() => setSelectedOrder(null)}
                   className="text-gray-400 hover:text-gray-600"
                 >
-                  <FiX className="w-6 h-6" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
 

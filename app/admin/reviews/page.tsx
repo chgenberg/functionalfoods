@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { FiCheckCircle, FiXCircle, FiFilter } from 'react-icons/fi';
+import { CheckCircle, XCircle, Filter } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -35,7 +35,7 @@ export default function AdminReviewsPage() {
     <div>
       <h1 className="text-2xl font-bold mb-4">Recensioner</h1>
       <div className="flex flex-wrap gap-2 items-center mb-4">
-        <FiFilter className="text-gray-500" />
+        <Filter className="text-gray-500" />
         <input value={courseId} onChange={e=>setCourseId(e.target.value)} placeholder="courseId (t.ex. functional-basics)" className="px-3 py-2 border rounded" />
         <select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2 border rounded">
           <option value="">Alla status</option>
@@ -63,8 +63,8 @@ export default function AdminReviewsPage() {
                 ))}
               </div>
               <div className="mt-3 flex gap-2">
-                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'APPROVED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700"><FiCheckCircle/>Godkänn</button>
-                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'REJECTED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700"><FiXCircle/>Avvisa</button>
+                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'APPROVED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700"><CheckCircle/>Godkänn</button>
+                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'REJECTED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700"><XCircle/>Avvisa</button>
               </div>
             </div>
           ))}

@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiUser, FiMail, FiLock, FiSave, FiCheck, FiAlertCircle } from 'react-icons/fi';
+
 import { useRouter } from 'next/navigation';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import HelpGuide from '@/app/components/HelpGuide';
+import { User, Mail, Lock, Save, Check, AlertCircle } from 'lucide-react';
 interface UserData {
   id: string;
   email: string;
@@ -186,7 +187,7 @@ export default function SettingsPage() {
           {/* Profile Information Section */}
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <FiUser className="text-primary" />
+              <User className="text-primary" />
               Profilinformation
             </h2>
             
@@ -210,7 +211,7 @@ export default function SettingsPage() {
                   E-postadress
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="email"
                     id="email"
@@ -227,7 +228,7 @@ export default function SettingsPage() {
           {/* Password Section */}
           <div className="border-t pt-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <FiLock className="text-primary" />
+              <Lock className="text-primary" />
               Byt lösenord
             </h2>
             
@@ -303,9 +304,9 @@ export default function SettingsPage() {
               }`}
             >
               {message.type === 'success' ? (
-                <FiCheck className="w-5 h-5 flex-shrink-0" />
+                <Check className="w-5 h-5 flex-shrink-0" />
               ) : (
-                <FiAlertCircle className="w-5 h-5 flex-shrink-0" />
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
               )}
               <span>{message.text}</span>
             </motion.div>
@@ -325,7 +326,7 @@ export default function SettingsPage() {
                 </>
               ) : (
                 <>
-                  <FiSave className="w-5 h-5" />
+                  <Save className="w-5 h-5" />
                   Spara ändringar
                 </>
               )}

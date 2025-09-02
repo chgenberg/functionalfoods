@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronDown, FiCheck, FiBook, FiLock } from 'react-icons/fi';
+
 import { useAuth } from '../hooks/useAuth';
+import { ChevronDown, Check, Book, Lock } from 'lucide-react';
 
 interface Course {
   id: string;
@@ -128,7 +129,7 @@ export default function CourseSwitcher() {
       >
         <span className="text-xl">{currentCourse.icon}</span>
         <span>{currentCourse.displayName}</span>
-        <FiChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence>
@@ -171,13 +172,13 @@ export default function CourseSwitcher() {
                       <p className="font-medium">{course.displayName}</p>
                       {!hasAccess && (
                         <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                          <FiLock className="w-3 h-3" />
+                          <Lock className="w-3 h-3" />
                           Låst
                         </p>
                       )}
                     </div>
                     {isCurrentCourse && (
-                      <FiCheck className="w-5 h-5 text-primary" />
+                      <Check className="w-5 h-5 text-primary" />
                     )}
                   </button>
                 );

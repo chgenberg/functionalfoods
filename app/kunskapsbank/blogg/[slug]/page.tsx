@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiCalendar, FiClock, FiArrowLeft, FiUser, FiTag } from 'react-icons/fi';
+
 import { motion } from 'framer-motion';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { Calendar, Clock, ArrowLeft, User, Tag } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -374,7 +375,7 @@ export default function BlogPostPage({ params }: Props) {
             href="/kunskapsbank/blogg"
             className="inline-flex items-center text-accent hover:text-accent-hover font-medium"
           >
-            <FiArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4 mr-2" />
             {t('blog.post.backToBlog','Tillbaka till bloggen')}
           </Link>
         </div>
@@ -397,7 +398,7 @@ export default function BlogPostPage({ params }: Props) {
               href="/kunskapsbank/blogg" 
               className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors group"
             >
-              <FiArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               {t('blog.post.backToBlog','Tillbaka till bloggen')}
             </Link>
           </motion.div>
@@ -411,7 +412,7 @@ export default function BlogPostPage({ params }: Props) {
           >
             {/* Category Badge */}
             <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <FiTag className="w-4 h-4" />
+              <Tag className="w-4 h-4" />
               Functional Foods
             </div>
 
@@ -428,15 +429,15 @@ export default function BlogPostPage({ params }: Props) {
             {/* Meta Information */}
             <div className="flex flex-wrap items-center justify-center gap-6 text-text-secondary">
               <div className="flex items-center gap-2">
-                <FiUser className="w-4 h-4" />
+                <User className="w-4 h-4" />
                 <span>{post.author?.name || 'Ulrika Davidsson'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <FiCalendar className="w-4 h-4" />
+                <Calendar className="w-4 h-4" />
                 <span>{new Date(post.publishedAt).toLocaleDateString('sv-SE')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <FiClock className="w-4 h-4" />
+                <Clock className="w-4 h-4" />
                 <span>{calculateReadTime(post.content)}</span>
               </div>
             </div>
@@ -479,11 +480,11 @@ export default function BlogPostPage({ params }: Props) {
                 <span className="text-sm text-text-secondary">{t('blog.post.share','Dela artikeln:')}</span>
                 <div className="flex gap-2">
                   <span className="inline-flex items-center gap-1 text-xs text-text-secondary bg-background-secondary px-2 py-1 rounded">
-                    <FiTag className="w-4 h-4" />
+                    <Tag className="w-4 h-4" />
                     Functional Foods
                   </span>
                   <span className="inline-flex items-center gap-1 text-xs text-text-secondary bg-background-secondary px-2 py-1 rounded">
-                    <FiTag className="w-4 h-4" />
+                    <Tag className="w-4 h-4" />
                     Hälsa
                   </span>
                 </div>

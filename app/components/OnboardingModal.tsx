@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiCheck } from 'react-icons/fi';
+import { X, Check } from 'lucide-react';
 
 interface OnboardingData {
   diet?: string;
@@ -98,7 +98,7 @@ export default function OnboardingModal({
               onClick={onClose}
               className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors"
             >
-              <FiX className="w-5 h-5" />
+              <X className="w-5 h-5" />
             </button>
             
             <div className="text-center">
@@ -158,7 +158,7 @@ export default function OnboardingModal({
                 className="flex-1 px-4 py-3 rounded-xl bg-[#014421] text-white hover:bg-[#112A12] transition-colors font-medium flex items-center justify-center gap-2"
               >
                 Nästa
-                <FiCheck className="w-4 h-4" />
+                <Check className="w-4 h-4" />
               </button>
             ) : (
               <button 
@@ -166,7 +166,7 @@ export default function OnboardingModal({
                 className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-[#FFB5A7] to-[#FCD5CE] text-white hover:shadow-lg transition-all font-medium flex items-center justify-center gap-2"
               >
                 Slutför
-                <FiCheck className="w-4 h-4" />
+                <Check className="w-4 h-4" />
               </button>
             )}
             

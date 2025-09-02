@@ -70,7 +70,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <FiLoader className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
+        <Loader className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
         <p className="text-gray-600">{t('dashboard.loading','Laddar din dashboard...')}</p>
       </div>
     </div>

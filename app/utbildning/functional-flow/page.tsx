@@ -2,12 +2,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { FiClock, FiCheckCircle, FiArrowLeft, FiHeart, FiZap, FiShoppingCart, FiUsers, FiBook, FiStar, FiPlay, FiVideo, FiUser, FiChevronRight } from 'react-icons/fi';
+
 import { GiBrain, GiStomach, GiWheat, GiHeartBeats } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
+import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Video, User, ChevronRight } from 'lucide-react';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -42,7 +43,7 @@ export default function FunctionalFlowPage() {
       color: "text-blue-600"
     },
     {
-      icon: FiZap,
+      icon: Zap,
       title: "Balanserat blodsocker",
       description: "Håll blodsockret stabilt för jämnare energi genom dagen och bättre allmän hälsa.",
       color: "text-yellow-600"
@@ -57,7 +58,7 @@ export default function FunctionalFlowPage() {
 
   const whatYouGet = [
     {
-      icon: FiBook,
+      icon: Book,
       title: "85 Recept & Måltidsplan",
       description: "Enkla, goda och näringsrika måltider för en bättre hälsa"
     },
@@ -67,22 +68,22 @@ export default function FunctionalFlowPage() {
       description: "Förstå sambandet mellan mat, tarmhälsa och energi"
     },
     {
-      icon: FiShoppingCart,
+      icon: ShoppingCart,
       title: "Råvaruguide & inköpslista",
       description: "Smarta inköp för att fylla köket med rätt mat"
     },
     {
-      icon: FiCheckCircle,
+      icon: CheckCircle,
       title: "Steg-för-steg-planering",
       description: "Lär dig att planera och balansera dina måltider"
     },
     {
-      icon: FiPlay,
+      icon: Play,
       title: "Videolektioner varje vecka",
       description: "Lättillgängligt och inspirerande innehåll"
     },
     {
-      icon: FiUsers,
+      icon: Users,
       title: "One-to-one coachning",
       description: "Personlig coaching med Ulrika och gruppstöd"
     }
@@ -97,9 +98,9 @@ export default function FunctionalFlowPage() {
 
   const functionalFoodsBenefits = [
     { icon: GiHeartBeats, text: "Stödja hormonsystemet" },
-    { icon: FiHeart, text: "Stärka immunförsvaret" },
+    { icon: Heart, text: "Stärka immunförsvaret" },
     { icon: GiStomach, text: "Förbättra matsmältningen" },
-    { icon: FiZap, text: "Ge jämnare energibalanser" }
+    { icon: Zap, text: "Ge jämnare energibalanser" }
   ];
 
   return (
@@ -116,7 +117,7 @@ export default function FunctionalFlowPage() {
           transition={{ duration: 0.3 }}
         >
           <Link href="/utbildning" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors group">
-            <FiArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Tillbaka till kurser
           </Link>
         </motion.div>
@@ -160,7 +161,7 @@ export default function FunctionalFlowPage() {
                 transition={{ delay: 1, duration: 0.5 }}
                 className="absolute -bottom-4 -left-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg flex items-center"
               >
-                <FiStar className="w-4 h-4 mr-1" />
+                <Star className="w-4 h-4 mr-1" />
                 85 Recept
               </motion.div>
             </div>
@@ -189,15 +190,15 @@ export default function FunctionalFlowPage() {
               className="flex flex-wrap items-center gap-4 text-text-secondary mb-6"
             >
               <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full">
-                <FiClock className="w-5 h-5 text-primary" />
+                <Clock className="w-5 h-5 text-primary" />
                 <span className="font-medium">6 veckor</span>
               </div>
               <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full">
-                <FiUsers className="w-5 h-5 text-primary" />
+                <Users className="w-5 h-5 text-primary" />
                 <span className="font-medium">Community</span>
               </div>
               <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full">
-                <FiPlay className="w-5 h-5 text-primary" />
+                <Play className="w-5 h-5 text-primary" />
                 <span className="font-medium">Videolektioner</span>
               </div>
             </motion.div>
@@ -234,19 +235,19 @@ export default function FunctionalFlowPage() {
               <div className="w-full border-t border-gray-200 my-2"></div>
               <div className="flex flex-col gap-2 w-full">
                 <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <FiBook className="w-4 h-4 text-primary" />
+                  <Book className="w-4 h-4 text-primary" />
                   85 Recept & måltidsplaner
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <FiVideo className="w-4 h-4 text-primary" />
+                  <Video className="w-4 h-4 text-primary" />
                   Videolektioner varje vecka
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <FiUser className="w-4 h-4 text-primary" />
+                  <User className="w-4 h-4 text-primary" />
                   1-på-1 coaching
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <FiClock className="w-4 h-4 text-primary" />
+                  <Clock className="w-4 h-4 text-primary" />
                   Livstidsåtkomst
                 </div>
               </div>
@@ -330,7 +331,7 @@ export default function FunctionalFlowPage() {
                       transition={{ delay: index * 0.1 }}
                       className="flex items-start gap-3 p-4 bg-background rounded-lg"
                     >
-                      <FiCheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                      <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <span className="text-text-secondary">{item}</span>
                     </motion.div>
                   ))}
@@ -472,7 +473,7 @@ export default function FunctionalFlowPage() {
               className="px-8 py-3 bg-white/20 backdrop-blur-sm text-white rounded-full font-medium hover:bg-white/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
             >
               Se kostschema
-              <FiChevronRight />
+              <ChevronRight />
             </Link>
           </div>
         </div>

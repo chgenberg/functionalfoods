@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiArrowLeft, FiArrowRight, FiCheck, FiBook, FiClock, FiUsers, FiTarget, FiImage, FiSave, FiCalendar, FiDownload, FiPlus, FiX, FiFileText } from 'react-icons/fi';
+
 import { GiMeal, GiFruitBowl } from 'react-icons/gi';
+import { ArrowLeft, ArrowRight, Check, Book, Clock, Users, Target, Image, Save, Calendar, Download, Plus, X, FileText } from 'lucide-react';
 
 interface WeekData {
   weekNumber: number;
@@ -86,7 +87,7 @@ const RecipeSelector = ({
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Välj recept</h3>
             <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-              <FiX className="w-5 h-5" />
+              <X className="w-5 h-5" />
             </button>
           </div>
           <input
@@ -179,13 +180,13 @@ export default function NewCoursePage() {
   });
 
   const steps = [
-    { number: 1, title: 'Grundinfo', icon: FiBook },
-    { number: 2, title: 'Struktur', icon: FiCalendar },
+    { number: 1, title: 'Grundinfo', icon: Book },
+    { number: 2, title: 'Struktur', icon: Calendar },
     { number: 3, title: 'Veckor', icon: GiMeal },
-    { number: 4, title: 'Material', icon: FiFileText },
-    { number: 5, title: 'Nedladdningar', icon: FiDownload },
-    { number: 6, title: 'Community', icon: FiUsers },
-    { number: 7, title: 'Granska', icon: FiCheck },
+    { number: 4, title: 'Material', icon: FileText },
+    { number: 5, title: 'Nedladdningar', icon: Download },
+    { number: 6, title: 'Community', icon: Users },
+    { number: 7, title: 'Granska', icon: Check },
   ];
 
   const handleNext = () => {
@@ -339,7 +340,7 @@ export default function NewCoursePage() {
             onClick={() => router.back()}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
-            <FiArrowLeft />
+            <ArrowLeft />
             Tillbaka
           </button>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Skapa ny kurs</h1>
@@ -446,7 +447,7 @@ export default function NewCoursePage() {
                     Längd
                   </label>
                   <div className="relative">
-                    <FiClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
                       value={courseData.duration}
@@ -491,7 +492,7 @@ export default function NewCoursePage() {
                         onClick={() => removeObjective(index)}
                         className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <FiX className="w-4 h-4" />
+                        <X className="w-4 h-4" />
                       </button>
                     )}
                   </div>
@@ -602,7 +603,7 @@ export default function NewCoursePage() {
                         }}
                         className="text-red-600 hover:text-red-700"
                       >
-                        <FiX className="w-5 h-5" />
+                        <X className="w-5 h-5" />
                       </button>
                     )}
                   </div>
@@ -659,7 +660,7 @@ export default function NewCoursePage() {
                           }}
                           className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
                         >
-                          <FiX className="w-4 h-4" />
+                          <X className="w-4 h-4" />
                         </button>
                       </div>
                     ))}
@@ -697,7 +698,7 @@ export default function NewCoursePage() {
                                     onClick={() => removeMeal(weekIndex, day, 'breakfast')}
                                     className="text-red-500 hover:text-red-700 ml-2"
                                   >
-                                    <FiX className="w-3 h-3" />
+                                    <X className="w-3 h-3" />
                                   </button>
                                 </div>
                               ) : (
@@ -723,7 +724,7 @@ export default function NewCoursePage() {
                                     onClick={() => removeMeal(weekIndex, day, 'lunch')}
                                     className="text-red-500 hover:text-red-700 ml-2"
                                   >
-                                    <FiX className="w-3 h-3" />
+                                    <X className="w-3 h-3" />
                                   </button>
                                 </div>
                               ) : (
@@ -749,7 +750,7 @@ export default function NewCoursePage() {
                                     onClick={() => removeMeal(weekIndex, day, 'dinner')}
                                     className="text-red-500 hover:text-red-700 ml-2"
                                   >
-                                    <FiX className="w-3 h-3" />
+                                    <X className="w-3 h-3" />
                                   </button>
                                 </div>
                               ) : (
@@ -1074,7 +1075,7 @@ export default function NewCoursePage() {
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
             }`}
           >
-            <FiArrowLeft />
+            <ArrowLeft />
             Föregående
           </button>
 
@@ -1084,7 +1085,7 @@ export default function NewCoursePage() {
               className="px-6 py-3 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 hover:shadow-lg transition-all flex items-center justify-center gap-2"
             >
               Nästa
-              <FiArrowRight />
+              <ArrowRight />
             </button>
           ) : (
             <button
@@ -1099,7 +1100,7 @@ export default function NewCoursePage() {
                 </>
               ) : (
                 <>
-                  <FiSave />
+                  <Save />
                   Skapa kurs
                 </>
               )}

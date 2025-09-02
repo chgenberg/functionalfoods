@@ -3,15 +3,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { 
-  FiMessageSquare, FiThumbsUp, FiEye, FiSearch, FiEdit, FiFilter,
-  FiPlus, FiClock, FiUser, FiTag, FiTrendingUp, FiStar
-} from 'react-icons/fi';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import HelpGuide from '@/app/components/HelpGuide';
+import { MessageSquare, ThumbsUp, Eye, Search, Edit, Filter, Plus, Clock, User, Tag, TrendingUp, Star } from 'lucide-react';
 interface ForumCategory {
   id: string;
   name: string;
@@ -85,7 +82,7 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
             </span>
             {thread._count.likes > 5 && (
               <span className="flex items-center gap-1 text-xs text-yellow-600">
-                <FiStar className="w-3 h-3" />
+                <Star className="w-3 h-3" />
                 Populär
               </span>
             )}
@@ -103,11 +100,11 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
           
           <div className="flex items-center gap-4 text-sm text-gray-500">
             <div className="flex items-center gap-1">
-              <FiUser className="w-4 h-4" />
+              <User className="w-4 h-4" />
               <span>{thread.author.name || thread.author.email.split('@')[0]}</span>
             </div>
             <div className="flex items-center gap-1">
-              <FiClock className="w-4 h-4" />
+              <Clock className="w-4 h-4" />
               <span>{timeAgo}</span>
             </div>
           </div>
@@ -115,15 +112,15 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
         
         <div className="flex-shrink-0 flex items-center gap-6 text-sm text-gray-600">
             <div className="flex items-center gap-2" title="Svar">
-            <FiMessageSquare className="w-4 h-4 text-gray-400"/>
+            <MessageSquare className="w-4 h-4 text-gray-400"/>
             <span className="font-medium">{thread._count.replies}</span>
           </div>
           <div className="flex items-center gap-2" title="Gillningar">
-            <FiThumbsUp className="w-4 h-4 text-gray-400"/>
+            <ThumbsUp className="w-4 h-4 text-gray-400"/>
             <span className="font-medium">{thread._count.likes}</span>
             </div>
              <div className="flex items-center gap-2" title="Visningar">
-            <FiEye className="w-4 h-4 text-gray-400"/>
+            <Eye className="w-4 h-4 text-gray-400"/>
                 <span className="font-medium">{thread.views}</span>
             </div>
           
@@ -273,7 +270,7 @@ export default function CommunityPage() {
           onClick={() => setShowNewThreadModal(true)}
           className="flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#112A12] transition-colors shadow-sm"
         >
-          <FiPlus className="w-4 h-4" />
+          <Plus className="w-4 h-4" />
           <span>Starta diskussion</span>
         </button>
       </div>
@@ -311,7 +308,7 @@ export default function CommunityPage() {
       {/* Search and Filter */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-grow">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input 
             type="text" 
             placeholder="Sök diskussioner..." 
@@ -321,7 +318,7 @@ export default function CommunityPage() {
           />
         </div>
         <div className="relative">
-          <FiFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -360,7 +357,7 @@ export default function CommunityPage() {
           </AnimatePresence>
         ) : (
           <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-            <FiMessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Inga diskussioner hittades</h3>
             <p className="text-gray-600 mb-4">
               {searchTerm ? 'Prova att ändra din sökning' : 'Var den första att starta en diskussion!'}
@@ -369,7 +366,7 @@ export default function CommunityPage() {
               onClick={() => setShowNewThreadModal(true)}
               className="inline-flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#112A12] transition-colors"
             >
-              <FiPlus className="w-4 h-4" />
+              <Plus className="w-4 h-4" />
               Starta diskussion
             </button>
           </div>
@@ -498,7 +495,7 @@ export default function CommunityPage() {
                         </>
                       ) : (
                         <>
-                          <FiPlus className="w-4 h-4" />
+                          <Plus className="w-4 h-4" />
                           Skapa diskussion
                         </>
                       )}

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { FiPlus, FiEdit3, FiTrash2, FiSearch, FiTag } from 'react-icons/fi';
+import { Plus, Edit3, Trash2, Search, Tag } from 'lucide-react';
 
 interface Coupon {
   id: string;
@@ -56,11 +56,11 @@ export default function AdminCouponsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Rabattkoder</h1>
           <p className="text-gray-600">Hantera rabattkoder för kampanjer</p>
         </div>
-        <button onClick={openNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary"><FiPlus/>Ny kod</button>
+        <button onClick={openNew} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary"><Plus/>Ny kod</button>
       </div>
 
       <div className="mb-4 relative max-w-sm">
-        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Sök kod..." className="w-full pl-9 pr-3 py-2 border rounded-lg" />
       </div>
 
@@ -89,8 +89,8 @@ export default function AdminCouponsPage() {
                     <td>{c.startsAt? c.startsAt.slice(0,10): '—'} – {c.expiresAt? c.expiresAt.slice(0,10): '—'}</td>
                     <td>{c.active? 'Aktiv' : 'Inaktiv'}</td>
                     <td className="text-right">
-                      <button onClick={()=>openEdit(c)} className="p-2 text-blue-600"><FiEdit3/></button>
-                      <button onClick={()=>remove(c.id)} className="p-2 text-red-600"><FiTrash2/></button>
+                      <button onClick={()=>openEdit(c)} className="p-2 text-blue-600"><Edit3/></button>
+                      <button onClick={()=>remove(c.id)} className="p-2 text-red-600"><Trash2/></button>
                     </td>
                   </tr>
                 ))}
@@ -99,7 +99,7 @@ export default function AdminCouponsPage() {
           )}
         </div>
         <div className="bg-white rounded-xl border p-4">
-          <h3 className="font-semibold mb-3 flex items-center gap-2"><FiTag/> {editing? 'Redigera rabattkod' : 'Ny rabattkod'}</h3>
+          <h3 className="font-semibold mb-3 flex items-center gap-2"><Tag/> {editing? 'Redigera rabattkod' : 'Ny rabattkod'}</h3>
           <div className="space-y-3">
             <input value={form.code||''} onChange={e=>setForm({ ...form, code: e.target.value })} placeholder="Kod (t.ex. SOMMAR20)" className="w-full px-3 py-2 border rounded" />
             <div className="flex gap-2">

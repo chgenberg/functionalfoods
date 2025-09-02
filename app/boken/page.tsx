@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { ArrowLeft, CheckCircle, Clock } from 'lucide-react';
 
 export default function BookPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -55,7 +55,7 @@ export default function BookPage() {
                 rel="noopener noreferrer"
                 className="btn-primary w-full flex items-center justify-center group"
               >
-                <FiArrowLeft className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                <ArrowLeft className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                 Köp nu
               </Link>
             </div>
@@ -63,15 +63,15 @@ export default function BookPage() {
             {/* Key Features */}
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-white rounded-xl p-4 text-center">
-                <FiClock className="w-8 h-8 text-accent mx-auto mb-2" />
+                <Clock className="w-8 h-8 text-accent mx-auto mb-2" />
                 <p className="text-sm font-medium">60+ recept</p>
               </div>
               <div className="bg-white rounded-xl p-4 text-center">
-                <FiCheckCircle className="w-8 h-8 text-accent mx-auto mb-2" />
+                <CheckCircle className="w-8 h-8 text-accent mx-auto mb-2" />
                 <p className="text-sm font-medium">Expertkunskap</p>
               </div>
               <div className="bg-white rounded-xl p-4 text-center">
-                <FiClock className="w-8 h-8 text-accent mx-auto mb-2" />
+                <Clock className="w-8 h-8 text-accent mx-auto mb-2" />
                 <p className="text-sm font-medium">240 sidor</p>
               </div>
             </div>

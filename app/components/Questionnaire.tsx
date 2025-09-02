@@ -1,11 +1,12 @@
 "use client";
 import { useState } from 'react';
 import { Question, bodyPartQuestions, AnalysisResult } from '../types';
-import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
+
 import { useRouter } from 'next/navigation';
 import LoadingAnalysis from './LoadingAnalysis';
 import { GiSparkles } from 'react-icons/gi';
 import SymptomResultScreen from './SymptomResultScreen';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 interface QuestionnaireProps {
   bodyPart: string;
@@ -361,7 +362,7 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
             disabled={currentQuestion === 0}
             className="flex items-center gap-3 px-6 py-3 text-gray-600 hover:text-gray-800 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl hover:bg-gray-100 group"
           >
-            <FiChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Föregående</span>
           </button>
           

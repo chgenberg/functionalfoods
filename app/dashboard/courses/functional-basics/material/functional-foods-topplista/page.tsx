@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiChevronRight, FiAward, FiStar, FiHeart } from 'react-icons/fi';
+
 import { GiFruitBowl, GiAlgae, GiWheat, GiStomach, GiMeal, GiFishCooked, GiHerbsBundle, GiWaterBottle, GiMeat } from 'react-icons/gi';
 import { FaSeedling } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, CheckCircle, ChevronRight, Award, Star, Heart } from 'lucide-react';
 
 interface FoodCategory {
   id: number;
@@ -141,7 +142,7 @@ export default function FunctionalFoodsTopplistaPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
-            <FiArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
         </div>
@@ -154,7 +155,7 @@ export default function FunctionalFoodsTopplistaPage() {
         >
           <div className="flex items-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mr-4">
-              <FiAward className="w-8 h-8 text-white" />
+              <Award className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Functional Foods Topplista</h1>
@@ -233,7 +234,7 @@ export default function FunctionalFoodsTopplistaPage() {
                           : 'border-gray-300 hover:border-primary'
                       }`}
                     >
-                      {isChecked && <FiCheckCircle className="w-4 h-4 text-white" />}
+                      {isChecked && <CheckCircle className="w-4 h-4 text-white" />}
                     </button>
                   </div>
                   
@@ -241,10 +242,10 @@ export default function FunctionalFoodsTopplistaPage() {
                   
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center text-sm text-gray-500">
-                      <FiStar className="w-4 h-4 mr-1 text-yellow-500" />
+                      <Star className="w-4 h-4 mr-1 text-yellow-500" />
                       {category.benefits.length} fördelar
                     </div>
-                    <FiChevronRight className={`w-5 h-5 text-primary transition-transform ${
+                    <ChevronRight className={`w-5 h-5 text-primary transition-transform ${
                       isSelected ? 'rotate-90' : ''
                     }`} />
                   </div>
@@ -263,7 +264,7 @@ export default function FunctionalFoodsTopplistaPage() {
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
                             <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
-                              <FiHeart className="w-4 h-4 mr-2 text-red-500" />
+                              <Heart className="w-4 h-4 mr-2 text-red-500" />
                               Hälsofördelar
                             </h4>
                             <ul className="space-y-2">
@@ -336,7 +337,7 @@ export default function FunctionalFoodsTopplistaPage() {
               <Link href="/dashboard/courses/functional-basics/material/naturens-egna-halsobomber" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Nästa modul: Naturens egna hälsobomber
-                <FiChevronRight className="ml-1" />
+                <ChevronRight className="ml-1" />
               </Link>
             </div>
             <GiFruitBowl className="w-16 h-16 text-primary opacity-20" />

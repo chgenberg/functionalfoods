@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiStar, FiDownload, FiHeart, FiClock, FiCalendar } from 'react-icons/fi';
+
 import { useFavoriteRecipes, FavoriteRecipe } from '@/app/hooks/useFavoriteRecipes';
 
 interface FavoriteRecipesPDFProps {
@@ -401,6 +401,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
         @media print {
             body { margin: 0; padding: 10px; }
             .header, .footer { background: #014421 !important; }
+import { Star, Download, Heart, Clock, Calendar } from 'lucide-react';
         }
     </style>
 </head>
@@ -496,7 +497,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
         className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-6 border border-yellow-200"
       >
         <div className="text-center">
-          <FiHeart className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+          <Heart className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-900 mb-2">Inga favoritrecept ännu</h3>
           <p className="text-gray-600 mb-4">
             Stjärnmarkera recept i dina måltidsplaner för att samla dem här!
@@ -520,7 +521,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
-            <FiHeart className="text-red-500" />
+            <Heart className="text-red-500" />
             Mina Favoritrecept
           </h3>
           <p className="text-gray-600 text-sm">
@@ -542,7 +543,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
             </>
           ) : (
             <>
-              <FiDownload className="text-lg" />
+              <Download className="text-lg" />
               <span className="hidden sm:inline">Ladda ner PDF</span>
               <span className="sm:hidden">PDF</span>
             </>
@@ -573,13 +574,13 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
           .map(([week, recipes]) => (
             <div key={week} className="bg-white/60 rounded-lg p-4">
               <h4 className="font-semibold text-[#014421] mb-2 flex items-center gap-2">
-                <FiCalendar className="text-sm" />
+                <Calendar className="text-sm" />
                 {week}
               </h4>
               <div className="space-y-2">
                 {recipes.slice(0, 3).map((recipe, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-sm">
-                    <FiStar className="text-yellow-500 text-xs" />
+                    <Star className="text-yellow-500 text-xs" />
                     <span className="text-gray-700 truncate">{recipe.name}</span>
                     <span className="text-gray-500 text-xs">({getMealTypeSwedish(recipe.mealType)})</span>
                   </div>
@@ -597,7 +598,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
       {/* Call to Action */}
       <div className="mt-6 p-4 bg-white/60 rounded-lg border border-yellow-300">
         <div className="flex items-start gap-3">
-          <FiHeart className="text-red-500 text-lg flex-shrink-0 mt-0.5" />
+          <Heart className="text-red-500 text-lg flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-gray-900 mb-1">
               Spara dina favoritrecept!

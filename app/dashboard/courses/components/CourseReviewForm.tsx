@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiStar, FiHeart, FiSend, FiCheckCircle } from 'react-icons/fi';
+import { Star, Heart, Send, CheckCircle } from 'lucide-react';
 
 interface CourseReviewFormProps {
   courseId: string;
@@ -60,7 +60,7 @@ export default function CourseReviewForm({ courseId, courseName, onSubmitSuccess
         className="bg-white rounded-3xl shadow-xl p-8 text-center"
       >
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <FiCheckCircle className="w-8 h-8 text-green-600" />
+          <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
         <h3 className="text-2xl font-bold text-gray-900 mb-2">Tack för din recension!</h3>
         <p className="text-gray-600 mb-4">
@@ -80,7 +80,7 @@ export default function CourseReviewForm({ courseId, courseName, onSubmitSuccess
       className="bg-white rounded-3xl shadow-xl p-8"
     >
       <div className="text-center mb-8">
-        <FiHeart className="w-12 h-12 text-[#014421] mx-auto mb-4" />
+        <Heart className="w-12 h-12 text-[#014421] mx-auto mb-4" />
         <h3 className="text-2xl font-bold text-gray-900 mb-2">Hur upplevde du {courseName}?</h3>
         <p className="text-gray-600">
           Din feedback är ovärderlig för oss och hjälper andra att fatta rätt beslut
@@ -103,7 +103,7 @@ export default function CourseReviewForm({ courseId, courseName, onSubmitSuccess
                 onMouseLeave={() => setHoveredRating(0)}
                 className="transition-all duration-200 transform hover:scale-110"
               >
-                <FiStar
+                <Star
                   className={`w-8 h-8 ${
                     star <= (hoveredRating || rating)
                       ? 'text-yellow-400 fill-current'
@@ -165,7 +165,7 @@ export default function CourseReviewForm({ courseId, courseName, onSubmitSuccess
             whileHover={{ scale: !rating || !feedback.trim() || !consent ? 1 : 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <FiSend className="w-5 h-5" />
+            <Send className="w-5 h-5" />
             {isSubmitting ? 'Skickar...' : 'Skicka recension'}
           </motion.button>
         </div>

@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiChevronLeft, FiEdit, FiCalendar, FiUser } from 'react-icons/fi';
+
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
+import { ChevronLeft, Edit, Calendar, User } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -68,7 +69,7 @@ export default function ViewBlogPostPage() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <Link href="/admin/blog" className="flex items-center gap-2 text-primary hover:text-secondary transition-colors font-medium uppercase text-sm tracking-wider">
-              <FiChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5" />
               <span>Tillbaka till blogginlägg</span>
             </Link>
           </div>
@@ -85,18 +86,18 @@ export default function ViewBlogPostPage() {
             <div className="p-8 flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-primary/10">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 text-text-secondary">
-                        <FiUser className="w-5 h-5"/>
+                        <User className="w-5 h-5"/>
                         <span>{post.author.name || post.author.email}</span>
                     </div>
                     {displayDate && (
                       <div className="flex items-center gap-2 text-text-secondary">
-                          <FiCalendar className="w-5 h-5"/>
+                          <Calendar className="w-5 h-5"/>
                           <span>{dateLabel}: {format(new Date(displayDate), "d MMMM yyyy", { locale: sv })}</span>
                       </div>
                     )}
                 </div>
                 <Link href={`/admin/blog/${post.slug}/edit`} className="flex items-center gap-2 text-primary hover:text-secondary font-semibold transition-colors">
-                    <FiEdit className="w-4 h-4" />
+                    <Edit className="w-4 h-4" />
                     <span>Redigera inlägg</span>
                 </Link>
             </div>

@@ -6,7 +6,7 @@ import MicronutrientQuestionModal from "../components/MicronutrientQuestionModal
 import { AnalysisResult } from '../types';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCheckCircle, FiAlertCircle, FiTrendingUp, FiHeart, FiShield, FiActivity, FiDroplet, FiSun, FiMoon, FiCoffee, FiHome, FiArrowRight, FiDownload, FiBook, FiMapPin, FiMessageSquare, FiHelpCircle } from 'react-icons/fi';
+import { CheckCircle, AlertCircle, TrendingUp, Heart, Shield, Activity, Droplet, Sun, Moon, Coffee, Home, ArrowRight, Download, Book, MapPin, MessageSquare, HelpCircle } from 'lucide-react';
 
 // Färg för siluetten och chattbubblor
 const bubbleColor = "#f3f4f6"; // Samma som siluetten/landningssidan
@@ -64,7 +64,7 @@ function ResultPageContent() {
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
-            <FiHome />
+            <Home />
             Tillbaka till start
           </Link>
         </motion.div>
@@ -89,7 +89,7 @@ function ResultPageContent() {
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
-            <FiHome />
+            <Home />
             Tillbaka till start
           </Link>
         </motion.div>
@@ -173,10 +173,10 @@ function ResultPageContent() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
         >
           {[
-            { icon: FiActivity, label: "Energinivå", value: "Medel", color: "from-yellow-400 to-orange-500" },
-            { icon: FiMoon, label: "Sömnkvalitet", value: "God", color: "from-blue-400 to-purple-500" },
-            { icon: FiHeart, label: "Stressnivå", value: "Låg", color: "from-green-400 to-teal-500" },
-            { icon: FiDroplet, label: "Hydrering", value: "Optimal", color: "from-cyan-400 to-blue-500" }
+            { icon: Activity, label: "Energinivå", value: "Medel", color: "from-yellow-400 to-orange-500" },
+            { icon: Moon, label: "Sömnkvalitet", value: "God", color: "from-blue-400 to-purple-500" },
+            { icon: Heart, label: "Stressnivå", value: "Låg", color: "from-green-400 to-teal-500" },
+            { icon: Droplet, label: "Hydrering", value: "Optimal", color: "from-cyan-400 to-blue-500" }
           ].map((stat, index) => (
             <motion.div
               key={index}
@@ -205,7 +205,7 @@ function ResultPageContent() {
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                <FiShield className="w-5 h-5 text-blue-400" />
+                <Shield className="w-5 h-5 text-blue-400" />
                 Immunförsvar
               </h3>
               <p className="text-white/70 text-sm mb-2">
@@ -218,7 +218,7 @@ function ResultPageContent() {
             </div>
             <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                <FiActivity className="w-5 h-5 text-accent" />
+                <Activity className="w-5 h-5 text-accent" />
                 Energimetabolism
               </h3>
               <p className="text-white/70 text-sm mb-2">
@@ -231,7 +231,7 @@ function ResultPageContent() {
             </div>
             <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                <FiHeart className="w-5 h-5 text-red-400" />
+                <Heart className="w-5 h-5 text-red-400" />
                 Hjärthälsa
               </h3>
               <p className="text-white/70 text-sm mb-2">
@@ -256,7 +256,7 @@ function ResultPageContent() {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                <FiBook className="w-5 h-5 text-white" />
+                <Book className="w-5 h-5 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white">Sammanfattning</h3>
             </div>
@@ -278,7 +278,7 @@ function ResultPageContent() {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <FiCheckCircle className="w-5 h-5 text-white" />
+                <CheckCircle className="w-5 h-5 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white">Rekommendationer</h3>
             </div>
@@ -291,7 +291,7 @@ function ResultPageContent() {
                   transition={{ delay: 0.7 + index * 0.1 }}
                   className="flex items-start gap-2 mb-3"
                 >
-                  <FiArrowRight className="w-4 h-4 text-accent mt-1 flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-accent mt-1 flex-shrink-0" />
                   <div>
                     <span className="text-white/80 block">{rec}</span>
                     <span className="text-white/60 text-sm block mt-1">
@@ -314,7 +314,7 @@ function ResultPageContent() {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
-                <FiCoffee className="w-5 h-5 text-white" />
+                <Coffee className="w-5 h-5 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white">Funktionella Livsmedel</h3>
             </div>
@@ -347,7 +347,7 @@ function ResultPageContent() {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
-                <FiTrendingUp className="w-5 h-5 text-white" />
+                <TrendingUp className="w-5 h-5 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-white">Livsstilsförändringar</h3>
             </div>
@@ -437,7 +437,7 @@ function ResultPageContent() {
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-6">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center flex-shrink-0">
-                <FiBook className="w-8 h-8 text-white" />
+                <Book className="w-8 h-8 text-white" />
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-white mb-2">
@@ -448,19 +448,19 @@ function ResultPageContent() {
                 </p>
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-accent" />
+                    <CheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">6 veckors strukturerat program</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-accent" />
+                    <CheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">Personlig coachning och support</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-accent" />
+                    <CheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">Över 75 näringsrika recept</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-accent" />
+                    <CheckCircle className="w-5 h-5 text-accent" />
                     <span className="text-white/80">Vetenskapligt baserade metoder</span>
                   </div>
                 </div>
@@ -469,7 +469,7 @@ function ResultPageContent() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-secondary transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Läs mer om kursen
-                  <FiArrowRight />
+                  <ArrowRight />
                 </Link>
               </div>
             </div>
@@ -501,14 +501,14 @@ function ResultPageContent() {
               href="/dashboard"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              <FiMessageSquare />
+              <MessageSquare />
               Prata med en expert
             </Link>
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/10 backdrop-blur-lg text-white font-semibold hover:bg-white/20 transition-all duration-300 border border-white/20"
             >
-              <FiHome />
+              <Home />
               Tillbaka till start
             </Link>
           </div>
@@ -522,7 +522,7 @@ function ResultPageContent() {
           className="mt-12 p-6 bg-yellow-500/10 backdrop-blur-lg rounded-2xl border border-yellow-500/20"
         >
           <div className="flex items-start gap-3">
-            <FiAlertCircle className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-yellow-200">
               <strong>Observera:</strong> Dessa rekommendationer är generella råd baserade på din hälsoanalys 
               och ersätter inte professionell medicinsk rådgivning. Konsultera alltid läkare innan du gör 
@@ -544,7 +544,7 @@ function ResultPageContent() {
               className="inline-flex items-center gap-1 hover:text-white transition-colors"
               title="Läs vår AI Policy"
             >
-              <FiHelpCircle className="w-4 h-4" />
+              <HelpCircle className="w-4 h-4" />
               <span>*AI genererad plan</span>
             </Link>
           </div>

@@ -2,9 +2,10 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { FiX, FiClock, FiExternalLink, FiInfo, FiCheckCircle, FiStar, FiShoppingCart } from 'react-icons/fi';
+
 import { useState, useEffect } from 'react';
 import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
+import { X, Clock, ExternalLink, Info, CheckCircle, Star, ShoppingCart } from 'lucide-react';
 
 interface Meal {
   mealType: string;
@@ -291,14 +292,14 @@ export default function DayModal({
                     onClick={onClose}
                     className="p-2 hover:bg-white/20 rounded-full transition-colors"
                   >
-                    <FiX className="text-2xl" />
+                    <X className="text-2xl" />
                   </motion.button>
                 </div>
 
                 {/* Progress and Total Calories */}
                 <div className="mt-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <FiCheckCircle className="text-lg" />
+                    <CheckCircle className="text-lg" />
                     <span className="text-sm text-white/90">
                       {completedMeals.length} av {meals.length} måltider genomförda
                     </span>
@@ -348,7 +349,7 @@ export default function DayModal({
                           exit={{ scale: 0, rotate: 180 }}
                           className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-1"
                         >
-                          <FiCheckCircle className="text-xl" />
+                          <CheckCircle className="text-xl" />
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -372,7 +373,7 @@ export default function DayModal({
                               {meal.mealType}
                             </h3>
                             <div className="flex items-center gap-1 text-sm text-gray-600">
-                              <FiClock className="text-xs" />
+                              <Clock className="text-xs" />
                               <span>{meal.time}</span>
                             </div>
                           </div>
@@ -406,7 +407,7 @@ export default function DayModal({
                                 <span className="underline underline-offset-2 group-hover:underline-offset-4">
                                   {meal.meal.toLowerCase().includes('rester') ? 'Se ursprungsreceptet' : 'Se receptet'}
                                 </span>
-                                <FiExternalLink className="text-base group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                <ExternalLink className="text-base group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                               </Link>
                             </motion.div>
                           )}
@@ -451,7 +452,7 @@ export default function DayModal({
                             mealType: meal.mealType.toLowerCase() as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert'
                           }) ? 'Ta bort från favoriter' : 'Lägg till i favoriter'}
                         >
-                          <FiStar className={`text-lg ${
+                          <Star className={`text-lg ${
                             isFavorite({
                               name: meal.meal,
                               recipeLink: getRecipeLink(meal) || undefined,
@@ -489,7 +490,7 @@ export default function DayModal({
                 className="mt-3 p-2 bg-blue-50 rounded-lg border border-blue-100"
               >
                 <div className="flex items-center gap-2">
-                  <FiInfo className="text-blue-500 text-lg flex-shrink-0" />
+                  <Info className="text-blue-500 text-lg flex-shrink-0" />
                   <p className="text-xs text-gray-700">
                     <span className="font-medium">Tips:</span> Klicka på måltider för att markera som genomförda
                   </p>
@@ -515,7 +516,7 @@ export default function DayModal({
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#014421] hover:bg-[#116530] 
                     text-white font-medium rounded-full transition-colors group order-1 sm:order-2"
                 >
-                  <FiShoppingCart className="w-4 h-4" />
+                  <ShoppingCart className="w-4 h-4" />
                   <span>Se inköpslista</span>
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </Link>

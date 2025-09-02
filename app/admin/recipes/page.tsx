@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiPlus, FiEdit3, FiTrash2, FiSearch, FiFilter, FiCoffee, FiClock, FiUsers } from 'react-icons/fi';
+
 import { motion } from 'framer-motion';
+import { Plus, Edit3, Trash2, Search, Filter, Coffee, Clock, Users } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -120,7 +121,7 @@ export default function AdminRecipesPage() {
             href="/admin/recipes/new"
             className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg"
           >
-            <FiPlus className="w-5 h-5" />
+            <Plus className="w-5 h-5" />
             Skapa nytt recept
           </Link>
         </div>
@@ -139,7 +140,7 @@ export default function AdminRecipesPage() {
                 <p className="text-2xl font-bold text-gray-900">{recipes.length}</p>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <FiCoffee className="w-6 h-6 text-orange-600" />
+                <Coffee className="w-6 h-6 text-orange-600" />
               </div>
             </div>
           </motion.div>
@@ -158,7 +159,7 @@ export default function AdminRecipesPage() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-background-secondary rounded-xl flex items-center justify-center">
-                <FiCoffee className="w-6 h-6 text-primary" />
+                <Coffee className="w-6 h-6 text-primary" />
               </div>
             </div>
           </motion.div>
@@ -177,7 +178,7 @@ export default function AdminRecipesPage() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <FiCoffee className="w-6 h-6 text-purple-600" />
+                <Coffee className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </motion.div>
@@ -219,7 +220,7 @@ export default function AdminRecipesPage() {
           </div>
 
           <div className="flex-1 max-w-md relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Sök recept..."
@@ -261,7 +262,7 @@ export default function AdminRecipesPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-200">
-                  <FiCoffee className="w-16 h-16 text-orange-400" />
+                  <Coffee className="w-16 h-16 text-orange-400" />
                 </div>
               )}
               
@@ -310,19 +311,19 @@ export default function AdminRecipesPage() {
               <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                 {recipe.difficulty && (
                   <span className="flex items-center gap-1">
-                    <FiFilter className="w-4 h-4" />
+                    <Filter className="w-4 h-4" />
                     {recipe.difficulty}
                   </span>
                 )}
                 {recipe.servings && (
                   <span className="flex items-center gap-1">
-                    <FiUsers className="w-4 h-4" />
+                    <Users className="w-4 h-4" />
                     {recipe.servings} port
                   </span>
                 )}
                 {recipe.prepTime && (
                   <span className="flex items-center gap-1">
-                    <FiClock className="w-4 h-4" />
+                    <Clock className="w-4 h-4" />
                     {recipe.prepTime}
                   </span>
                 )}
@@ -334,14 +335,14 @@ export default function AdminRecipesPage() {
                   href={`/admin/recipes/${recipe.slug}/edit`}
                   className="flex-1 flex items-center justify-center gap-2 bg-blue-50 text-blue-600 py-2 px-4 rounded-xl hover:bg-blue-100 transition-colors text-sm font-medium"
                 >
-                  <FiEdit3 className="w-4 h-4" />
+                  <Edit3 className="w-4 h-4" />
                   Redigera
                 </Link>
                 <button
                   onClick={() => handleDeleteRecipe(recipe.id, recipe.title)}
                   className="flex items-center justify-center gap-2 bg-red-50 text-red-600 py-2 px-4 rounded-xl hover:bg-red-100 transition-colors text-sm font-medium"
                 >
-                  <FiTrash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" />
                   Ta bort
                 </button>
               </div>
@@ -352,7 +353,7 @@ export default function AdminRecipesPage() {
 
       {filteredRecipes.length === 0 && !loading && (
         <div className="text-center py-16">
-          <FiCoffee className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <Coffee className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <div className="text-gray-500 text-lg">
             {searchTerm ? 'Inga recept hittades för din sökning.' : 'Inga recept hittades.'}
           </div>
@@ -360,7 +361,7 @@ export default function AdminRecipesPage() {
             href="/admin/recipes/new"
             className="inline-flex items-center gap-2 mt-4 text-orange-600 hover:text-orange-700"
           >
-            <FiPlus className="w-5 h-5" />
+            <Plus className="w-5 h-5" />
             Skapa ditt första recept
           </Link>
         </div>

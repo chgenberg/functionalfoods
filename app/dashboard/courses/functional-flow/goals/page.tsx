@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiTarget, FiCheck, FiClock } from 'react-icons/fi';
+import { Target, Check, Clock } from 'lucide-react';
 
 interface Goal {
   id: string;
@@ -125,7 +125,7 @@ export default function FlowGoalsPage() {
                 }`}
               >
                 {goal.completed && (
-                  <FiCheck className="w-4 h-4 text-white" />
+                  <Check className="w-4 h-4 text-white" />
                 )}
               </button>
               
@@ -150,9 +150,9 @@ export default function FlowGoalsPage() {
               
               <div className="text-gray-400">
                 {goal.completed ? (
-                  <FiCheck className="w-5 h-5 text-primary" />
+                  <Check className="w-5 h-5 text-primary" />
                 ) : (
-                  <FiClock className="w-5 h-5" />
+                  <Clock className="w-5 h-5" />
                 )}
               </div>
             </div>
@@ -168,7 +168,7 @@ export default function FlowGoalsPage() {
         className="mt-8 bg-gradient-to-r from-[#1a4d78] to-[#2563a8] rounded-xl p-6 text-white"
       >
         <div className="flex items-center gap-3 mb-3">
-          <FiTarget className="w-6 h-6" />
+          <Target className="w-6 h-6" />
           <h3 className="text-xl font-semibold">Fortsätt din avancerade resa!</h3>
         </div>
         <p className="leading-relaxed">

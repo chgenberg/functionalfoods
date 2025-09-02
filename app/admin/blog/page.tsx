@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FiPlus, FiSearch, FiEdit3, FiTrash2, FiEye, FiTag, FiUser, FiCalendar, FiFileText, FiClock } from 'react-icons/fi';
+
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Plus, Search, Edit3, Trash2, Eye, Tag, User, Calendar, FileText, Clock } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -108,14 +109,14 @@ export default function AdminBlogPage() {
               href="/admin/blog/auto-generator" 
               className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg"
             >
-              <FiClock className="w-5 h-5" />
+              <Clock className="w-5 h-5" />
               AI Generator
             </Link>
             <Link 
               href="/admin/blog/new" 
               className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg"
             >
-              <FiPlus className="w-5 h-5" />
+              <Plus className="w-5 h-5" />
               Skapa ny artikel
             </Link>
           </div>
@@ -135,7 +136,7 @@ export default function AdminBlogPage() {
                 <p className="text-2xl font-bold text-gray-900">{posts.length}</p>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <FiFileText className="w-6 h-6 text-orange-600" />
+                <FileText className="w-6 h-6 text-orange-600" />
               </div>
             </div>
           </motion.div>
@@ -154,7 +155,7 @@ export default function AdminBlogPage() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-background-secondary rounded-xl flex items-center justify-center">
-                <FiEye className="w-6 h-6 text-primary" />
+                <Eye className="w-6 h-6 text-primary" />
               </div>
             </div>
           </motion.div>
@@ -173,7 +174,7 @@ export default function AdminBlogPage() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-                <FiFileText className="w-6 h-6 text-gray-600" />
+                <FileText className="w-6 h-6 text-gray-600" />
               </div>
             </div>
           </motion.div>
@@ -215,7 +216,7 @@ export default function AdminBlogPage() {
           </div>
 
           <div className="flex-1 max-w-md relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Sök artiklar..."
@@ -254,7 +255,7 @@ export default function AdminBlogPage() {
               {filteredPosts.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-16 text-center">
-                    <FiFileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <p className="text-gray-500">
                       {searchTerm ? 'Inga artiklar hittades för din sökning.' : 'Inga artiklar hittades.'}
                     </p>
@@ -262,7 +263,7 @@ export default function AdminBlogPage() {
                       href="/admin/blog/new"
                       className="inline-flex items-center gap-2 mt-4 text-orange-600 hover:text-orange-700"
                     >
-                      <FiPlus className="w-5 h-5" />
+                      <Plus className="w-5 h-5" />
                       Skapa din första artikel
                     </Link>
                   </td>
@@ -286,7 +287,7 @@ export default function AdminBlogPage() {
                           />
                         ) : (
                           <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg mr-4 flex items-center justify-center">
-                            <FiFileText className="w-8 h-8 text-orange-400" />
+                            <FileText className="w-8 h-8 text-orange-400" />
                           </div>
                         )}
                         <div>
@@ -299,7 +300,7 @@ export default function AdminBlogPage() {
                     </td>
                     <td className="px-6 py-4 hidden md:table-cell">
                       <div className="flex items-center gap-2">
-                        <FiUser className="w-4 h-4 text-gray-400" />
+                        <User className="w-4 h-4 text-gray-400" />
                         <span className="text-sm text-gray-600">
                           {post.author?.name || post.author?.email}
                         </span>
@@ -307,7 +308,7 @@ export default function AdminBlogPage() {
                     </td>
                     <td className="px-6 py-4 hidden lg:table-cell">
                       <div className="flex items-center gap-2">
-                        <FiCalendar className="w-4 h-4 text-gray-400" />
+                        <Calendar className="w-4 h-4 text-gray-400" />
                         <span className="text-sm text-gray-600">
                           {new Date(post.publishedAt || post.createdAt).toLocaleDateString('sv-SE')}
                         </span>
@@ -331,7 +332,7 @@ export default function AdminBlogPage() {
                             className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                             title="Visa artikel"
                           >
-                            <FiEye className="w-4 h-4" />
+                            <Eye className="w-4 h-4" />
                           </Link>
                         )}
                         <Link
@@ -339,14 +340,14 @@ export default function AdminBlogPage() {
                           className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Redigera"
                         >
-                          <FiEdit3 className="w-4 h-4" />
+                          <Edit3 className="w-4 h-4" />
                         </Link>
                         <button
                           onClick={() => handleDeletePost(post.id, post.title)}
                           className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
                           title="Ta bort"
                         >
-                          <FiTrash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

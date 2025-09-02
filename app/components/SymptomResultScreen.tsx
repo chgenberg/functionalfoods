@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiShoppingCart, FiBook, FiHeart } from 'react-icons/fi';
+
 import { useRouter } from 'next/navigation';
+import { ArrowLeft, ArrowRight, CheckCircle, ShoppingCart, Book, Heart } from 'lucide-react';
 
 interface SymptomResultScreenProps {
   analysisResult: {
@@ -55,7 +56,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
             onClick={onBack}
             className="mb-6 text-white/80 hover:text-white inline-flex items-center space-x-2 transition-colors"
           >
-            <FiArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5" />
             <span>Tillbaka</span>
           </button>
           
@@ -180,7 +181,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
                   >
                     <div className="flex items-start space-x-4">
                       <div className="bg-purple-100 rounded-full p-3 flex-shrink-0">
-                        <FiCheckCircle className="w-6 h-6 text-purple-600" />
+                        <CheckCircle className="w-6 h-6 text-purple-600" />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold text-gray-800 mb-3">{rec.nutrient}</h3>
@@ -256,7 +257,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
                     <div className="bg-blue-100 rounded-full p-3 flex-shrink-0">
-                      <FiHeart className="w-6 h-6 text-blue-600" />
+                      <Heart className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-800 mb-2">Daglig rörelse</h3>
@@ -269,7 +270,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
                   
                   <div className="flex items-start space-x-4">
                     <div className="bg-background-secondary rounded-full p-3 flex-shrink-0">
-                      <FiHeart className="w-6 h-6 text-primary" />
+                      <Heart className="w-6 h-6 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-800 mb-2">Stresshantering</h3>
@@ -282,7 +283,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
                   
                   <div className="flex items-start space-x-4">
                     <div className="bg-purple-100 rounded-full p-3 flex-shrink-0">
-                      <FiHeart className="w-6 h-6 text-purple-600" />
+                      <Heart className="w-6 h-6 text-purple-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-800 mb-2">Sömnkvalitet</h3>
@@ -304,7 +305,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
             onClick={() => router.push('/dashboard/courses/functional-basics')}
             className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg hover:shadow-xl inline-flex items-center justify-center space-x-2"
           >
-            <FiBook className="w-5 h-5" />
+            <Book className="w-5 h-5" />
             <span>Lär dig mer om Functional Foods</span>
           </button>
           
@@ -312,7 +313,7 @@ const SymptomResultScreen: React.FC<SymptomResultScreenProps> = ({ analysisResul
             onClick={() => router.push('/cart')}
             className="bg-white text-purple-600 border-2 border-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-purple-50 transition-all duration-300 inline-flex items-center justify-center space-x-2"
           >
-            <FiShoppingCart className="w-5 h-5" />
+            <ShoppingCart className="w-5 h-5" />
             <span>Handla rekommenderade produkter</span>
           </button>
         </div>

@@ -2,17 +2,14 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiChevronLeft, FiChevronRight, FiCalendar, FiClock, 
-  FiStar, FiHeart, FiShoppingCart, FiDownload, FiPrinter,
-  FiSun, FiCoffee, FiCheck, FiArrowLeft, FiSearch, FiFilter
-} from 'react-icons/fi';
+
 import { MdDinnerDining } from 'react-icons/md';
 import { getMealForDay, getWeekData } from '@/app/data/mealPlans';
 import Link from 'next/link';
 import Image from 'next/image';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
+import { ChevronLeft, ChevronRight, Calendar, Clock, Star, Heart, ShoppingCart, Download, Printer, Sun, Coffee, Check, ArrowLeft, Search, Filter } from 'lucide-react';
 const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: string, icon: any, time: string, day: string }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -60,7 +57,7 @@ const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: stri
           ${isCompleted ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-400'}
         `}
       >
-        {isCompleted && <FiCheck className="w-4 h-4 text-white" />}
+        {isCompleted && <Check className="w-4 h-4 text-white" />}
       </button>
 
       <div className="flex items-start gap-4">
@@ -139,10 +136,10 @@ export default function KostschemaPage() {
 
   const getMealIcon = (type: string) => {
     switch(type) {
-      case 'breakfast': return FiSun;
-      case 'lunch': return FiCoffee;
+      case 'breakfast': return Sun;
+      case 'lunch': return Coffee;
       case 'dinner': return MdDinnerDining;
-      default: return FiSun;
+      default: return Sun;
     }
   };
 
@@ -176,7 +173,7 @@ export default function KostschemaPage() {
             {/* Search and Filter */}
             <div className="flex items-center gap-4">
               <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Sök recept..."
@@ -236,7 +233,7 @@ export default function KostschemaPage() {
             disabled={currentWeek === 1}
             className="p-3 rounded-full bg-white shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <FiChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5" />
           </button>
 
           <div className="flex gap-2">
@@ -262,7 +259,7 @@ export default function KostschemaPage() {
             disabled={currentWeek === 6}
             className="p-3 rounded-full bg-white shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <FiChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5" />
           </button>
         </div>
 
@@ -294,7 +291,7 @@ export default function KostschemaPage() {
                       href={`/dashboard/courses/functional-basics/inkopslista?week=${currentWeek}&day=${index + 1}`}
                       className="flex items-center gap-2 text-sm text-[#014421] hover:text-[#112A12] font-medium"
                     >
-                      <FiShoppingCart className="w-4 h-4" />
+                      <ShoppingCart className="w-4 h-4" />
                       Inköpslista
                     </Link>
                   </div>
@@ -384,7 +381,7 @@ export default function KostschemaPage() {
             className="bg-[#FFB5A7] rounded-2xl p-4 md:p-6 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
           >
             <Link href={`/dashboard/courses/functional-basics/inkopslista?week=${currentWeek}`}>
-              <FiShoppingCart className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
+              <ShoppingCart className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
               <h3 className="text-base md:text-lg font-bold text-white mb-2">Veckans inköpslista</h3>
               <p className="text-white/90 text-xs md:text-sm">Få alla ingredienser för vecka {currentWeek}</p>
             </Link>
@@ -394,7 +391,7 @@ export default function KostschemaPage() {
             whileHover={{ scale: 1.02 }}
             className="bg-[#014421] rounded-2xl p-4 md:p-6 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
           >
-            <FiDownload className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
+            <Download className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
             <h3 className="text-base md:text-lg font-bold text-white mb-2">Ladda ner schema</h3>
             <p className="text-white/90 text-xs md:text-sm">Spara som PDF för offline</p>
           </motion.div>
@@ -403,7 +400,7 @@ export default function KostschemaPage() {
             whileHover={{ scale: 1.02 }}
             className="bg-[#112A12] rounded-2xl p-4 md:p-6 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
           >
-            <FiHeart className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
+            <Heart className="w-6 h-6 md:w-8 md:h-8 text-white mb-3" />
             <h3 className="text-base md:text-lg font-bold text-white mb-2">Mina favoriter</h3>
             <p className="text-white/90 text-xs md:text-sm">Se dina sparade recept</p>
           </motion.div>

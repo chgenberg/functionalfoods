@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { FiArrowLeft, FiAlertTriangle, FiInfo, FiShield } from 'react-icons/fi';
+import { ArrowLeft, AlertTriangle, Info, Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'AI Policy - Ulrika Functional Foods',
@@ -17,14 +17,14 @@ export default function AIPolicy() {
             href="/" 
             className="inline-flex items-center gap-2 text-[#014421] hover:text-[#116530] transition-colors mb-6"
           >
-            <FiArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" />
             Tillbaka till startsidan
           </Link>
           
           <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <FiShield className="w-6 h-6 text-blue-600" />
+                <Shield className="w-6 h-6 text-blue-600" />
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900">AI Policy</h1>
             </div>
@@ -39,7 +39,7 @@ export default function AIPolicy() {
         {/* Warning Notice */}
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-8">
           <div className="flex items-start gap-3">
-            <FiAlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
+            <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
             <div>
               <h2 className="text-lg font-semibold text-amber-800 mb-2">Viktigt meddelande</h2>
               <p className="text-amber-700">
@@ -56,7 +56,7 @@ export default function AIPolicy() {
           {/* Where we use AI */}
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <div className="flex items-center gap-3 mb-6">
-              <FiInfo className="w-6 h-6 text-blue-600" />
+              <Info className="w-6 h-6 text-blue-600" />
               <h2 className="text-2xl font-bold text-gray-900">Var vi använder AI</h2>
             </div>
             

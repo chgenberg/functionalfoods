@@ -1,10 +1,11 @@
 "use client";
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiBookOpen, FiSearch, FiMessageCircle, FiArrowRight, FiBook } from 'react-icons/fi';
+
 import { GiCookingPot } from 'react-icons/gi';
 import { useState } from 'react';
 import { useT } from '../lib/i18n/LanguageProvider';
+import { BookOpen, Search, MessageCircle, ArrowRight, Book } from 'lucide-react';
 
 export default function KunskapsbankPage() {
   const t = useT();
@@ -17,7 +18,7 @@ export default function KunskapsbankPage() {
       description: t('kb.sections.blog.desc','Läs våra senaste artiklar om hälsa, kost och livsstil'),
       image: "/kunskapsbank/smoothie.jpg",
       href: "/kunskapsbank/blogg",
-      icon: FiBookOpen,
+      icon: BookOpen,
       color: "text-blue-600"
     },
     {
@@ -44,7 +45,7 @@ export default function KunskapsbankPage() {
       description: t('kb.sections.sources.desc','Vetenskapliga referenser och forskning bakom functional foods'),
       image: "/kunskapsbank/aggrora.jpg",
       href: "/kunskapsbank/kallor",
-      icon: FiBook,
+      icon: Book,
       color: "text-indigo-600"
     },
     {
@@ -53,7 +54,7 @@ export default function KunskapsbankPage() {
       description: t('kb.sections.search.desc','Hitta specifik information i vår kunskapsbank'),
       image: "/kunskapsbank/sallad.JPG",
       href: "/kunskapsbank/sok",
-      icon: FiSearch,
+      icon: Search,
       color: "text-purple-600"
     },
     {
@@ -62,7 +63,7 @@ export default function KunskapsbankPage() {
       description: t('kb.sections.faq.desc','Vanliga frågor och svar om Functional Foods, kurser och mer'),
       image: "/kunskapsbank/Gronsakswok.jpg",
       href: "/kunskapsbank/qa",
-      icon: FiMessageCircle,
+      icon: MessageCircle,
       color: "text-orange-600"
     },
     {
@@ -71,7 +72,7 @@ export default function KunskapsbankPage() {
       description: t('kb.sections.pod.desc','Lyssna på våra poddavsnitt om hälsa och functional foods'),
       image: "/kunskapsbank/smoothie.jpg",
       href: "/kunskapsbank/poddar",
-      icon: FiBookOpen,
+      icon: BookOpen,
       color: "text-emerald-600"
     }
   ];
@@ -125,7 +126,7 @@ export default function KunskapsbankPage() {
                 
                 <div className="flex items-center text-accent text-sm font-medium">
                   <span>{t('kb.explore','Utforska')}</span>
-                  <FiArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </Link>
@@ -139,7 +140,7 @@ export default function KunskapsbankPage() {
             <p className="text-text-secondary mb-6">{t('kb.cta.desc','Fördjupa din kunskap med våra omfattande kurser om functional foods och hälsosam livsstil.')}</p>
             <Link href="/utbildning" className="btn-primary inline-flex items-center">
               {t('kb.cta.btn','Se våra kurser')}
-              <FiArrowRight className="ml-2 w-5 h-5" />
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </div>
         </div>

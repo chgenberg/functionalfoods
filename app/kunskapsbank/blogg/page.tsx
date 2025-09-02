@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiCalendar, FiClock, FiArrowRight, FiSearch, FiTag } from 'react-icons/fi';
+
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { Calendar, Clock, ArrowRight, Search, Tag } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -93,7 +94,7 @@ export default function BlogPage() {
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
                   placeholder={t('blog.searchPlaceholder','Sök artiklar...')}
@@ -160,11 +161,11 @@ export default function BlogPage() {
                   <div className="p-6">
                     <div className="flex items-center gap-4 text-sm text-text-secondary mb-3">
                       <span className="flex items-center gap-1">
-                        <FiCalendar className="w-4 h-4" />
+                        <Calendar className="w-4 h-4" />
                         {new Date(post.publishedAt).toLocaleDateString('sv-SE')}
                       </span>
                       <span className="flex items-center gap-1">
-                        <FiClock className="w-4 h-4" />
+                        <Clock className="w-4 h-4" />
                         {calculateReadTime(post.excerpt)}
                       </span>
                     </div>
@@ -182,18 +183,18 @@ export default function BlogPage() {
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2 mb-4">
                       <span className="flex items-center gap-1 text-xs text-text-secondary bg-background-secondary px-2 py-1 rounded">
-                        <FiTag className="w-4 h-4" />
+                        <Tag className="w-4 h-4" />
                         Functional Foods
                       </span>
                       <span className="flex items-center gap-1 text-xs text-text-secondary bg-background-secondary px-2 py-1 rounded">
-                        <FiTag className="w-4 h-4" />
+                        <Tag className="w-4 h-4" />
                         Hälsa
                       </span>
                     </div>
 
                     <div className="flex items-center text-accent font-medium group-hover:gap-2 transition-all duration-200">
                       <span>{t('common.readMore','Läs mer')}</span>
-                      <FiArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </div>

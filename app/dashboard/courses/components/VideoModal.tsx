@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX } from 'react-icons/fi';
+import { X } from 'lucide-react';
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -44,7 +44,7 @@ export default function VideoModal({
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 rounded-full transition"
               >
-                <FiX className="text-2xl" />
+                <X className="text-2xl" />
               </button>
             </div>
 

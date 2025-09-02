@@ -3,11 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { 
-  FiArrowLeft, FiClock, FiBookOpen, FiHeart, FiShare2,
-  FiPrinter, FiBookmark, FiCheckCircle
-} from 'react-icons/fi';
+
 import Link from 'next/link';
+import { ArrowLeft, Clock, BookOpen, Heart, Share2, Printer, CheckCircle } from 'lucide-react';
 
 interface ArticleData {
   title: string;
@@ -338,7 +336,7 @@ export default function ArticlePage() {
               href="/dashboard/courses/functional-basics/material"
               className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
             >
-              <FiArrowLeft className="w-5 h-5 mr-2" />
+              <ArrowLeft className="w-5 h-5 mr-2" />
               Tillbaka till kunskapsmaterial
             </Link>
             
@@ -355,14 +353,14 @@ export default function ArticlePage() {
               </button>
               
               <button className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                <FiShare2 className="w-5 h-5" />
+                <Share2 className="w-5 h-5" />
               </button>
               
               <button 
                 onClick={() => window.print()}
                 className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               >
-                <FiPrinter className="w-5 h-5" />
+                <Printer className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -388,17 +386,17 @@ export default function ArticlePage() {
           
           <div className="flex items-center justify-center space-x-6 text-gray-600">
             <div className="flex items-center">
-              <FiClock className="w-5 h-5 mr-2" />
+              <Clock className="w-5 h-5 mr-2" />
               <span>{article.readTime} läsning</span>
             </div>
             
             <div className="flex items-center">
-              <FiBookOpen className="w-5 h-5 mr-2" />
+              <BookOpen className="w-5 h-5 mr-2" />
               <span>Kunskapsmaterial</span>
             </div>
             
             <div className="flex items-center">
-              <FiHeart className="w-5 h-5 mr-2" />
+              <Heart className="w-5 h-5 mr-2" />
               <span>Hälsa & Välbefinnande</span>
             </div>
           </div>
@@ -424,7 +422,7 @@ export default function ArticlePage() {
           className="text-center mt-12"
         >
                       <button className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105">
-            <FiCheckCircle className="w-5 h-5 mr-2" />
+            <CheckCircle className="w-5 h-5 mr-2" />
             Markera som läst
           </button>
         </motion.div>

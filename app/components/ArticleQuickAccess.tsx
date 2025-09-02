@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiX, FiExternalLink, FiClock, FiTrendingUp } from 'react-icons/fi';
+
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { X, ExternalLink, Clock, TrendingUp } from 'lucide-react';
 
 interface Article {
   id: string;
@@ -116,7 +117,7 @@ export default function ArticleQuickAccess() {
             <Image src="/davidsson.png" alt="Ulrika Davidsson" fill className="object-cover" />
           </div>
           <span className="hidden md:inline text-text-primary font-semibold">{t('articles.quick.button','Snabbläs artiklar')}</span>
-          <FiTrendingUp className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" />
+          <TrendingUp className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" />
         </button>
       </div>
 
@@ -135,7 +136,7 @@ export default function ArticleQuickAccess() {
                   </div>
                 </div>
                 <button onClick={() => setIsOpen(false)} className="text-white hover:text-green-200 transition-colors">
-                  <FiX className="w-6 h-6" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
             </div>
@@ -167,12 +168,12 @@ export default function ArticleQuickAccess() {
                       <p className="text-gray-600 text-sm mb-3 line-clamp-3">{article.excerpt}</p>
                       <div className="flex items-center justify-between text-xs text-gray-500">
                         <div className="flex items-center gap-1">
-                          <FiClock className="w-3 h-3" />
+                          <Clock className="w-3 h-3" />
                           <span>{article.readTime}</span>
                         </div>
                         <div className="flex items-center gap-1 text-accent group-hover:text-accent-hover transition-colors">
                           <span>{t('common.readMore','Läs mer')}</span>
-                          <FiExternalLink className="w-3 h-3" />
+                          <ExternalLink className="w-3 h-3" />
                         </div>
                       </div>
                     </Link>
@@ -182,7 +183,7 @@ export default function ArticleQuickAccess() {
               <div className="mt-8 text-center">
                 <Link href="/kunskapsbank/blogg" onClick={() => setIsOpen(false)} className="inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-lg hover:bg-accent-hover transition-colors">
                   <span>{t('articles.quick.seeAll','Se alla artiklar')}</span>
-                  <FiExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" />
                 </Link>
               </div>
             </div>

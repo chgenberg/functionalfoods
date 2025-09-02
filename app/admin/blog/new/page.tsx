@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowLeft, FiArrowRight, FiSave, FiX, FiPlus, FiCheck, FiEye, FiCalendar, FiTag } from 'react-icons/fi';
+
 import Link from 'next/link';
+import { ArrowLeft, ArrowRight, Save, X, Plus, Check, Eye, Calendar, Tag } from 'lucide-react';
 const LOCALES = ['sv','en','es','de','fr'] as const;
 type Locale = typeof LOCALES[number];
 
@@ -458,7 +459,7 @@ export default function NewBlogPage() {
                       }}
                       className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                      <FiX className="w-4 h-4" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -466,7 +467,7 @@ export default function NewBlogPage() {
                   onClick={addKeyTakeaway}
                   className="flex items-center gap-2 text-primary hover:bg-background px-3 py-2 rounded-lg transition-colors"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <Plus className="w-4 h-4" />
                   Lägg till nyckelpoäng
                 </button>
               </div>
@@ -502,7 +503,7 @@ export default function NewBlogPage() {
                       }}
                       className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                      <FiX className="w-4 h-4" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -510,7 +511,7 @@ export default function NewBlogPage() {
                   onClick={addReference}
                   className="flex items-center gap-2 text-primary hover:bg-background px-3 py-2 rounded-lg transition-colors"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <Plus className="w-4 h-4" />
                   Lägg till referens
                 </button>
               </div>
@@ -534,7 +535,7 @@ export default function NewBlogPage() {
                       onClick={() => removeTag(index)}
                       className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                      <FiX className="w-4 h-4" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -542,7 +543,7 @@ export default function NewBlogPage() {
                   onClick={addTag}
                   className="flex items-center gap-2 text-primary hover:bg-background px-3 py-2 rounded-lg transition-colors"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <Plus className="w-4 h-4" />
                   Lägg till tagg
                 </button>
               </div>
@@ -573,7 +574,7 @@ export default function NewBlogPage() {
 
             <div className="bg-background border border-border rounded-lg p-4">
               <div className="flex items-center gap-2 text-secondary">
-                <FiCheck className="w-5 h-5" />
+                <Check className="w-5 h-5" />
                 <span className="font-medium">Redo att publicera</span>
               </div>
               <p className="text-secondary text-sm mt-1">
@@ -584,7 +585,7 @@ export default function NewBlogPage() {
             {blogData.published && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <div className="flex items-center gap-2 text-blue-800">
-                  <FiCalendar className="w-5 h-5" />
+                  <Calendar className="w-5 h-5" />
                   <span className="font-medium">Schemalagd publicering</span>
                 </div>
                 <p className="text-blue-700 text-sm mt-1">
@@ -609,7 +610,7 @@ export default function NewBlogPage() {
             href="/admin/blog"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
-            <FiArrowLeft />
+            <ArrowLeft />
             Tillbaka till blogglistan
           </Link>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Skapa ny bloggpost</h1>
@@ -642,7 +643,7 @@ export default function NewBlogPage() {
                   }`}
                 >
                   {currentStep > step.id ? (
-                    <FiCheck className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6" />
                   ) : (
                     <span className="text-sm sm:text-base font-medium">{step.id}</span>
                   )}
@@ -686,7 +687,7 @@ export default function NewBlogPage() {
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
             }`}
           >
-            <FiArrowLeft />
+            <ArrowLeft />
             Föregående
           </button>
 
@@ -696,7 +697,7 @@ export default function NewBlogPage() {
               className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary hover:shadow-lg transition-all flex items-center justify-center gap-2"
             >
               Nästa steg
-              <FiArrowRight />
+              <ArrowRight />
             </button>
           ) : (
             <button
@@ -711,7 +712,7 @@ export default function NewBlogPage() {
                 </>
               ) : (
                 <>
-                  <FiSave />
+                  <Save />
                   Publicera artikel
                 </>
               )}

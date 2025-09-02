@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiArrowLeft, FiClock, FiCalendar, FiShare2, FiBookmark } from 'react-icons/fi';
+import { ArrowLeft, Clock, Calendar, Share2 } from 'lucide-react';
 
 export default function LongevityBlogPost() {
   return (
@@ -19,7 +19,7 @@ export default function LongevityBlogPost() {
         {/* Back button */}
         <div className="absolute top-8 left-8">
           <Link href="/kunskapsbank/blogg" className="flex items-center gap-2 text-white hover:text-white/80 transition-colors">
-            <FiArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4 mr-2" />
             <span>Tillbaka till bloggen</span>
           </Link>
         </div>
@@ -36,11 +36,11 @@ export default function LongevityBlogPost() {
               </h1>
               <div className="flex items-center gap-6 text-white/80">
                 <span className="flex items-center gap-2">
-                  <FiCalendar className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                   10 januari 2024
                 </span>
                 <span className="flex items-center gap-2">
-                  <FiClock className="w-4 h-4" />
+                  <Clock className="w-4 h-4" />
                   7 min läsning
                 </span>
               </div>
@@ -55,7 +55,7 @@ export default function LongevityBlogPost() {
           {/* Share buttons */}
           <div className="flex justify-end gap-4 mb-8">
             <button className="p-3 rounded-full bg-background-secondary hover:bg-gray-200 transition-colors">
-              <FiShare2 className="w-5 h-5 text-text-secondary" />
+              <Share2 className="w-5 h-5 text-text-secondary" />
             </button>
             <button className="p-3 rounded-full bg-background-secondary hover:bg-gray-200 transition-colors">
               <FiBookmark className="w-5 h-5 text-text-secondary" />

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { FiX, FiUser, FiMail, FiLock, FiShield } from 'react-icons/fi';
+
 import { motion, AnimatePresence } from 'framer-motion';
+import { X, User, Mail, Lock, Shield } from 'lucide-react';
 
 interface AddUserModalProps {
   onClose: () => void;
@@ -74,7 +75,7 @@ export default function AddUserModal({ onClose, onAdd }: AddUserModalProps) {
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <FiX className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-gray-500" />
             </button>
           </div>
 
@@ -84,7 +85,7 @@ export default function AddUserModal({ onClose, onAdd }: AddUserModalProps) {
                 Namn
               </label>
               <div className="relative">
-                <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
                   value={formData.name}
@@ -105,7 +106,7 @@ export default function AddUserModal({ onClose, onAdd }: AddUserModalProps) {
                 E-postadress
               </label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="email"
                   value={formData.email}
@@ -126,7 +127,7 @@ export default function AddUserModal({ onClose, onAdd }: AddUserModalProps) {
                 Lösenord
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="password"
                   value={formData.password}
@@ -147,7 +148,7 @@ export default function AddUserModal({ onClose, onAdd }: AddUserModalProps) {
                 Roll
               </label>
               <div className="relative">
-                <FiShield className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Shield className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}

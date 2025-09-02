@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { FiUser, FiActivity, FiHeart, FiTrendingUp } from 'react-icons/fi';
+import { User, Activity, Heart, TrendingUp } from 'lucide-react';
 
 interface UserProfileSummaryProps {
   compact?: boolean;
@@ -70,7 +70,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
     return (
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
         <div className="flex items-center space-x-2 text-blue-700">
-          <FiUser className="w-5 h-5" />
+          <User className="w-5 h-5" />
           <span className="font-medium">Välkommen {user.name || user.email}!</span>
         </div>
         <p className="text-blue-600 text-sm mt-1">
@@ -85,12 +85,12 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
       <div className="bg-background border border-border rounded-xl p-3 mb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <FiUser className="w-4 h-4 text-primary" />
+            <User className="w-4 h-4 text-primary" />
             <span className="text-secondary font-medium text-sm">{user.name || user.email}</span>
           </div>
           {userData.quizResults && (
             <div className="flex items-center space-x-1 text-secondary">
-              <FiHeart className="w-4 h-4" />
+              <Heart className="w-4 h-4" />
               <span className="text-sm font-medium">{userData.quizResults.healthScore}/100</span>
             </div>
           )}
@@ -102,7 +102,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
   return (
     <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-border rounded-xl p-4 mb-4">
       <div className="flex items-center space-x-2 mb-3">
-        <FiUser className="w-5 h-5 text-primary" />
+        <User className="w-5 h-5 text-primary" />
         <span className="font-semibold text-secondary">Din Hälsoprofil</span>
       </div>
 
@@ -111,7 +111,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">Total Hälsopoäng</span>
             <div className="flex items-center space-x-2">
-              <FiTrendingUp className="w-4 h-4 text-primary" />
+              <TrendingUp className="w-4 h-4 text-primary" />
               <span className="font-bold text-secondary">{userData.quizResults.healthScore}/100</span>
             </div>
           </div>
@@ -149,13 +149,13 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
         <div className="flex items-center space-x-4 mt-3 pt-3 border-t border-border">
           {userData.symptomAnalysesCount > 0 && (
             <div className="flex items-center space-x-1 text-blue-600">
-              <FiActivity className="w-4 h-4" />
+              <Activity className="w-4 h-4" />
               <span className="text-xs">{userData.symptomAnalysesCount} analyser</span>
             </div>
           )}
           {userData.coursesCount > 0 && (
             <div className="flex items-center space-x-1 text-purple-600">
-              <FiHeart className="w-4 h-4" />
+              <Heart className="w-4 h-4" />
               <span className="text-xs">{userData.coursesCount} kurser</span>
             </div>
           )}

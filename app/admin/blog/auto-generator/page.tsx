@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiPlay, FiSettings, FiClock, FiCheck, FiX, FiInfo, FiRefreshCw } from 'react-icons/fi';
+
 import Link from 'next/link';
+import { Play, Settings, Clock, Check, X, Info, RefreshCw } from 'lucide-react';
 
 export default function AutoBlogGeneratorPage() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -120,7 +121,7 @@ export default function AutoBlogGeneratorPage() {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <FiPlay className="w-5 h-5 text-blue-600" />
+                  <Play className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">Manuell Generering</h2>
@@ -140,7 +141,7 @@ export default function AutoBlogGeneratorPage() {
                   </>
                 ) : (
                   <>
-                    <FiPlay className="w-5 h-5" />
+                    <Play className="w-5 h-5" />
                     Generera Blogginlägg Nu
                   </>
                 )}
@@ -158,9 +159,9 @@ export default function AutoBlogGeneratorPage() {
                 >
                   <div className="flex items-center gap-2 mb-2">
                     {lastResult.success ? (
-                      <FiCheck className="w-5 h-5 text-primary" />
+                      <Check className="w-5 h-5 text-primary" />
                     ) : (
-                      <FiX className="w-5 h-5 text-red-600" />
+                      <X className="w-5 h-5 text-red-600" />
                     )}
                     <span className="font-medium">
                       {lastResult.success ? 'Framgång!' : 'Fel uppstod'}
@@ -190,7 +191,7 @@ export default function AutoBlogGeneratorPage() {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <FiClock className="w-5 h-5 text-orange-600" />
+                  <Clock className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">Automatisk Schemaläggning</h2>
@@ -203,15 +204,15 @@ export default function AutoBlogGeneratorPage() {
                   <h3 className="font-medium text-gray-900 mb-2">Aktuella Inställningar</h3>
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
-                      <FiClock className="w-4 h-4" />
+                      <Clock className="w-4 h-4" />
                       <span>Körs slumpmässigt under dagtid (08:00-18:00)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <FiRefreshCw className="w-4 h-4" />
+                      <RefreshCw className="w-4 h-4" />
                       <span>30% chans att köra vid varje kontroll</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <FiSettings className="w-4 h-4" />
+                      <Settings className="w-4 h-4" />
                       <span>Använder OpenAI GPT-4 för innehållsgenerering</span>
                     </div>
                   </div>
@@ -219,7 +220,7 @@ export default function AutoBlogGeneratorPage() {
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 text-blue-800 mb-2">
-                    <FiInfo className="w-5 h-5" />
+                    <Info className="w-5 h-5" />
                     <span className="font-medium">Schemaläggning via Cron Jobs</span>
                   </div>
                   <p className="text-blue-700 text-sm">
@@ -287,7 +288,7 @@ export default function AutoBlogGeneratorPage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-background-secondary rounded-lg flex items-center justify-center">
-                    <FiCheck className="w-4 h-4 text-primary" />
+                    <Check className="w-4 h-4 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">AI-genererat innehåll</p>
@@ -296,7 +297,7 @@ export default function AutoBlogGeneratorPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-background-secondary rounded-lg flex items-center justify-center">
-                    <FiCheck className="w-4 h-4 text-primary" />
+                    <Check className="w-4 h-4 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">Automatisk SEO</p>
@@ -305,7 +306,7 @@ export default function AutoBlogGeneratorPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-background-secondary rounded-lg flex items-center justify-center">
-                    <FiCheck className="w-4 h-4 text-primary" />
+                    <Check className="w-4 h-4 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">Direkt publicering</p>
@@ -314,7 +315,7 @@ export default function AutoBlogGeneratorPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-background-secondary rounded-lg flex items-center justify-center">
-                    <FiCheck className="w-4 h-4 text-primary" />
+                    <Check className="w-4 h-4 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">Duplikatskydd</p>

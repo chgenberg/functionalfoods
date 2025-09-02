@@ -1,7 +1,5 @@
 'use client';
 
-import { FiDownload, FiFileText, FiImage, FiVideo, FiSearch, FiFilter } from 'react-icons/fi';
-
 const downloadableFiles = [
   {
     id: 1,
@@ -9,7 +7,7 @@ const downloadableFiles = [
     description: 'En komplett guide för att komma igång med din nya livsstil.',
     type: 'pdf',
     size: '2.5 MB',
-    icon: <FiFileText className="text-red-500 w-8 h-8" />,
+    icon: <FileText className="text-red-500 w-8 h-8" />,
     href: '#'
   },
   {
@@ -18,7 +16,7 @@ const downloadableFiles = [
     description: '7 nya, hälsosamma och enkla recept för hela veckan.',
     type: 'pdf',
     size: '4.1 MB',
-    icon: <FiFileText className="text-red-500 w-8 h-8" />,
+    icon: <FileText className="text-red-500 w-8 h-8" />,
     href: '#'
   },
   {
@@ -27,7 +25,7 @@ const downloadableFiles = [
     description: 'En utskriftsvänlig inköpslista för att förenkla dina matinköp.',
     type: 'pdf',
     size: '0.8 MB',
-    icon: <FiFileText className="text-red-500 w-8 h-8" />,
+    icon: <FileText className="text-red-500 w-8 h-8" />,
     href: '#'
   },
   {
@@ -36,7 +34,7 @@ const downloadableFiles = [
     description: 'Motiverande och snygga bakgrundsbilder till din dator.',
     type: 'image',
     size: '12.3 MB',
-    icon: <FiImage className="text-blue-500 w-8 h-8" />,
+    icon: <Image className="text-blue-500 w-8 h-8" />,
     href: '#'
   },
     {
@@ -45,7 +43,7 @@ const downloadableFiles = [
     description: 'En 10-minuters guidad meditation för att minska stress.',
     type: 'video',
     size: '45.2 MB',
-    icon: <FiVideo className="text-purple-500 w-8 h-8" />,
+    icon: <Video className="text-purple-500 w-8 h-8" />,
     href: '#'
   },
 ];
@@ -61,13 +59,12 @@ const FileItem = ({ file }: { file: typeof downloadableFiles[0] }) => (
         </div>
         <div className="text-right flex-shrink-0">
              <a href={file.href} download className="btn-secondary inline-flex items-center gap-2">
-                <FiDownload/>
+                <Download/>
                 <span>Ladda ner ({file.size})</span>
              </a>
         </div>
     </div>
 );
-
 
 export default function DownloadsPage() {
   return (
@@ -80,11 +77,11 @@ export default function DownloadsPage() {
        {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-grow">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input type="text" placeholder="Sök bland filer..." className="input-style pl-12" />
         </div>
         <div className="relative">
-          <FiFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <select className="input-style appearance-none pl-12 pr-10">
             <option>Alla filtyper</option>
             <option>PDF</option>

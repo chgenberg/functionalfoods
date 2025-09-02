@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiArrowLeft, FiSave, FiTrash2, FiEye, FiLoader, FiCheck, FiAlertCircle } from 'react-icons/fi';
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { ArrowLeft, Save, Trash2, Eye, Loader, Check, AlertCircle } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -296,7 +297,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                 href="/admin/recipes"
                 className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
-                <FiArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5" />
                 Tillbaka
               </Link>
               <div className="h-6 w-px bg-gray-300" />
@@ -306,19 +307,19 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             <div className="flex items-center gap-3">
               {saveStatus === 'saved' && (
                 <div className="flex items-center gap-2 text-primary">
-                  <FiCheck className="w-4 h-4" />
+                  <Check className="w-4 h-4" />
                   <span className="text-sm">Sparat!</span>
                 </div>
               )}
               {saveStatus === 'saving' && (
                 <div className="flex items-center gap-2 text-orange-600">
-                  <FiLoader className="w-4 h-4 animate-spin" />
+                  <Loader className="w-4 h-4 animate-spin" />
                   <span className="text-sm">Sparar...</span>
                 </div>
               )}
               {saveStatus === 'error' && (
                 <div className="flex items-center gap-2 text-red-600">
-                  <FiAlertCircle className="w-4 h-4" />
+                  <AlertCircle className="w-4 h-4" />
                   <span className="text-sm">Fel vid sparning</span>
                 </div>
               )}
@@ -328,7 +329,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                 target="_blank"
                 className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
               >
-                <FiEye className="w-4 h-4" />
+                <Eye className="w-4 h-4" />
                 Förhandsgranska
               </Link>
               
@@ -337,7 +338,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                 disabled={saving}
                 className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
               >
-                <FiTrash2 className="w-4 h-4" />
+                <Trash2 className="w-4 h-4" />
                 Ta bort
               </button>
               
@@ -346,7 +347,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                 disabled={saving}
                 className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
               >
-                <FiSave className="w-4 h-4" />
+                <Save className="w-4 h-4" />
                 {saving ? 'Sparar...' : 'Spara ändringar'}
               </button>
             </div>
@@ -498,7 +499,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                       onClick={() => removeIngredient(index)}
                       className="p-2 text-red-600 hover:text-red-700 transition-colors"
                     >
-                      <FiTrash2 className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -531,7 +532,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                       onClick={() => removeInstruction(index)}
                       className="p-2 text-red-600 hover:text-red-700 transition-colors"
                     >
-                      <FiTrash2 className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}

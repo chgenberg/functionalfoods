@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiExternalLink, FiBookOpen, FiInfo } from 'react-icons/fi';
+import { X, ExternalLink, BookOpen, Info } from 'lucide-react';
 
 interface InfoItem {
   title: string;
@@ -242,7 +242,7 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
                     onClick={() => setSelectedInfo(null)}
                     className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center"
                   >
-                    <FiX className="w-6 h-6" />
+                    <X className="w-6 h-6" />
                   </button>
                 </div>
               </div>
@@ -342,7 +342,7 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
               {/* Modal Footer - Always visible */}
               <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <FiInfo className="w-4 h-4" />
+                  <Info className="w-4 h-4" />
                   <span>Del av Functional Foods kunskapsbank</span>
                 </div>
                 <button

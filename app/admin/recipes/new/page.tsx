@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowLeft, FiArrowRight, FiSave, FiX, FiPlus, FiCheck, FiClock, FiUsers, FiStar } from 'react-icons/fi';
+
 import Link from 'next/link';
+import { ArrowLeft, ArrowRight, Save, X, Plus, Check, Clock, Users, Star } from 'lucide-react';
 
 interface RecipeData {
   title: string;
@@ -394,15 +395,15 @@ export default function NewRecipePage() {
               <h3 className="font-medium text-orange-800 mb-2">Tidsuppgifter</h3>
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center gap-2">
-                  <FiClock className="w-4 h-4 text-orange-600" />
+                  <Clock className="w-4 h-4 text-orange-600" />
                   <span>Prep: {recipeData.prepTime || '0 min'}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FiClock className="w-4 h-4 text-orange-600" />
+                  <Clock className="w-4 h-4 text-orange-600" />
                   <span>Cook: {recipeData.cookTime || '0 min'}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FiUsers className="w-4 h-4 text-orange-600" />
+                  <Users className="w-4 h-4 text-orange-600" />
                   <span>{recipeData.servings} portioner</span>
                 </div>
               </div>
@@ -419,7 +420,7 @@ export default function NewRecipePage() {
                 onClick={addIngredient}
                 className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 hover:shadow-lg transition-all duration-200 font-medium"
               >
-                <FiPlus className="w-4 h-4" />
+                <Plus className="w-4 h-4" />
                 Lägg till ingrediens
               </button>
             </div>
@@ -478,7 +479,7 @@ export default function NewRecipePage() {
                         onClick={() => removeIngredient(index)}
                         className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
                       >
-                        <FiX className="w-4 h-4" />
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -504,7 +505,7 @@ export default function NewRecipePage() {
                 onClick={addInstruction}
                 className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 hover:shadow-lg transition-all duration-200 font-medium"
               >
-                <FiPlus className="w-4 h-4" />
+                <Plus className="w-4 h-4" />
                 Lägg till steg
               </button>
             </div>
@@ -528,7 +529,7 @@ export default function NewRecipePage() {
                     onClick={() => removeInstruction(index)}
                     className="flex-shrink-0 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
-                    <FiX className="w-4 h-4" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -643,7 +644,7 @@ export default function NewRecipePage() {
                       onClick={() => removeTag(index)}
                       className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                      <FiX className="w-4 h-4" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -651,7 +652,7 @@ export default function NewRecipePage() {
                   onClick={addTag}
                   className="flex items-center gap-2 text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-lg transition-colors"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <Plus className="w-4 h-4" />
                   Lägg till tagg
                 </button>
               </div>
@@ -682,7 +683,7 @@ export default function NewRecipePage() {
                       }}
                       className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                      <FiX className="w-4 h-4" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -690,7 +691,7 @@ export default function NewRecipePage() {
                   onClick={addFunctionalBenefit}
                   className="flex items-center gap-2 text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-lg transition-colors"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <Plus className="w-4 h-4" />
                   Lägg till functional food-fördel
                 </button>
               </div>
@@ -721,7 +722,7 @@ export default function NewRecipePage() {
 
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
               <div className="flex items-center gap-2 text-orange-800">
-                <FiCheck className="w-5 h-5" />
+                <Check className="w-5 h-5" />
                 <span className="font-medium">Redo att publicera</span>
               </div>
               <p className="text-orange-700 text-sm mt-1">
@@ -745,7 +746,7 @@ export default function NewRecipePage() {
             href="/admin/recipes"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
-            <FiArrowLeft />
+            <ArrowLeft />
             Tillbaka till receptlistan
           </Link>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Skapa nytt recept</h1>
@@ -778,7 +779,7 @@ export default function NewRecipePage() {
                   }`}
                 >
                   {currentStep > step.id ? (
-                    <FiCheck className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6" />
                   ) : (
                     <span className="text-sm sm:text-base font-medium">{step.id}</span>
                   )}
@@ -822,7 +823,7 @@ export default function NewRecipePage() {
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
             }`}
           >
-            <FiArrowLeft />
+            <ArrowLeft />
             Föregående
           </button>
 
@@ -832,7 +833,7 @@ export default function NewRecipePage() {
               className="px-6 py-3 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 hover:shadow-lg transition-all flex items-center justify-center gap-2"
             >
               Nästa steg
-              <FiArrowRight />
+              <ArrowRight />
             </button>
           ) : (
             <button
@@ -847,7 +848,7 @@ export default function NewRecipePage() {
                 </>
               ) : (
                 <>
-                  <FiSave />
+                  <Save />
                   Publicera recept
                 </>
               )}

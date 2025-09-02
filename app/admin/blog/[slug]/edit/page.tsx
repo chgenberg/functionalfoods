@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiChevronLeft, FiSave, FiLoader, FiAlertTriangle } from 'react-icons/fi';
+import { ChevronLeft, Save, Loader, AlertTriangle } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -81,7 +81,7 @@ export default function EditBlogPostPage() {
   if (loading) {
     return (
       <div className="p-8 flex justify-center items-center">
-        <FiLoader className="animate-spin text-primary w-8 h-8" />
+        <Loader className="animate-spin text-primary w-8 h-8" />
       </div>
     );
   }
@@ -106,7 +106,7 @@ export default function EditBlogPostPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <Link href="/admin/blog" className="flex items-center gap-2 text-primary hover:text-secondary transition-colors font-medium uppercase text-sm tracking-wider">
-            <FiChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5" />
             <span>Tillbaka till blogginlägg</span>
           </Link>
         </div>
@@ -176,19 +176,19 @@ export default function EditBlogPostPage() {
             >
               {saving ? (
                 <>
-                  <FiLoader className="animate-spin w-5 h-5" />
+                  <Loader className="animate-spin w-5 h-5" />
                   <span>Sparar...</span>
                 </>
               ) : (
                 <>
-                  <FiSave className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span>Spara ändringar</span>
                 </>
               )}
             </button>
             
             <div className="h-6">
-              {error && <p className="text-sm text-error flex items-center gap-2"><FiAlertTriangle /> {error}</p>}
+              {error && <p className="text-sm text-error flex items-center gap-2"><AlertTriangle /> {error}</p>}
               {success && <p className="text-sm text-success">{success}</p>}
             </div>
           </div>

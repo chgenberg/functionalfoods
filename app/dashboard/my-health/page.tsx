@@ -103,9 +103,9 @@ export default function MyHealthPage() {
           </p>
         </div>
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-1">
-            <button className="p-2 rounded-md hover:bg-gray-100"><FiChevronLeft/></button>
+            <button className="p-2 rounded-md hover:bg-gray-100"><ChevronLeft/></button>
             <span className="px-4 font-semibold text-gray-700">Idag, 13 juni</span>
-            <button className="p-2 rounded-md hover:bg-gray-100"><FiChevronRight/></button>
+            <button className="p-2 rounded-md hover:bg-gray-100"><ChevronRight/></button>
         </div>
       </div>
 
@@ -113,9 +113,9 @@ export default function MyHealthPage() {
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Dagens Aktivitet</h2>
         <div className="flex flex-col md:flex-row justify-around items-center gap-8">
-          <ActivityRing {...activityData.move} label="Rörelse" icon={FiTrendingUp} />
-          <ActivityRing {...activityData.exercise} label="Träning" icon={FiZap} />
-          <ActivityRing {...activityData.stand} label="Stå" icon={FiSunrise} />
+                      <ActivityRing {...activityData.move} label="Rörelse" icon={TrendingUp} />
+            <ActivityRing {...activityData.exercise} label="Träning" icon={Zap} />
+            <ActivityRing {...activityData.stand} label="Stå" icon={Sunrise} />
         </div>
       </div>
       

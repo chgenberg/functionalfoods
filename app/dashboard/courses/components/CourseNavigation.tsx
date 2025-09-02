@@ -2,9 +2,10 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { FiCheckCircle, FiAward, FiUsers, FiSettings, FiHelpCircle } from 'react-icons/fi';
+
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
+import { CheckCircle, Award, Users, Settings, HelpCircle } from 'lucide-react';
 
 interface CourseNavigationProps {
   courseType: 'basics' | 'flow';
@@ -117,7 +118,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               }`}
             >
               <span className="flex items-center gap-1">
-                <FiAward className="w-4 h-4" />
+                <Award className="w-4 h-4" />
                 <span>Avslutning</span>
               </span>
             </Link>
@@ -131,7 +132,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               }`}
             >
               <span className="flex items-center gap-1">
-                <FiUsers className="w-4 h-4" />
+                <Users className="w-4 h-4" />
                 <span>Community</span>
               </span>
             </Link>
@@ -145,7 +146,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               }`}
             >
               <span className="flex items-center gap-1">
-                <FiSettings className="w-4 h-4" />
+                <Settings className="w-4 h-4" />
                 <span className="hidden sm:inline">Inställningar</span>
                 <span className="sm:hidden">Inst.</span>
               </span>
@@ -244,7 +245,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                 isOnCompletion ? 'bg-white text-[#014421]' : 'bg-[#014421] text-white'
               }`}>
-                <FiAward className="w-3 h-3" />
+                <Award className="w-3 h-3" />
               </div>
               <span className="text-xs font-medium">Avslut</span>
             </Link>
@@ -264,7 +265,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                 isOnCommunity ? 'bg-white text-[#014421]' : 'bg-[#014421] text-white'
               }`}>
-                <FiUsers className="w-3 h-3" />
+                <Users className="w-3 h-3" />
               </div>
               <span className="text-xs font-medium">Community</span>
             </Link>
@@ -284,7 +285,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                 isOnSettings ? 'bg-white text-[#014421]' : 'bg-[#014421] text-white'
               }`}>
-                <FiSettings className="w-3 h-3" />
+                <Settings className="w-3 h-3" />
               </div>
               <span className="text-xs font-medium">Inst.</span>
             </Link>

@@ -4,8 +4,9 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiClock, FiArrowRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -88,10 +89,10 @@ export default function RecipeCarousel() {
       </div>
       <div className="relative overflow-hidden group" ref={containerRef} onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
         <button onClick={() => moveCarousel('left')} className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 md:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-70 md:opacity-0 group-hover:opacity-100 hover:scale-110" aria-label={t('home.recipes.prev','Föregående recept')}>
-          <FiChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <button onClick={() => moveCarousel('right')} className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 md:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-70 md:opacity-0 group-hover:opacity-100 hover:scale-110" aria-label={t('home.recipes.next','Nästa recept')}>
-          <FiChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+          <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <div className="absolute left-0 top-0 bottom-0 w-12 md:w-20 z-[5] pointer-events-none" style={{ background: 'linear-gradient(to right, #F3EFE3, rgba(243,239,227,0))' }} />
         <div className="absolute right-0 top-0 bottom-0 w-12 md:w-20 z-[5] pointer-events-none" style={{ background: 'linear-gradient(to left, #F3EFE3, rgba(243,239,227,0))' }} />
@@ -116,11 +117,11 @@ export default function RecipeCarousel() {
                   </div>
                   <div className="flex items-center justify-between mt-auto">
                     {recipe.prepTime && (
-                      <div className="flex items-center gap-1 text-sm text-gray-500"><FiClock className="w-4 h-4" /><span>{recipe.prepTime}</span></div>
+                      <div className="flex items-center gap-1 text-sm text-gray-500"><Clock className="w-4 h-4" /><span>{recipe.prepTime}</span></div>
                     )}
                     <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover/card:gap-2 transition-all">
                       {t('common.readMore','Läs mer')}
-                      <FiArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
                 </div>

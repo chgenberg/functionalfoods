@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiSearch, FiBookOpen, FiExternalLink, FiFilter, FiCalendar, FiUser, FiLink, FiCopy, FiCheck } from 'react-icons/fi';
+
 import { BiDna, BiLeaf } from 'react-icons/bi';
 import { GiMicroscope, GiHeartOrgan, GiBrain } from 'react-icons/gi';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { Search, BookOpen, ExternalLink, Filter, Calendar, User, Link, Copy, Check } from 'lucide-react';
 
 interface Source {
   id: number;
@@ -577,7 +578,7 @@ const typeLabels = {
 };
 
 const categoryIcons: Record<string, any> = {
-  "Functional Foods": FiBookOpen,
+  "Functional Foods": BookOpen,
   "Antioxidanter": BiLeaf,
   "Omega-3": GiHeartOrgan,
   "Probiotika": GiMicroscope,
@@ -589,8 +590,8 @@ const categoryIcons: Record<string, any> = {
   "Longevity": GiBrain,
   "Antiinflammatorisk kost": BiLeaf,
   "Tarmhälsa": GiMicroscope,
-  "Allmänt": FiBookOpen,
-  "Översikt": FiBookOpen
+  "Allmänt": BookOpen,
+  "Översikt": BookOpen
 };
 
 export default function KallorPage() {
@@ -668,12 +669,12 @@ export default function KallorPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white rounded-xl border p-4 text-center">
-              <div className="mx-auto w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2"><FiBookOpen className="w-5 h-5"/></div>
+              <div className="mx-auto w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2"><BookOpen className="w-5 h-5"/></div>
               <div className="text-2xl font-bold">{sources.length}</div>
               <div className="text-sm text-gray-600">{t('sources.stats.sources','Vetenskapliga källor')}</div>
             </div>
             <div className="bg-white rounded-xl border p-4 text-center">
-              <div className="mx-auto w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2"><FiCalendar className="w-5 h-5"/></div>
+              <div className="mx-auto w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2"><Calendar className="w-5 h-5"/></div>
               <div className="text-2xl font-bold">{Math.max(...sources.map(s => s.year)) - Math.min(...sources.map(s => s.year))} år</div>
               <div className="text-sm text-gray-600">{t('sources.stats.span','Forskningsspann')}</div>
             </div>
@@ -699,7 +700,7 @@ export default function KallorPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('sources.search.label','Sök i källorna')}</label>
                 <div className="relative">
-                  <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="text"
                     placeholder={t('sources.search.placeholder','Titel, författare eller tidskrift...')}
@@ -714,7 +715,7 @@ export default function KallorPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('sources.filter.label','Forskningsområde')}</label>
                 <div className="relative">
-                  <FiFilter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
@@ -741,7 +742,7 @@ export default function KallorPage() {
                 <span className="text-sm text-gray-500">{t('sources.activeFilters','Aktiva filter:')}</span>
                 {searchTerm && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#9dc46d]/20 text-[#1a4324] rounded-full text-sm">
-                    <FiSearch className="w-3 h-3" />
+                    <Search className="w-3 h-3" />
                     {searchTerm}
                     <button onClick={() => setSearchTerm("")} className="ml-1 hover:text-red-600">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -752,7 +753,7 @@ export default function KallorPage() {
                 )}
                 {selectedCategory !== t('sources.filter.all','Alla') && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#9dc46d]/20 text-[#1a4324] rounded-full text-sm">
-                    <FiFilter className="w-3 h-3" />
+                    <Filter className="w-3 h-3" />
                     {selectedCategory}
                     <button onClick={() => setSelectedCategory(t('sources.filter.all','Alla'))} className="ml-1 hover:text-red-600">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -774,7 +775,7 @@ export default function KallorPage() {
         {/* Sources Grid */}
         <div className="grid gap-6">
           {filteredSources.map((source, index) => {
-            const CategoryIcon = categoryIcons[source.category] || FiBookOpen;
+            const CategoryIcon = categoryIcons[source.category] || BookOpen;
             
             return (
               <motion.div
@@ -805,7 +806,7 @@ export default function KallorPage() {
                         </span>
                         <div className="text-gray-600">
                           <div className="flex items-center gap-2 text-sm">
-                            <FiCalendar className="w-4 h-4 text-[#9dc46d]" />
+                            <Calendar className="w-4 h-4 text-[#9dc46d]" />
                             <span className="font-medium">{source.year}</span>
                           </div>
                         </div>
@@ -821,7 +822,7 @@ export default function KallorPage() {
                         </h3>
                         
                         <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                          <FiUser className="w-4 h-4" />
+                          <User className="w-4 h-4" />
                           <span>{source.authors.join(', ')}</span>
                         </div>
                         
@@ -860,12 +861,12 @@ export default function KallorPage() {
                           >
                             {copiedId === source.id ? (
                               <>
-                                <FiCheck className="w-4 h-4 text-primary" />
+                                <Check className="w-4 h-4 text-primary" />
                                 <span className="text-primary">{t('sources.copied','Kopierad!')}</span>
                               </>
                             ) : (
                               <>
-                                <FiCopy className="w-4 h-4" />
+                                <Copy className="w-4 h-4" />
                                 <span>{t('sources.copy','Kopiera källa')}</span>
                               </>
                             )}
@@ -879,7 +880,7 @@ export default function KallorPage() {
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1a4324] text-white hover:bg-[#9dc46d] hover:text-[#1a4324] rounded-lg transition-colors"
                           >
-                            <FiExternalLink className="w-4 h-4" />
+                            <ExternalLink className="w-4 h-4" />
                             <span>{t('sources.readMore','Läs mer')}</span>
                           </a>
                         )}
@@ -895,7 +896,7 @@ export default function KallorPage() {
 
         {filteredSources.length === 0 && (
           <div className="text-center py-12">
-            <FiBookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">{t('sources.empty.title','Inga källor hittades')}</h3>
             <p className="text-gray-500">{t('sources.empty.subtitle','Prova att ändra sökterm eller filter')}</p>
           </div>

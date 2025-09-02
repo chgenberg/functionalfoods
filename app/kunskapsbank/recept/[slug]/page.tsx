@@ -5,11 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiArrowLeft, FiClock, FiUsers, FiHeart, FiBookmark,
-  FiCheck, FiPlus, FiMinus, FiPrinter, FiX,
-  FiChevronDown, FiChevronUp, FiStar, FiCamera
-} from 'react-icons/fi';
+
 import { useAuth } from '../../../hooks/useAuth';
 import { useFavoriteRecipes } from '../../../hooks/useFavoriteRecipes';
 import { GiCookingPot } from 'react-icons/gi';
@@ -285,12 +281,12 @@ export default function RecipePage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <FiX className="w-10 h-10 text-red-600" />
+            <X className="w-10 h-10 text-red-600" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.notFoundTitle','Receptet hittades inte')}</h1>
           <p className="text-gray-600 mb-6">{error || t('recipes.detail.notFoundText','Det verkar som att receptet du letar efter inte finns.')}</p>
           <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors">
-            <FiArrowLeft />
+            <ArrowLeft />
             {t('recipes.detail.backToRecipes','Tillbaka till recept')}
           </Link>
         </div>
@@ -355,6 +351,7 @@ export default function RecipePage() {
           }
           .no-print {
             display: none !important;
+import { ArrowLeft, Clock, Users, Heart, Check, Plus, Minus, Printer, X, ChevronDown, ChevronUp, Star } from 'lucide-react';
           }
           .print-break {
             page-break-inside: avoid;
@@ -372,7 +369,7 @@ export default function RecipePage() {
         {/* Back Button - No Print */}
         <div className="container mx-auto px-4 py-4 no-print">
           <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-500 transition-colors">
-            <FiArrowLeft />
+            <ArrowLeft />
             <span>{t('recipes.detail.backToRecipes','Tillbaka till recept')}</span>
           </Link>
         </div>
@@ -440,19 +437,19 @@ export default function RecipePage() {
                 <div className="flex flex-wrap items-center gap-6 text-sm">
                   {recipe.prepTime && (
                     <div className="flex items-center gap-2">
-                      <FiClock className="text-orange-500" />
+                      <Clock className="text-orange-500" />
                       <span className="text-gray-600">Förberedelse: {recipe.prepTime}</span>
                     </div>
                   )}
                   {recipe.cookTime && (
                     <div className="flex items-center gap-2">
-                      <FiClock className="text-orange-500" />
+                      <Clock className="text-orange-500" />
                       <span className="text-gray-600">Tillagning: {recipe.cookTime}</span>
                     </div>
                   )}
                   {recipe.difficulty && (
                     <div className="flex items-center gap-2">
-                      <FiStar className="text-orange-500" />
+                      <Star className="text-orange-500" />
                       <span className="text-gray-600">{recipe.difficulty}</span>
                     </div>
                   )}
@@ -469,7 +466,7 @@ export default function RecipePage() {
                     }`}
                     title={isRecipeFavorite() ? 'Ta bort från favoriter' : 'Lägg till i favoriter'}
                   >
-                    <FiHeart className={`w-5 h-5 ${isRecipeFavorite() ? 'fill-current' : ''}`} />
+                    <Heart className={`w-5 h-5 ${isRecipeFavorite() ? 'fill-current' : ''}`} />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -477,7 +474,7 @@ export default function RecipePage() {
                     onClick={handlePrint}
                     className="p-3 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition-colors"
                   >
-                    <FiPrinter className="w-5 h-5" />
+                    <Printer className="w-5 h-5" />
                   </motion.button>
                 </div>
               </div>
@@ -507,7 +504,7 @@ export default function RecipePage() {
                         onClick={() => setServings(Math.max(1, servings - 1))}
                         className="w-10 h-10 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-orange-600"
                       >
-                        <FiMinus />
+                        <Minus />
                       </motion.button>
                       <span className="text-2xl font-bold text-orange-600 w-12 text-center">{servings}</span>
                       <motion.button
@@ -516,7 +513,7 @@ export default function RecipePage() {
                         onClick={() => setServings(servings + 1)}
                         className="w-10 h-10 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-orange-600"
                       >
-                        <FiPlus />
+                        <Plus />
                       </motion.button>
                     </div>
                   </div>
@@ -548,7 +545,7 @@ export default function RecipePage() {
                           : 'border-gray-300'
                       }`}>
                         {checkedIngredients.includes(index) && (
-                          <FiCheck className="w-3 h-3 text-white" />
+                          <Check className="w-3 h-3 text-white" />
                         )}
                       </div>
                       <span className={`${checkedIngredients.includes(index) ? 'line-through' : ''}`}>
@@ -557,9 +554,6 @@ export default function RecipePage() {
                     </motion.div>
                   ))}
                 </div>
-
-
-
 
               </div>
 
@@ -591,7 +585,7 @@ export default function RecipePage() {
                           ? 'bg-primary text-white' 
                           : 'bg-orange-100 text-orange-600'
                       }`}>
-                        {checkedSteps.includes(index) ? <FiCheck /> : index + 1}
+                        {checkedSteps.includes(index) ? <Check /> : index + 1}
                       </div>
                       <p className={`text-gray-700 pt-2 ${checkedSteps.includes(index) ? 'line-through opacity-60' : ''}`}>
                         {step}
@@ -632,11 +626,11 @@ export default function RecipePage() {
                 >
                   <h3 className="text-xl font-bold flex items-center gap-2">
                     <span className="bg-background-secondary w-10 h-10 rounded-full flex items-center justify-center text-primary">
-                      <FiHeart className="w-5 h-5" />
+                      <Heart className="w-5 h-5" />
                     </span>
                     {t('recipes.detail.nutrition','Näringsvärden')}
                   </h3>
-                  {showNutrition ? <FiChevronUp /> : <FiChevronDown />}
+                  {showNutrition ? <ChevronUp /> : <ChevronDown />}
                 </button>
 
                 <AnimatePresence>
@@ -706,7 +700,6 @@ export default function RecipePage() {
               </motion.div>
             )}
           </div>
-
 
         </div>
       </div>

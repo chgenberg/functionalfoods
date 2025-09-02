@@ -1,12 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { 
-  FiDownload, FiFileText, FiBook, FiList,
-  FiCheckCircle, FiInfo, FiAward
-} from 'react-icons/fi';
+
 import { GiFruitBowl, GiMeal, GiHealthNormal } from 'react-icons/gi';
 import { useState } from 'react';
+import { Download, FileText, Book, List, CheckCircle, Info, Award } from 'lucide-react';
 
 interface Download {
   id: string;
@@ -35,7 +33,7 @@ export default function DownloadsPage() {
       description: 'Komplett inköpslista för första veckan',
       category: 'shopping',
       size: '245 KB',
-      icon: FiList
+      icon: List
     },
     {
       id: 'vecka-2-inkopslista',
@@ -43,7 +41,7 @@ export default function DownloadsPage() {
       description: 'Komplett inköpslista för andra veckan',
       category: 'shopping',
       size: '248 KB',
-      icon: FiList
+      icon: List
     },
     {
       id: 'vecka-3-inkopslista',
@@ -51,7 +49,7 @@ export default function DownloadsPage() {
       description: 'Komplett inköpslista för tredje veckan',
       category: 'shopping',
       size: '251 KB',
-      icon: FiList
+      icon: List
     },
     {
       id: 'drycker-guide',
@@ -75,7 +73,7 @@ export default function DownloadsPage() {
       description: 'Allt om spirulina, chlorella och andra superpulver',
       category: 'knowledge',
       size: '3.1 MB',
-      icon: FiAward,
+      icon: Award,
       popular: true
     },
     {
@@ -84,7 +82,7 @@ export default function DownloadsPage() {
       description: 'Arbetsmaterial för personlig utveckling',
       category: 'knowledge',
       size: '892 KB',
-      icon: FiBook
+      icon: Book
     },
     {
       id: 'ersattningsguide-kolhydrater',
@@ -92,7 +90,7 @@ export default function DownloadsPage() {
       description: 'Smarta alternativ till vanliga kolhydrater',
       category: 'guide',
       size: '1.5 MB',
-      icon: FiFileText
+      icon: FileText
     },
     {
       id: 'periodisk-fasta-guide',
@@ -100,16 +98,16 @@ export default function DownloadsPage() {
       description: 'Introduktion till 16:8 metoden',
       category: 'knowledge',
       size: '2.2 MB',
-      icon: FiInfo
+      icon: Info
     }
   ];
 
   const categories = [
-    { id: 'all', label: 'Alla', icon: FiFileText },
+    { id: 'all', label: 'Alla', icon: FileText },
     { id: 'guide', label: 'Guider', icon: GiFruitBowl },
     { id: 'recipe', label: 'Recept', icon: GiMeal },
-    { id: 'shopping', label: 'Inköpslistor', icon: FiList },
-    { id: 'knowledge', label: 'Kunskap', icon: FiBook }
+    { id: 'shopping', label: 'Inköpslistor', icon: List },
+    { id: 'knowledge', label: 'Kunskap', icon: Book }
   ];
 
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -198,7 +196,7 @@ export default function DownloadsPage() {
                   onClick={() => handleDownload(download)}
                   className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
                 >
-                  <FiDownload className="w-5 h-5" />
+                  <Download className="w-5 h-5" />
                   Ladda ner
                 </button>
               </div>
@@ -214,7 +212,7 @@ export default function DownloadsPage() {
           className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8"
         >
           <div className="flex items-start gap-4">
-            <FiInfo className="w-5 h-5 md:w-6 md:h-6 text-blue-600 flex-shrink-0 mt-1" />
+            <Info className="w-5 h-5 md:w-6 md:h-6 text-blue-600 flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Tips för nedladdningar</h3>
               <p className="text-gray-600">

@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiUserPlus, FiSearch, FiEdit3, FiTrash2, FiChevronLeft, FiChevronRight, FiMail, FiCalendar, FiShield, FiUsers } from 'react-icons/fi';
+
 import AddUserModal from './AddUserModal';
 import { motion } from 'framer-motion';
+import { UserPlus, Search, Edit3, Trash2, ChevronLeft, ChevronRight, Mail, Calendar, Shield, Users } from 'lucide-react';
 
 interface User {
   id: string;
@@ -125,7 +126,7 @@ export default function AdminUsersPage() {
               onClick={() => setShowModal(true)} 
               className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg"
             >
-              <FiUserPlus className="w-5 h-5" />
+              <UserPlus className="w-5 h-5" />
               Lägg till användare
             </button>
           </div>
@@ -144,7 +145,7 @@ export default function AdminUsersPage() {
                   <p className="text-2xl font-bold text-gray-900">{users.length}</p>
                 </div>
                 <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <FiUsers className="w-6 h-6 text-orange-600" />
+                  <Users className="w-6 h-6 text-orange-600" />
                 </div>
               </div>
             </motion.div>
@@ -163,7 +164,7 @@ export default function AdminUsersPage() {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-background-secondary rounded-xl flex items-center justify-center">
-                  <FiUsers className="w-6 h-6 text-primary" />
+                  <Users className="w-6 h-6 text-primary" />
                 </div>
               </div>
             </motion.div>
@@ -182,7 +183,7 @@ export default function AdminUsersPage() {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <FiUsers className="w-6 h-6 text-blue-600" />
+                  <Users className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
             </motion.div>
@@ -201,7 +202,7 @@ export default function AdminUsersPage() {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <FiShield className="w-6 h-6 text-purple-600" />
+                  <Shield className="w-6 h-6 text-purple-600" />
                 </div>
               </div>
             </motion.div>
@@ -210,7 +211,7 @@ export default function AdminUsersPage() {
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 max-w-md relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Sök användare..."
@@ -275,7 +276,7 @@ export default function AdminUsersPage() {
                             {user.name || 'Ingen namn'}
                           </p>
                           <div className="flex items-center gap-1 text-sm text-gray-500">
-                            <FiMail className="w-3 h-3" />
+                            <Mail className="w-3 h-3" />
                             <span>{user.email}</span>
                           </div>
                         </div>
@@ -292,7 +293,7 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4 hidden md:table-cell">
                       <div className="flex items-center gap-2">
-                        <FiShield className={`w-4 h-4 ${
+                        <Shield className={`w-4 h-4 ${
                           user.role === 'admin' ? 'text-purple-600' : 'text-gray-400'
                         }`} />
                         <span className={`text-sm font-medium ${
@@ -304,7 +305,7 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4 hidden lg:table-cell">
                       <div className="flex items-center gap-2 text-gray-500">
-                        <FiCalendar className="w-4 h-4" />
+                        <Calendar className="w-4 h-4" />
                         <span className="text-sm">
                           {new Date(user.createdAt).toLocaleDateString('sv-SE')}
                         </span>
@@ -316,13 +317,13 @@ export default function AdminUsersPage() {
                           href={`/admin/users/${user.id}/edit`}
                           className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
                         >
-                          <FiEdit3 className="w-4 h-4" />
+                          <Edit3 className="w-4 h-4" />
                         </Link>
                         <button 
                           onClick={() => handleDeleteUser(user.id, user.name || user.email)}
                           className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
                         >
-                          <FiTrash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -344,7 +345,7 @@ export default function AdminUsersPage() {
                   disabled={currentPage === 1}
                   className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <FiChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
                 
                 {[...Array(totalPages)].map((_, i) => (
@@ -366,7 +367,7 @@ export default function AdminUsersPage() {
                   disabled={currentPage === totalPages}
                   className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <FiChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
             </div>

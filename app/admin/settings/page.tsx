@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiSave, FiInfo, FiBell, FiLock, FiCreditCard, FiUser, FiGlobe, FiKey, FiEye, FiEyeOff } from 'react-icons/fi';
+import { Save, Info, Lock, CreditCard, User, Eye, EyeOff } from 'lucide-react';
 
 const SettingsCard = ({ title, subtitle, children }: { title: string, subtitle?: string, children: React.ReactNode }) => (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300">
@@ -14,7 +14,7 @@ const SettingsCard = ({ title, subtitle, children }: { title: string, subtitle?:
         </div>
         <div className="p-6 bg-gray-50 rounded-b-xl border-t border-gray-100 flex justify-end">
             <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors">
-                <FiSave className="w-4 h-4"/>
+                <Save className="w-4 h-4"/>
                 <span>Spara ändringar</span>
             </button>
         </div>
@@ -44,8 +44,8 @@ export default function AdminSettingsPage() {
   });
 
   const tabs = [
-    { id: 'general', label: 'Allmänt', icon: FiInfo },
-    { id: 'security', label: 'Säkerhet', icon: FiLock },
+    { id: 'general', label: 'Allmänt', icon: Info },
+    { id: 'security', label: 'Säkerhet', icon: Lock },
     { id: 'notifications', label: 'Notiser', icon: FiBell },
   ];
 
@@ -94,7 +94,7 @@ export default function AdminSettingsPage() {
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                         >
-                          {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </button>
                       </div>
                       <input

@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronDown, FiSearch, FiBook, FiShoppingCart, FiCreditCard, FiShield, FiHelpCircle } from 'react-icons/fi';
+
 import { GiFruitBowl } from 'react-icons/gi';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { ChevronDown, Search, Book, ShoppingCart, CreditCard, Shield, HelpCircle } from 'lucide-react';
 
 interface FAQ {
   question: string;
@@ -69,7 +70,7 @@ const sections: Section[] = [
   {
     id: 'courses',
     title: 'Kurser',
-    icon: FiBook,
+    icon: Book,
     faqs: [
       {
         question: 'Vilka kurser erbjuder ni?',
@@ -156,7 +157,7 @@ const sections: Section[] = [
   {
     id: 'recipes',
     title: 'Recept & Kunskapsbank',
-    icon: FiBook,
+    icon: Book,
     faqs: [
       {
         question: 'Var hittar jag gratis recept?',
@@ -183,7 +184,7 @@ const sections: Section[] = [
   {
     id: 'book',
     title: 'Boken "Functional Foods: Mat för ett friskare liv"',
-    icon: FiBook,
+    icon: Book,
     faqs: [
       {
         question: 'Vad handlar boken om?',
@@ -210,7 +211,7 @@ const sections: Section[] = [
   {
     id: 'payment',
     title: 'Betalning & Villkor',
-    icon: FiCreditCard,
+    icon: CreditCard,
     faqs: [
       {
         question: 'Vilka betalningsmetoder accepterar ni?',
@@ -237,7 +238,7 @@ const sections: Section[] = [
   {
     id: 'privacy',
     title: 'Integritet & Cookies',
-    icon: FiShield,
+    icon: Shield,
     faqs: [
       {
         question: 'Hur skyddar ni mina personuppgifter?',
@@ -301,7 +302,7 @@ export default function QAPage() {
       <div className="text-center mb-10">
         <div className="flex justify-center mb-4">
           <div className="bg-primary rounded-full p-4">
-            <FiHelpCircle className="w-8 h-8 text-white" />
+            <HelpCircle className="w-8 h-8 text-white" />
           </div>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
@@ -314,7 +315,7 @@ export default function QAPage() {
 
       {/* Search Bar */}
       <div className="relative mb-8">
-        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
         <input
           type="text"
           placeholder={t('qa.search.placeholder','Sök bland frågor och svar...')}
@@ -355,7 +356,7 @@ export default function QAPage() {
                   animate={{ rotate: isExpanded ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <FiChevronDown className="w-5 h-5 text-gray-500" />
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
                 </motion.div>
               </button>
 
@@ -391,7 +392,7 @@ export default function QAPage() {
                                 transition={{ duration: 0.2 }}
                                 className="flex-shrink-0 mt-0.5"
                               >
-                                <FiChevronDown className="w-4 h-4 text-gray-500" />
+                                <ChevronDown className="w-4 h-4 text-gray-500" />
                               </motion.div>
                             </button>
                             <AnimatePresence>

@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCheck, FiLoader, FiAlertTriangle, FiTag, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+
 import { FaCarrot, FaFish, FaCheese, FaBreadSlice, FaSeedling } from 'react-icons/fa';
+import { Check, Loader, AlertTriangle, Tag, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ShoppingListItem {
   id: string;
@@ -93,7 +94,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
   if (loading) {
     return (
       <div className="flex items-center justify-center p-6 gap-2 text-gray-500">
-        <FiLoader className="animate-spin mr-2" />
+        <Loader className="animate-spin mr-2" />
         <span>Laddar inköpslista...</span>
       </div>
     );
@@ -102,7 +103,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
   if (error) {
     return (
       <div className="flex items-center p-4 gap-2 text-red-600 bg-red-50 rounded-lg">
-        <FiAlertTriangle />
+        <AlertTriangle />
         <span>{error}</span>
       </div>
     );
@@ -135,7 +136,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
               {categoryIcons[category] && React.createElement(categoryIcons[category], { className: "w-6 h-6 text-primary" })}
               <h3 className="font-bold text-lg text-gray-800">{category}</h3>
             </div>
-            {openCategories.has(category) ? <FiChevronUp className="text-gray-500" /> : <FiChevronDown className="text-gray-500" />}
+            {openCategories.has(category) ? <ChevronUp className="text-gray-500" /> : <ChevronDown className="text-gray-500" />}
           </button>
 
           <AnimatePresence>
@@ -156,7 +157,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
                     className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${checkedItems.has(item.id) ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <div className={`w-5 h-5 rounded-md flex items-center justify-center border-2 ${checkedItems.has(item.id) ? 'bg-primary border-primary' : 'border-gray-300'}`}>
-                      {checkedItems.has(item.id) && <FiCheck className="w-4 h-4 text-white" />}
+                      {checkedItems.has(item.id) && <Check className="w-4 h-4 text-white" />}
                     </div>
                     <span className={`${checkedItems.has(item.id) ? 'line-through' : ''}`}>
                       {item.name} - <span className="text-gray-500">{item.quantity}</span>

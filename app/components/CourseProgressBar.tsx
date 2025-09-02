@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiCalendar, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { Calendar, CheckCircle, Clock } from 'lucide-react';
 
 interface CourseProgressBarProps {
   startDate: string; // ISO date string
@@ -64,9 +64,9 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
         <div className="flex items-center gap-3">
           <div className="p-3 bg-primary/10 rounded-full">
             {isCompleted ? (
-              <FiCheckCircle className="w-6 h-6 text-primary" />
+              <CheckCircle className="w-6 h-6 text-primary" />
             ) : (
-              <FiCalendar className="w-6 h-6 text-primary" />
+              <Calendar className="w-6 h-6 text-primary" />
             )}
           </div>
           <div>
@@ -143,7 +143,7 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
       {!isCompleted && (
         <div className="mt-4 p-4 bg-background rounded-lg border border-primary/20">
           <div className="flex items-center gap-2 text-sm">
-            <FiClock className="w-4 h-4 text-primary" />
+            <Clock className="w-4 h-4 text-primary" />
             <span className="text-gray-700">
               Idag är dag {daysInCurrentWeek} i vecka {currentWeek}
             </span>

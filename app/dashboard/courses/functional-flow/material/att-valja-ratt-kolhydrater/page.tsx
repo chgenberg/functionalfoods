@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiChevronRight, FiAlertCircle, FiTrendingUp, FiTrendingDown, FiActivity } from 'react-icons/fi';
+
 import { GiWheat, GiGrainBundle, GiSugarCane, GiBread, GiCarrot, GiFruitBowl, GiPotato, GiRiceCooker } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, CheckCircle, ChevronRight, AlertCircle, TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 interface CarbSource {
   id: string;
@@ -121,7 +122,7 @@ export default function AttValjaRattKolhydraterPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard/courses/functional-flow/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
-            <FiArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
         </div>
@@ -150,7 +151,7 @@ export default function AttValjaRattKolhydraterPage() {
             
             <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 my-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                <FiAlertCircle className="w-5 h-5 mr-2 text-primary" />
+                <AlertCircle className="w-5 h-5 mr-2 text-primary" />
                 Viktigt att veta:
               </h3>
               <p className="text-gray-700">
@@ -175,22 +176,22 @@ export default function AttValjaRattKolhydraterPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Snabba kolhydrater</h2>
-              <FiTrendingUp className="w-6 h-6 text-red-500" />
+              <TrendingUp className="w-6 h-6 text-red-500" />
             </div>
             <p className="text-gray-600 mb-4">
               Innehåller ofta lite näring, mycket socker och ger kort mättnad.
             </p>
             <div className="space-y-2">
               <div className="flex items-center text-red-600">
-                <FiAlertCircle className="w-4 h-4 mr-2" />
+                <AlertCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Snabb blodsockerhöjning</span>
               </div>
               <div className="flex items-center text-red-600">
-                <FiAlertCircle className="w-4 h-4 mr-2" />
+                <AlertCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Kort energi & sockerkrasch</span>
               </div>
               <div className="flex items-center text-red-600">
-                <FiAlertCircle className="w-4 h-4 mr-2" />
+                <AlertCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Ökar inflammation</span>
               </div>
             </div>
@@ -208,22 +209,22 @@ export default function AttValjaRattKolhydraterPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Långsamma kolhydrater</h2>
-              <FiActivity className="w-6 h-6 text-primary" />
+              <Activity className="w-6 h-6 text-primary" />
             </div>
             <p className="text-gray-600 mb-4">
               Tar längre tid att bryta ner och påverkar blodsockret mindre.
             </p>
             <div className="space-y-2">
               <div className="flex items-center text-primary">
-                <FiCheckCircle className="w-4 h-4 mr-2" />
+                <CheckCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Stabil blodsockernivå</span>
               </div>
               <div className="flex items-center text-primary">
-                <FiCheckCircle className="w-4 h-4 mr-2" />
+                <CheckCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Långvarig energi</span>
               </div>
               <div className="flex items-center text-primary">
-                <FiCheckCircle className="w-4 h-4 mr-2" />
+                <CheckCircle className="w-4 h-4 mr-2" />
                 <span className="text-sm">Mättande & näringsrika</span>
               </div>
             </div>
@@ -407,19 +408,19 @@ export default function AttValjaRattKolhydraterPage() {
             </p>
             <ul className="space-y-2 ml-4">
               <li className="flex items-start">
-                <FiCheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span>Jämnare blodsocker och energinivåer</span>
               </li>
               <li className="flex items-start">
-                <FiCheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span>Minskad inflammation i kroppen</span>
               </li>
               <li className="flex items-start">
-                <FiCheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span>Bättre humör och mental klarhet</span>
               </li>
               <li className="flex items-start">
-                <FiCheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
                 <span>Ökad fettförbränning</span>
               </li>
             </ul>
@@ -440,7 +441,7 @@ export default function AttValjaRattKolhydraterPage() {
               <Link href="/dashboard/courses/functional-flow/material/ersattningsguide-for-kolhydrater" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till ersättningsguiden
-                <FiChevronRight className="ml-1" />
+                <ChevronRight className="ml-1" />
               </Link>
             </div>
             <GiGrainBundle className="w-16 h-16 text-primary opacity-20" />

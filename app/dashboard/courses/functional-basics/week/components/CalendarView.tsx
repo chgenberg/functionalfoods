@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiCalendar, FiCheck, FiClock } from 'react-icons/fi';
+import { Calendar, Check, Clock } from 'lucide-react';
 
 interface MealItem {
   name: string;
@@ -106,7 +106,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
       {/* Calendar Grid */}
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
-          <FiCalendar className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
+          <Calendar className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
           <h3 className="text-2xl font-bold text-gray-900">Vecka {weekNumber} - Kostschema</h3>
         </div>
 
@@ -136,7 +136,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
                   {index + 1}
                 </div>
                 {status === 'completed' && (
-                  <FiCheck className="absolute top-1 right-1 w-4 h-4" />
+                  <Check className="absolute top-1 right-1 w-4 h-4" />
                 )}
                 {status === 'current' && (
                   <div className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />
@@ -184,7 +184,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🌅</span>
               <h5 className="font-semibold text-gray-900">Frukost</h5>
-              <FiClock className="w-4 h-4 text-gray-500 ml-auto" />
+              <Clock className="w-4 h-4 text-gray-500 ml-auto" />
               <span className="text-sm text-gray-500">07:00</span>
             </div>
             <p className="text-gray-700 mb-3">{currentDayMeals.breakfast.name}</p>
@@ -203,7 +203,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">☀️</span>
               <h5 className="font-semibold text-gray-900">Lunch</h5>
-              <FiClock className="w-4 h-4 text-gray-500 ml-auto" />
+              <Clock className="w-4 h-4 text-gray-500 ml-auto" />
               <span className="text-sm text-gray-500">12:00</span>
             </div>
             <p className="text-gray-700 mb-3">{currentDayMeals.lunch.name}</p>
@@ -227,7 +227,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🌙</span>
               <h5 className="font-semibold text-gray-900">Middag</h5>
-              <FiClock className="w-4 h-4 text-gray-500 ml-auto" />
+              <Clock className="w-4 h-4 text-gray-500 ml-auto" />
               <span className="text-sm text-gray-500">18:00</span>
             </div>
             <p className="text-gray-700 mb-3">{currentDayMeals.dinner.name}</p>

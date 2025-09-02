@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiTarget, FiCheckCircle, FiCheck, FiTrendingUp, FiFlag, FiClock
-} from 'react-icons/fi';
+
 import { useGoals } from '@/app/hooks/useGoals';
+import { Target, CheckCircle, Check, TrendingUp, Clock } from 'lucide-react';
 
 // Samma fördefinierade mål som på huvudsidan
 const PREDEFINED_GOALS = {
@@ -156,7 +155,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
           <div className="bg-orange-100 rounded-full p-3">
-            <FiTarget className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
+            <Target className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Mål för vecka {weekNumber}</h2>
@@ -213,7 +212,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                         : 'border-gray-300 hover:border-primary'
                     }`}
                   >
-                    {goal.status === 'completed' && <FiCheck className="w-3 h-3" />}
+                    {goal.status === 'completed' && <Check className="w-3 h-3" />}
                   </button>
                   <div className="flex-1 min-w-0">
                     <h5 className={`font-medium text-sm sm:text-base break-words ${
@@ -285,7 +284,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
       {weekGoals.length === 0 && (
         <div className="text-center py-8">
           <div className="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-4">
-            <FiTarget className="w-12 h-12 text-gray-400 mx-auto" />
+            <Target className="w-12 h-12 text-gray-400 mx-auto" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">Inga aktiva mål ännu</h3>
           <p className="text-gray-600 mb-4">Välj från föreslagna mål ovan för att komma igång</p>

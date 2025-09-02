@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiArrowLeft, FiSave, FiUser, FiMail, FiShield, FiCheck } from 'react-icons/fi';
+import { ArrowLeft, Save, User, Mail, Shield, Check } from 'lucide-react';
 
 interface User {
   id: string;
@@ -120,7 +120,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           onClick={() => router.back()}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
         >
-          <FiArrowLeft />
+          <ArrowLeft />
           Tillbaka
         </button>
         <h1 className="text-3xl font-bold text-gray-900">Redigera användare</h1>
@@ -131,7 +131,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           {/* User Info */}
           <div className="flex items-center gap-4 pb-6 border-b">
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-              <FiUser className="w-8 h-8 text-orange-600" />
+              <User className="w-8 h-8 text-orange-600" />
             </div>
             <div>
               <h2 className="text-xl font-semibold">{user.name || user.email}</h2>
@@ -159,7 +159,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
               E-postadress
             </label>
             <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="email"
                 value={formData.email}
@@ -176,7 +176,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
               Roll
             </label>
             <div className="relative">
-              <FiShield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
@@ -244,7 +244,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                 </>
               ) : (
                 <>
-                  <FiSave />
+                  <Save />
                   Spara ändringar
                 </>
               )}

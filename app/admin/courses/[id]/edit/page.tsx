@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiArrowLeft, FiSave, FiBook, FiClock, FiUsers, FiX, FiPlus, FiCheckCircle, FiAlertCircle, FiImage, FiDollarSign, FiTarget, FiFileText, FiDownload, FiMessageSquare, FiEye } from 'react-icons/fi';
+
 import { GiMeal } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Save, Book, Clock, Users, X, Plus, CheckCircle, AlertCircle, Image, DollarSign, Target, FileText, Download, MessageSquare, Eye } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -108,7 +109,7 @@ const RecipeSelector = ({
                   onClick={onClose} 
                   className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
                 >
-                  <FiX className="w-5 h-5" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
               
@@ -359,7 +360,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FiAlertCircle className="w-12 h-12 text-red-600" />
+            <AlertCircle className="w-12 h-12 text-red-600" />
           </div>
           <p className="text-xl text-gray-600">Kursen hittades inte</p>
         </div>
@@ -378,7 +379,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
           onClick={() => router.back()}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 group"
         >
-          <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="group-hover:-translate-x-1 transition-transform" />
           <span>Tillbaka</span>
         </button>
         <div className="flex items-center justify-between">
@@ -394,7 +395,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
               onClick={() => router.push(`/utbildning/functional-basics`)}
               className="px-4 py-2 bg-white text-gray-700 rounded-xl hover:bg-gray-50 transition-colors shadow-md flex items-center gap-2"
             >
-              <FiEye />
+              <Eye />
               Förhandsgranska
             </button>
           </div>
@@ -420,7 +421,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
-                <FiBook />
+                <Book />
                 Grundinformation
               </button>
               <button
@@ -450,7 +451,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                 <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                      <FiBook className="w-10 h-10 text-white" />
+                      <Book className="w-10 h-10 text-white" />
                     </div>
                     <div className="text-white">
                       <h2 className="text-2xl font-bold">{course.title}</h2>
@@ -482,7 +483,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
               {/* Basic Information */}
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <FiFileText className="text-orange-500" />
+                  <FileText className="text-orange-500" />
                   Grundläggande information
                 </h3>
 
@@ -544,7 +545,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                         Längd
                       </label>
                       <div className="relative">
-                        <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Clock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <input
                           type="text"
                           value={formData.duration}
@@ -561,7 +562,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
               {/* Additional Settings */}
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <FiTarget className="text-primary" />
+                  <Target className="text-primary" />
                   Pris & Inställningar
                 </h3>
 
@@ -584,7 +585,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                       Omslagsbild URL
                     </label>
                     <div className="relative">
-                      <FiImage className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <Image className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                       <input
                         type="text"
                         value={formData.coverImage || ''}
@@ -605,7 +606,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                       className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
                     />
                     <span className="text-gray-700">
-                      <FiMessageSquare className="inline mr-2 text-blue-500" />
+                      <MessageSquare className="inline mr-2 text-blue-500" />
                       Aktivera community-funktioner
                     </span>
                   </label>
@@ -708,7 +709,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                             }}
                             className="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
                           >
-                            <FiX className="w-5 h-5" />
+                            <X className="w-5 h-5" />
                           </button>
                         )}
                       </div>
@@ -784,7 +785,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                                         onClick={() => removeMeal(weekIndex, day, 'breakfast')}
                                         className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 ml-2"
                                       >
-                                        <FiX className="w-4 h-4" />
+                                        <X className="w-4 h-4" />
                                       </button>
                                     </div>
                                   ) : (
@@ -812,7 +813,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                                         onClick={() => removeMeal(weekIndex, day, 'lunch')}
                                         className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 ml-2"
                                       >
-                                        <FiX className="w-4 h-4" />
+                                        <X className="w-4 h-4" />
                                       </button>
                                     </div>
                                   ) : (
@@ -840,7 +841,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                                         onClick={() => removeMeal(weekIndex, day, 'dinner')}
                                         className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 ml-2"
                                       >
-                                        <FiX className="w-4 h-4" />
+                                        <X className="w-4 h-4" />
                                       </button>
                                     </div>
                                   ) : (
@@ -874,7 +875,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-4 border-2 border-dashed border-gray-300 rounded-2xl text-gray-600 hover:border-orange-400 hover:text-orange-600 hover:bg-orange-50 transition-all duration-200 font-medium flex items-center justify-center gap-2"
               >
-                <FiPlus className="text-xl" />
+                <Plus className="text-xl" />
                 Lägg till vecka
               </motion.button>
             </motion.div>
@@ -901,7 +902,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                 </>
               ) : (
                 <>
-                  <FiCheckCircle className="text-xl" />
+                  <CheckCircle className="text-xl" />
                   <span>Spara ändringar</span>
                 </>
               )}

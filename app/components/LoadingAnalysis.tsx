@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiActivity, FiHeart, FiZap, FiShield, FiTrendingUp, FiCheckCircle } from 'react-icons/fi';
+
 import { GiBrain, GiStomach, GiFruitBowl, GiMeal, GiBodyBalance, GiHeartBeats, GiMeditation } from 'react-icons/gi';
+import { Activity, Heart, Zap, Shield, TrendingUp, CheckCircle } from 'lucide-react';
 
 export default function LoadingAnalysis({ totalMs = 45000 }: { totalMs?: number }) {
   const [mounted, setMounted] = useState(false);
@@ -21,10 +22,10 @@ export default function LoadingAnalysis({ totalMs = 45000 }: { totalMs?: number 
 
   const messages = [
     { text: "Analyserar dina svar...", icon: GiBrain, duration: scaledDurations[0], color: "from-purple-400 to-pink-400", subtext: "Vi går igenom din hälsoprofil" },
-    { text: "Identifierar näringsbrister...", icon: FiActivity, duration: scaledDurations[1], color: "from-blue-400 to-cyan-400", subtext: "Matchar symptom med näringsämnen" },
+    { text: "Identifierar näringsbrister...", icon: Activity, duration: scaledDurations[1], color: "from-blue-400 to-cyan-400", subtext: "Matchar symptom med näringsämnen" },
     { text: "Skapar personlig hälsoplan...", icon: GiStomach, duration: scaledDurations[2], color: "from-green-400 to-emerald-400", subtext: "Anpassar rekommendationer efter dina behov" },
     { text: "Väljer functional foods...", icon: GiFruitBowl, duration: scaledDurations[3], color: "from-orange-400 to-amber-400", subtext: "Hittar rätt livsmedel för dig" },
-    { text: "Förbereder din rapport...", icon: FiHeart, duration: scaledDurations[4], color: "from-red-400 to-pink-400", subtext: "Sammanställer alla insikter" }
+    { text: "Förbereder din rapport...", icon: Heart, duration: scaledDurations[4], color: "from-red-400 to-pink-400", subtext: "Sammanställer alla insikter" }
   ];
 
   const healthTips = [
@@ -177,7 +178,7 @@ export default function LoadingAnalysis({ totalMs = 45000 }: { totalMs?: number 
             <div className="flex justify-center gap-2">
               {messages.map((_, index) => (
                 <motion.div key={index} initial={{ scale: 0 }} animate={{ scale: index < messageIndex ? 1 : 0.5, opacity: index <= messageIndex ? 1 : 0.3 }} transition={{ delay: index * 0.1 }} className={`w-8 h-8 rounded-full flex items-center justify-center ${index < messageIndex ? 'bg-primary text-white' : index === messageIndex ? 'bg-gradient-to-r from-primary to-accent text-white' : 'bg-gray-200'}`}>
-                  {index < messageIndex ? (<FiCheckCircle className="w-4 h-4" />) : (<span className="text-xs font-medium">{index + 1}</span>)}
+                  {index < messageIndex ? (<CheckCircle className="w-4 h-4" />) : (<span className="text-xs font-medium">{index + 1}</span>)}
                 </motion.div>
               ))}
             </div>

@@ -3,10 +3,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiGrid, FiList, FiFilter, FiX, FiChevronRight } from 'react-icons/fi';
+
 import { GiWheat, GiFruitBowl, GiMeat, GiHerbsBundle } from 'react-icons/gi';
 import { FaCheese, FaFish, FaLeaf } from 'react-icons/fa';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { Search, Grid3X3, List, Filter, X, ChevronRight } from 'lucide-react';
 
 interface RawMaterial {
   id: string;
@@ -161,7 +162,7 @@ export default function IngrediensPage() {
             {/* Search */}
             <div ref={searchRef} className="flex-1 relative">
               <div className="relative">
-                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
                 <input
                   type="text"
                   placeholder={t('ingredients.search.placeholder','Sök efter råvara eller näringsämne...')}
@@ -174,7 +175,7 @@ export default function IngrediensPage() {
                     onClick={() => setSearchQuery('')}
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary"
                   >
-                    <FiX className="w-5 h-5" />
+                    <X className="w-5 h-5" />
                   </button>
                 )}
               </div>
@@ -188,7 +189,7 @@ export default function IngrediensPage() {
                   showFilters ? 'bg-accent text-white border-accent' : 'border-accent/20 hover:border-accent'
                 }`}
               >
-                <FiFilter className="w-5 h-5" />
+                <Filter className="w-5 h-5" />
                 <span className="hidden sm:inline">{t('ingredients.filter','Filter')}</span>
               </button>
               
@@ -197,13 +198,13 @@ export default function IngrediensPage() {
                   onClick={() => setViewMode('grid')}
                   className={`p-3 transition-colors ${viewMode === 'grid' ? 'bg-accent text-white' : 'hover:bg-accent/10'}`}
                 >
-                  <FiGrid className="w-5 h-5" />
+                  <Grid3X3 className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
                   className={`p-3 transition-colors ${viewMode === 'list' ? 'bg-accent text-white' : 'hover:bg-accent/10'}`}
                 >
-                  <FiList className="w-5 h-5" />
+                  <List className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -282,7 +283,7 @@ export default function IngrediensPage() {
                         animate={{ rotate: isExpanded ? 90 : 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <FiChevronRight className="w-5 h-5 text-text-secondary" />
+                        <ChevronRight className="w-5 h-5 text-text-secondary" />
                       </motion.div>
                     </div>
                     

@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiHelpCircle, FiCheck, FiClock, FiLock, FiBookOpen, FiAward, FiCalendar, FiTrendingUp, FiUsers, FiInstagram } from 'react-icons/fi';
+
 import CourseNavigation from '../../components/CourseNavigation';
 import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
 import InfoPopupGrid from '../../components/InfoPopupGrid';
 import CompleteCourseDownload from '../../components/CompleteCourseDownload';
 import { mealPlans } from '@/app/data/mealPlans';
+import { HelpCircle, Check, Clock, Lock, BookOpen, Award, Calendar, TrendingUp, Users, Instagram } from 'lucide-react';
 
 export default function FunctionalBasicsOverview() {
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -65,9 +66,9 @@ export default function FunctionalBasicsOverview() {
 
   const getWeekIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <FiCheck className="w-6 h-6 text-green-600" />;
-      case 'current': return <FiClock className="w-6 h-6 text-blue-600" />;
-      default: return <FiLock className="w-6 h-6 text-gray-400" />;
+      case 'completed': return <Check className="w-6 h-6 text-green-600" />;
+      case 'current': return <Clock className="w-6 h-6 text-blue-600" />;
+      default: return <Lock className="w-6 h-6 text-gray-400" />;
     }
   };
 
@@ -112,22 +113,22 @@ export default function FunctionalBasicsOverview() {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center p-4 bg-green-50 rounded-2xl">
-              <FiCalendar className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <Calendar className="w-8 h-8 text-green-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900">{completedDays}</div>
               <div className="text-sm text-gray-600">Dagar genomförda</div>
             </div>
             <div className="text-center p-4 bg-blue-50 rounded-2xl">
-              <FiClock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900">{daysRemaining}</div>
               <div className="text-sm text-gray-600">Dagar kvar</div>
             </div>
             <div className="text-center p-4 bg-purple-50 rounded-2xl">
-              <FiBookOpen className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <BookOpen className="w-8 h-8 text-purple-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900">{currentWeek}</div>
               <div className="text-sm text-gray-600">Aktuell vecka</div>
             </div>
             <div className="text-center p-4 bg-orange-50 rounded-2xl">
-              <FiTrendingUp className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+              <TrendingUp className="w-8 h-8 text-orange-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900">111</div>
               <div className="text-sm text-gray-600">Recept totalt</div>
             </div>
@@ -155,7 +156,7 @@ export default function FunctionalBasicsOverview() {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
           >
-            <FiUsers className="w-5 h-5" />
+            <Users className="w-5 h-5" />
             COACHNING OCH FUNCTIONAL FOODS - KLICKA HÄR
           </motion.button>
         </motion.div>
@@ -176,7 +177,7 @@ export default function FunctionalBasicsOverview() {
           <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Nästa steg</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
-              <FiBookOpen className="w-12 h-12 text-green-600 mx-auto mb-4" />
+              <BookOpen className="w-12 h-12 text-green-600 mx-auto mb-4" />
               <h4 className="text-lg font-bold text-gray-900 mb-2">Fortsätt kursen</h4>
               <p className="text-gray-600 mb-4">Du är på vecka {currentWeek}, dag {currentDay}</p>
               <button
@@ -187,7 +188,7 @@ export default function FunctionalBasicsOverview() {
               </button>
             </div>
             <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
-              <FiAward className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+              <Award className="w-12 h-12 text-blue-600 mx-auto mb-4" />
               <h4 className="text-lg font-bold text-gray-900 mb-2">Dina framsteg</h4>
               <p className="text-gray-600 mb-4">{Math.round(progressPercentage)}% av kursen genomförd</p>
               <div className="text-2xl font-bold text-blue-600">{completedDays}/{totalDays} dagar</div>
@@ -206,7 +207,7 @@ export default function FunctionalBasicsOverview() {
             className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6"
           >
             <div className="text-center">
-              <FiHelpCircle className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+              <HelpCircle className="w-16 h-16 text-blue-500 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-900 mb-4">Hur navigerar du?</h3>
               <div className="text-left space-y-3 text-sm text-gray-600">
                 <p>• <strong>Översikt:</strong> Se din framsteg och kursöversikt</p>
@@ -268,7 +269,7 @@ export default function FunctionalBasicsOverview() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-4 bg-[#014421] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
-                  <FiUsers className="w-6 h-6" />
+                  <Users className="w-6 h-6" />
                   <div>
                     <div className="font-bold">MIGHTY NETWORKS</div>
                     <div className="text-sm opacity-90">Gå med i vår community</div>
@@ -281,7 +282,7 @@ export default function FunctionalBasicsOverview() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-4 bg-[#F4B4C3] text-[#014421] rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
-                  <FiInstagram className="w-6 h-6" />
+                  <Instagram className="w-6 h-6" />
                   <div>
                     <div className="font-bold">INSTAGRAM</div>
                     <div className="text-sm opacity-90">@functionalfoods.se</div>

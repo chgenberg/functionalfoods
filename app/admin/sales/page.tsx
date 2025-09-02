@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { FiDollarSign, FiShoppingCart, FiUsers, FiTrendingUp, FiDownload, FiCalendar, FiFilter, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { DollarSign, ShoppingCart, Users, TrendingUp, Download, Calendar, Filter, ArrowUp, ArrowDown } from 'lucide-react';
 
 const salesData = [
   { name: 'Jan', Intäkter: 40000, Kurser: 24, Kunder: 120 },
@@ -24,7 +25,7 @@ const stats = [
     { 
       title: "Totala intäkter", 
       value: "1,2M kr", 
-      icon: FiDollarSign, 
+      icon: DollarSign, 
       change: 15.2, 
       bgColor: "bg-orange-100",
       iconColor: "text-orange-600",
@@ -33,7 +34,7 @@ const stats = [
     { 
       title: "Antal ordrar", 
       value: "4,352", 
-      icon: FiShoppingCart, 
+      icon: ShoppingCart, 
       change: 21, 
       bgColor: "bg-yellow-100",
       iconColor: "text-yellow-600",
@@ -42,7 +43,7 @@ const stats = [
     { 
       title: "Nya kunder", 
       value: "857", 
-      icon: FiUsers, 
+      icon: Users, 
       change: 8.5, 
       bgColor: "bg-amber-100",
       iconColor: "text-amber-600",
@@ -51,7 +52,7 @@ const stats = [
     { 
       title: "Snittordervärde", 
       value: "275 kr", 
-      icon: FiTrendingUp, 
+      icon: TrendingUp, 
       change: -1.2, 
       bgColor: "bg-orange-100",
       iconColor: "text-orange-600",
@@ -81,7 +82,7 @@ export default function AdminSalesPage() {
                   <option value="365">Senaste året</option>
                 </select>
                 <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors">
-                    <FiDownload className="w-4 h-4" />
+                    <Download className="w-4 h-4" />
                     <span>Exportera rapport</span>
                 </button>
             </div>
@@ -96,7 +97,7 @@ export default function AdminSalesPage() {
                             <stat.icon className="w-6 h-6" />
                         </div>
                         <div className={`flex items-center gap-1 text-sm font-medium ${stat.changeColor}`}>
-                            {stat.change > 0 ? <FiArrowUp className="w-4 h-4" /> : <FiArrowDown className="w-4 h-4" />}
+                            {stat.change > 0 ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
                             <span>{Math.abs(stat.change)}%</span>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FiBook, FiVideo, FiFileText, FiDownload } from 'react-icons/fi';
+import { Book, Video, FileText, Download } from 'lucide-react';
 
 const materials = [
   {
@@ -9,7 +9,7 @@ const materials = [
     title: 'Kursmaterial - Functional Flow',
     description: 'Komplett kursmaterial med fördjupad information om avancerade functional foods-koncept',
     type: 'pdf',
-    icon: FiFileText,
+    icon: FileText,
     downloadUrl: '/materials/functional-flow-guide.pdf',
   },
   {
@@ -17,7 +17,7 @@ const materials = [
     title: 'Videoföreläsningar',
     description: 'Se alla inspelade föreläsningar från kursen när som helst',
     type: 'video',
-    icon: FiVideo,
+    icon: Video,
     link: '/dashboard/courses/functional-flow/videos',
   },
   {
@@ -25,7 +25,7 @@ const materials = [
     title: 'Receptsamling',
     description: 'Alla 85 recept samlade i ett praktiskt format',
     type: 'pdf',
-    icon: FiBook,
+    icon: Book,
     downloadUrl: '/materials/functional-flow-recipes.pdf',
   },
   {
@@ -33,7 +33,7 @@ const materials = [
     title: 'Referenslista',
     description: 'Vetenskapliga källor och vidare läsning',
     type: 'pdf',
-    icon: FiFileText,
+    icon: FileText,
     downloadUrl: '/materials/references.pdf',
   },
 ];
@@ -72,7 +72,7 @@ export default function FlowMaterialPage() {
                 
                 {material.downloadUrl ? (
                   <button className="inline-flex items-center gap-2 text-[#1a4d78] hover:text-[#2563a8] font-medium transition-colors">
-                    <FiDownload className="w-4 h-4" />
+                    <Download className="w-4 h-4" />
                     Ladda ner
                   </button>
                 ) : (

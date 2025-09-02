@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FiDownload, FiFileText, FiBook, FiCheckCircle } from 'react-icons/fi';
+import { Download, FileText, Book, CheckCircle } from 'lucide-react';
 
 const downloads = [
   {
@@ -10,7 +10,7 @@ const downloads = [
     description: 'Hela kursen i PDF-format med alla veckor och recept',
     size: '15.2 MB',
     type: 'PDF',
-    icon: FiBook,
+    icon: Book,
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const downloads = [
     description: 'Alla 6 veckors kostscheman i utskriftsvänligt format',
     size: '3.8 MB',
     type: 'PDF',
-    icon: FiFileText,
+    icon: FileText,
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ const downloads = [
     description: 'Kompletta inköpslistor för alla veckor',
     size: '1.2 MB',
     type: 'PDF',
-    icon: FiFileText,
+    icon: FileText,
   },
   {
     id: 4,
@@ -34,7 +34,7 @@ const downloads = [
     description: 'Alla 85 recept i ett dokument',
     size: '8.5 MB',
     type: 'PDF',
-    icon: FiBook,
+    icon: Book,
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const downloads = [
     description: 'Fördjupad information om funktionella råvaror',
     size: '4.3 MB',
     type: 'PDF',
-    icon: FiFileText,
+    icon: FileText,
   },
 ];
 
@@ -63,7 +63,7 @@ export default function FlowDownloadsPage() {
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
         <div className="flex items-start gap-3">
-          <FiCheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+          <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
           <div>
             <p className="text-sm text-blue-800">
               <strong>Tips:</strong> Ladda ner allt material för att ha tillgång till kursen även offline. 
@@ -107,7 +107,7 @@ export default function FlowDownloadsPage() {
                 onClick={() => handleDownload(download.title)}
                 className="flex items-center gap-2 bg-[#1a4d78] text-white px-4 py-2 rounded-lg hover:bg-[#2563a8] transition-colors"
               >
-                <FiDownload className="w-4 h-4" />
+                <Download className="w-4 h-4" />
                 Ladda ner
               </button>
             </div>
@@ -133,7 +133,7 @@ export default function FlowDownloadsPage() {
             onClick={() => handleDownload('Functional Flow - Allt material')}
             className="flex items-center gap-2 bg-white text-[#1a4d78] px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium"
           >
-            <FiDownload className="w-5 h-5" />
+            <Download className="w-5 h-5" />
             Ladda ner allt
           </button>
         </div>

@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiChevronRight, FiHeart, FiActivity, FiTarget, FiShield, FiZap, FiTrendingUp } from 'react-icons/fi';
+
 import { GiBrain, GiStomach, GiFruitBowl, GiHeartBeats, GiMuscleUp, GiWeightScale, GiFireBowl } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, CheckCircle, ChevronRight, Heart, Activity, Target, Shield, Zap, TrendingUp } from 'lucide-react';
 
 interface Benefit {
   id: number;
@@ -89,7 +90,7 @@ export default function FordelarnaPage() {
     {
       id: 6,
       title: 'Ökade energinivåer',
-      icon: FiZap,
+      icon: Zap,
       description: 'Functional Foods innehåller komplexa kolhydrater, protein och järn som ökar energi och mental klarhet.',
       examples: ['Grön smoothie', 'Hemgjord granola', 'Quinoa', 'Ägg'],
       color: 'from-yellow-400 to-amber-400',
@@ -102,7 +103,7 @@ export default function FordelarnaPage() {
     {
       id: 7,
       title: 'Stärker immunförsvaret',
-      icon: FiShield,
+      icon: Shield,
       description: 'Många Functional Foods är rika på vitamin C, D och zink som stärker immunförsvaret.',
       examples: ['Citrusfrukter', 'Yoghurt', 'Kimchi', 'Svamp', 'Vitlök'],
       color: 'from-teal-400 to-green-400',
@@ -124,7 +125,7 @@ export default function FordelarnaPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
-            <FiArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
         </div>
@@ -137,7 +138,7 @@ export default function FordelarnaPage() {
         >
           <div className="flex items-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mr-4">
-              <FiHeart className="w-8 h-8 text-white" />
+              <Heart className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Fördelarna med Functional Foods</h1>
@@ -185,7 +186,7 @@ export default function FordelarnaPage() {
                     
                     <div className="flex items-center text-primary text-sm font-medium">
                       <span>Läs mer</span>
-                      <FiChevronRight className={`ml-1 transition-transform ${
+                      <ChevronRight className={`ml-1 transition-transform ${
                         selectedBenefit === benefit.id ? 'rotate-90' : ''
                       }`} />
                     </div>
@@ -223,7 +224,7 @@ export default function FordelarnaPage() {
                           <ul className="space-y-2">
                             {benefit.examples.map((example, idx) => (
                               <li key={idx} className="flex items-center">
-                                <FiCheckCircle className="w-5 h-5 text-primary mr-2 flex-shrink-0" />
+                                <CheckCircle className="w-5 h-5 text-primary mr-2 flex-shrink-0" />
                                 <span className="text-gray-600">{example}</span>
                               </li>
                             ))}
@@ -235,7 +236,7 @@ export default function FordelarnaPage() {
                           <ul className="space-y-2">
                             {benefit.tips.map((tip, idx) => (
                               <li key={idx} className="flex items-start">
-                                <FiTarget className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                                <Target className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" />
                                 <span className="text-gray-600">{tip}</span>
                               </li>
                             ))}
@@ -264,7 +265,7 @@ export default function FordelarnaPage() {
             Varje måltid blir en möjlighet att ge din kropp det bästa – näring som läker, stärker och energiserar.
           </p>
           <div className="flex items-center">
-            <FiActivity className="w-5 h-5 md:w-6 md:h-6 mr-2" />
+            <Activity className="w-5 h-5 md:w-6 md:h-6 mr-2" />
             <span className="font-medium">Din hälsoresa börjar med varje medvetet val du gör!</span>
           </div>
         </motion.div>
@@ -287,7 +288,7 @@ export default function FordelarnaPage() {
               </button>
             ) : (
               <div className="flex items-center text-primary">
-                <FiCheckCircle className="w-5 h-5 md:w-6 md:h-6 mr-2" />
+                <CheckCircle className="w-5 h-5 md:w-6 md:h-6 mr-2" />
                 <span className="font-medium">Slutförd!</span>
               </div>
             )}
@@ -299,10 +300,10 @@ export default function FordelarnaPage() {
               <Link href="/dashboard/courses/functional-basics/material/dags-att-komma-igang" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till "Dags att komma igång"
-                <FiChevronRight className="ml-1" />
+                <ChevronRight className="ml-1" />
               </Link>
             </div>
-            <FiTrendingUp className="w-12 h-12 text-primary opacity-20" />
+            <TrendingUp className="w-12 h-12 text-primary opacity-20" />
           </div>
         </motion.div>
       </div>

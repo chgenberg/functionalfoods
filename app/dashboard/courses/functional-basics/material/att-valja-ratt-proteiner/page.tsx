@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiChevronRight, FiInfo, FiTarget, FiZap, FiShield } from 'react-icons/fi';
+
 import { GiMuscleUp, GiMeat, GiChicken, GiGrainBundle, GiBodyBalance } from 'react-icons/gi';
 import { FaFish, FaEgg, FaSeedling } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, CheckCircle, ChevronRight, Info, Target, Zap, Shield } from 'lucide-react';
 
 interface ProteinSource {
   id: string;
@@ -135,7 +136,7 @@ export default function AttValjaRattProteinerPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard/courses/functional-basics/material" className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mb-4">
-            <FiArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Tillbaka till kursmaterial
           </Link>
         </div>
@@ -167,19 +168,19 @@ export default function AttValjaRattProteinerPage() {
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Proteinets viktiga funktioner:</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-start">
-                  <FiCheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
                   <span className="text-gray-700">Bygger och reparerar muskler</span>
                 </div>
                 <div className="flex items-start">
-                  <FiCheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
                   <span className="text-gray-700">Stärker immunförsvaret</span>
                 </div>
                 <div className="flex items-start">
-                  <FiCheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
                   <span className="text-gray-700">Balanserar hormoner</span>
                 </div>
                 <div className="flex items-start">
-                  <FiCheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-primary mt-1 mr-3 flex-shrink-0" />
                   <span className="text-gray-700">Stabiliserar blodsockret</span>
                 </div>
               </div>
@@ -230,7 +231,7 @@ export default function AttValjaRattProteinerPage() {
                         }`}>
                           {source.category === 'animal' ? 'Animaliskt' : 'Vegetabiliskt'}
                         </span>
-                        <FiChevronRight className={`w-5 h-5 text-primary transition-transform ${
+                        <ChevronRight className={`w-5 h-5 text-primary transition-transform ${
                           isSelected ? 'rotate-90' : ''
                         }`} />
                       </div>
@@ -269,7 +270,7 @@ export default function AttValjaRattProteinerPage() {
                             <ul className="space-y-2">
                               {source.benefits.map((benefit, idx) => (
                                 <li key={idx} className="flex items-center">
-                                  <FiShield className="w-5 h-5 text-primary mr-2 flex-shrink-0" />
+                                  <Shield className="w-5 h-5 text-primary mr-2 flex-shrink-0" />
                                   <span className="text-gray-600">{benefit}</span>
                                 </li>
                               ))}
@@ -281,7 +282,7 @@ export default function AttValjaRattProteinerPage() {
                             <ul className="space-y-2">
                               {source.tips.map((tip, idx) => (
                                 <li key={idx} className="flex items-start">
-                                  <FiTarget className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                                  <Target className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" />
                                   <span className="text-gray-600">{tip}</span>
                                 </li>
                               ))}
@@ -413,10 +414,10 @@ export default function AttValjaRattProteinerPage() {
               <Link href="/dashboard/courses/functional-basics/material/att-valja-ratt-kolhydrater" 
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium">
                 Fortsätt till nästa modul
-                <FiChevronRight className="ml-1" />
+                <ChevronRight className="ml-1" />
               </Link>
             </div>
-            <FiZap className="w-16 h-16 text-primary opacity-20" />
+            <Zap className="w-16 h-16 text-primary opacity-20" />
           </div>
         </motion.div>
       </div>

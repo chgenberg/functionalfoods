@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { FiX, FiPlay } from 'react-icons/fi';
+import { X, Play } from 'lucide-react';
 
 interface WeekHeroWithVideoProps {
   weekNumber: number;
@@ -46,7 +46,7 @@ export default function WeekHeroWithVideo({
               whileTap={{ scale: 0.95 }}
               className="bg-white/90 rounded-full p-4 sm:p-5 md:p-6 shadow-2xl backdrop-blur-sm"
             >
-              <FiPlay className="text-3xl sm:text-4xl md:text-5xl text-[#014421] ml-1 sm:ml-2" />
+              <Play className="text-3xl sm:text-4xl md:text-5xl text-[#014421] ml-1 sm:ml-2" />
             </motion.div>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function WeekHeroWithVideo({
                   onClick={() => setShowVideoModal(false)}
                   className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition"
                 >
-                  <FiX className="text-xl sm:text-2xl" />
+                  <X className="text-xl sm:text-2xl" />
                 </button>
               </div>
 
