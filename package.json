@@ -10,7 +10,9 @@
     "import:recipes": "node scripts/import-recipes-from-csv.js",
     "align:mealplan-slugs": "node scripts/align-mealplan-slugs.js",
     "check:mealplan-links": "node scripts/check-mealplan-links.js",
-    "recipes:set-access": "node scripts/set-recipe-access-by-mealplans.js"
+    "recipes:set-access": "node scripts/set-recipe-access-by-mealplans.js",
+    "images:rematch": "node scripts/rematch-recipe-images.js",
+    "images:rematch:apply": "node scripts/rematch-recipe-images.js --apply"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
