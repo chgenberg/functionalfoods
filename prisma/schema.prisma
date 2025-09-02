@@ -399,6 +399,7 @@ model Recipe {
   title_es        String?
   title_fr        String?
   imageMobileUrl  String?
+  ingredientsStructured Json?
   author          User?        @relation(fields: [authorId], references: [id])
 
   @@index([status])

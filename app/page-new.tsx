@@ -245,6 +245,15 @@ export default function Home() {
               </div>
               <p className="text-lg md:text-2xl font-semibold drop-shadow">{t('home.portrait.subtitle','Mat som medicin för kropp och själ')}</p>
             </div>
+            {/* Centered CTA */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <a
+                href="/utbildning"
+                className="pointer-events-auto inline-flex items-center px-6 md:px-8 py-3 md:py-4 rounded-full bg-[#FF7E70] hover:bg-[#ff6b5d] text-white font-semibold shadow-lg transition-colors"
+              >
+                Köp nu
+              </a>
+            </div>
           </div>
         </div>
       </section>

@@ -37,6 +37,7 @@ interface Recipe {
     name: string;
     email: string;
   };
+  ingredientsStructured?: any[]; // Added for structured ingredients
 }
 
 export default function RecipePage() {
@@ -197,11 +198,15 @@ export default function RecipePage() {
   };
 
   const scaleIngredient = (ingredient: string, originalServings: number = 4) => {
-    const scaleFactor = servings / originalServings;
+    const baseServings = typeof originalServings === 'number' && originalServings > 0 ? originalServings : 4;
+    const scaleFactor = servings / baseServings;
     
     return ingredient.replace(/(\d+(?:[.,]\d+)?)\s*(kg|g|mg|l|dl|cl|ml|msk|tsk|krm|st|st\.|stycken|styck|burk|burkar|påse|påsar|förpackning|förpackningar)?/gi, 
       (match, amount, unit) => {
         const numAmount = parseFloat(amount.replace(',', '.'));
+        if (isNaN(numAmount) || !isFinite(numAmount)) {
+          return match; // keep original if not a valid number
+        }
         let scaledAmount = numAmount * scaleFactor;
         
         // Format numbers nicely
@@ -209,11 +214,11 @@ export default function RecipePage() {
           return `${scaledAmount}${unit ? ' ' + unit : ''}`;
         } else if (scaledAmount < 1) {
           // For amounts less than 1, show fractions
-          if (scaledAmount === 0.5) return `½${unit ? ' ' + unit : ''}`;
-          if (scaledAmount === 0.25) return `¼${unit ? ' ' + unit : ''}`;
-          if (scaledAmount === 0.75) return `¾${unit ? ' ' + unit : ''}`;
-          if (scaledAmount === 0.33 || scaledAmount === 0.34) return `⅓${unit ? ' ' + unit : ''}`;
-          if (scaledAmount === 0.67 || scaledAmount === 0.66) return `⅔${unit ? ' ' + unit : ''}`;
+          if (Math.abs(scaledAmount - 0.5) < 1e-9) return `½${unit ? ' ' + unit : ''}`;
+          if (Math.abs(scaledAmount - 0.25) < 1e-9) return `¼${unit ? ' ' + unit : ''}`;
+          if (Math.abs(scaledAmount - 0.75) < 1e-9) return `¾${unit ? ' ' + unit : ''}`;
+          if (scaledAmount > 0.32 && scaledAmount < 0.35) return `⅓${unit ? ' ' + unit : ''}`;
+          if (scaledAmount > 0.65 && scaledAmount < 0.68) return `⅔${unit ? ' ' + unit : ''}`;
           return `${scaledAmount.toFixed(1).replace('.', ',')}${unit ? ' ' + unit : ''}`;
         } else {
           // For amounts greater than 1, show one decimal if needed
@@ -469,33 +474,74 @@ export default function RecipePage() {
 
                 {/* Ingredients Grid */}
                 <div className="grid md:grid-cols-2 gap-3">
-                  {scaledIngredients.map((ingredient, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.03 }}
-                      onClick={() => toggleIngredient(index)}
-                      className={`flex items-center p-3 rounded-xl cursor-pointer transition-all border-2 no-print ${
-                        checkedIngredients.includes(index) 
-                          ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
-                          : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
-                      }`}
-                    >
-                      <div className={`w-6 h-6 rounded-lg border-2 mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
-                        checkedIngredients.includes(index) 
-                          ? 'bg-[#93C560] border-[#93C560]' 
-                          : 'border-gray-300 bg-white'
-                      }`}>
-                        {checkedIngredients.includes(index) && (
-                          <Check className="w-4 h-4 text-white" />
-                        )}
-                      </div>
-                      <span className={`text-[#014421] ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
-                        {ingredient}
-                      </span>
-                    </motion.div>
-                  ))}
+                  {(recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
+                    (recipe as any).ingredientsStructured.map((item: any, index: number) => {
+                      const baseServings = recipe.servings && recipe.servings > 0 ? recipe.servings : 4;
+                      const scale = servings / baseServings;
+                      const amount = typeof item.finalAmount === 'number' ? item.finalAmount * scale : null;
+                      const unit = item.finalUnit || item.baseUnit || '';
+                      const amountText = amount !== null && isFinite(amount)
+                        ? (amount % 1 === 0 ? `${Math.round(amount)}` : `${amount.toFixed(1).replace('.', ',')}`)
+                        : '';
+                      const labelText = item.label || '';
+                      const display = amountText ? `${amountText}${unit ? ' ' + unit : ''} ${labelText.replace(/\([^\)]*\)/g, '').trim()}` : labelText;
+                      return (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.03 }}
+                          onClick={() => toggleIngredient(index)}
+                          className={`flex items-center p-3 rounded-xl cursor-pointer transition-all border-2 no-print ${
+                            checkedIngredients.includes(index) 
+                              ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
+                              : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
+                          }`}
+                        >
+                          <div className={`w-6 h-6 rounded-lg border-2 mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                            checkedIngredients.includes(index) 
+                              ? 'bg-[#93C560] border-[#93C560]' 
+                              : 'border-gray-300 bg-white'
+                          }`}>
+                            {checkedIngredients.includes(index) && (
+                              <Check className="w-4 h-4 text-white" />
+                            )}
+                          </div>
+                          <span className={`text-[#014421] ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
+                            {display}
+                          </span>
+                        </motion.div>
+                      );
+                    })
+                  ) : (
+                    scaledIngredients.map((ingredient, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        onClick={() => toggleIngredient(index)}
+                        className={`flex items-center p-3 rounded-xl cursor-pointer transition-all border-2 no-print ${
+                          checkedIngredients.includes(index) 
+                            ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
+                            : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
+                        }`}
+                      >
+                        <div className={`w-6 h-6 rounded-lg border-2 mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                          checkedIngredients.includes(index) 
+                            ? 'bg-[#93C560] border-[#93C560]' 
+                            : 'border-gray-300 bg-white'
+                        }`}>
+                          {checkedIngredients.includes(index) && (
+                            <Check className="w-4 h-4 text-white" />
+                          )}
+                        </div>
+                        <span className={`text-[#014421] ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
+                          {ingredient}
+                        </span>
+                      </motion.div>
+                    ))
+                  )}
                 </div>
               </div>
 

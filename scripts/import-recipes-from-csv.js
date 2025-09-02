@@ -151,8 +151,28 @@ async function main() {
       const key = row.post_id;
       if (!ingredientsByPostId.has(key)) ingredientsByPostId.set(key, []);
       const label = (row.ingredient_label || '').trim();
+      const baseAmount = row.base_amount !== 'None' && row.base_amount !== undefined ? Number(row.base_amount) : null;
+      const baseUnit = row.base_unit && row.base_unit !== 'None' ? row.base_unit : null;
+      const multiplier = row.multiplier !== 'None' && row.multiplier !== undefined ? Number(row.multiplier) : null;
+      const finalAmount = row.final_amount !== 'None' && row.final_amount !== undefined ? Number(row.final_amount) : null;
+      const finalUnit = row.final_unit && row.final_unit !== 'None' ? row.final_unit : null;
+      const note = row.note || null;
+      const isFunctional = row.is_functional ? row.is_functional === '1' || row.is_functional === 1 : false;
+
+      const entry = { 
+        label,
+        baseAmount,
+        baseUnit,
+        multiplier,
+        finalAmount,
+        finalUnit,
+        note,
+        isFunctional
+      };
+
+      // Keep plain label array for backward compatibility
       if (label) {
-        ingredientsByPostId.get(key).push(label);
+        ingredientsByPostId.get(key).push(entry);
       }
     }
 
@@ -176,11 +196,12 @@ async function main() {
       const excerpt = (row.benefit_text || '').trim();
       const instructions = (row.gor_sa_har_text || '').trim();
       const postId = row.post_id;
-      const ingredients = ingredientsByPostId.get(postId) || [];
+      const ingredientsEntries = ingredientsByPostId.get(row.post_id) || [];
+      const ingredientLabels = ingredientsEntries.map(e => e.label);
 
       const imageUrl = findMatchingImage(title, imageFiles);
 
-      const searchText = [title, excerpt, ingredients.join(' ')].join(' ').slice(0, 10000);
+      const searchText = [title, excerpt, ingredientLabels.join(' ')].join(' ').slice(0, 10000);
 
       try {
         await prisma.recipe.create({
@@ -188,25 +209,19 @@ async function main() {
             title,
             slug,
             excerpt,
-            content: instructions, // store full text as content
-            imageUrl,
+            content: instructions,
+            imageUrl: imageUrl || null,
             imageAlt: title,
             categories: [],
-            ingredients,
-            instructions, // also in instructions field
-            difficulty: null,
-            prepTime: null,
-            cookTime: null,
-            totalTime: null,
-            servings: null,
-            nutrition: null,
-            tips: null,
-            tags: [],
+            ingredients: ingredientLabels,
+            ingredientsStructured: ingredientsEntries,
+            instructions,
             status: 'PUBLISHED',
-            isPremium: false,
             isFree: true,
-            searchText,
-          },
+            isPremium: false,
+            searchText: `${title} ${ingredientLabels.join(' ')}`,
+            servings: null
+          }
         });
         imported++;
         if (imported % 25 === 0) console.log(`Imported ${imported}...`);
