@@ -85,7 +85,7 @@ function normalizeIngredientName(ingredient: string): string {
     }
   }
   
-  return ingredient.trim();
+  return ingredient.trim().replace(/\([^\)]*\)/g, '').trim();
 }
 
 function categorizeIngredient(ingredient: string): string {
@@ -145,6 +145,29 @@ function parseIngredientLine(line: string): { name: string; amount: string; unit
   };
 }
 
+// Unit normalization helpers
+const VOLUME_TO_ML: Record<string, number> = { l: 1000, dl: 100, cl: 10, ml: 1, msk: 15, tsk: 5, krm: 1 };
+const MASS_TO_G: Record<string, number> = { kg: 1000, g: 1, mg: 0.001 };
+
+function toBase(amount: number, unit: string | null | undefined): { qty: number; base: 'ml' | 'g' | 'st' } {
+  const u = (unit || '').toLowerCase();
+  if (u in VOLUME_TO_ML) return { qty: amount * VOLUME_TO_ML[u], base: 'ml' };
+  if (u in MASS_TO_G) return { qty: amount * MASS_TO_G[u], base: 'g' };
+  return { qty: amount, base: 'st' };
+}
+
+function formatFromBase(qty: number, base: 'ml' | 'g' | 'st'): { amount: string; unit: string } {
+  if (base === 'st') return { amount: `${Math.round(qty)}`, unit: 'st' };
+  if (base === 'g') {
+    if (qty >= 1000) return { amount: (qty / 1000).toFixed(1).replace('.', ','), unit: 'kg' };
+    return { amount: `${Math.round(qty)}`, unit: 'g' };
+  }
+  // ml
+  if (qty >= 1000) return { amount: (qty / 1000).toFixed(1).replace('.', ','), unit: 'l' };
+  if (qty >= 100) return { amount: (qty / 100).toFixed(1).replace('.', ','), unit: 'dl' };
+  return { amount: `${Math.round(qty)}`, unit: 'ml' };
+}
+
 export async function GET(
   request: Request,
   { params }: { params: { courseType: string; weekNumber: string } }
@@ -152,6 +175,9 @@ export async function GET(
   try {
     const { courseType, weekNumber } = params;
     const weekNum = parseInt(weekNumber);
+    const url = new URL(request.url);
+    const servingsParam = parseInt(url.searchParams.get('servings') || '4');
+    const targetServings = isNaN(servingsParam) || servingsParam <= 0 ? 4 : servingsParam;
     
     // Try curated list first
     try {
@@ -249,43 +275,60 @@ export async function GET(
     });
     
     // Fetch recipes from database
-    const recipes = await prisma.recipe.findMany({
+    const recipes: any[] = await prisma.recipe.findMany({
       where: {
         slug: { in: recipeSlugs }
       },
       select: {
         title: true,
         slug: true,
-        ingredients: true
-      }
+        ingredients: true,
+        // @ts-ignore - custom JSON field available in schema
+        ingredientsStructured: true,
+        servings: true
+      } as any
     });
     
     // Parse and aggregate ingredients
-    const ingredientMap = new Map<string, { amount: number; unit: string; category: string }>();
-    
-    console.log('Found recipes:', recipes.map(r => ({ title: r.title, slug: r.slug, hasIngredients: !!r.ingredients })));
+    const ingredientMap = new Map<string, { qty: number; base: 'ml' | 'g' | 'st'; category: string }>();
     
     recipes.forEach(recipe => {
-      if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
+      const baseServings = typeof recipe.servings === 'number' && recipe.servings > 0 ? recipe.servings : 4;
+      const scale = targetServings / baseServings;
+
+      if (Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0) {
+        (recipe as any).ingredientsStructured.forEach((entry: any) => {
+          const label = (entry.label || '').toString();
+          const normalizedName = normalizeIngredientName(label);
+          if (!normalizedName || shouldExcludeIngredient(normalizedName)) return;
+
+          const rawAmount = typeof entry.finalAmount === 'number' ? entry.finalAmount : (typeof entry.baseAmount === 'number' ? entry.baseAmount : 1);
+          const unit = entry.finalUnit || entry.baseUnit || 'st';
+          const scaled = toBase(rawAmount * scale, unit);
+
+          const key = `${normalizedName.toLowerCase()}_${scaled.base}`;
+          const existing = ingredientMap.get(key);
+          if (existing) {
+            existing.qty += scaled.qty;
+          } else {
+            ingredientMap.set(key, { qty: scaled.qty, base: scaled.base, category: categorizeIngredient(normalizedName) });
+          }
+        });
+      } else if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
         recipe.ingredients.forEach((ingredient: any) => {
           if (typeof ingredient === 'string') {
             const parsed = parseIngredientLine(ingredient);
             if (parsed) {
               const normalizedName = normalizeIngredientName(parsed.name);
-              if (shouldExcludeIngredient(normalizedName)) {
-                return; // Skip excluded ingredients
-              }
-              const key = `${normalizedName.toLowerCase()}_${parsed.unit}`;
+              if (shouldExcludeIngredient(normalizedName)) return;
+              const amountNum = parseFloat(parsed.amount.replace(',', '.')) || 1;
+              const scaled = toBase(amountNum * scale, parsed.unit);
+              const key = `${normalizedName.toLowerCase()}_${scaled.base}`;
               const existing = ingredientMap.get(key);
-              
               if (existing) {
-                existing.amount += parseFloat(parsed.amount) || 1;
+                existing.qty += scaled.qty;
               } else {
-                ingredientMap.set(key, {
-                  amount: parseFloat(parsed.amount) || 1,
-                  unit: parsed.unit,
-                  category: categorizeIngredient(normalizedName)
-                });
+                ingredientMap.set(key, { qty: scaled.qty, base: scaled.base, category: categorizeIngredient(normalizedName) });
               }
             }
           }
@@ -293,13 +336,14 @@ export async function GET(
       }
     });
     
-    // Convert to array format
+    // Convert to array format with nice units
     const ingredients = Array.from(ingredientMap.entries()).map(([key, data]) => {
       const [name] = key.split('_');
+      const pretty = formatFromBase(data.qty, data.base);
       return {
         name: name.charAt(0).toUpperCase() + name.slice(1),
-        amount: data.amount.toString(),
-        unit: data.unit,
+        amount: pretty.amount,
+        unit: pretty.unit,
         category: data.category,
         checked: false
       };
@@ -318,7 +362,9 @@ export async function GET(
       courseType,
       recipeCount: recipes.length,
       ingredients,
-      generatedAt: new Date().toISOString()
+      generatedAt: new Date().toISOString(),
+      servings: targetServings,
+      source: 'aggregated'
     });
     
   } catch (error) {
