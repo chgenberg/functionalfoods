@@ -51,12 +51,14 @@ export default function UtbildningPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
                 <div className="absolute left-4 bottom-4 flex items-center gap-3 text-white">
-                  <span className="inline-flex items-center gap-1.5 text-xs md:text-sm bg-white/15 px-3 py-1 rounded-full backdrop-blur-sm">
-                    <FiClock className="w-4 h-4" /> {course.duration}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 text-xs md:text-sm bg-white/15 px-3 py-1 rounded-full backdrop-blur-sm">
-                    <FiTrendingUp className="w-4 h-4" /> {course.level}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-accent" />
+                    <span>{course.duration}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-accent" />
+                    <span>{course.level}</span>
+                  </div>
                 </div>
               </div>
 

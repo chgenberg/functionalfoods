@@ -1,6 +1,6 @@
 "use client";
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { FiAlertTriangle, FiRefreshCw, FiHome } from 'react-icons/fi';
+import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
@@ -53,7 +53,7 @@ export default class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <FiAlertTriangle className="w-8 h-8 text-red-600" />
+              <AlertTriangle className="w-8 h-8 text-red-600" />
             </div>
             
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
@@ -82,7 +82,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                 onClick={this.handleReload}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#014421] text-white rounded-lg hover:bg-[#116530] transition-colors focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
               >
-                <FiRefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-4 h-4" />
                 Ladda om
               </button>
               
@@ -90,7 +90,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                 onClick={this.handleGoHome}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
               >
-                <FiHome className="w-4 h-4" />
+                <Home className="w-4 h-4" />
                 Startsida
               </button>
             </div>

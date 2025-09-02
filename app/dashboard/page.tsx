@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiLoader } from 'react-icons/fi';
+import { Loader } from 'lucide-react';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 

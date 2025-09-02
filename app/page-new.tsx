@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Book, Users, Heart, Zap, Target, Award, Check, Play, Star } from "lucide-react";
+import { ArrowRight, Book, Users, Heart, Zap, Target, Award, Check, Play, Star, ClipboardCheck, Microscope, FileText, Rocket } from "lucide-react";
 import { GiFruitBowl, GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
@@ -264,10 +264,10 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {[
-              { step: "1", title: t('home.how.step1.title','Ta quizet'), desc: t('home.how.step1.desc','Besvara några enkla frågor om din hälsa'), icon: "📝" },
-              { step: "2", title: t('home.how.step2.title','Få din analys'), desc: t('home.how.step2.desc','Vi analyserar dina svar med AI'), icon: "🔬" },
-              { step: "3", title: t('home.how.step3.title','Personlig plan'), desc: t('home.how.step3.desc','Få skräddarsydda rekommendationer'), icon: "📋" },
-              { step: "4", title: t('home.how.step4.title','Börja må bättre'), desc: t('home.how.step4.desc','Implementera och känn skillnad'), icon: "🚀" }
+              { step: "1", title: t('home.how.step1.title','Ta quizet'), desc: t('home.how.step1.desc','Besvara några enkla frågor om din hälsa'), icon: ClipboardCheck },
+              { step: "2", title: t('home.how.step2.title','Få din analys'), desc: t('home.how.step2.desc','Vi analyserar dina svar med AI'), icon: Microscope },
+              { step: "3", title: t('home.how.step3.title','Personlig plan'), desc: t('home.how.step3.desc','Få skräddarsydda rekommendationer'), icon: FileText },
+              { step: "4", title: t('home.how.step4.title','Börja må bättre'), desc: t('home.how.step4.desc','Implementera och känn skillnad'), icon: Rocket }
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -278,7 +278,9 @@ export default function Home() {
                 className="relative"
               >
                 <div className="text-center">
-                  <div className="text-3xl md:text-5xl mb-3 md:mb-4">{item.icon}</div>
+                  <div className="text-3xl md:text-5xl mb-3 md:mb-4">
+                    <item.icon className="w-12 h-12 md:w-16 md:h-16 text-primary mx-auto" />
+                  </div>
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-base md:text-xl mx-auto mb-3 md:mb-4">
                     {item.step}
                   </div>

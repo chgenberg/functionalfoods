@@ -1,10 +1,10 @@
-'use client';
-
-import { useState } from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiArrowRight, FiCheck } from 'react-icons/fi';
-import { GiFruitBowl } from 'react-icons/gi';
-import { FiTarget, FiZap } from 'react-icons/fi';
+import Image from 'next/image';
+import { X, ArrowRight, Check, Target, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface FeaturePopupProps {
   isOpen: boolean;
@@ -114,7 +114,7 @@ export default function FeaturePopup({ isOpen, onClose, feature }: FeaturePopupP
                 className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 
                          transition-colors backdrop-blur-sm"
               >
-                <FiX className="w-5 h-5" />
+                <X className="w-5 h-5" />
               </button>
 
               <div className="flex items-center gap-4 mb-4">
@@ -145,7 +145,7 @@ export default function FeaturePopup({ isOpen, onClose, feature }: FeaturePopupP
                     >
                       <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center 
                                     flex-shrink-0 mt-0.5">
-                        <FiCheck className="w-3 h-3 text-white" />
+                        <Check className="w-3 h-3 text-white" />
                       </div>
                       <p className="text-gray-700">{benefit}</p>
                     </motion.div>
@@ -185,7 +185,7 @@ export default function FeaturePopup({ isOpen, onClose, feature }: FeaturePopupP
               >
                 <span className="flex items-center justify-center gap-2">
                   {content.cta}
-                  <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </motion.a>
             </div>
