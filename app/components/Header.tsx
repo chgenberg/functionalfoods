@@ -141,59 +141,7 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'}`}>
-      {/* Top announcement bar - Hidden on course pages */}
-      {!isCoursePage && (
-        <div className="w-full text-white text-xs sm:text-sm" style={{ backgroundColor: '#112A12' }}>
-          <div className="container-custom">
-            <div className="relative overflow-hidden h-8 sm:h-10 flex items-center">
-              <div className="animate-marquee whitespace-nowrap flex items-center">
-                <Link href="/utbildning" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                  <span className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
-                    <span className="inline-block align-middle">🌿</span>
-                    <span>{t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')}</span>
-                  </span>
-                </Link>
-                <Link href="/kunskapsbank/recept" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                  <span className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
-                    <span className="inline-block align-middle">🍽️</span>
-                    <span>{t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
-                  </span>
-                </Link>
-                <Link href="/kunskapsbank/kallor" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                  <span className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
-                    <span className="inline-block align-middle">🔎</span>
-                    <span>{t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
-                  </span>
-                </Link>
-                {/* Extra spacing for smooth loop */}
-                <div className="w-16 sm:w-24"></div>
-              </div>
-              <div className="animate-marquee2 whitespace-nowrap absolute left-full flex items-center">
-                <Link href="/utbildning" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                  <span className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
-                    <span className="inline-block align-middle">🌿</span>
-                    <span>{t('topbar.functionalFoods','Upptäck kraften i Functional Foods – personligt anpassat för din hälsa')}</span>
-                  </span>
-                </Link>
-                <Link href="/kunskapsbank/recept" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                  <span className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
-                    <span className="inline-block align-middle">🍽️</span>
-                    <span>{t('topbar.recipes','Utforska våra gratis, hälsosamma recept')}</span>
-                  </span>
-                </Link>
-                <Link href="/kunskapsbank/kallor" className="mx-8 sm:mx-12 inline-flex items-center gap-1 sm:gap-2 hover:underline flex-shrink-0">
-                  <span className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2">
-                    <span className="inline-block align-middle">🔎</span>
-                    <span>{t('topbar.science','Vetenskapligt grundat – läs våra källor')}</span>
-                  </span>
-                </Link>
-                {/* Extra spacing for smooth loop */}
-                <div className="w-16 sm:w-24"></div>
-              </div>
-          </div>
-        </div>
-      </div>
-      )}
+
       <div className="container-custom">
         <div className="relative flex items-center h-24 md:h-28">
           {/* Mobile hamburger menu - LEFT SIDE */}
