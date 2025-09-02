@@ -333,22 +333,22 @@ export default function RecipePage() {
 
       <div id="printable-recipe" className="bg-[#F3EFE3] min-h-screen">
         {/* Back Button - No Print */}
-        <div className="container mx-auto px-4 py-6 no-print">
-          <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 text-[#014421] hover:text-[#93C560] transition-colors font-medium">
-            <ArrowLeft className="w-5 h-5" />
+        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6 no-print">
+          <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 text-[#014421] hover:text-[#93C560] transition-colors font-medium text-sm md:text-base">
+            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
             <span>{t('recipes.detail.backToRecipes','Tillbaka till recept')}</span>
           </Link>
         </div>
 
-        <div className="container mx-auto px-4 pb-16">
+        <div className="max-w-7xl mx-auto px-4 pb-16">
           {/* Modern Layout with Better Portrait Image Handling */}
-          <div className="grid lg:grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
             {/* Left Side - Image and Basic Info */}
             <div className="lg:col-span-5">
-              <div className="sticky top-8">
+              <div className="lg:sticky lg:top-8">
                 {/* Image Container - Optimized for Portrait Images */}
-                <div className="relative w-full bg-white rounded-3xl shadow-xl overflow-hidden">
-                  <div className="relative aspect-[3/4] lg:aspect-[4/5]">
+                <div className="relative w-full bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden">
+                  <div className="relative aspect-[3/4] md:aspect-[3/4] lg:aspect-[4/5]">
                     {(recipe.imageUrl || recipe.imageMobileUrl) && !imageError ? (
                       <Image
                         src={recipe.imageUrl || recipe.imageMobileUrl!}
@@ -357,77 +357,77 @@ export default function RecipePage() {
                         className="object-cover"
                         style={{ objectFit: 'cover', objectPosition: 'center' }}
                         priority
-                        sizes="(max-width: 1024px) 100vw, 40vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 40vw"
                         onError={() => setImageError(true)}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">
-                        <Camera className="w-20 h-20 text-[#014421]/30" />
+                        <Camera className="w-16 h-16 md:w-20 md:h-20 text-[#014421]/30" />
                       </div>
                     )}
                   </div>
                   
                   {/* Recipe Title Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-6">
-                    <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 md:p-6">
+                    <div className="flex flex-wrap gap-1.5 md:gap-2 mb-2 md:mb-3">
                       {recipe.categories.map((category, index) => (
-                        <span key={index} className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span key={index} className="bg-white/20 backdrop-blur-sm text-white px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs md:text-sm font-medium">
                           {category}
                         </span>
                       ))}
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{recipe.title}</h1>
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1 md:mb-2">{recipe.title}</h1>
                     {recipe.excerpt && (
-                      <p className="text-white/90 text-lg">{recipe.excerpt}</p>
+                      <p className="text-white/90 text-sm md:text-base lg:text-lg line-clamp-2">{recipe.excerpt}</p>
                     )}
                   </div>
                 </div>
 
                 {/* Quick Info Cards */}
-                <div className="grid grid-cols-3 gap-3 mt-6">
+                <div className="grid grid-cols-3 gap-2 md:gap-3 mt-4 md:mt-6">
                   {recipe.prepTime && (
-                    <div className="bg-white rounded-2xl p-4 text-center shadow-md">
-                      <Clock className="w-6 h-6 text-[#93C560] mx-auto mb-2" />
-                      <p className="text-xs text-gray-500 mb-1">Förberedelse</p>
-                      <p className="font-bold text-[#014421]">{recipe.prepTime}</p>
+                    <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 text-center shadow-md">
+                      <Clock className="w-5 h-5 md:w-6 md:h-6 text-[#93C560] mx-auto mb-1 md:mb-2" />
+                      <p className="text-[10px] md:text-xs text-gray-500 mb-0.5 md:mb-1">Förberedelse</p>
+                      <p className="font-bold text-[#014421] text-sm md:text-base">{recipe.prepTime}</p>
                     </div>
                   )}
                   {recipe.cookTime && (
-                    <div className="bg-white rounded-2xl p-4 text-center shadow-md">
-                      <Flame className="w-6 h-6 text-[#FF7E70] mx-auto mb-2" />
-                      <p className="text-xs text-gray-500 mb-1">Tillagning</p>
-                      <p className="font-bold text-[#014421]">{recipe.cookTime}</p>
+                    <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 text-center shadow-md">
+                      <Flame className="w-5 h-5 md:w-6 md:h-6 text-[#FF7E70] mx-auto mb-1 md:mb-2" />
+                      <p className="text-[10px] md:text-xs text-gray-500 mb-0.5 md:mb-1">Tillagning</p>
+                      <p className="font-bold text-[#014421] text-sm md:text-base">{recipe.cookTime}</p>
                     </div>
                   )}
-                  <div className="bg-white rounded-2xl p-4 text-center shadow-md">
-                    <Users className="w-6 h-6 text-[#014421] mx-auto mb-2" />
-                    <p className="text-xs text-gray-500 mb-1">Portioner</p>
-                    <p className="font-bold text-[#014421]">{servings}</p>
+                  <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 text-center shadow-md">
+                    <Users className="w-5 h-5 md:w-6 md:h-6 text-[#014421] mx-auto mb-1 md:mb-2" />
+                    <p className="text-[10px] md:text-xs text-gray-500 mb-0.5 md:mb-1">Portioner</p>
+                    <p className="font-bold text-[#014421] text-sm md:text-base">{servings}</p>
                   </div>
                 </div>
 
                 {/* Action Buttons - No Print */}
-                <div className="flex gap-3 mt-6 no-print">
+                <div className="flex gap-2 md:gap-3 mt-4 md:mt-6 no-print">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleToggleFavorite}
-                    className={`flex-1 p-4 rounded-2xl font-medium transition-all flex items-center justify-center gap-2 ${
+                    className={`flex-1 p-3 md:p-4 rounded-xl md:rounded-2xl font-medium transition-all flex items-center justify-center gap-2 text-sm md:text-base ${
                       isFavorited 
                         ? 'bg-red-500 text-white' 
                         : 'bg-white text-gray-700 hover:bg-red-50 hover:text-red-600 shadow-md'
                     }`}
                   >
-                    <Heart className={`w-5 h-5 ${isFavorited ? 'fill-current' : ''}`} />
+                    <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isFavorited ? 'fill-current' : ''}`} />
                     {isFavorited ? 'Sparad' : 'Spara recept'}
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handlePrint}
-                    className="p-4 rounded-2xl bg-white shadow-md text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-white shadow-md text-gray-700 hover:bg-gray-50 transition-colors"
                   >
-                    <Printer className="w-5 h-5" />
+                    <Printer className="w-4 h-4 md:w-5 md:h-5" />
                   </motion.button>
                 </div>
               </div>
@@ -436,33 +436,33 @@ export default function RecipePage() {
             {/* Right Side - Recipe Details */}
             <div className="lg:col-span-7">
               {/* Ingredients Section */}
-              <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-[#014421] flex items-center gap-3">
-                    <span className="bg-[#93C560]/20 w-12 h-12 rounded-2xl flex items-center justify-center">
-                      <Utensils className="w-6 h-6 text-[#93C560]" />
+              <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl p-4 md:p-6 lg:p-8 mb-6 md:mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
+                  <h2 className="text-xl md:text-2xl font-bold text-[#014421] flex items-center gap-2 md:gap-3">
+                    <span className="bg-[#93C560]/20 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <Utensils className="w-5 h-5 md:w-6 md:h-6 text-[#93C560]" />
                     </span>
                     {t('recipes.detail.ingredients','Ingredienser')}
                   </h2>
                   
                   {/* Servings Selector - No Print */}
-                  <div className="flex items-center gap-3 bg-[#F3EFE3] rounded-full px-4 py-2 no-print">
+                  <div className="flex items-center gap-2 md:gap-3 bg-[#F3EFE3] rounded-full px-3 md:px-4 py-1.5 md:py-2 no-print self-start sm:self-auto">
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setServings(Math.max(1, servings - 1))}
-                      className="w-8 h-8 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-[#014421]"
+                      className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-[#014421]"
                     >
-                      <Minus className="w-4 h-4" />
+                      <Minus className="w-3 h-3 md:w-4 md:h-4" />
                     </motion.button>
-                    <span className="text-lg font-bold text-[#014421] w-8 text-center">{servings}</span>
+                    <span className="text-base md:text-lg font-bold text-[#014421] w-6 md:w-8 text-center">{servings}</span>
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setServings(servings + 1)}
-                      className="w-8 h-8 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-[#014421]"
+                      className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center text-[#014421]"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-3 h-3 md:w-4 md:h-4" />
                     </motion.button>
                   </div>
                 </div>
@@ -473,7 +473,7 @@ export default function RecipePage() {
                 </div>
 
                 {/* Ingredients Grid */}
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                   {(recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
                     (recipe as any).ingredientsStructured.map((item: any, index: number) => {
                       const baseServings = recipe.servings && recipe.servings > 0 ? recipe.servings : 4;
@@ -492,22 +492,22 @@ export default function RecipePage() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.03 }}
                           onClick={() => toggleIngredient(index)}
-                          className={`flex items-center p-3 rounded-xl cursor-pointer transition-all border-2 no-print ${
+                          className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
                             checkedIngredients.includes(index) 
                               ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
                               : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
                           }`}
                         >
-                          <div className={`w-6 h-6 rounded-lg border-2 mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                          <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
                             checkedIngredients.includes(index) 
                               ? 'bg-[#93C560] border-[#93C560]' 
                               : 'border-gray-300 bg-white'
                           }`}>
                             {checkedIngredients.includes(index) && (
-                              <Check className="w-4 h-4 text-white" />
+                              <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                             )}
                           </div>
-                          <span className={`text-[#014421] ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
+                          <span className={`text-[#014421] text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
                             {display}
                           </span>
                         </motion.div>
@@ -521,22 +521,22 @@ export default function RecipePage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.03 }}
                         onClick={() => toggleIngredient(index)}
-                        className={`flex items-center p-3 rounded-xl cursor-pointer transition-all border-2 no-print ${
+                        className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
                           checkedIngredients.includes(index) 
                             ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
                             : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
                         }`}
                       >
-                        <div className={`w-6 h-6 rounded-lg border-2 mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                        <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
                           checkedIngredients.includes(index) 
                             ? 'bg-[#93C560] border-[#93C560]' 
                             : 'border-gray-300 bg-white'
                         }`}>
                           {checkedIngredients.includes(index) && (
-                            <Check className="w-4 h-4 text-white" />
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                           )}
                         </div>
-                        <span className={`text-[#014421] ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
+                        <span className={`text-[#014421] text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
                           {ingredient}
                         </span>
                       </motion.div>
@@ -546,76 +546,46 @@ export default function RecipePage() {
               </div>
 
               {/* Instructions Section */}
-              <div className="bg-white rounded-3xl shadow-xl p-8">
-                <h2 className="text-2xl font-bold text-[#014421] mb-8 flex items-center gap-3">
-                  <span className="bg-[#FF7E70]/20 w-12 h-12 rounded-2xl flex items-center justify-center">
-                    <ChefHat className="w-6 h-6 text-[#FF7E70]" />
+              <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl p-4 md:p-6 lg:p-8">
+                <h2 className="text-xl md:text-2xl font-bold text-[#014421] mb-4 md:mb-6 flex items-center gap-2 md:gap-3">
+                  <span className="bg-[#FF7E70]/20 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <ChefHat className="w-5 h-5 md:w-6 md:h-6 text-[#FF7E70]" />
                   </span>
                   {t('recipes.detail.instructions','Gör så här')}
                 </h2>
-
-                <div className="space-y-4">
-                  {instructionSteps.map((step, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      onClick={() => toggleStep(index)}
-                      className={`group cursor-pointer transition-all ${
-                        checkedSteps.includes(index) ? 'opacity-60' : ''
-                      }`}
-                    >
-                      <div className="flex gap-4">
-                        <div className={`relative flex-shrink-0 transition-all ${
-                          checkedSteps.includes(index) 
-                            ? 'scale-90' 
-                            : 'group-hover:scale-105'
-                        }`}>
-                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg transition-all ${
-                            checkedSteps.includes(index) 
-                              ? 'bg-[#93C560] text-white' 
-                              : 'bg-[#FF7E70]/20 text-[#FF7E70] group-hover:bg-[#FF7E70]/30'
-                          }`}>
-                            {checkedSteps.includes(index) ? <Check className="w-6 h-6" /> : index + 1}
-                          </div>
-                          {index < instructionSteps.length - 1 && (
-                            <div className={`absolute top-12 left-1/2 w-0.5 h-8 -translate-x-1/2 transition-all ${
-                              checkedSteps.includes(index) 
-                                ? 'bg-[#93C560]' 
-                                : 'bg-gray-200'
-                            }`} />
-                          )}
+                
+                {/* Instructions Steps */}
+                <div className="space-y-3 md:space-y-4">
+                  {instructionSteps.length > 0 ? (
+                    instructionSteps.map((step, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex gap-3 md:gap-4"
+                      >
+                        <div className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 bg-[#014421] text-white rounded-full flex items-center justify-center font-bold text-sm md:text-base">
+                          {index + 1}
                         </div>
-                        <div className="flex-1 pb-8">
-                          <p className={`text-[#014421] text-lg leading-relaxed transition-all ${
-                            checkedSteps.includes(index) 
-                              ? 'line-through' 
-                              : 'group-hover:text-[#014421]/80'
-                          }`}>
-                            {step}
-                          </p>
+                        <div className="flex-1">
+                          <p className="text-[#014421] leading-relaxed text-sm md:text-base">{step}</p>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))
+                  ) : recipe.content ? (
+                    <div className="prose prose-sm md:prose max-w-none">
+                      <p className="text-[#014421] leading-relaxed text-sm md:text-base">{recipe.content}</p>
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Tips Section */}
                 {recipe.tips && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-12 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6 border-2 border-yellow-200"
-                  >
-                    <h3 className="font-bold text-[#014421] mb-3 flex items-center gap-2">
-                      <span className="text-2xl">💡</span>
-                      Tips & tricks
-                    </h3>
-                    <p className="text-[#014421]/80 leading-relaxed">
-                      {recipe.tips}
-                    </p>
-                  </motion.div>
+                  <div className="mt-6 md:mt-8 p-4 md:p-6 bg-[#93C560]/10 rounded-xl md:rounded-2xl border-2 border-[#93C560]/20">
+                    <h3 className="font-bold text-[#014421] mb-2 text-base md:text-lg">💡 Tips</h3>
+                    <p className="text-[#014421] text-sm md:text-base">{recipe.tips}</p>
+                  </div>
                 )}
               </div>
 
