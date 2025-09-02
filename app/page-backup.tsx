@@ -288,7 +288,7 @@ export default function Home() {
                 {/* Desktop Image */}
                 <div className="hidden md:block">
                   <img
-                    src="/udavidsson.PNG"
+                    src="/Hem/hero_image.png"
                     alt="Ulrika Davidsson"
                     className="rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl w-full h-auto"
                   />

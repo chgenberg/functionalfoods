@@ -165,7 +165,7 @@ export default function Home() {
 
             <div className="relative">
               <img
-                src="/udavidsson.PNG"
+                src="/Hem/hero_image.png"
                 alt="Ulrika Davidsson"
                 className="rounded-3xl shadow-2xl w-full h-auto"
               />
