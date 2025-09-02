@@ -7,7 +7,8 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "import:recipes": "node scripts/import-recipes-from-csv.js"
+    "import:recipes": "node scripts/import-recipes-from-csv.js",
+    "align:mealplan-slugs": "node scripts/align-mealplan-slugs.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
