@@ -16,6 +16,8 @@ export async function GET() {
     const freeRecipes = await prisma.recipe.findMany({
       where: {
         status: 'PUBLISHED',
+        isFree: true,
+        isPremium: false,
         imageUrl: {
           not: null
         }
@@ -35,9 +37,9 @@ export async function GET() {
 
     let pool = freeRecipes;
     if (pool.length === 0) {
-      // Fallback: tillåt poster utan bild och ta de senaste
+      // Fallback: tillåt poster utan bild och ta de senaste, fortfarande endast gratis
       pool = await prisma.recipe.findMany({
-        where: { status: 'PUBLISHED' },
+        where: { status: 'PUBLISHED', isFree: true, isPremium: false },
         orderBy: { createdAt: 'desc' },
         take: 30, // Increased from 12 to 30
         select: {
