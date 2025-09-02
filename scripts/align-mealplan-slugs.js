@@ -36,6 +36,7 @@ async function main() {
 
     // Load all recipes
     const recipes = await prisma.recipe.findMany({});
+    const existingSlugs = new Set(recipes.map(r => r.slug));
     const titleIndex = new Map(); // normalized title -> recipes with that title
     for (const r of recipes) {
       const key = normalize(r.title);
@@ -48,9 +49,14 @@ async function main() {
     const unresolved = [];
 
     for (const { name, slug } of pairs) {
-      // If slug exists in DB already, consider it OK
-      const exists = recipes.find(r => r.slug === slug);
-      if (exists) {
+      // Skip leftovers entries if present in data
+      if (/rester/i.test(name)) {
+        alreadyOk++;
+        continue;
+      }
+
+      // If slug already exists (including from earlier updates), consider it OK
+      if (existingSlugs.has(slug)) {
         alreadyOk++;
         continue;
       }
@@ -59,10 +65,10 @@ async function main() {
       const candidates = titleIndex.get(key) || [];
       if (candidates.length === 1) {
         const r = candidates[0];
-        // Update this recipe to the expected slug
         try {
           await prisma.recipe.update({ where: { id: r.id }, data: { slug } });
           updated++;
+          existingSlugs.add(slug);
           console.log(`Updated slug -> '${slug}' for title '${r.title}'.`);
           continue;
         } catch (e) {
@@ -80,6 +86,7 @@ async function main() {
           try {
             await prisma.recipe.update({ where: { id: r.id }, data: { slug } });
             updated++;
+            existingSlugs.add(slug);
             console.log(`Updated via fuzzy match -> '${slug}' for title '${r.title}' (score ${best.rating.toFixed(2)}).`);
             continue;
           } catch (e) {
