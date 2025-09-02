@@ -1,17 +1,13 @@
 'use client';
-
-import {
-  FiZap,
-  FiMoon,
-  FiHeart,
-  FiTrendingUp,
-  FiWatch,
-  FiChevronLeft,
-  FiChevronRight,
-  FiTarget,
-  FiAward,
-  FiSunrise,
-} from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { Activity, Utensils, User, Calendar, TrendingUp, ChevronDown, ChevronUp, Loader, Plus, Zap, Moon, Heart, Watch, ChevronLeft, ChevronRight, Target, Award, Sunrise } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { useErrorHandler } from '@/app/lib/errorHandler';
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 // --- Reusable Components ---
@@ -100,7 +96,7 @@ export default function MyHealthPage() {
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <FiWatch /> Min Hälsa
+                          <Watch /> Min Hälsa
           </h1>
           <p className="text-gray-600 mt-1">
             Din dagliga hälsodata från din anslutna enhet.

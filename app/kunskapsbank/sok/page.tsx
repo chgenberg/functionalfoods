@@ -1,9 +1,14 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { FiSearch, FiArrowLeft, FiBookOpen, FiUser, FiTag, FiPackage } from 'react-icons/fi';
+import { useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useAuth } from '../../hooks/useAuth';
+import { Search, Filter, X, ChevronDown, ArrowRight, BookOpen, Package, Tag, User, ArrowLeft } from 'lucide-react';
+import RecipeCard from '@/app/components/RecipeCard';
 import Image from 'next/image';
+import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { useErrorHandler } from '@/app/lib/errorHandler';
+import { useAuth } from '../../hooks/useAuth';
 
 interface SearchResult {
   id: string;
@@ -91,12 +96,12 @@ export default function Sok() {
   }, [searchQuery, selectedFilter]);
 
   const filters = [
-    { value: 'all', label: 'Alla', icon: FiSearch },
-    { value: 'recipe', label: 'Recept', icon: FiBookOpen },
-    { value: 'raw-material', label: 'Råvaror', icon: FiPackage },
-    { value: 'ingredient', label: 'Ingredienser', icon: FiPackage },
-    { value: 'category', label: 'Kategorier', icon: FiTag },
-    { value: 'article', label: 'Artiklar', icon: FiUser }
+    { value: 'all', label: 'Alla', icon: Search },
+    { value: 'recipe', label: 'Recept', icon: BookOpen },
+    { value: 'raw-material', label: 'Råvaror', icon: Package },
+    { value: 'ingredient', label: 'Ingredienser', icon: Package },
+    { value: 'category', label: 'Kategorier', icon: Tag },
+    { value: 'article', label: 'Artiklar', icon: User }
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -106,12 +111,12 @@ export default function Sok() {
 
   const getResultIcon = (type: string) => {
     switch (type) {
-      case 'recipe': return FiBookOpen;
-      case 'raw-material': return FiPackage;
-      case 'ingredient': return FiPackage;
-      case 'category': return FiTag;
-      case 'article': return FiUser;
-      default: return FiSearch;
+      case 'recipe': return BookOpen;
+      case 'raw-material': return Package;
+      case 'ingredient': return Package;
+      case 'category': return Tag;
+      case 'article': return User;
+      default: return Search;
     }
   };
 
