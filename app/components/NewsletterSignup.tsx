@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { FiMail, FiCheck, FiLoader, FiArrowRight } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Check, Loader, ArrowRight } from 'lucide-react';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 interface NewsletterSignupProps {
@@ -93,7 +93,7 @@ export default function NewsletterSignup({
                               className="px-4 py-2 bg-[#FF7e70] text-white rounded-lg hover:bg-[#e56b5e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'loading' ? (
-                <FiLoader className="w-5 h-5 animate-spin" />
+                <Loader className="w-5 h-5 animate-spin" />
               ) : (
                 t('newsletter.subscribeShort','Prenumerera')
               )}
@@ -151,7 +151,7 @@ export default function NewsletterSignup({
             transition={{ delay: 0.3, type: 'spring' }}
             className="w-16 h-16 bg-[#F3EFE3] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
           >
-            <FiMail className="w-8 h-8 text-[#112A12]" />
+            <Mail className="w-8 h-8 text-[#112A12]" />
           </motion.div>
           
           <h3 className="text-2xl md:text-3xl font-bold mb-2 text-[#112A12] text-center">{localTitle}</h3>
@@ -206,18 +206,18 @@ export default function NewsletterSignup({
             >
               {status === 'loading' ? (
                 <>
-                  <FiLoader className="w-5 h-5 animate-spin" />
+                  <Loader className="w-5 h-5 animate-spin" />
                   <span>{t('newsletter.subscribing','Prenumererar...')}</span>
                 </>
               ) : status === 'success' ? (
                 <>
-                  <FiCheck className="w-5 h-5" />
+                  <Check className="w-5 h-5" />
                   <span>{t('newsletter.success','Tack för din prenumeration!')}</span>
                 </>
               ) : (
                 <>
                   <span>{t('newsletter.subscribe','Prenumerera på nyhetsbrev')}</span>
-                  <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
             </motion.button>
@@ -282,15 +282,15 @@ export default function NewsletterSignup({
             className="px-6 py-2 bg-[#1a4324] text-white font-medium rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {status === 'loading' ? (
-              <FiLoader className="w-5 h-5 animate-spin" />
+              <Loader className="w-5 h-5 animate-spin" />
             ) : status === 'success' ? (
               <>
-                <FiCheck className="w-5 h-5" />
+                <Check className="w-5 h-5" />
                 {t('newsletter.thanksShort','Tack!')}
               </>
             ) : (
               <>
-                <FiMail className="w-5 h-5" />
+                <Mail className="w-5 h-5" />
                 {t('newsletter.subscribeShort','Prenumerera')}
               </>
             )}

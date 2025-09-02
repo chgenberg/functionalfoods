@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiArrowRight, FiBookOpen, FiClock, FiTrendingUp } from 'react-icons/fi';
+import { ArrowRight, BookOpen, Clock, TrendingUp } from 'lucide-react';
 
 export default function UtbildningPage() {
   const courses = [
@@ -67,7 +67,7 @@ export default function UtbildningPage() {
                 <ul className="mt-4 space-y-2 text-gray-700 text-sm">
                   {course.highlights.map((h) => (
                     <li key={h} className="flex items-start gap-2">
-                      <FiBookOpen className="mt-0.5 w-4 h-4 text-primary" />
+                      <BookOpen className="mt-0.5 w-4 h-4 text-primary" />
                       <span>{h}</span>
                     </li>
                   ))}
@@ -79,7 +79,7 @@ export default function UtbildningPage() {
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors"
                   >
                     Läs mer
-                    <FiArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" />
                   </Link>
 
                   <Link
@@ -100,7 +100,7 @@ export default function UtbildningPage() {
             className="inline-flex items-center gap-2 text-gray-700 hover:text-primary font-medium"
           >
             Visa hela kurskatalogen
-            <FiArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

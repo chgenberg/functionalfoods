@@ -1,57 +1,71 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
-import { useLanguage, Locale } from '../lib/i18n/LanguageProvider';
-import { FiGlobe } from 'react-icons/fi';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Globe } from 'lucide-react';
+import { useLanguage } from '../lib/i18n/LanguageProvider';
 
 export default function LanguageSwitcher() {
+  const [isOpen, setIsOpen] = useState(false);
   const { locale, setLocale } = useLanguage();
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const options: { code: Locale; label: string }[] = [
-    { code: 'sv', label: 'Svenska' },
-    { code: 'en', label: 'English' },
-    { code: 'es', label: 'Español' },
-    { code: 'de', label: 'Deutsch' },
-    { code: 'fr', label: 'Français' }
+
+  const languages = [
+    { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
   ];
 
-  useEffect(() => {
-    const onDoc = (e: Event) => {
-      if (!rootRef.current) return;
-      if (!rootRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    // capture phase to ensure we see the event before bubbling side effects
-    document.addEventListener('pointerdown', onDoc, true);
-    return () => document.removeEventListener('pointerdown', onDoc, true);
-  }, []);
+  const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
 
   return (
-    <div ref={rootRef} className="relative select-none">
+    <div className="relative">
       <button
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#F3EFE3] hover:bg-[#e9e3d6] text-[#112A12]"
-        onClick={() => setOpen(o => !o)}
-        onPointerDown={(e) => e.stopPropagation()}
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm"
         aria-label="Byt språk"
       >
-        <FiGlobe className="w-4 h-4" />
-        <span className="text-sm font-medium uppercase">{locale}</span>
+        <Globe className="w-4 h-4 text-gray-600" />
+        <span className="hidden sm:inline text-gray-700">{currentLanguage.flag}</span>
+        <span className="hidden md:inline text-gray-700 font-medium">{locale.toUpperCase()}</span>
       </button>
-      {open && (
-        <div
-          className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-[#F3EFE3] z-[1000] overflow-hidden"
-          onPointerDown={(e) => e.stopPropagation()}
-        >
-          {options.map(o => (
-            <button
-              key={o.code}
-              onClick={() => { setLocale(o.code); setOpen(false); }}
-              className={`w-full text-left px-4 py-2 text-sm hover:bg-[#F3EFE3] ${locale===o.code? 'font-semibold text-[#112A12]' : 'text-[#112A12]/80'}`}
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <div 
+              className="fixed inset-0 z-40" 
+              onClick={() => setIsOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ duration: 0.15 }}
+              className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[160px] z-50"
             >
-              {o.label}
-            </button>
-          ))}
-        </div>
-      )}
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  onClick={() => {
+                    setLocale(language.code as any);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-3 ${
+                    locale === language.code ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700'
+                  }`}
+                >
+                  <span className="text-lg">{language.flag}</span>
+                  <span className="text-sm">{language.name}</span>
+                  {locale === language.code && (
+                    <span className="ml-auto text-primary">✓</span>
+                  )}
+                </button>
+              ))}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 } 

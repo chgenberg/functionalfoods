@@ -1,10 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Send, MessageCircle, HelpCircle } from 'lucide-react';
+import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
+import { useAuth } from '../hooks/useAuth';
 import Image from 'next/image';
-import { FiX, FiSend, FiMessageCircle, FiHelpCircle } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
 import UserProfileSummary from './UserProfileSummary';
-import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
 import Link from 'next/link';
 import { useErrorHandler } from '../lib/errorHandler';
 
@@ -120,7 +122,7 @@ export default function ChatBot() {
         className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'}`}
         aria-label="Öppna chat"
       >
-        <FiMessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+        <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
 
       {/* Chat Window - Responsive */}
@@ -138,7 +140,7 @@ export default function ChatBot() {
             </div>
           </div>
           <button onClick={() => setIsOpen(false)} className="text-white hover:bg-white/20 rounded-full p-2 transition-colors">
-            <FiX className="w-5 h-5" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -200,7 +202,7 @@ export default function ChatBot() {
               disabled={isLoading}
             />
             <button onClick={handleSendMessage} disabled={!inputValue.trim() || isLoading} className={`p-2 rounded-full transition-all ${inputValue.trim() && !isLoading ? 'bg-primary text-white hover:bg-primary' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
-              <FiSend className="w-5 h-5" />
+              <Send className="w-5 h-5" />
             </button>
           </div>
           
@@ -211,7 +213,7 @@ export default function ChatBot() {
               className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 text-xs transition-colors"
               title="Läs vår AI Policy"
             >
-              <FiHelpCircle className="w-3 h-3" />
+              <HelpCircle className="w-3 h-3" />
               <span>AI-assisterad rådgivning - Läs vår AI Policy</span>
             </Link>
           </div>

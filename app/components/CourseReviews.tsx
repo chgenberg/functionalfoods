@@ -76,7 +76,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
       <section className="py-16 bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-            <FiAlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
+            <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-red-800 mb-2">Kunde inte ladda recensioner</h3>
             <p className="text-red-600 text-sm">{error}</p>
             <button 
@@ -143,7 +143,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
           >
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map(star => (
-                <FiStar
+                <Star
                   key={star}
                   className={`w-5 h-5 ${
                     star <= averageRating ? 'text-yellow-400 fill-current' : 'text-gray-300'
@@ -191,7 +191,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
               {/* Rating Stars */}
               <div className="flex items-center gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map(star => (
-                  <FiStar
+                  <Star
                     key={star}
                     className={`w-5 h-5 ${
                       star <= (review.rating || 5) ? 'text-yellow-400 fill-current' : 'text-gray-300'
@@ -208,7 +208,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
               {/* Reviewer Info */}
               <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                 <div className="w-10 h-10 bg-[#014421] rounded-full flex items-center justify-center">
-                  <FiUser className="w-5 h-5 text-white" />
+                  <User className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <div className="font-medium text-gray-900">{getDisplayName(review)}</div>

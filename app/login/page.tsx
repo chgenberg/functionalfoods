@@ -2,7 +2,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { FiMail, FiLock, FiUser, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
+import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 
 function LoginForm() {

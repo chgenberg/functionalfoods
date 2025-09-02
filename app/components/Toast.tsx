@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCheck, FiX, FiAlertTriangle, FiInfo } from 'react-icons/fi';
+import { Check, X, AlertTriangle, Info } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -39,13 +39,13 @@ function ToastItem({ toast, onDismiss }: ToastProps) {
   const getIcon = () => {
     switch (toast.type) {
       case 'success':
-        return <FiCheck className="w-5 h-5" />;
+        return <Check className="w-5 h-5" />;
       case 'error':
-        return <FiX className="w-5 h-5" />;
+        return <X className="w-5 h-5" />;
       case 'warning':
-        return <FiAlertTriangle className="w-5 h-5" />;
+        return <AlertTriangle className="w-5 h-5" />;
       case 'info':
-        return <FiInfo className="w-5 h-5" />;
+        return <Info className="w-5 h-5" />;
     }
   };
 
@@ -114,7 +114,7 @@ function ToastItem({ toast, onDismiss }: ToastProps) {
               className="flex-shrink-0 p-1 rounded-full hover:bg-black/10 transition-colors"
               aria-label="Stäng meddelande"
             >
-              <FiX className="w-4 h-4" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </motion.div>
