@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Star, Download, Heart, Calendar } from 'lucide-react';
 
 import { useFavoriteRecipes, FavoriteRecipe } from '@/app/hooks/useFavoriteRecipes';
 
@@ -401,7 +402,6 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
         @media print {
             body { margin: 0; padding: 10px; }
             .header, .footer { background: #014421 !important; }
-import { Star, Download, Heart, Clock, Calendar } from 'lucide-react';
         }
     </style>
 </head>
