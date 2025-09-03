@@ -30,7 +30,7 @@ export default function UtbildningPage() {
       title: 'Functional Energy',
       description: 'För dig som vill stabilisera blodsockret och få jämn energi. Perfekt vid prediabetes eller energidippar.',
       href: '/utbildning/functional-energy',
-      image: '/Bilder_flow/lax-med-sellerisallad-och-valnotter.JPG',
+      image: '/lax-med-sellerisallad-och-valnotter.JPG',
       duration: '6 veckor',
       level: 'Alla nivåer',
       highlights: ['Stabilt blodsocker', 'Jämn energi hela dagen', 'Minska sötsug och trötthet']

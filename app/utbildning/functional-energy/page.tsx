@@ -50,7 +50,7 @@ export default function FunctionalEnergyPage() {
     name: 'Functional Energy',
     price: 2295,
     type: 'course' as const,
-    image: '/Bilder_flow/lax-med-sellerisallad-och-valnotter.JPG',
+    image: '/lax-med-sellerisallad-och-valnotter.JPG',
     quantity: 1
   };
 
@@ -219,7 +219,7 @@ export default function FunctionalEnergyPage() {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/Bilder_flow/lax-med-sellerisallad-och-valnotter.JPG"
+                  src="/lax-med-sellerisallad-och-valnotter.JPG"
                   alt="Functional Energy - Lax med sellerisallad och valnötter"
                   width={600}
                   height={600}
