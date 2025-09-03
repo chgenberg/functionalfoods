@@ -18,21 +18,21 @@ interface Episode {
 const demoEpisodes: Episode[] = [
   {
     id: "ep1",
-    title: "Hur påverkar functional foods din energi?",
-    description: "Vi pratar om blodsocker, proteinintag och smarta livsmedelsval för jämnare energi.",
-    duration: "18:42",
-    audioUrl: "/demo-audio/episode1.mp3",
-    coverUrl: "/images/blog-placeholder.jpg",
-    date: "2025-07-01",
+    title: "Hur kropp och själ hänger samman i en vacker synergi",
+    description: "Ulrika Davidsson pratar om sambandet mellan kropp och själ, och hur functional foods kan påverka vårt välmående på djupet.",
+    duration: "45:30",
+    audioUrl: "https://poddtoppen.se/podcast/1543876523/sa-in-i-sjalen/79-ulrika-davidsson-om-hur-kropp-och-sjal-hanger-samman-i-en-vacker-synergi",
+    coverUrl: "/Ulrika_portratt/udavidsson.PNG",
+    date: "2025-06-15",
   },
   {
-    id: "ep2",
-    title: "Maghälsa: fiber, fermenterat och balans",
-    description: "Allt om prebiotika, probiotika och hur du bygger en resilient tarmflora.",
-    duration: "24:10",
-    audioUrl: "/demo-audio/episode2.mp3",
-    coverUrl: "/images/blog-placeholder.jpg",
-    date: "2025-07-08",
+    id: "ep2", 
+    title: "Ulrika Davidsson om functional foods och hälsa",
+    description: "Ett djupdykning i functional foods världen med Ulrika Davidsson - från grunderna till praktiska tips för vardagen.",
+    duration: "32:15",
+    audioUrl: "https://poddtoppen.se/podcast/1473737348/2-latar-1-kandis/ulrika-davidsson",
+    coverUrl: "/Ulrika_portratt/udavidsson_mobile.PNG",
+    date: "2025-05-20",
   },
 ];
 
@@ -43,6 +43,16 @@ export default function PodcastsPage() {
   const { locale } = useLanguage();
 
   const togglePlay = (id: string) => {
+    const episode = demoEpisodes.find(ep => ep.id === id);
+    if (!episode) return;
+    
+    // For external podcast URLs, open in new tab
+    if (episode.audioUrl.startsWith('http')) {
+      window.open(episode.audioUrl, '_blank');
+      return;
+    }
+    
+    // For local audio files, use original logic
     const audio = audioRefs.current[id];
     if (!audio) return;
     if (currentId === id && !audio.paused) {
@@ -101,32 +111,39 @@ export default function PodcastsPage() {
                     <button
                       onClick={() => togglePlay(ep.id)}
                       className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors"
-                      aria-label={t('podcasts.playPause','Spela/Pausa')}
+                      aria-label={ep.audioUrl.startsWith('http') ? 'Öppna på Poddtoppen' : t('podcasts.playPause','Spela/Pausa')}
                     >
-                      {currentId === ep.id && audioRefs.current[ep.id] && !audioRefs.current[ep.id]!.paused ? (
-                        <PauseCircle className="w-7 h-7" />
-                      ) : (
-                        <PlayCircle className="w-7 h-7" />
-                      )}
+                      <PlayCircle className="w-7 h-7" />
                     </button>
 
                     <div className="flex-1">
-                      <div className="h-2 bg-white rounded-full overflow-hidden">
-                        <div className="h-full w-1/3 bg-accent transition-all duration-300" />
-                      </div>
-                      <div className="mt-2 flex justify-between text-xs text-text-secondary">
-                        <span>0:00</span>
-                        <span>{ep.duration}</span>
-                      </div>
+                      {ep.audioUrl.startsWith('http') ? (
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-primary">Lyssna på Poddtoppen</p>
+                          <p className="text-xs text-text-secondary">Klicka för att öppna i ny flik</p>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="h-2 bg-white rounded-full overflow-hidden">
+                            <div className="h-full w-1/3 bg-accent transition-all duration-300" />
+                          </div>
+                          <div className="mt-2 flex justify-between text-xs text-text-secondary">
+                            <span>0:00</span>
+                            <span>{ep.duration}</span>
+                          </div>
+                        </>
+                      )}
                     </div>
 
-                    <audio
-                      ref={(el) => { audioRefs.current[ep.id] = el; }}
-                      src={ep.audioUrl}
-                      preload="none"
-                      onEnded={() => setCurrentId(null)}
-                      className="hidden"
-                    />
+                    {!ep.audioUrl.startsWith('http') && (
+                      <audio
+                        ref={(el) => { audioRefs.current[ep.id] = el; }}
+                        src={ep.audioUrl}
+                        preload="none"
+                        onEnded={() => setCurrentId(null)}
+                        className="hidden"
+                      />
+                    )}
                   </div>
                 </div>
               </div>

@@ -50,7 +50,7 @@ export default function FunctionalBasicsPage() {
     name: 'Functional Basics',
     price: 2295,
     type: 'course' as const,
-    image: '/functional_basics.png',
+    image: '/Bilder_basic/lax-med-ratatouille.jpg',
     quantity: 1
   };
 
