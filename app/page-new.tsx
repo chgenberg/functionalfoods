@@ -333,43 +333,45 @@ export default function Home() {
             </h2>
           </motion.div>
           
-          <div className="relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTestimonial}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 lg:p-12 shadow-lg md:shadow-xl"
-              >
-                <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 md:w-6 md:h-6 text-[#FFE135] fill-current" />
-                  ))}
-                </div>
-                <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
-                  "{testimonials[activeTestimonial].text}"
-                </p>
-                <p className="font-semibold text-gray-800 text-center md:text-left">
-                  — {testimonials[activeTestimonial].name}
-                </p>
-              </motion.div>
-            </AnimatePresence>
+          {testimonials.length > 0 && (
+            <div className="relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTestimonial}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 lg:p-12 shadow-lg md:shadow-xl"
+                >
+                  <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 md:w-6 md:h-6 text-[#FFE135] fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
+                    "{testimonials[activeTestimonial].text}"
+                  </p>
+                  <p className="font-semibold text-gray-800 text-center md:text-left">
+                    — {testimonials[activeTestimonial].name}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
 
-            <div className="flex justify-center gap-2 mt-6 md:mt-8">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTestimonial(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === activeTestimonial
-                      ? "w-8 bg-primary"
-                      : "bg-gray-300 hover:bg-gray-400"
-                  }`}
-                />
-              ))}
+              <div className="flex justify-center gap-2 mt-6 md:mt-8">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveTestimonial(index)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      index === activeTestimonial
+                        ? "w-8 bg-primary"
+                        : "bg-gray-300 hover:bg-gray-400"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
