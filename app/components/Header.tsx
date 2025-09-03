@@ -71,6 +71,7 @@ export default function Header() {
       { label: t('nav.allCourses','Alla kurser'), href: "/utbildning/alla-kurser" },
       { label: "Functional Basics", href: "/utbildning/functional-basics" },
       { label: "Functional Flow", href: "/utbildning/functional-flow" },
+      { label: "Functional Energy", href: "/utbildning/functional-energy" },
     ] },
     { label: t('nav.recipes','RECEPT'), href: "/kunskapsbank/recept" },
     { label: t('nav.knowledge','KUNSKAPSBANK'), href: "/kunskapsbank", submenu: [
