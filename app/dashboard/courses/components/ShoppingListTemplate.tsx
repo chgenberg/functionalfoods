@@ -26,11 +26,11 @@ interface Ingredient {
 }
 
 interface ShoppingListTemplateProps {
-  courseType: 'basics' | 'flow';
-  week: number;
+  courseType: 'basics' | 'flow' | 'energy';
+  weekNumber: number;
 }
 
-export default function ShoppingListTemplate({ courseType, week }: ShoppingListTemplateProps) {
+export default function ShoppingListTemplate({ courseType, weekNumber }: ShoppingListTemplateProps) {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -40,14 +40,14 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
 
   useEffect(() => {
     generateShoppingList();
-  }, [week, courseType, servings]);
+  }, [weekNumber, courseType, servings]);
 
   const generateShoppingList = async () => {
     setLoading(true);
     
     try {
-      console.log(`🛒 Fetching shopping list for ${courseType} week ${week}, servings ${servings}`);
-      const response = await fetch(`/api/shopping-list/${courseType}/${week}?servings=${servings}`);
+      console.log(`🛒 Fetching shopping list for ${courseType} week ${weekNumber}, servings ${servings}`);
+      const response = await fetch(`/api/shopping-list/${courseType}/${weekNumber}?servings=${servings}`);
       console.log(`📡 API Response status: ${response.status}`);
       
       if (response.ok) {
@@ -106,7 +106,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
   const totalCount = ingredients.length;
 
   const buildListText = () => {
-    const header = `Inköpslista • Vecka ${week} • ${courseType === 'basics' ? 'Basics' : 'Flow'} • ${servings} portioner`;
+    const header = `Inköpslista • Vecka ${weekNumber} • ${courseType === 'basics' ? 'Basics' : 'Flow'} • ${servings} portioner`;
     const body = ingredients.map(i => `${i.name} — ${i.amount} ${i.unit}`.trim()).join("\n");
     return `${header}\n\n${body}`;
   };
@@ -115,7 +115,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
     const text = buildListText();
     try {
       if (navigator.share) {
-        await navigator.share({ title: `Inköpslista vecka ${week}`, text });
+        await navigator.share({ title: `Inköpslista vecka ${weekNumber}`, text });
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(text);
         alert('Listan kopierades till urklipp. Klistra in den i valfri inköpsapp.');
@@ -143,7 +143,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inköpslista - ${courseName} Vecka ${week}</title>
+    <title>Inköpslista - ${courseName} Vecka ${weekNumber}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -342,7 +342,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
         <div class="logo">Functional Foods</div>
         <div class="course-info">${courseName} • ${servings} portioner</div>
         <div class="date-info">Skapad ${today}</div>
-        <div class="week-title">Inköpslista Vecka ${week}</div>
+        <div class="week-title">Inköpslista Vecka ${weekNumber}</div>
         <div class="subtitle">Organiserad efter kategori för enkel shopping</div>
     </div>
     
@@ -376,7 +376,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
     
     <div class="footer">
         <div class="footer-text">
-            Genererad från ${courseName} - Vecka ${week}<br>
+            Genererad från ${courseName} - Vecka ${weekNumber}<br>
             © ${new Date().getFullYear()} Functional Foods med Ulrika Davidsson
         </div>
     </div>
@@ -409,7 +409,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inköpslista - ${courseName} Vecka ${week}</title>
+    <title>Inköpslista - ${courseName} Vecka ${weekNumber}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -627,7 +627,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
         <div class="logo">Functional Foods</div>
         <div class="course-info">${courseName} • ${servings} portioner</div>
         <div class="date-info">Skapad ${today}</div>
-        <div class="week-title">Inköpslista Vecka ${week}</div>
+        <div class="week-title">Inköpslista Vecka ${weekNumber}</div>
         <div class="subtitle">Organiserad efter kategori för enkel shopping</div>
     </div>
     
@@ -661,7 +661,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
     
     <div class="footer">
         <div class="footer-text">
-            Genererad från ${courseName} - Vecka ${week}<br>
+            Genererad från ${courseName} - Vecka ${weekNumber}<br>
             © ${new Date().getFullYear()} Functional Foods med Ulrika Davidsson
         </div>
     </div>
@@ -672,7 +672,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `inköpslista-${courseType}-vecka-${week}.html`;
+    a.download = `inköpslista-${courseType}-vecka-${weekNumber}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -691,7 +691,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
       <WeekHeroWithVideo
         weekNumber={0}
         weekTitle="Inköpslista"
-        weekSubtitle={`Vecka ${week} - Alla ingredienser för veckans recept`}
+        weekSubtitle={`Vecka ${weekNumber} - Alla ingredienser för veckans recept`}
         heroImage="/Ulrika_portratt/udavidssondesktop.png"
         videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
       />
@@ -699,7 +699,7 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
       {/* Course Navigation - After Hero Section */}
       <div className="bg-white shadow-lg print:hidden">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
-          <CourseNavigation courseType={courseType} currentWeek={week} />
+          <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
         </div>
       </div>
 
@@ -709,11 +709,11 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <Link
-                href={`/dashboard/courses/functional-${courseType}/week/${week}`}
+                href={`/dashboard/courses/functional-${courseType}/week/${weekNumber}`}
                 className="flex items-center text-gray-600 hover:text-[#014421] transition-colors mb-2 text-sm"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
-                Tillbaka till vecka {week}
+                Tillbaka till vecka {weekNumber}
               </Link>
               <h1 className="text-2xl sm:text-3xl font-bold text-[#014421]">
                 Handla smart

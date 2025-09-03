@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { mealPlans, flowMealPlans, type WeekMealPlan } from '@/app/data/mealPlans';
+import { mealPlans, flowMealPlans, energyMealPlans, type WeekMealPlan } from '@/app/data/mealPlans';
 import fs from 'fs';
 import path from 'path';
 
@@ -245,7 +245,9 @@ export async function GET(
     const weekKey = `week${weekNum}`;
     const weekMeals: WeekMealPlan | undefined = courseType === 'basics' 
       ? mealPlans[weekKey]
-      : flowMealPlans[weekKey];
+      : courseType === 'flow' 
+      ? flowMealPlans[weekKey]
+      : energyMealPlans[weekKey];
       
     if (!weekMeals || !weekMeals.days) {
       return NextResponse.json({ error: 'Week not found' }, { status: 404 });

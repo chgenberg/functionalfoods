@@ -1,0 +1,62 @@
+{
+  "week1": {
+    "week": 1,
+    "title": "Vecka 1: Typ 2-diabetes kostschema",
+    "days": {},
+    "stats": {
+      "totalMeals": 0,
+      "matchedMeals": 0,
+      "matchRate": null
+    }
+  },
+  "week2": {
+    "week": 2,
+    "title": "Vecka 2: Typ 2-diabetes kostschema",
+    "days": {},
+    "stats": {
+      "totalMeals": 0,
+      "matchedMeals": 0,
+      "matchRate": null
+    }
+  },
+  "week3": {
+    "week": 3,
+    "title": "Vecka 3: Typ 2-diabetes kostschema",
+    "days": {},
+    "stats": {
+      "totalMeals": 0,
+      "matchedMeals": 0,
+      "matchRate": null
+    }
+  },
+  "week4": {
+    "week": 4,
+    "title": "Vecka 4: Typ 2-diabetes kostschema",
+    "days": {},
+    "stats": {
+      "totalMeals": 0,
+      "matchedMeals": 0,
+      "matchRate": null
+    }
+  },
+  "week5": {
+    "week": 5,
+    "title": "Vecka 5: Typ 2-diabetes kostschema",
+    "days": {},
+    "stats": {
+      "totalMeals": 0,
+      "matchedMeals": 0,
+      "matchRate": null
+    }
+  },
+  "week6": {
+    "week": 6,
+    "title": "Vecka 6: Typ 2-diabetes kostschema",
+    "days": {},
+    "stats": {
+      "totalMeals": 0,
+      "matchedMeals": 0,
+      "matchRate": null
+    }
+  }
+}

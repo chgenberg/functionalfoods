@@ -1,0 +1,1034 @@
+{
+  "week1": {
+    "week": 1,
+    "title": "Vecka 1: Typ 2-diabetes kostschema",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Yoghurt med bovetegranola  (420 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt",
+          "recipeId": "2ed45f07-a38b-4dbe-b820-85357146f86c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Omelett med paprika och champinjoner  (286 kcal)",
+          "recipeLink": "/kunskapsbank/recept/omelettrulle",
+          "recipeId": "5c1b3027-3fef-4ca9-8b88-031e0e6b1f5f",
+          "confidence": 0.7058823529411765,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Kycklingburgare med mangosalsa och wasabi (332 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-citronkram",
+          "recipeId": "73836b75-0ef2-4b6c-9d90-7c8e9a40f0bf",
+          "confidence": 0.6829268292682927,
+          "method": "fuzzy_title"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Stekt ägg med tomat (240 kcal)",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-lax",
+          "recipeId": "33814aba-5a8c-40f0-b522-daef54ddafcd",
+          "confidence": 0.7,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Kycklingburgare med mangosalsa och wasabi (332 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-citronkram",
+          "recipeId": "73836b75-0ef2-4b6c-9d90-7c8e9a40f0bf",
+          "confidence": 0.6829268292682927,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Tonfiskröra med rödbetor (233 kcal)",
+          "recipeLink": "/kunskapsbank/recept/tonfiskrora-med-rodbetor",
+          "recipeId": "0a36d074-5291-406e-a049-659cd6d290cd",
+          "confidence": 0.6451612903225806,
+          "method": "fuzzy_title"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Slät havregrynsgröt med vaniljprotein (244 kcal)",
+          "recipeLink": "/kunskapsbank/recept/slat-havregrynsgrot-med-vaniljprotein",
+          "recipeId": "48d6b4b1-8a00-48df-9914-6e784b0d4693",
+          "confidence": 0.68,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Tonfiskröra med rödbetor (233 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/tonfiskrora-med-rodbetor",
+          "recipeId": "0a36d074-5291-406e-a049-659cd6d290cd",
+          "confidence": 0.6451612903225806,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Köttfärswrap med röd curry och äpple (531 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kottfarswrap-med-rod-curry-och-apple",
+          "recipeId": "3fc05133-7007-4ab1-bc59-65733070d46f",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Keso med melon och ananas (182 kcal)",
+          "recipeLink": "/kunskapsbank/recept/havrevaffla-med-jordgubbssylt-och-vaniljkeso",
+          "recipeId": "29355c78-8dc3-4ed0-98ca-161f80cb357d",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Köttfärswrap med röd curry och äpple (531 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/kottfarswrap-med-rod-curry-och-apple",
+          "recipeId": "3fc05133-7007-4ab1-bc59-65733070d46f",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Apelsinkyckling med blomkålsris (579 kcal)",
+          "recipeLink": "/kunskapsbank/recept/apelsinkyckling-med-blomkalsris",
+          "recipeId": "f3aa59cc-6a8d-48ed-b722-4542a8d4f68f",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Bananpannkaka med pistagenötter och bär (291 kcal)",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-champinjoner-2",
+          "recipeId": "95ca0a5b-9066-486e-8dbb-9b197801e761",
+          "confidence": 0.95,
+          "method": "exact_title"
+        },
+        "lunch": {
+          "name": "Apelsinkyckling med blomkålsris (579 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/apelsinkyckling-med-blomkalsris",
+          "recipeId": "f3aa59cc-6a8d-48ed-b722-4542a8d4f68f",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Fisk och skaldjursgryta från medelhavet (494 kcal)",
+          "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet",
+          "recipeId": "bcf862ae-ca19-4e6d-be06-f2218ef05cb3",
+          "confidence": 1,
+          "method": "exact_slug"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Kesofralla med skinka och tomat (355 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kesofralla-med-ost-och-paprika",
+          "recipeId": "053e619d-041c-4550-8960-c8516b5861dc",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Fisk och skaldjursgryta från medelhavet(494 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet",
+          "recipeId": "bcf862ae-ca19-4e6d-be06-f2218ef05cb3",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "dinner": {
+          "name": "Biff med sötpotatis (400 kcal)Mandelkaka med choklad och hallon (383 kcal)",
+          "recipeLink": "/kunskapsbank/recept/laxbiffar-med-mango-och-wasabi",
+          "recipeId": "a52d0cd3-34e2-47b5-b0ad-cabefbdd83df",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Champinjonomelett(319 kcal)",
+          "recipeLink": "/kunskapsbank/recept/champinjonomelett",
+          "recipeId": "4fdd6f77-e683-4e16-bd9a-ae25eafd3c3c",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "lunch": {
+          "name": "Biff med sötpotatis (400 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/laxbiffar-med-mango-och-wasabi",
+          "recipeId": "a52d0cd3-34e2-47b5-b0ad-cabefbdd83df",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Quinoasallad med halloumi (551 kcal)",
+          "recipeLink": "/kunskapsbank/recept/quinoasallad-med-halloumi",
+          "recipeId": "fad45e25-ff4f-4522-99c1-b3bf43efd200",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        }
+      }
+    },
+    "stats": {
+      "totalMeals": 21,
+      "matchedMeals": 21,
+      "matchRate": 100
+    }
+  },
+  "week2": {
+    "week": 2,
+    "title": "Vecka 2: Typ 2-diabetes kostschema",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Yoghurt med bär och bovetegranola (434 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt",
+          "recipeId": "2ed45f07-a38b-4dbe-b820-85357146f86c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Quinoasallad med halloumi (551 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/quinoasallad-med-halloumi",
+          "recipeId": "fad45e25-ff4f-4522-99c1-b3bf43efd200",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Kycklingwok med teriyakisås och cashewnötter (399 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklingfarswok",
+          "recipeId": "73680cbd-62f5-412a-ab96-c0fced571bcb",
+          "confidence": 0.75,
+          "method": "fuzzy_title"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Rökt lax med ägghack  (295 kcal)",
+          "recipeLink": "/kunskapsbank/recept/aggrora-lax-2",
+          "recipeId": "1f490ce8-6f93-4a1b-826e-5a615c312b5f",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Kycklingwok med teriyakisås och cashewnötter (399 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/kycklingfarswok",
+          "recipeId": "73680cbd-62f5-412a-ab96-c0fced571bcb",
+          "confidence": 0.75,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Panerad torsk med blomkålsris (522 kcal)",
+          "recipeLink": "/kunskapsbank/recept/panerad-torsk-med-blomkalsris",
+          "recipeId": "9f06c461-049c-4216-aced-19fdf2b67b97",
+          "confidence": 0.6111111111111112,
+          "method": "fuzzy_title"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Smoothiebowl med spirulina och havre (314 kcal)",
+          "recipeLink": "/kunskapsbank/recept/barsmoothiebowl",
+          "recipeId": "e7afe103-0497-4247-9a49-1d83bc03310b",
+          "confidence": 0.8,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Panerad torsk med blomkålsris (522 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/panerad-torsk-med-blomkalsris",
+          "recipeId": "9f06c461-049c-4216-aced-19fdf2b67b97",
+          "confidence": 0.6111111111111112,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Varm tacosallad (386 kcal)",
+          "recipeLink": "/kunskapsbank/recept/varm-tacosallad",
+          "recipeId": "d746dff0-67e2-4d82-9a7c-11f6be6af8fa",
+          "confidence": 1,
+          "method": "exact_slug"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Kesotortilla med tomat, pesto och kalkon  (274 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kesotortilla-med-tomat-pesto-och-kalkon",
+          "recipeId": "9ac976c5-a6b5-46ce-9823-2f24b7ee62e4",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Varm tacosallad (386 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/varm-tacosallad",
+          "recipeId": "d746dff0-67e2-4d82-9a7c-11f6be6af8fa",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "dinner": {
+          "name": "Tofugryta med blomkålsris (642 kcal)",
+          "recipeLink": "/kunskapsbank/recept/tofugryta-med-blomkalsris",
+          "recipeId": "d9430b69-7fb0-477a-8a9a-6d59f304c781",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Kesotortilla med tomat, pesto och kalkon  (274 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kesotortilla-med-tomat-pesto-och-kalkon",
+          "recipeId": "9ac976c5-a6b5-46ce-9823-2f24b7ee62e4",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Tofugryta med blomkålsris (642 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/tofugryta-med-blomkalsris",
+          "recipeId": "d9430b69-7fb0-477a-8a9a-6d59f304c781",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Lövbiffsrullader med cheddar och coleslaw (643kcal)",
+          "recipeLink": "/kunskapsbank/recept/lovbiffsrullader-med-brie-pesto-och-rodbetor",
+          "recipeId": "23b18b7b-c830-406c-97a8-a20f14f9c385",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Kesofralla med färskost och gurka (346 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kesofralla-med-ost-och-paprika",
+          "recipeId": "053e619d-041c-4550-8960-c8516b5861dc",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Lövbiffsrullader med cheddar och coleslaw (643kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/lovbiffsrullader-med-brie-pesto-och-rodbetor",
+          "recipeId": "23b18b7b-c830-406c-97a8-a20f14f9c385",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Italiensk kycklinggratäng med mozzarella (446 kcal)Pistagekaka (235 kcal)",
+          "recipeLink": "/kunskapsbank/recept/italiensk-kycklinggratang-med-mozzarella",
+          "recipeId": "de291eb3-5fa6-4759-9a19-743f477c69da",
+          "confidence": 0.7796610169491526,
+          "method": "fuzzy_title"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Tropisk smoothie (204 kcal)",
+          "recipeLink": "/kunskapsbank/recept/tropisk-smoothie",
+          "recipeId": "c4a45713-6db8-45ff-9000-5df48b5ba6c2",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "lunch": {
+          "name": "Italiensk kycklinggratäng med mozzarella (446 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/italiensk-kycklinggratang-med-mozzarella",
+          "recipeId": "de291eb3-5fa6-4759-9a19-743f477c69da",
+          "confidence": 0.7796610169491526,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Lax- och broccolipaj (558 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj",
+          "recipeId": "a5ba94e4-cb12-4abf-84a4-b14e4ca8619d",
+          "confidence": 1,
+          "method": "exact_slug"
+        }
+      }
+    },
+    "stats": {
+      "totalMeals": 21,
+      "matchedMeals": 21,
+      "matchRate": 100
+    }
+  },
+  "week3": {
+    "week": 3,
+    "title": "Vecka 3: Typ 2-diabetes kostschema",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Tropisk smoothie (204 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/tropisk-smoothie",
+          "recipeId": "c4a45713-6db8-45ff-9000-5df48b5ba6c2",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "lunch": {
+          "name": "Lax- och broccolipaj (558 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj",
+          "recipeId": "a5ba94e4-cb12-4abf-84a4-b14e4ca8619d",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "dinner": {
+          "name": "Linssallad med fetaost och pekannötter (467 kcal)",
+          "recipeLink": "/kunskapsbank/recept/linssallad-med-fetaost-och-pekannotter",
+          "recipeId": "5195b3f4-7126-4bce-bcd2-a041d0dda7c2",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Äggröra med kalkon och granatäpple  (292 kcal)",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-lax",
+          "recipeId": "e86603e7-c4fc-47e7-be91-4c11380f05e4",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Linssallad med fetaost och pekannötter (467 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/linssallad-med-fetaost-och-pekannotter",
+          "recipeId": "5195b3f4-7126-4bce-bcd2-a041d0dda7c2",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Kalkonbolognese med morotspasta (490 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kalkonbolognese-med-morotspasta",
+          "recipeId": "d3e2de97-8695-487d-ad8d-aded78cd2c95",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Bananpannkaka med keso, blåbär och mango (280 kcal)",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-champinjoner-2",
+          "recipeId": "95ca0a5b-9066-486e-8dbb-9b197801e761",
+          "confidence": 0.95,
+          "method": "exact_title"
+        },
+        "lunch": {
+          "name": "Kalkonbolognese med morotspasta (490 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/kalkonbolognese-med-morotspasta",
+          "recipeId": "d3e2de97-8695-487d-ad8d-aded78cd2c95",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Lövbiffsrullad med ugnsrostade rödbetor (469 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lovbiffsrullad-med-ugnsrostade-rodbetor",
+          "recipeId": "9cbba23d-e489-467c-98bf-91f3c0cacdf9",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Yoghurt med bovetegranola och aprikos (446 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt",
+          "recipeId": "2ed45f07-a38b-4dbe-b820-85357146f86c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Lövbiffsrullad med ugnsrostade rödbetor (469 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/lovbiffsrullad-med-ugnsrostade-rodbetor",
+          "recipeId": "9cbba23d-e489-467c-98bf-91f3c0cacdf9",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Minestronesoppa (203 kcal)",
+          "recipeLink": "/kunskapsbank/recept/minestronesoppa",
+          "recipeId": "bde44bf4-d05e-477f-8adc-09052ba78c22",
+          "confidence": 1,
+          "method": "exact_slug"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Kesofralla med ost och paprika (425 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kesofralla-med-ost-och-paprika",
+          "recipeId": "053e619d-041c-4550-8960-c8516b5861dc",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Minestronesoppa (203 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/minestronesoppa",
+          "recipeId": "bde44bf4-d05e-477f-8adc-09052ba78c22",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "dinner": {
+          "name": "Hamburgare med fetaostkräm och rostad sötpotatis (529 kcal)",
+          "recipeLink": "/kunskapsbank/recept/hamburgare-med-hummus",
+          "recipeId": "e3ba0c6d-2eb2-4a54-945b-c428af6e3a75",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Ugnsbakad gröt med päron (341 kcal)",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakad-grot",
+          "recipeId": "9b0a7365-f4b3-4449-9185-1be6c1935d1c",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "lunch": {
+          "name": "Hamburgare med fetaostkräm och rostad sötpotatis (529 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/hamburgare-med-hummus",
+          "recipeId": "e3ba0c6d-2eb2-4a54-945b-c428af6e3a75",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Halstrad tonfisk med grönsaker och sesamdressing (439 kcal)Blodapelsin med vit chokladkräm (267 kcal)",
+          "recipeLink": "/kunskapsbank/recept/halstrad-tonfisk-med-gronsaker-och-sesamdressing",
+          "recipeId": "dea8e736-6fe7-4e38-9d5d-6e4ccfabf847",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Ugnsbakad gröt (341 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakad-grot",
+          "recipeId": "9b0a7365-f4b3-4449-9185-1be6c1935d1c",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "lunch": {
+          "name": "Halstrad tonfisk med grönsaker och sesamdressing (439 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/halstrad-tonfisk-med-gronsaker-och-sesamdressing",
+          "recipeId": "dea8e736-6fe7-4e38-9d5d-6e4ccfabf847",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Tacokyckling med blomkålssallad (665 kcal)",
+          "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad",
+          "recipeId": "ccd0acf5-585b-436e-9778-2efb8e35c71d",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      }
+    },
+    "stats": {
+      "totalMeals": 21,
+      "matchedMeals": 21,
+      "matchRate": 100
+    }
+  },
+  "week4": {
+    "week": 4,
+    "title": "Vecka 4: Typ 2-diabetes kostschema",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Proteingröt med äpple(333 kcal)",
+          "recipeLink": "/kunskapsbank/recept/proteingrot-med-apple",
+          "recipeId": "3578812d-d38e-4789-a8d4-62889444bc2b",
+          "confidence": 0.7142857142857143,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Tacokyckling med blomkålssallad (665 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad",
+          "recipeId": "ccd0acf5-585b-436e-9778-2efb8e35c71d",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Vegetarisk paprikapasta med citron (394 kcal)",
+          "recipeLink": "/kunskapsbank/recept/vegetarisk-paprikapasta-med-citron",
+          "recipeId": "7c353085-a9e6-414b-b94f-c587facd7018",
+          "confidence": 0.8235294117647058,
+          "method": "fuzzy_title"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Stekt ägg med kalkon och senapsmajonnäs (357 kcal)",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-lax",
+          "recipeId": "33814aba-5a8c-40f0-b522-daef54ddafcd",
+          "confidence": 0.7,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Vegetarisk paprikapasta med citron (394 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/vegetarisk-paprikapasta-med-citron",
+          "recipeId": "7c353085-a9e6-414b-b94f-c587facd7018",
+          "confidence": 0.8235294117647058,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Tonfisksallad med rödbetsröra(432 kcal)",
+          "recipeLink": "/kunskapsbank/recept/tonfisksallad-apple-sallad",
+          "recipeId": "60e8104a-c6da-4fb1-b791-35994519aa0d",
+          "confidence": 0.75,
+          "method": "fuzzy_title"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Yoghurt med bovetegranola, keso och sylt (365 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt",
+          "recipeId": "2ed45f07-a38b-4dbe-b820-85357146f86c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Tonfisksallad med rödbetsröra (432 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/tonfisksallad-apple-sallad",
+          "recipeId": "60e8104a-c6da-4fb1-b791-35994519aa0d",
+          "confidence": 0.75,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Kycklingfärstimbaler med ingefära, färskost och sweetchili (473 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kycklingfarswok",
+          "recipeId": "73680cbd-62f5-412a-ab96-c0fced571bcb",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Blåbärssmoothie (160 kcal)",
+          "recipeLink": "/kunskapsbank/recept/jordgubbar-mango-vit",
+          "recipeId": "0b827512-d62b-4893-99b2-ad8f32c9f26b",
+          "confidence": 0.95,
+          "method": "exact_title"
+        },
+        "lunch": {
+          "name": "Kycklingfärstimbaler med ingefära, färskost och sweetchili (473 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/kycklingfarswok",
+          "recipeId": "73680cbd-62f5-412a-ab96-c0fced571bcb",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Lövbiff med bacon, stekta grönsaker och pestoyoghurt(588 kcal)",
+          "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt",
+          "recipeId": "2ed45f07-a38b-4dbe-b820-85357146f86c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Blåbärssmoothie (160 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/jordgubbar-mango-vit",
+          "recipeId": "0b827512-d62b-4893-99b2-ad8f32c9f26b",
+          "confidence": 0.95,
+          "method": "exact_title"
+        },
+        "lunch": {
+          "name": "Lövbiff med bacon, stekta grönsaker och pestoyoghurt(588 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt",
+          "recipeId": "2ed45f07-a38b-4dbe-b820-85357146f86c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Laxgratäng med blomkålsmos (403 kcal)",
+          "recipeLink": "/kunskapsbank/recept/laxgratang-med-broccoli-och-scampi",
+          "recipeId": "be1b88b0-3de7-431a-b4e0-220985451493",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Äggröra med sockerärtor (274 kcal)",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-lax",
+          "recipeId": "e86603e7-c4fc-47e7-be91-4c11380f05e4",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Laxgratäng med blomkålsmos (403 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/laxgratang-med-broccoli-och-scampi",
+          "recipeId": "be1b88b0-3de7-431a-b4e0-220985451493",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Entrecote med sparris, granatäpple och ärtpesto (639 kcal)Morotskaka med havregryn och chiafrön (273 kcal)",
+          "recipeLink": "/kunskapsbank/recept/entrecote-med-sparris-och-artpesto",
+          "recipeId": "9acfc4dc-d036-443b-8139-b912dcaff42c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Havrevåffla med jordgubbssylt och vaniljkeso (443 kcal)",
+          "recipeLink": "/kunskapsbank/recept/havrevaffla-med-jordgubbssylt-och-vaniljkeso",
+          "recipeId": "29355c78-8dc3-4ed0-98ca-161f80cb357d",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Entrecote med sparris, granatäpple och ärtpesto (639 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/entrecote-med-sparris-och-artpesto",
+          "recipeId": "9acfc4dc-d036-443b-8139-b912dcaff42c",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Fisk och skaldjursgryta från medelhavet(494 kcal) rester från frysen",
+          "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet",
+          "recipeId": "bcf862ae-ca19-4e6d-be06-f2218ef05cb3",
+          "confidence": 0.8717948717948718,
+          "method": "fuzzy_title"
+        }
+      }
+    },
+    "stats": {
+      "totalMeals": 21,
+      "matchedMeals": 21,
+      "matchRate": 100
+    }
+  },
+  "week5": {
+    "week": 5,
+    "title": "Vecka 5: Typ 2-diabetes kostschema",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Kokta ägg med kaviar (231 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kokt-agg-kaviar",
+          "recipeId": "d78a9d0e-5612-4ab8-98b8-f382b5b35b8c",
+          "confidence": 0.6086956521739131,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Lax- och broccolipaj(558 kcal) rester från frysen",
+          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj",
+          "recipeId": "a5ba94e4-cb12-4abf-84a4-b14e4ca8619d",
+          "confidence": 0.7727272727272727,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Mexikanskt nötfärsfräs (418 kcal)",
+          "recipeLink": "/kunskapsbank/recept/mexikanskt-notfarsfras",
+          "recipeId": "ca70ea32-d56d-45bd-91c4-e48a35162953",
+          "confidence": 1,
+          "method": "exact_slug"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Kokos- och jordgubbssmoothie med bovetegranola (387 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kokos-och-jordgubbssmoothie-med-bovetegranola",
+          "recipeId": "1ff930c3-9a19-42fd-a6a8-3c4fdb4d1062",
+          "confidence": 0.7575757575757576,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Mexikanskt nötfärsfräs (418 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/mexikanskt-notfarsfras",
+          "recipeId": "ca70ea32-d56d-45bd-91c4-e48a35162953",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "dinner": {
+          "name": "Oneplate ugnsbakad kyckling och rödbetor (427 kcal)",
+          "recipeLink": "/kunskapsbank/recept/oneplate-ugnsbakad-kyckling-och-rodbetor",
+          "recipeId": "889a0624-f5cf-4f4b-8c16-ec5430e31b10",
+          "confidence": 1,
+          "method": "exact_slug"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Vallmogröt med apelsinfiléer (330 kcal)",
+          "recipeLink": "/kunskapsbank/recept/vallmogrot-med-apelsinfileer",
+          "recipeId": "21233350-7cc4-434b-b455-912bfa59d2ae",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Oneplate ugnsbakad kyckling och rödbetor (427 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/oneplate-ugnsbakad-kyckling-och-rodbetor",
+          "recipeId": "889a0624-f5cf-4f4b-8c16-ec5430e31b10",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "dinner": {
+          "name": "Riswrap med philadelphiaost och lax(439 kcal)",
+          "recipeLink": "/kunskapsbank/recept/riswrap-med-philadelphiaost-och-lax",
+          "recipeId": "9e13c6c2-30a3-4fac-9816-618d521ed4c5",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Äggröra med kalkon och granatäpple (292 kcal)",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-lax",
+          "recipeId": "e86603e7-c4fc-47e7-be91-4c11380f05e4",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Riswrap med philadelphiaost och lax(439 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/riswrap-med-philadelphiaost-och-lax",
+          "recipeId": "9e13c6c2-30a3-4fac-9816-618d521ed4c5",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Poke Bowl med pankopanerad tofu (494 kcal)",
+          "recipeLink": "/kunskapsbank/recept/poke-bowl-med-pankopanerad-tofu",
+          "recipeId": "0ed24904-1081-4a81-b6d7-525aee5b4584",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Chiapudding med jordgubbssylt och pistagenötter (266 kcal)",
+          "recipeLink": "/kunskapsbank/recept/tropisk-chiapudding",
+          "recipeId": "56a731f4-ec29-4efb-912b-0c3d2292ee5c",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Poke Bowl med pankopanerad tofu (494 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/poke-bowl-med-pankopanerad-tofu",
+          "recipeId": "0ed24904-1081-4a81-b6d7-525aee5b4584",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Fläskkarré med fylld sötpotatis och citronsås (614 kcal)",
+          "recipeLink": "/kunskapsbank/recept/flaskkarre-med-fylld-sotpotatis-och-citronsas",
+          "recipeId": "28f3c45c-d242-4633-b125-7ae5cfb8a099",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Ugnsomelett med keso och bär (362 kcal)",
+          "recipeLink": "/kunskapsbank/recept/ugnsomelett-med-keso-och-bar",
+          "recipeId": "5d96a9c0-8163-4288-9fa7-ea036e81822c",
+          "confidence": 0.6060606060606061,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Fläskkarré med fylld sötpotatis och citronsås (614 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/flaskkarre-med-fylld-sotpotatis-och-citronsas",
+          "recipeId": "28f3c45c-d242-4633-b125-7ae5cfb8a099",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Kycklingbullar med soltorkade tomater  (503 kcal)Citronkaka med chiafrön (141 kcal)",
+          "recipeLink": "/kunskapsbank/recept/indiska-kycklingbullar",
+          "recipeId": "e550124e-88a5-4c18-b7d7-fa9035d50d1d",
+          "confidence": 0.7272727272727273,
+          "method": "fuzzy_title"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Ugnsomelett med keso och bär (362 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/ugnsomelett-med-keso-och-bar",
+          "recipeId": "5d96a9c0-8163-4288-9fa7-ea036e81822c",
+          "confidence": 0.6060606060606061,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Kycklingbullar med soltorkade tomater  (503 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/indiska-kycklingbullar",
+          "recipeId": "e550124e-88a5-4c18-b7d7-fa9035d50d1d",
+          "confidence": 0.7272727272727273,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Grönsakspannkaka med asiatisk sås (440 kcal)",
+          "recipeLink": "/kunskapsbank/recept/gronsakspankaka-med-asiatisk-sas",
+          "recipeId": "7da648e5-0f98-4ae0-b079-935e6c6a17eb",
+          "confidence": 0.6511627906976745,
+          "method": "fuzzy_title"
+        }
+      }
+    },
+    "stats": {
+      "totalMeals": 21,
+      "matchedMeals": 21,
+      "matchRate": 100
+    }
+  },
+  "week6": {
+    "week": 6,
+    "title": "Vecka 6: Typ 2-diabetes kostschema",
+    "days": {
+      "Måndag": {
+        "breakfast": {
+          "name": "Saffransgröt med bär och granatäpple  (200 kcal)",
+          "recipeLink": "/kunskapsbank/recept/saffransgrot-med-bar-och-granatapple",
+          "recipeId": "99362ddf-52a4-495b-bd5e-6a8da9bdf27f",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Tacokyckling med blomkålssallad (665 kcal) rester från frysen",
+          "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad",
+          "recipeId": "ccd0acf5-585b-436e-9778-2efb8e35c71d",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Laxbiffar med mango och wasabi (494 kcal)",
+          "recipeLink": "/kunskapsbank/recept/laxbiffar-med-mango-och-wasabi",
+          "recipeId": "a52d0cd3-34e2-47b5-b0ad-cabefbdd83df",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Tisdag": {
+        "breakfast": {
+          "name": "Omelettrulle(268 kcal)",
+          "recipeLink": "/kunskapsbank/recept/omelettrulle",
+          "recipeId": "5c1b3027-3fef-4ca9-8b88-031e0e6b1f5f",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "lunch": {
+          "name": "Laxbiffar med mango och wasabi (494 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/laxbiffar-med-mango-och-wasabi",
+          "recipeId": "a52d0cd3-34e2-47b5-b0ad-cabefbdd83df",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Köftekyckling med grönsaker och granatäpple (449 kcal)",
+          "recipeLink": "/kunskapsbank/recept/koftekyckling-med-gronsaker-och-granatapple",
+          "recipeId": "b877ce0a-c604-4789-8643-a1d13bb61cb1",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Onsdag": {
+        "breakfast": {
+          "name": "Omelettrulle(268 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/omelettrulle",
+          "recipeId": "5c1b3027-3fef-4ca9-8b88-031e0e6b1f5f",
+          "confidence": 1,
+          "method": "exact_slug"
+        },
+        "lunch": {
+          "name": "Köftekyckling med grönsaker och granatäpple (449 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/koftekyckling-med-gronsaker-och-granatapple",
+          "recipeId": "b877ce0a-c604-4789-8643-a1d13bb61cb1",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Ramensoppa med tofu (443 kcal)",
+          "recipeLink": "/kunskapsbank/recept/ramensoppa-med-tofu",
+          "recipeId": "3cd96e58-f8e9-4985-a485-9f7664e1673d",
+          "confidence": 0.72,
+          "method": "fuzzy_title"
+        }
+      },
+      "Torsdag": {
+        "breakfast": {
+          "name": "Chiapudding med apelsin och mynta (256 kcal)",
+          "recipeLink": "/kunskapsbank/recept/tropisk-chiapudding",
+          "recipeId": "56a731f4-ec29-4efb-912b-0c3d2292ee5c",
+          "confidence": 0.6666666666666666,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Ramensoppa med tofu (443 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/ramensoppa-med-tofu",
+          "recipeId": "3cd96e58-f8e9-4985-a485-9f7664e1673d",
+          "confidence": 0.72,
+          "method": "fuzzy_title"
+        },
+        "dinner": {
+          "name": "Paprikastekt torsk med linssallad och citronyoghurt (510 kcal)",
+          "recipeLink": "/kunskapsbank/recept/paprikastekt-torsk-med-linssallad-och-citronyoghurt",
+          "recipeId": "3fcfb593-7dc9-4a40-b92d-3e8c90d54d26",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Fredag": {
+        "breakfast": {
+          "name": "Kesofralla med skinka och tomat (355 kcal)",
+          "recipeLink": "/kunskapsbank/recept/kesofralla-med-ost-och-paprika",
+          "recipeId": "053e619d-041c-4550-8960-c8516b5861dc",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "lunch": {
+          "name": "Paprikastekt torsk med linssallad och citronyoghurt (510 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/paprikastekt-torsk-med-linssallad-och-citronyoghurt",
+          "recipeId": "3fcfb593-7dc9-4a40-b92d-3e8c90d54d26",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Enchiladas med nötfärs och majs (656 kcal)",
+          "recipeLink": "/kunskapsbank/recept/enchiladas-med-notfars-och-majs",
+          "recipeId": "aa8eed43-15da-4847-a783-c294ead048eb",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Lördag": {
+        "breakfast": {
+          "name": "Ugnsbakade ägg med spenat (234 kcal)",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakade-agg-med-spenat",
+          "recipeId": "99f2a337-3144-46ac-8ee2-6a19d4bedf36",
+          "confidence": 0.7272727272727273,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Enchiladas med nötfärs och majs (656 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/enchiladas-med-notfars-och-majs",
+          "recipeId": "aa8eed43-15da-4847-a783-c294ead048eb",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Stekt kyckling med asiatisk tomatsallad (503 kcal)Chokladmuffins (212 kcal)",
+          "recipeLink": "/kunskapsbank/recept/stekt-kyckling-med-asiatisk-tomatsallad",
+          "recipeId": "2a79a5cc-dd36-4f8e-b732-82e21be64be5",
+          "confidence": 0.7,
+          "method": "partial_match"
+        }
+      },
+      "Söndag": {
+        "breakfast": {
+          "name": "Ugnsbakade ägg med spenat (234 kcal) rester",
+          "recipeLink": "/kunskapsbank/recept/ugnsbakade-agg-med-spenat",
+          "recipeId": "99f2a337-3144-46ac-8ee2-6a19d4bedf36",
+          "confidence": 0.7272727272727273,
+          "method": "fuzzy_title"
+        },
+        "lunch": {
+          "name": "Stekt kyckling med asiatisk tomatsallad (503 kcal)rester",
+          "recipeLink": "/kunskapsbank/recept/stekt-kyckling-med-asiatisk-tomatsallad",
+          "recipeId": "2a79a5cc-dd36-4f8e-b732-82e21be64be5",
+          "confidence": 0.7,
+          "method": "partial_match"
+        },
+        "dinner": {
+          "name": "Chèvresallad med blodapelsin (536 kcal)",
+          "recipeLink": "/kunskapsbank/recept/chevresallad-med-blodapelsin",
+          "recipeId": "17250241-438b-423c-ad14-6973170d4b79",
+          "confidence": 0.6111111111111112,
+          "method": "fuzzy_title"
+        }
+      }
+    },
+    "stats": {
+      "totalMeals": 21,
+      "matchedMeals": 21,
+      "matchRate": 100
+    }
+  }
+}

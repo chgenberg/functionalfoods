@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
-const { energyMealPlans } = require('../app/data/mealPlans');
+const fs = require('fs');
+const path = require('path');
 
 const prisma = new PrismaClient();
 
@@ -7,6 +8,10 @@ async function main() {
   console.log('🎯 Tagging Functional Energy recipes as premium...\n');
 
   try {
+    // Read extracted meal plans data
+    const extractedPath = path.join(process.cwd(), 'scripts', 'extracted-energy-meal-plans-v2.json');
+    const energyMealPlans = JSON.parse(fs.readFileSync(extractedPath, 'utf-8'));
+    
     // Collect all unique recipe slugs from Energy meal plans
     const recipeSlugs = new Set();
     
