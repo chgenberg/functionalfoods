@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { BookOpen, Calendar, CheckCircle, Clock, MessageSquare, ShoppingCart, Target, Trophy, Video, Zap, Battery, Coffee, Moon } from 'lucide-react';
+import { BookOpen, Calendar, CheckCircle, Clock, MessageSquare, ShoppingCart, Target, Trophy, User, Video, Zap, Battery, Coffee, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/app/hooks/useAuth';
 import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
@@ -79,12 +79,80 @@ export default function FunctionalEnergyOversiktPage() {
       <WeekHeroWithVideo
         title="Välkommen till Functional Energy!"
         subtitle="Din 6-veckors resa mot stabilt blodsocker och jämn energi"
-        description="Lär dig hur du kan balansera blodsockret naturligt och få energi som håller hela dagen."
+        description="Nu har du en viktig och spännande resa framför dig under 6 veckor med näringsrika recept och grunderna i Functional Foods, särskilt utformade för att stödja din hälsa och hjälpa dig att hantera typ 2-diabetes eller prediabetes."
         videoUrl=""
         backgroundImage="/Bilder_flow/gron-smoothie-med-avokado-och-hampaprotein.jpg"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Message from Ulrika */}
+        <section className="mb-12">
+          <div className="bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3] rounded-3xl p-8 md:p-12">
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white shadow-lg flex items-center justify-center">
+                  <User className="w-8 h-8 md:w-10 md:h-10 text-[#014421]" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl md:text-3xl font-bold text-[#014421] mb-4">Välkommen till Functional Energy</h2>
+                <div className="prose prose-lg text-gray-700 leading-relaxed space-y-4">
+                  <p>
+                    Nu har du en viktig och spännande resa framför dig under 6 veckor med näringsrika recept och grunderna i Functional Foods, särskilt utformade för att stödja din hälsa och hjälpa dig att hantera typ 2-diabetes eller prediabetes. Du kommer att få praktiska kostscheman, recept för alla måltider och inköpslistor varje vecka.
+                  </p>
+                  <p>
+                    Under dessa veckor kommer du att lära dig hur en näringsrik kost kan bidra till att stabilisera ditt blodsocker, minska inflammation och öka din energi. Genom att följa denna kostplan och förstå hur maten påverkar din kropp, kan du förbättra både ditt blodsocker och ditt allmänna välbefinnande.
+                  </p>
+                  <p>
+                    Mitt bästa tips är planering – laga gärna flera maträtter i förväg så att du är väl förberedd och kan hålla dig till din nya, hälsosamma livsstil.
+                  </p>
+                  <p className="font-medium text-[#014421]">
+                    Varmt välkommen till en livsstil som kan förbättra din hälsa och hjälpa dig att kontrollera blodsockret för ett friskare liv!
+                  </p>
+                  <p className="text-right font-medium text-[#014421] mt-6">
+                    /Ulrika
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Knowledge Documents Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Kunskapsdokument och artiklar</h2>
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-start gap-4 mb-6">
+              <BookOpen className="w-8 h-8 text-[#93C560] flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="text-xl font-bold text-[#014421] mb-3">Viktiga kunskapsartiklar</h3>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  I kursen har vi samlat flera viktiga kunskapsartiklar som vi rekommenderar att ni läser för att få en bättre förståelse. Dessa artiklar handlar om både Functional Foods och hur ni kan äta rätt för att stödja en hälsosam kropp.
+                </p>
+                <div className="bg-[#F3EFE3] rounded-xl p-4 border-l-4 border-[#93C560]">
+                  <p className="text-[#014421] font-medium">
+                    📚 Vi rekommenderar att ni börjar med att läsa dokumentet "Vad drabbas man av diabetes typ-2 och vad innebär det?" för att få en grundläggande förståelse för sjukdomen och hur den påverkar kroppen.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <Link 
+                href="/dashboard/courses/functional-energy/material"
+                className="bg-[#014421] text-white px-6 py-3 rounded-full font-medium hover:bg-[#116530] transition-colors"
+              >
+                Läs kunskapsmaterial
+              </Link>
+              <Link 
+                href="/kunskapsbank/artiklar"
+                className="bg-white text-[#014421] px-6 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors border border-gray-200"
+              >
+                Utforska kunskapsbank
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* Progress Overview */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Din kursresa</h2>
