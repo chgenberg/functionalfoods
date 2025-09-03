@@ -261,12 +261,22 @@ export default function MyCoursesPage() {
                   <div className="mt-8 pt-8 border-t border-gray-200">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">Inkluderat i kursen:</h3>
                     <ul className="space-y-2">
-                      {selectedCourse.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-accent mt-1">✓</span>
-                          <span className="text-gray-700">{feature}</span>
-                        </li>
-                      ))}
+                      {selectedCourse.features.map((feature, index) => {
+                        const isString = typeof feature === 'string';
+                        const title = isString ? (feature as string) : (feature as any).title || '';
+                        const description = isString ? '' : (feature as any).description || '';
+                        return (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-accent mt-1">✓</span>
+                            <div>
+                              <span className="text-gray-700">{title}</span>
+                              {description && (
+                                <div className="text-sm text-gray-500">{description}</div>
+                              )}
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 </div>
