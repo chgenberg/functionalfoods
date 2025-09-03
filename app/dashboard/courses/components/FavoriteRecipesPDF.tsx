@@ -7,7 +7,7 @@ import { Star, Download, Heart, Calendar } from 'lucide-react';
 import { useFavoriteRecipes, FavoriteRecipe } from '@/app/hooks/useFavoriteRecipes';
 
 interface FavoriteRecipesPDFProps {
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
 }
 
 export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFProps) {

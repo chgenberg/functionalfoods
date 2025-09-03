@@ -22,7 +22,7 @@ interface WeekDay {
 }
 
 interface CourseTemplateProps {
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
   heroTitle: string;
   heroSubtitle: string;
   heroImage?: string;

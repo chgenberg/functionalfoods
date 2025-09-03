@@ -135,7 +135,7 @@ const infoItems: InfoItem[] = [
 ];
 
 interface InfoPopupGridProps {
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
 }
 
 export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {

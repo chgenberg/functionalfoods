@@ -3,17 +3,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-import { mealPlans, flowMealPlans, WeekMealPlan, DayMeals, MealItem } from '@/app/data/mealPlans';
+import { mealPlans, flowMealPlans, energyMealPlans, WeekMealPlan, DayMeals, MealItem } from '@/app/data/mealPlans';
 import { Download, Book, Calendar, User, FileText, Package } from 'lucide-react';
 
 interface CompleteCourseDownloadProps {
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
 }
 
 export default function CompleteCourseDownload({ courseType }: CompleteCourseDownloadProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
-  const courseData = courseType === 'basics' ? mealPlans : flowMealPlans;
+  const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Flow' : 'Functional Energy';
+  const courseData: Record<string, WeekMealPlan> = courseType === 'basics' ? mealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
 
   // Count total meals
 

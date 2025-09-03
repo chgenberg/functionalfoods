@@ -11,6 +11,7 @@ import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVi
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
+import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun } from 'lucide-react';
 
 interface WeekDay {
@@ -22,8 +23,8 @@ interface WeekDay {
 }
 
 interface WeekTemplateProps {
-  courseType: 'basics' | 'flow';
   weekNumber: number;
+  courseType: 'basics' | 'flow' | 'energy';
   weekTitle: string;
   weekSubtitle: string;
   heroImage?: string;
