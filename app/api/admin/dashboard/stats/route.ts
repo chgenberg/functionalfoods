@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function GET() {
   try {
@@ -30,16 +32,16 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
       include: {
         user: true,
-        orderItems: {
+        items: {
           include: {
-            courseProduct: true
+            course: true
           }
         }
       }
     }).then(orders => orders.map(order => ({
       id: order.id,
-      customerName: order.user?.name || order.customerEmail,
-      productName: order.orderItems[0]?.courseProduct?.name || 'Unknown',
+      customerName: order.user?.name || 'Okänd kund',
+      productName: order.items[0]?.course?.name || order.items[0]?.name || 'Okänd produkt',
       amount: order.totalAmount,
       createdAt: order.createdAt
     })));
