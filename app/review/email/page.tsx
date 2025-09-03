@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Star, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
-export default function EmailReviewPage() {
+function EmailReviewForm() {
   const searchParams = useSearchParams();
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -218,5 +218,24 @@ export default function EmailReviewPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full text-center">
+        <div className="w-8 h-8 border-2 border-[#014421]/30 border-t-[#014421] rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-gray-600">Laddar recensionsformulär...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function EmailReviewPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <EmailReviewForm />
+    </Suspense>
   );
 } 
