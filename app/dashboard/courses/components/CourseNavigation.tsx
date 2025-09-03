@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import { CheckCircle, Award, Users, Settings, HelpCircle } from 'lucide-react';
 
 interface CourseNavigationProps {
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
   currentWeek?: number;
 }
 
@@ -36,12 +36,12 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   }, [pathname]); // Re-run when pathname changes
   
   const weeks = [
-    { number: 1, title: courseType === 'basics' ? "Grunden i Functional Foods" : "Optimera din energi" },
-    { number: 2, title: courseType === 'basics' ? "Proteiner & aminosyror" : "Avancerad näringsoptimering" },
-    { number: 3, title: courseType === 'basics' ? "Fetter & kolhydrater" : "Prestationshöjande kost" },
-    { number: 4, title: courseType === 'basics' ? "Vitaminer & mineraler" : "Antiinflammatorisk livsstil" },
-    { number: 5, title: courseType === 'basics' ? "Antioxidanter & fytokemikalier" : "Longevity & återhämtning" },
-    { number: 6, title: courseType === 'basics' ? "Att komma igång" : "Personlig optimering" }
+    { number: 1, title: courseType === 'basics' ? "Grunden i Functional Foods" : courseType === 'flow' ? "Optimera din energi" : "Introduktion" },
+    { number: 2, title: courseType === 'basics' ? "Proteiner & aminosyror" : courseType === 'flow' ? "Avancerad näringsoptimering" : "Blodsocker & energi" },
+    { number: 3, title: courseType === 'basics' ? "Fetter & kolhydrater" : courseType === 'flow' ? "Prestationshöjande kost" : "Måltidsplanering" },
+    { number: 4, title: courseType === 'basics' ? "Vitaminer & mineraler" : courseType === 'flow' ? "Antiinflammatorisk livsstil" : "Smarta kolhydrater" },
+    { number: 5, title: courseType === 'basics' ? "Antioxidanter & fytokemikalier" : courseType === 'flow' ? "Longevity & återhämtning" : "Energistabila vanor" },
+    { number: 6, title: courseType === 'basics' ? "Att komma igång" : courseType === 'flow' ? "Personlig optimering" : "Långsiktig hållbarhet" }
   ];
 
   // Check if we're on specific pages

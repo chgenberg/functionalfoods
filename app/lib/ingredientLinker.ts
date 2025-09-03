@@ -16,6 +16,11 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
  * Fetch raw materials from API with caching
  */
 export async function getRawMaterials(): Promise<RawMaterial[]> {
+  // Only run on client side
+  if (typeof window === 'undefined') {
+    return [];
+  }
+  
   const now = Date.now();
   
   // Return cached data if still valid
