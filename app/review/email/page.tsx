@@ -4,6 +4,9 @@ import { useSearchParams } from 'next/navigation';
 import { Star, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
+// Force this page to be dynamically rendered
+export const dynamic = 'force-dynamic';
+
 function EmailReviewForm() {
   const searchParams = useSearchParams();
   const [rating, setRating] = useState(0);
