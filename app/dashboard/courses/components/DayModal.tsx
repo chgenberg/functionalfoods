@@ -23,7 +23,7 @@ interface DayModalProps {
   dayNumber: number;
   dayName: string;
   meals: Meal[];
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
 }
 
 export default function DayModal({
