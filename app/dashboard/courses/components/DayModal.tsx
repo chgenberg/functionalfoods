@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 import { X, Clock, ExternalLink, Info, CheckCircle, Star, ShoppingCart } from 'lucide-react';
+import Image from 'next/image';
 
 interface Meal {
   mealType: string;
@@ -38,6 +39,7 @@ export default function DayModal({
   const [completedMeals, setCompletedMeals] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const { toggleFavorite, isFavorite } = useFavoriteRecipes();
+  const [recipeImages, setRecipeImages] = useState<Record<string, string>>({});
 
   // Load meal progress when modal opens
   useEffect(() => {
@@ -45,6 +47,39 @@ export default function DayModal({
       loadMealProgress();
     }
   }, [isOpen, weekNumber, dayNumber, courseType]);
+
+  // Fetch recipe images when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const fetchRecipeImages = async () => {
+        try {
+          const recipeNames = meals.map(meal => meal.meal);
+          const response = await fetch('/api/recipes/batch-images', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ recipeNames })
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            setRecipeImages(data.images || {});
+          }
+        } catch (error) {
+          console.error('Error fetching recipe images:', error);
+          // Set placeholder for all on error
+          const placeholders: Record<string, string> = {};
+          meals.forEach(meal => {
+            placeholders[meal.meal] = '/images/recipe-placeholder.svg';
+          });
+          setRecipeImages(placeholders);
+        }
+      };
+      
+      fetchRecipeImages();
+    }
+  }, [isOpen, meals]);
 
   const loadMealProgress = async () => {
     try {
@@ -67,18 +102,7 @@ export default function DayModal({
     }
   };
 
-  const getMealIcon = (mealType: string) => {
-    switch (mealType.toLowerCase()) {
-      case 'frukost':
-        return '🥐';
-      case 'lunch':
-        return '🥗';
-      case 'middag':
-        return '🍽️';
-      default:
-        return '🍴';
-    }
-  };
+  // Removed getMealIcon - now using actual recipe images
 
   const getMealGradient = (mealType: string) => {
     switch (mealType.toLowerCase()) {
@@ -356,15 +380,29 @@ export default function DayModal({
 
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-4">
-                        {/* Meal Icon */}
+                        {/* Recipe Image instead of emoji */}
                         <motion.div 
-                          className="text-4xl"
+                          className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden shadow-sm flex-shrink-0 bg-gray-100"
                           animate={{ 
-                            scale: hoveredMeal === index ? 1.2 : 1,
-                            rotate: hoveredMeal === index ? [0, -10, 10, -10, 0] : 0
+                            scale: hoveredMeal === index ? 1.08 : 1,
                           }}
+                          transition={{ type: "spring", stiffness: 400, damping: 25 }}
                         >
-                          {getMealIcon(meal.mealType)}
+                          <Image
+                            src={recipeImages[meal.meal] || '/images/recipe-placeholder.svg'}
+                            alt={meal.meal}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 640px) 48px, 56px"
+                            priority={index < 3}
+                          />
+                          {/* Subtle overlay on hover */}
+                          <motion.div
+                            className="absolute inset-0 bg-black"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: hoveredMeal === index ? 0.1 : 0 }}
+                            transition={{ duration: 0.2 }}
+                          />
                         </motion.div>
                         
                         <div className="flex-1">
