@@ -5,6 +5,17 @@
 /* Import Work Sans font - primary typeface */
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Header spacing utility to prevent content from being hidden behind fixed header */
+.header-safe {
+  padding-top: 6rem; /* 96px - mobile header height */
+}
+
+@media (min-width: 768px) {
+  .header-safe {
+    padding-top: 7rem; /* 112px - desktop header height */
+  }
+}
+
 /* Improved mobile animations and accessibility */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {

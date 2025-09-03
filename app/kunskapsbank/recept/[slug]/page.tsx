@@ -333,7 +333,7 @@ export default function RecipePage() {
 
       <div id="printable-recipe" className="bg-[#F3EFE3] min-h-screen">
         {/* Back Button - No Print */}
-        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6 no-print">
+        <div className="max-w-7xl mx-auto px-4 pb-4 md:pb-6 no-print header-safe">
           <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 text-[#014421] hover:text-[#93C560] transition-colors font-medium text-sm md:text-base">
             <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
             <span>{t('recipes.detail.backToRecipes','Tillbaka till recept')}</span>
