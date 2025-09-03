@@ -31,7 +31,7 @@ export default function CoachingPage() {
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [isBooked, setIsBooked] = useState(false);
 
-  // Dummy coaching data
+  // Real coaching profile data
   const coachingProfile = {
     name: "Ulrika Davidsson",
     title: "Certifierad Funktionell Nutrition Coach",
@@ -39,7 +39,7 @@ export default function CoachingPage() {
     experience: "8+ år",
     specialties: ["Hormonell balans", "Tarmhälsa", "Anti-inflammation", "Vikthantering"],
     bio: "Som certifierad funktionell nutritionist hjälper jag dig att optimera din hälsa genom personlig kostanpassning och livsstilsförändringar.",
-    image: "/coach-ulrika.jpg"
+    image: "/Ulrika_portratt/udavidsson.PNG"
   };
 
   const upcomingSessions = [

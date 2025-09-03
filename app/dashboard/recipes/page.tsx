@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { BookOpen, ChevronLeft, Clock, Download, Filter, Heart, Search, Share2, Star, Tag, Users } from 'lucide-react';
 
@@ -19,92 +19,26 @@ export default function RecipesPage() {
     { id: "desserter", name: "Desserter", count: 10 }
   ];
 
-  const recipes = [
-    {
-      id: 1,
-      title: "Gyllene mjölk med gurkmeja",
-      category: "drycker",
-      image: "/placeholder-recipe.jpg",
-      prepTime: "5 min",
-      servings: 2,
-      difficulty: "Lätt",
-      rating: 4.8,
-      reviews: 24,
-      tags: ["Anti-inflammatorisk", "Adaptogen", "Glutenfri"],
-      description: "En värmande och helande dryck med gurkmeja, ingefära och kokosgrädde.",
-      course: "Functional Flow"
-    },
-    {
-      id: 2,
-      title: "Quinoasallad med kimchi",
-      category: "lunch",
-      image: "/placeholder-recipe.jpg",
-      prepTime: "20 min",
-      servings: 4,
-      difficulty: "Medel",
-      rating: 4.6,
-      reviews: 31,
-      tags: ["Probiotisk", "Vegetarisk", "Proteinrik"],
-      description: "Näringsrik sallad med fermenterade grönsaker för optimal tarmhälsa.",
-      course: "Functional Basics"
-    },
-    {
-      id: 3,
-      title: "Adaptogent smoothie",
-      category: "frukost",
-      image: "/placeholder-recipe.jpg",
-      prepTime: "5 min",
-      servings: 1,
-      difficulty: "Lätt",
-      rating: 4.9,
-      reviews: 18,
-      tags: ["Adaptogen", "Superfood", "Vegansk"],
-      description: "Kraftfull smoothie med ashwagandha och maca för stressbalans.",
-      course: "Functional Flow"
-    },
-    {
-      id: 4,
-      title: "Fermenterad rotfruktsoppa",
-      category: "middag",
-      image: "/placeholder-recipe.jpg",
-      prepTime: "45 min",
-      servings: 6,
-      difficulty: "Medel",
-      rating: 4.7,
-      reviews: 27,
-      tags: ["Prebiotisk", "Uppvärmande", "Säsongsbetonad"],
-      description: "Näringsrik soppa med fermenterade grönsaker och rotfrukter.",
-      course: "Functional Basics"
-    },
-    {
-      id: 5,
-      title: "Omega-3 laxbowl",
-      category: "middag",
-      image: "/placeholder-recipe.jpg",
-      prepTime: "25 min",
-      servings: 2,
-      difficulty: "Medel",
-      rating: 4.5,
-      reviews: 42,
-      tags: ["Omega-3", "Anti-inflammatorisk", "Proteinrik"],
-      description: "Balanserad bowl med wild-caught lax och anti-inflammatoriska ingredienser.",
-      course: "Functional Flow"
-    },
-    {
-      id: 6,
-      title: "Matcha energibollar",
-      category: "mellanmal",
-      image: "/placeholder-recipe.jpg",
-      prepTime: "15 min",
-      servings: 12,
-      difficulty: "Lätt",
-      rating: 4.4,
-      reviews: 35,
-      tags: ["Superfood", "Rå", "Energigivande"],
-      description: "Naturligt söta energibollar med matcha och mandlar.",
-      course: "Functional Basics"
-    }
-  ];
+  const [recipes, setRecipes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch('/api/recipes');
+        const data = await response.json();
+        if (data.recipes && Array.isArray(data.recipes)) {
+          setRecipes(data.recipes);
+        }
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

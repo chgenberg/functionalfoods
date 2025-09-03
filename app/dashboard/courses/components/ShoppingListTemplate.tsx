@@ -57,26 +57,15 @@ export default function ShoppingListTemplate({ courseType, week }: ShoppingListT
         console.log(`✅ Set ${data.ingredients?.length || 0} ingredients`);
       } else {
         console.error(`❌ API Error: ${response.status} ${response.statusText}`);
-        // Fallback to mock data if API fails
-        const mockIngredients: Ingredient[] = [
-          { name: 'Mjölk', amount: '2', unit: 'liter', category: 'Mejeri', checked: false },
-          { name: 'Ägg', amount: '12', unit: 'st', category: 'Mejeri', checked: false },
-          { name: 'Lax', amount: '600', unit: 'g', category: 'Kött & Fisk', checked: false },
-          { name: 'Avokado', amount: '4', unit: 'st', category: 'Frukt & Grönt', checked: false },
-          { name: 'Olivolja', amount: '1', unit: 'flaska', category: 'Skafferi', checked: false }
-        ];
-        setIngredients(mockIngredients);
-        console.log(`🔄 Using fallback data with ${mockIngredients.length} items`);
+        // Show empty state when API fails
+        setIngredients([]);
+        console.log('📝 API failed - showing empty state');
       }
     } catch (error) {
       console.error('🚨 Error fetching shopping list:', error);
-      // Use mock data as fallback
-      const mockIngredients: Ingredient[] = [
-        { name: 'Mjölk', amount: '2', unit: 'liter', category: 'Mejeri', checked: false },
-        { name: 'Ägg', amount: '12', unit: 'st', category: 'Mejeri', checked: false }
-      ];
-      setIngredients(mockIngredients);
-      console.log(`🔄 Using error fallback data with ${mockIngredients.length} items`);
+      // Show empty state on error
+      setIngredients([]);
+      console.log('📝 Error occurred - showing empty state');
     } finally {
       setLoading(false);
     }

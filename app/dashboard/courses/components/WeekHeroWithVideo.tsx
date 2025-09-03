@@ -18,7 +18,7 @@ export default function WeekHeroWithVideo({
   weekTitle, 
   weekSubtitle,
   heroImage = '/Ulrika_portratt/udavidssondesktop.png',
-  videoUrl = 'https://www.youtube.com/embed/dQw4w9WgXcQ' // Placeholder video
+  videoUrl = '' // No default video - must be provided
 }: WeekHeroWithVideoProps) {
   const [showVideoModal, setShowVideoModal] = useState(false);
 

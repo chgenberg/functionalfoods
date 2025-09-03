@@ -39,29 +39,42 @@ export default function Home() {
     }
   }, [locale]);
 
-  const testimonials = [
-    {
-      name: "Maria L.",
-      text: t('home.testimonials.sample1','Efter 3 veckor med Functional Foods känner jag mig som en ny människa!'),
-      rating: 5
-    },
-    {
-      name: "Johan K.",
-      text: t('home.testimonials.sample2','Äntligen ett program som faktiskt fungerar. Min energi är på topp!'),
-      rating: 5
-    },
-    {
-      name: "Anna S.",
-      text: t('home.testimonials.sample3','Ulrika är fantastisk! Hon har hjälpt mig att helt förändra min hälsa.'),
-      rating: 5
-    }
-  ];
+  const [testimonials, setTestimonials] = useState<any[]>([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch('/api/reviews?status=APPROVED&limit=3');
+        const data = await response.json();
+        if (data.reviews && Array.isArray(data.reviews)) {
+          const formattedTestimonials = data.reviews.map((review: any) => ({
+            name: review.user?.name ? review.user.name.split(' ')[0] + ' ' + (review.user.name.split(' ')[1]?.[0] || '') + '.' : 'Anonym',
+            text: typeof review.answers === 'object' && review.answers?.feedback 
+              ? review.answers.feedback 
+              : Array.isArray(review.answers) && review.answers[0]?.a 
+                ? review.answers[0].a 
+                : 'Fantastisk kurs som verkligen förändrade min hälsa!',
+            rating: review.rating || 5
+          }));
+          setTestimonials(formattedTestimonials);
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+        // Fallback to empty array - no testimonials shown if API fails
+        setTestimonials([]);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  useEffect(() => {
+    if (testimonials.length > 0) {
+      const interval = setInterval(() => {
+        setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
   }, [testimonials.length]);
 
   const handleQuizComplete = (answers: Record<number, string>) => {

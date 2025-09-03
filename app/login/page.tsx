@@ -342,13 +342,7 @@ function LoginForm() {
             </p>
           </div>
 
-          {/* Demo credentials for login only */}
-          {isLogin && (
-            <div className="bg-background-secondary px-8 py-4 border-t border-border">
-              <p className="text-xs text-gray-600 font-medium mb-1">Demo-inloggning:</p>
-              <p className="text-xs text-gray-500">Email: test@example.com | Lösenord: test123</p>
-            </div>
-          )}
+
         </div>
       </div>
 

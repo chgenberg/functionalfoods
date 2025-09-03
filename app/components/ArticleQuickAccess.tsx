@@ -37,34 +37,16 @@ export default function ArticleQuickAccess() {
             category: getCategoryFromTitle(post.title),
             readTime: calculateReadTime(post.content),
             href: `/kunskapsbank/blogg/${post.slug}`,
-            coverImage: post.coverImage || '/images/blog-placeholder.jpg'
+            coverImage: post.coverImage || null
           }));
           setArticles(transformedArticles);
         } else {
-          setArticles([
-            {
-              id: '1',
-              title: t('articles.quick.fallbackTitle','Utforska våra artiklar'),
-              excerpt: t('articles.quick.excerptFallback','Upptäck värdefull information om functional foods och hälsa...'),
-              category: t('articles.quick.category','Kunskapsbas'),
-              readTime: '5 min',
-              href: '/kunskapsbank/blogg',
-              coverImage: '/images/blog-placeholder.jpg'
-            }
-          ]);
+          // No articles found - show empty state
+          setArticles([]);
         }
       } catch (error) {
-        setArticles([
-          {
-            id: '1',
-            title: t('articles.quick.fallbackTitle','Utforska våra artiklar'),
-            excerpt: t('articles.quick.excerptFallback','Upptäck värdefull information om functional foods och hälsa'),
-            category: t('articles.quick.category','Kunskapsbas'),
-            readTime: '5 min',
-            href: '/kunskapsbank/blogg',
-            coverImage: '/images/blog-placeholder.jpg'
-          }
-        ]);
+        // Show empty state on error instead of placeholder content
+        setArticles([]);
       } finally {
         setLoading(false);
       }
