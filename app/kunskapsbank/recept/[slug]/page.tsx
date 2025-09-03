@@ -4,8 +4,8 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, Clock, Heart, Minus, Plus, Printer, Star, Users, X, Camera, ChefHat, Flame, Utensils } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Bookmark, Check, Clock, Heart, Minus, Plus, Printer, Star, Users, X, Camera, ChefHat, Flame, Utensils } from 'lucide-react';
 
 import { useAuth } from '../../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
@@ -54,7 +54,6 @@ export default function RecipePage() {
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
   const [nutrition, setNutrition] = useState<any>(null);
   const [nutritionLoading, setNutritionLoading] = useState(false);
-  const [showNutrition, setShowNutrition] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
@@ -596,60 +595,45 @@ export default function RecipePage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="mt-8 bg-white rounded-3xl shadow-xl overflow-hidden"
                 >
-                  <button
-                    onClick={() => setShowNutrition(!showNutrition)}
-                    className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors no-print"
-                  >
+                  <div className="p-6 no-print">
                     <h3 className="text-xl font-bold text-[#014421] flex items-center gap-3">
                       <span className="bg-[#014421]/10 w-10 h-10 rounded-xl flex items-center justify-center">
                         <Heart className="w-5 h-5 text-[#014421]" />
                       </span>
                       {t('recipes.detail.nutrition','Näringsvärden')}
                     </h3>
-                    {showNutrition ? <ChevronUp className="text-[#014421]" /> : <ChevronDown className="text-[#014421]" />}
-                  </button>
+                  </div>
 
-                  <AnimatePresence>
-                    {showNutrition && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        {nutritionLoading ? (
-                          <div className="p-8 text-center">
-                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#014421] mx-auto"></div>
-                            <p className="text-gray-600 mt-2">{t('recipes.detail.calculating','Beräknar näringsvärden...')}</p>
-                          </div>
-                        ) : nutrition ? (
-                          <div className="p-6 border-t border-gray-100">
-                            <div className="mb-4">
-                              <p className="text-sm text-gray-600 mb-2">Per portion ({recipe.servings || 4} portioner totalt)</p>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                              <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                                <p className="text-sm text-gray-600">{t('recipes.detail.kcal','Kalorier')}</p>
-                                <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.calories || '-'}</p>
-                              </div>
-                              <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                                <p className="text-sm text-gray-600">{t('recipes.detail.protein','Protein')}</p>
-                                <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.protein || '-'}g</p>
-                              </div>
-                              <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                                <p className="text-sm text-gray-600">{t('recipes.detail.carbs','Kolhydrater')}</p>
-                                <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.carbs || '-'}g</p>
-                              </div>
-                              <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                                <p className="text-sm text-gray-600">{t('recipes.detail.fat','Fett')}</p>
-                                <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.fat || '-'}g</p>
-                              </div>
-                            </div>
-                          </div>
-                        ) : null}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {nutritionLoading ? (
+                    <div className="p-8 text-center">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#014421] mx-auto"></div>
+                      <p className="text-gray-600 mt-2">{t('recipes.detail.calculating','Beräknar näringsvärden...')}</p>
+                    </div>
+                  ) : nutrition ? (
+                    <div className="p-6 border-t border-gray-100">
+                      <div className="mb-4">
+                        <p className="text-sm text-gray-600 mb-2">Per portion ({recipe.servings || 4} portioner totalt)</p>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
+                          <p className="text-sm text-gray-600">{t('recipes.detail.kcal','Kalorier')}</p>
+                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.calories || '-'}</p>
+                        </div>
+                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
+                          <p className="text-sm text-gray-600">{t('recipes.detail.protein','Protein')}</p>
+                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.protein || '-'}g</p>
+                        </div>
+                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
+                          <p className="text-sm text-gray-600">{t('recipes.detail.carbs','Kolhydrater')}</p>
+                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.carbs || '-'}g</p>
+                        </div>
+                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
+                          <p className="text-sm text-gray-600">{t('recipes.detail.fat','Fett')}</p>
+                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.fat || '-'}g</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
                 </motion.div>
               )}
             </div>
