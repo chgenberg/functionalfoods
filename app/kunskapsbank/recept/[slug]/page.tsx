@@ -9,6 +9,7 @@ import { ArrowLeft, Bookmark, Check, Clock, Heart, Minus, Plus, Printer, Star, U
 
 import { useAuth } from '../../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { optimizeImageUrl, getResponsiveSizes } from '../../../lib/imageOptimization';
 
 interface Recipe {
   id: string;
@@ -350,13 +351,13 @@ export default function RecipePage() {
                   <div className="relative aspect-[3/4] md:aspect-[3/4] lg:aspect-[4/5]">
                     {(recipe.imageUrl || recipe.imageMobileUrl) && !imageError ? (
                       <Image
-                        src={recipe.imageUrl || recipe.imageMobileUrl!}
+                        src={optimizeImageUrl(recipe.imageUrl || recipe.imageMobileUrl, 'large', 'portrait')}
                         alt={recipe.imageAlt || recipe.title}
                         fill
                         className="object-cover"
                         style={{ objectFit: 'cover', objectPosition: 'center' }}
                         priority
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 40vw"
+                        sizes={getResponsiveSizes('large')}
                         onError={() => setImageError(true)}
                       />
                     ) : (

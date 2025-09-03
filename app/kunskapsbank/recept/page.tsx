@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Grid, List, X, Check } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { optimizeImageUrl, getResponsiveSizes } from '../../lib/imageOptimization';
 
 interface Recipe {
   id: string;
@@ -529,10 +530,10 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
         <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
           {recipe.imageUrl && !imageError ? (
             <Image
-              src={recipe.imageUrl}
+              src={optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape')}
               alt={recipe.imageAlt || recipe.title}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes={getResponsiveSizes('medium')}
               className="object-cover group-hover:scale-110 transition-transform duration-700 recipe-image"
               style={{ 
                 objectFit: 'cover', 
@@ -541,7 +542,6 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
               }}
               onError={() => setImageError(true)}
               priority={false}
-              quality={75}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">
@@ -615,6 +615,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
 // Recipe List Item Component
 const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
+  const [imageError, setImageError] = useState(false);
   const t = useT();
 
   return (
@@ -626,12 +627,12 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
         <div className="flex gap-4">
           {/* Image */}
           <div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-            {recipe.imageUrl ? (
+            {recipe.imageUrl && !imageError ? (
               <Image
-                src={recipe.imageUrl}
+                src={optimizeImageUrl(recipe.imageUrl, 'small', 'square')}
                 alt={recipe.imageAlt || recipe.title}
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes={getResponsiveSizes('small')}
                 className="object-cover group-hover:scale-110 transition-transform duration-700 recipe-image"
                 style={{ 
                   objectFit: 'cover', 
@@ -640,7 +641,6 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
                 }}
                 onError={() => setImageError(true)}
                 priority={false}
-                quality={75}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">

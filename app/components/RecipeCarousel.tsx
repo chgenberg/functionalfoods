@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useT } from '@/app/lib/i18n/LanguageProvider';
+import { optimizeImageUrl, getResponsiveSizes } from '../lib/imageOptimization';
 import { Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Recipe {
@@ -102,7 +103,14 @@ export default function RecipeCarousel() {
               <motion.div className="w-[300px] h-[380px] bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col" whileHover={{ y: -5 }}>
                 <div className="relative h-[200px] overflow-hidden bg-gray-100">
                   {recipe.imageUrl ? (
-                    <Image src={recipe.imageUrl} alt={recipe.imageAlt || recipe.title} fill className="object-cover group-hover/card:scale-110 transition-transform duration-300" />
+                    <Image 
+                      src={optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape')} 
+                      alt={recipe.imageAlt || recipe.title} 
+                      fill 
+                      className="object-cover group-hover/card:scale-110 transition-transform duration-300"
+                      sizes={getResponsiveSizes('medium')}
+                      priority={false}
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-background"><span className="text-4xl">🍽️</span></div>
                   )}

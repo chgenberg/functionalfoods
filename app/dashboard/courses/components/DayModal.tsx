@@ -59,7 +59,7 @@ export default function DayModal({
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ recipeNames })
+            body: JSON.stringify({ recipeNames, size: 'small' })
           });
           
           if (response.ok) {

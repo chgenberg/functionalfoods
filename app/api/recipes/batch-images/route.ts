@@ -3,28 +3,65 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Helper function to normalize Swedish text for better matching
+function normalizeSwedish(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/å/g, 'a')
+    .replace(/ä/g, 'a')
+    .replace(/ö/g, 'o')
+    .replace(/[^\w\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Helper function to extract recipe name from meal name
+function extractRecipeName(mealName: string): string {
+  return mealName
+    .replace(/\s*(rester|från frysen|från fysen)\s*/gi, '')
+    .replace(/\s*(med|och|i|av|till|från|på)\s+[^,]*$/gi, '') // Remove trailing prepositions
+    .trim();
+}
+
+// Helper function to add optimization parameters to image URLs
+function optimizeImageUrl(imageUrl: string, size: 'small' | 'medium' | 'large' = 'medium'): string {
+  if (!imageUrl || imageUrl.includes('placeholder')) return imageUrl;
+  
+  // For Railway/production images, add query parameters for optimization
+  if (imageUrl.startsWith('/')) {
+    const sizeParams = {
+      small: '?w=80&h=80&fit=crop&q=75',
+      medium: '?w=200&h=200&fit=crop&q=80', 
+      large: '?w=400&h=400&fit=crop&q=85'
+    };
+    return `${imageUrl}${sizeParams[size]}`;
+  }
+  
+  return imageUrl;
+}
+
 export async function POST(request: Request) {
   try {
-    const { recipeNames } = await request.json();
+    const { recipeNames, size = 'medium' } = await request.json();
     
     if (!Array.isArray(recipeNames)) {
       return NextResponse.json({ error: 'Recipe names must be an array' }, { status: 400 });
     }
 
-    // Clean recipe names and create search patterns
-    const cleanedNames = recipeNames.map(name => 
-      name.replace(/\s*(rester|från frysen)\s*/gi, '').trim()
-    );
+    console.log('🔍 Fetching images for:', recipeNames);
 
-    // Fetch recipes by name (case insensitive)
+    // Clean recipe names and create search patterns
+    const cleanedNames = recipeNames.map(name => extractRecipeName(name));
+    const normalizedNames = cleanedNames.map(name => normalizeSwedish(name));
+
+    console.log('🧹 Cleaned names:', cleanedNames);
+    console.log('🔤 Normalized names:', normalizedNames);
+
+    // Fetch all recipes for better matching
     const recipes = await prisma.recipe.findMany({
       where: {
-        OR: cleanedNames.map(name => ({
-          title: {
-            contains: name,
-            mode: 'insensitive'
-          }
-        }))
+        status: 'PUBLISHED',
+        imageUrl: { not: null }
       },
       select: {
         title: true,
@@ -33,45 +70,58 @@ export async function POST(request: Request) {
       }
     });
 
+    console.log(`📚 Found ${recipes.length} recipes with images`);
+
     // Create a map of recipe names to images
     const imageMap: Record<string, string> = {};
     
-    for (const recipeName of recipeNames) {
-      const cleanName = recipeName.replace(/\s*(rester|från frysen)\s*/gi, '').trim();
+    for (let i = 0; i < recipeNames.length; i++) {
+      const originalName = recipeNames[i];
+      const cleanName = cleanedNames[i];
+      const normalizedName = normalizedNames[i];
       
-      // Find the best match
-      const match = recipes.find((recipe: any) => 
-        recipe.title.toLowerCase().includes(cleanName.toLowerCase()) ||
-        cleanName.toLowerCase().includes(recipe.title.toLowerCase())
+      console.log(`🔍 Matching "${originalName}" -> "${cleanName}" -> "${normalizedName}"`);
+      
+      // Try exact match first
+      let match = recipes.find((recipe: any) => 
+        normalizeSwedish(recipe.title) === normalizedName
       );
       
-      if (match && match.imageUrl) {
-        imageMap[recipeName] = match.imageUrl;
-      } else {
-        // Try to find a partial match
-        const partialMatch = recipes.find((recipe: any) => {
-          const recipeWords = recipe.title.toLowerCase().split(/\s+/);
-          const searchWords = cleanName.toLowerCase().split(/\s+/);
-          
-          // Check if at least 2 words match
-          const matchingWords = searchWords.filter((word: string) => 
-            recipeWords.some((recipeWord: string) => recipeWord.includes(word) || word.includes(recipeWord))
-          );
-          
-          return matchingWords.length >= 2;
+      // Try partial match
+      if (!match) {
+        match = recipes.find((recipe: any) => {
+          const normalizedTitle = normalizeSwedish(recipe.title);
+          return normalizedTitle.includes(normalizedName) || normalizedName.includes(normalizedTitle);
         });
-        
-        if (partialMatch && partialMatch.imageUrl) {
-          imageMap[recipeName] = partialMatch.imageUrl;
-        } else {
-          imageMap[recipeName] = '/images/recipe-placeholder.svg';
-        }
+      }
+      
+      // Try word-based matching
+      if (!match) {
+        const searchWords = normalizedName.split(/\s+/).filter(w => w.length > 2);
+        match = recipes.find((recipe: any) => {
+          const titleWords = normalizeSwedish(recipe.title).split(/\s+/);
+          const matchingWords = searchWords.filter(word => 
+            titleWords.some(titleWord => titleWord.includes(word) || word.includes(titleWord))
+          );
+          return matchingWords.length >= Math.min(2, searchWords.length);
+        });
+      }
+      
+      if (match && match.imageUrl) {
+        const optimizedUrl = optimizeImageUrl(match.imageUrl, size as 'small' | 'medium' | 'large');
+        imageMap[originalName] = optimizedUrl;
+        console.log(`✅ Match found: "${originalName}" -> "${match.title}" -> ${optimizedUrl}`);
+      } else {
+        imageMap[originalName] = optimizeImageUrl('/images/recipe-placeholder.svg', size as 'small' | 'medium' | 'large');
+        console.log(`❌ No match for: "${originalName}"`);
       }
     }
 
+    console.log('📸 Final image map:', imageMap);
+
     return NextResponse.json({ images: imageMap });
   } catch (error) {
-    console.error('Error fetching recipe images:', error);
+    console.error('❌ Error fetching recipe images:', error);
     return NextResponse.json({ error: 'Failed to fetch recipe images' }, { status: 500 });
   }
 } 
