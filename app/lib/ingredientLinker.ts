@@ -36,7 +36,8 @@ export async function getRawMaterials(): Promise<RawMaterial[]> {
     return rawMaterialsCache;
   } catch (error) {
     console.error('Error fetching raw materials:', error);
-    return [];
+    // Return empty array on error, but keep existing cache if available
+    return rawMaterialsCache ?? [];
   }
 }
 
@@ -46,71 +47,91 @@ export async function getRawMaterials(): Promise<RawMaterial[]> {
 function normalizeText(text: string): string {
   return text
     .toLowerCase()
-    .replace(/å/g, 'a')
-    .replace(/ä/g, 'a')
-    .replace(/ö/g, 'o')
-    .replace(/[^\w\s]/g, ' ')
+    .replace(/[åä]/g, 'a')
+    .replace(/[ö]/g, 'o')
+    .replace(/[éè]/g, 'e')
+    .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
 /**
- * Extract ingredient name from full ingredient text
- * Examples: "2 dl mjölk" -> "mjölk", "400 g kycklingfilé" -> "kycklingfilé"
+ * Extract the actual ingredient name from measurement text
  */
 function extractIngredientName(ingredient: string): string {
   // Remove quantities and units at the beginning
   let cleaned = ingredient
-    .replace(/^(\d+(?:[.,]\d+)?|½|¼|¾|1\/2|1\/4|3\/4)\s*(dl|ml|l|g|kg|msk|tsk|st|krm)\s+/i, '')
-    .replace(/^\d+\s*[-–]\s*\d+\s*(dl|ml|l|g|kg|msk|tsk|st|krm)\s+/i, '')
-    .replace(/^ca\.?\s*\d+\s*(dl|ml|l|g|kg|msk|tsk|st|krm)\s+/i, '');
-  
-  // Remove parenthetical information
-  cleaned = cleaned.replace(/\([^)]*\)/g, '');
-  
-  // Remove common descriptive words
-  cleaned = cleaned
-    .replace(/\b(färsk|fryst|hackad|skivad|tärnad|riven|finhackad|grovhackad|kokt|stekt|rå)\b/gi, '')
-    .replace(/\b(stor|liten|medium|extra|fin|grov)\b/gi, '')
+    .replace(/^\d+(\.\d+)?\s*(st|stycken|styck|stk|msk|matsked|tsk|tesked|krm|dl|l|liter|ml|g|gram|kg|kilo|klyftor|klyfta|skivor|skiva|cm|mm|m)?\s*/i, '')
+    .replace(/\([^)]*\)/g, '') // Remove parentheses content
+    .replace(/\s*(hackad|hackade|strimlad|strimlade|tärnad|tärnede|riven|rivet|rivna|färsk|färska|fryst|frysta|torr|torra|kokt|kokta|stekt|stekta|rå|råa)\s*/gi, '') // Remove preparation adjectives
     .trim();
   
   return cleaned;
 }
 
 /**
- * Find matching raw material for an ingredient
+ * Find matching raw material for an ingredient with improved precision
  */
 export function findRawMaterial(ingredient: string, rawMaterials: RawMaterial[]): RawMaterial | null {
   const cleanIngredient = extractIngredientName(ingredient);
   const normalizedIngredient = normalizeText(cleanIngredient);
   
-  // Try exact match first
+  // Skip very short ingredients (less than 3 characters) to avoid false matches
+  if (normalizedIngredient.length < 3) {
+    return null;
+  }
+  
+  // Try exact match first (most reliable)
   let match = rawMaterials.find(material => 
     normalizeText(material.name) === normalizedIngredient
   );
   
   if (match) return match;
   
-  // Try partial match
-  match = rawMaterials.find(material => {
-    const normalizedMaterial = normalizeText(material.name);
-    return normalizedMaterial.includes(normalizedIngredient) || 
-           normalizedIngredient.includes(normalizedMaterial);
-  });
+  // Try exact word match in material name
+  const ingredientWords = normalizedIngredient.split(/\s+/).filter(w => w.length >= 3);
   
-  if (match) return match;
+  for (const word of ingredientWords) {
+    match = rawMaterials.find(material => {
+      const materialWords = normalizeText(material.name).split(/\s+/);
+      return materialWords.includes(word);
+    });
+    
+    if (match) {
+      // Additional validation: ensure the match makes sense
+      const materialName = normalizeText(match.name);
+      
+      // Avoid false matches where ingredient is too different from material
+      if (word.length >= 4 && materialName.includes(word)) {
+        return match;
+      }
+    }
+  }
   
-  // Try word-based matching
-  const ingredientWords = normalizedIngredient.split(/\s+/).filter(w => w.length > 2);
-  match = rawMaterials.find(material => {
-    const materialWords = normalizeText(material.name).split(/\s+/);
-    const matchingWords = ingredientWords.filter(word => 
-      materialWords.some(matWord => matWord.includes(word) || word.includes(matWord))
-    );
-    return matchingWords.length >= Math.min(2, ingredientWords.length);
-  });
+  // Try substring match only for longer ingredients (5+ chars) to avoid false positives
+  if (normalizedIngredient.length >= 5) {
+    match = rawMaterials.find(material => {
+      const normalizedMaterial = normalizeText(material.name);
+      
+      // Check if ingredient is a substantial part of material name
+      if (normalizedMaterial.includes(normalizedIngredient) && 
+          normalizedIngredient.length >= normalizedMaterial.length * 0.4) {
+        return true;
+      }
+      
+      // Check if material name is a substantial part of ingredient
+      if (normalizedIngredient.includes(normalizedMaterial) && 
+          normalizedMaterial.length >= normalizedIngredient.length * 0.4) {
+        return true;
+      }
+      
+      return false;
+    });
+    
+    if (match) return match;
+  }
   
-  return match || null;
+  return null;
 }
 
 /**
