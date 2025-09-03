@@ -50,7 +50,7 @@ export default function FunctionalEnergyPage() {
     name: 'Functional Energy',
     price: 2295,
     type: 'course' as const,
-    image: '/Bilder_flow/gron-smoothie-med-avokado-och-hampaprotein.jpg',
+    image: '/Bilder_flow/lax-med-sellerisallad-och-valnotter.JPG',
     quantity: 1
   };
 
@@ -185,8 +185,11 @@ export default function FunctionalEnergyPage() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <AddToCart 
-                  product={course}
-                  className="px-8 py-4 bg-[#FF7E70] text-white rounded-full font-medium hover:bg-[#FF6B5C] transition-colors shadow-lg hover:shadow-xl"
+                  id={course.id}
+                  name={course.name}
+                  price={course.price}
+                  type={course.type}
+                  image={course.image}
                 />
                 <a 
                   href="#reviews" 
@@ -216,8 +219,8 @@ export default function FunctionalEnergyPage() {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/Bilder_flow/gron-smoothie-med-avokado-och-hampaprotein.jpg"
-                  alt="Functional Energy - Grön smoothie med avokado"
+                  src="/Bilder_flow/lax-med-sellerisallad-och-valnotter.JPG"
+                  alt="Functional Energy - Lax med sellerisallad och valnötter"
                   width={600}
                   height={600}
                   className="w-full h-auto"
@@ -260,14 +263,14 @@ export default function FunctionalEnergyPage() {
             viewport={{ once: true }}
             className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video bg-gray-100"
           >
-            <iframe
-              className="absolute inset-0 w-full h-full"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Functional Energy Introduction"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+                          <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://player.vimeo.com/video/1099286272?h=0c219534c4"
+                title="Functional Energy Introduction"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
           </motion.div>
         </div>
       </section>
@@ -501,8 +504,11 @@ export default function FunctionalEnergyPage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <AddToCart 
-                product={course}
-                className="px-8 py-4 bg-[#FF7E70] text-white rounded-full font-medium hover:bg-[#FF6B5C] transition-colors shadow-lg hover:shadow-xl"
+                id={course.id}
+                name={course.name}
+                price={course.price}
+                type={course.type}
+                image={course.image}
               />
               <Link 
                 href="/utbildning" 
