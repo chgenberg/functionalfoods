@@ -1,145 +1,178 @@
 "use client";
-import { useState, ReactNode, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Users, BookOpen, FileText, Video, ShoppingBag, BarChart3, Tag, Settings, LogOut, Menu } from 'lucide-react';
-const menuItems = [
-  { icon: Home, label: "Översikt", href: "/admin" },
-  { icon: Users, label: "Användare", href: "/admin/users" },
-  { icon: BookOpen, label: "Kurser", href: "/admin/courses" },
-  { icon: FileText, label: "Blogg", href: "/admin/blog" },
-  { icon: Video, label: "Recept", href: "/admin/recipes" },
-  { icon: ShoppingBag, label: "Beställningar", href: "/admin/orders" },
-  { icon: BarChart3, label: "Försäljning", href: "/admin/sales" },
-  { icon: Tag, label: "Rabattkoder", href: "/admin/coupons" },
-  { icon: Settings, label: "Inställningar", href: "/admin/settings" },
-];
+import { 
+  Home, 
+  FileText, 
+  Image, 
+  Users, 
+  ShoppingCart, 
+  Settings,
+  BarChart3,
+  Menu,
+  X,
+  LogOut,
+  Palette,
+  BookOpen,
+  Tag,
+  MessageSquare,
+  Mail,
+  Eye
+} from 'lucide-react';
 
-function SidebarContent() {
-    const pathname = usePathname();
-    const router = useRouter();
-    
-    const handleLogout = () => {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      // Rensa admin-cookie
-      document.cookie = 'adminToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-      router.push('/admin/login');
-    };
-    
-    return (
-         <div className="flex flex-col h-full">
-            {/* Logo */}
-            <div className="px-6 py-6 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-lg">FF</span>
-                </div>
-                <div>
-                  <h2 className="text-sm font-bold text-gray-900">ADMIN PORTAL</h2>
-                  <p className="text-xs text-gray-500">Functional Foods</p>
-                </div>
-              </div>
-            </div>
-            
-            <nav className="flex-grow px-4 space-y-1 pt-6 pb-4 overflow-y-auto">
-              {menuItems.map((item) => {
-                  const isActive = pathname === item.href || 
-                    (item.href !== '/admin' && pathname.startsWith(item.href));
-                  
-                  return (
-                     <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                          isActive
-                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
-                            : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
-                        }`}
-                      >
-                        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-orange-600'} transition-colors`} />
-                        <span className="font-medium text-sm">{item.label}</span>
-                      </Link>
-                  )
-              })}
-            </nav>
-            
-            <div className="p-4 border-t border-gray-200">
-              <button 
-                onClick={handleLogout} 
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all duration-200 group"
-              >
-                <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-sm">Logga ut</span>
-              </button>
-            </div>
-        </div>
-    );
-}
-
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const router = useRouter();
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Check if admin is logged in
   useEffect(() => {
-    const adminToken = localStorage.getItem('adminToken');
-    if (!adminToken && pathname !== '/admin/login') {
-      router.push('/admin/login');
-    }
-  }, [pathname, router]);
+    checkAuth();
+  }, []);
 
-  // Don't show layout on login page
-  if (pathname === '/admin/login') {
-    return <>{children}</>;
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/admin/auth/verify');
+      if (res.ok) {
+        setIsAuthenticated(true);
+      } else {
+        router.push('/admin/login');
+      }
+    } catch (error) {
+      router.push('/admin/login');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await fetch('/api/admin/auth/logout', { method: 'POST' });
+    router.push('/admin/login');
+  };
+
+  const menuItems = [
+    { icon: Home, label: 'Dashboard', href: '/admin' },
+    { icon: FileText, label: 'Blogginlägg', href: '/admin/blog' },
+    { icon: BookOpen, label: 'Recept', href: '/admin/recipes' },
+    { icon: Users, label: 'Kunder', href: '/admin/users' },
+    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders' },
+    { icon: Tag, label: 'Rabattkoder', href: '/admin/coupons' },
+    { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews' },
+    { icon: Mail, label: 'Email', href: '/admin/emails' },
+    { icon: Image, label: 'Media', href: '/admin/media' },
+    { icon: Palette, label: 'Sidbyggare', href: '/admin/page-builder' },
+    { icon: BarChart3, label: 'Analys', href: '/admin/analytics' },
+    { icon: Settings, label: 'Inställningar', href: '/admin/settings' },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-        <div className="flex">
-            {/* Mobile sidebar backdrop */}
-            {sidebarOpen && (
-              <div 
-                className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
-                onClick={() => setSidebarOpen(false)}
-              />
-            )}
+      {/* Mobile menu button */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 bg-white rounded-lg shadow-lg"
+        >
+          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
 
-            {/* Sidebar */}
-            <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0 ${
-              sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-            }`}>
-                <SidebarContent />
-            </div>
-            
-            {/* Main content */}
-            <div className="flex-1 flex flex-col">
-                {/* Mobile header */}
-                <div className="lg:hidden bg-white shadow-sm p-4 flex items-center justify-between sticky top-0 z-30">
-                    <button 
-                        onClick={() => setSidebarOpen(true)} 
-                        className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                        <Menu className="h-6 w-6" />
-                    </button>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">FF</span>
-                      </div>
-                      <span className="font-bold text-gray-900">Admin</span>
-                    </div>
-                    <div className="w-10" /> {/* Spacer for centering */}
-                </div>
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transform transition-transform duration-300
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:translate-x-0
+      `}>
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="p-6 border-b">
+            <h1 className="text-2xl font-bold text-[#014421]">Admin Panel</h1>
+            <p className="text-sm text-gray-500 mt-1">Functional Foods</p>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto p-4">
+            <ul className="space-y-2">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href || 
+                  (item.href !== '/admin' && pathname.startsWith(item.href));
                 
-                {/* Page content */}
-                <main className="flex-1 p-4 lg:p-8">
-                    <div className="max-w-7xl mx-auto">
-                        {children}
-                    </div>
-                </main>
-            </div>
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`
+                        flex items-center gap-3 px-4 py-3 rounded-lg transition-all
+                        ${isActive 
+                          ? 'bg-[#014421] text-white' 
+                          : 'text-gray-700 hover:bg-gray-100'
+                        }
+                      `}
+                      onClick={() => setIsSidebarOpen(false)}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="font-medium">{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+
+          {/* Footer */}
+          <div className="p-4 border-t">
+            <Link
+              href="/"
+              target="_blank"
+              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#014421] transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+              <span className="text-sm">Visa hemsida</span>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 transition-colors w-full"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="text-sm">Logga ut</span>
+            </button>
+          </div>
         </div>
+      </aside>
+
+      {/* Main content */}
+      <main className="lg:ml-64">
+        <div className="p-4 lg:p-8">
+          {children}
+        </div>
+      </main>
+
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 } 
