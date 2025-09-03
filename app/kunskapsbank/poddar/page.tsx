@@ -22,7 +22,7 @@ const demoEpisodes: Episode[] = [
     description: "Ulrika Davidsson pratar om sambandet mellan kropp och själ, och hur functional foods kan påverka vårt välmående på djupet.",
     duration: "45:30",
     audioUrl: "https://poddtoppen.se/podcast/1543876523/sa-in-i-sjalen/79-ulrika-davidsson-om-hur-kropp-och-sjal-hanger-samman-i-en-vacker-synergi",
-    coverUrl: "/Ulrika_portratt/udavidsson.PNG",
+    coverUrl: "/ulrika3.png",
     date: "2025-06-15",
   },
   {
@@ -31,7 +31,7 @@ const demoEpisodes: Episode[] = [
     description: "Ett djupdykning i functional foods världen med Ulrika Davidsson - från grunderna till praktiska tips för vardagen.",
     duration: "32:15",
     audioUrl: "https://poddtoppen.se/podcast/1473737348/2-latar-1-kandis/ulrika-davidsson",
-    coverUrl: "/Ulrika_portratt/udavidsson_mobile.PNG",
+    coverUrl: "/ulrika-hero-bg.jpg",
     date: "2025-05-20",
   },
 ];
