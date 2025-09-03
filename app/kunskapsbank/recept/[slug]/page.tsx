@@ -10,6 +10,8 @@ import { ArrowLeft, Bookmark, Check, Clock, Heart, Minus, Plus, Printer, Star, U
 import { useAuth } from '../../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 import { optimizeImageUrl, getResponsiveSizes } from '../../../lib/imageOptimization';
+import { getRawMaterials, findRawMaterial, type RawMaterial } from '../../../lib/ingredientLinker';
+import LinkedIngredient from '../../../components/LinkedIngredient';
 
 interface Recipe {
   id: string;
@@ -57,12 +59,22 @@ export default function RecipePage() {
   const [nutritionLoading, setNutritionLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
 
   useEffect(() => {
     if (slug) {
       fetchRecipe();
     }
   }, [slug, user]);
+
+  useEffect(() => {
+    // Fetch raw materials for ingredient linking
+    const loadRawMaterials = async () => {
+      const materials = await getRawMaterials();
+      setRawMaterials(materials);
+    };
+    loadRawMaterials();
+  }, []);
 
   useEffect(() => {
     if (recipe) {
@@ -507,9 +519,11 @@ export default function RecipePage() {
                               <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                             )}
                           </div>
-                          <span className={`text-[#014421] text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
-                            {display}
-                          </span>
+                          <LinkedIngredient
+                            ingredient={display}
+                            rawMaterial={findRawMaterial(labelText, rawMaterials)}
+                            className={`text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}
+                          />
                         </motion.div>
                       );
                     })
@@ -536,9 +550,11 @@ export default function RecipePage() {
                             <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                           )}
                         </div>
-                        <span className={`text-[#014421] text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}>
-                          {ingredient}
-                        </span>
+                        <LinkedIngredient
+                          ingredient={ingredient}
+                          rawMaterial={findRawMaterial(ingredient, rawMaterials)}
+                          className={`text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}
+                        />
                       </motion.div>
                     ))
                   )}
