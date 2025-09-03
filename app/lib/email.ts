@@ -381,7 +381,7 @@ export class EmailService {
 
   // Send password reset email
   async sendCourseReviewRequest(data: { email: string; name: string; courseId: string; courseName: string; userId: string }): Promise<boolean> {
-    const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL}/review?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}`;
+    const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/review/email?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}&courseName=${encodeURIComponent(data.courseName)}`;
     
     const html = `
       <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff;">

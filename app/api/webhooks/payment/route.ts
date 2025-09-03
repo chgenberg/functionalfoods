@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { PaymentService } from '../../../lib/payment';
+import { emailService } from '../../../lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -287,7 +288,14 @@ async function completePayment(paymentId: string, webhookData: any) {
         processedAt: new Date(),
         gatewayResponse: webhookData
       },
-      include: { order: { include: { items: true } } }
+      include: { 
+        order: { 
+          include: { 
+            items: true,
+            user: true
+          } 
+        } 
+      }
     });
 
     // Update order
@@ -296,7 +304,29 @@ async function completePayment(paymentId: string, webhookData: any) {
       data: { status: 'COMPLETED' }
     });
 
+    // Get user and check if they need login credentials
+    const user = payment.order.user;
+    let needsLoginCredentials = false;
+    let temporaryPassword = '';
+
+    // Check if user was created recently (within last hour) - indicates new user
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    if (user.createdAt > oneHourAgo) {
+      needsLoginCredentials = true;
+      // Generate temporary password
+      temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
+      
+      // Update user with temporary password
+      const bcrypt = require('bcrypt');
+      const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
+      await tx.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword }
+      });
+    }
+
     // Create purchases for courses
+    const purchasedCourses = [];
     for (const item of payment.order.items) {
       if (item.type === 'course' && item.courseId) {
         // Check if purchase already exists
@@ -310,7 +340,7 @@ async function completePayment(paymentId: string, webhookData: any) {
         });
 
         if (!existingPurchase) {
-          await tx.purchase.create({
+          const purchase = await tx.purchase.create({
             data: {
               userId: payment.order.userId,
               courseId: item.courseId,
@@ -318,13 +348,42 @@ async function completePayment(paymentId: string, webhookData: any) {
               status: 'completed',
               orderId: payment.order.id,
               accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+            },
+            include: {
+              course: true
             }
           });
+          purchasedCourses.push(purchase.course);
         }
       }
     }
 
-    // TODO: Send confirmation email
+    // Send order confirmation email with login credentials if needed
+    try {
+      const emailData = {
+        customerEmail: user.email,
+        customerName: user.name || user.email.split('@')[0],
+        orderNumber: payment.order.orderNumber,
+        totalAmount: payment.order.totalAmount,
+        courses: purchasedCourses.map(course => ({
+          name: course.name,
+          price: course.price
+        })),
+        ...(needsLoginCredentials && {
+          loginCredentials: {
+            email: user.email,
+            password: temporaryPassword,
+            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
+          }
+        })
+      };
+
+      await emailService.sendOrderConfirmation(emailData);
+      console.log('Order confirmation email sent with login credentials:', user.email);
+    } catch (emailError) {
+      console.error('Failed to send order confirmation email:', emailError);
+    }
+
     console.log(`Payment completed for order ${payment.order.orderNumber}`);
   });
 }
