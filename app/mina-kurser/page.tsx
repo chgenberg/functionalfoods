@@ -88,21 +88,34 @@ export default function MyCoursesPage() {
       if (purchases.length > 0) {
         const ownedCourses = purchases.map((p: any) => p.course.name);
         
-        if (ownedCourses.includes('Functional Flow') && !ownedCourses.includes('Functional Basics')) {
-          // Only Flow course - redirect to Flow dashboard
-          router.push('/dashboard/courses/functional-flow');
-          return;
-        } else if (ownedCourses.includes('Functional Basics') && !ownedCourses.includes('Functional Flow')) {
-          // Only Basic course - redirect to Basic dashboard
-          router.push('/dashboard/courses/functional-basics');
-          return;
-        } else if (ownedCourses.includes('Functional Flow') && ownedCourses.includes('Functional Basics')) {
-          // Has both courses - prioritize Flow (advanced course)
-          router.push('/dashboard/courses/functional-flow');
-          return;
+        if (purchases.length === 1) {
+          // Only one course - redirect directly to that course
+          const courseName = ownedCourses[0];
+          if (courseName === 'Functional Basics') {
+            router.push('/dashboard/courses/functional-basics');
+            return;
+          } else if (courseName === 'Functional Flow') {
+            router.push('/dashboard/courses/functional-flow');
+            return;
+          } else if (courseName === 'Functional Energy') {
+            router.push('/dashboard/courses/functional-energy');
+            return;
+          }
+        } else if (purchases.length > 1) {
+          // Multiple courses - prioritize Energy > Flow > Basics
+          if (ownedCourses.includes('Functional Energy')) {
+            router.push('/dashboard/courses/functional-energy');
+            return;
+          } else if (ownedCourses.includes('Functional Flow')) {
+            router.push('/dashboard/courses/functional-flow');
+            return;
+          } else if (ownedCourses.includes('Functional Basics')) {
+            router.push('/dashboard/courses/functional-basics');
+            return;
+          }
         }
         
-        // If they have other courses or multiple, stay on this page
+        // Fallback - stay on this page and show first course
         setSelectedCourse(purchases[0].course);
       }
     } catch (error) {
