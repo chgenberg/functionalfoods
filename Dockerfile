@@ -11,6 +11,11 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Install git and git-lfs, then ensure LFS files are present
+RUN apk add --no-cache git git-lfs \
+	&& git lfs install \
+	&& git lfs pull || true
+
 # Generate Prisma client
 RUN npx prisma generate
 
