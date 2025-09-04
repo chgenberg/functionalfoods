@@ -86,19 +86,16 @@ export default function FunctionalEnergyOverview() {
               </div>
             </div>
             
-            {/* Video Placeholder */}
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-gray-100">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <p className="text-gray-500">Video kommer snart</p>
-                </div>
-              </div>
+            {/* Video */}
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
+              <iframe
+                src="https://player.vimeo.com/video/1099287748"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+                title="Välkommen till Functional Energy"
+              />
             </div>
           </div>
         </div>
