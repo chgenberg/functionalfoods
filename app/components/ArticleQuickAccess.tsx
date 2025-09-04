@@ -85,8 +85,8 @@ export default function ArticleQuickAccess() {
 
   return (
     <>
-      {/* Floating Button - Hidden */}
-      <div className="hidden fixed bottom-6 left-6 md:top-40 md:left-1/2 md:-translate-x-1/2 z-30">
+      {/* Floating Button */}
+      <div className="fixed bottom-6 left-6 md:top-40 md:left-1/2 md:-translate-x-1/2 z-30">
         <button
           onClick={() => setIsOpen(true)}
           className="relative bg-background-secondary hover:bg-background border-2 border-accent rounded-full p-3 md:px-6 md:py-3 shadow-lg flex items-center gap-3 group transition-all duration-300 hover:shadow-xl"
