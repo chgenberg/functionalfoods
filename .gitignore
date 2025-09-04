@@ -83,3 +83,16 @@ yarn-error.log*
 
 # Quiz folder (separate git repository)
 QUIZ-Functional/
+
+# Stora importfiler
+public/artiklar_*/
+public/**/**.docx
+public/**/**.pdf
+*.docx
+*.pdf
+
+# Stora mediafiler över 50MB
+*.mp4
+*.mov
+*.avi
+*.mkv
