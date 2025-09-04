@@ -83,22 +83,54 @@ export default function FunctionalFlowOverview() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3]">
-      {/* Hero Section with Video */}
-      <WeekHeroWithVideo
-        weekNumber={0}
-        heroImage="/Ulrika_portratt/udavidssondesktop.png"
-        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        weekTitle="Functional Flow - Översikt"
-        weekSubtitle="Avancerad näringsoptimering för optimal prestanda"
-      />
-
+    <main className="min-h-screen bg-gradient-to-br from-[#F7F5F0] via-[#F7F1E8] to-[#F3EFE3]">
       {/* Navigation */}
       <CourseNavigation courseType="flow" currentWeek={currentWeek} />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-        
+      {/* Welcome Video Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Text Content */}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-4">
+                Välkommen till Functional Flow
+              </h1>
+              <div className="space-y-4 text-gray-700 leading-relaxed">
+                <p>
+                  Nu har du en spännande resa framför dig under 6 veckor med näringsrika recept och grunderna i Functional Foods. Du får praktiska kostscheman, recept för alla måltider och inköpslistor varje vecka.
+                </p>
+                <p>
+                  Efter dessa veckor kommer du ha lärt dig om matlagning och de fördelar som kommer med en näringsrik kost: bättre matsmältning, hjärthälsa, ökad energi, minskad inflammation och ett starkare immunförsvar.
+                </p>
+                <p>
+                  Mitt bästa tips är planering – laga flera maträtter samtidigt för att vara väl förberedd.
+                </p>
+                <p className="font-semibold">
+                  Varmt välkommen till framtidens kost för bättre hälsa och ett friskare liv!
+                </p>
+                <p className="text-[#014421] font-signature text-xl">
+                  /Ulrika
+                </p>
+              </div>
+            </div>
+            
+            {/* Video */}
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
+              <iframe
+                src="https://player.vimeo.com/video/1084931582?h=79f8062094"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+                title="Välkommen till Functional Flow"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-8">
         {/* Progress Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -291,6 +323,6 @@ export default function FunctionalFlowOverview() {
         onClose={() => setShowHelpModal(false)} 
       />
 
-    </div>
+    </main>
   );
 } 

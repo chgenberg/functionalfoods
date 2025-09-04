@@ -12,6 +12,8 @@ import { useT } from '@/app/lib/i18n/LanguageProvider';
 import { optimizeImageUrl, getResponsiveSizes } from '../../../lib/imageOptimization';
 import { getRawMaterials, findRawMaterial, type RawMaterial } from '../../../lib/ingredientLinker';
 import LinkedIngredient from '../../../components/LinkedIngredient';
+import { useSearchParams } from 'next/navigation';
+import { mealPlans, flowMealPlans, energyMealPlans } from '../../../data/mealPlans';
 
 interface Recipe {
   id: string;
@@ -48,6 +50,7 @@ export default function RecipePage() {
   const slug = params.slug as string;
   const { user } = useAuth();
   const t = useT();
+  const searchParams = useSearchParams();
   
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,6 +63,42 @@ export default function RecipePage() {
   const [imageError, setImageError] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
+
+  // Check if this recipe appears as "rester" later in the same week
+  const checkIfRecipeAppearsAsRester = (recipeSlug: string, fromCourse?: string, fromWeek?: string) => {
+    if (!fromCourse || !fromWeek) return false;
+    
+    const weekNum = parseInt(fromWeek);
+    if (isNaN(weekNum)) return false;
+    
+    // Get the right meal plan based on course
+    let courseMealPlans;
+    if (fromCourse === 'basics') {
+      courseMealPlans = mealPlans;
+    } else if (fromCourse === 'flow') {
+      courseMealPlans = flowMealPlans;
+    } else if (fromCourse === 'energy') {
+      courseMealPlans = energyMealPlans;
+    } else {
+      return false;
+    }
+    
+    const weekKey = `week${weekNum}` as keyof typeof courseMealPlans;
+    const weekData = courseMealPlans[weekKey];
+    if (!weekData) return false;
+    
+    // Check all days in the week for "rester" meals with this recipe
+    for (const day of Object.values(weekData.days)) {
+      const allMeals = [day.breakfast, day.lunch, day.dinner, day.snack, day.dessert].filter(Boolean);
+      for (const meal of allMeals) {
+        if (meal && meal.name.toLowerCase().includes('rester') && meal.recipeLink?.includes(recipeSlug)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  };
 
   useEffect(() => {
     if (slug) {
@@ -85,6 +124,18 @@ export default function RecipePage() {
         setIsFavorited(favoriteIds.includes(recipe.id));
       }
       
+      // Check if coming from a meal plan and if the recipe appears as "rester"
+      const fromCourse = searchParams.get('course');
+      const fromWeek = searchParams.get('week');
+      
+      if (fromCourse && fromWeek && checkIfRecipeAppearsAsRester(slug, fromCourse, fromWeek)) {
+        // Set servings to 2 for recipes that will have leftovers
+        setServings(2);
+      } else if (recipe.servings) {
+        // Otherwise use recipe default or 1 portion
+        setServings(1);
+      }
+      
       // Use nutrition from DB if available and in correct format, otherwise calculate
       if (recipe.nutrition && recipe.nutrition.perServing) {
         setNutrition(recipe.nutrition);
@@ -93,7 +144,7 @@ export default function RecipePage() {
         calculateNutrition();
       }
     }
-  }, [recipe]);
+  }, [recipe, searchParams, slug]);
 
   const getToken = () => {
     return localStorage.getItem('token');

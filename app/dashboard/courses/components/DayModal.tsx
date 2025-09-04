@@ -152,7 +152,11 @@ export default function DayModal({
   // Function to find original recipe link for "rester" meals
   const getRecipeLink = (meal: Meal) => {
     if (meal.recipeLink) {
-      return meal.recipeLink;
+      // Add query parameters for course and week
+      const url = new URL(meal.recipeLink, window.location.origin);
+      url.searchParams.set('course', courseType);
+      url.searchParams.set('week', weekNumber.toString());
+      return url.pathname + url.search;
     }
     
     // If it's a "rester" meal, try to find the original recipe

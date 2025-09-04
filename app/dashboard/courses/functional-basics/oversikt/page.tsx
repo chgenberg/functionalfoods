@@ -74,20 +74,54 @@ export default function FunctionalBasicsOverview() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3]">
-      {/* Hero Section with Video */}
-      <WeekHeroWithVideo
-        weekNumber={0}
-        heroImage="/Ulrika_portratt/udavidssondesktop.png"
-        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        weekTitle="Functional Basics - Översikt"
-        weekSubtitle="Din personliga resa mot optimal hälsa"
-      />
-
       {/* Navigation */}
       <CourseNavigation courseType="basics" currentWeek={currentWeek} />
 
+      {/* Welcome Video Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Text Content */}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-4">
+                Välkommen till Functional Basics
+              </h1>
+              <div className="space-y-4 text-gray-700 leading-relaxed">
+                <p>
+                  Nu har du en spännande resa framför dig under dessa 6 veckor med näringsrika och hälsobringade recept och du kommer att få lära dig grunderna i Functional Foods. Du får praktiska kostscheman att följa, recept för alla måltider och inköpslistor för varje vecka.
+                </p>
+                <p>
+                  Efter dessa 6 veckor har du dels lärt dig mycket om matlagning och hur du får in alla näringsämnen i din kost samt fördelarna som kommer: ökad näringsnivå, förbättrad matsmältning, bättre hjärthälsa, minskad inflammation i kroppen, ökade energinivåer och ett bättre immunförsvar.
+                </p>
+                <p>
+                  Du kommer att tacka dig själv, även om det kan finnas dagar när det känns tufft. Mitt bästa tips är planering! Förbered dig för veckan och laga gärna upp flera maträtter på samma gång så att du är väl förberedd.
+                </p>
+                <p className="font-semibold">
+                  Varmt välkommen till framtidens kost för en god hälsa och ett friskare liv!
+                </p>
+                <p className="text-[#014421] font-signature text-xl">
+                  /Ulrika
+                </p>
+              </div>
+            </div>
+            
+            {/* Video */}
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
+              <iframe
+                src="https://player.vimeo.com/video/1058943393"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+                title="Välkommen till Functional Basics"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-8">
         
         {/* Progress Section */}
         <motion.div

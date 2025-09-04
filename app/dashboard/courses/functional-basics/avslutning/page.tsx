@@ -30,16 +30,7 @@ export default function CompletionPage() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Hero Section with Video */}
-      <WeekHeroWithVideo
-        weekNumber={7}
-        weekTitle="Kursen avslutad"
-        weekSubtitle="Stort grattis! Här är din avslutningsfilm och nästa steg"
-        heroImage="/Ulrika_portratt/udavidssondesktop.png"
-        videoUrl="https://player.vimeo.com/video/1058943393"
-      />
-
-      {/* Course Navigation - After Hero Section */}
+      {/* Course Navigation */}
       <div className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType="basics" currentWeek={6} />
@@ -50,24 +41,6 @@ export default function CompletionPage() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-[#014421] text-center mb-8">Kursen avslutad</h1>
         
-        {/* Video Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <div className="relative bg-black rounded-2xl overflow-hidden aspect-video shadow-2xl">
-            <iframe
-              src="https://player.vimeo.com/video/1058943393"
-              className="w-full h-full"
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
-              title="Functional Basics Completion"
-            />
-          </div>
-        </motion.div>
-
         {/* Congratulations Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

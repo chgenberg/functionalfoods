@@ -21,6 +21,8 @@ interface Recipe {
   status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
   isPremium: boolean;
   isFree: boolean;
+  isAccessible?: boolean;
+  isComingSoon?: boolean;
   date: string;
   author: {
     name: string;
@@ -164,7 +166,8 @@ const RecipesPage = () => {
     const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
     const matchesStatus = selectedStatus === 'all' || 
                          (selectedStatus === 'free' && recipe.isFree && !recipe.isPremium) ||
-                         (selectedStatus === 'premium' && recipe.isPremium);
+                         (selectedStatus === 'premium' && recipe.isPremium) ||
+                         (selectedStatus === 'coming-soon' && recipe.isComingSoon === true);
     const matchesSearch = !searchQuery || 
                          recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (recipe.excerpt && recipe.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -375,7 +378,8 @@ const RecipesPage = () => {
                         {[
                           { value: 'all', label: t('recipes.list.filters.typeAll','Alla'), color: 'gray' },
                           { value: 'free', label: t('recipes.list.filters.typeFree','Gratis'), color: 'green' },
-                          { value: 'premium', label: t('recipes.list.filters.typePremium','Premium'), color: 'amber' }
+                          { value: 'premium', label: t('recipes.list.filters.typePremium','Premium'), color: 'amber' },
+                          { value: 'coming-soon', label: 'Kommer snart', color: 'gray' }
                         ].map(option => (
                           <button
                             key={option.value}
@@ -421,7 +425,9 @@ const RecipesPage = () => {
                         )}
                         {selectedStatus !== 'all' && (
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
-                            {selectedStatus === 'free' ? t('recipes.list.filters.typeFree','Gratis') : t('recipes.list.filters.typePremium','Premium')}
+                            {selectedStatus === 'free' ? t('recipes.list.filters.typeFree','Gratis') : 
+                             selectedStatus === 'premium' ? t('recipes.list.filters.typePremium','Premium') : 
+                             selectedStatus === 'coming-soon' ? 'Kommer snart' : ''}
                             <button onClick={() => setSelectedStatus('all')} className="hover:text-orange-900">
                               <X className="w-3 h-3" />
                             </button>
@@ -516,12 +522,13 @@ const RecipesPage = () => {
 
 // Recipe Card Component
 const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
-  const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
+  const canAccess = recipe.isAccessible !== false && (recipe.isFree || !recipe.isPremium || userAccess.hasAccess);
+  const isComingSoon = recipe.isComingSoon === true;
   const [imageError, setImageError] = useState(false);
   const t = useT();
 
   return (
-    <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
+    <Link href={canAccess && !isComingSoon ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
       <motion.div 
         whileHover={{ y: -5 }}
         className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full flex flex-col"
@@ -553,14 +560,21 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Badges */}
-          {recipe.isPremium && (
+          {isComingSoon && (
+            <div className="absolute top-3 right-3">
+              <span className="bg-gray-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+                Kommer snart
+              </span>
+            </div>
+          )}
+          {!isComingSoon && recipe.isPremium && (
             <div className="absolute top-3 right-3">
               <span className="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                 {t('recipes.card.badgePremium','Premium')}
               </span>
             </div>
           )}
-          {recipe.isFree && !recipe.isPremium && (
+          {!isComingSoon && recipe.isFree && !recipe.isPremium && (
             <div className="absolute top-3 right-3">
               <span className="bg-primary text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                 {t('recipes.card.badgeFree','Gratis')}
@@ -598,12 +612,14 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
           </div>
         </div>
 
-        {/* Locked overlay for premium recipes */}
-        {!canAccess && (
+        {/* Locked overlay for premium/coming soon recipes */}
+        {((!canAccess && !isComingSoon) || isComingSoon) && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center rounded-2xl">
             <div className="text-white text-center">
-              <div className="text-4xl mb-2">🔒</div>
-              <p className="text-sm font-medium">{t('recipes.card.locked','Premium recept')}</p>
+              <div className="text-4xl mb-2">{isComingSoon ? '⏳' : '🔒'}</div>
+              <p className="text-sm font-medium">
+                {isComingSoon ? 'Kommer snart' : t('recipes.card.locked','Premium recept')}
+              </p>
             </div>
           </div>
         )}

@@ -47,6 +47,8 @@ interface Recipe {
   nutrition?: any;
   tips?: string;
   tags?: string[];
+  isAccessible?: boolean; // Added for frontend filtering
+  isComingSoon?: boolean; // Added for frontend filtering
 }
 
 export async function GET(request: NextRequest) {
@@ -98,9 +100,11 @@ export async function GET(request: NextRequest) {
           where.isPremium = true;
         }
       } else {
-        // Default: visa bara publicerade, gratis recept (endast för listnings-anrop)
+        // Default: visa alla publicerade recept (inklusive ADMIN_ONLY för visning som "kommer snart")
         where.status = 'PUBLISHED';
-        where.isFree = true;
+        
+        // Ta INTE bort följande rad - vi vill visa ALLA recept i listan
+        // where.isFree = true;
       }
     }
 
@@ -159,6 +163,8 @@ export async function GET(request: NextRequest) {
 
     // Hämta användarens kurs-namn för jämförelse
     let userCourseNames: string[] = [];
+    let isAdmin = false;
+    
     if (userId && userCourseIds.length > 0) {
       const userCourses = await prisma.courseProduct.findMany({
         where: {
@@ -170,51 +176,46 @@ export async function GET(request: NextRequest) {
       });
       userCourseNames = userCourses.map(course => course.name);
     }
+    
+    // Check if user is admin
+    if (userId) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true }
+      });
+      isAdmin = user?.role === 'admin';
+    }
 
-    // Filtrera recept baserat på kursåtkomst
-    const filteredRecipes = recipes.filter(recipe => {
-      if (!recipe.isPremium || recipe.isFree) return true; // Gratis recept är alltid tillgängliga
-      if (!userId) return false; // Premium recept kräver autentisering
+    // Process recipes - don't filter out, just mark accessibility
+    const processedRecipes = recipes.map(recipe => {
+      const hasAdminOnlyTag = recipe.tags && recipe.tags.includes('ADMIN_ONLY');
+      const isAccessible = !hasAdminOnlyTag || isAdmin;
       
-      // Kontrollera om användaren har åtkomst baserat på recipe tags
-      if (recipe.tags && recipe.tags.length > 0) {
-        // Kolla om receptet är taggat med "Basic" eller "Flow"
-        const hasBasicTag = recipe.tags.includes('Basic');
-        const hasFlowTag = recipe.tags.includes('Flow');
-        
-        if (hasBasicTag || hasFlowTag) {
-          // Kontrollera om användaren har tillgång till rätt kurs
-          if (hasBasicTag && userCourseNames.includes('Functional Basics')) {
-            return true;
-          }
-          if (hasFlowTag && userCourseNames.includes('Functional Flow')) {
-            return true;
-          }
-          
-          return false; // Har inte tillgång till denna specifika kurs
-        }
-      }
-      
-      // Fallback: Om inget specifik kurs-tag, använd allmän premiumåtkomst
-      return userCourseIds.length > 0;
+      return {
+        ...recipe,
+        isAccessible,
+        isComingSoon: hasAdminOnlyTag && !isAdmin
+      };
     });
 
     // Räkna totalt antal recept (före filtrering)
     const totalRecipes = await prisma.recipe.count({ where });
 
     // Konvertera till API-format
-    const formattedRecipes: Recipe[] = filteredRecipes.map(recipe => ({
+    const formattedRecipes: Recipe[] = processedRecipes.map(recipe => ({
       id: recipe.id,
       title: recipe.title,
       excerpt: recipe.excerpt || '',
       imageUrl: recipe.imageUrl || '/images/recipe-placeholder.svg',
       imageAlt: recipe.imageAlt || recipe.title,
-      categories: recipe.categories,
+      categories: recipe.isComingSoon ? ['Kommer snart'] : recipe.categories,
       ingredients: recipe.ingredients,
       slug: recipe.slug,
       status: recipe.status as 'PUBLISHED' | 'DRAFT' | 'ARCHIVED',
       isPremium: recipe.isPremium,
       isFree: recipe.isFree,
+      isAccessible: recipe.isAccessible,
+      isComingSoon: recipe.isComingSoon,
       date: recipe.createdAt.toISOString(),
       author: {
         name: recipe.author?.name || 'Ulrika Davidsson',

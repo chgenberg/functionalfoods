@@ -64,20 +64,47 @@ export default function FunctionalEnergyOverview() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#F7F5F0] via-[#F7F1E8] to-[#F3EFE3]">
-      {/* Hero Section */}
-      <WeekHeroWithVideo
-        weekNumber={0}
-        weekTitle="Välkommen till Functional Energy!"
-        weekSubtitle="Din 6-veckors resa mot stabilt blodsocker och jämn energi"
-        videoUrl="https://player.vimeo.com/video/1054236789?h=0c219534c4"
-        heroImage="/lax-med-sellerisallad-och-valnotter.JPG"
-      />
-
       {/* Navigation */}
       <CourseNavigation courseType="energy" currentWeek={currentWeek} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-        
+      {/* Welcome Video Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Text Content */}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-4">
+                Välkommen till Functional Energy
+              </h1>
+              <div className="space-y-4 text-gray-700 leading-relaxed">
+                <p className="text-gray-500 italic">
+                  [Texten kommer snart - inväntar innehåll från Ulrika]
+                </p>
+                <p className="text-[#014421] font-signature text-xl">
+                  /Ulrika
+                </p>
+              </div>
+            </div>
+            
+            {/* Video Placeholder */}
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-500">Video kommer snart</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-8">
         {/* Progress Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

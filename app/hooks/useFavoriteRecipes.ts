@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 export interface FavoriteRecipe {
   name: string;
   recipeLink?: string;
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
   weekNumber: number;
   dayName: string;
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert';
