@@ -5,6 +5,17 @@
 /* Import Work Sans font - primary typeface */
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Emoji support för bättre rendering */
+.emoji-support {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji', 'EmojiSymbols', sans-serif;
+  font-variant-emoji: emoji;
+}
+
+/* Förbättrad emoji-rendering för alla element */
+* {
+  font-variant-emoji: emoji;
+}
+
 /* Header spacing utility to prevent content from being hidden behind fixed header */
 .header-safe {
   padding-top: 6rem; /* 96px - mobile header height */
