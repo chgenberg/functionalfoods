@@ -84,6 +84,8 @@ export default function FunctionalFlowOverview() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#F7F5F0] via-[#F7F1E8] to-[#F3EFE3]">
+      {/* Top spacer to avoid header overlap */}
+      <div className="h-16 md:h-0" />
       {/* Navigation */}
       <CourseNavigation courseType="flow" currentWeek={currentWeek} />
 

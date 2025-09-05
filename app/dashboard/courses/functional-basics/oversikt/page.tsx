@@ -74,6 +74,8 @@ export default function FunctionalBasicsOverview() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3]">
+      {/* Top spacer to avoid header overlap */}
+      <div className="h-16 md:h-0" />
       {/* Navigation */}
       <CourseNavigation courseType="basics" currentWeek={currentWeek} />
 
