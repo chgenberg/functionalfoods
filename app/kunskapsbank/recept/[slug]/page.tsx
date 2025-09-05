@@ -104,6 +104,31 @@ export default function RecipePage() {
     return false;
   };
 
+  const isRecipeInCourse = (recipeSlug: string, course: string | null): boolean => {
+    if (!course) return false;
+    const collectSlugs = (plan: any) => {
+      const s = new Set<string>();
+      Object.values(plan || {}).forEach((week: any) => {
+        Object.values(week || {}).forEach((day: any) => {
+          Object.values((day?.meals) || {}).forEach((meal: any) => {
+            if (meal?.recipe) s.add(meal.recipe);
+          });
+        });
+      });
+      return s;
+    };
+    if (course === 'basics' || course === 'basic') {
+      return collectSlugs(mealPlans).has(recipeSlug);
+    }
+    if (course === 'flow') {
+      return collectSlugs(flowMealPlans).has(recipeSlug);
+    }
+    if (course === 'energy') {
+      return collectSlugs(energyMealPlans).has(recipeSlug);
+    }
+    return false;
+  };
+
   useEffect(() => {
     if (slug) {
       // If user is logged in but userCourses hasn't been loaded yet, wait
@@ -221,13 +246,19 @@ export default function RecipePage() {
 
       const data = await response.json();
       
+      // Determine if coming from a course link and the recipe belongs to that course
+      const fromCourseParam = searchParams.get('course');
+      const arrivedFromCourse = !!fromCourseParam && isRecipeInCourse(data.slug || slug, fromCourseParam);
+      const isLoggedIn = !!localStorage.getItem('token');
+      
       // Check if recipe requires premium and user doesn't have access
       if (data.requiresPremium) {
         // Check if user has access to any of the courses this recipe belongs to
         const recipeCourses = data.tags?.filter((tag: string) => ['Basic', 'Flow', 'Energy'].includes(tag)) || [];
-        const hasAccessToRecipeCourse = recipeCourses.length === 0 || // Free recipe
-          recipeCourses.some((course: string) => userCourses.includes(course)) || // Has specific course
-          (userHasAccess && recipeCourses.length === 0); // Legacy access for non-tagged recipes
+        const hasAccessToRecipeCourse = recipeCourses.length === 0 || // Untagged premium (should be allowed if legacy)
+          recipeCourses.some((course: string) => userCourses.includes(course)) ||
+          (userHasAccess && recipeCourses.length === 0) ||
+          (isLoggedIn && arrivedFromCourse); // Fallback: opened from a course where this recipe belongs
         
         if (!hasAccessToRecipeCourse) {
           setError('premium');
