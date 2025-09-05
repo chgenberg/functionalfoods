@@ -28,21 +28,9 @@ export function optimizeImageUrl(
     return imageUrl || '/images/recipe-placeholder.svg';
   }
 
-  // For local images, add optimization parameters
+  // For local images, return as-is since Next.js Image component handles optimization
   if (imageUrl.startsWith('/')) {
-    const config = imageSizes[size];
-    let params = `?w=${config.width}&h=${config.height}&q=${config.quality}&fit=crop`;
-    
-    // Add aspect ratio specific parameters
-    if (aspectRatio === 'portrait') {
-      params += '&ar=3:4';
-    } else if (aspectRatio === 'landscape') {
-      params += '&ar=4:3';
-    } else if (aspectRatio === 'square') {
-      params += '&ar=1:1';
-    }
-    
-    return `${imageUrl}${params}`;
+    return imageUrl;
   }
 
   // For external images, return as-is (could be enhanced with proxy service)
