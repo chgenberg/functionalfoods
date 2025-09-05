@@ -15,35 +15,29 @@ export async function GET() {
 
     console.log('🔍 Fetching free recipes for carousel...');
 
-    const freeRecipes = await prisma.recipe.findMany({
+    let pool = await prisma.recipe.findMany({
       where: {
         status: 'PUBLISHED',
         isFree: true,
         isPremium: false,
         imageUrl: { not: null }
       },
+      orderBy: { createdAt: 'desc' },
+      take: 30, // Increased from 12 to 30
       select: {
-        id: true,
-        title: true,
-        slug: true,
-        imageUrl: true,
-        imageAlt: true,
-        excerpt: true,
-        prepTime: true,
-        categories: true
-      },
-      take: 50
+        id: true, title: true, slug: true, imageUrl: true, imageAlt: true, excerpt: true, prepTime: true, categories: true
+      }
     });
 
-    console.log(`Found ${freeRecipes.length} free recipes with images`);
+    console.log(`Found ${pool.length} free recipes with images`);
 
-    if (freeRecipes.length === 0) {
+    if (pool.length === 0) {
       console.log('No free recipes found, using fallback');
       return NextResponse.json({ recipes: sampleFallback() }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
     }
 
-    const count = Math.min(20, freeRecipes.length);
-    const shuffled = freeRecipes.sort(() => 0.5 - Math.random());
+    const count = Math.min(20, pool.length);
+    const shuffled = pool.sort(() => 0.5 - Math.random());
     const randomRecipes = shuffled.slice(0, count);
 
     console.log(`Returning ${randomRecipes.length} random free recipes`);

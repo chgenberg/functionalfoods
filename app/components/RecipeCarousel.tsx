@@ -1,13 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-
-import { useT } from '@/app/lib/i18n/LanguageProvider';
-import { optimizeImageUrl, getResponsiveSizes } from '../lib/imageOptimization';
-import { Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Clock, ArrowRight } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -15,7 +12,7 @@ interface Recipe {
   slug: string;
   imageUrl: string | null;
   imageAlt: string | null;
-  excerpt: string | null;
+  excerpt: string;
   prepTime: string | null;
   categories: string[];
 }
@@ -24,63 +21,88 @@ export default function RecipeCarousel() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const controls = useAnimation();
+  const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const itemWidth = 320; // 300px + 20px gap
-  const t = useT();
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const x = useMotionValue(0);
+  const controls = useAnimation();
 
-  useEffect(() => { fetchRecipes(); }, []);
-
-  const fetchRecipes = async () => {
-    try {
-      // Use hardcoded working recipes until API cache clears
-      const workingRecipes = [
-        { id: 'w1', title: 'Stekt ägg med lax', slug: 'stekt-agg-med-lax', imageUrl: '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp', imageAlt: 'Stekt ägg med lax', excerpt: 'Proteinrik frukost med omega-3', prepTime: '10 min', categories: ['Frukost'] },
-        { id: 'w2', title: 'Het ratatouille', slug: 'het-ratatouille', imageUrl: '/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp', imageAlt: 'Het ratatouille', excerpt: 'Medelhavsinspirerad grönsaksgryta', prepTime: '25 min', categories: ['Middag'] },
-        { id: 'w3', title: 'Yoghurt med ketomüsli', slug: 'yoghurt-med-ketomusli', imageUrl: '/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp', imageAlt: 'Yoghurt med ketomüsli', excerpt: 'Hälsosam start på dagen', prepTime: '5 min', categories: ['Frukost'] },
-        { id: 'w4', title: 'Kycklingburgare med papayasallad', slug: 'kycklingburgare-med-papayasallad', imageUrl: '/Bilder_flow/_optimized/IMG_0457.webp', imageAlt: 'Kycklingburgare', excerpt: 'Proteinrik middag med exotisk touch', prepTime: '25 min', categories: ['Middag'] },
-        { id: 'w5', title: 'Choklad- och kokoschiapudding', slug: 'choklad-och-kokoschiapudding', imageUrl: '/Bilder_flow/_optimized/IMG_0480.webp', imageAlt: 'Chiapudding', excerpt: 'Krämig och näringsrik dessert', prepTime: '15 min', categories: ['Dessert'] },
-      ];
-      
-      setRecipes([...workingRecipes, ...workingRecipes]); // Duplicate for carousel effect
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching recipes:', error);
-      setLoading(false);
-    }
-  };
-
-  const moveCarousel = async (direction: 'left' | 'right') => {
-    setIsPaused(true);
-    controls.stop();
-    const moveBy = direction === 'left' ? -1 : 1;
-    let newIndex = currentIndex + moveBy;
-    const halfLength = Math.floor(recipes.length / 2);
-    if (newIndex < 0) newIndex = halfLength - 1;
-    else if (newIndex >= halfLength) newIndex = 0;
-    setCurrentIndex(newIndex);
-    await controls.start({ x: -newIndex * itemWidth, transition: { duration: 0.5, ease: 'easeInOut' } });
-    setTimeout(() => { setIsPaused(false); }, 5000);
-  };
-
+  // Fetch recipes
   useEffect(() => {
-    if (recipes.length > 0 && !isPaused) {
-      const animateCarousel = async () => {
-        const totalWidth = itemWidth * (recipes.length / 2);
-        await controls.start({ x: -totalWidth, transition: { x: { repeat: Infinity, repeatType: 'loop', duration: recipes.length * 10, ease: 'linear' } } });
-      };
-      animateCarousel();
-    } else if (isPaused) {
-      controls.stop();
-    }
-  }, [recipes, controls, isPaused]);
+    const fetchRecipes = async () => {
+      try {
+        const res = await fetch('/api/recipes/random', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch');
+        
+        const data = await res.json();
+        if (data.recipes && data.recipes.length > 0) {
+          // Ensure we have at least 10 recipes for smooth carousel
+          const recipesToShow = data.recipes.length >= 10 ? data.recipes : [...data.recipes, ...data.recipes];
+          setRecipes(recipesToShow.slice(0, 20));
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+        setLoading(false);
+      }
+    };
 
+    fetchRecipes();
+  }, []);
+
+  // Auto-scroll
+  useEffect(() => {
+    if (!isDragging && recipes.length > 0) {
+      intervalRef.current = setInterval(() => {
+        handleNext();
+      }, 4000);
+    }
+    
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [currentIndex, isDragging, recipes.length]);
+
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + recipes.length) % recipes.length);
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % recipes.length);
+  };
+
+  const handleDragStart = () => {
+    setIsDragging(true);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Loading skeleton
   if (loading) {
     return (
-      <div className="py-8 md:py-12">
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="py-12 md:py-20 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <div className="h-12 w-64 bg-gray-200 rounded-lg mx-auto mb-4 animate-pulse" />
+            <div className="h-6 w-96 bg-gray-100 rounded mx-auto animate-pulse" />
+          </div>
+          <div className="flex gap-6 justify-center">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="w-[350px] h-[450px] bg-gray-100 rounded-2xl animate-pulse" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -89,67 +111,172 @@ export default function RecipeCarousel() {
   if (recipes.length === 0) return null;
 
   return (
-    <section className="py-8 md:py-12 overflow-hidden" style={{ backgroundColor: '#F3EFE3' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <h2 className="text-2xl md:text-3xl font-light text-center text-gray-800">
-          {t('home.recipes.title','Utforska våra ')}<span className="font-bold text-primary">{t('home.recipes.free','gratis recept')}</span>
-        </h2>
-        <p className="text-center text-gray-600 mt-2">{t('home.recipes.subtitle','Hälsosamma måltider för varje dag')}</p>
-      </div>
-      <div className="relative overflow-hidden group" ref={containerRef} onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
-        <button onClick={() => moveCarousel('left')} className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 md:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-70 md:opacity-0 group-hover:opacity-100 hover:scale-110" aria-label={t('home.recipes.prev','Föregående recept')}>
-          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-        </button>
-        <button onClick={() => moveCarousel('right')} className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 md:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-70 md:opacity-0 group-hover:opacity-100 hover:scale-110" aria-label={t('home.recipes.next','Nästa recept')}>
-          <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-        </button>
-        <div className="absolute left-0 top-0 bottom-0 w-12 md:w-20 z-[5] pointer-events-none" style={{ background: 'linear-gradient(to right, #F3EFE3, rgba(243,239,227,0))' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-12 md:w-20 z-[5] pointer-events-none" style={{ background: 'linear-gradient(to left, #F3EFE3, rgba(243,239,227,0))' }} />
-        <motion.div className="flex gap-5" animate={controls} style={{ width: 'fit-content' }}>
-          {recipes.map((recipe, index) => (
-            <Link key={`${recipe.id}-${index}`} href={`/kunskapsbank/recept/${recipe.slug}`} className="flex-shrink-0 group/card">
-              <motion.div className="w-[300px] h-[380px] bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col" whileHover={{ y: -5 }}>
-                <div className="relative h-[200px] overflow-hidden bg-gray-100">
-                  {recipe.imageUrl ? (
-                    <Image 
-                      src={optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape')} 
-                      alt={recipe.imageAlt || recipe.title} 
-                      fill 
-                      className="object-cover group-hover/card:scale-110 transition-transform duration-300"
-                      sizes={getResponsiveSizes('medium')}
-                      priority={false}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-background"><span className="text-4xl">🍽️</span></div>
-                  )}
-                  {recipe.categories && recipe.categories.length > 0 && (
-                    <div className="absolute top-3 left-3"><span className="bg-primary text-white px-3 py-1 rounded-full text-xs font-medium">{recipe.categories[0]}</span></div>
-                  )}
-                </div>
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover/card:text-primary transition-colors">{recipe.title}</h3>
-                    {recipe.excerpt && (<p className="text-sm text-gray-600 line-clamp-3 mb-3">{recipe.excerpt}</p>)}
-                  </div>
-                  <div className="flex items-center justify-between mt-auto">
-                    {recipe.prepTime && (
-                      <div className="flex items-center gap-1 text-sm text-gray-500"><Clock className="w-4 h-4" /><span>{recipe.prepTime}</span></div>
-                    )}
-                    <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover/card:gap-2 transition-all">
-                      {t('common.readMore','Läs mer')}
-                      <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-          ))}
-        </motion.div>
-      </div>
-      <div className="flex justify-center mt-6 gap-2">
-        {Array.from({ length: Math.ceil(recipes.length / 2) }, (_, i) => (
-          <button key={i} onClick={() => { setIsPaused(true); setCurrentIndex(i); controls.start({ x: -i * itemWidth, transition: { duration: 0.5, ease: 'easeInOut' } }); setTimeout(() => setIsPaused(false), 5000); }} className={`h-2 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-8 bg-primary' : 'w-2 bg-gray-300 hover:bg-gray-400'}`} aria-label={t('home.recipes.goto','Gå till recept') + ` ${i + 1}`} />
-        ))}
+    <section className="py-12 md:py-20 overflow-hidden bg-gradient-to-b from-[#F3EFE3] to-white">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-5xl font-playfair text-[#014421] mb-4"
+          >
+            Utforska våra gratis recept
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-lg text-gray-600 max-w-2xl mx-auto"
+          >
+            Hälsosamma måltider för varje dag
+          </motion.p>
+          
+          {/* Snabblås button */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#014421] text-white rounded-full hover:bg-[#014421]/90 transition-all cursor-pointer group"
+          >
+            <span className="text-2xl">👩‍💼</span>
+            <span className="font-medium">Snabblås artiklar</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </motion.div>
+        </div>
+
+        {/* Carousel Container */}
+        <div className="relative" ref={containerRef}>
+          {/* Navigation Buttons - Desktop */}
+          <button
+            onClick={handlePrevious}
+            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur rounded-full items-center justify-center shadow-lg hover:bg-white transition-all -translate-x-6"
+            aria-label="Previous recipe"
+          >
+            <ChevronLeft className="w-6 h-6 text-[#014421]" />
+          </button>
+          
+          <button
+            onClick={handleNext}
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur rounded-full items-center justify-center shadow-lg hover:bg-white transition-all translate-x-6"
+            aria-label="Next recipe"
+          >
+            <ChevronRight className="w-6 h-6 text-[#014421]" />
+          </button>
+
+          {/* Carousel */}
+          <div 
+            ref={carouselRef}
+            className="overflow-hidden mx-auto max-w-[1200px]"
+          >
+            <motion.div
+              drag="x"
+              dragConstraints={{ left: -((recipes.length - 1) * 380), right: 0 }}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              animate={{ x: -(currentIndex * 380) }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="flex gap-6 cursor-grab active:cursor-grabbing"
+              style={{ x }}
+            >
+              {recipes.map((recipe, index) => (
+                <motion.div
+                  key={`${recipe.id}-${index}`}
+                  className="flex-shrink-0 w-[350px]"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <Link href={`/kunskapsbank/recept/${recipe.slug}`} className="block group">
+                    <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-[450px] flex flex-col">
+                      {/* Image Container */}
+                      <div className="relative h-[250px] overflow-hidden">
+                        {recipe.imageUrl ? (
+                          <>
+                            <Image 
+                              src={recipe.imageUrl} 
+                              alt={recipe.imageAlt || recipe.title} 
+                              fill 
+                              className="object-cover group-hover:scale-110 transition-transform duration-700"
+                              sizes="350px"
+                              unoptimized={true}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          </>
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-[#014421]/10 to-[#014421]/5 flex items-center justify-center">
+                            <span className="text-6xl opacity-50">🍽️</span>
+                          </div>
+                        )}
+                        
+                        {/* Category Badge */}
+                        {recipe.categories && recipe.categories.length > 0 && (
+                          <div className="absolute top-4 left-4">
+                            <span className="px-3 py-1 bg-white/90 backdrop-blur text-[#014421] text-sm font-medium rounded-full">
+                              {recipe.categories[0]}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="p-6 flex-1 flex flex-col">
+                        <h3 className="text-xl font-semibold text-[#014421] mb-2 line-clamp-2 group-hover:text-[#014421]/80 transition-colors">
+                          {recipe.title}
+                        </h3>
+                        
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">
+                          {recipe.excerpt}
+                        </p>
+                        
+                        <div className="flex items-center justify-between mt-auto">
+                          {recipe.prepTime && (
+                            <div className="flex items-center gap-1 text-sm text-gray-500">
+                              <Clock className="w-4 h-4" />
+                              <span>{recipe.prepTime}</span>
+                            </div>
+                          )}
+                          
+                          <span className="text-[#014421] font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                            Läs mer
+                            <ArrowRight className="w-4 h-4" />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-2 mt-8">
+            {recipes.slice(0, Math.min(recipes.length, 8)).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex % Math.min(recipes.length, 8)
+                    ? 'w-8 bg-[#014421]'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to recipe ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile swipe hint */}
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-center text-sm text-gray-500 mt-4 md:hidden"
+        >
+          Svep för att se fler recept →
+        </motion.p>
       </div>
     </section>
   );
