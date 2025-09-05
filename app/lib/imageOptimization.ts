@@ -25,7 +25,7 @@ export function optimizeImageUrl(
   aspectRatio?: 'square' | 'portrait' | 'landscape'
 ): string {
   if (!imageUrl || imageUrl.includes('placeholder')) {
-    return imageUrl || '/images/recipe-placeholder.svg';
+    return '/images/recipe-placeholder.svg';
   }
 
   // For local images, return as-is since Next.js Image component handles optimization
@@ -62,4 +62,21 @@ export function preloadImage(src: string): void {
     link.href = src;
     document.head.appendChild(link);
   }
+}
+
+/**
+ * Check if an image URL is valid and fallback to placeholder if needed
+ */
+export function getValidImageUrl(imageUrl: string | null | undefined): string {
+  if (!imageUrl) {
+    return '/images/recipe-placeholder.svg';
+  }
+  
+  // If it's already a placeholder, return as-is
+  if (imageUrl.includes('placeholder')) {
+    return imageUrl;
+  }
+  
+  // For local images that might be missing, we'll let Next.js Image component handle the error
+  return imageUrl;
 } 
