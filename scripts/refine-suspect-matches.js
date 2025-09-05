@@ -9,15 +9,27 @@ function includes(hay, needle) { return hay.toLowerCase().includes(needle.toLowe
 // Name → desired slug
 const rules = [
   { match: 'ugnsbakad tomat med köttfärs', slug: 'kottfarsbiffar-stekt-blomkal' },
-  { match: 'torskrygg med ägghack och sparris', slug: 'torsk-teriyaki-med-gronsaker' },
+  { match: 'torskrygg med ägghack och sparris', slug: 'torskrygg-med-agghack-och-sparris' },
+  { match: 'turkiska lammfärsspett med raita och sallad', slug: 'turkiska-lammfarsspett-med-raita-och-sallad' },
+  { match: 'kycklingfylld aubergine', slug: 'kycklingfylld-aubergine' },
+  { match: 'torsk från mellanöstern', slug: 'torsk-fran-mellanostern' },
+  { match: 'indisk laxgryta med röda linser', slug: 'indisk-laxgryta-med-roda-linser' },
+  { match: 'tropisk fruktsallad', slug: 'tropisk-fruktsallad' },
+  { match: 'kycklingpizza', slug: 'kycklingpizza' },
+  { match: 'torsk med saffranssås', slug: 'torsk-med-saffranssas' },
+  { match: 'pestotorsk med capresesallad', slug: 'pestotorsk-med-capresesallad' },
+  { match: 'nötgryta med rotfrukter', slug: 'notgryta-med-rotfrukter' },
+  { match: 'varm tacosallad', slug: 'varm-tacosallad' },
+  { match: 'hamburgare med fetaostkräm och rostad sötpotatis', slug: 'hamburgare-med-fetaostkram-och-rostad-sotpotatis' },
+  { match: 'paprikastekt torsk med linssallad och citronyoghurt', slug: 'paprikastekt-torsk-med-linssallad-och-citronyoghurt' },
+  { match: 'ugnsbakade ägg med spenat', slug: 'ugnsbakade-agg-med-spenat' },
+  { match: 'stekt kyckling med asiatisk tomatsallad', slug: 'stekt-kyckling-med-asiatisk-tomatsallad' },
+  { match: 'bananpannkaka med pistagenötter och bär', slug: 'bananpannkakor-med-pistagenotter-och-bar' },
+  { match: 'stekt ägg med kalkon och senapsmajonnäs', slug: 'stekt-agg-med-kalkon-och-senapsmajonnas' },
+  { match: 'entrecote med sparris', slug: 'entrecote-med-sparris-och-artpesto' },
+  { match: 'halstrad tonfisk med grönsaker och sesamdressing', slug: 'halstrad-tonfisk-med-gronsaker-och-sesamdressing' },
   { match: 'äggröra med rökt lax', slug: 'aggrora-lax-2' },
-  { match: 'tropisk fruktsallad', slug: 'smoothie-smoothiebowl' },
-  { match: 'kycklingpizza', slug: 'kesotortilla-med-tomat-pesto-och-kalkon' },
-  { match: 'torsk med saffranssås', slug: 'panerad-torsk-med-blomkalsris' },
-  { match: 'pestotorsk med capresesallad', slug: 'panerad-torsk-med-blomkalsris' },
-  { match: 'varm tacosallad', slug: 'tacokyckling-med-blomkalssallad' },
-  { match: 'hamburgare med fetaostkräm och rostad sötpotatis', slug: 'hamburgare-med-grekisk-sallad' },
-  { match: 'paprikastekt torsk med linssallad och citronyoghurt', slug: 'torsk-teriyaki-med-gronsaker' }
+  { match: 'äggröra med kalkon och granatäpple', slug: 'aggrora-med-kalkon-och-granatapple' }
 ];
 
 async function main() {
