@@ -3,3 +3,5 @@ public/**/_optimized/*.jpeg filter=lfs diff=lfs merge=lfs -text
 public/**/_optimized/*.png filter=lfs diff=lfs merge=lfs -text
 public/**/_optimized/*.webp filter=lfs diff=lfs merge=lfs -text
 public/**/_optimized/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/Recept_complete2.0/images/_optimized/*.webp filter=lfs diff=lfs merge=lfs -text
+public/Recept_complete/images/_optimized/*.webp filter=lfs diff=lfs merge=lfs -text
