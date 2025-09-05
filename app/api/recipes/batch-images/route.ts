@@ -17,10 +17,7 @@ function normalizeSwedish(text: string): string {
 
 // Helper function to extract recipe name from meal name
 function extractRecipeName(mealName: string): string {
-  return mealName
-    .replace(/\s*(rester|från frysen|från fysen)\s*/gi, '')
-    .replace(/\s*(med|och|i|av|till|från|på)\s+[^,]*$/gi, '') // Remove trailing prepositions
-    .trim();
+  return mealName.replace(/\s+rester$/, '').replace(/\s+\(.*\)$/, '').trim();
 }
 
 // Helper function to add optimization parameters to image URLs
@@ -38,6 +35,20 @@ function optimizeImageUrl(imageUrl: string, size: 'small' | 'medium' | 'large' =
   }
   
   return imageUrl;
+}
+
+// Helper function to get a working fallback image
+function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string {
+  // Use a working image from Bilder_basic as fallback
+  const fallbackImages = [
+    '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp',
+    '/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp',
+    '/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp',
+    '/Bilder_basic/_optimized/barsmoothie-med-apelsin.webp'
+  ];
+  
+  const randomImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+  return optimizeImageUrl(randomImage, size);
 }
 
 export async function POST(request: Request) {
@@ -108,12 +119,18 @@ export async function POST(request: Request) {
       }
       
       if (match && match.imageUrl) {
-        const optimizedUrl = optimizeImageUrl(match.imageUrl, size as 'small' | 'medium' | 'large');
-        imageMap[originalName] = optimizedUrl;
-        console.log(`✅ Match found: "${originalName}" -> "${match.title}" -> ${optimizedUrl}`);
+        // Check if the matched image is from a problematic directory
+        if (match.imageUrl.includes('Recept_complete2.0') || match.imageUrl.includes('Recept_complete/')) {
+          console.log(`⚠️ Using fallback for problematic path: ${match.imageUrl}`);
+          imageMap[originalName] = getFallbackImage(size as 'small' | 'medium' | 'large');
+        } else {
+          const optimizedUrl = optimizeImageUrl(match.imageUrl, size as 'small' | 'medium' | 'large');
+          imageMap[originalName] = optimizedUrl;
+          console.log(`✅ Match found: "${originalName}" -> "${match.title}" -> ${optimizedUrl}`);
+        }
       } else {
-        imageMap[originalName] = optimizeImageUrl('/images/recipe-placeholder.svg', size as 'small' | 'medium' | 'large');
-        console.log(`❌ No match for: "${originalName}"`);
+        imageMap[originalName] = getFallbackImage(size as 'small' | 'medium' | 'large');
+        console.log(`❌ No match for: "${originalName}" - using fallback`);
       }
     }
 
@@ -123,5 +140,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('❌ Error fetching recipe images:', error);
     return NextResponse.json({ error: 'Failed to fetch recipe images' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 } 
