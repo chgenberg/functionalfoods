@@ -66,6 +66,7 @@ export default function RecipePage() {
   const [isFavorited, setIsFavorited] = useState(false);
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
   const [userHasAccess, setUserHasAccess] = useState(false);
+  const [userCourses, setUserCourses] = useState<string[]>([]);
 
   // Check if this recipe appears as "rester" later in the same week
   const checkIfRecipeAppearsAsRester = (recipeSlug: string, fromCourse?: string, fromWeek?: string) => {
@@ -105,9 +106,15 @@ export default function RecipePage() {
 
   useEffect(() => {
     if (slug) {
+      // If user is logged in but userCourses hasn't been loaded yet, wait
+      const token = localStorage.getItem('token');
+      if (token && userHasAccess && userCourses.length === 0) {
+        // Wait for userCourses to be loaded
+        return;
+      }
       fetchRecipe();
     }
-  }, [slug, user]);
+  }, [slug, user, userCourses, userHasAccess]);
 
   useEffect(() => {
     // Fetch raw materials for ingredient linking
@@ -162,6 +169,22 @@ export default function RecipePage() {
           if (response.ok) {
             const data = await response.json();
             setUserHasAccess(data.hasCourseAccess);
+            
+            // Set user's purchased courses
+            const courseNames = data.courses?.map((course: any) => {
+              // Map course titles to course tags used in recipes
+              if (course.title.includes('Functional Basics') || course.slug === 'functional-basics') return 'Basic';
+              if (course.title.includes('Functional Flow') || course.slug === 'functional-flow') return 'Flow';
+              if (course.title.includes('Functional Energy') || course.slug === 'functional-energy') return 'Energy';
+              return course.slug;
+            }).filter(Boolean) || [];
+            
+            setUserCourses(courseNames);
+            
+            // Legacy support - if user has legacy access, give them all courses
+            if (data.hasLegacyAccess) {
+              setUserCourses(['Basic', 'Flow', 'Energy']);
+            }
           }
         } catch (error) {
           console.error('Error checking access:', error);
@@ -199,10 +222,18 @@ export default function RecipePage() {
       const data = await response.json();
       
       // Check if recipe requires premium and user doesn't have access
-      if (data.requiresPremium && !userHasAccess) {
-        setError('premium');
-        setRecipe(data); // Still set recipe for showing title/image
-        return;
+      if (data.requiresPremium) {
+        // Check if user has access to any of the courses this recipe belongs to
+        const recipeCourses = data.tags?.filter((tag: string) => ['Basic', 'Flow', 'Energy'].includes(tag)) || [];
+        const hasAccessToRecipeCourse = recipeCourses.length === 0 || // Free recipe
+          recipeCourses.some((course: string) => userCourses.includes(course)) || // Has specific course
+          (userHasAccess && recipeCourses.length === 0); // Legacy access for non-tagged recipes
+        
+        if (!hasAccessToRecipeCourse) {
+          setError('premium');
+          setRecipe(data); // Still set recipe for showing title/image
+          return;
+        }
       }
       
       // Check if recipe is admin only
