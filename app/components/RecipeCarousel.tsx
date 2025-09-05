@@ -34,11 +34,14 @@ export default function RecipeCarousel() {
 
   const fetchRecipes = async () => {
     try {
-      const response = await fetch('/api/recipes/random');
+      // Try the force refresh endpoint first, fallback to regular random
+      const response = await fetch('/api/force-carousel-refresh');
       const data = await response.json();
-      setRecipes([...(Array.isArray(data.recipes) ? data.recipes : data), ...(Array.isArray(data.recipes) ? data.recipes : data)]);
+      const recipes = Array.isArray(data.recipes) ? data.recipes : [];
+      setRecipes([...recipes, ...recipes]); // Duplicate for carousel effect
       setLoading(false);
     } catch (error) {
+      console.error('Error fetching recipes:', error);
       setLoading(false);
     }
   };
