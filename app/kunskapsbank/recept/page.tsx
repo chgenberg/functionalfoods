@@ -531,7 +531,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
     <Link href={canAccess && !isComingSoon ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
       <motion.div 
         whileHover={{ y: -5 }}
-        className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full flex flex-col"
+        className="relative group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full flex flex-col"
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
@@ -638,7 +638,7 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
     <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
       <motion.div 
         whileHover={{ x: 5 }}
-        className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer p-4"
+        className="relative group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer p-4"
       >
         <div className="flex gap-4">
           {/* Image */}
