@@ -618,13 +618,37 @@ export default function RecipePage() {
                     (recipe as any).ingredientsStructured.map((item: any, index: number) => {
                       const baseServings = recipe.servings && recipe.servings > 0 ? recipe.servings : 4;
                       const scale = servings / baseServings;
-                      const amount = typeof item.finalAmount === 'number' ? item.finalAmount * scale : null;
-                      const unit = item.finalUnit || item.baseUnit || '';
-                      const amountText = amount !== null && isFinite(amount)
-                        ? (amount % 1 === 0 ? `${Math.round(amount)}` : `${amount.toFixed(1).replace('.', ',')}`)
-                        : '';
-                      const labelText = item.label || '';
-                      const display = amountText ? `${amountText}${unit ? ' ' + unit : ''} ${labelText.replace(/\([^\)]*\)/g, '').trim()}` : labelText;
+                      
+                      // Calculate scaled amount
+                      const amount = typeof item.baseAmount === 'number' ? item.baseAmount * scale : null;
+                      const unit = item.baseUnit || '';
+                      
+                      // Format amount text
+                      let amountText = '';
+                      if (amount !== null && isFinite(amount)) {
+                        if (amount % 1 === 0) {
+                          amountText = `${Math.round(amount)}`;
+                        } else {
+                          // Handle fractions
+                          if (Math.abs(amount - 0.25) < 0.01) amountText = '¼';
+                          else if (Math.abs(amount - 0.5) < 0.01) amountText = '½';
+                          else if (Math.abs(amount - 0.75) < 0.01) amountText = '¾';
+                          else if (Math.abs(amount - 0.33) < 0.01) amountText = '⅓';
+                          else if (Math.abs(amount - 0.67) < 0.01) amountText = '⅔';
+                          else amountText = amount.toFixed(1).replace('.', ',');
+                        }
+                      }
+                      
+                      // Extract ingredient name without parentheses
+                      const labelText = (item.label || '').replace(/\([^\)]*\)/g, '').trim();
+                      
+                      // Build display text with amount and unit
+                      const display = amountText && unit ? 
+                        `${amountText} ${unit} ${labelText}` : 
+                        amountText ? 
+                          `${amountText} ${labelText}` : 
+                          labelText;
+                      
                       return (
                         <motion.div
                           key={index}
