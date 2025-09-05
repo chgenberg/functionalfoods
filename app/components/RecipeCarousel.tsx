@@ -34,11 +34,16 @@ export default function RecipeCarousel() {
 
   const fetchRecipes = async () => {
     try {
-      // Try the force refresh endpoint first, fallback to regular random
-      const response = await fetch('/api/force-carousel-refresh');
-      const data = await response.json();
-      const recipes = Array.isArray(data.recipes) ? data.recipes : [];
-      setRecipes([...recipes, ...recipes]); // Duplicate for carousel effect
+      // Use hardcoded working recipes until API cache clears
+      const workingRecipes = [
+        { id: 'w1', title: 'Stekt ägg med lax', slug: 'stekt-agg-med-lax', imageUrl: '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp', imageAlt: 'Stekt ägg med lax', excerpt: 'Proteinrik frukost med omega-3', prepTime: '10 min', categories: ['Frukost'] },
+        { id: 'w2', title: 'Het ratatouille', slug: 'het-ratatouille', imageUrl: '/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp', imageAlt: 'Het ratatouille', excerpt: 'Medelhavsinspirerad grönsaksgryta', prepTime: '25 min', categories: ['Middag'] },
+        { id: 'w3', title: 'Yoghurt med ketomüsli', slug: 'yoghurt-med-ketomusli', imageUrl: '/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp', imageAlt: 'Yoghurt med ketomüsli', excerpt: 'Hälsosam start på dagen', prepTime: '5 min', categories: ['Frukost'] },
+        { id: 'w4', title: 'Kycklingburgare med papayasallad', slug: 'kycklingburgare-med-papayasallad', imageUrl: '/Bilder_flow/_optimized/IMG_0457.webp', imageAlt: 'Kycklingburgare', excerpt: 'Proteinrik middag med exotisk touch', prepTime: '25 min', categories: ['Middag'] },
+        { id: 'w5', title: 'Choklad- och kokoschiapudding', slug: 'choklad-och-kokoschiapudding', imageUrl: '/Bilder_flow/_optimized/IMG_0480.webp', imageAlt: 'Chiapudding', excerpt: 'Krämig och näringsrik dessert', prepTime: '15 min', categories: ['Dessert'] },
+      ];
+      
+      setRecipes([...workingRecipes, ...workingRecipes]); // Duplicate for carousel effect
       setLoading(false);
     } catch (error) {
       console.error('Error fetching recipes:', error);
