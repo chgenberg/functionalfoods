@@ -34,11 +34,17 @@ export async function GET(
       );
     }
 
+    // For now, we'll send the recipe data along with access info
+    // The frontend will handle the display based on user access
     const localized: any = { ...recipe };
     localized.title = pick(recipe as any, 'title', lang);
     localized.excerpt = pick(recipe as any, 'excerpt', lang);
     const instr = pick(recipe as any, 'instructions', lang) as string | null;
     if (instr) localized.instructions = instr;
+
+    // Add access requirements info
+    localized.requiresPremium = recipe.isPremium && !recipe.isFree;
+    localized.isAdminOnly = recipe.tags?.includes('ADMIN_ONLY') || recipe.tags?.includes('UD');
 
     return NextResponse.json(localized);
   } catch (error) {

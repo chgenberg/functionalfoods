@@ -43,6 +43,8 @@ interface Recipe {
     email: string;
   };
   ingredientsStructured?: any[]; // Added for structured ingredients
+  requiresPremium?: boolean; // Added for premium access check
+  isAdminOnly?: boolean; // Added for admin-only access check
 }
 
 export default function RecipePage() {
@@ -63,6 +65,7 @@ export default function RecipePage() {
   const [imageError, setImageError] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
+  const [userHasAccess, setUserHasAccess] = useState(false);
 
   // Check if this recipe appears as "rester" later in the same week
   const checkIfRecipeAppearsAsRester = (recipeSlug: string, fromCourse?: string, fromWeek?: string) => {
@@ -146,6 +149,29 @@ export default function RecipePage() {
     }
   }, [recipe, searchParams, slug]);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const checkAccess = async () => {
+        try {
+          const response = await fetch('/api/user/access', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setUserHasAccess(data.hasCourseAccess);
+          }
+        } catch (error) {
+          console.error('Error checking access:', error);
+        }
+      };
+      
+      checkAccess();
+    }
+  }, [user]);
+
   const getToken = () => {
     return localStorage.getItem('token');
   };
@@ -166,13 +192,26 @@ export default function RecipePage() {
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error(t('recipes.detail.notFound','Receptet hittades inte'));
-        } else if (response.status === 403) {
-          throw new Error(t('recipes.detail.premiumRequired','Detta recept kräver en premium-prenumeration'));
         }
         throw new Error(t('recipes.detail.loadError','Kunde inte ladda receptet'));
       }
 
       const data = await response.json();
+      
+      // Check if recipe requires premium and user doesn't have access
+      if (data.requiresPremium && !userHasAccess) {
+        setError('premium');
+        setRecipe(data); // Still set recipe for showing title/image
+        return;
+      }
+      
+      // Check if recipe is admin only
+      if (data.isAdminOnly && user?.role !== 'ADMIN') {
+        setError('adminOnly');
+        setRecipe(data); // Still set recipe for showing title/image
+        return;
+      }
+      
       setRecipe(data);
       
       // Initialize servings from recipe data
@@ -306,22 +345,60 @@ export default function RecipePage() {
     );
   }
 
-  if (error || !recipe) {
-    return (
-      <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8">
-          <div className="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <X className="w-10 h-10 text-red-600" />
+  if (error) {
+    if (error === 'premium') {
+      return (
+        <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center">
+          <div className="text-center max-w-md mx-auto p-8">
+            <div className="bg-yellow-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+              <Star className="w-10 h-10 text-yellow-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.premiumRequiredTitle','Premium-prenumeration krävs')}</h1>
+            <p className="text-gray-600 mb-6">{t('recipes.detail.premiumRequiredText','Detta recept kräver en premium-prenumeration för att du ska kunna se det.')}</p>
+            <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
+              <ArrowLeft />
+              {t('recipes.detail.backToRecipes','Tillbaka till recept')}
+            </Link>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.notFoundTitle','Receptet hittades inte')}</h1>
-          <p className="text-gray-600 mb-6">{error || t('recipes.detail.notFoundText','Det verkar som att receptet du letar efter inte finns.')}</p>
-          <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
-            <ArrowLeft />
-            {t('recipes.detail.backToRecipes','Tillbaka till recept')}
-          </Link>
         </div>
-      </div>
-    );
+      );
+    } else if (error === 'adminOnly') {
+      return (
+        <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center">
+          <div className="text-center max-w-md mx-auto p-8">
+            <div className="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+              <X className="w-10 h-10 text-red-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.adminOnlyTitle','Administratörsbara recept')}</h1>
+            <p className="text-gray-600 mb-6">{t('recipes.detail.adminOnlyText','Detta recept är endast för administratörer.')}</p>
+            <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
+              <ArrowLeft />
+              {t('recipes.detail.backToRecipes','Tillbaka till recept')}
+            </Link>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center">
+          <div className="text-center max-w-md mx-auto p-8">
+            <div className="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+              <X className="w-10 h-10 text-red-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.notFoundTitle','Receptet hittades inte')}</h1>
+            <p className="text-gray-600 mb-6">{error || t('recipes.detail.notFoundText','Det verkar som att receptet du letar efter inte finns.')}</p>
+            <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
+              <ArrowLeft />
+              {t('recipes.detail.backToRecipes','Tillbaka till recept')}
+            </Link>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  if (!recipe) {
+    return null; // Should not happen if error is handled
   }
 
   const scaledIngredients = recipe.ingredients.map(ing => 
