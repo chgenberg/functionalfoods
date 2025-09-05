@@ -133,18 +133,7 @@ export default function RecipeCarousel() {
             Hälsosamma måltider för varje dag
           </motion.p>
           
-          {/* Snabblås button */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#014421] text-white rounded-full hover:bg-[#014421]/90 transition-all cursor-pointer group"
-          >
-            <span className="text-2xl">👩‍💼</span>
-            <span className="font-medium">Snabblås artiklar</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </motion.div>
+          {/* Snabblås button removed as requested */}
         </div>
 
         {/* Carousel Container */}
