@@ -1,45 +1,44 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   try {
-    const buildTime = new Date().toISOString();
-    const buildId = `build-${Date.now()}`;
+    // Force cache invalidation
+    const timestamp = Date.now();
     
-    console.log('🔄 Force refresh requested at:', buildTime);
+    // Revalidate all paths
+    revalidatePath('/', 'layout');
+    revalidatePath('/api/recipes/random');
+    revalidateTag('recipes');
     
-    // Clear any potential server-side caches
-    if (global.gc) {
-      global.gc();
-    }
+    // Add headers to prevent any caching
+    const headers = new Headers();
+    headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+    headers.set('Pragma', 'no-cache');
+    headers.set('Expires', '0');
+    headers.set('Surrogate-Control', 'no-store');
+    headers.set('X-Cache-Timestamp', timestamp.toString());
     
-    return NextResponse.json({
-      success: true,
-      message: 'Cache refresh forced',
-      buildTime,
-      buildId,
-      timestamp: Date.now(),
-      environment: process.env.NODE_ENV,
-      railway: !!process.env.RAILWAY_ENVIRONMENT
-    }, {
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'Surrogate-Control': 'no-store',
-        'X-Force-Refresh': buildTime
+    return new NextResponse(
+      JSON.stringify({ 
+        success: true, 
+        message: 'Cache cleared and paths revalidated',
+        timestamp,
+        time: new Date().toISOString()
+      }),
+      { 
+        status: 200,
+        headers
       }
-    });
+    );
   } catch (error) {
-    console.error('❌ Error in force refresh:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Force refresh failed',
-      timestamp: Date.now()
-    }, { 
-      status: 500,
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate'
-      }
-    });
+    console.error('Force refresh error:', error);
+    return NextResponse.json(
+      { error: 'Failed to refresh', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 } 
