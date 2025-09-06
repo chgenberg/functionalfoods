@@ -8,8 +8,8 @@ export async function GET() {
   try {
     if (!hasDb || !prisma) {
       return NextResponse.json(
-        { recipes: sampleFallback() },
-        { status: 200, headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } }
+        { recipes: [] },
+        { status: 200, headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' } }
       );
     }
 
@@ -23,31 +23,62 @@ export async function GET() {
         imageUrl: { not: null }
       },
       orderBy: { createdAt: 'desc' },
-      take: 30, // Increased from 12 to 30
+      take: 50,
       select: {
-        id: true, title: true, slug: true, imageUrl: true, imageAlt: true, excerpt: true, prepTime: true, categories: true
+        id: true, 
+        title: true, 
+        slug: true, 
+        imageUrl: true, 
+        imageAlt: true, 
+        excerpt: true, 
+        prepTime: true, 
+        categories: true
       }
     });
 
-    console.log(`Found ${pool.length} free recipes with images`);
+    console.log(\`Found \${pool.length} free recipes with images\`);
+
+    // Filter out recipes with problematic image URLs
+    pool = pool.filter(recipe => {
+      if (!recipe.imageUrl) return false;
+      // Skip if image URL contains spaces or problematic paths
+      if (recipe.imageUrl.includes(' ')) return false;
+      if (recipe.imageUrl.includes('/Recept_complete/')) return false;
+      if (recipe.imageUrl.includes('/public/')) return false;
+      return true;
+    });
+
+    console.log(\`After filtering: \${pool.length} recipes with valid images\`);
 
     if (pool.length === 0) {
-      console.log('No free recipes found, using fallback');
-      return NextResponse.json({ recipes: sampleFallback() }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
+      console.log('No free recipes with valid images found');
+      return NextResponse.json({ recipes: [] }, { 
+        headers: { 
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        } 
+      });
     }
 
     const count = Math.min(20, pool.length);
     const shuffled = pool.sort(() => 0.5 - Math.random());
     const randomRecipes = shuffled.slice(0, count);
 
-    console.log(`Returning ${randomRecipes.length} random free recipes`);
+    console.log(\`Returning \${randomRecipes.length} random free recipes\`);
 
-    return NextResponse.json({ recipes: randomRecipes }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
+    return NextResponse.json({ recipes: randomRecipes }, { 
+      headers: { 
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     console.error('Error fetching random recipes:', error);
     return NextResponse.json(
-      { recipes: sampleFallback() },
-      { status: 200, headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } }
+      { recipes: [] },
+      { status: 200, headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' } }
     );
   } finally {
     if (prisma) {
@@ -55,13 +86,3 @@ export async function GET() {
     }
   }
 }
-
-function sampleFallback() {
-  return [
-    { id: 'f1', title: 'Stekt ägg med lax', slug: 'stekt-agg-lax', imageUrl: '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp', imageAlt: 'Stekt ägg med lax', excerpt: 'Proteinrik frukost med omega-3', prepTime: '10 min', categories: ['Frukost'] },
-    { id: 'f2', title: 'Het ratatouille', slug: 'het-ratatouille', imageUrl: '/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp', imageAlt: 'Het ratatouille', excerpt: 'Medelhavsinspirerad grönsaksgryta', prepTime: '25 min', categories: ['Middag'] },
-    { id: 'f3', title: 'Yoghurt med ketomüsli', slug: 'yoghurt-ketomusli', imageUrl: '/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp', imageAlt: 'Yoghurt med ketomüsli', excerpt: 'Hälsosam start på dagen', prepTime: '5 min', categories: ['Frukost'] },
-    { id: 'f4', title: 'Kycklingburgare med papayasallad', slug: 'kycklingburgare-papayasallad-sallad', imageUrl: '/Bilder_flow/_optimized/IMG_0457.webp', imageAlt: 'Kycklingburgare', excerpt: 'Proteinrik middag med exotisk touch', prepTime: '25 min', categories: ['Middag'] },
-    { id: 'f5', title: 'Choklad- och kokoschiapudding', slug: 'choklad-kokoschiapudding', imageUrl: '/Bilder_flow/_optimized/IMG_0480.webp', imageAlt: 'Chiapudding', excerpt: 'Krämig och näringsrik dessert', prepTime: '15 min', categories: ['Dessert'] },
-  ];
-} 
