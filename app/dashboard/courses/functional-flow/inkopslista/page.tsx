@@ -8,7 +8,7 @@ function ShoppingListContent() {
   const searchParams = useSearchParams();
   const week = searchParams ? parseInt(searchParams.get('week') || '1') : 1;
 
-  return <ShoppingListTemplate courseType="flow" week={week} />;
+  return <ShoppingListTemplate courseType="flow" weekNumber={week} />;
 }
 
 export default function ShoppingListPage() {
