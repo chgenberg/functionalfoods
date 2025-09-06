@@ -253,15 +253,22 @@ export default function RecipePage() {
       
       // Check if recipe requires premium and user doesn't have access
       if (data.requiresPremium) {
-        // Check if user has access to any of the courses this recipe belongs to
-        const recipeCourses = data.tags?.filter((tag: string) => ['Basic', 'Flow', 'Energy'].includes(tag)) || [];
-        const hasAccessToRecipeCourse = recipeCourses.length === 0 || // Untagged premium (should be allowed if legacy)
-          recipeCourses.some((course: string) => userCourses.includes(course)) ||
-          (userHasAccess && recipeCourses.length === 0) ||
+        // This is a true premium recipe (not a course recipe)
+        if (!userHasAccess) {
+          setError('premium');
+          setRecipe(data); // Still set recipe for showing title/image
+          return;
+        }
+      }
+      
+      // Check if recipe requires course access
+      if (data.requiresCourse) {
+        const recipeCourses = data.courseTags || [];
+        const hasAccessToRecipeCourse = recipeCourses.some((course: string) => userCourses.includes(course)) ||
           (isLoggedIn && arrivedFromCourse); // Fallback: opened from a course where this recipe belongs
         
         if (!hasAccessToRecipeCourse) {
-          setError('premium');
+          setError('premium'); // Show same premium message for course recipes
           setRecipe(data); // Still set recipe for showing title/image
           return;
         }
