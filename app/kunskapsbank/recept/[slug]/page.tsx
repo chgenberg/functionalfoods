@@ -233,6 +233,8 @@ export default function RecipePage() {
   const fetchRecipe = async () => {
     try {
       setLoading(true);
+      setError(null); // Clear any previous errors
+      
       const token = getToken();
       const headers: HeadersInit = {};
       if (token) {
@@ -251,41 +253,49 @@ export default function RecipePage() {
       }
 
       const data = await response.json();
+      console.log('🔍 Recipe data:', { 
+        requiresCourse: data.requiresCourse, 
+        requiresPremium: data.requiresPremium,
+        isLoggedIn: !!token,
+        courseTags: data.courseTags 
+      });
       
-      // Simplified access check
       const isLoggedIn = !!token;
-      const fromCourseParam = searchParams.get('course');
       
-      // If it's a course recipe and user is not logged in, block access
-      if (data.requiresCourse && !isLoggedIn) {
-        setError('premium');
-        setRecipe(data);
-        return;
-      }
+      // Check access rules in order of priority
       
-      // If it's a course recipe and user is logged in
-      if (data.requiresCourse && isLoggedIn) {
-        // For now, allow access to all logged-in users for course recipes
-        // This matches the business logic where course purchasers can view course recipes
-        setRecipe(data);
-        return;
-      }
-      
-      // If it's a premium recipe (not course), check premium access
-      if (data.requiresPremium && !userHasAccess) {
-        setError('premium');
-        setRecipe(data);
-        return;
-      }
-      
-      // If it's admin only
+      // 1. Admin-only recipes
       if (data.isAdminOnly && user?.role !== 'ADMIN') {
+        console.log('❌ Admin only recipe, user is not admin');
         setError('adminOnly');
         setRecipe(data);
         return;
       }
       
-      // Allow access
+      // 2. Course recipes
+      if (data.requiresCourse) {
+        if (!isLoggedIn) {
+          console.log('❌ Course recipe, user not logged in');
+          setError('premium');
+          setRecipe(data);
+          return;
+        } else {
+          console.log('✅ Course recipe, user is logged in - ALLOWING ACCESS');
+          setRecipe(data);
+          return;
+        }
+      }
+      
+      // 3. Premium recipes (non-course)
+      if (data.requiresPremium && !userHasAccess) {
+        console.log('❌ Premium recipe, user has no premium access');
+        setError('premium');
+        setRecipe(data);
+        return;
+      }
+      
+      // 4. Free recipes or user has access
+      console.log('✅ Free recipe or user has access - ALLOWING ACCESS');
       setRecipe(data);
       
       // Initialize servings from recipe data
