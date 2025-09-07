@@ -143,15 +143,9 @@ export default function RecipePage() {
 
   useEffect(() => {
     if (slug) {
-      // If user is logged in but userCourses hasn't been loaded yet, wait
-      const token = localStorage.getItem('token');
-      if (token && userHasAccess && userCourses.length === 0) {
-        // Wait for userCourses to be loaded
-        return;
-      }
       fetchRecipe();
     }
-  }, [slug, user, userCourses, userHasAccess]);
+  }, [slug, user]);
 
   useEffect(() => {
     // Fetch raw materials for ingredient linking
@@ -276,10 +270,18 @@ export default function RecipePage() {
       // Check if recipe requires course access
       if (data.requiresCourse) {
         const recipeCourses = data.courseTags || [];
-        const hasAccessToRecipeCourse = recipeCourses.some((course: string) => userCourses.includes(course)) ||
-          (isLoggedIn && arrivedFromCourse); // Fallback: opened from a course where this recipe belongs
+        const fromCourseParam = searchParams.get('course');
+        const arrivedFromCourse = !!fromCourseParam && isRecipeInCourse(data.slug || slug, fromCourseParam);
         
-        if (!hasAccessToRecipeCourse) {
+        // Allow access if:
+        // 1. User has purchased any of the required courses
+        // 2. User arrived from a course page where this recipe belongs
+        // 3. User has legacy access (all courses)
+        const hasAccessToRecipeCourse = recipeCourses.some((course: string) => userCourses.includes(course)) ||
+          (isLoggedIn && arrivedFromCourse) ||
+          userHasAccess; // Legacy fallback
+        
+        if (!hasAccessToRecipeCourse && isLoggedIn) {
           setError('premium'); // Show same premium message for course recipes
           setRecipe(data); // Still set recipe for showing title/image
           return;
