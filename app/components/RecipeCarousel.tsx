@@ -41,7 +41,13 @@ export default function RecipeCarousel() {
           }
         });
         
-        if (!res.ok) throw new Error('Failed to fetch');
+        if (!res.ok) {
+          console.warn('Recipe API failed:', res.status);
+          // Use fallback data instead of throwing
+          setRecipes([]);
+          setLoading(false);
+          return;
+        }
         
         const data = await res.json();
         if (data.recipes && data.recipes.length > 0) {
