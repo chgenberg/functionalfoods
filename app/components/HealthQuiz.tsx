@@ -799,8 +799,11 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    onClick={() => { console.log('Start health test clicked'); startQuiz(); }}
-                    className="mt-4 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 inline-flex items-center gap-2 relative z-10"
+                    type="button"
+                    onClick={() => { console.log('Start health test clicked (click)'); startQuiz(); }}
+                    onMouseDown={() => { console.log('Start health test clicked (mousedown)'); startQuiz(); }}
+                    onTouchStart={() => { console.log('Start health test clicked (touchstart)'); startQuiz(); }}
+                    className="mt-4 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 inline-flex items-center gap-2 relative z-10 pointer-events-auto"
                   >
                     <span>{t('quiz.start','Starta Ditt Personliga Quiz')}</span>
                     <ChevronRight className="w-5 h-5" />
