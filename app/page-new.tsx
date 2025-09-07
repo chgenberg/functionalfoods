@@ -164,7 +164,8 @@ export default function Home() {
                     console.log('Health test button clicked!');
                     setShowQuiz(true);
                   }}
-                                     className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer z-30 relative"
+                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
+                  style={{ position: 'relative', zIndex: 50 }}
                 >
                   {t('home.startQuiz','Starta Hälsotest')}
                   <ArrowRight className="w-5 h-5" />
@@ -410,7 +411,8 @@ export default function Home() {
                 console.log('CTA button clicked!');
                 setShowQuiz(true);
               }}
-              className="bg-[#FF7e70] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#e56b5e] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3 cursor-pointer z-30 relative"
+              className="bg-[#FF7e70] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#e56b5e] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3 cursor-pointer relative"
+              style={{ position: 'relative', zIndex: 50 }}
             >
               {t('cta.button')}
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
