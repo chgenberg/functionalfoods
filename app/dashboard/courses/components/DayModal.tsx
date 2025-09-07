@@ -84,8 +84,12 @@ export default function DayModal({
   const loadMealProgress = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers: HeadersInit = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
       const response = await fetch(
-        `/api/meal-progress?courseType=${courseType}&weekNumber=${weekNumber}&dayNumber=${dayNumber}`
+        `/api/meal-progress?courseType=${courseType}&weekNumber=${weekNumber}&dayNumber=${dayNumber}`,
+        { headers }
       );
       
       if (response.ok) {
@@ -120,11 +124,12 @@ export default function DayModal({
   const toggleMealComplete = async (index: number) => {
     try {
       setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers: HeadersInit = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
       const response = await fetch('/api/meal-progress', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
           courseType,
           weekNumber,
