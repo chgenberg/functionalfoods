@@ -745,19 +745,19 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
           <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
             <div className="grid lg:grid-cols-2 gap-0">
               {/* Left side - Content */}
-              <div className="p-8 md:p-12 order-2 lg:order-1">
+              <div className="p-12 md:p-16 order-2 lg:order-1 flex flex-col justify-center">
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="mb-8"
+                  className="mb-12"
                 >
-                  <h1 className="text-3xl md:text-5xl font-light mb-4 text-gray-800 leading-tight">
-                    UPPTÄCK DIN PERFEKTA
-                    <span className="text-primary font-bold block">FUNCTIONAL FOOD</span>
+                  <h1 className="text-4xl md:text-6xl font-light mb-6 text-gray-800 leading-tight">
+                    Ditt personliga
+                    <span className="text-primary font-bold block">HÄLSOTEST</span>
                   </h1>
-                  <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                    Få personaliserade rekommendationer baserat på din livsstil och hälsobehov enligt <strong className="text-secondary">Ulrika Davidssons</strong> beprövade metod.
+                  <p className="text-xl text-gray-600 mb-8">
+                    2 minuter till bättre hälsa
                   </p>
                 </motion.div>
 
@@ -765,36 +765,23 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
-                  className="space-y-4 mb-8"
+                  className="space-y-6 mb-12"
                 >
-                  <div className="flex items-center space-x-3 p-4 bg-background-secondary rounded-2xl hover:shadow-md transition-shadow">
-                    <div className="text-2xl">🎯</div>
-                    <span className="text-gray-700 font-medium">Personaliserade rekommendationer</span>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-3xl">🎯</div>
+                    <span className="text-lg text-gray-700">Personliga råd</span>
                   </div>
-                  <div className="flex items-center space-x-3 p-4 bg-background-secondary rounded-2xl hover:shadow-md transition-shadow">
-                    <div className="text-2xl">🧬</div>
-                    <span className="text-gray-700 font-medium">Vetenskapligt baserade råd</span>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-3xl">🧬</div>
+                    <span className="text-lg text-gray-700">Vetenskaplig grund</span>
                   </div>
-                  <div className="flex items-center space-x-3 p-4 bg-background-secondary rounded-2xl hover:shadow-md transition-shadow">
-                    <div className="text-2xl">⚡</div>
-                    <span className="text-gray-700 font-medium">Snabb analys på 2 minuter</span>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-3xl">⚡</div>
+                    <span className="text-lg text-gray-700">Snabbt resultat</span>
                   </div>
                 </motion.div>
 
-                <div className="bg-white/80 rounded-2xl border p-4 md:p-6">
-                  <div className="grid md:grid-cols-2 gap-3">
-                    <input value={firstName} onChange={e=>setFirstName(e.target.value)} placeholder={t('auth.fullname','Förnamn och efternamn')} className="px-3 py-2 border rounded-lg" />
-                    <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={t('auth.email','E‑postadress')} className="px-3 py-2 border rounded-lg" />
-                  </div>
-                  <label className="mt-3 flex items-center gap-2 text-sm text-gray-700">
-                    <input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} />
-                    <span>
-                      {t('auth.acceptTerms','Jag accepterar')}
-                      {" "}
-                      <a href="/integritetspolicy" target="_blank" className="text-primary underline">{t('footer.links.privacy','Integritetspolicy')}</a>
-                    </span>
-                  </label>
-                  {formError && <div className="mt-2 text-sm text-red-600">{formError}</div>}
+                <div className="space-y-6">
                   <motion.button
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -803,12 +790,31 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     onClick={() => { console.log('Start health test clicked (click)'); startQuiz(); }}
                     onMouseDown={() => { console.log('Start health test clicked (mousedown)'); startQuiz(); }}
                     onTouchStart={() => { console.log('Start health test clicked (touchstart)'); startQuiz(); }}
-                    className="mt-4 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 inline-flex items-center gap-2 relative z-10 pointer-events-auto"
+                    className="w-full bg-primary text-white px-8 py-6 rounded-full font-bold text-xl hover:bg-secondary transition-all duration-300 inline-flex items-center justify-center gap-3 relative z-10 pointer-events-auto shadow-xl"
                   >
-                    <span>{t('quiz.start','Starta Ditt Personliga Quiz')}</span>
-                    <ChevronRight className="w-5 h-5" />
+                    <span>Starta hälsotestet</span>
+                    <ChevronRight className="w-6 h-6" />
                   </motion.button>
-                  <p className="text-gray-500 mt-3 text-xs">{t('quiz.badge','10 smarta frågor • Kostnadsfritt')}</p>
+                  
+                  <div className="space-y-4">
+                    <input 
+                      value={firstName} 
+                      onChange={e=>setFirstName(e.target.value)} 
+                      placeholder="Namn (frivilligt)" 
+                      className="w-full px-6 py-4 border border-gray-200 rounded-xl text-lg focus:outline-none focus:border-primary transition-colors" 
+                    />
+                    <input 
+                      type="email" 
+                      value={email} 
+                      onChange={e=>setEmail(e.target.value)} 
+                      placeholder="E-post (frivilligt)" 
+                      className="w-full px-6 py-4 border border-gray-200 rounded-xl text-lg focus:outline-none focus:border-primary transition-colors" 
+                    />
+                  </div>
+                  
+                  {formError && <div className="text-sm text-red-600 mt-2">{formError}</div>}
+                  
+                  <p className="text-gray-500 text-center text-sm">Kostnadsfritt • Inga mejl krävs</p>
                 </div>
               </div>
 
@@ -837,7 +843,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     }}
                   >
                     <Image 
-                      src="/davidsson.png" 
+                      src="/Ulrika_portratt/Ulrika3.jpg" 
                       alt="Ulrika Davidsson"
                       width={400}
                       height={500}
