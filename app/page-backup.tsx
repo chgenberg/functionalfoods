@@ -248,7 +248,7 @@ export default function Home() {
               onClick={() => setShowQuiz(true)}
                   className="group bg-primary text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl hover:bg-secondary transition-all flex items-center justify-center gap-3 backdrop-blur-sm"
             >
-              Starta Hälsoquiz
+                                  Starta Hälsotest
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
                 <Link
@@ -507,7 +507,7 @@ export default function Home() {
               Redo att transformera din hälsa?
             </h2>
             <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 opacity-90 max-w-2xl mx-auto px-4">
-              Starta din resa mot optimal hälsa med vårt personliga hälsoquiz
+                              Starta din resa mot optimal hälsa med vårt personliga hälsotest
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}

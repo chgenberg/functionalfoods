@@ -511,7 +511,7 @@ interface HealthQuizProps {
 const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const { locale } = useLanguage();
   const t = useT();
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'intro' | 'location' | 'quiz' | 'result'>('quiz');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'intro' | 'location' | 'quiz' | 'result'>('welcome');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
   const [isAnimating, setIsAnimating] = useState(false);

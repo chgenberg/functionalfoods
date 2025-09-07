@@ -54,7 +54,7 @@ const sections: Section[] = [
         answer: 'Kursmaterialet är vetenskapligt baserat och lutar sig på aktuell forskning om bioaktiva ämnen.',
       },
       {
-        question: 'Hur funkar hälsoquizet?',
+        question: 'Hur funkar hälsotestet?',
         answer: 'Du svarar på livsstilsfrågor → AI analyserar svaren → du får en personlig plan.',
       },
       {
