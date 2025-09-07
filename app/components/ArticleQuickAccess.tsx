@@ -86,19 +86,19 @@ export default function ArticleQuickAccess() {
   return (
     <>
       {/* Floating Button */}
-      <div className="fixed bottom-6 left-6 z-10 pointer-events-none">
+      <div className="fixed bottom-6 left-6 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-0 z-10 pointer-events-none">
         <button
           onClick={() => setIsOpen(true)}
-          className="relative bg-background-secondary hover:bg-background border-2 border-accent rounded-full p-3 md:px-6 md:py-3 shadow-lg flex items-center gap-3 group transition-all duration-300 hover:shadow-xl pointer-events-auto"
+          className="relative bg-background-secondary hover:bg-background border-2 border-accent rounded-full p-3 md:rounded-r-full md:rounded-l-none md:px-4 md:py-6 shadow-lg flex md:flex-col items-center gap-3 group transition-all duration-300 hover:shadow-xl pointer-events-auto"
         >
           <div
-            className="absolute -inset-1 rounded-full border-2 border-accent opacity-75"
+            className="absolute -inset-1 rounded-full md:rounded-r-full md:rounded-l-none border-2 border-accent opacity-75"
             style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}
           />
           <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-accent">
             <Image src="/davidsson.png" alt="Ulrika Davidsson" fill className="object-cover" />
           </div>
-          <span className="hidden md:inline text-text-primary font-semibold">{t('articles.quick.button','Snabbläs artiklar')}</span>
+          <span className="hidden md:inline text-text-primary font-semibold md:[writing-mode:vertical-rl] md:rotate-180">{t('articles.quick.button','Snabbläs artiklar')}</span>
           <TrendingUp className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" />
         </button>
       </div>
