@@ -9,11 +9,12 @@ export async function GET(req: NextRequest) {
   try {
     const authorization = req.headers.get('authorization');
     if (!authorization?.startsWith('Bearer ')) {
+      console.log('❌ No authorization header in meal-progress GET');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const token = authorization.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { userId: string };
     const { searchParams } = new URL(req.url);
     const courseType = searchParams.get('courseType');
     const weekNumber = searchParams.get('weekNumber');
@@ -44,11 +45,12 @@ export async function POST(req: NextRequest) {
   try {
     const authorization = req.headers.get('authorization');
     if (!authorization?.startsWith('Bearer ')) {
+      console.log('❌ No authorization header in meal-progress POST');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const token = authorization.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { userId: string };
     const { courseType, weekNumber, dayNumber, mealIndex } = await req.json();
 
     if (!courseType || weekNumber === undefined || dayNumber === undefined || mealIndex === undefined) {
