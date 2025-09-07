@@ -262,6 +262,11 @@ export default function RecipePage() {
       
       const isLoggedIn = !!token;
       
+      // Derive course recipe on the client as a fallback in case API flags are stale
+      const isCourseRecipeClient = Boolean(data?.requiresCourse) 
+        || (Array.isArray(data?.courseTags) && data.courseTags.length > 0)
+        || (Array.isArray(data?.tags) && data.tags.some((t: string) => ['Basic','Flow','Energy'].includes(t)));
+      
       // Check access rules in order of priority
       
       // 1. Admin-only recipes
@@ -272,15 +277,15 @@ export default function RecipePage() {
         return;
       }
       
-      // 2. Course recipes
-      if (data.requiresCourse) {
+      // 2. Course recipes (server or client derived)
+      if (isCourseRecipeClient) {
         if (!isLoggedIn) {
           console.log('❌ Course recipe, user not logged in');
           setError('premium');
           setRecipe(data);
           return;
         } else {
-          console.log('✅ Course recipe, user is logged in - ALLOWING ACCESS');
+          console.log('✅ Course recipe (client-derived OK), user is logged in - ALLOWING ACCESS');
           setRecipe(data);
           return;
         }
