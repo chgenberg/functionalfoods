@@ -10,8 +10,12 @@ WORKDIR /app
 ARG REPO_URL=https://github.com/chgenberg/functionalfoods.git
 ARG REPO_REF=main
 
+# Explicit cache-buster for Docker layer caching
+ARG FORCE_REBUILD=2025-09-08-00-55
+RUN echo "FORCE_REBUILD=${FORCE_REBUILD}" > /FORCE_REBUILD
+
 # Bust cache by embedding the latest commit SHA for the target ref
-# This ensures the next layer re-runs when the upstream repo changes
+# Note: This step is also influenced by FORCE_REBUILD above
 RUN echo "Fetching latest commit SHA for ${REPO_REF}..." && \
     LATEST_SHA=$(curl -s https://api.github.com/repos/chgenberg/functionalfoods/commits/${REPO_REF} | sed -n 's/.*"sha": "\([a-f0-9]\{40\}\)".*/\1/p' | head -n1) && \
     echo "Latest SHA: ${LATEST_SHA}" && \
