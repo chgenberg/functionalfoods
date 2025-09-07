@@ -167,7 +167,7 @@ export default function Home() {
                   className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
-                  {t('home.startQuiz','Starta Hälsotest')}
+                  Starta Hälsotest
                   <ArrowRight className="w-5 h-5" />
                 </button>
                 <Link
