@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-09-07T16:37:22.931Z",
+  "summary": {
+    "totalRecipes": 385,
+    "issuesFound": 1,
+    "fixesApplied": 0,
+    "noImageFound": 1
+  },
+  "issues": [
+    {
+      "type": "missing",
+      "recipe": "Papayabåtar",
+      "slug": "papayabatar",
+      "current": "/images/_optimized/recipe-placeholder.webp"
+    }
+  ],
+  "fixes": [],
+  "noImageFound": [
+    {
+      "recipe": "Papayabåtar",
+      "slug": "papayabatar",
+      "tags": []
+    }
+  ]
+}
