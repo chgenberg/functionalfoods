@@ -142,11 +142,11 @@ export default function RecipePage() {
   };
 
   useEffect(() => {
-    // Restore token from URL if present (e.g., when opening from course modal)
+    // Restore token from URL if present (when opened from course modal)
     try {
       const url = new URL(window.location.href);
       const tk = url.searchParams.get('tk');
-      if (tk && !localStorage.getItem('token')) {
+      if (tk) {
         localStorage.setItem('token', tk);
       }
     } catch {}
@@ -238,7 +238,17 @@ export default function RecipePage() {
   }, [user]);
 
   const getToken = () => {
-    return localStorage.getItem('token');
+    const stored = localStorage.getItem('token');
+    if (stored) return stored;
+    try {
+      const url = new URL(window.location.href);
+      const tk = url.searchParams.get('tk');
+      if (tk) {
+        localStorage.setItem('token', tk);
+        return tk;
+      }
+    } catch {}
+    return null;
   };
 
   const fetchRecipe = async () => {

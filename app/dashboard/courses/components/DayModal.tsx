@@ -161,7 +161,6 @@ export default function DayModal({
       const url = new URL(meal.recipeLink, window.location.origin);
       url.searchParams.set('course', courseType);
       url.searchParams.set('week', weekNumber.toString());
-      // Include token to ensure auth on recipe page when opened from modal
       const token = localStorage.getItem('token');
       if (token) {
         url.searchParams.set('tk', token);

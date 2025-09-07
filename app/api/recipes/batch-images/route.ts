@@ -53,7 +53,7 @@ function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string
 
 export async function POST(request: Request) {
   try {
-    const { recipeNames, size = 'medium' } = await request.json();
+    const { recipeNames, recipeSlugs = [], size = 'medium' } = await request.json();
 
     if (!Array.isArray(recipeNames)) {
       return NextResponse.json({ error: 'Recipe names must be an array' }, { status: 400 });
@@ -83,6 +83,16 @@ export async function POST(request: Request) {
 
     console.log(`📚 Found ${recipes.length} recipes with images`);
 
+    // Build quick index by slug
+    const slugToImage: Record<string, string> = {};
+    for (const r of recipes) {
+      if (r.slug && r.imageUrl) {
+        let url = r.imageUrl;
+        if (url.startsWith('/public/')) url = url.replace('/public', '');
+        slugToImage[r.slug] = optimizeImageUrl(url, size);
+      }
+    }
+
     // Create a map of recipe names to images
     const imageMap: Record<string, string> = {};
 
@@ -91,43 +101,37 @@ export async function POST(request: Request) {
       const cleanName = cleanedNames[i];
       const normalizedName = normalizedNames[i];
 
-      console.log(`🔍 Matching "${originalName}" -> "${cleanName}" -> "${normalizedName}"`);
-
-      // Try exact match first
-      let match = recipes.find((recipe: any) => 
-        normalizeSwedish(recipe.title) === normalizedName
-      );
-
-      // Try partial match
-      if (!match) {
-        match = recipes.find((recipe: any) => {
-          const normalizedTitle = normalizeSwedish(recipe.title);
-          return normalizedTitle.includes(normalizedName) || normalizedName.includes(normalizedTitle);
-        });
+      // Prefer slug matching when provided
+      const providedSlug = Array.isArray(recipeSlugs) ? recipeSlugs[i] : null;
+      if (providedSlug && slugToImage[providedSlug]) {
+        imageMap[originalName] = slugToImage[providedSlug];
+        console.log(`✅ Slug match: ${providedSlug} -> ${slugToImage[providedSlug]}`);
+        continue;
       }
 
-      // Try word-based matching
+      console.log(`🔍 Matching "${originalName}" -> "${cleanName}" -> "${normalizedName}"`);
+      let match = recipes.find((r: any) => normalizeSwedish(r.title) === normalizedName);
       if (!match) {
-        const searchWords = normalizedName.split(/\s+/).filter(w => w.length > 2);
-        match = recipes.find((recipe: any) => {
-          const titleWords = normalizeSwedish(recipe.title).split(/\s+/);
-          const matchingWords = searchWords.filter(word => 
-            titleWords.some(titleWord => titleWord.includes(word) || word.includes(titleWord))
-          );
-          return matchingWords.length >= Math.min(2, searchWords.length);
+        match = recipes.find((r: any) => {
+          const nt = normalizeSwedish(r.title);
+          return nt.includes(normalizedName) || normalizedName.includes(nt);
+        });
+      }
+      if (!match) {
+        const searchWords = normalizedName.split(/\s+/).filter((w: string) => w.length > 2);
+        match = recipes.find((r: any) => {
+          const tw = normalizeSwedish(r.title).split(/\s+/);
+          const hits = searchWords.filter((w: string) => tw.some((t: string) => t.includes(w) || w.includes(t)));
+          return hits.length >= Math.min(2, searchWords.length);
         });
       }
 
       if (match && match.imageUrl) {
-        // Prefer actual recipe image; accept Recept_complete2.0/Recept_complete as valid sources
         let url = match.imageUrl as string;
         if (url.startsWith('/public/')) url = url.replace('/public', '');
-        const optimizedUrl = optimizeImageUrl(url, size as 'small' | 'medium' | 'large');
-        imageMap[originalName] = optimizedUrl;
-        console.log(`✅ Match found: "${originalName}" -> "${match.title}" -> ${optimizedUrl}`);
+        imageMap[originalName] = optimizeImageUrl(url, size as 'small' | 'medium' | 'large');
       } else {
         imageMap[originalName] = getFallbackImage(size as 'small' | 'medium' | 'large');
-        console.log(`❌ No match for: "${originalName}" - using fallback`);
       }
     }
 
