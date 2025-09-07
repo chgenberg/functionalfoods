@@ -117,11 +117,76 @@ async function findBestImageMatch(recipe) {
   return null;
 }
 
+const CSV_RECIPES_PATH = 'public/Recept_complete/recipes.csv';
+
+function tryReadCsvRecipes() {
+  try {
+    const abs = path.join(process.cwd(), CSV_RECIPES_PATH);
+    if (!fs.existsSync(abs)) return [];
+    const raw = fs.readFileSync(abs, 'utf8');
+    const lines = raw.split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return [];
+    const header = lines[0].split(/\t/);
+    const titleIdx = header.findIndex(h => /title/i.test(h));
+    const imgPathIdx = header.findIndex(h => /(featured_image_path|image_path)/i.test(h));
+    if (titleIdx === -1 || imgPathIdx === -1) return [];
+    const entries = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(/\t/);
+      const title = (cols[titleIdx] || '').trim();
+      const imgPath = (cols[imgPathIdx] || '').trim();
+      if (!title) continue;
+      // Normalize to local public path if possible
+      const fileName = path.basename(imgPath);
+      const localCandidate = path.join('public', 'Recept_complete', 'images', fileName);
+      const exists = fs.existsSync(path.join(process.cwd(), localCandidate));
+      entries.push({
+        title,
+        normTitle: normalizeText(title),
+        fileName,
+        localPath: exists ? `/${path.join('Recept_complete', 'images', fileName)}` : null
+      });
+    }
+    return entries;
+  } catch (err) {
+    console.warn('CSV read failed:', err.message);
+    return [];
+  }
+}
+
+function scoreTitleAgainstPath(recipeTitle, imagePath) {
+  const name = normalizeText(path.basename(imagePath || '', path.extname(imagePath || '')));
+  const r = normalizeText(recipeTitle);
+  if (!name || !r) return 0;
+  return stringSimilarity.compareTwoStrings(r, name);
+}
+
+async function findAuthoritativeCsvMatch(recipe, csvEntries) {
+  if (!csvEntries || csvEntries.length === 0) return null;
+  const target = normalizeText(recipe.title);
+  let best = null;
+  let bestScore = 0;
+  for (const e of csvEntries) {
+    const s = stringSimilarity.compareTwoStrings(target, e.normTitle);
+    if (s > bestScore) {
+      bestScore = s;
+      best = e;
+    }
+  }
+  if (best && best.localPath && bestScore >= 0.45) {
+    return { path: best.localPath, score: bestScore * 100, reason: `CSV title match ${Math.round(bestScore*100)}%` };
+  }
+  return null;
+}
+
 // Main validation function
 async function validateAndFixRecipeImages() {
   try {
     console.log('🖼️ RECIPE IMAGE VALIDATION AND FIX');
     console.log('====================================\n');
+
+    const csvEntries = tryReadCsvRecipes();
+    console.log(`📄 CSV mapping entries: ${csvEntries.length}`);
 
     // Get all recipes
     const recipes = await prisma.recipe.findMany({
@@ -151,85 +216,56 @@ async function validateAndFixRecipeImages() {
         console.log(`  Progress: ${checkedCount}/${recipes.length} recipes checked...`);
       }
 
-      // Check if image exists and is valid
-      const hasImage = recipe.imageUrl && 
-                      !recipe.imageUrl.includes('placeholder') &&
-                      recipe.imageUrl !== '/images/placeholder.jpg';
+      const currentUrl = recipe.imageUrl || '';
+      const currentExists = currentUrl && fs.existsSync(path.join(process.cwd(), 'public', currentUrl));
+      const currentScore = scoreTitleAgainstPath(recipe.title, currentUrl) * 100;
 
-      if (!hasImage) {
+      // First, try authoritative CSV mapping
+      let bestCandidate = await findAuthoritativeCsvMatch(recipe, csvEntries);
+
+      // If none from CSV, try fuzzy on directories
+      if (!bestCandidate) {
+        bestCandidate = await findBestImageMatch(recipe);
+      }
+
+      // Determine if missing or mismatched
+      const missingOrBroken = !currentUrl || !currentExists;
+      const severelyMismatched = !missingOrBroken && bestCandidate && (bestCandidate.score - currentScore >= 20 || currentScore < 35);
+
+      if (missingOrBroken || severelyMismatched) {
         issues.push({
-          type: 'missing',
+          type: missingOrBroken ? 'missing_or_broken' : 'mismatch',
           recipe: recipe.title,
           slug: recipe.slug,
-          current: recipe.imageUrl || 'none'
+          current: currentUrl,
+          currentScore: Math.round(currentScore),
+          best: bestCandidate ? bestCandidate.path : null,
+          bestScore: bestCandidate ? Math.round(bestCandidate.score) : 0,
+          reason: bestCandidate ? bestCandidate.reason : 'no candidate'
         });
 
-        // Try to find matching image
-        const match = await findBestImageMatch(recipe);
-        
-        if (match && match.score > 50) {
-          if (FIX_MODE) {
-            await prisma.recipe.update({
-              where: { id: recipe.id },
-              data: { imageUrl: match.path }
-            });
-            
-            fixes.push({
-              recipe: recipe.title,
-              slug: recipe.slug,
-              newImage: match.path,
-              reason: match.reason,
-              score: match.score
-            });
-          }
-        } else {
-          noImageFound.push({
+        if (bestCandidate && FIX_MODE) {
+          await prisma.recipe.update({
+            where: { id: recipe.id },
+            data: { imageUrl: bestCandidate.path }
+          });
+          fixes.push({
             recipe: recipe.title,
             slug: recipe.slug,
-            tags: recipe.tags || []
+            oldImage: currentUrl,
+            newImage: bestCandidate.path,
+            currentScore: Math.round(currentScore),
+            bestScore: Math.round(bestCandidate.score),
+            reason: bestCandidate.reason
           });
+        } else if (!bestCandidate) {
+          noImageFound.push({ recipe: recipe.title, slug: recipe.slug, tags: recipe.tags || [] });
         }
-        
+
         continue;
       }
 
-      // Check if file actually exists
-      const imagePath = path.join(process.cwd(), 'public', recipe.imageUrl);
-      if (!fs.existsSync(imagePath)) {
-        issues.push({
-          type: 'broken',
-          recipe: recipe.title,
-          slug: recipe.slug,
-          current: recipe.imageUrl
-        });
-
-        // Try to find replacement
-        const match = await findBestImageMatch(recipe);
-        
-        if (match) {
-          if (FIX_MODE) {
-            await prisma.recipe.update({
-              where: { id: recipe.id },
-              data: { imageUrl: match.path }
-            });
-            
-            fixes.push({
-              recipe: recipe.title,
-              slug: recipe.slug,
-              oldImage: recipe.imageUrl,
-              newImage: match.path,
-              reason: match.reason,
-              score: match.score
-            });
-          }
-        } else {
-          noImageFound.push({
-            recipe: recipe.title,
-            slug: recipe.slug,
-            tags: recipe.tags || []
-          });
-        }
-      }
+      // If current seems fine, skip
     }
 
     // Generate report
@@ -240,69 +276,7 @@ async function validateAndFixRecipeImages() {
     console.log(`✨ Fixes applied: ${fixes.length}`);
     console.log(`❌ No suitable image found: ${noImageFound.length}`);
 
-    if (issues.length > 0) {
-      console.log('\n🚨 ISSUES:');
-      const missingImages = issues.filter(i => i.type === 'missing');
-      const brokenImages = issues.filter(i => i.type === 'broken');
-      
-      if (missingImages.length > 0) {
-        console.log(`\n  Missing images: ${missingImages.length}`);
-        missingImages.slice(0, 5).forEach(issue => {
-          console.log(`    - ${issue.recipe} (${issue.slug})`);
-        });
-        if (missingImages.length > 5) {
-          console.log(`    ... and ${missingImages.length - 5} more`);
-        }
-      }
-
-      if (brokenImages.length > 0) {
-        console.log(`\n  Broken image links: ${brokenImages.length}`);
-        brokenImages.slice(0, 5).forEach(issue => {
-          console.log(`    - ${issue.recipe}: ${issue.current}`);
-        });
-        if (brokenImages.length > 5) {
-          console.log(`    ... and ${brokenImages.length - 5} more`);
-        }
-      }
-    }
-
-    if (fixes.length > 0) {
-      console.log('\n✨ FIXES APPLIED:');
-      fixes.slice(0, 10).forEach(fix => {
-        console.log(`  ✅ ${fix.recipe}`);
-        console.log(`     New image: ${fix.newImage}`);
-        console.log(`     Reason: ${fix.reason} (score: ${Math.round(fix.score)})`);
-      });
-      if (fixes.length > 10) {
-        console.log(`  ... and ${fixes.length - 10} more fixes`);
-      }
-    }
-
-    if (noImageFound.length > 0) {
-      console.log('\n❌ NO SUITABLE IMAGE FOUND:');
-      
-      // Group by course
-      const byCourse = {
-        Basic: noImageFound.filter(r => r.tags.includes('Basic')),
-        Flow: noImageFound.filter(r => r.tags.includes('Flow')),
-        Energy: noImageFound.filter(r => r.tags.includes('Energy')),
-        Free: noImageFound.filter(r => !r.tags.some(t => ['Basic', 'Flow', 'Energy'].includes(t)))
-      };
-
-      Object.entries(byCourse).forEach(([course, recipes]) => {
-        if (recipes.length > 0) {
-          console.log(`\n  ${course}: ${recipes.length} recipes`);
-          recipes.slice(0, 3).forEach(r => {
-            console.log(`    - ${r.recipe} (${r.slug})`);
-          });
-          if (recipes.length > 3) {
-            console.log(`    ... and ${recipes.length - 3} more`);
-          }
-        }
-      });
-    }
-
-    // Save detailed report
+    // Persist report
     const report = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -311,15 +285,11 @@ async function validateAndFixRecipeImages() {
         fixesApplied: fixes.length,
         noImageFound: noImageFound.length
       },
-      issues,
       fixes,
+      issues,
       noImageFound
     };
-
-    fs.writeFileSync(
-      path.join(process.cwd(), 'recipe-image-validation-report.json'),
-      JSON.stringify(report, null, 2)
-    );
+    fs.writeFileSync(path.join(process.cwd(), 'recipe-image-validation-report.json'), JSON.stringify(report, null, 2));
 
     console.log('\n📄 Detailed report saved to: recipe-image-validation-report.json');
     console.log('\n✨ Image validation complete!');
