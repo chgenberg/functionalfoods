@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GiFruitBowl, GiMeal, GiMeat, GiGrainBundle, GiNutBolt, GiMilkCarton, GiWheat, GiCoffeeCup, GiChocolateBar, GiSaltShaker } from 'react-icons/gi';
-import { CheckCircle, AlertCircle, TrendingUp, Zap, RefreshCw, ChevronRight, Mail, Heart, Target, Brain, Activity, Coffee, Moon, Sun, Star, BookOpen, Phone } from 'lucide-react';
+import { GiFruitBowl, GiMeal, GiMeat, GiGrainBundle, GiMilkCarton, GiWheat, GiCoffeeCup, GiChocolateBar, GiSaltShaker } from 'react-icons/gi';
+import { CheckCircle, AlertCircle, TrendingUp, Zap, RefreshCw, ChevronRight, Mail, Heart, Target, Brain, Activity, Coffee, Moon, Sun, Star, BookOpen, Phone, Wind, Flower, MapPin, Loader2, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
@@ -33,7 +33,7 @@ interface HealthScores {
 }
 
 interface QuizResultScreenProps {
-  quizData: Record<number, string> | {
+  quizData: Record<number, string | string[]> | {
     symptoms: Array<{ symptom: string; severity: number }>;
     recommendations: Array<{
       nutrient: string;
@@ -48,10 +48,11 @@ interface QuizResultScreenProps {
       emoji: string;
     }>;
   };
+  contextData?: any;
   onRestart: () => void;
 }
 
-const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart }) => {
+const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextData, onRestart }) => {
   const t = useT();
   const { locale } = useLanguage();
   const [recommendations, setRecommendations] = useState<QuizResultData | null>(null);
@@ -67,6 +68,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     kost: 7,
     motion: 5
   });
+  const [functionalFoods, setFunctionalFoods] = useState<any[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [aiReport, setAiReport] = useState<any>(null);
+  const [loadingAiReport, setLoadingAiReport] = useState(false);
 
   // Checklist (autosave) per domän – must be declared before any early returns
   const checklistKey = 'quiz_checklist_v1';
@@ -119,6 +124,37 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
   const calculateTotalScore = (): number => {
     const total = Object.values(healthScores).reduce((sum, score) => sum + score, 0);
     return Math.round((total / 50) * 100);
+  };
+
+  const fetchFunctionalFoods = async () => {
+    if (loadingProducts) return;
+    
+    setLoadingProducts(true);
+    try {
+      // Extract health goals and deficiencies from quiz answers
+      const answers = quizData as Record<number, string | string[]>;
+      const healthGoals = Array.isArray(answers[9]) ? answers[9] : [];
+      const deficiencies = Array.isArray(answers[10]) ? answers[10] : [answers[10]].filter(Boolean);
+      
+      const response = await fetch('/api/healthquiz/functional-foods', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          healthGoals,
+          currentDeficiencies: deficiencies,
+          preferences: [] // Could add diet preferences later
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setFunctionalFoods(data.recommendations || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch functional foods:', error);
+    } finally {
+      setLoadingProducts(false);
+    }
   };
 
   useEffect(() => {
@@ -228,7 +264,47 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
     };
 
     fetchRecommendations();
-  }, [quizData]);
+    fetchFunctionalFoods();
+    
+    // Generate AI report after all data is collected
+    const generateAiReport = async () => {
+      if (loadingAiReport || !functionalFoods.length) return;
+      
+      setLoadingAiReport(true);
+      try {
+        const response = await fetch('/api/healthquiz/ai-moderator', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            answers: quizData,
+            contextData,
+            functionalFoods,
+            userProfile: {
+              firstName: localStorage.getItem('health_test_identity_v2') ? 
+                JSON.parse(localStorage.getItem('health_test_identity_v2') || '{}').firstName : 'Användare',
+              email: localStorage.getItem('health_test_identity_v2') ? 
+                JSON.parse(localStorage.getItem('health_test_identity_v2') || '{}').email : ''
+            }
+          })
+        });
+        
+        if (response.ok) {
+          const report = await response.json();
+          setAiReport(report.report);
+        }
+      } catch (error) {
+        console.error('Failed to generate AI report:', error);
+      } finally {
+        setLoadingAiReport(false);
+      }
+    };
+    
+    // Generate AI report when functional foods are loaded
+    if (functionalFoods.length > 0 && !aiReport && !loadingAiReport) {
+      generateAiReport();
+    }
+    
+  }, [quizData, loadingProducts, functionalFoods, contextData, aiReport, loadingAiReport]);
 
   if (loading) {
     const answeredCount = isQuizAnswers(quizData) ? Object.keys(quizData).length : 10;
@@ -271,6 +347,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
 
   const tabs = [
     { id: 'summary', label: 'Översikt', icon: '📊' },
+    ...(contextData ? [{ id: 'context', label: 'Din plats', icon: '🌍' }] : []),
+    { id: 'products', label: 'Produkter', icon: '🛒' },
+    ...(contextData?.enhanced?.safety?.warnings?.length > 0 ? [{ id: 'safety', label: 'Säkerhet', icon: '🛡️' }] : []),
+    ...(contextData?.enhanced?.circadian?.length > 0 ? [{ id: 'timing', label: 'Timing', icon: '🕐' }] : []),
     { id: 'course', label: 'Kursrekommendation', icon: '🎓' },
     { id: 'recommendations', label: 'Functional Foods', icon: '🥗' },
     { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' },
@@ -545,19 +625,53 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                       >
-                        <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.profile','Din hälsoprofil')}</h2>
-                        <div 
-                          className="prose prose-gray max-w-none text-sm md:text-base text-gray-600 leading-relaxed space-y-4"
-                          dangerouslySetInnerHTML={{ __html: recommendations.profile.replace(/\. /g, '.<br/><br/>') }}
-                        />
+                        <div className="flex items-center justify-between mb-4 md:mb-6">
+                          <h2 className="text-xl md:text-2xl font-light text-gray-900">{t('quiz.profile','Din hälsoprofil')}</h2>
+                          {aiReport && (
+                            <div className="flex items-center gap-2">
+                              <Brain className="w-4 h-4 text-purple-500" />
+                              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                                AI-Analyserad
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {loadingAiReport ? (
+                          <div className="flex items-center justify-center py-8">
+                            <Loader2 className="w-8 h-8 animate-spin text-[#014421]" />
+                            <span className="ml-3 text-gray-600">AI analyserar din hälsoprofil...</span>
+                          </div>
+                        ) : (
+                          <div 
+                            className="prose prose-gray max-w-none text-sm md:text-base text-gray-600 leading-relaxed space-y-4"
+                            dangerouslySetInnerHTML={{ __html: aiReport?.profile ? aiReport.profile.replace(/\n/g, '<br/><br/>') : recommendations.profile.replace(/\. /g, '.<br/><br/>') }}
+                          />
+                        )}
                       </motion.div>
 
                     {/* Quick Actions Grid */}
                     <div className="grid md:grid-cols-3 gap-4">
                       {[
-                        { icon: Activity, title: "Daglig aktivitet", desc: "30 min rörelse", color: "from-blue-500 to-blue-600" },
+                        { 
+                          icon: Activity, 
+                          title: "Daglig aktivitet", 
+                          desc: contextData?.weather?.current && contextData.weather.current.precipitation < 0.5 
+                            ? "Träna utomhus idag!" 
+                            : "30 min rörelse", 
+                          color: "from-blue-500 to-blue-600" 
+                        },
                         { icon: Heart, title: "Hjärthälsa", desc: "Omega-3 dagligen", color: "from-red-500 to-red-600" },
-                        { icon: Zap, title: "Energinivåer", desc: "B-vitaminer", color: "from-yellow-500 to-yellow-600" }
+                        { 
+                          icon: Zap, 
+                          title: "Energinivåer", 
+                          desc: contextData?.air?.hourly && (() => {
+                            const latest = Object.keys(contextData.air.hourly.time || {}).length - 1;
+                            const pm25 = contextData.air.hourly.pm2_5?.[latest] || 0;
+                            return pm25 > 50 ? "Träna inomhus" : "B-vitaminer";
+                          })() || "B-vitaminer", 
+                          color: "from-yellow-500 to-yellow-600" 
+                        }
                       ].map((action, index) => (
                         <motion.div
                           key={index}
@@ -574,6 +688,406 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                           <p className="text-xs text-gray-500">{action.desc}</p>
                         </motion.div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'context' && contextData && (
+                  <div className="space-y-6">
+                    {/* Weather & Training Recommendation */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                    >
+                      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                        <Sun className="w-5 h-5 text-yellow-500" />
+                        Träningsrekommendation idag
+                      </h3>
+                      
+                      {contextData.weather?.current && (
+                        <div className="space-y-4">
+                          <div className="flex flex-wrap gap-4 text-sm">
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500">Temperatur:</span>
+                              <span className="font-medium">{Math.round(contextData.weather.current.temperature_2m)}°C</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500">UV-index:</span>
+                              <span className={`font-medium ${contextData.weather.current.uv_index > 6 ? 'text-red-600' : 'text-green-600'}`}>
+                                {contextData.weather.current.uv_index || 0}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500">Nederbörd:</span>
+                              <span className="font-medium">{contextData.weather.current.precipitation || 0} mm</span>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-green-50 rounded-lg p-4">
+                            <p className="text-green-800 font-medium">
+                              {contextData.weather.current.uv_index < 8 && contextData.weather.current.precipitation < 0.5
+                                ? '✅ Perfekt väder för utomhusträning!'
+                                : contextData.weather.current.precipitation > 2
+                                ? '🏠 Rekommenderar inomhusträning idag'
+                                : '⚠️ Var försiktig med solen, träna i skuggan eller inomhus'}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+
+                    {/* Air Quality */}
+                    {contextData.air?.hourly && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                      >
+                        <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          <Wind className="w-5 h-5 text-blue-500" />
+                          Luftkvalitet
+                        </h3>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {(() => {
+                            const latest = Object.keys(contextData.air.hourly.time || {}).length - 1;
+                            const pm25 = contextData.air.hourly.pm2_5?.[latest] || 0;
+                            const pm10 = contextData.air.hourly.pm10?.[latest] || 0;
+                            const no2 = contextData.air.hourly.nitrogen_dioxide?.[latest] || 0;
+                            
+                            return (
+                              <>
+                                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                                  <div className="text-xs text-gray-500 mb-1">PM2.5</div>
+                                  <div className={`text-lg font-medium ${pm25 < 25 ? 'text-green-600' : pm25 < 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                    {Math.round(pm25)} μg/m³
+                                  </div>
+                                </div>
+                                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                                  <div className="text-xs text-gray-500 mb-1">PM10</div>
+                                  <div className={`text-lg font-medium ${pm10 < 50 ? 'text-green-600' : pm10 < 100 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                    {Math.round(pm10)} μg/m³
+                                  </div>
+                                </div>
+                                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                                  <div className="text-xs text-gray-500 mb-1">NO2</div>
+                                  <div className={`text-lg font-medium ${no2 < 40 ? 'text-green-600' : no2 < 100 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                    {Math.round(no2)} μg/m³
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })()}
+                        </div>
+                        
+                        <div className="mt-4 text-sm text-gray-600">
+                          {(() => {
+                            const latest = Object.keys(contextData.air.hourly.time || {}).length - 1;
+                            const pm25 = contextData.air.hourly.pm2_5?.[latest] || 0;
+                            return pm25 < 25 
+                              ? '💚 Utmärkt luftkvalitet - perfekt för träning utomhus!'
+                              : pm25 < 50
+                              ? '💛 Acceptabel luftkvalitet - undvik intensiv träning utomhus'
+                              : '🔴 Dålig luftkvalitet - träna inomhus idag';
+                          })()}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Pollen */}
+                    {contextData.pollen?.daily && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                      >
+                        <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          <Flower className="w-5 h-5 text-pink-500" />
+                          Pollennivåer
+                        </h3>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                          {[
+                            { name: 'Björk', key: 'birch_pollen' },
+                            { name: 'Gräs', key: 'grass_pollen' },
+                            { name: 'Gråbo', key: 'mugwort_pollen' },
+                            { name: 'Ragweed', key: 'ragweed_pollen' }
+                          ].map(pollen => {
+                            const level = contextData.pollen.daily[pollen.key]?.[0] || 0;
+                            return (
+                              <div key={pollen.key} className="text-center p-3 bg-gray-50 rounded-lg">
+                                <div className="text-xs text-gray-500 mb-1">{pollen.name}</div>
+                                <div className={`text-lg font-medium ${level < 50 ? 'text-green-600' : level < 100 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                  {level}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        
+                        <div className="text-sm text-gray-600">
+                          💡 Tips för allergiker: Ta antihistamin 30 min före träning och välj tidiga morgnar eller sena kvällar.
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Nearby Places */}
+                    {contextData.places && contextData.places.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                      >
+                        <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          <MapPin className="w-5 h-5 text-green-500" />
+                          Träningsplatser nära dig
+                        </h3>
+                        
+                        <div className="space-y-3">
+                          {contextData.places.slice(0, 8).map((place: any, index: number) => (
+                            <div key={place.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                              <div>
+                                <div className="font-medium text-gray-900">
+                                  {place.name || `${place.type === 'park' ? 'Park' : place.type === 'fitness_centre' ? 'Gym' : 'Träningsplats'}`}
+                                </div>
+                                <div className="text-xs text-gray-500 capitalize">
+                                  {place.type.replace(/_/g, ' ')}
+                                </div>
+                              </div>
+                              <a
+                                href={`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lon}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:text-secondary text-sm font-medium flex items-center gap-1"
+                              >
+                                Vägbeskrivning
+                                <ChevronRight className="w-4 h-4" />
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'products' && (
+                  <div className="space-y-6">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                        <Star className="w-5 h-5 text-yellow-500" />
+                        Rekommenderade Functional Foods
+                      </h3>
+                      <p className="text-gray-600 mb-6">
+                        Baserat på dina hälsomål och eventuella näringsbrister har vi hittat dessa produkter som kan stödja din hälsa.
+                      </p>
+                      
+                      {loadingProducts ? (
+                        <div className="flex items-center justify-center py-8">
+                          <Loader2 className="w-8 h-8 animate-spin text-[#014421]" />
+                          <span className="ml-3 text-gray-600">Söker produkter...</span>
+                        </div>
+                      ) : functionalFoods.length > 0 ? (
+                        <div className="grid md:grid-cols-2 gap-4">
+                          {functionalFoods.map((product, index) => (
+                            <motion.div
+                              key={product.id}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all bg-white"
+                            >
+                              <div className="flex gap-4">
+                                {product.image && (
+                                  <img 
+                                    src={product.image} 
+                                    alt={product.name}
+                                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                  />
+                                )}
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-gray-900 mb-1 text-sm">{product.name}</h4>
+                                  {product.brand && (
+                                    <p className="text-xs text-gray-500 mb-2">{product.brand}</p>
+                                  )}
+                                  
+                                  <div className="flex flex-wrap gap-1 mb-2">
+                                    {product.healthBenefits.slice(0, 2).map((benefit: string, i: number) => (
+                                      <span key={i} className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                                        {benefit}
+                                      </span>
+                                    ))}
+                                  </div>
+                                  
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex gap-2">
+                                      {product.nutriScore && (
+                                        <span className={`text-xs px-2 py-1 rounded font-medium ${
+                                          product.nutriScore === 'A' ? 'bg-green-100 text-green-700' :
+                                          product.nutriScore === 'B' ? 'bg-yellow-100 text-yellow-700' : 
+                                          'bg-gray-100 text-gray-700'
+                                        }`}>
+                                          {product.nutriScore}
+                                        </span>
+                                      )}
+                                      {product.ecoScore && (
+                                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-medium">
+                                          Eco {product.ecoScore}
+                                        </span>
+                                      )}
+                                    </div>
+                                    
+                                    <a
+                                      href={product.openFoodFactsUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-primary hover:text-secondary text-xs font-medium flex items-center gap-1"
+                                    >
+                                      Info
+                                      <ChevronRight className="w-3 h-3" />
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <div className="text-gray-400 mb-4">🔍</div>
+                          <p className="text-gray-600">Inga produkter hittades för dina specifika behov.</p>
+                          <button 
+                            onClick={fetchFunctionalFoods}
+                            className="mt-4 text-primary hover:text-secondary font-medium text-sm"
+                          >
+                            Försök igen
+                          </button>
+                        </div>
+                      )}
+                      
+                      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                          💡 <strong>Tips:</strong> Dessa produkter är filtrerade för functional foods och longevity. 
+                          Vi visar endast produkter med dokumenterade hälsofördelar och undviker processad mat.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'safety' && contextData?.enhanced?.safety && (
+                  <div className="space-y-6">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                        <AlertCircle className="w-5 h-5 text-red-500" />
+                        Säkerhetsvarningar
+                      </h3>
+                      
+                      {contextData.enhanced.safety.warnings.length > 0 ? (
+                        <div className="space-y-4">
+                          {contextData.enhanced.safety.warnings.map((warning: any, index: number) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="border-l-4 border-red-400 bg-red-50 p-4 rounded-r-lg"
+                            >
+                              <div className="flex items-start gap-3">
+                                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                                <div>
+                                  <h4 className="font-medium text-red-800 mb-1">
+                                    {warning.medication}
+                                  </h4>
+                                  <p className="text-red-700 text-sm mb-2">
+                                    {warning.warning}
+                                  </p>
+                                  <p className="text-red-600 text-xs font-medium">
+                                    → {warning.action}
+                                  </p>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <CheckCircle className="w-8 h-8 text-green-600" />
+                          </div>
+                          <h4 className="font-medium text-green-800 mb-2">Inga kända interaktioner</h4>
+                          <p className="text-green-600 text-sm">
+                            Baserat på dina mediciner ser vi inga direkta konflikter med functional foods.
+                          </p>
+                        </div>
+                      )}
+                      
+                      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                          💡 <strong>Viktigt:</strong> Konsultera alltid läkare eller apotekare innan du börjar med nya kosttillskott, 
+                          särskilt om du tar mediciner regelbundet.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'timing' && contextData?.enhanced?.circadian && (
+                  <div className="space-y-6">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-blue-500" />
+                        Optimal Timing för Kosttillskott
+                      </h3>
+                      
+                      <div className="mb-6">
+                        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                          <div>🌍 {contextData.enhanced.location?.city || 'Din plats'}</div>
+                          <div>🕐 {contextData.enhanced.timezone?.circadianPhase || 'Okänd tid'}</div>
+                          <div>☀️ {contextData.enhanced.timezone?.isDaytime ? 'Dagtid' : 'Kvällstid'}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        {contextData.enhanced.circadian.map((rec: any, index: number) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 border border-blue-100"
+                          >
+                            <div className="flex items-start gap-4">
+                              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <Clock className="w-6 h-6 text-blue-600" />
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-900 mb-1">{rec.timing}</h4>
+                                <div className="flex flex-wrap gap-1 mb-2">
+                                  {rec.supplements.map((supplement: string, i: number) => (
+                                    <span key={i} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                                      {supplement}
+                                    </span>
+                                  ))}
+                                </div>
+                                <p className="text-gray-600 text-sm">{rec.reason}</p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
+                        <p className="text-sm text-yellow-800">
+                          ⏰ <strong>Cirkadian optimering:</strong> Timing av kosttillskott kan förbättra absorption 
+                          med upp till 40% och minska biverkningar.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -742,26 +1256,80 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, onRestart
                   </div>
                 )}
 
-                {activeTab === 'science' && recommendations && (
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.science','Vetenskaplig grund')}</h2>
-                    <div className="space-y-4">
-                      {recommendations.scientificReferences.map((reference, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="flex gap-4 p-4 bg-blue-50 rounded-xl"
-                        >
-                          <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                          <div 
-                            className="text-gray-700 text-sm space-y-2"
-                            dangerouslySetInnerHTML={{ __html: reference.replace(/\n+/g, '<br/>') }}
-                          />
-                        </motion.div>
-                      ))}
-                    </div>
+                {activeTab === 'science' && (
+                  <div className="space-y-6">
+                    {/* PubMed Research */}
+                    {contextData?.enhanced?.research && contextData.enhanced.research.length > 0 && (
+                      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          <BookOpen className="w-5 h-5 text-blue-500" />
+                          Aktuell Forskning för Dina Hälsomål
+                        </h3>
+                        
+                        <div className="space-y-4">
+                          {contextData.enhanced.research.map((study: any, index: number) => (
+                            <motion.div
+                              key={study.pmid}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all bg-gradient-to-r from-blue-50 to-white"
+                            >
+                              <div className="flex items-start gap-4">
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <BookOpen className="w-5 h-5 text-blue-600" />
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-gray-900 mb-2 text-sm leading-tight">
+                                    {study.title}
+                                  </h4>
+                                  <div className="flex items-center gap-4 text-xs text-gray-500 mb-2">
+                                    <span>{study.authors}</span>
+                                    <span>{study.pubdate}</span>
+                                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                                      {study.goal.replace('_', ' ')}
+                                    </span>
+                                  </div>
+                                  <a
+                                    href={study.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:text-secondary text-xs font-medium flex items-center gap-1"
+                                  >
+                                    Läs studien
+                                    <ChevronRight className="w-3 h-3" />
+                                  </a>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Fallback to original science content */}
+                    {recommendations && (
+                      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                        <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.science','Vetenskaplig grund')}</h2>
+                        <div className="space-y-4">
+                          {recommendations.scientificReferences.map((reference, index) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="flex gap-4 p-4 bg-blue-50 rounded-xl"
+                            >
+                              <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                              <div 
+                                className="text-gray-700 text-sm space-y-2"
+                                dangerouslySetInnerHTML={{ __html: reference.replace(/\n+/g, '<br/>') }}
+                              />
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 

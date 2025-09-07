@@ -74,7 +74,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
           <span className="font-medium">Välkommen {user.name || user.email}!</span>
         </div>
         <p className="text-blue-600 text-sm mt-1">
-          Gör vårt hälsoquiz för att få personaliserade råd i chatten.
+                                  Gör vårt hälsotest för att få personaliserade råd i chatten.
         </p>
       </div>
     );
@@ -141,7 +141,7 @@ export default function UserProfileSummary({ compact = false }: UserProfileSumma
         </div>
       ) : (
         <p className="text-blue-600 text-sm">
-          Gör vårt hälsoquiz för att få personaliserade råd!
+                                Gör vårt hälsotest för att få personaliserade råd!
         </p>
       )}
 

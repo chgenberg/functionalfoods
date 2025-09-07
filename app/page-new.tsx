@@ -18,7 +18,7 @@ export default function Home() {
   const t = useT();
   const { locale, setLocale } = useLanguage();
   const [showQuiz, setShowQuiz] = useState(false);
-  const [quizResults, setQuizResults] = useState<Record<number, string> | null>(null);
+  const [quizResults, setQuizResults] = useState<{ answers: Record<number, string | string[]>; context?: any } | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [videosLoaded, setVideosLoaded] = useState(0);
   const [videoError, setVideoError] = useState(false);
@@ -77,8 +77,8 @@ export default function Home() {
     }
   }, [testimonials.length]);
 
-  const handleQuizComplete = (answers: Record<number, string>) => {
-    setQuizResults(answers);
+  const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
+    setQuizResults({ answers, context });
     setShowQuiz(false);
   };
 
@@ -90,7 +90,8 @@ export default function Home() {
   if (quizResults) {
     return (
       <QuizResultScreen 
-        quizData={quizResults} 
+        quizData={quizResults.answers}
+        contextData={quizResults.context}
         onRestart={handleRestartQuiz}
       />
     );

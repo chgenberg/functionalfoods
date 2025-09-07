@@ -194,7 +194,9 @@ export default function RecipePage() {
         setNutrition(recipe.nutrition);
         setNutritionLoading(false);
       } else {
-        calculateNutrition();
+        // Nutrition disabled
+        setNutrition(null);
+        setNutritionLoading(false);
       }
     }
   }, [recipe, searchParams, slug]);
@@ -903,54 +905,7 @@ export default function RecipePage() {
                 )}
               </div>
 
-              {/* Nutrition Information */}
-              {(nutrition || nutritionLoading) && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-8 bg-white rounded-3xl shadow-xl overflow-hidden"
-                >
-                  <div className="p-6 no-print">
-                    <h3 className="text-xl font-bold text-[#014421] flex items-center gap-3">
-                      <span className="bg-[#014421]/10 w-10 h-10 rounded-xl flex items-center justify-center">
-                        <Heart className="w-5 h-5 text-[#014421]" />
-                      </span>
-                      {t('recipes.detail.nutrition','Näringsvärden')}
-                    </h3>
-                  </div>
-
-                  {nutritionLoading ? (
-                    <div className="p-8 text-center">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#014421] mx-auto"></div>
-                      <p className="text-gray-600 mt-2">{t('recipes.detail.calculating','Beräknar näringsvärden...')}</p>
-                    </div>
-                  ) : nutrition ? (
-                    <div className="p-6 border-t border-gray-100">
-                      <div className="mb-4">
-                        <p className="text-sm text-gray-600 mb-2">Per portion ({recipe.servings || 4} portioner totalt)</p>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                          <p className="text-sm text-gray-600">{t('recipes.detail.kcal','Kalorier')}</p>
-                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.calories || '-'}</p>
-                        </div>
-                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                          <p className="text-sm text-gray-600">{t('recipes.detail.protein','Protein')}</p>
-                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.protein || '-'}g</p>
-                        </div>
-                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                          <p className="text-sm text-gray-600">{t('recipes.detail.carbs','Kolhydrater')}</p>
-                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.carbs || '-'}g</p>
-                        </div>
-                        <div className="bg-[#F3EFE3] rounded-xl p-4 text-center">
-                          <p className="text-sm text-gray-600">{t('recipes.detail.fat','Fett')}</p>
-                          <p className="text-2xl font-bold text-[#014421]">{nutrition?.perServing?.fat || '-'}g</p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : null}
-                </motion.div>
-              )}
+              {/* Nutrition disabled */}
             </div>
           </div>
         </div>

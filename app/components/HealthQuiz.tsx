@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, Check, Clock, Activity, Target, Moon, Heart, AlertCircle, Coffee, Brain, Zap } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Check, Clock, Activity, Target, Moon, Heart, AlertCircle, Coffee, Brain, Zap, MapPin, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import QuizResultScreen from './QuizResultScreen';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
@@ -341,6 +341,138 @@ const QUIZ_SV: QuizQuestion[] = [
         icon: "🧠"
       }
     ]
+  },
+  {
+    id: 10,
+    question: "Vilka hälsomål är viktigast för dig?",
+    subtitle: "Välj de områden du vill förbättra mest (du kan välja flera)",
+    icon: "🎯",
+    options: [
+      {
+        label: "Mer energi och mindre trötthet",
+        description: "Jag vill känna mig piggare och mer alert",
+        value: "energy",
+        icon: "⚡"
+      },
+      {
+        label: "Bättre hjärn- och minnesfunktion",
+        description: "Förbättra fokus, minne och kognitiva förmågor",
+        value: "brain_health",
+        icon: "🧠"
+      },
+      {
+        label: "Starkare immunförsvar",
+        description: "Bli mindre sjuk och återhämta mig snabbare",
+        value: "immune",
+        icon: "🛡️"
+      },
+      {
+        label: "Bättre tarm- och maghälsa",
+        description: "Förbättra matsmältning och tarmflora",
+        value: "gut_health",
+        icon: "🦠"
+      },
+      {
+        label: "Anti-aging och longevity",
+        description: "Åldras långsammare och må bra längre",
+        value: "anti_aging",
+        icon: "🌿"
+      },
+      {
+        label: "Bättre hud, hår och naglar",
+        description: "Förbättra utseende och hudkvalitet",
+        value: "beauty",
+        icon: "✨"
+      }
+    ]
+  },
+  {
+    id: 11,
+    question: "Har du några kända näringsbrister?",
+    subtitle: "Baserat på blodprover eller symtom du känner igen",
+    icon: "🔬",
+    options: [
+      {
+        label: "Vitamin D-brist",
+        description: "Låga D-vitamin nivåer eller lite sol",
+        value: "vitamin_d",
+        icon: "☀️"
+      },
+      {
+        label: "Omega-3 brist",
+        description: "Äter sällan fet fisk eller omega-3 källor",
+        value: "omega_3",
+        icon: "🐟"
+      },
+      {
+        label: "B12-brist",
+        description: "Särskilt vanligt för veganer/vegetarianer",
+        value: "b12",
+        icon: "🥗"
+      },
+      {
+        label: "Järnbrist",
+        description: "Känner mig trött, har bleka naglar",
+        value: "iron",
+        icon: "🩸"
+      },
+      {
+        label: "Magnesiumbrist",
+        description: "Muskelkramper, sömnproblem, stress",
+        value: "magnesium",
+        icon: "💪"
+      },
+      {
+        label: "Inga kända brister",
+        description: "Jag har inga kända näringsbrister",
+        value: "none",
+        icon: "✅"
+      }
+    ]
+  },
+  {
+    id: 12,
+    question: "Tar du några mediciner regelbundet?",
+    subtitle: "För att säkerställa att våra rekommendationer är säkra för dig",
+    icon: "💊",
+    options: [
+      {
+        label: "Blodförtunnande medicin",
+        description: "Warfarin, Apixaban, Rivaroxaban eller liknande",
+        value: "blood_thinners",
+        icon: "🩸"
+      },
+      {
+        label: "Blodtrycksmedicin",
+        description: "ACE-hämmare, betablockerare eller liknande",
+        value: "blood_pressure",
+        icon: "❤️"
+      },
+      {
+        label: "Antidepressiva",
+        description: "SSRI, SNRI eller andra antidepressiva",
+        value: "antidepressants",
+        icon: "🧠"
+      },
+      {
+        label: "Diabetesmedicin",
+        description: "Metformin, insulin eller andra diabetesmediciner",
+        value: "diabetes",
+        icon: "🍯"
+      },
+      {
+        label: "Sköldkörtelmedicin",
+        description: "Levaxin eller andra sköldkörtelhormon",
+        value: "thyroid",
+        icon: "🦋"
+      },
+      {
+        label: "Inga mediciner",
+        description: "Jag tar inga receptbelagda mediciner",
+        value: "none",
+        icon: "✅"
+      }
+    ]
   }
 ];
 
@@ -372,36 +504,41 @@ const QUIZ_FR: QuizQuestion[] = [
 ] as QuizQuestion[];
 
 interface HealthQuizProps {
-  onComplete?: (answers: Record<number, string>) => void;
+  onComplete?: (answers: Record<number, string | string[]>, context?: any) => void;
   onClose?: () => void;
 }
 
 const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const { locale } = useLanguage();
   const t = useT();
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'intro' | 'quiz' | 'result'>('quiz');
+  const [currentStep, setCurrentStep] = useState<'welcome' | 'intro' | 'location' | 'quiz' | 'result'>('quiz');
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [consent, setConsent] = useState(false);
   const [formError, setFormError] = useState('');
+  const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
+  const [locationContext, setLocationContext] = useState<any>(null);
+  const [loadingContext, setLoadingContext] = useState(false);
   const quizQuestions: QuizQuestion[] = locale === 'en' ? QUIZ_EN : locale === 'es' ? QUIZ_ES : locale === 'de' ? QUIZ_DE : locale === 'fr' ? QUIZ_FR : QUIZ_SV;
-  const STORAGE_KEY = `health_quiz_state_v1_${locale}`;
+  const STORAGE_KEY = `health_test_state_v2_${locale}`;
   // Restore autosaved state
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
-      const saved = JSON.parse(raw) as { step: 'welcome'|'quiz'|'result'; q: number; a: Record<number,string> };
+      const saved = JSON.parse(raw) as { step: 'welcome'|'intro'|'location'|'quiz'|'result'; q: number; a: Record<number,string>; locationConsent?: boolean; locationContext?: any };
       if (saved && typeof saved.q === 'number' && saved.a) {
         setCurrentStep((saved.step as any) || 'quiz');
         setCurrentQuestion(saved.q);
         setAnswers(saved.a);
+        if (saved.locationConsent !== undefined) setLocationConsent(saved.locationConsent);
+        if (saved.locationContext) setLocationContext(saved.locationContext);
       }
       // restore identity if available
-      const idRaw = localStorage.getItem('quiz_identity_v1');
+      const idRaw = localStorage.getItem('health_test_identity_v2');
       if (idRaw) {
         const id = JSON.parse(idRaw) as { firstName?: string; email?: string; consent?: boolean };
         setFirstName(id.firstName || '');
@@ -414,10 +551,10 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   // Persist state
   useEffect(() => {
     try {
-      const payload = JSON.stringify({ step: currentStep, q: currentQuestion, a: answers });
+      const payload = JSON.stringify({ step: currentStep, q: currentQuestion, a: answers, locationConsent, locationContext });
       localStorage.setItem(STORAGE_KEY, payload);
     } catch {}
-  }, [currentStep, currentQuestion, answers, STORAGE_KEY]);
+  }, [currentStep, currentQuestion, answers, locationConsent, locationContext, STORAGE_KEY]);
 
   const validateEmail = (val: string) => /[^@\s]+@[^@\s]+\.[^@\s]+/.test(val);
   const startQuiz = () => {
@@ -426,16 +563,89 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     if (!validateEmail(email)) { setFormError('Ange en giltig e‑postadress.'); return; }
     if (!consent) { setFormError('Du måste godkänna integritetspolicyn.'); return; }
     setFormError('');
-    try { localStorage.setItem('quiz_identity_v1', JSON.stringify({ firstName, email, consent: true })); } catch {}
+    try { localStorage.setItem('health_test_identity_v2', JSON.stringify({ firstName, email, consent: true })); } catch {}
     setCurrentStep('intro');
   };
 
+  const handleLocationConsent = async (consent: boolean) => {
+    setLocationConsent(consent);
+    if (consent) {
+      setLoadingContext(true);
+      try {
+        // Get location
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000 // 5 min cache
+          });
+        });
+        
+        // Fetch context
+        const response = await fetch('/api/healthquiz/context', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+            radiusMeters: 2000
+          })
+        });
+        
+        // Also fetch enhanced context with safety and research data
+        const enhancedResponse = await fetch('/api/healthquiz/enhanced-context', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+            medications: Array.isArray(answers[11]) ? answers[11].filter(m => m !== 'none') : [],
+            healthGoals: Array.isArray(answers[9]) ? answers[9] : []
+          })
+        });
+        
+        if (response.ok) {
+          const context = await response.json();
+          const enhancedContext = enhancedResponse.ok ? await enhancedResponse.json() : null;
+          
+          setLocationContext({
+            ...context,
+            enhanced: enhancedContext
+          });
+        }
+      } catch (error) {
+        console.error('Location/context error:', error);
+        // Continue without context
+      } finally {
+        setLoadingContext(false);
+      }
+    }
+    setCurrentStep('quiz');
+  };
+
   const handleAnswer = (answer: string) => {
-    const newAnswers = {
-      ...answers,
-      [currentQuestion]: answer
-    };
-    setAnswers(newAnswers);
+    const isMultiSelect = currentQuestion === 9 || currentQuestion === 11; // Health goals and medications questions (0-indexed)
+    
+    let newAnswers;
+    if (isMultiSelect) {
+      const currentAnswers = Array.isArray(answers[currentQuestion]) ? answers[currentQuestion] as string[] : [];
+      const updatedAnswers = currentAnswers.includes(answer)
+        ? currentAnswers.filter(a => a !== answer)
+        : [...currentAnswers, answer];
+      
+      newAnswers = {
+        ...answers,
+        [currentQuestion]: updatedAnswers
+      };
+      setAnswers(newAnswers);
+      return; // Don't auto-advance for multi-select
+    } else {
+      newAnswers = {
+        ...answers,
+        [currentQuestion]: answer
+      };
+      setAnswers(newAnswers);
+    }
 
     setIsAnimating(true);
     setTimeout(() => {
@@ -443,12 +653,23 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
         setCurrentQuestion(currentQuestion + 1);
       } else {
         setCurrentStep('result');
-        onComplete?.(newAnswers);
+        onComplete?.(newAnswers, locationContext);
         // Clear persisted state after completion
         try { localStorage.removeItem(STORAGE_KEY); } catch {}
       }
       setIsAnimating(false);
     }, 300);
+  };
+
+  const handleMultiSelectNext = () => {
+    if (currentQuestion < quizQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setCurrentStep('result');
+      onComplete?.(answers, locationContext);
+      // Clear persisted state after completion
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    }
   };
   const skipQuestion = () => {
     handleAnswer('skipped');
@@ -468,6 +689,8 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     setCurrentStep('welcome');
     setCurrentQuestion(0);
     setAnswers({});
+    setLocationConsent(null);
+    setLocationContext(null);
     try { localStorage.removeItem(STORAGE_KEY); } catch {}
   };
 
@@ -656,8 +879,63 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 max-w-2xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">{firstName ? `Hej ${firstName}!` : t('quiz.hello','Hej!')}</h2>
           <p className="text-gray-700 mb-6">{t('quiz.intro','Vad roligt att du vill göra vårt hälso‑quiz. Nu sätter vi igång!')}</p>
-          <button onClick={()=>setCurrentStep('quiz')} className="bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition">{t('quiz.startNow','Starta nu')}</button>
+                          <button onClick={()=>setCurrentStep('location')} className="bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition">{t('healthtest.startNow','Starta nu')}</button>
         </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'location') {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F9F6F0]">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden"
+        >
+          <div className="px-8 py-12 md:px-16">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-[#93C560]/20 rounded-full mb-6">
+                <MapPin className="w-10 h-10 text-[#014421]" />
+              </div>
+              <h2 className="text-3xl font-bold text-[#014421] mb-4">
+                {t('healthtest.locationTitle', 'Anpassa för din plats')}
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
+                {t('healthtest.locationText', 'Vi kan ge dig bättre träningsråd om vi vet var du befinner dig. Vi använder platsen för att hitta väder, luftkvalitet och träningsplatser nära dig.')}
+              </p>
+              
+              {loadingContext ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-8 h-8 animate-spin text-[#014421]" />
+                  <span className="ml-3 text-gray-600">{t('healthtest.fetchingData', 'Hämtar lokal information...')}</span>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <button
+                    onClick={() => handleLocationConsent(true)}
+                    className="w-full bg-[#014421] text-white py-4 px-6 rounded-xl font-medium hover:bg-[#025830] transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3"
+                  >
+                    <MapPin className="w-5 h-5" />
+                    {t('healthtest.allowLocation', 'Tillåt platsåtkomst')}
+                  </button>
+                  
+                  <button
+                    onClick={() => handleLocationConsent(false)}
+                    className="w-full bg-gray-100 text-gray-700 py-4 px-6 rounded-xl font-medium hover:bg-gray-200 transition-all"
+                  >
+                    {t('healthtest.skipLocation', 'Hoppa över')}
+                  </button>
+                </div>
+              )}
+              
+              <p className="text-sm text-gray-500 mt-6">
+                {t('healthtest.locationPrivacy', 'Din plats sparas endast under testet och raderas efteråt.')}
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -744,12 +1022,23 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleAnswer(option.value)}
                       className={`relative p-2.5 sm:p-4 rounded-xl border-2 transition-all duration-200 text-left group overflow-hidden ${
-                        answers[currentQuestion] === option.value
-                          ? 'border-primary bg-background shadow-lg transform scale-[1.02]'
-                          : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-primary hover:shadow-md'
+                        (() => {
+                          const isMultiSelect = currentQuestion === 9 || currentQuestion === 11;
+                          const isSelected = isMultiSelect 
+                            ? Array.isArray(answers[currentQuestion]) && (answers[currentQuestion] as string[]).includes(option.value)
+                            : answers[currentQuestion] === option.value;
+                          return isSelected
+                            ? 'border-primary bg-background shadow-lg transform scale-[1.02]'
+                            : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-primary hover:shadow-md';
+                        })()
                       }`}
-                      role="radio"
-                      aria-checked={answers[currentQuestion] === option.value}
+                      role={(currentQuestion === 9 || currentQuestion === 11) ? "checkbox" : "radio"}
+                      aria-checked={(() => {
+                        const isMultiSelect = currentQuestion === 9 || currentQuestion === 11;
+                        return isMultiSelect 
+                          ? Array.isArray(answers[currentQuestion]) && (answers[currentQuestion] as string[]).includes(option.value)
+                          : answers[currentQuestion] === option.value;
+                      })()}
                       aria-label={option.label}
                     >
                       {/* Hover gradient effect */}
@@ -758,16 +1047,22 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                       }`} />
                       
                       {/* Selected indicator */}
-                      {answers[currentQuestion] === option.value && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: "spring", stiffness: 200 }}
-                          className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow-lg"
-                        >
-                          <Check className="w-3.5 h-3.5 text-white" />
-                        </motion.div>
-                      )}
+                      {(() => {
+                        const isMultiSelect = currentQuestion === 9 || currentQuestion === 11;
+                        const isSelected = isMultiSelect 
+                          ? Array.isArray(answers[currentQuestion]) && (answers[currentQuestion] as string[]).includes(option.value)
+                          : answers[currentQuestion] === option.value;
+                        return isSelected && (
+                          <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 200 }}
+                            className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow-lg"
+                          >
+                            <Check className="w-3.5 h-3.5 text-white" />
+                          </motion.div>
+                        );
+                      })()}
                       
                       <div className="flex items-start space-x-2.5 relative z-10">
                         <motion.div 
@@ -794,6 +1089,26 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   ))}
                 </div>
               </div>
+
+              {/* Multi-select next button */}
+              {(currentQuestion === 9 || currentQuestion === 11) && (
+                <div className="mt-6">
+                  <button
+                    onClick={handleMultiSelectNext}
+                    disabled={!Array.isArray(answers[currentQuestion]) || (answers[currentQuestion] as string[]).length === 0}
+                    className="w-full bg-[#014421] text-white py-4 px-6 rounded-xl font-medium hover:bg-[#025830] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {t('healthtest.continue', 'Fortsätt')} 
+                    <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
+                      {Array.isArray(answers[currentQuestion]) ? (answers[currentQuestion] as string[]).length : 0} valda
+                    </span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <p className="text-xs text-gray-500 text-center mt-2">
+                    {t('healthtest.multiSelectHint', 'Du kan välja flera alternativ som passar dig')}
+                  </p>
+                </div>
+              )}
 
               {/* Navigation - Compact and fixed at bottom */}
               <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-100">
@@ -824,7 +1139,8 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   // Result state
   return (
     <QuizResultScreen 
-      quizData={answers} 
+      quizData={answers}
+      contextData={locationContext}
       onRestart={resetQuiz}
     />
   );
