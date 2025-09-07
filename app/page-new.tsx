@@ -16,6 +16,7 @@ import ArticleQuickAccess from "./components/ArticleQuickAccess";
 import FeaturePopup from "./components/FeaturePopup";
 import RecipeCarousel from "./components/RecipeCarousel";
 import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const t = useT();
@@ -29,6 +30,16 @@ export default function Home() {
   const router = useRouter();
   const [showGeoSuggest, setShowGeoSuggest] = useState(false);
   const [suggestedLocale, setSuggestedLocale] = useState<'sv'|'en'|'es'|null>(null);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    try {
+      const qp = searchParams?.get('quiz');
+      if (qp === '1' || qp === 'true') {
+        setShowQuiz(true);
+      }
+    } catch {}
+  }, [searchParams]);
 
   useEffect(() => {
     const chosen = typeof localStorage !== 'undefined' ? localStorage.getItem('lang') : null;
@@ -162,20 +173,19 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  onClick={() => {
-                    console.log('Health test button clicked!');
-                    setShowQuiz(true);
-                  }}
+                <Link
+                  href="/?quiz=1"
+                  onClick={() => { console.log('Health test button clicked (link+state)'); setShowQuiz(true); }}
                   className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
                   Starta Hälsotest
                   <ArrowRight className="w-5 h-5" />
-                </button>
+                </Link>
                 <Link
                   href="/utbildning"
                   className="bg-white/90 border-2 border-white/30 text-gray-700 px-8 py-5 rounded-full font-semibold text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
+                  style={{ position: 'relative', zIndex: 50 }}
                 >
                   <Book className="w-5 h-5" />
                   {t('home.ourCourses','Våra kurser')}
