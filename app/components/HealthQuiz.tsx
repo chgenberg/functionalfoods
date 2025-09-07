@@ -721,7 +721,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4 overflow-hidden">
         {/* Animated background elements */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 pointer-events-none z-0">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 0.1, scale: 1 }}
@@ -799,8 +799,8 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    onClick={startQuiz}
-                    className="mt-4 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 inline-flex items-center gap-2"
+                    onClick={() => { console.log('Start health test clicked'); startQuiz(); }}
+                    className="mt-4 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 inline-flex items-center gap-2 relative z-10"
                   >
                     <span>{t('quiz.start','Starta Ditt Personliga Quiz')}</span>
                     <ChevronRight className="w-5 h-5" />
