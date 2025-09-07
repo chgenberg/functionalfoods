@@ -84,6 +84,7 @@
     "fast-xml-parser": "5.2.5",
     "jszip": "3.10.1",
     "mammoth": "1.9.1",
+    "node-fetch": "2.7.0",
     "postcss": "^8.4.38",
     "prisma": "6.9.0",
     "react-leaflet": "^4.2.1",

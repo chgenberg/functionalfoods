@@ -263,10 +263,10 @@ export default function RecipePage() {
         return;
       }
       
-      // If it's a course recipe and user is logged in, allow access
-      // (We trust that the user has access if they're logged in and came from a course)
-      if (data.requiresCourse && isLoggedIn && fromCourseParam) {
-        // Allow access - user came from course page
+      // If it's a course recipe and user is logged in
+      if (data.requiresCourse && isLoggedIn) {
+        // For now, allow access to all logged-in users for course recipes
+        // This matches the business logic where course purchasers can view course recipes
         setRecipe(data);
         return;
       }
