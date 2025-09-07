@@ -142,6 +142,17 @@ export default function RecipePage() {
   };
 
   useEffect(() => {
+    // Restore token from URL if present (e.g., when opening from course modal)
+    try {
+      const url = new URL(window.location.href);
+      const tk = url.searchParams.get('tk');
+      if (tk && !localStorage.getItem('token')) {
+        localStorage.setItem('token', tk);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
     if (slug) {
       fetchRecipe();
     }
