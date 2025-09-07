@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// Lazily create OpenAI client only when an API key exists
+function getOpenAIClient(): OpenAI | null {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey || apiKey.trim() === '') return null;
+  return new OpenAI({ apiKey });
+}
 
 interface HealthTestData {
   answers: Record<number, string | string[]>;
@@ -205,27 +208,33 @@ INSTRUKTIONER:
 
 Maxlängd: 1500 ord. Fokus på kvalitet över kvantitet.`;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "Du är en expert inom functional foods, personaliserad nutrition och hälsooptimering. Du skapar personliga, evidensbaserade hälsorapporter som integrerar all tillgänglig data på ett sammanhängande sätt."
-        },
-        {
-          role: "user", 
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2000
-    });
-
-    const aiReport = completion.choices[0]?.message?.content || '';
+    // Try to generate AI report if API key is configured
+    let aiReport = '';
+    const openai = getOpenAIClient();
+    if (openai) {
+      try {
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "Du är en expert inom functional foods, personaliserad nutrition och hälsooptimering. Du skapar personliga, evidensbaserade hälsorapporter som integrerar all tillgänglig data på ett sammanhängande sätt."
+            },
+            { role: "user", content: prompt }
+          ],
+          temperature: 0.7,
+          max_tokens: 2000
+        });
+        aiReport = completion.choices[0]?.message?.content || '';
+      } catch (e) {
+        // Gracefully degrade if OpenAI fails
+        aiReport = '';
+      }
+    }
 
     // Generate structured recommendations
     const structuredRecommendations = {
-      profile: aiReport,
+      profile: aiReport || 'AI‑sammanfattning är tillfälligt inaktiverad. Här är dina rekommendationer baserade på dina svar och kontext.',
       priorityActions: [
         ...(analysis.riskFactors.includes('Dålig sömnkvalitet') ? ['Prioritera sömnhygien och magnesium'] : []),
         ...(analysis.riskFactors.includes('Kronisk stress') ? ['Implementera adaptogener och stresshantering'] : []),
