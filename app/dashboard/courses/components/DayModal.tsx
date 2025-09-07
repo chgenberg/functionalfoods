@@ -54,12 +54,20 @@ export default function DayModal({
       const fetchRecipeImages = async () => {
         try {
           const recipeNames = meals.map(meal => meal.meal);
+          // Also send resolved slugs when possible
+          const recipeSlugs = meals.map(meal => {
+            const link = getRecipeLink(meal);
+            if (!link) return null;
+            const parts = link.split('/');
+            const slugPart = parts[parts.length - 1] || '';
+            return slugPart.split('?')[0] || null;
+          });
           const response = await fetch('/api/recipes/batch-images', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ recipeNames, size: 'small' })
+            body: JSON.stringify({ recipeNames, recipeSlugs, size: 'small' })
           });
           
           if (response.ok) {
