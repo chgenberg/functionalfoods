@@ -148,6 +148,7 @@ export default function RecipePage() {
       const tk = url.searchParams.get('tk');
       if (tk) {
         localStorage.setItem('token', tk);
+        console.log('🔑 Token restored from URL in first useEffect');
       }
     } catch {}
   }, []);
@@ -156,7 +157,7 @@ export default function RecipePage() {
     if (slug) {
       fetchRecipe();
     }
-  }, [slug, user]);
+  }, [slug, userCourses]); // Changed dependency to userCourses instead of user
 
   useEffect(() => {
     // Fetch raw materials for ingredient linking
@@ -199,6 +200,17 @@ export default function RecipePage() {
   }, [recipe, searchParams, slug]);
 
   useEffect(() => {
+    // First check for token in URL
+    try {
+      const url = new URL(window.location.href);
+      const tk = url.searchParams.get('tk');
+      if (tk) {
+        localStorage.setItem('token', tk);
+        console.log('🔑 Token restored from URL');
+      }
+    } catch {}
+    
+    // Then check access
     const token = localStorage.getItem('token');
     if (token) {
       const checkAccess = async () => {
@@ -222,10 +234,12 @@ export default function RecipePage() {
             }).filter(Boolean) || [];
             
             setUserCourses(courseNames);
+            console.log('👤 User courses:', courseNames);
             
             // Legacy support - if user has legacy access, give them all courses
             if (data.hasLegacyAccess) {
               setUserCourses(['Basic', 'Flow', 'Energy']);
+              console.log('🔓 Legacy access granted');
             }
           }
         } catch (error) {
@@ -235,7 +249,7 @@ export default function RecipePage() {
       
       checkAccess();
     }
-  }, [user]);
+  }, []);
 
   const getToken = () => {
     const stored = localStorage.getItem('token');
@@ -300,7 +314,36 @@ export default function RecipePage() {
       
       // 2. Course recipes (server or client derived)
       if (isCourseRecipeClient) {
-        console.log('✅ Course recipe detected - TEMPORARY UNLOCK: allowing access');
+        console.log('🔍 Course recipe detected, checking user access...');
+        console.log('  Recipe tags:', data.tags);
+        console.log('  Course tags:', data.courseTags);
+        console.log('  User courses:', userCourses);
+        console.log('  Is logged in:', isLoggedIn);
+        
+        // Check if user has access to any of the required courses
+        const requiredCourses = data.courseTags || data.tags?.filter((t: string) => ['Basic','Flow','Energy'].includes(t)) || [];
+        const hasAccess = requiredCourses.length === 0 || requiredCourses.some((course: string) => userCourses.includes(course));
+        
+        console.log('  Required courses:', requiredCourses);
+        console.log('  Has access:', hasAccess);
+        
+        if (!isLoggedIn) {
+          console.log('❌ Course recipe, user not logged in');
+          setError('login');
+          setRecipe(data);
+          return;
+        } else if (!hasAccess && userCourses.length === 0 && user) {
+          // User is logged in but courses haven't loaded yet - allow access temporarily
+          console.log('⏳ User courses not loaded yet, allowing temporary access');
+          setRecipe(data);
+          return;
+        } else if (!hasAccess) {
+          console.log('❌ Course recipe, user has no access to required courses');
+          setError('course');
+          setRecipe(data);
+          return;
+        }
+        console.log('✅ Course recipe, user has access');
         setRecipe(data);
         return;
       }
