@@ -23,17 +23,18 @@ function extractRecipeName(mealName: string): string {
 // Helper function to add optimization parameters to image URLs
 function optimizeImageUrl(imageUrl: string, size: 'small' | 'medium' | 'large' = 'medium'): string {
   if (!imageUrl || imageUrl.includes('placeholder')) return imageUrl;
-  
-  // For Railway/production images, add query parameters for optimization
-  if (imageUrl.startsWith('/')) {
-    const sizeParams = {
-      small: '?w=80&h=80&fit=crop&q=75',
-      medium: '?w=200&h=200&fit=crop&q=80', 
-      large: '?w=400&h=400&fit=crop&q=85'
-    };
-    return `${imageUrl}${sizeParams[size]}`;
+
+  // Normalize '/public' prefix if present
+  if (imageUrl.startsWith('/public/')) {
+    imageUrl = imageUrl.replace('/public', '');
   }
-  
+
+  // Do NOT append query params for local assets; Next.js handles optimization
+  if (imageUrl.startsWith('/')) {
+    return imageUrl;
+  }
+
+  // Remote URLs can remain unchanged
   return imageUrl;
 }
 
@@ -46,7 +47,6 @@ function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string
     '/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp',
     '/Bilder_basic/_optimized/barsmoothie-med-apelsin.webp'
   ];
-  
   const randomImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
   return optimizeImageUrl(randomImage, size);
 }
@@ -54,7 +54,7 @@ function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string
 export async function POST(request: Request) {
   try {
     const { recipeNames, size = 'medium' } = await request.json();
-    
+
     if (!Array.isArray(recipeNames)) {
       return NextResponse.json({ error: 'Recipe names must be an array' }, { status: 400 });
     }
@@ -85,19 +85,19 @@ export async function POST(request: Request) {
 
     // Create a map of recipe names to images
     const imageMap: Record<string, string> = {};
-    
+
     for (let i = 0; i < recipeNames.length; i++) {
       const originalName = recipeNames[i];
       const cleanName = cleanedNames[i];
       const normalizedName = normalizedNames[i];
-      
+
       console.log(`🔍 Matching "${originalName}" -> "${cleanName}" -> "${normalizedName}"`);
-      
+
       // Try exact match first
       let match = recipes.find((recipe: any) => 
         normalizeSwedish(recipe.title) === normalizedName
       );
-      
+
       // Try partial match
       if (!match) {
         match = recipes.find((recipe: any) => {
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
           return normalizedTitle.includes(normalizedName) || normalizedName.includes(normalizedTitle);
         });
       }
-      
+
       // Try word-based matching
       if (!match) {
         const searchWords = normalizedName.split(/\s+/).filter(w => w.length > 2);
@@ -117,17 +117,14 @@ export async function POST(request: Request) {
           return matchingWords.length >= Math.min(2, searchWords.length);
         });
       }
-      
+
       if (match && match.imageUrl) {
-        // Check if the matched image is from a problematic directory
-        if (match.imageUrl.includes('Recept_complete2.0') || match.imageUrl.includes('Recept_complete/')) {
-          console.log(`⚠️ Using fallback for problematic path: ${match.imageUrl}`);
-          imageMap[originalName] = getFallbackImage(size as 'small' | 'medium' | 'large');
-        } else {
-          const optimizedUrl = optimizeImageUrl(match.imageUrl, size as 'small' | 'medium' | 'large');
-          imageMap[originalName] = optimizedUrl;
-          console.log(`✅ Match found: "${originalName}" -> "${match.title}" -> ${optimizedUrl}`);
-        }
+        // Prefer actual recipe image; accept Recept_complete2.0/Recept_complete as valid sources
+        let url = match.imageUrl as string;
+        if (url.startsWith('/public/')) url = url.replace('/public', '');
+        const optimizedUrl = optimizeImageUrl(url, size as 'small' | 'medium' | 'large');
+        imageMap[originalName] = optimizedUrl;
+        console.log(`✅ Match found: "${originalName}" -> "${match.title}" -> ${optimizedUrl}`);
       } else {
         imageMap[originalName] = getFallbackImage(size as 'small' | 'medium' | 'large');
         console.log(`❌ No match for: "${originalName}" - using fallback`);
