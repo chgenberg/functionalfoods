@@ -1,0 +1,2086 @@
+{
+  "fixes": [
+    {
+      "title": "Ägghack i salladsblad",
+      "slug": "agghack-i-salladsblad",
+      "newImage": "/Recept_complete/images/_optimized/Agghack i salladsblad.webp",
+      "score": 100
+    },
+    {
+      "title": "Ägghack i salladsblad",
+      "slug": "agghack-salladsblad-sallad",
+      "newImage": "/Recept_complete/images/_optimized/Agghack i salladsblad.webp",
+      "score": 100
+    },
+    {
+      "title": "Ägghack med kalkon",
+      "slug": "agghack-med-kalkon",
+      "newImage": "/Recept_complete/images/_optimized/Agghack med kalkon.webp",
+      "score": 100
+    },
+    {
+      "title": "Ägghack med kalkon",
+      "slug": "agghack-kalkon",
+      "newImage": "/Recept_complete/images/_optimized/Agghack med kalkon.webp",
+      "score": 100
+    },
+    {
+      "title": "Ägghack med kallrökt lax",
+      "slug": "agghack-med-kallrokt-lax",
+      "newImage": "/Recept_complete/images/_optimized/Agghack med kallrokt lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Ägghack med kallrökt lax",
+      "slug": "aggrora-lax-2",
+      "newImage": "/Recept_complete/images/_optimized/Agghack med kallrokt lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med asiatisk avokadosallad",
+      "slug": "aggrora-asiatisk-avokadosallad",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med asiatisk avokadosallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med avokado",
+      "slug": "aggrora-med-avokado",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med avokado.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med avokado och granatäpple",
+      "slug": "aggrora-med-avokado-och-granatapple",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med avokado och granatapple.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med champinjoner",
+      "slug": "aggrora-lax",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med champinjoner.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med champinjoner",
+      "slug": "aggrora-med-champinjoner",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med champinjoner.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med fetaost och spenat",
+      "slug": "aggrora-fetaost-spenat",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med fetaost och spenat.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med granatäpple och kiwi",
+      "slug": "aggrora-granatapple-kiwi",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med granatapple och kiwi.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med granatäpple och kiwi",
+      "slug": "aggrora-med-granatapple-och-kiwi",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med granatapple och kiwi.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med kalkon och granatäpple",
+      "slug": "aggrora-med-kalkon-och-granatapple",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med kalkon och granatapple.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med lax",
+      "slug": "aggrora-med-lax",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med paprika",
+      "slug": "aggrora-paprika",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med paprika.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med paprika",
+      "slug": "aggrora-med-paprika",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med paprika.webp",
+      "score": 100
+    },
+    {
+      "title": "Äggröra med sockerärtor",
+      "slug": "aggrora-med-sockerartor",
+      "newImage": "/Recept_complete/images/_optimized/Aggrora med sockerartor.webp",
+      "score": 100
+    },
+    {
+      "title": "Ajvarspett med grekisk sallad och tzatziki",
+      "slug": "ajvarspett-med-grekisk-sallad-och-tzatziki",
+      "newImage": "/Recept_complete/images/_optimized/Ajvarspett med grekisk sallad och tzatziki.webp",
+      "score": 100
+    },
+    {
+      "title": "Apelsinkyckling med blomkålsris",
+      "slug": "apelsinkyckling-med-blomkalsris",
+      "newImage": "/Recept_complete/images/_optimized/Apelsinkyckling med blomkalsris.webp",
+      "score": 100
+    },
+    {
+      "title": "Äppelgranola",
+      "slug": "appelgranola",
+      "newImage": "/Recept_complete/images/_optimized/Appelgranola.webp",
+      "score": 130
+    },
+    {
+      "title": "Äpple med jordnötskräm",
+      "slug": "apple-med-jordnotskram",
+      "newImage": "/Recept_complete/images/_optimized/Apple med jordnotskram.webp",
+      "score": 100
+    },
+    {
+      "title": "Asiatiska köttbullar med nudelsallad",
+      "slug": "asiatiska-kottbullar-med-nudelsallad",
+      "newImage": "/Recept_complete/images/_optimized/Asiatiska kottbullar med nudelsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Asiatisk tonfisksallad",
+      "slug": "asiatisk-tonfisksallad",
+      "newImage": "/Recept_complete/images/_optimized/Asiatisk tonfisksallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Asiatisk torsk",
+      "slug": "asiatisk-torsk",
+      "newImage": "/Recept_complete/images/_optimized/Asiatisk torsk.webp",
+      "score": 100
+    },
+    {
+      "title": "Auberginerullader med chorizo och ricottakräm",
+      "slug": "auberginerullader-med-chorizo-och-ricottakram",
+      "newImage": "/Recept_complete/images/_optimized/Auberginerullader med chorizo och ricottakram.webp",
+      "score": 100
+    },
+    {
+      "title": "Avokado- och persikosallad",
+      "slug": "avokado-och-persikosallad",
+      "newImage": "/Recept_complete/images/_optimized/Avokado- och persikosallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananmuffin",
+      "slug": "lax-fetaost-rostade",
+      "newImage": "/Recept_complete/images/_optimized/Bananmuffin.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananmuffin",
+      "slug": "bananmuffin",
+      "newImage": "/Recept_complete/images/_optimized/Bananmuffin.webp",
+      "score": 130
+    },
+    {
+      "title": "Bananmuffins med mandel och kanel",
+      "slug": "bananmuffins-med-mandel-och-kanel",
+      "newImage": "/Recept_complete/images/_optimized/Bananmuffins med mandel och kanel.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananpannkaka",
+      "slug": "bananpannkaka",
+      "newImage": "/Recept_complete/images/_optimized/Bananpannkaka.webp",
+      "score": 130
+    },
+    {
+      "title": "Bananpannkaka",
+      "slug": "stekt-agg-champinjoner-2",
+      "newImage": "/Recept_complete/images/_optimized/Bananpannkaka.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananpannkaka med keso, blåbär och mango",
+      "slug": "bananpannkaka-med-keso-blabar-och-mango",
+      "newImage": "/Recept_complete/images/_optimized/Bananpannkaka med keso, blabar och mango.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananpannkakor med pistagenötter och bär",
+      "slug": "bananpannkakor-med-pistagenotter-och-bar",
+      "newImage": "/Recept_complete/images/_optimized/Bananpannkakor med pistagenotter och bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananplättar med jordgubbar och kokos",
+      "slug": "bananplattar-jordgubbar-kokos",
+      "newImage": "/Recept_complete/images/_optimized/Bananplattar med jordgubbar och kokos.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananplättar med jordgubbar och kokos",
+      "slug": "bananplattar-med-jordgubbar-och-kokos",
+      "newImage": "/Recept_complete/images/_optimized/Bananplattar med jordgubbar och kokos.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananplättar med keso och hallon",
+      "slug": "bananplattar-med-keso-och-hallon",
+      "newImage": "/Recept_complete/images/_optimized/Bananplattar med keso och hallon.webp",
+      "score": 100
+    },
+    {
+      "title": "Bananplättar med mango och granatäpple",
+      "slug": "bananplattar-med-mango-och-granatapple",
+      "newImage": "/Recept_complete/images/_optimized/Bananplattar med mango och granatapple.webp",
+      "score": 100
+    },
+    {
+      "title": "Bärsmoothiebowl",
+      "slug": "barsmoothiebowl",
+      "newImage": "/Recept_complete/images/_optimized/Barsmoothiebowl.webp",
+      "score": 130
+    },
+    {
+      "title": "Biff med sötpotatis",
+      "slug": "biff-med-sotpotatis",
+      "newImage": "/Recept_complete/images/_optimized/Biff med sotpotatis.webp",
+      "score": 100
+    },
+    {
+      "title": "Blåbär- och hallonsmoothie",
+      "slug": "blabar-och-hallonsmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Blabar- och hallonsmoothie.webp",
+      "score": 100
+    },
+    {
+      "title": "Blåbärssmoothie",
+      "slug": "blabarssmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Blabarssmoothie.webp",
+      "score": 130
+    },
+    {
+      "title": "Blåbärssmoothie",
+      "slug": "jordgubbar-mango-vit",
+      "newImage": "/Recept_complete/images/_optimized/Blabarssmoothie.webp",
+      "score": 100
+    },
+    {
+      "title": "Blodapelsin med vit chokladkräm",
+      "slug": "blodapelsin-med-vit-chokladkram",
+      "newImage": "/Recept_complete/images/_optimized/Blodapelsin med vit chokladkram.webp",
+      "score": 100
+    },
+    {
+      "title": "Blomkål- och saffranssoppa",
+      "slug": "blomkal-och-saffranssoppa",
+      "newImage": "/Recept_complete/images/_optimized/Blomkal- och saffranssoppa.webp",
+      "score": 100
+    },
+    {
+      "title": "Bovetegranola",
+      "slug": "bovetegranola",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 130
+    },
+    {
+      "title": "Bovetegranola med apelsin och kardemumma",
+      "slug": "bovetegranola-med-apelsin-och-kardemumma",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola med apelsin och kardemumma.webp",
+      "score": 100
+    },
+    {
+      "title": "Bovetemüsli med dadelsirap och nyponskal",
+      "slug": "bovetem-sli-med-dadelsirap-och-nyponskal",
+      "newImage": "/Recept_complete/images/_optimized/Bovetemüsli med dadelsirap och nyponskal.webp",
+      "score": 100
+    },
+    {
+      "title": "Bovetemüsli med dadelsirap och nyponskal",
+      "slug": "bovetemusli-med-dadelsirap-och-nyponskal",
+      "newImage": "/Recept_complete/images/_optimized/Bovetemüsli med dadelsirap och nyponskal.webp",
+      "score": 100
+    },
+    {
+      "title": "Burrata med tomatsallad",
+      "slug": "burrata-med-tomatsallad",
+      "newImage": "/Recept_complete/images/_optimized/Burrata med tomatsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Champinjonomelett",
+      "slug": "champinjonomelett",
+      "newImage": "/Recept_complete/images/_optimized/Champinjonomelett.webp",
+      "score": 130
+    },
+    {
+      "title": "Chèvresallad med blodapelsin",
+      "slug": "ch-vresallad-med-blodapelsin",
+      "newImage": "/Recept_complete/images/_optimized/Chèvresallad med blodapelsin.webp",
+      "score": 100
+    },
+    {
+      "title": "Chèvresallad med blodapelsin",
+      "slug": "chevresallad-med-blodapelsin",
+      "newImage": "/Recept_complete/images/_optimized/Chèvresallad med blodapelsin.webp",
+      "score": 100
+    },
+    {
+      "title": "Chiafrögröt",
+      "slug": "chiafrogrot",
+      "newImage": "/Recept_complete/images/_optimized/Chiafrogrot.webp",
+      "score": 130
+    },
+    {
+      "title": "Chiapudding med jordgubbssylt och pistagenötter",
+      "slug": "chiapudding-med-jordgubbssylt-och-pistagenotter",
+      "newImage": "/Recept_complete/images/_optimized/Chiapudding med jordgubbssylt och pistagenotter.webp",
+      "score": 100
+    },
+    {
+      "title": "Chiapudding med med apelsin och mynta",
+      "slug": "chiapudding-med-med-apelsin-och-mynta",
+      "newImage": "/Recept_complete/images/_optimized/Chiapudding med med apelsin och mynta.webp",
+      "score": 100
+    },
+    {
+      "title": "Chokladbars med majskakor",
+      "slug": "chokladbars-med-majskakor",
+      "newImage": "/Recept_complete/images/_optimized/Chokladbars med majskakor.webp",
+      "score": 100
+    },
+    {
+      "title": "Chokladmuffins",
+      "slug": "chokladmuffins",
+      "newImage": "/Recept_complete/images/_optimized/Chokladmuffins.webp",
+      "score": 130
+    },
+    {
+      "title": "Choklad- och kokoschiapudding",
+      "slug": "choklad-kokoschiapudding",
+      "newImage": "/Recept_complete/images/_optimized/Choklad- och kokoschiapudding.webp",
+      "score": 100
+    },
+    {
+      "title": "Chokladriskaka med jordnötssmör",
+      "slug": "chokladriskaka-med-jordnotssmor",
+      "newImage": "/Recept_complete/images/_optimized/Chokladriskaka med jordnotssmor.webp",
+      "score": 100
+    },
+    {
+      "title": "Citronkaka med äpple och kardemumma",
+      "slug": "citronkaka-med-apple-och-kardemumma",
+      "newImage": "/Recept_complete/images/_optimized/Citronkaka med apple och kardemumma.webp",
+      "score": 100
+    },
+    {
+      "title": "Citronkakor med chiafrön",
+      "slug": "citronkakor-med-chiafron",
+      "newImage": "/Recept_complete/images/_optimized/Citronkakor med chiafron.webp",
+      "score": 100
+    },
+    {
+      "title": "Detox my morning",
+      "slug": "detox-my-morning",
+      "newImage": "/Recept_complete/images/_optimized/Detox my morning.webp",
+      "score": 100
+    },
+    {
+      "title": "Enchiladas med nötfärs och majs",
+      "slug": "enchiladas-med-notfars-och-majs",
+      "newImage": "/Recept_complete/images/_optimized/Enchiladas med notfars och majs.webp",
+      "score": 100
+    },
+    {
+      "title": "Energisjuice",
+      "slug": "energisjuice",
+      "newImage": "/Recept_complete/images/_optimized/Energisjuice.webp",
+      "score": 130
+    },
+    {
+      "title": "Entrecote med haricots verts och bearnaisesås",
+      "slug": "entrecote-med-haricots-verts-och-bearnaisesas",
+      "newImage": "/Recept_complete/images/_optimized/Entrecote med haricots verts och bearnaisesas.webp",
+      "score": 100
+    },
+    {
+      "title": "Entrecote med sparris och ärtpesto",
+      "slug": "entrecote-med-sparris-och-artpesto",
+      "newImage": "/Recept_complete/images/_optimized/Entrecote med sparris och artpesto.webp",
+      "score": 100
+    },
+    {
+      "title": "Fänkålssallad med grapefrukt och burrata",
+      "slug": "fankalssallad-med-grapefrukt-och-burrata",
+      "newImage": "/Recept_complete/images/_optimized/Fankalssallad med grapefrukt och burrata.webp",
+      "score": 100
+    },
+    {
+      "title": "Fisk och skaldjursgryta från medelhavet",
+      "slug": "fisk-och-skaldjursgryta-fran-medelhavet",
+      "newImage": "/Recept_complete/images/_optimized/Fisk och skaldjursgryta fran medelhavet.webp",
+      "score": 100
+    },
+    {
+      "title": "Fläskkarré med fylld sötpotatis och citronsås",
+      "slug": "flaskkarr-med-fylld-sotpotatis-och-citronsas",
+      "newImage": "/Recept_complete/images/_optimized/Flaskkarré med fylld sotpotatis och citronsas.webp",
+      "score": 100
+    },
+    {
+      "title": "Fläskkarré med fylld sötpotatis och citronsås",
+      "slug": "flaskkarre-med-fylld-sotpotatis-och-citronsas",
+      "newImage": "/Recept_complete/images/_optimized/Flaskkarré med fylld sotpotatis och citronsas.webp",
+      "score": 100
+    },
+    {
+      "title": "Frukostmuffin med ägg",
+      "slug": "frukostmuffin-med-agg",
+      "newImage": "/Recept_complete/images/_optimized/Frukostmuffin med agg.webp",
+      "score": 100
+    },
+    {
+      "title": "Frukostmuffin med färskost och bär",
+      "slug": "frukostmuffin-med-farskost-och-bar",
+      "newImage": "/Recept_complete/images/_optimized/Frukostmuffin med farskost och bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Frukostmuffins",
+      "slug": "frukostmuffins",
+      "newImage": "/Recept_complete/images/_optimized/Frukostmuffins.webp",
+      "score": 130
+    },
+    {
+      "title": "Fruktsmoothie",
+      "slug": "fruktsmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Fruktsmoothie.webp",
+      "score": 130
+    },
+    {
+      "title": "Fruktsmoothie",
+      "slug": "smoothie-2",
+      "newImage": "/Recept_complete/images/_optimized/Fruktsmoothie.webp",
+      "score": 100
+    },
+    {
+      "title": "Gino",
+      "slug": "gino",
+      "newImage": "/Recept_complete/images/_optimized/Gino.webp",
+      "score": 130
+    },
+    {
+      "title": "Glasnudellsalad med grönsaker",
+      "slug": "glasnudellsalad-med-gronsaker",
+      "newImage": "/Recept_complete/images/_optimized/Glasnudellsalad med gronsaker.webp",
+      "score": 100
+    },
+    {
+      "title": "Glutenfri kladdkaka med lakrits och hallon",
+      "slug": "glutenfri-kladdkaka-med-lakrits-och-hallon",
+      "newImage": "/Recept_complete/images/_optimized/Glutenfri kladdkaka med lakrits och hallon.webp",
+      "score": 100
+    },
+    {
+      "title": "Grekiska köttbullar i tomatsås",
+      "slug": "grekiska-kottbullar-i-tomatsas",
+      "newImage": "/Recept_complete/images/_optimized/Grekiska kottbullar i tomatsas.webp",
+      "score": 100
+    },
+    {
+      "title": "Grekisk yoghurt med bovetemüsli",
+      "slug": "grekisk-yoghurt-med-bovetemusli",
+      "newImage": "/Recept_complete/images/_optimized/Grekisk yoghurt med bovetemüsli.webp",
+      "score": 100
+    },
+    {
+      "title": "Grekisk yoghurt med bovetemüsli",
+      "slug": "grekisk-yoghurt-med-bovetem-sli",
+      "newImage": "/Recept_complete/images/_optimized/Grekisk yoghurt med bovetemüsli.webp",
+      "score": 100
+    },
+    {
+      "title": "Grillspett med grekisk sallad och morotstzatziki",
+      "slug": "grillspett-med-grekisk-sallad-och-morotstzatziki",
+      "newImage": "/Recept_complete/images/_optimized/Grillspett med grekisk sallad och morotstzatziki.webp",
+      "score": 100
+    },
+    {
+      "title": "Grön juice",
+      "slug": "gron-juice-juice",
+      "newImage": "/Recept_complete/images/_optimized/Gron juice.webp",
+      "score": 100
+    },
+    {
+      "title": "Grön juice",
+      "slug": "gron-juice",
+      "newImage": "/Recept_complete/images/_optimized/Gron juice.webp",
+      "score": 100
+    },
+    {
+      "title": "Grönkålsdrink",
+      "slug": "gronkalsdrink",
+      "newImage": "/Recept_complete/images/_optimized/Gronkalsdrink.webp",
+      "score": 130
+    },
+    {
+      "title": "Grönkålspaj med champinjoner",
+      "slug": "gronkalspaj-med-champinjoner",
+      "newImage": "/Recept_complete/images/_optimized/Gronkalspaj med champinjoner.webp",
+      "score": 100
+    },
+    {
+      "title": "Grönsakspankaka med asiatisk sås",
+      "slug": "gronsakspankaka-med-asiatisk-sas",
+      "newImage": "/Recept_complete/images/_optimized/Gronsakspankaka med asiatisk sas.webp",
+      "score": 100
+    },
+    {
+      "title": "Grönsakswok med kyckling",
+      "slug": "gronsakswok-med-kyckling",
+      "newImage": "/Recept_complete/images/_optimized/Gronsakswok med kyckling.webp",
+      "score": 100
+    },
+    {
+      "title": "Grönsakswok med kycklingfärs",
+      "slug": "gronsakswok-med-kycklingfars",
+      "newImage": "/Recept_complete/images/_optimized/Gronsakswok med kycklingfars.webp",
+      "score": 100
+    },
+    {
+      "title": "Grön smoothie",
+      "slug": "gron-smoothie",
+      "newImage": "/Recept_complete/images/_optimized/Gron smoothie.webp",
+      "score": 100
+    },
+    {
+      "title": "Grundrecept benbuljong",
+      "slug": "grundrecept-benbuljong",
+      "newImage": "/Recept_complete/images/_optimized/Grundrecept benbuljong.webp",
+      "score": 100
+    },
+    {
+      "title": "Hallon- och blåbärssmoothie",
+      "slug": "hallon-och-blabarssmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Blabarssmoothie.webp",
+      "score": 113
+    },
+    {
+      "title": "Hallon- och blåbärssmoothie",
+      "slug": "smoothie-blabarssmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Blabarssmoothie.webp",
+      "score": 113
+    },
+    {
+      "title": "Hallon och kiwi med vit chokladcréme",
+      "slug": "hallon-och-kiwi-med-vit-chokladcr-me",
+      "newImage": "/Recept_complete/images/_optimized/Hallon och kiwi med vit chokladcréme.webp",
+      "score": 100
+    },
+    {
+      "title": "Hallon och kiwi med vit chokladcréme",
+      "slug": "hallon-och-kiwi-med-vit-chokladcreme",
+      "newImage": "/Recept_complete/images/_optimized/Hallon och kiwi med vit chokladcréme.webp",
+      "score": 100
+    },
+    {
+      "title": "Halstrad tonfisk med grönsaker och sesamdressing",
+      "slug": "halstrad-tonfisk-med-gronsaker-och-sesamdressing",
+      "newImage": "/Recept_complete/images/_optimized/Halstrad tonfisk med gronsaker och sesamdressing.webp",
+      "score": 100
+    },
+    {
+      "title": "Hamburgare med fetaostkräm och rostad sötpotatis",
+      "slug": "hamburgare-med-fetaostkram-och-rostad-sotpotatis",
+      "newImage": "/Recept_complete/images/_optimized/Hamburgare med fetaostkram och rostad sotpotatis.webp",
+      "score": 100
+    },
+    {
+      "title": "Hamburgare med grekisk sallad",
+      "slug": "hamburgare-med-grekisk-sallad",
+      "newImage": "/Recept_complete/images/_optimized/Hamburgare med grekisk sallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Hamburgare med hummus",
+      "slug": "hamburgare-med-hummus",
+      "newImage": "/Recept_complete/images/_optimized/Hamburgare med hummus.webp",
+      "score": 100
+    },
+    {
+      "title": "Havrefralla med morötter och torkade aprikoser",
+      "slug": "havrefralla-med-morotter-och-torkade-aprikoser",
+      "newImage": "/Recept_complete/images/_optimized/Havrefralla med morotter och torkade aprikoser.webp",
+      "score": 100
+    },
+    {
+      "title": "Havrefrallor med morötter och aprikoser",
+      "slug": "havrefrallor-morotter-aprikoser",
+      "newImage": "/Recept_complete/images/_optimized/Havrefrallor med morotter och aprikoser.webp",
+      "score": 100
+    },
+    {
+      "title": "Havrefrallor med morötter och aprikoser",
+      "slug": "havrefrallor-med-morotter-och-aprikoser",
+      "newImage": "/Recept_complete/images/_optimized/Havrefrallor med morotter och aprikoser.webp",
+      "score": 100
+    },
+    {
+      "title": "Havregrynsgröt med ananas",
+      "slug": "havregrynsgrot-med-ananas",
+      "newImage": "/Recept_complete/images/_optimized/Havregrynsgrot med ananas.webp",
+      "score": 100
+    },
+    {
+      "title": "Havregrynsgröt med apelsin och kokos",
+      "slug": "havregrynsgrot-med-apelsin-och-kokos",
+      "newImage": "/Recept_complete/images/_optimized/Havregrynsgrot med apelsin och kokos.webp",
+      "score": 100
+    },
+    {
+      "title": "Havregrynsgröt med apelsin och kokos",
+      "slug": "havregrynsgrot-apelsin-kokos",
+      "newImage": "/Recept_complete/images/_optimized/Havregrynsgrot med apelsin och kokos.webp",
+      "score": 100
+    },
+    {
+      "title": "Havregrynsgröt med äpple och kanel",
+      "slug": "havregrynsgrot-med-apple-och-kanel",
+      "newImage": "/Recept_complete/images/_optimized/Havregrynsgrot med apple och kanel.webp",
+      "score": 100
+    },
+    {
+      "title": "Havregrynsgröt med torkad frukt och äpple",
+      "slug": "havregrynsgrot-torkad-frukt",
+      "newImage": "/Recept_complete/images/_optimized/Havregrynsgrot med torkad frukt och apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Havregrynsgröt med torkad frukt och äpple",
+      "slug": "havregrynsgrot-med-torkad-frukt-och-apple",
+      "newImage": "/Recept_complete/images/_optimized/Havregrynsgrot med torkad frukt och apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Havregrynsgröt med valnötter och bär",
+      "slug": "havregrynsgrot-med-valnotter-och-bar",
+      "newImage": "/Recept_complete/images/_optimized/Havregrynsgrot med valnotter och bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Havrevåffla med jordgubbssylt och vaniljkeso",
+      "slug": "havrevaffla-med-jordgubbssylt-och-vaniljkeso",
+      "newImage": "/Recept_complete/images/_optimized/Havrevaffla med jordgubbssylt och vaniljkeso.webp",
+      "score": 100
+    },
+    {
+      "title": "Het ratatouille",
+      "slug": "het-ratatouille",
+      "newImage": "/Recept_complete/images/_optimized/Het ratatouille.webp",
+      "score": 100
+    },
+    {
+      "title": "Indiska kycklingbullar",
+      "slug": "indiska-kycklingbullar",
+      "newImage": "/Recept_complete/images/_optimized/Indiska kycklingbullar.webp",
+      "score": 100
+    },
+    {
+      "title": "Indisk laxgryta med röda linser",
+      "slug": "indisk-laxgryta-med-roda-linser",
+      "newImage": "/Recept_complete/images/_optimized/Indisk laxgryta med roda linser.webp",
+      "score": 100
+    },
+    {
+      "title": "Indisk wok med sjögräsnudlar och kyckling",
+      "slug": "indisk-wok-med-sjograsnudlar-och-kyckling",
+      "newImage": "/Recept_complete/images/_optimized/Indisk wok med sjograsnudlar och kyckling.webp",
+      "score": 100
+    },
+    {
+      "title": "Inkokta päron med chokladcréme och mandlar",
+      "slug": "inkokta-paron-med-chokladcr-me-och-mandlar",
+      "newImage": "/Recept_complete/images/_optimized/Inkokta paron med chokladcréme och mandlar.webp",
+      "score": 100
+    },
+    {
+      "title": "Inkokta päron med chokladcréme och mandlar",
+      "slug": "inkokta-paron-med-chokladcreme-och-mandlar",
+      "newImage": "/Recept_complete/images/_optimized/Inkokta paron med chokladcréme och mandlar.webp",
+      "score": 100
+    },
+    {
+      "title": "Italiensk kycklinggratäng med mozzarella",
+      "slug": "italiensk-kycklinggratang-med-mozzarella",
+      "newImage": "/Recept_complete/images/_optimized/Italiensk kycklinggratang med mozzarella.webp",
+      "score": 100
+    },
+    {
+      "title": "Japansk kycklingfärswok med groddar",
+      "slug": "japansk-kycklingfarswok-med-groddar",
+      "newImage": "/Recept_complete/images/_optimized/Japansk kycklingfarswok med groddar.webp",
+      "score": 100
+    },
+    {
+      "title": "Jordgubbar och mango med vit chokladkräm",
+      "slug": "jordgubbar-och-mango-med-vit-chokladkram",
+      "newImage": "/Recept_complete/images/_optimized/Jordgubbar och mango med vit chokladkram.webp",
+      "score": 100
+    },
+    {
+      "title": "Jordgubbs- och granatäppelsmoothie",
+      "slug": "jordgubbs-och-granatappelsmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Jordgubbs- och granatappelsmoothie.webp",
+      "score": 100
+    },
+    {
+      "title": "Jordgubbssylt",
+      "slug": "jordgubbssylt",
+      "newImage": "/Recept_complete/images/_optimized/Jordgubbssylt.webp",
+      "score": 130
+    },
+    {
+      "title": "Kalkonbolognese med morotspasta",
+      "slug": "kalkonbolognese-med-morotspasta",
+      "newImage": "/Recept_complete/images/_optimized/Kalkonbolognese med morotspasta.webp",
+      "score": 100
+    },
+    {
+      "title": "Kavring med frön",
+      "slug": "kavring-med-fron",
+      "newImage": "/Recept_complete/images/_optimized/Kavring med fron.webp",
+      "score": 100
+    },
+    {
+      "title": "Kesofralla med färskost och gurka",
+      "slug": "kesofralla-med-farskost-och-gurka",
+      "newImage": "/Recept_complete/images/_optimized/Kesofralla med farskost och gurka.webp",
+      "score": 100
+    },
+    {
+      "title": "Kesofralla med ost och paprika",
+      "slug": "kesofralla-med-ost-och-paprika",
+      "newImage": "/Recept_complete/images/_optimized/Kesofralla med ost och paprika.webp",
+      "score": 100
+    },
+    {
+      "title": "Kesofralla med skinka och tomat",
+      "slug": "kesofralla-med-skinka-och-tomat",
+      "newImage": "/Recept_complete/images/_optimized/Kesofralla med skinka och tomat.webp",
+      "score": 100
+    },
+    {
+      "title": "Kesofrallor med äpple och pumpafrön",
+      "slug": "kesofrallor-med-apple-och-pumpafron",
+      "newImage": "/Recept_complete/images/_optimized/Kesofrallor med apple och pumpafron.webp",
+      "score": 100
+    },
+    {
+      "title": "Kesokaka med kardemumma och hallon",
+      "slug": "kesokaka-med-kardemumma-och-hallon",
+      "newImage": "/Recept_complete/images/_optimized/Kesokaka med kardemumma och hallon.webp",
+      "score": 100
+    },
+    {
+      "title": "Keso med bovetegranola",
+      "slug": "keso-med-bovetegranola",
+      "newImage": "/Bilder_flow/_optimized/keso-med-bovetegranola-och-frukt.webp",
+      "score": 117
+    },
+    {
+      "title": "Keso med bovetegranola",
+      "slug": "keso-bovetegranola-granola",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 116
+    },
+    {
+      "title": "Keso med bovetegranola och frukt",
+      "slug": "keso-bovetegranola-frukt",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 103
+    },
+    {
+      "title": "Keso med granola och fruktsallad",
+      "slug": "keso-med-granola-och-fruktsallad",
+      "newImage": "/Recept_complete/images/_optimized/Keso med granola och fruktsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Keso med granola och fruktsallad",
+      "slug": "keso-granola-fruktsallad",
+      "newImage": "/Recept_complete/images/_optimized/Keso med granola och fruktsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Keso med grapefrukt",
+      "slug": "keso-med-grapefrukt",
+      "newImage": "/Recept_complete/images/_optimized/Keso med grapefrukt.webp",
+      "score": 100
+    },
+    {
+      "title": "Keso med hallon och granatäpple",
+      "slug": "keso-hallon-granatapple",
+      "newImage": "/Recept_complete/images/_optimized/Bananplattar med keso och hallon.webp",
+      "score": 69
+    },
+    {
+      "title": "Keso med hallon och granatäpple",
+      "slug": "keso-med-hallon-och-granatapple",
+      "newImage": "/Recept_complete/images/_optimized/Bananplattar med keso och hallon.webp",
+      "score": 69
+    },
+    {
+      "title": "Keso med hallon och valnötter",
+      "slug": "keso-med-hallon-och-valnotter",
+      "newImage": "/Recept_complete/images/_optimized/Keso med hallon och valnotter.webp",
+      "score": 100
+    },
+    {
+      "title": "Keso med melon och ananas",
+      "slug": "keso-med-melon-och-ananas",
+      "newImage": "/Recept_complete/images/_optimized/Keso med melon och ananas.webp",
+      "score": 100
+    },
+    {
+      "title": "Keso- och havrefrallor med tranbär",
+      "slug": "keso-och-havrefrallor-med-tranbar",
+      "newImage": "/Recept_complete/images/_optimized/Keso- och havrefrallor med tranbar.webp",
+      "score": 100
+    },
+    {
+      "title": "Kesoplättar med bär och yoghurt",
+      "slug": "kesoplattar-med-bar-och-yoghurt",
+      "newImage": "/Recept_complete/images/_optimized/Kesoplattar med bar och yoghurt.webp",
+      "score": 100
+    },
+    {
+      "title": "Kesotortilla med tomat, pesto och kalkon",
+      "slug": "kesotortilla-med-tomat-pesto-och-kalkon",
+      "newImage": "/Recept_complete/images/_optimized/Kesotortilla med tomat, pesto och kalkon.webp",
+      "score": 100
+    },
+    {
+      "title": "Ketomüsli",
+      "slug": "ketomusli",
+      "newImage": "/Recept_complete/images/_optimized/Ketomüsli.webp",
+      "score": 100
+    },
+    {
+      "title": "Ketomüsli",
+      "slug": "ketom-sli",
+      "newImage": "/Recept_complete/images/_optimized/Ketomüsli.webp",
+      "score": 100
+    },
+    {
+      "title": "Köftekyckling med grönsaker och granatäpple",
+      "slug": "koftekyckling-med-gronsaker-och-granatapple",
+      "newImage": "/Recept_complete/images/_optimized/Koftekyckling med gronsaker och granatapple.webp",
+      "score": 100
+    },
+    {
+      "title": "Kokos- och jordgubbssmoothie med bovetegranola",
+      "slug": "kokos-och-jordgubbssmoothie-med-bovetegranola",
+      "newImage": "/Recept_complete/images/_optimized/Kokos- och jordgubbssmoothie med bovetegranola.webp",
+      "score": 100
+    },
+    {
+      "title": "Kokta ägg med kaviar",
+      "slug": "kokta-agg-med-kaviar",
+      "newImage": "/Recept_complete/images/_optimized/Kokta agg med kaviar.webp",
+      "score": 100
+    },
+    {
+      "title": "Kokta ägg med kaviar",
+      "slug": "kokt-agg-kaviar",
+      "newImage": "/Recept_complete/images/_optimized/Kokta agg med kaviar.webp",
+      "score": 100
+    },
+    {
+      "title": "Kokt ägg med majonnäs",
+      "slug": "kokt-agg-med-majonnas",
+      "newImage": "/Recept_complete/images/_optimized/Kokt agg med majonnas.webp",
+      "score": 100
+    },
+    {
+      "title": "Kokt ägg med majonnäs",
+      "slug": "kokt-agg-majonnas",
+      "newImage": "/Recept_complete/images/_optimized/Kokt agg med majonnas.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärsbiffar med sötpotatis",
+      "slug": "kottfarsbiffar-med-sotpotatis",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarsbiffar med sotpotatis.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärsbiffar med stekt blomkål",
+      "slug": "kottfarsbiffar-stekt-blomkal",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarsbiffar med stekt blomkal.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärsbiffar med stekt blomkål",
+      "slug": "kottfarsbiffar-med-stekt-blomkal",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarsbiffar med stekt blomkal.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärsfylld squash",
+      "slug": "kottfarsfylld-squash",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarsfylld squash.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärslimpa med ajvar och rostad sötpotatis",
+      "slug": "kottfarslimpa-med-ajvar-och-rostad-sotpotatis",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarslimpa med ajvar och rostad sotpotatis.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärspytt med italienska smaker",
+      "slug": "kottfarspytt-med-italienska-smaker",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarspytt med italienska smaker.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärssås med konjaksnudlar",
+      "slug": "kottfarssas-med-konjaksnudlar",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarssas med konjaksnudlar.webp",
+      "score": 100
+    },
+    {
+      "title": "Köttfärswrap med röd curry och äpple",
+      "slug": "kottfarswrap-med-rod-curry-och-apple",
+      "newImage": "/Recept_complete/images/_optimized/Kottfarswrap med rod curry och apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Kryddmjölk med apelsin",
+      "slug": "kryddmjolk-med-apelsin",
+      "newImage": "/Recept_complete/images/_optimized/Kryddmjolk med apelsin.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingbullar med soltorkade tomater",
+      "slug": "kycklingbullar-med-soltorkade-tomater",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingbullar med soltorkade tomater.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingburgare med citronkräm",
+      "slug": "kycklingburgare-med-citronkram",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingburgare med citronkram.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingburgare med mangosalsa och wasabi",
+      "slug": "kycklingburgare-med-mangosalsa-och-wasabi",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingburgare med mangosalsa och wasabi.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingburgare med papayasallad",
+      "slug": "kycklingburgare-papayasallad-sallad",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingburgare med papayasallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingfärs med röda linser",
+      "slug": "kycklingfars-med-roda-linser",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingfars med roda linser.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingfärstimbaler med färskost och sweet chili",
+      "slug": "kycklingfarstimbaler-med-farskost-och-sweet-chili",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingfarstimbaler med farskost och sweet chili.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingfärswok",
+      "slug": "kycklingfarswok",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingfarswok.webp",
+      "score": 130
+    },
+    {
+      "title": "Kycklingfylld aubergine",
+      "slug": "kycklingfylld-aubergine",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingfylld aubergine.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklinggryta med bakad spetskål",
+      "slug": "kycklinggryta-med-bakad-spetskal",
+      "newImage": "/Recept_complete/images/_optimized/Kycklinggryta med bakad spetskal.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklinggryta med mango och linser",
+      "slug": "kycklinggryta-med-mango-och-linser",
+      "newImage": "/Recept_complete/images/_optimized/Kycklinggryta med mango och linser.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklinggryta med rotfrukter och plommon",
+      "slug": "kycklinggryta-med-rotfrukter-och-plommon",
+      "newImage": "/Recept_complete/images/_optimized/Kycklinggryta med rotfrukter och plommon.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingjärpar med linssallad",
+      "slug": "kycklingjarpar-med-linssallad",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingjarpar med linssallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Kyckling med stekt blomkålsris och dillyoghurt",
+      "slug": "kyckling-med-stekt-blomkalsris-och-dillyoghurt",
+      "newImage": "/Recept_complete/images/_optimized/Kyckling med stekt blomkalsris och dillyoghurt.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingpizza",
+      "slug": "kycklingpizza",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingpizza.webp",
+      "score": 130
+    },
+    {
+      "title": "Kycklingröra med örter och tomat",
+      "slug": "kycklingrora-med-orter-och-tomat",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingrora med orter och tomat.webp",
+      "score": 100
+    },
+    {
+      "title": "Kycklingwok med teriyakisås och cashewnötter",
+      "slug": "kycklingwok-med-teriyakisas-och-cashewnotter",
+      "newImage": "/Recept_complete/images/_optimized/Kycklingwok med teriyakisas och cashewnotter.webp",
+      "score": 100
+    },
+    {
+      "title": "Lammfärsbiffar med grekisk sallad",
+      "slug": "lammfarsbiffar-med-grekisk-sallad",
+      "newImage": "/Recept_complete/images/_optimized/Lammfarsbiffar med grekisk sallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Lammgryta med plommon och bulgur",
+      "slug": "lammgryta-med-plommon-och-bulgur",
+      "newImage": "/Recept_complete/images/_optimized/Lammgryta med plommon och bulgur.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxbiffar med mango och wasabi",
+      "slug": "laxbiffar-med-mango-och-wasabi",
+      "newImage": "/Recept_complete/images/_optimized/Laxbiffar med mango och wasabi.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxburgare med krämig grönsaksröra",
+      "slug": "laxburgare-med-kramig-gronsaksrora",
+      "newImage": "/Recept_complete/images/_optimized/Laxburgare med kramig gronsaksrora.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxfilé med broccolisallad",
+      "slug": "laxfile-med-broccolisallad",
+      "newImage": "/Recept_complete/images/_optimized/Laxfilé med broccolisallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxfilé med broccolisallad",
+      "slug": "laxfil-med-broccolisallad",
+      "newImage": "/Recept_complete/images/_optimized/Laxfilé med broccolisallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxfilé med ratatouille",
+      "slug": "laxfile-med-ratatouille",
+      "newImage": "/Recept_complete/images/_optimized/Laxfilé med ratatouille.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxfilé med ratatouille",
+      "slug": "laxfil-med-ratatouille",
+      "newImage": "/Recept_complete/images/_optimized/Laxfilé med ratatouille.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxgratäng med blomkålsmos",
+      "slug": "laxgratang-med-blomkalsmos",
+      "newImage": "/Recept_complete/images/_optimized/Laxgratang med blomkalsmos.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxgratäng med broccoli och scampi",
+      "slug": "laxgratang-med-broccoli-och-scampi",
+      "newImage": "/Recept_complete/images/_optimized/Laxgratang med broccoli och scampi.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxgryta med dill och citron",
+      "slug": "laxgryta-med-dill-och-citron",
+      "newImage": "/Recept_complete/images/_optimized/Laxgryta med dill och citron.webp",
+      "score": 100
+    },
+    {
+      "title": "Lax med fetaost och rostade rotfrukter",
+      "slug": "lax-med-fetaost-och-rostade-rotfrukter",
+      "newImage": "/Recept_complete/images/_optimized/Lax med fetaost och rostade rotfrukter.webp",
+      "score": 100
+    },
+    {
+      "title": "Lax med rödbetssallad",
+      "slug": "lax-med-rodbetssallad",
+      "newImage": "/Recept_complete/images/_optimized/Lax med rodbetssallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Lax med waldorfsallad",
+      "slug": "lax-med-waldorfsallad",
+      "newImage": "/Recept_complete/images/_optimized/Lax med waldorfsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Lax- och broccolipaj",
+      "slug": "lax-och-broccolipaj",
+      "newImage": "/Recept_complete/images/_optimized/Lax- och broccolipaj.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxsallad med fetaost",
+      "slug": "laxsallad-med-fetaost",
+      "newImage": "/Recept_complete/images/_optimized/Laxsallad med fetaost.webp",
+      "score": 100
+    },
+    {
+      "title": "Laxsallad med vindruvor",
+      "slug": "laxsallad-med-vindruvor",
+      "newImage": "/Recept_complete/images/_optimized/Laxsallad med vindruvor.webp",
+      "score": 100
+    },
+    {
+      "title": "Linssallad med fetaost och pekannötter",
+      "slug": "linssallad-med-fetaost-och-pekannotter",
+      "newImage": "/Recept_complete/images/_optimized/Linssallad med fetaost och pekannotter.webp",
+      "score": 100
+    },
+    {
+      "title": "Linssoppa från medelhavet",
+      "slug": "linssoppa-medelhavet-soppa",
+      "newImage": "/Recept_complete/images/_optimized/Linssoppa fran medelhavet.webp",
+      "score": 100
+    },
+    {
+      "title": "Lövbiff med stekta grönsaker och pestoyoghurt",
+      "slug": "lovbiff-med-stekta-gronsaker-och-pestoyoghurt",
+      "newImage": "/Recept_complete/images/_optimized/Lovbiff med stekta gronsaker och pestoyoghurt.webp",
+      "score": 100
+    },
+    {
+      "title": "Lövbiffsgryta med champinjoner och grönsaksspagetti",
+      "slug": "lovbiffsgryta-med-champinjoner-och-gronsaksspagetti",
+      "newImage": "/Recept_complete/images/_optimized/Lovbiffsgryta med champinjoner och gronsaksspagetti.webp",
+      "score": 100
+    },
+    {
+      "title": "Lövbiffsrullader med cheddar och coleslaw",
+      "slug": "lovbiffsrullader-med-cheddar-och-coleslaw",
+      "newImage": "/Recept_complete/images/_optimized/Lovbiffsrullader med cheddar och coleslaw.webp",
+      "score": 100
+    },
+    {
+      "title": "Lövbiffsrullad med ugnsrostade rödbetor",
+      "slug": "lovbiffsrullad-med-ugnsrostade-rodbetor",
+      "newImage": "/Recept_complete/images/_optimized/Lovbiffsrullad med ugnsrostade rodbetor.webp",
+      "score": 100
+    },
+    {
+      "title": "Macka med ost",
+      "slug": "macka-med-ost",
+      "newImage": "/Recept_complete/images/_optimized/Macka med ost.webp",
+      "score": 100
+    },
+    {
+      "title": "Macka med ost",
+      "slug": "macka-ost",
+      "newImage": "/Recept_complete/images/_optimized/Macka med ost.webp",
+      "score": 100
+    },
+    {
+      "title": "Mandarin med kanelkräm",
+      "slug": "mandarin-med-kanelkram",
+      "newImage": "/Recept_complete/images/_optimized/Mandarin med kanelkram.webp",
+      "score": 100
+    },
+    {
+      "title": "Mandelkaka med frukt",
+      "slug": "mandelkaka-med-frukt",
+      "newImage": "/Recept_complete/images/_optimized/Mandelkaka med frukt.webp",
+      "score": 100
+    },
+    {
+      "title": "Mandelkaka med med choklad",
+      "slug": "mandelkaka-med-med-choklad",
+      "newImage": "/Recept_complete/images/_optimized/Mandelkaka med med choklad.webp",
+      "score": 100
+    },
+    {
+      "title": "Mandel och citronpaj",
+      "slug": "mandel-och-citronpaj",
+      "newImage": "/Recept_complete/images/_optimized/Mandel och citronpaj.webp",
+      "score": 100
+    },
+    {
+      "title": "Mangoglass",
+      "slug": "mangoglass",
+      "newImage": "/Recept_complete/images/_optimized/Mangoglass.webp",
+      "score": 130
+    },
+    {
+      "title": "Mango med keso och nötter",
+      "slug": "mango-keso-notter",
+      "newImage": "/Recept_complete/images/_optimized/Mango med keso och notter.webp",
+      "score": 100
+    },
+    {
+      "title": "Mango med keso och nötter",
+      "slug": "mango-med-keso-och-notter",
+      "newImage": "/Recept_complete/images/_optimized/Mango med keso och notter.webp",
+      "score": 100
+    },
+    {
+      "title": "Mangosmoothie med spenat",
+      "slug": "mangosmoothie-med-spenat",
+      "newImage": "/Recept_complete/images/_optimized/Mangosmoothie med spenat.webp",
+      "score": 100
+    },
+    {
+      "title": "Mangosmoothie med spenat",
+      "slug": "smoothie-spenat",
+      "newImage": "/Recept_complete/images/_optimized/Mangosmoothie med spenat.webp",
+      "score": 100
+    },
+    {
+      "title": "Mexikanskt nötfärsfräs",
+      "slug": "mexikanskt-notfarsfras",
+      "newImage": "/Recept_complete/images/_optimized/Mexikanskt notfarsfras.webp",
+      "score": 100
+    },
+    {
+      "title": "Minestronesoppa",
+      "slug": "minestronesoppa",
+      "newImage": "/Recept_complete/images/_optimized/Minestronesoppa.webp",
+      "score": 130
+    },
+    {
+      "title": "Morot- och kesolimpa",
+      "slug": "morot-och-kesolimpa",
+      "newImage": "/Recept_complete/images/_optimized/Morot- och kesolimpa.webp",
+      "score": 100
+    },
+    {
+      "title": "Morotsjuice",
+      "slug": "morotsjuice-juice",
+      "newImage": "/Recept_complete/images/_optimized/Morotsjuice.webp",
+      "score": 130
+    },
+    {
+      "title": "Morotsjuice",
+      "slug": "morotsjuice",
+      "newImage": "/Recept_complete/images/_optimized/Morotsjuice.webp",
+      "score": 130
+    },
+    {
+      "title": "Morotskaka med havregryn och chiafrön",
+      "slug": "morotskaka-med-havregryn-och-chiafron",
+      "newImage": "/Recept_complete/images/_optimized/Morotskaka med havregryn och chiafron.webp",
+      "score": 100
+    },
+    {
+      "title": "Nötfärstimbaler med chèvreost och soltorkad tomat",
+      "slug": "notfarstimbaler-med-chevreost-och-soltorkad-tomat",
+      "newImage": "/Recept_complete/images/_optimized/Notfarstimbaler med chèvreost och soltorkad tomat.webp",
+      "score": 100
+    },
+    {
+      "title": "Nötgryta med rotfrukter",
+      "slug": "notgryta-med-rotfrukter",
+      "newImage": "/Recept_complete/images/_optimized/Notgryta med rotfrukter.webp",
+      "score": 100
+    },
+    {
+      "title": "Nudelsoppa med grönsaker",
+      "slug": "nudelsoppa-med-gronsaker",
+      "newImage": "/Recept_complete/images/_optimized/Nudelsoppa med gronsaker.webp",
+      "score": 100
+    },
+    {
+      "title": "Nudelsoppa med grönsaker",
+      "slug": "nudelsoppa-med-gronsaker-2",
+      "newImage": "/Recept_complete/images/_optimized/Nudelsoppa med gronsaker.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med bär",
+      "slug": "omelett-med-bar",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med bär",
+      "slug": "omelett-bar",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med champinjoner",
+      "slug": "omelett-med-champinjoner",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med champinjoner.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med champinjoner",
+      "slug": "omelett-champinjoner",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med champinjoner.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med hallon",
+      "slug": "omelett-hallon",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med hallon.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med hallon",
+      "slug": "omelett-med-hallon",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med hallon.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med jordgubbar och pistagenötter",
+      "slug": "omelett-med-jordgubbar-och-pistagenotter",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med jordgubbar och pistagenotter.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med keso och bär",
+      "slug": "omelett-keso-bar",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med keso och bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med ost och spenat",
+      "slug": "omelett-ost-spenat",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med ost och spenat.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med paprika och champinjoner",
+      "slug": "omelett-med-paprika-och-champinjoner",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med paprika och champinjoner.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med tomat",
+      "slug": "omelett-tomat",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med tomat.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelett med tomat",
+      "slug": "omelett-med-tomat",
+      "newImage": "/Recept_complete/images/_optimized/Omelett med tomat.webp",
+      "score": 100
+    },
+    {
+      "title": "Omelettrulle",
+      "slug": "omelettrulle",
+      "newImage": "/Recept_complete/images/_optimized/Omelettrulle.webp",
+      "score": 130
+    },
+    {
+      "title": "Oneplate ugnsbakad kyckling och rödbetor",
+      "slug": "oneplate-ugnsbakad-kyckling-och-rodbetor",
+      "newImage": "/Recept_complete/images/_optimized/Oneplate ugnsbakad kyckling och rodbetor.webp",
+      "score": 100
+    },
+    {
+      "title": "Overnightoats med banan och bär",
+      "slug": "overnightoats-med-banan-och-bar",
+      "newImage": "/Recept_complete/images/_optimized/Overnightoats med banan och bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Overnightoats med morot",
+      "slug": "overnightoats-morot",
+      "newImage": "/Recept_complete/images/_optimized/Overnightoats med morot.webp",
+      "score": 100
+    },
+    {
+      "title": "Panerad torsk med blomkålsris",
+      "slug": "panerad-torsk-med-blomkalsris",
+      "newImage": "/Recept_complete/images/_optimized/Panerad torsk med blomkalsris.webp",
+      "score": 100
+    },
+    {
+      "title": "Pankopanerad scampi med fried rice",
+      "slug": "pankopanerad-scampi-med-fried-rice",
+      "newImage": "/Recept_complete/images/_optimized/Pankopanerad scampi med fried rice.webp",
+      "score": 100
+    },
+    {
+      "title": "Paprikastekt torsk med linssallad och citronyoghurt",
+      "slug": "paprikastekt-torsk-med-linssallad-och-citronyoghurt",
+      "newImage": "/Recept_complete/images/_optimized/Paprikastekt torsk med linssallad och citronyoghurt.webp",
+      "score": 100
+    },
+    {
+      "title": "Päronsallad med chevréost",
+      "slug": "paronsallad-med-chevr-ost",
+      "newImage": "/Recept_complete/images/_optimized/Paronsallad med chevréost.webp",
+      "score": 100
+    },
+    {
+      "title": "Päronsallad med chevréost",
+      "slug": "paronsallad-med-chevreost",
+      "newImage": "/Recept_complete/images/_optimized/Paronsallad med chevréost.webp",
+      "score": 100
+    },
+    {
+      "title": "Passionsfrukts- och mangosmoothie",
+      "slug": "passionsfrukts-och-mangosmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Passionsfrukts- och mangosmoothie.webp",
+      "score": 100
+    },
+    {
+      "title": "Pestotorsk med Capresesallad",
+      "slug": "pestotorsk-med-capresesallad",
+      "newImage": "/Recept_complete/images/_optimized/Pestotorsk med Capresesallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Pistagekakor",
+      "slug": "pistagekakor",
+      "newImage": "/Recept_complete/images/_optimized/Pistagekakor.webp",
+      "score": 130
+    },
+    {
+      "title": "Pokebowl med kyckling",
+      "slug": "pokebowl-med-kyckling",
+      "newImage": "/Recept_complete/images/_optimized/Pokebowl med kyckling.webp",
+      "score": 100
+    },
+    {
+      "title": "Pokebowl med kyckling",
+      "slug": "poke-bowl-kyckling",
+      "newImage": "/Recept_complete/images/_optimized/Pokebowl med kyckling.webp",
+      "score": 100
+    },
+    {
+      "title": "Pokébowl med lax",
+      "slug": "pok-bowl-med-lax",
+      "newImage": "/Recept_complete/images/_optimized/Pokébowl med lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Pokébowl med lax",
+      "slug": "pokebowl-med-lax",
+      "newImage": "/Recept_complete/images/_optimized/Pokébowl med lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Poke Bowl med pankopanerad tofu",
+      "slug": "poke-bowl-med-pankopanerad-tofu",
+      "newImage": "/Recept_complete/images/_optimized/Poke Bowl med pankopanerad tofu.webp",
+      "score": 100
+    },
+    {
+      "title": "Proteingröt med äpple",
+      "slug": "proteingrot-med-apple",
+      "newImage": "/Recept_complete/images/_optimized/Proteingrot med apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Quinoasallad med scampi och mango",
+      "slug": "quinoasallad-med-scampi-och-mango",
+      "newImage": "/Recept_complete/images/_optimized/Quinoasallad med scampi och mango.webp",
+      "score": 100
+    },
+    {
+      "title": "Quinoasallad med stekt halloumi",
+      "slug": "quinoasallad-med-stekt-halloumi",
+      "newImage": "/Recept_complete/images/_optimized/Quinoasallad med stekt halloumi.webp",
+      "score": 100
+    },
+    {
+      "title": "Råkost med tonfiskröra",
+      "slug": "rakost-med-tonfiskrora",
+      "newImage": "/Recept_complete/images/_optimized/Rakost med tonfiskrora.webp",
+      "score": 100
+    },
+    {
+      "title": "Ramensoppa med tofu",
+      "slug": "ramensoppa-med-tofu",
+      "newImage": "/Recept_complete/images/_optimized/Ramensoppa med tofu.webp",
+      "score": 100
+    },
+    {
+      "title": "Ratatouille med Apetina panéer",
+      "slug": "ratatouille-med-apetina-paneer",
+      "newImage": "/Recept_complete/images/_optimized/Ratatouille med Apetina panéer.webp",
+      "score": 100
+    },
+    {
+      "title": "Ratatouille med Apetina panéer",
+      "slug": "ratatouille-med-apetina-pan-er",
+      "newImage": "/Recept_complete/images/_optimized/Ratatouille med Apetina panéer.webp",
+      "score": 100
+    },
+    {
+      "title": "Riswrap med philadelphiaost och lax",
+      "slug": "riswrap-med-philadelphiaost-och-lax",
+      "newImage": "/Recept_complete/images/_optimized/Riswrap med philadelphiaost och lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Rödbetsjuice",
+      "slug": "rodbetsjuice",
+      "newImage": "/Recept_complete/images/_optimized/Rodbetsjuice.webp",
+      "score": 130
+    },
+    {
+      "title": "Rödbetsjuice",
+      "slug": "rodbetsjuice-juice",
+      "newImage": "/Recept_complete/images/_optimized/Rodbetsjuice.webp",
+      "score": 130
+    },
+    {
+      "title": "Rödbetssmoothie",
+      "slug": "rodbetssmoothie",
+      "newImage": "/Recept_complete/images/_optimized/Rodbetssmoothie.webp",
+      "score": 130
+    },
+    {
+      "title": "Rökt lax med ägghack",
+      "slug": "rokt-lax-med-agghack",
+      "newImage": "/Recept_complete/images/_optimized/Rokt lax med agghack.webp",
+      "score": 100
+    },
+    {
+      "title": "Rökt lax med blomkålsallad och citronyoghurt",
+      "slug": "rokt-lax-med-blomkalsallad-och-citronyoghurt",
+      "newImage": "/Recept_complete/images/_optimized/Rokt lax med blomkalsallad och citronyoghurt.webp",
+      "score": 100
+    },
+    {
+      "title": "Rostad fänkål och rödbeta med getost",
+      "slug": "rostad-fankal-och-rodbeta-med-getost",
+      "newImage": "/Recept_complete/images/_optimized/Rostad fankal och rodbeta med getost.webp",
+      "score": 100
+    },
+    {
+      "title": "Rotfruktssoppa",
+      "slug": "rotfruktssoppa",
+      "newImage": "/Recept_complete/images/_optimized/Rotfruktssoppa.webp",
+      "score": 130
+    },
+    {
+      "title": "Saffransgröt med bär och granatäpple",
+      "slug": "saffransgrot-med-bar-och-granatapple",
+      "newImage": "/Recept_complete/images/_optimized/Saffransgrot med bar och granatapple.webp",
+      "score": 100
+    },
+    {
+      "title": "Shitake med nudlar",
+      "slug": "shitake-med-nudlar",
+      "newImage": "/Recept_complete/images/_optimized/Shitake med nudlar.webp",
+      "score": 100
+    },
+    {
+      "title": "Skaldjursgryta med torsk i gul curry",
+      "slug": "skaldjursgryta-med-torsk-i-gul-curry",
+      "newImage": "/Recept_complete/images/_optimized/Skaldjursgryta med torsk i gul curry.webp",
+      "score": 100
+    },
+    {
+      "title": "Slät havregrynsgröt med vaniljprotein",
+      "slug": "slat-havregrynsgrot-med-vaniljprotein",
+      "newImage": "/Recept_complete/images/_optimized/Slat havregrynsgrot med vaniljprotein.webp",
+      "score": 100
+    },
+    {
+      "title": "Smoothiebowl med blåbär och granola",
+      "slug": "smoothiebowl-blabar-granola",
+      "newImage": "/Recept_complete/images/_optimized/Smoothiebowl med blabar och granola.webp",
+      "score": 100
+    },
+    {
+      "title": "Smoothiebowl med blåbär och granola",
+      "slug": "smoothiebowl-med-blabar-och-granola",
+      "newImage": "/Recept_complete/images/_optimized/Smoothiebowl med blabar och granola.webp",
+      "score": 100
+    },
+    {
+      "title": "Smoothiebowl med mango och pistagenötter",
+      "slug": "smoothiebowl-med-mango-och-pistagenotter",
+      "newImage": "/Recept_complete/images/_optimized/Smoothiebowl med mango och pistagenotter.webp",
+      "score": 100
+    },
+    {
+      "title": "Smoothiebowl med mango och pistagenötter",
+      "slug": "smoothiebowl-mango-pistagenotter",
+      "newImage": "/Recept_complete/images/_optimized/Smoothiebowl med mango och pistagenotter.webp",
+      "score": 100
+    },
+    {
+      "title": "Smoothiebowl med spirulina och havre",
+      "slug": "smoothiebowl-med-spirulina-och-havre",
+      "newImage": "/Recept_complete/images/_optimized/Smoothiebowl med spirulina och havre.webp",
+      "score": 100
+    },
+    {
+      "title": "Snickersmuffins",
+      "slug": "snickersmuffins",
+      "newImage": "/Recept_complete/images/_optimized/Snickersmuffins.webp",
+      "score": 130
+    },
+    {
+      "title": "Sötpotatisgryta med bönor",
+      "slug": "sotpotatisgryta-med-bonor",
+      "newImage": "/Recept_complete/images/_optimized/Sotpotatisgryta med bonor.webp",
+      "score": 100
+    },
+    {
+      "title": "Sötpotatissallad",
+      "slug": "sotpotatissallad",
+      "newImage": "/Recept_complete/images/_optimized/Sotpotatissallad.webp",
+      "score": 130
+    },
+    {
+      "title": "Spenat och grönkål med ägg",
+      "slug": "spenat-och-gronkal-med-agg",
+      "newImage": "/Recept_complete/images/_optimized/Spenat och gronkal med agg.webp",
+      "score": 100
+    },
+    {
+      "title": "Spenatsoppa med ägg",
+      "slug": "spenatsoppa-med-agg",
+      "newImage": "/Recept_complete/images/_optimized/Spenatsoppa med agg.webp",
+      "score": 100
+    },
+    {
+      "title": "Spenatsoppa med halloumi och solrosfrön",
+      "slug": "spenatsoppa-med-halloumi-och-solrosfron",
+      "newImage": "/Recept_complete/images/_optimized/Spenatsoppa med halloumi och solrosfron.webp",
+      "score": 100
+    },
+    {
+      "title": "Spenatsoppa med rostade pumpafrön",
+      "slug": "spenatsoppa-med-rostade-pumpafron",
+      "newImage": "/Recept_complete/images/_optimized/Spenatsoppa med rostade pumpafron.webp",
+      "score": 100
+    },
+    {
+      "title": "Squashspagetti med köttfärssås",
+      "slug": "squashspagetti-med-kottfarssas",
+      "newImage": "/Recept_complete/images/_optimized/Squashspagetti med kottfarssas.webp",
+      "score": 100
+    },
+    {
+      "title": "Squashspagetti med köttfärssås",
+      "slug": "squashspagetti-kottfarssas",
+      "newImage": "/Recept_complete/images/_optimized/Squashspagetti med kottfarssas.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekta äpplen med vit chokladkräm",
+      "slug": "stekta-applen-med-vit-chokladkram",
+      "newImage": "/Recept_complete/images/_optimized/Stekta applen med vit chokladkram.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekt ägg med champinjoner",
+      "slug": "stekt-agg-champinjoner",
+      "newImage": "/Recept_complete/images/_optimized/Stekt agg med champinjoner.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekt ägg med kalkon och senapsmajonnäs",
+      "slug": "stekt-agg-med-kalkon-och-senapsmajonnas",
+      "newImage": "/Recept_complete/images/_optimized/Stekt agg med kalkon och senapsmajonnas.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekt ägg med lax",
+      "slug": "stekt-agg-med-lax",
+      "newImage": "/Recept_complete/images/_optimized/Stekt agg med lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekt ägg med lax",
+      "slug": "stekt-agg-lax",
+      "newImage": "/Recept_complete/images/_optimized/Stekt agg med lax.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekt ägg med parmaskinka",
+      "slug": "stekt-agg-med-parmaskinka",
+      "newImage": "/Recept_complete/images/_optimized/Stekt agg med parmaskinka.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekt ägg med tomat",
+      "slug": "stekt-agg-med-tomat",
+      "newImage": "/Recept_complete/images/_optimized/Stekt agg med tomat.webp",
+      "score": 100
+    },
+    {
+      "title": "Stekt kyckling med asiatisk tomatsallad",
+      "slug": "stekt-kyckling-med-asiatisk-tomatsallad",
+      "newImage": "/Recept_complete/images/_optimized/Stekt kyckling med asiatisk tomatsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Stek torsk med bearnaisesås och haricot verts",
+      "slug": "stek-torsk-med-bearnaisesas-och-haricot-verts",
+      "newImage": "/Recept_complete/images/_optimized/Stek torsk med bearnaisesas och haricot verts.webp",
+      "score": 100
+    },
+    {
+      "title": "Tacokyckling med blomkålssallad",
+      "slug": "tacokyckling-med-blomkalssallad",
+      "newImage": "/Recept_complete/images/_optimized/Tacokyckling med blomkalssallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Tofugryta med blomkålsris",
+      "slug": "tofugryta-med-blomkalsris",
+      "newImage": "/Recept_complete/images/_optimized/Tofugryta med blomkalsris.webp",
+      "score": 100
+    },
+    {
+      "title": "Tomatsoppa från medelhavet med fetaost",
+      "slug": "tomatsoppa-fran-medelhavet-med-fetaost",
+      "newImage": "/Recept_complete/images/_optimized/Tomatsoppa fran medelhavet med fetaost.webp",
+      "score": 100
+    },
+    {
+      "title": "Tomatsoppa med halloumi",
+      "slug": "tomatsoppa-med-halloumi",
+      "newImage": "/Recept_complete/images/_optimized/Tomatsoppa med halloumi.webp",
+      "score": 100
+    },
+    {
+      "title": "Tonfiskröra med rödbetor",
+      "slug": "tonfiskrora-med-rodbetor",
+      "newImage": "/Recept_complete/images/_optimized/Tonfiskrora med rodbetor.webp",
+      "score": 100
+    },
+    {
+      "title": "Tonfisksallad med äpple",
+      "slug": "tonfisksallad-apple-sallad",
+      "newImage": "/Recept_complete/images/_optimized/Tonfisksallad med apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Tonfisksallad med äpple",
+      "slug": "tonfisksallad-med-apple",
+      "newImage": "/Recept_complete/images/_optimized/Tonfisksallad med apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Tonfisksallad med rödbetsröra",
+      "slug": "tonfisksallad-med-rodbetsrora",
+      "newImage": "/Recept_complete/images/_optimized/Tonfisksallad med rodbetsrora.webp",
+      "score": 100
+    },
+    {
+      "title": "Torsk från mellanöstern",
+      "slug": "torsk-fran-mellanostern",
+      "newImage": "/Recept_complete/images/_optimized/Torsk fran mellanostern.webp",
+      "score": 100
+    },
+    {
+      "title": "Torsk med guacamole och sötpotatis",
+      "slug": "torsk-med-guacamole-och-sotpotatis",
+      "newImage": "/Recept_complete/images/_optimized/Torsk med guacamole och sotpotatis.webp",
+      "score": 100
+    },
+    {
+      "title": "Torskrygg med ägghack och sparris",
+      "slug": "torskrygg-med-agghack-och-sparris",
+      "newImage": "/Recept_complete/images/_optimized/Torskrygg med agghack och sparris.webp",
+      "score": 100
+    },
+    {
+      "title": "Torskrygg med nudelsallad",
+      "slug": "torskrygg-med-nudelsallad",
+      "newImage": "/Recept_complete/images/_optimized/Torskrygg med nudelsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Torsk teriyaki med grönsaker",
+      "slug": "torsk-teriyaki-med-gronsaker",
+      "newImage": "/Recept_complete/images/_optimized/Torsk teriyaki med gronsaker.webp",
+      "score": 100
+    },
+    {
+      "title": "Tropisk chiafrögröt",
+      "slug": "tropisk-chiafrogrot",
+      "newImage": "/Recept_complete/images/_optimized/Chiafrogrot.webp",
+      "score": 104
+    },
+    {
+      "title": "Tropisk chiapudding",
+      "slug": "tropisk-chiapudding",
+      "newImage": "/Recept_complete/images/_optimized/Tropisk chiapudding.webp",
+      "score": 100
+    },
+    {
+      "title": "Tropisk fruktsallad",
+      "slug": "tropisk-fruktsallad",
+      "newImage": "/Recept_complete/images/_optimized/Tropisk fruktsallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Tropisk smoothie",
+      "slug": "tropisk-smoothie",
+      "newImage": "/Recept_complete/images/_optimized/Tropisk smoothie.webp",
+      "score": 100
+    },
+    {
+      "title": "Tropisk Smoothiebowl",
+      "slug": "tropisk-smoothiebowl",
+      "newImage": "/Recept_complete/images/_optimized/Tropisk Smoothiebowl.webp",
+      "score": 100
+    },
+    {
+      "title": "Tropisk Smoothiebowl",
+      "slug": "smoothie-smoothiebowl",
+      "newImage": "/Recept_complete/images/_optimized/Tropisk Smoothiebowl.webp",
+      "score": 100
+    },
+    {
+      "title": "Tropisk smoothie med kokosmjölk",
+      "slug": "tropisk-smoothie-med-kokosmjolk",
+      "newImage": "/Recept_complete/images/_optimized/Tropisk smoothie med kokosmjolk.webp",
+      "score": 100
+    },
+    {
+      "title": "Turkiska lammfärsspett med raita och sallad",
+      "slug": "turkiska-lammfarsspett-med-raita-och-sallad",
+      "newImage": "/Recept_complete/images/_optimized/Turkiska lammfarsspett med raita och sallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Ugnsbakade ägg med spenat",
+      "slug": "ugnsbakade-agg-med-spenat",
+      "newImage": "/Recept_complete/images/_optimized/Ugnsbakade agg med spenat.webp",
+      "score": 100
+    },
+    {
+      "title": "Ugnsbakad gröt",
+      "slug": "ugnsbakad-grot",
+      "newImage": "/Recept_complete/images/_optimized/Ugnsbakad grot.webp",
+      "score": 100
+    },
+    {
+      "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+      "slug": "ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas",
+      "newImage": "/Recept_complete/images/_optimized/Ugnsbakad kyckling med quinoasallad och chilimajonas.webp",
+      "score": 100
+    },
+    {
+      "title": "Ugnsbakad kyckling med tzatziki och sallad",
+      "slug": "ugnsbakad-kyckling-med-tzatziki-och-sallad",
+      "newImage": "/Recept_complete/images/_optimized/Ugnsbakad kyckling med tzatziki och sallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Ugnsbakad kyckling med tzatziki och sallad",
+      "slug": "ugnsbakad-kyckling-med-tzatziki-och-sallad-2",
+      "newImage": "/Recept_complete/images/_optimized/Ugnsbakad kyckling med tzatziki och sallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Vallmogröt med apelsinfiléer",
+      "slug": "vallmogrot-med-apelsinfil-er",
+      "newImage": "/Recept_complete/images/_optimized/Vallmogrot med apelsinfiléer.webp",
+      "score": 100
+    },
+    {
+      "title": "Vallmogröt med apelsinfiléer",
+      "slug": "vallmogrot-med-apelsinfileer",
+      "newImage": "/Recept_complete/images/_optimized/Vallmogrot med apelsinfiléer.webp",
+      "score": 100
+    },
+    {
+      "title": "Valnötslax med fetaostcreme",
+      "slug": "valnotslax-med-fetaostcreme",
+      "newImage": "/Recept_complete/images/_optimized/Valnotslax med fetaostcreme.webp",
+      "score": 100
+    },
+    {
+      "title": "Vaniljgranola med nötter och kokos",
+      "slug": "vaniljgranola-med-notter-och-kokos",
+      "newImage": "/Recept_complete/images/_optimized/Vaniljgranola med notter och kokos.webp",
+      "score": 100
+    },
+    {
+      "title": "Varm chiagröt med äpple",
+      "slug": "varm-chiagrot-med-apple",
+      "newImage": "/Recept_complete/images/_optimized/Varm chiagrot med apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Varm chiagröt med äpple",
+      "slug": "varm-chiagrot-apple",
+      "newImage": "/Recept_complete/images/_optimized/Varm chiagrot med apple.webp",
+      "score": 100
+    },
+    {
+      "title": "Varm tacosallad",
+      "slug": "varm-tacosallad",
+      "newImage": "/Recept_complete/images/_optimized/Varm tacosallad.webp",
+      "score": 100
+    },
+    {
+      "title": "Västerbottenpizza med skaldjur",
+      "slug": "vasterbottenpizza-med-skaldjur",
+      "newImage": "/Recept_complete/images/_optimized/Vasterbottenpizza med skaldjur.webp",
+      "score": 100
+    },
+    {
+      "title": "Vegetarisk currygryta med panéer",
+      "slug": "vegetarisk-currygryta-med-paneer",
+      "newImage": "/Recept_complete/images/_optimized/Vegetarisk currygryta med panéer.webp",
+      "score": 100
+    },
+    {
+      "title": "Vegetarisk currygryta med panéer",
+      "slug": "vegetarisk-currygryta-med-pan-er",
+      "newImage": "/Recept_complete/images/_optimized/Vegetarisk currygryta med panéer.webp",
+      "score": 100
+    },
+    {
+      "title": "Vegetarisk paprikapasta med citron",
+      "slug": "vegetarisk-paprikapasta-med-citron",
+      "newImage": "/Recept_complete/images/_optimized/Vegetarisk paprikapasta med citron.webp",
+      "score": 100
+    },
+    {
+      "title": "Wokad lövbiff med nudlar",
+      "slug": "wokad-lovbiff-med-nudlar",
+      "newImage": "/Recept_complete/images/_optimized/Wokad lovbiff med nudlar.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med apelsin- och bovetegranola",
+      "slug": "yoghurt-med-apelsin-och-bovetegranola",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med apelsin- och bovetegranola.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med äppelgranola",
+      "slug": "yoghurt-med-appelgranola",
+      "newImage": "/Recept_complete/images/_optimized/Appelgranola.webp",
+      "score": 106
+    },
+    {
+      "title": "Yoghurt med bär och bovetegranola",
+      "slug": "yoghurt-med-bar-och-bovetegranola",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 101
+    },
+    {
+      "title": "Yoghurt med bovetegranola",
+      "slug": "yoghurt-bovetegranola-granola",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 108
+    },
+    {
+      "title": "Yoghurt med bovetegranola",
+      "slug": "yoghurt-med-bovetegranola",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 108
+    },
+    {
+      "title": "Yoghurt med bovetegranola och aprikos",
+      "slug": "yoghurt-med-bovetegranola-och-aprikos",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med bovetegranola och aprikos.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med bovetegranola och bär",
+      "slug": "yoghurt-med-bovetegranola-och-bar",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 101
+    },
+    {
+      "title": "Yoghurt med bovetegranola och bär",
+      "slug": "yoghurt-bovetegranola-bar",
+      "newImage": "/Recept_complete/images/_optimized/Bovetegranola.webp",
+      "score": 101
+    },
+    {
+      "title": "Yoghurt med bovetegranola och frukt",
+      "slug": "yoghurt-med-bovetegranola-och-frukt",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med bovetegranola och frukt.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med bovetegranola och frukt",
+      "slug": "yoghurt-bovetegranola-frukt",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med bovetegranola och frukt.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med bovetegranola och sylt",
+      "slug": "yoghurt-med-bovetegranola-och-sylt",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med bovetegranola och sylt.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med ketomüsli",
+      "slug": "yoghurt-ketomusli",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med ketomüsli.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med ketomüsli",
+      "slug": "yoghurt-med-ketom-sli",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med ketomüsli.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med kiwi och mandel",
+      "slug": "yoghurt-med-kiwi-och-mandel",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med kiwi och mandel.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med mango och apelsin",
+      "slug": "yoghurt-med-mango-och-apelsin",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med mango och apelsin.webp",
+      "score": 100
+    },
+    {
+      "title": "Yoghurt med vaniljgranola och bär",
+      "slug": "yoghurt-med-vaniljgranola-och-bar",
+      "newImage": "/Recept_complete/images/_optimized/Yoghurt med vaniljgranola och bar.webp",
+      "score": 100
+    },
+    {
+      "title": "Zucchinikaka med kardemumma",
+      "slug": "zucchinikaka-med-kardemumma",
+      "newImage": "/Recept_complete/images/_optimized/Zucchinikaka med kardemumma.webp",
+      "score": 100
+    }
+  ],
+  "noMatch": [
+    {
+      "title": "Papayabåtar",
+      "slug": "papayabatar"
+    }
+  ]
+}
