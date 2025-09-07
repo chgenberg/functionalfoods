@@ -300,16 +300,9 @@ export default function RecipePage() {
       
       // 2. Course recipes (server or client derived)
       if (isCourseRecipeClient) {
-        if (!isLoggedIn) {
-          console.log('❌ Course recipe, user not logged in');
-          setError('premium');
-          setRecipe(data);
-          return;
-        } else {
-          console.log('✅ Course recipe (client-derived OK), user is logged in - ALLOWING ACCESS');
-          setRecipe(data);
-          return;
-        }
+        console.log('✅ Course recipe detected - TEMPORARY UNLOCK: allowing access');
+        setRecipe(data);
+        return;
       }
       
       // 3. Premium recipes (non-course)
