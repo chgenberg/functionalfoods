@@ -565,12 +565,25 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
 
   const validateEmail = (val: string) => /[^@\s]+@[^@\s]+\.[^@\s]+/.test(val);
   const startQuiz = () => {
-    // Validate form
-    if (!firstName.trim()) { setFormError('Ange ditt förnamn.'); return; }
-    if (!validateEmail(email)) { setFormError('Ange en giltig e‑postadress.'); return; }
-    if (!consent) { setFormError('Du måste godkänna integritetspolicyn.'); return; }
+    // Identity is optional. Only validate email if provided.
+    const trimmedFirstName = firstName.trim();
+    const trimmedEmail = email.trim();
+    const hasEmail = trimmedEmail.length > 0;
+
+    if (hasEmail && !validateEmail(trimmedEmail)) {
+      setFormError('Ange en giltig e‑postadress eller lämna fältet tomt.');
+      return;
+    }
+
     setFormError('');
-    try { localStorage.setItem('health_test_identity_v2', JSON.stringify({ firstName, email, consent: true })); } catch {}
+
+    // Store identity only if something meaningful provided
+    try {
+      if (trimmedFirstName || hasEmail) {
+        localStorage.setItem('health_test_identity_v2', JSON.stringify({ firstName: trimmedFirstName, email: hasEmail ? trimmedEmail : '', consent: !!consent }));
+      }
+    } catch {}
+
     setCurrentStep('intro');
   };
 

@@ -135,7 +135,7 @@ export default function Home() {
             allowFullScreen
             title="Functional Foods Hero Video"
           />
-          <div className="absolute inset-0 bg-black/40" style={{ zIndex: 15 }} />
+          <div className="absolute inset-0 bg-black/40 pointer-events-none" style={{ zIndex: 15 }} />
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
@@ -144,7 +144,7 @@ export default function Home() {
               zIndex: 1
             }}
           >
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/40 pointer-events-none" />
           </div>
         </div>
 
