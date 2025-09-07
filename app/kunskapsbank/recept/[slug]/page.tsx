@@ -252,49 +252,40 @@ export default function RecipePage() {
 
       const data = await response.json();
       
-      // Determine if coming from a course link and the recipe belongs to that course
+      // Simplified access check
+      const isLoggedIn = !!token;
       const fromCourseParam = searchParams.get('course');
-      const arrivedFromCourse = !!fromCourseParam && isRecipeInCourse(data.slug || slug, fromCourseParam);
-      const isLoggedIn = !!localStorage.getItem('token');
       
-      // Check if recipe requires premium and user doesn't have access
-      if (data.requiresPremium) {
-        // This is a true premium recipe (not a course recipe)
-        if (!userHasAccess) {
-          setError('premium');
-          setRecipe(data); // Still set recipe for showing title/image
-          return;
-        }
-      }
-      
-      // Check if recipe requires course access
-      if (data.requiresCourse) {
-        const recipeCourses = data.courseTags || [];
-        const fromCourseParam = searchParams.get('course');
-        const arrivedFromCourse = !!fromCourseParam && isRecipeInCourse(data.slug || slug, fromCourseParam);
-        
-        // Allow access if:
-        // 1. User has purchased any of the required courses
-        // 2. User arrived from a course page where this recipe belongs
-        // 3. User has legacy access (all courses)
-        const hasAccessToRecipeCourse = recipeCourses.some((course: string) => userCourses.includes(course)) ||
-          (isLoggedIn && arrivedFromCourse) ||
-          userHasAccess; // Legacy fallback
-        
-        if (!hasAccessToRecipeCourse && isLoggedIn) {
-          setError('premium'); // Show same premium message for course recipes
-          setRecipe(data); // Still set recipe for showing title/image
-          return;
-        }
-      }
-      
-      // Check if recipe is admin only
-      if (data.isAdminOnly && user?.role !== 'ADMIN') {
-        setError('adminOnly');
-        setRecipe(data); // Still set recipe for showing title/image
+      // If it's a course recipe and user is not logged in, block access
+      if (data.requiresCourse && !isLoggedIn) {
+        setError('premium');
+        setRecipe(data);
         return;
       }
       
+      // If it's a course recipe and user is logged in, allow access
+      // (We trust that the user has access if they're logged in and came from a course)
+      if (data.requiresCourse && isLoggedIn && fromCourseParam) {
+        // Allow access - user came from course page
+        setRecipe(data);
+        return;
+      }
+      
+      // If it's a premium recipe (not course), check premium access
+      if (data.requiresPremium && !userHasAccess) {
+        setError('premium');
+        setRecipe(data);
+        return;
+      }
+      
+      // If it's admin only
+      if (data.isAdminOnly && user?.role !== 'ADMIN') {
+        setError('adminOnly');
+        setRecipe(data);
+        return;
+      }
+      
+      // Allow access
       setRecipe(data);
       
       // Initialize servings from recipe data
