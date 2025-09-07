@@ -106,25 +106,37 @@ export default function RecipePage() {
 
   const isRecipeInCourse = (recipeSlug: string, course: string | null): boolean => {
     if (!course) return false;
-    const collectSlugs = (plan: any) => {
-      const s = new Set<string>();
-      Object.values(plan || {}).forEach((week: any) => {
-        Object.values(week || {}).forEach((day: any) => {
-          Object.values((day?.meals) || {}).forEach((meal: any) => {
-            if (meal?.recipe) s.add(meal.recipe);
+
+    const extractSlug = (link?: string) => {
+      if (!link) return '';
+      const parts = link.split('/');
+      return parts[parts.length - 1] || '';
+    };
+
+    const collectSlugsFromWeekPlan = (plan: any) => {
+      const slugs = new Set<string>();
+      if (!plan) return slugs;
+      Object.values(plan).forEach((week: any) => {
+        if (!week?.days) return;
+        Object.values(week.days).forEach((day: any) => {
+          const meals = [day.breakfast, day.lunch, day.dinner, day.snack, day.dessert].filter(Boolean);
+          meals.forEach((meal: any) => {
+            const slug = extractSlug(meal?.recipeLink);
+            if (slug) slugs.add(slug);
           });
         });
       });
-      return s;
+      return slugs;
     };
+
     if (course === 'basics' || course === 'basic') {
-      return collectSlugs(mealPlans).has(recipeSlug);
+      return collectSlugsFromWeekPlan(mealPlans).has(recipeSlug);
     }
     if (course === 'flow') {
-      return collectSlugs(flowMealPlans).has(recipeSlug);
+      return collectSlugsFromWeekPlan(flowMealPlans).has(recipeSlug);
     }
     if (course === 'energy') {
-      return collectSlugs(energyMealPlans).has(recipeSlug);
+      return collectSlugsFromWeekPlan(energyMealPlans).has(recipeSlug);
     }
     return false;
   };
