@@ -523,9 +523,16 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const [locationContext, setLocationContext] = useState<any>(null);
   const [loadingContext, setLoadingContext] = useState(false);
   const quizQuestions: QuizQuestion[] = locale === 'en' ? QUIZ_EN : locale === 'es' ? QUIZ_ES : locale === 'de' ? QUIZ_DE : locale === 'fr' ? QUIZ_FR : QUIZ_SV;
-  const STORAGE_KEY = `health_test_state_v2_${locale}`;
+  const STORAGE_KEY = `health_test_state_v3_${locale}`;
   // Restore autosaved state
   useEffect(() => {
+    // Clean up old versions
+    try {
+      localStorage.removeItem(`health_test_state_v1_${locale}`);
+      localStorage.removeItem(`health_test_state_v2_${locale}`);
+      localStorage.removeItem(`quiz_state_v1_${locale}`);
+    } catch {}
+    
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
