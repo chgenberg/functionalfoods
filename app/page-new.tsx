@@ -173,15 +173,16 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/?quiz=1"
-                  onClick={() => { console.log('Health test button clicked (link+state)'); setShowQuiz(true); }}
+                <button
+                  type="button"
+                  onClick={(e) => { e.preventDefault(); console.log('Health test start (button)'); setShowQuiz(true); try { router.replace('/?quiz=1', { scroll: false }); } catch {} }}
                   className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
-                  style={{ position: 'relative', zIndex: 50 }}
+                  style={{ position: 'relative', zIndex: 50, pointerEvents: 'auto' }}
+                  aria-label="Starta hälsotest"
                 >
                   Starta Hälsotest
                   <ArrowRight className="w-5 h-5" />
-                </Link>
+                </button>
                 <Link
                   href="/utbildning"
                   className="bg-white/90 border-2 border-white/30 text-gray-700 px-8 py-5 rounded-full font-semibold text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
