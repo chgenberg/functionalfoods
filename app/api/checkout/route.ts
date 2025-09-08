@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withRateLimit, checkoutRateLimit } from '@/app/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
+  return withRateLimit(req, checkoutRateLimit, async () => {
   try {
     const body = await req.json();
     const { items, customer } = body as {
@@ -52,4 +54,5 @@ export async function POST(req: NextRequest) {
     console.error('Create Checkout Session error:', err);
     return NextResponse.json({ error: err?.message || 'Kunde inte skapa betalning' }, { status: 500 });
   }
+  });
 } 
