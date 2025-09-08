@@ -186,6 +186,8 @@ export default function Checkout() {
                     stripe: { name: 'Kort (Visa, Mastercard, Amex)', icon: CreditCard, desc: 'Säker kortbetalning via Stripe' }
                   }[method];
 
+                  if (!methodData) return null;
+
                   return (
                     <div key={method} className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
                       selectedPayment === method 
