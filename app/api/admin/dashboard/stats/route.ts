@@ -4,6 +4,20 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function GET() {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({
+      totalUsers: 0,
+      totalOrders: 0,
+      totalRevenue: 0,
+      totalRecipes: 0,
+      totalBlogPosts: 0,
+      recentOrders: [],
+      recentUsers: [],
+      popularContent: []
+    });
+  }
+  
   try {
     // Get total users
     const totalUsers = await prisma.user.count();

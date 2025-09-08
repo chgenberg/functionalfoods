@@ -5,6 +5,11 @@ import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ hasCourseAccess: false, courses: [] });
+  }
+  
   try {
     const authHeader = req.headers.get('authorization');
     const token = authHeader?.replace('Bearer ', '') || req.cookies.get('token')?.value;

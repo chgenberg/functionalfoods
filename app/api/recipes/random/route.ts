@@ -69,6 +69,11 @@ function normalizeImageUrl(url: string | null): string | null {
 }
 
 export async function GET(request: Request) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ recipes: [] });
+  }
+  
   try {
     const { searchParams } = new URL(request.url);
     const count = Math.min(50, Math.max(1, parseInt(searchParams.get('count') || '10')));

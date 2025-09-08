@@ -8,6 +8,11 @@ export const dynamic = 'force-dynamic';
  * GET /api/admin/backup - List all backups
  */
 export async function GET(request: NextRequest) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ backups: [] });
+  }
+  
   return withRateLimit(request, apiRateLimit, async () => {
     try {
       // TODO: Add admin authentication check
@@ -44,6 +49,11 @@ export async function GET(request: NextRequest) {
  * POST /api/admin/backup - Create new backup
  */
 export async function POST(request: NextRequest) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ success: false, error: 'Not available during build' });
+  }
+  
   return withRateLimit(request, apiRateLimit, async () => {
     try {
       // TODO: Add admin authentication check

@@ -4,6 +4,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function GET() {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ recipes: [] });
+  }
+  
   try {
     console.log('🔄 Force refreshing carousel data...');
 

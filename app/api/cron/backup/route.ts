@@ -9,6 +9,11 @@ export const dynamic = 'force-dynamic';
  * GET /api/cron/backup
  */
 export async function GET(request: NextRequest) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ message: 'Skipped during build' });
+  }
+  
   try {
     // Verify cron job authentication
     const authHeader = request.headers.get('authorization');
