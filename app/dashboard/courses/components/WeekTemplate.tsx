@@ -46,6 +46,7 @@ export default function WeekTemplate({
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [dayThumbnails, setDayThumbnails] = useState<Record<number, string>>({});
 
   useEffect(() => {
     const handler = () => {
@@ -93,6 +94,63 @@ export default function WeekTemplate({
   };
 
   const weekDays = getDaysForWeek(weekNumber);
+
+  // Load day thumbnails from real recipe images (first available meal per day)
+  useEffect(() => {
+    const loadThumbnails = async () => {
+      try {
+        if (!mealPlan || !mealPlan.days) return;
+        const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+        const names: string[] = [];
+        const slugs: (string | null)[] = [];
+        const indexToDay: number[] = [];
+
+        for (let i = 0; i < 7; i++) {
+          const dayNum = i + 1;
+          const swedishDayKey = dayNames[i];
+          const numberDayKey = `day${dayNum}`;
+          const dayData = mealPlan.days[swedishDayKey] || mealPlan.days[numberDayKey];
+          if (!dayData) continue;
+          const firstMeal = dayData.breakfast || dayData.lunch || dayData.dinner || dayData.snack || dayData.dessert;
+          if (!firstMeal) continue;
+          const mealName: string = firstMeal.name || `Dag ${dayNum}`;
+          names.push(mealName);
+          // Extract slug from recipeLink if present
+          let slug: string | null = null;
+          if (firstMeal.recipeLink) {
+            try {
+              const url = new URL(firstMeal.recipeLink, window.location.origin);
+              const parts = url.pathname.split('/');
+              slug = parts[parts.length - 1] || null;
+            } catch {}
+          }
+          slugs.push(slug);
+          indexToDay.push(dayNum);
+        }
+
+        if (names.length === 0) return;
+
+        const resp = await fetch('/api/recipes/batch-images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'small' })
+        });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const images: Record<string, string> = data.images || {};
+        const map: Record<number, string> = {};
+        names.forEach((n, idx) => {
+          const dayNum = indexToDay[idx];
+          const url = images[n];
+          if (url) map[dayNum] = url;
+        });
+        setDayThumbnails(map);
+      } catch (e) {
+        // ignore, fallback will be used
+      }
+    };
+    loadThumbnails();
+  }, [mealPlan, weekNumber]);
 
   // Format date for display
   const formatDate = (week: number, day: number) => {
@@ -164,10 +222,10 @@ export default function WeekTemplate({
                       w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto overflow-hidden relative
                       ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}
                     `}>
-                      {dayImages[weekNumber.toString()]?.[day.day.toString()] ? (
+                      {dayThumbnails[day.day] || dayImages[weekNumber.toString()]?.[day.day.toString()] ? (
                         <>
                           <Image
-                            src={dayImages[weekNumber.toString()][day.day.toString()]!}
+                            src={(dayThumbnails[day.day] || dayImages[weekNumber.toString()][day.day.toString()]!) as string}
                             alt={`Day ${day.day} meal`}
                             fill
                             className="object-cover"
