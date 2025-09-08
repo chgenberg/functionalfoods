@@ -487,28 +487,32 @@ export default function RecipePage() {
 
   useEffect(() => {
     if (!recipe) return;
-    if (recipe.imageUrl && !imageError) return;
+    
+    // Always try to get optimized image from new image bank via fuzzy matching
     (async () => {
       try {
         const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
           cache: 'no-store',
-          body: JSON.stringify({ recipeNames: [recipe.title], recipeSlugs: [recipe.slug], size: 'xl' })
+          body: JSON.stringify({ recipeNames: [recipe.title], recipeSlugs: [recipe.slug], size: 'large' })
         });
         if (mapRes.ok) {
           const { images } = await mapRes.json();
           const mapped = images && images[recipe.title];
           if (mapped) {
+            console.log(`🖼️ Recipe detail: Mapped "${recipe.title}" -> ${mapped}`);
             setRecipe(prev => prev ? { ...prev, imageUrl: mapped } : prev);
             setImageError(false);
+          } else {
+            console.log(`⚠️ Recipe detail: No image found for "${recipe.title}"`);
           }
         }
       } catch (e) {
         console.warn('Detail image batch-map failed', e);
       }
     })();
-  }, [recipe?.slug, imageError]);
+  }, [recipe?.slug]);
 
   if (loading) {
     return (
