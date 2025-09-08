@@ -187,6 +187,9 @@ export default function Checkout() {
                   }[method];
 
                   if (!methodData) return null;
+                  
+                  // TypeScript assertion after null check
+                  const data = methodData as NonNullable<typeof methodData>;
 
                   return (
                     <div key={method} className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
@@ -199,11 +202,11 @@ export default function Checkout() {
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                             selectedPayment === method ? 'bg-[#93C560]/20 text-[#014421]' : 'bg-gray-100'
                           }`}>
-                            <methodData.icon className="w-4 h-4" />
+                            <data.icon className="w-4 h-4" />
                           </div>
                           <div>
-                            <p className="font-medium">{methodData.name}</p>
-                            <p className="text-sm text-gray-600">{methodData.desc}</p>
+                            <p className="font-medium">{data.name}</p>
+                            <p className="text-sm text-gray-600">{data.desc}</p>
                             <span className="px-2 py-1 bg-[#93C560] text-[#014421] text-xs rounded-full font-medium">
                               Rekommenderas
                             </span>
