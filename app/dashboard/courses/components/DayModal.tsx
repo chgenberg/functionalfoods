@@ -75,7 +75,8 @@ export default function DayModal({
             body: JSON.stringify({
               recipeNames: meals.map(m => m.meal),
               recipeSlugs: recipeSlugs,
-              size: 'medium'
+              size: 'medium',
+              usage: 'card'
             })
           });
 

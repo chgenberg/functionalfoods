@@ -65,7 +65,12 @@ export default function RandomRecipes({ excludeId, count = 3, title = "Fler rece
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
               cache: 'no-store',
-              body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'medium' })
+              body: JSON.stringify({ 
+                recipeNames: names, 
+                recipeSlugs: slugs, 
+                size: 'medium',
+                usage: 'card'
+              })
             });
             if (mapRes.ok) {
               const { images } = await mapRes.json();

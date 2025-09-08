@@ -64,7 +64,12 @@ export default function RecipeCarousel() {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
               cache: 'no-store',
-              body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'large' })
+              body: JSON.stringify({ 
+                recipeNames: names, 
+                recipeSlugs: slugs, 
+                size: 'large',
+                usage: 'card'
+              })
             });
             if (mapRes.ok) {
               const { images } = await mapRes.json();

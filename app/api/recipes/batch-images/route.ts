@@ -114,21 +114,32 @@ function getAvailableImages(): string[] {
     
     let files = [];
     
-    // Try optimized first
+    // Try optimized first - look for card-medium format as reference
     if (fs.existsSync(optimizedDir)) {
       files = fs.readdirSync(optimizedDir);
-      // Extract base names from optimized files (remove -size.webp suffix)
+      // Extract base names from new format files (remove -format.webp suffix)
       const optimizedNames = files
-        .filter(f => f.endsWith('-medium.webp'))
-        .map(f => f.replace('-medium.webp', ''))
+        .filter(f => f.endsWith('-card-medium.webp'))
+        .map(f => f.replace('-card-medium.webp', ''))
         .map(f => {
           // Convert slugified back to readable name for matching
           return f.replace(/-/g, ' ');
         });
       
       if (optimizedNames.length > 0) {
-        console.log(`📁 Found ${optimizedNames.length} optimized images`);
+        console.log(`📁 Found ${optimizedNames.length} optimized images with new formats`);
         return optimizedNames;
+      }
+      
+      // Fallback to old format if new format doesn't exist yet
+      const oldFormatNames = files
+        .filter(f => f.endsWith('-medium.webp'))
+        .map(f => f.replace('-medium.webp', ''))
+        .map(f => f.replace(/-/g, ' '));
+      
+      if (oldFormatNames.length > 0) {
+        console.log(`📁 Found ${oldFormatNames.length} optimized images with old format`);
+        return oldFormatNames;
       }
     }
     

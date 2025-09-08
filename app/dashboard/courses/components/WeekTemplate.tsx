@@ -137,7 +137,12 @@ export default function WeekTemplate({
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
           cache: 'no-store',
-          body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'small' })
+          body: JSON.stringify({ 
+            recipeNames: names, 
+            recipeSlugs: slugs, 
+            size: 'small',
+            usage: 'thumb'
+          })
         });
         
         if (!resp.ok) {
