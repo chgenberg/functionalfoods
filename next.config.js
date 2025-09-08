@@ -23,6 +23,10 @@ const nextConfig = {
       {
         source: '/Bilder_flow/_optimized/:path*',
         destination: '/api/images/Bilder_flow/_optimized/:path*',
+      },
+      {
+        source: '/recept_images_optimized/:path*',
+        destination: '/api/images/recept_images_optimized/:path*',
       }
     ];
   }
