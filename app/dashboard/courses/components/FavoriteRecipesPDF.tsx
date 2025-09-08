@@ -13,8 +13,9 @@ interface FavoriteRecipesPDFProps {
 export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const { getFavoritesByCoursetype } = useFavoriteRecipes();
-  const favorites = getFavoritesByCoursetype(courseType);
-  const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
+  const normalizedType: 'basics' | 'flow' = courseType === 'flow' ? 'flow' : 'basics';
+  const favorites = getFavoritesByCoursetype(normalizedType);
+  const courseName = normalizedType === 'basics' ? 'Functional Basics' : 'Functional Flow';
 
   // Group favorites by week - moved to component level
   const favoritesByWeek = favorites.reduce((acc, fav) => {
