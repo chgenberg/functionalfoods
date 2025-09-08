@@ -126,6 +126,21 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     return Math.round((total / 50) * 100);
   };
 
+  // Convert simple markdown to HTML-friendly output: ### -> <strong>, **bold** -> <strong>
+  const formatText = (txt: string): string => {
+    if (!txt) return '';
+    let html = String(txt);
+    // Headings like ### Title -> <strong>Title</strong>
+    html = html.replace(/^#{1,6}\s*(.+)$/gm, '<strong>$1</strong>');
+    // Bold **text** -> <strong>text</strong>
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Normalize multiple newlines
+    html = html.replace(/\n{2,}/g, '\n\n');
+    // Line breaks to paragraphs spacing
+    html = html.replace(/\n/g, '<br/><br/>' );
+    return html;
+  };
+
   const fetchFunctionalFoods = async () => {
     if (loadingProducts) return;
     
@@ -645,7 +660,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         ) : (
                           <div 
                             className="prose prose-gray max-w-none text-sm md:text-base text-gray-600 leading-relaxed space-y-4"
-                            dangerouslySetInnerHTML={{ __html: aiReport?.profile ? aiReport.profile.replace(/\n/g, '<br/><br/>') : recommendations.profile.replace(/\. /g, '.<br/><br/>') }}
+                            dangerouslySetInnerHTML={{ __html: aiReport?.profile ? formatText(aiReport.profile) : formatText(recommendations.profile) }}
                           />
                         )}
                       </motion.div>
