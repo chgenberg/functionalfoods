@@ -70,7 +70,7 @@ export default function HealthTrackingPage() {
                 </div>
                 <div>
                     <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Noteringar</label>
-                    <textarea id="notes" rows="3" className="input-style" placeholder="Hur har dagen varit? Något speciellt som hänt?"></textarea>
+                    <textarea id="notes" rows={3} className="input-style" placeholder="Hur har dagen varit? Något speciellt som hänt?"></textarea>
                 </div>
                 <div className="text-right">
                     <button type="submit" className="btn-primary">Spara logg</button>
