@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-import { 
 import { Calendar, ShoppingCart, ChevronRight, Clock, CheckCircle, Download, ExternalLink } from 'lucide-react';
+import { 
   GiFruitBowl, GiMeal, GiCookingPot, GiMeat, 
   GiWheat, GiWaterBottle, GiHerbsBundle
 } from 'react-icons/gi';
