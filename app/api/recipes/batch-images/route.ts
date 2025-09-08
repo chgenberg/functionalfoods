@@ -64,8 +64,8 @@ function localAssetToApiUrl(assetPath: string): string {
   return `/api/images/${segments.join('/')}`;
 }
 
-// Helper to convert image filename to optimized URL
-function imageToOptimizedUrl(imageName: string, size: string = 'medium'): string {
+// Helper to convert image filename to optimized URL with correct format
+function imageToOptimizedUrl(imageName: string, size: string = 'medium', usage: 'card' | 'detail' | 'thumb' = 'card'): string {
   const slugified = imageName
     .replace(/[ÅÄåä]/g, 'a')
     .replace(/[Öö]/g, 'o')
@@ -75,10 +75,20 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium'): string
     .replace(/^-|-$/g, '')
     .toLowerCase();
   
+  // Map size to specific format based on usage
+  let format;
+  if (usage === 'detail') {
+    format = `detail-${size}`;
+  } else if (usage === 'thumb') {
+    format = `thumb-${size === 'small' || size === 'medium' ? size : 'medium'}`;
+  } else {
+    format = `card-${size}`;
+  }
+  
   // Try optimized first
-  const optimizedPath = path.join(process.cwd(), 'public', 'recept_images_optimized', `${slugified}-${size}.webp`);
+  const optimizedPath = path.join(process.cwd(), 'public', 'recept_images_optimized', `${slugified}-${format}.webp`);
   if (fs.existsSync(optimizedPath)) {
-    return `/api/images/recept_images_optimized/${slugified}-${size}.webp`;
+    return `/api/images/recept_images_optimized/${slugified}-${format}.webp`;
   }
   
   // Fallback to original image
@@ -93,7 +103,7 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium'): string
   }
   
   // Final fallback
-  return `/api/images/recept_images_optimized/het-ratatouille-${size}.webp`;
+  return `/api/images/recept_images_optimized/het-ratatouille-${format}.webp`;
 }
 
 // Get available image files from filesystem
@@ -140,19 +150,19 @@ function getAvailableImages(): string[] {
 }
 
 // Fuzzy match recipe name to image filename
-function findBestImageMatch(recipeName: string, availableImages: string[], size: string = 'medium'): string | null {
+function findBestImageMatch(recipeName: string, availableImages: string[], size: string = 'medium', usage: 'card' | 'detail' | 'thumb' = 'card'): string | null {
   const normalized = normalizeSwedish(recipeName);
   
   // 1. Exact match
   let match = availableImages.find(img => normalizeSwedish(img) === normalized);
-  if (match) return imageToOptimizedUrl(match, size);
+  if (match) return imageToOptimizedUrl(match, size, usage);
   
   // 2. Contains match (both directions)
   match = availableImages.find(img => {
     const normalizedImg = normalizeSwedish(img);
     return normalizedImg.includes(normalized) || normalized.includes(normalizedImg);
   });
-  if (match) return imageToOptimizedUrl(match, size);
+  if (match) return imageToOptimizedUrl(match, size, usage);
   
   // 3. Word-based matching
   const recipeWords = normalized.split(/\s+/).filter(w => w.length > 2);
@@ -164,7 +174,7 @@ function findBestImageMatch(recipeName: string, availableImages: string[], size:
       );
       return matchedWords.length >= Math.min(2, recipeWords.length);
     });
-    if (match) return imageToOptimizedUrl(match, size);
+    if (match) return imageToOptimizedUrl(match, size, usage);
   }
   
   return null;
@@ -172,13 +182,13 @@ function findBestImageMatch(recipeName: string, availableImages: string[], size:
 
 export async function POST(request: Request) {
   try {
-    const { recipeNames, recipeSlugs = [], size = 'medium' } = await request.json();
+    const { recipeNames, recipeSlugs = [], size = 'medium', usage = 'card' } = await request.json();
 
     if (!Array.isArray(recipeNames)) {
       return NextResponse.json({ error: 'Recipe names must be an array' }, { status: 400 });
     }
 
-    console.log('🔍 Fetching images for:', recipeNames);
+    console.log('🔍 Fetching images for:', recipeNames, 'with usage:', usage);
 
     // Get available image files from filesystem
     const availableImages = getAvailableImages();
@@ -199,7 +209,7 @@ export async function POST(request: Request) {
       const cleanName = cleanedNames[i];
 
       // Try filesystem fuzzy matching
-      const fsMatch = findBestImageMatch(cleanName, availableImages, size);
+      const fsMatch = findBestImageMatch(cleanName, availableImages, size, usage);
       if (fsMatch) {
         imageMap[originalName] = fsMatch;
         console.log(`✅ Filesystem match: "${originalName}" -> ${fsMatch}`);

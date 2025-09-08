@@ -501,7 +501,12 @@ export default function RecipePage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
           cache: 'no-store',
-          body: JSON.stringify({ recipeNames: [recipe.title], recipeSlugs: [recipe.slug], size: 'large' })
+          body: JSON.stringify({ 
+            recipeNames: [recipe.title], 
+            recipeSlugs: [recipe.slug], 
+            size: 'large',
+            usage: 'detail'
+          })
         });
         if (mapRes.ok) {
           const { images } = await mapRes.json();
