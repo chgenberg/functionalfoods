@@ -67,6 +67,7 @@ export default function RecipePage() {
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
   const [userHasAccess, setUserHasAccess] = useState(false);
   const [userCourses, setUserCourses] = useState<string[]>([]);
+  const [imageLoading, setImageLoading] = useState(true);
 
   // Check if this recipe appears as "rester" later in the same week
   const checkIfRecipeAppearsAsRester = (recipeSlug: string, fromCourse?: string, fromWeek?: string) => {
@@ -491,6 +492,8 @@ export default function RecipePage() {
     console.log(`🖼️ Recipe detail: Loading image for "${recipe.title}" (slug: ${recipe.slug})`);
     console.log(`🖼️ Current imageUrl:`, recipe.imageUrl);
     
+    setImageLoading(true);
+    
     // Always try to get optimized image from new image bank via fuzzy matching
     (async () => {
       try {
@@ -516,6 +519,8 @@ export default function RecipePage() {
         }
       } catch (e) {
         console.error('❌ Recipe detail: batch-map failed', e);
+      } finally {
+        setImageLoading(false);
       }
     })();
   }, [recipe?.slug]);
@@ -675,7 +680,7 @@ export default function RecipePage() {
                 {/* Image Container - Optimized for Portrait Images */}
                 <div className="relative w-full bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden">
                   <div className="relative aspect-[3/4] md:aspect-[3/4] lg:aspect-[4/5]">
-                    {(recipe.imageUrl || recipe.imageMobileUrl) && !imageError ? (
+                    {!imageLoading && recipe.imageUrl && !imageError && !recipe.imageUrl.includes('Recept_complete2.0') ? (
                       <Image
                         src={optimizeImageUrl(recipe.imageUrl || recipe.imageMobileUrl, 'large', 'portrait')}
                         alt={recipe.imageAlt || recipe.title}
@@ -686,6 +691,10 @@ export default function RecipePage() {
                         sizes={getResponsiveSizes('large')}
                         onError={() => setImageError(true)}
                       />
+                    ) : imageLoading ? (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#93C560]"></div>
+                      </div>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">
                         <Camera className="w-16 h-16 md:w-20 md:h-20 text-[#014421]/30" />
