@@ -53,6 +53,17 @@ function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string
   return randomImage;
 }
 
+// Helper to convert local public asset path to /api/images with encoded segments
+function localAssetToApiUrl(assetPath: string): string {
+  if (!assetPath) return assetPath as unknown as string;
+  let p = assetPath;
+  if (p.startsWith('/public/')) p = p.replace('/public', '');
+  if (!p.startsWith('/')) p = `/${p}`;
+  // encode each segment but preserve slashes
+  const segments = p.split('/').filter(Boolean).map(s => encodeURIComponent(s));
+  return `/api/images/${segments.join('/')}`;
+}
+
 // Get available image files from filesystem
 function getAvailableImages(): string[] {
   try {
@@ -139,7 +150,8 @@ export async function POST(request: Request) {
         let url = r.imageUrl;
         if (url.startsWith('/public/')) url = url.replace('/public', '');
         if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
-        slugToImage[r.slug] = optimizeImageUrl(url, size);
+        // Always serve via API route to handle spaces/slugified filenames
+        slugToImage[r.slug] = localAssetToApiUrl(url);
       }
     }
 
@@ -189,7 +201,8 @@ export async function POST(request: Request) {
         let url = match.imageUrl as string;
         if (url.startsWith('/public/')) url = url.replace('/public', '');
         if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
-        imageMap[originalName] = optimizeImageUrl(url, size as 'small' | 'medium' | 'large');
+        // Use API images route for reliability
+        imageMap[originalName] = localAssetToApiUrl(url);
         console.log(`✅ DB match: "${originalName}" -> ${imageMap[originalName]}`);
       } else {
         const fallback = getFallbackImage(size as 'small' | 'medium' | 'large');
