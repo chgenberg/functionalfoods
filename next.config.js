@@ -27,6 +27,10 @@ const nextConfig = {
       {
         source: '/recept_images_optimized/:path*',
         destination: '/api/images/recept_images_optimized/:path*',
+      },
+      {
+        source: '/recept_images_2025/:path*',
+        destination: '/api/images/recept_images_2025/:path*',
       }
     ];
   }

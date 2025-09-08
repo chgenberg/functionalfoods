@@ -74,24 +74,67 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium'): string
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
     .toLowerCase();
-  return `/api/images/recept_images_optimized/${slugified}-${size}.webp`;
+  
+  // Try optimized first
+  const optimizedPath = path.join(process.cwd(), 'public', 'recept_images_optimized', `${slugified}-${size}.webp`);
+  if (fs.existsSync(optimizedPath)) {
+    return `/api/images/recept_images_optimized/${slugified}-${size}.webp`;
+  }
+  
+  // Fallback to original image
+  const originalDir = path.join(process.cwd(), 'recept_images_2025');
+  const possibleExtensions = ['jpg', 'jpeg', 'png'];
+  
+  for (const ext of possibleExtensions) {
+    const originalPath = path.join(originalDir, `${imageName}.${ext}`);
+    if (fs.existsSync(originalPath)) {
+      return `/api/images/recept_images_2025/${encodeURIComponent(imageName)}.${ext}`;
+    }
+  }
+  
+  // Final fallback
+  return `/api/images/recept_images_optimized/het-ratatouille-${size}.webp`;
 }
 
 // Get available image files from filesystem
 function getAvailableImages(): string[] {
   try {
-    const imagesDir = path.join(process.cwd(), 'public', 'recept_images_optimized');
-    const files = fs.readdirSync(imagesDir);
-    // Extract base names from optimized files (remove -size.webp suffix)
-    return files
-      .filter(f => f.endsWith('-medium.webp'))
-      .map(f => f.replace('-medium.webp', ''))
-      .map(f => {
-        // Convert slugified back to readable name for matching
-        return f.replace(/-/g, ' ');
-      });
+    const optimizedDir = path.join(process.cwd(), 'public', 'recept_images_optimized');
+    const originalDir = path.join(process.cwd(), 'recept_images_2025');
+    
+    let files = [];
+    
+    // Try optimized first
+    if (fs.existsSync(optimizedDir)) {
+      files = fs.readdirSync(optimizedDir);
+      // Extract base names from optimized files (remove -size.webp suffix)
+      const optimizedNames = files
+        .filter(f => f.endsWith('-medium.webp'))
+        .map(f => f.replace('-medium.webp', ''))
+        .map(f => {
+          // Convert slugified back to readable name for matching
+          return f.replace(/-/g, ' ');
+        });
+      
+      if (optimizedNames.length > 0) {
+        console.log(`📁 Found ${optimizedNames.length} optimized images`);
+        return optimizedNames;
+      }
+    }
+    
+    // Fallback to original images
+    if (fs.existsSync(originalDir)) {
+      files = fs.readdirSync(originalDir);
+      const originalNames = files
+        .filter(f => /\.(jpg|jpeg|png)$/i.test(f))
+        .map(f => f.replace(/\.(jpg|jpeg|png)$/i, ''));
+      console.log(`📁 Fallback to ${originalNames.length} original images`);
+      return originalNames;
+    }
+    
+    return [];
   } catch (error) {
-    console.warn('Could not read optimized images directory:', error);
+    console.warn('Could not read images directory:', error);
     return [];
   }
 }
