@@ -9,10 +9,17 @@ interface NutrientStatus {
   foodSources: string;
 }
 
+interface RecommendedTest {
+  gptName: string;
+  name?: string;
+  description?: string;
+  source_url?: string;
+}
+
 function MicronutrientResultContent() {
   const searchParams = useSearchParams();
   const [selectedNutrient, setSelectedNutrient] = useState<string | null>(null);
-  const [recommendedTests, setRecommendedTests] = useState([]);
+  const [recommendedTests, setRecommendedTests] = useState<RecommendedTest[]>([]);
   
   const data = searchParams.get("data");
   const result = data ? JSON.parse(decodeURIComponent(data)) : null;
@@ -29,7 +36,7 @@ function MicronutrientResultContent() {
         body: JSON.stringify({ gptRecommended }),
       });
       const data = await res.json();
-      setRecommendedTests(data.recommendedTests || []);
+      setRecommendedTests((data.recommendedTests || []) as RecommendedTest[]);
     }
     fetchRecommended();
   }, [result]);
@@ -168,7 +175,7 @@ function MicronutrientResultContent() {
         <div className="mt-8">
           <h2 className="text-lg font-bold mb-2">Recommended Health Tests</h2>
           <ul>
-            {recommendedTests.map(test => (
+            {recommendedTests.map((test: RecommendedTest) => (
               <li key={test.gptName} className="mb-4">
                 <div className="font-semibold">{test.name || test.gptName}</div>
                 <div className="text-sm text-gray-700">{test.description}</div>
