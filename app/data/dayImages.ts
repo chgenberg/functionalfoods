@@ -1,56 +1,56 @@
 export const dayImages: Record<string, Record<string, string | null>> = {
   "1": {
-    "1": "/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp",
-    "2": "/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp",
-    "3": "/Bilder_basic/_optimized/aggrora-med-tomater-och-paprika.webp",
-    "4": "/Bilder_basic/_optimized/bakad-feta-med-tomat-och-rostad-sotpotatissallad.webp",
-    "5": "/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp",
-    "6": "/Bilder_basic/_optimized/barsmoothie-med-apelsin.webp",
-    "7": "/Bilder_basic/_optimized/biff-med-jordnotssas-och-nudelsallad.webp"
+    "1": "/Recept_complete2.0/images/_optimized/Agg i paprika.webp",
+    "2": "/Recept_complete2.0/images/_optimized/Agghack i salladsblad.webp",
+    "3": "/Recept_complete2.0/images/_optimized/Bakad feta med tomat och rostad sötpotatissallad.webp",
+    "4": "/Recept_complete2.0/images/_optimized/Banankeso plättar med frukt och bär.webp",
+    "5": "/Recept_complete2.0/images/_optimized/Bärsmoothie med apelsin.webp",
+    "6": "/Recept_complete2.0/images/_optimized/Biff med jordnötssås och nudelsallad.webp",
+    "7": "/Recept_complete2.0/images/_optimized/Het ratatouille.webp"
   },
   "2": {
-    "1": "/Bilder_flow/_optimized/IMG_0457.webp",
-    "2": "/Bilder_flow/_optimized/IMG_0480.webp",
-    "3": "/Bilder_flow/_optimized/IMG_0486.webp",
-    "4": "/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp",
-    "5": "/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp",
-    "6": "/Bilder_basic/_optimized/aggrora-med-tomater-och-paprika.webp",
-    "7": "/Bilder_basic/_optimized/bakad-feta-med-tomat-och-rostad-sotpotatissallad.webp"
+    "1": "/Recept_complete2.0/images/_optimized/Kycklingburgare med papayasallad.webp",
+    "2": "/Recept_complete2.0/images/_optimized/Choklad- och kokoschiapudding.webp",
+    "3": "/Recept_complete2.0/images/_optimized/Lax med fetaost och rostade rotfrukter och brysselkål.webp",
+    "4": "/Recept_complete2.0/images/_optimized/Agg i paprika.webp",
+    "5": "/Recept_complete2.0/images/_optimized/Agghack i salladsblad.webp",
+    "6": "/Recept_complete2.0/images/_optimized/Bakad feta med tomat och rostad sötpotatissallad.webp",
+    "7": "/Recept_complete2.0/images/_optimized/Banankeso plättar med frukt och bär.webp"
   },
   "3": {
-    "1": "/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp",
-    "2": "/Bilder_basic/_optimized/barsmoothie-med-apelsin.webp",
-    "3": "/Bilder_basic/_optimized/biff-med-jordnotssas-och-nudelsallad.webp",
-    "4": "/Bilder_flow/_optimized/IMG_0457.webp",
-    "5": "/Bilder_flow/_optimized/IMG_0480.webp",
-    "6": "/Bilder_flow/_optimized/IMG_0486.webp",
-    "7": "/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp"
+    "1": "/Recept_complete2.0/images/_optimized/Bärsmoothie med apelsin.webp",
+    "2": "/Recept_complete2.0/images/_optimized/Biff med jordnötssås och nudelsallad.webp",
+    "3": "/Recept_complete2.0/images/_optimized/Het ratatouille.webp",
+    "4": "/Recept_complete2.0/images/_optimized/Kycklingburgare med papayasallad.webp",
+    "5": "/Recept_complete2.0/images/_optimized/Choklad- och kokoschiapudding.webp",
+    "6": "/Recept_complete2.0/images/_optimized/Lax med fetaost och rostade rotfrukter och brysselkål.webp",
+    "7": "/Recept_complete2.0/images/_optimized/Agg i paprika.webp"
   },
   "4": {
-    "1": "/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp",
-    "2": "/Bilder_basic/_optimized/aggrora-med-tomater-och-paprika.webp",
-    "3": "/Bilder_basic/_optimized/bakad-feta-med-tomat-och-rostad-sotpotatissallad.webp",
-    "4": "/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp",
-    "5": "/Bilder_basic/_optimized/barsmoothie-med-apelsin.webp",
-    "6": "/Bilder_basic/_optimized/biff-med-jordnotssas-och-nudelsallad.webp",
-    "7": "/Bilder_flow/_optimized/IMG_0457.webp"
+    "1": "/Recept_complete2.0/images/_optimized/Agghack i salladsblad.webp",
+    "2": "/Recept_complete2.0/images/_optimized/Bakad feta med tomat och rostad sötpotatissallad.webp",
+    "3": "/Recept_complete2.0/images/_optimized/Banankeso plättar med frukt och bär.webp",
+    "4": "/Recept_complete2.0/images/_optimized/Bärsmoothie med apelsin.webp",
+    "5": "/Recept_complete2.0/images/_optimized/Biff med jordnötssås och nudelsallad.webp",
+    "6": "/Recept_complete2.0/images/_optimized/Het ratatouille.webp",
+    "7": "/Recept_complete2.0/images/_optimized/Kycklingburgare med papayasallad.webp"
   },
   "5": {
-    "1": "/Bilder_flow/_optimized/IMG_0480.webp",
-    "2": "/Bilder_flow/_optimized/IMG_0486.webp",
-    "3": "/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp",
-    "4": "/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp",
-    "5": "/Bilder_basic/_optimized/aggrora-med-tomater-och-paprika.webp",
-    "6": "/Bilder_basic/_optimized/bakad-feta-med-tomat-och-rostad-sotpotatissallad.webp",
-    "7": "/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp"
+    "1": "/Recept_complete2.0/images/_optimized/Choklad- och kokoschiapudding.webp",
+    "2": "/Recept_complete2.0/images/_optimized/Lax med fetaost och rostade rotfrukter och brysselkål.webp",
+    "3": "/Recept_complete2.0/images/_optimized/Agg i paprika.webp",
+    "4": "/Recept_complete2.0/images/_optimized/Agghack i salladsblad.webp",
+    "5": "/Recept_complete2.0/images/_optimized/Bakad feta med tomat och rostad sötpotatissallad.webp",
+    "6": "/Recept_complete2.0/images/_optimized/Banankeso plättar med frukt och bär.webp",
+    "7": "/Recept_complete2.0/images/_optimized/Bärsmoothie med apelsin.webp"
   },
   "6": {
-    "1": "/Bilder_basic/_optimized/barsmoothie-med-apelsin.webp",
-    "2": "/Bilder_basic/_optimized/biff-med-jordnotssas-och-nudelsallad.webp",
-    "3": "/Bilder_flow/_optimized/IMG_0457.webp",
-    "4": "/Bilder_flow/_optimized/IMG_0480.webp",
-    "5": "/Bilder_flow/_optimized/IMG_0486.webp",
-    "6": "/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp",
-    "7": "/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp"
+    "1": "/Recept_complete2.0/images/_optimized/Biff med jordnötssås och nudelsallad.webp",
+    "2": "/Recept_complete2.0/images/_optimized/Het ratatouille.webp",
+    "3": "/Recept_complete2.0/images/_optimized/Kycklingburgare med papayasallad.webp",
+    "4": "/Recept_complete2.0/images/_optimized/Choklad- och kokoschiapudding.webp",
+    "5": "/Recept_complete2.0/images/_optimized/Lax med fetaost och rostade rotfrukter och brysselkål.webp",
+    "6": "/Recept_complete2.0/images/_optimized/Agg i paprika.webp",
+    "7": "/Recept_complete2.0/images/_optimized/Agghack i salladsblad.webp"
   }
 };

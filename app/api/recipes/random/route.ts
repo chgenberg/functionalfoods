@@ -9,7 +9,7 @@ function sampleFallback() {
       id: 'f1', 
       title: 'Stekt ägg med lax', 
       slug: 'stekt-agg-med-lax', 
-      imageUrl: '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp', 
+      imageUrl: '/Recept_complete2.0/images/_optimized/Agg i paprika.webp', 
       imageAlt: 'Stekt ägg med lax', 
       excerpt: 'Proteinrik frukost med omega-3', 
       prepTime: '10 min', 
@@ -19,7 +19,7 @@ function sampleFallback() {
       id: 'f2', 
       title: 'Het ratatouille', 
       slug: 'het-ratatouille', 
-      imageUrl: '/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp', 
+      imageUrl: '/Recept_complete2.0/images/_optimized/Het ratatouille.webp', 
       imageAlt: 'Het ratatouille', 
       excerpt: 'Medelhavsinspirerad grönsaksgryta', 
       prepTime: '25 min', 
@@ -29,7 +29,7 @@ function sampleFallback() {
       id: 'f3', 
       title: 'Yoghurt med ketomüsli', 
       slug: 'yoghurt-med-ketomusli', 
-      imageUrl: '/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp', 
+      imageUrl: '/Recept_complete2.0/images/_optimized/Banankeso plättar med frukt och bär.webp', 
       imageAlt: 'Yoghurt med ketomüsli', 
       excerpt: 'Hälsosam start på dagen', 
       prepTime: '5 min', 
@@ -39,7 +39,7 @@ function sampleFallback() {
       id: 'f4', 
       title: 'Kycklingburgare med papayasallad', 
       slug: 'kycklingburgare-med-papayasallad', 
-      imageUrl: '/Bilder_flow/_optimized/IMG_0457.webp', 
+      imageUrl: '/Recept_complete2.0/images/_optimized/Kycklingburgare med papayasallad.webp', 
       imageAlt: 'Kycklingburgare', 
       excerpt: 'Proteinrik middag med exotisk touch', 
       prepTime: '25 min', 
@@ -49,13 +49,23 @@ function sampleFallback() {
       id: 'f5', 
       title: 'Choklad- och kokoschiapudding', 
       slug: 'choklad-och-kokoschiapudding', 
-      imageUrl: '/Bilder_flow/_optimized/IMG_0480.webp', 
+      imageUrl: '/Recept_complete2.0/images/_optimized/Choklad- och kokoschiapudding.webp', 
       imageAlt: 'Chiapudding', 
       excerpt: 'Krämig och näringsrik dessert', 
       prepTime: '15 min', 
       categories: ['Dessert'] 
     }
   ];
+}
+
+function normalizeImageUrl(url: string | null): string | null {
+  if (!url) return null;
+  let out = url;
+  if (out.startsWith('/public/')) out = out.replace('/public', '');
+  // Ensure leading slash for local assets
+  if (out.startsWith('public/')) out = out.replace('public/', '/');
+  if (!out.startsWith('/') && !out.startsWith('http')) out = `/${out}`;
+  return out;
 }
 
 export async function GET(request: Request) {
@@ -95,7 +105,10 @@ export async function GET(request: Request) {
 
     // Shuffle and return requested count
     const shuffled = freeRecipes.sort(() => 0.5 - Math.random());
-    const selectedRecipes = shuffled.slice(0, count);
+    const selectedRecipes = shuffled.slice(0, count).map(r => ({
+      ...r,
+      imageUrl: normalizeImageUrl(r.imageUrl)
+    }));
 
     return NextResponse.json(
       { recipes: selectedRecipes },

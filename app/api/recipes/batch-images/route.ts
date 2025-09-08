@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -40,15 +42,58 @@ function optimizeImageUrl(imageUrl: string, size: 'small' | 'medium' | 'large' =
 
 // Helper function to get a working fallback image
 function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string {
-  // Use a working image from Bilder_basic as fallback
+  // Use a working image from Recept_complete2.0 as fallback
   const fallbackImages = [
-    '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp',
-    '/Bilder_basic/_optimized/aggrora-med-tomat-och-paprika.webp',
-    '/Bilder_basic/_optimized/banankeso-plattar-med-frukt-och-bar.webp',
-    '/Bilder_basic/_optimized/barsmoothie-med-apelsin.webp'
+    '/Recept_complete2.0/images/_optimized/Agg i paprika.webp',
+    '/Recept_complete2.0/images/_optimized/Het ratatouille.webp',
+    '/Recept_complete2.0/images/_optimized/Banankeso plättar med frukt och bär.webp',
+    '/Recept_complete2.0/images/_optimized/Bärsmoothie med apelsin.webp'
   ];
   const randomImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
   return optimizeImageUrl(randomImage, size);
+}
+
+// Get available image files from filesystem
+function getAvailableImages(): string[] {
+  try {
+    const imagesDir = path.join(process.cwd(), 'public', 'Recept_complete2.0', 'images', '_optimized');
+    const files = fs.readdirSync(imagesDir);
+    return files.filter(f => f.endsWith('.webp')).map(f => f.replace('.webp', ''));
+  } catch (error) {
+    console.warn('Could not read images directory:', error);
+    return [];
+  }
+}
+
+// Fuzzy match recipe name to image filename
+function findBestImageMatch(recipeName: string, availableImages: string[]): string | null {
+  const normalized = normalizeSwedish(recipeName);
+  
+  // 1. Exact match
+  let match = availableImages.find(img => normalizeSwedish(img) === normalized);
+  if (match) return `/Recept_complete2.0/images/_optimized/${match}.webp`;
+  
+  // 2. Contains match (both directions)
+  match = availableImages.find(img => {
+    const normalizedImg = normalizeSwedish(img);
+    return normalizedImg.includes(normalized) || normalized.includes(normalizedImg);
+  });
+  if (match) return `/Recept_complete2.0/images/_optimized/${match}.webp`;
+  
+  // 3. Word-based matching
+  const recipeWords = normalized.split(/\s+/).filter(w => w.length > 2);
+  if (recipeWords.length > 0) {
+    match = availableImages.find(img => {
+      const imgWords = normalizeSwedish(img).split(/\s+/);
+      const matchedWords = recipeWords.filter(rw => 
+        imgWords.some(iw => iw.includes(rw) || rw.includes(iw))
+      );
+      return matchedWords.length >= Math.min(2, recipeWords.length);
+    });
+    if (match) return `/Recept_complete2.0/images/_optimized/${match}.webp`;
+  }
+  
+  return null;
 }
 
 export async function POST(request: Request) {
@@ -61,6 +106,10 @@ export async function POST(request: Request) {
 
     console.log('🔍 Fetching images for:', recipeNames);
 
+    // Get available image files from filesystem
+    const availableImages = getAvailableImages();
+    console.log(`📁 Found ${availableImages.length} available image files`);
+
     // Clean recipe names and create search patterns
     const cleanedNames = recipeNames.map(name => extractRecipeName(name));
     const normalizedNames = cleanedNames.map(name => normalizeSwedish(name));
@@ -68,7 +117,7 @@ export async function POST(request: Request) {
     console.log('🧹 Cleaned names:', cleanedNames);
     console.log('🔤 Normalized names:', normalizedNames);
 
-    // Fetch all recipes for better matching
+    // Fetch all recipes for database matching (as backup)
     const recipes = await prisma.recipe.findMany({
       where: {
         status: 'PUBLISHED',
@@ -81,7 +130,7 @@ export async function POST(request: Request) {
       }
     });
 
-    console.log(`📚 Found ${recipes.length} recipes with images`);
+    console.log(`📚 Found ${recipes.length} recipes with images in database`);
 
     // Build quick index by slug
     const slugToImage: Record<string, string> = {};
@@ -102,7 +151,7 @@ export async function POST(request: Request) {
       const cleanName = cleanedNames[i];
       const normalizedName = normalizedNames[i];
 
-      // Prefer slug matching when provided
+      // 1. Try slug matching first (most reliable)
       const providedSlug = Array.isArray(recipeSlugs) ? recipeSlugs[i] : null;
       if (providedSlug && slugToImage[providedSlug]) {
         imageMap[originalName] = slugToImage[providedSlug];
@@ -110,7 +159,16 @@ export async function POST(request: Request) {
         continue;
       }
 
-      console.log(`🔍 Matching "${originalName}" -> "${cleanName}" -> "${normalizedName}"`);
+      // 2. Try filesystem fuzzy matching
+      const fsMatch = findBestImageMatch(cleanName, availableImages);
+      if (fsMatch) {
+        imageMap[originalName] = fsMatch;
+        console.log(`✅ Filesystem match: "${originalName}" -> ${fsMatch}`);
+        continue;
+      }
+
+      // 3. Try database matching
+      console.log(`🔍 DB matching "${originalName}" -> "${cleanName}" -> "${normalizedName}"`);
       let match = recipes.find((r: any) => normalizeSwedish(r.title) === normalizedName);
       if (!match) {
         match = recipes.find((r: any) => {
@@ -132,7 +190,7 @@ export async function POST(request: Request) {
         if (url.startsWith('/public/')) url = url.replace('/public', '');
         if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
         imageMap[originalName] = optimizeImageUrl(url, size as 'small' | 'medium' | 'large');
-        console.log(`✅ Found match: "${originalName}" -> ${imageMap[originalName]}`);
+        console.log(`✅ DB match: "${originalName}" -> ${imageMap[originalName]}`);
       } else {
         const fallback = getFallbackImage(size as 'small' | 'medium' | 'large');
         imageMap[originalName] = fallback;
