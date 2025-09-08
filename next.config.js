@@ -5,7 +5,7 @@ const nextConfig = {
   },
   // Force rebuild by disabling caching
   generateBuildId: async () => {
-    return `build-${Date.now()}`;
+    return `build-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   },
   // Disable static optimization for dynamic routes
   trailingSlash: false,
