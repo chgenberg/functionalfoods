@@ -134,15 +134,37 @@ const RecipesPage = () => {
         params.append('status', selectedStatus);
       }
 
-      const response = await fetch(`/api/recipes?${params}`, { headers });
+      const response = await fetch(`/api/recipes?${params}`, { headers, cache: 'no-store' });
       
       if (!response.ok) {
         throw new Error('Failed to fetch recipes');
       }
 
       const data: RecipeData = await response.json();
+      let fetchedRecipes = data.recipes || [];
+
+      // Batch-map images using filesystem fuzzy matching
+      try {
+        const names = fetchedRecipes.map(r => r.title);
+        const slugs = fetchedRecipes.map(r => r.slug);
+        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+          cache: 'no-store',
+          body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'medium' })
+        });
+        if (mapRes.ok) {
+          const { images } = await mapRes.json();
+          fetchedRecipes = fetchedRecipes.map(r => ({
+            ...r,
+            imageUrl: images && images[r.title] ? images[r.title] : r.imageUrl
+          }));
+        }
+      } catch (e) {
+        console.warn('batch-images mapping failed, using original imageUrl', e);
+      }
       
-      setRecipes(data.recipes || []);
+      setRecipes(fetchedRecipes);
       setCategories(data.categories || []);
       setStatistics(data.statistics || { total: 0, free: 0, premium: 0, visible: 0 });
       

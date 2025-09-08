@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Clock, Users } from 'lucide-react';
+import { optimizeImageUrl } from '@/app/lib/imageOptimization';
 
 interface Recipe {
   id: string;
@@ -97,7 +98,7 @@ export default function RandomRecipes({ excludeId, count = 3, title = "Fler rece
                 <div className="h-48 bg-gradient-to-br from-orange-100 to-orange-200 relative overflow-hidden">
                   {recipe.imageUrl ? (
                     <Image
-                      src={recipe.imageUrl}
+                      src={optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape')}
                       alt={recipe.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700 recipe-image"
@@ -106,7 +107,7 @@ export default function RandomRecipes({ excludeId, count = 3, title = "Fler rece
                         objectPosition: 'center',
                         imageOrientation: 'from-image'
                       }}
-                      unoptimized
+                      unoptimized={false}
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">

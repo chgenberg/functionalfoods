@@ -485,6 +485,31 @@ export default function RecipePage() {
     );
   };
 
+  useEffect(() => {
+    if (!recipe) return;
+    if (recipe.imageUrl && !imageError) return;
+    (async () => {
+      try {
+        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+          cache: 'no-store',
+          body: JSON.stringify({ recipeNames: [recipe.title], recipeSlugs: [recipe.slug], size: 'xl' })
+        });
+        if (mapRes.ok) {
+          const { images } = await mapRes.json();
+          const mapped = images && images[recipe.title];
+          if (mapped) {
+            setRecipe(prev => prev ? { ...prev, imageUrl: mapped } : prev);
+            setImageError(false);
+          }
+        }
+      } catch (e) {
+        console.warn('Detail image batch-map failed', e);
+      }
+    })();
+  }, [recipe?.slug, imageError]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center">
