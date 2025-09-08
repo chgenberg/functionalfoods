@@ -141,6 +141,31 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     return html;
   };
 
+  // Very lightweight translation shim for product strings
+  const translateToSwedish = (text: string): string => {
+    if (!text) return text;
+    const map: Record<string, string> = {
+      'omega-3': 'omega‑3',
+      'fish oil': 'fiskolja',
+      'chia seeds': 'chiafrön',
+      'flaxseed': 'linfrö',
+      'walnuts': 'valnötter',
+      'almonds': 'mandlar',
+      'b-vitamins': 'B‑vitaminer',
+      'collagen': 'kollagen',
+      'probiotic': 'probiotika',
+      'prebiotic': 'prebiotika',
+      'green tea': 'grönt te',
+      'dark chocolate': 'mörk choklad'
+    };
+    let out = text;
+    Object.entries(map).forEach(([en, sv]) => {
+      const re = new RegExp(en, 'gi');
+      out = out.replace(re, sv);
+    });
+    return out;
+  };
+
   const fetchFunctionalFoods = async () => {
     if (loadingProducts) return;
     
@@ -926,15 +951,15 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                                   />
                                 )}
                                 <div className="flex-1">
-                                  <h4 className="font-medium text-gray-900 mb-1 text-sm">{product.name}</h4>
+                                  <h4 className="font-medium text-gray-900 mb-1 text-sm">{translateToSwedish(product.name)}</h4>
                                   {product.brand && (
-                                    <p className="text-xs text-gray-500 mb-2">{product.brand}</p>
+                                    <p className="text-xs text-gray-500 mb-2">{translateToSwedish(product.brand)}</p>
                                   )}
                                   
                                   <div className="flex flex-wrap gap-1 mb-2">
                                     {product.healthBenefits.slice(0, 2).map((benefit: string, i: number) => (
                                       <span key={i} className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                                        {benefit}
+                                        {translateToSwedish(benefit)}
                                       </span>
                                     ))}
                                   </div>
