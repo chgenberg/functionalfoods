@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     Total risk index (weighted): ${totalScore}
 
     Here are all answers (with points):
-    ${answers.map(a => `Block: ${a.block}\nQ: ${a.question}\nA: ${a.answer}\nPoints: ${a.points}`).join("\n\n")}
+    ${answers.map((a: any) => `Block: ${a.block}\nQ: ${a.question}\nA: ${a.answer}\nPoints: ${a.points}`).join("\n\n")}
 
     Additionally, create a matrix (heatmap) where each row is a nutrient (e.g., Vitamin D, Iron, B12, Omega-3, etc.) and each column is one of: "Diet", "Symptoms", "Lifestyle", "Blood test". 
     For each cell, assign a risk score (0–3) and a color code ("green", "yellow", "red") based on the user's answers and risk profile. 
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
     console.error("Error in micronutrient analysis:", e);
     return NextResponse.json({ 
       error: "Error processing analysis", 
-      details: e.message 
+      details: e instanceof Error ? e.message : 'Unknown error'
     }, { status: 500 });
   }
 }
