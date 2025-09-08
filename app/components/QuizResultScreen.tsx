@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GiFruitBowl, GiMeal, GiMeat, GiGrainBundle, GiMilkCarton, GiWheat, GiCoffeeCup, GiChocolateBar, GiSaltShaker } from 'react-icons/gi';
-import { CheckCircle, AlertCircle, TrendingUp, Zap, RefreshCw, ChevronRight, Mail, Heart, Target, Brain, Activity, Coffee, Moon, Sun, Star, BookOpen, Phone, Wind, Flower, MapPin, Loader2, Clock } from 'lucide-react';
+import { CheckCircle, AlertCircle, TrendingUp, Zap, RefreshCw, ChevronRight, Mail, Heart, Target, Brain, Activity, Coffee, Moon, Sun, Star, BookOpen, Phone, Wind, Flower, MapPin, Loader2, Clock, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
@@ -22,6 +22,17 @@ interface QuizResultData {
   warningSignals: string[];
   successMetrics: string[];
   courseRecommendation: string;
+  priorityAreas?: Array<{
+    area: string;
+    description: string;
+    suggestions: string[];
+  }>;
+  functionalFoods?: Array<{
+    name: string;
+    benefits: string[];
+    timing: string;
+    dosage: string;
+  }>;
 }
 
 interface HealthScores {
@@ -124,21 +135,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const calculateTotalScore = (): number => {
     const total = Object.values(healthScores).reduce((sum, score) => sum + score, 0);
     return Math.round((total / 50) * 100);
-  };
-
-  // Convert simple markdown to HTML-friendly output: ### -> <strong>, **bold** -> <strong>
-  const formatText = (txt: string): string => {
-    if (!txt) return '';
-    let html = String(txt);
-    // Headings like ### Title -> <strong>Title</strong>
-    html = html.replace(/^#{1,6}\s*(.+)$/gm, '<strong>$1</strong>');
-    // Bold **text** -> <strong>text</strong>
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // Normalize multiple newlines
-    html = html.replace(/\n{2,}/g, '\n\n');
-    // Line breaks to paragraphs spacing
-    html = html.replace(/\n/g, '<br/><br/>' );
-    return html;
   };
 
   // Very lightweight translation shim for product strings
@@ -431,7 +427,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       t('quiz.tip.stress.3','2×10 min promenad utan telefon')
     ],
     kost: [
-      t('quiz.tip.diet.1','”Halva tallriken grönt” varje lunch/middag'),
+      t('quiz.tip.diet.1','"Halva tallriken grönt" varje lunch/middag'),
       t('quiz.tip.diet.2','Byt raffinerade kolhydrater mot fullkorn/baljväxter'),
       t('quiz.tip.diet.3','Fermenterat 1–2 ggr/dag (kefir/kimchi)')
     ],
@@ -496,241 +492,102 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       {/* Main Content */}
       <div className="w-full px-4 py-4 md:py-8 overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
-          {/* Mobile Score Summary */}
-          <div className="lg:hidden mb-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900">{scoreMessage.text}</h3>
-                  <p className="text-sm text-gray-500">Total poäng: {totalScore}/100</p>
-                </div>
-                <div className="text-3xl">{scoreMessage.emoji}</div>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-            
-            {/* Left Sidebar - Score Overview - Hidden on mobile */}
-            <div className="hidden lg:block lg:col-span-3">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="sticky top-8"
-              >
-                {/* Total Score Card */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-                  <div className="text-center">
-                    <div className="relative inline-block mb-4">
-                      <svg className="w-32 h-32">
-                        <circle
-                          cx="64"
-                          cy="64"
-                          r="58"
-                          stroke="#f3f4f6"
-                          strokeWidth="8"
-                          fill="none"
-                        />
-                        <motion.circle
-                          cx="64"
-                          cy="64"
-                          r="58"
-                          stroke="#10b981"
-                          strokeWidth="8"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeDasharray={364}
-                          strokeDashoffset={364 - (totalScore / 100) * 364}
-                          initial={{ strokeDashoffset: 364 }}
-                          animate={{ strokeDashoffset: 364 - (totalScore / 100) * 364 }}
-                          transition={{ duration: 2, ease: "easeOut" }}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div>
-                          <motion.div 
-                            className="text-4xl font-light text-gray-900"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: 0.5, type: "spring" }}
-                          >
-                            {totalScore}
-                          </motion.div>
-                          <div className="text-xs text-gray-500 uppercase tracking-wider">poäng</div>
-                        </div>
-                      </div>
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900">{scoreMessage.text}</h3>
-                    <p className="text-sm text-gray-500 mt-1">{t('quiz.overall','Din övergripande hälsostatus')}</p>
-                  </div>
-                </div>
-
-                {/* Health Areas */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                  <h4 className="text-sm font-medium text-gray-900 mb-4">{t('quiz.areas','Hälsoområden')}</h4>
-                  {/* Temporarily disabled radar chart to isolate a rendering error */}
-                  {/* <div className="flex items-center justify-center mb-6">
-                    <RadarChart labels={healthAreas.map(h=>h.label)} values={healthAreas.map(h=> (healthScores as any)[h.key] as number)} />
-                  </div> */}
-                  <div className="space-y-4">
-                    {healthAreas.map((area, index) => {
-                      const score = healthScores[area.key as keyof HealthScores];
-                      const percentage = (score / 10) * 100;
-                      const Icon = area.icon;
-                      
-                      return (
-                        <motion.div
-                          key={area.key}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <Icon className="w-4 h-4 text-gray-600" />
-                              <span className="text-sm text-gray-700">{area.label}</span>
-                            </div>
-                            <span className="text-sm font-medium text-gray-900">{score}/10</span>
-                          </div>
-                          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                            <motion.div
-                              className="h-full rounded-full"
-                              style={{ backgroundColor: area.color }}
-                              initial={{ width: 0 }}
-                              animate={{ width: `${percentage}%` }}
-                              transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-                            />
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
+          <div className="flex gap-6">
             {/* Main Content Area */}
-            <div className="lg:col-span-9">
-              {/* Tab Navigation - Scrollable on Mobile */}
-              <div className="mb-6">
-                <div className="overflow-x-auto scrollbar-hide">
-                  <div className="flex gap-3 min-w-max pb-2">
-                    {tabs.map((tab) => (
-                      <motion.button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`group relative w-14 h-14 rounded-full text-2xl transition-all flex-shrink-0 ${
-                          activeTab === tab.id
-                            ? 'bg-primary text-white shadow-lg'
-                            : 'bg-white text-gray-600 hover:bg-background-secondary hover:text-secondary border border-gray-200 hover:border-border shadow-sm hover:shadow-md'
-                        }`}
-                        title={tab.label}
-                      >
-                        <span className="flex items-center justify-center h-full">
-                          {tab.icon}
-                        </span>
-                        
-                        {/* Tooltip on hover - hidden on mobile */}
-                        <div className="hidden md:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-                          {tab.label}
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                        </div>
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Tab Content */}
+            <div className="flex-1">
+              {/* Content based on active tab */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {activeTab === 'summary' && recommendations && (
-                    <div className="space-y-6">
-                      {/* Profile Card */}
-                      <motion.div 
-                        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                      >
-                        <div className="flex items-center justify-between mb-4 md:mb-6">
-                          <h2 className="text-xl md:text-2xl font-light text-gray-900">{t('quiz.profile','Din hälsoprofil')}</h2>
-                          {aiReport && (
-                            <div className="flex items-center gap-2">
-                              <Brain className="w-4 h-4 text-purple-500" />
-                              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
-                                AI-Analyserad
-                              </span>
-                            </div>
-                          )}
+                  {activeTab === 'summary' && (
+                    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                      <h2 className="text-2xl font-light text-gray-900 mb-6">
+                        Din hälsoöversikt
+                      </h2>
+                      
+                      {/* Total Score */}
+                      <div className="mb-8 text-center">
+                        <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 mb-4">
+                          <span className="text-3xl font-bold text-gray-900">{totalScore}</span>
+                          <span className="text-gray-600">/100</span>
                         </div>
-                        
-                        {loadingAiReport ? (
-                          <div className="flex items-center justify-center py-8">
-                            <Loader2 className="w-8 h-8 animate-spin text-[#014421]" />
-                            <span className="ml-3 text-gray-600">AI analyserar din hälsoprofil...</span>
-                          </div>
-                        ) : (
-                          <div 
-                            className="prose prose-gray max-w-none text-sm md:text-base text-gray-600 leading-relaxed space-y-4"
-                            dangerouslySetInnerHTML={{ __html: aiReport?.profile ? formatText(aiReport.profile) : formatText(recommendations.profile) }}
-                          />
-                        )}
-                      </motion.div>
+                        <div className={`text-lg font-medium ${scoreMessage.color}`}>
+                          <span className="text-2xl mr-2">{scoreMessage.emoji}</span>
+                          {scoreMessage.text}
+                        </div>
+                      </div>
 
-                    {/* Quick Actions Grid */}
-                    <div className="grid md:grid-cols-3 gap-4">
-                      {[
-                        { 
-                          icon: Activity, 
-                          title: "Daglig aktivitet", 
-                          desc: contextData?.weather?.current && contextData.weather.current.precipitation < 0.5 
-                            ? "Träna utomhus idag!" 
-                            : "30 min rörelse", 
-                          color: "from-blue-500 to-blue-600" 
-                        },
-                        { icon: Heart, title: "Hjärthälsa", desc: "Omega-3 dagligen", color: "from-red-500 to-red-600" },
-                        { 
-                          icon: Zap, 
-                          title: "Energinivåer", 
-                          desc: contextData?.air?.hourly && (() => {
-                            const latest = Object.keys(contextData.air.hourly.time || {}).length - 1;
-                            const pm25 = contextData.air.hourly.pm2_5?.[latest] || 0;
-                            return pm25 > 50 ? "Träna inomhus" : "B-vitaminer";
-                          })() || "B-vitaminer", 
-                          color: "from-yellow-500 to-yellow-600" 
-                        }
-                      ].map((action, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                          className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 cursor-pointer group"
-                        >
-                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                            <action.icon className="w-5 h-5 text-white" />
+                      {/* Priority Areas */}
+                      {recommendations?.priorityAreas && recommendations.priorityAreas.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-lg font-medium text-gray-900 mb-4">Prioriterade områden</h3>
+                          <div className="space-y-4">
+                            {recommendations.priorityAreas.map((area, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="bg-gray-50 rounded-xl p-4"
+                              >
+                                <h4 className="font-medium text-gray-900 mb-2">{area.area}</h4>
+                                <p className="text-sm text-gray-600 mb-3">{area.description}</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {area.suggestions.map((suggestion, i) => (
+                                    <span key={i} className="text-xs bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-200">
+                                      {suggestion}
+                                    </span>
+                                  ))}
+                                </div>
+                              </motion.div>
+                            ))}
                           </div>
-                          <h3 className="text-sm font-medium text-gray-900 mb-1">{action.title}</h3>
-                          <p className="text-xs text-gray-500">{action.desc}</p>
-                        </motion.div>
-                      ))}
+                        </div>
+                      )}
+
+                      {/* Functional Foods Grid */}
+                      {recommendations?.functionalFoods && recommendations.functionalFoods.length > 0 && (
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900 mb-4">Rekommenderade functional foods</h3>
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {recommendations.functionalFoods.map((food, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-4 border border-green-100"
+                              >
+                                <h4 className="font-medium text-gray-900 mb-2">{food.name}</h4>
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                  {food.benefits.map((benefit, i) => (
+                                    <span key={i} className="text-xs bg-white/80 px-2 py-1 rounded text-gray-700">
+                                      {benefit}
+                                    </span>
+                                  ))}
+                                </div>
+                                <div className="text-sm text-gray-600 space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Clock className="w-3 h-3" />
+                                    <span>{food.timing}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Activity className="w-3 h-3" />
+                                    <span>{food.dosage}</span>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {activeTab === 'context' && contextData && (
                   <div className="space-y-6">
@@ -898,15 +755,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                                   {place.type.replace(/_/g, ' ')}
                                 </div>
                               </div>
-                              <a
-                                href={`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lon}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-primary hover:text-secondary text-sm font-medium flex items-center gap-1"
-                              >
-                                Vägbeskrivning
-                                <ChevronRight className="w-4 h-4" />
-                              </a>
+                              <div className="text-sm text-gray-600">
+                                {place.distance ? `${Math.round(place.distance * 100) / 100} km` : ''}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -919,34 +770,31 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                   <div className="space-y-6">
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                       <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                        <Star className="w-5 h-5 text-yellow-500" />
-                        Rekommenderade Functional Foods
+                        <ShoppingCart className="w-5 h-5 text-green-500" />
+                        Rekommenderade produkter
                       </h3>
-                      <p className="text-gray-600 mb-6">
-                        Baserat på dina hälsomål och eventuella näringsbrister har vi hittat dessa produkter som kan stödja din hälsa.
-                      </p>
                       
                       {loadingProducts ? (
                         <div className="flex items-center justify-center py-8">
-                          <Loader2 className="w-8 h-8 animate-spin text-[#014421]" />
-                          <span className="ml-3 text-gray-600">Söker produkter...</span>
+                          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                          <span className="ml-3 text-gray-600">Söker efter produkter...</span>
                         </div>
                       ) : functionalFoods.length > 0 ? (
                         <div className="grid md:grid-cols-2 gap-4">
-                          {functionalFoods.map((product, index) => (
+                          {functionalFoods.slice(0, 8).map((product: any, index: number) => (
                             <motion.div
-                              key={product.id}
+                              key={product.code || index}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.1 }}
-                              className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all bg-white"
+                              className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                             >
                               <div className="flex gap-4">
-                                {product.image && (
+                                {product.imageUrl && (
                                   <img 
-                                    src={product.image} 
+                                    src={product.imageUrl} 
                                     alt={product.name}
-                                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                                    className="w-16 h-16 object-cover rounded-lg"
                                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                   />
                                 )}
@@ -1020,118 +868,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                   </div>
                 )}
 
-                {activeTab === 'safety' && contextData?.enhanced?.safety && (
-                  <div className="space-y-6">
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                        <AlertCircle className="w-5 h-5 text-red-500" />
-                        Säkerhetsvarningar
-                      </h3>
-                      
-                      {contextData.enhanced.safety.warnings.length > 0 ? (
-                        <div className="space-y-4">
-                          {contextData.enhanced.safety.warnings.map((warning: any, index: number) => (
-                            <motion.div
-                              key={index}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: index * 0.1 }}
-                              className="border-l-4 border-red-400 bg-red-50 p-4 rounded-r-lg"
-                            >
-                              <div className="flex items-start gap-3">
-                                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                                <div>
-                                  <h4 className="font-medium text-red-800 mb-1">
-                                    {warning.medication}
-                                  </h4>
-                                  <p className="text-red-700 text-sm mb-2">
-                                    {warning.warning}
-                                  </p>
-                                  <p className="text-red-600 text-xs font-medium">
-                                    → {warning.action}
-                                  </p>
-                                </div>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-8">
-                          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <CheckCircle className="w-8 h-8 text-green-600" />
-                          </div>
-                          <h4 className="font-medium text-green-800 mb-2">Inga kända interaktioner</h4>
-                          <p className="text-green-600 text-sm">
-                            Baserat på dina mediciner ser vi inga direkta konflikter med functional foods.
-                          </p>
-                        </div>
-                      )}
-                      
-                      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                        <p className="text-sm text-blue-800">
-                          💡 <strong>Viktigt:</strong> Konsultera alltid läkare eller apotekare innan du börjar med nya kosttillskott, 
-                          särskilt om du tar mediciner regelbundet.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'timing' && contextData?.enhanced?.circadian && (
-                  <div className="space-y-6">
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                        <Clock className="w-5 h-5 text-blue-500" />
-                        Optimal Timing för Kosttillskott
-                      </h3>
-                      
-                      <div className="mb-6">
-                        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                          <div>🌍 {contextData.enhanced.location?.city || 'Din plats'}</div>
-                          <div>🕐 {contextData.enhanced.timezone?.circadianPhase || 'Okänd tid'}</div>
-                          <div>☀️ {contextData.enhanced.timezone?.isDaytime ? 'Dagtid' : 'Kvällstid'}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        {contextData.enhanced.circadian.map((rec: any, index: number) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 border border-blue-100"
-                          >
-                            <div className="flex items-start gap-4">
-                              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <Clock className="w-6 h-6 text-blue-600" />
-                              </div>
-                              <div>
-                                <h4 className="font-medium text-gray-900 mb-1">{rec.timing}</h4>
-                                <div className="flex flex-wrap gap-1 mb-2">
-                                  {rec.supplements.map((supplement: string, i: number) => (
-                                    <span key={i} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                                      {supplement}
-                                    </span>
-                                  ))}
-                                </div>
-                                <p className="text-gray-600 text-sm">{rec.reason}</p>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                      
-                      <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-                        <p className="text-sm text-yellow-800">
-                          ⏰ <strong>Cirkadian optimering:</strong> Timing av kosttillskott kan förbättra absorption 
-                          med upp till 40% och minska biverkningar.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {activeTab === 'recommendations' && recommendations && (
                   <div className="space-y-4">
                     {recommendations.recommendations.map((rec, index) => (
@@ -1150,20 +886,18 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                           </div>
                           <div className="flex-1">
                             <h3 className="text-xl font-medium text-gray-900 mb-3">{rec.title}</h3>
-                            <div 
-                              className="text-gray-600 mb-4 leading-relaxed space-y-3"
-                              dangerouslySetInnerHTML={{ __html: rec.description.replace(/\. /g, '.<br/><br/>') }}
-                            />
+                            <p className="text-gray-600 mb-4 leading-relaxed">
+                              {rec.description}
+                            </p>
                             <details className="group">
                               <summary className="cursor-pointer text-primary hover:text-secondary font-medium text-sm flex items-center gap-2">
                                 <span>Hur du använder det</span>
                                 <ChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform" />
                               </summary>
                               <div className="mt-4 pl-6 border-l-2 border-green-100">
-                                <div 
-                                  className="text-gray-600 text-sm leading-relaxed space-y-2"
-                                  dangerouslySetInnerHTML={{ __html: rec.howToUse.replace(/\. /g, '.<br/><br/>') }}
-                                />
+                                                              <p className="text-gray-600 text-sm leading-relaxed">
+                                {rec.howToUse}
+                              </p>
                               </div>
                             </details>
                           </div>
@@ -1185,10 +919,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                           transition={{ delay: index * 0.05 }}
                           className="border-l-4 border-gray-200 pl-6 py-2 hover:border-primary transition-colors"
                         >
-                          <div 
-                            className="text-gray-700 space-y-2"
-                            dangerouslySetInnerHTML={{ __html: advice.replace(/\. /g, '.<br/><br/>') }}
-                          />
+                          <p className="text-gray-700">
+                            {advice}
+                          </p>
                         </motion.div>
                       ))}
                     </div>
@@ -1240,10 +973,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                               <span className="text-sm font-medium text-gray-600">{index + 1}</span>
                             </div>
                             <div className="flex-1 pb-8">
-                              <div 
-                                className="text-gray-700 space-y-2"
-                                dangerouslySetInnerHTML={{ __html: step.replace(/\. /g, '.<br/><br/>') }}
-                              />
+                              <p className="text-gray-700">
+                                {step}
+                              </p>
                             </div>
                           </motion.div>
                         ))}
@@ -1268,10 +1000,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                 {activeTab === 'course' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
                     <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.course','Rekommenderad kurs för dig')}</h2>
-                    <div 
-                      className="prose prose-gray max-w-none text-gray-600 mb-8 space-y-4"
-                      dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation.replace(/\. /g, '.<br/><br/>') }}
-                    />
+                    <p className="text-gray-600 mb-8 leading-relaxed">
+                      {recommendations.courseRecommendation}
+                    </p>
                     
                     <div className="grid md:grid-cols-2 gap-4">
                       <motion.button
@@ -1361,10 +1092,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                               className="flex gap-4 p-4 bg-blue-50 rounded-xl"
                             >
                               <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                              <div 
-                                className="text-gray-700 text-sm space-y-2"
-                                dangerouslySetInnerHTML={{ __html: reference.replace(/\n+/g, '<br/>') }}
-                              />
+                              <p className="text-gray-700 text-sm">
+                                {reference}
+                              </p>
                             </motion.div>
                           ))}
                         </div>
@@ -1387,10 +1117,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                             className="flex gap-4 p-4 bg-orange-50 rounded-xl border border-orange-100"
                           >
                             <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                            <div 
-                              className="text-gray-700 space-y-2"
-                              dangerouslySetInnerHTML={{ __html: warning.replace(/\. /g, '.<br/><br/>') }}
-                            />
+                            <p className="text-gray-700">
+                              {warning}
+                            </p>
                           </motion.div>
                         ))}
                       </div>
@@ -1423,10 +1152,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                           <div className="w-10 h-10 bg-background-secondary rounded-lg flex items-center justify-center flex-shrink-0">
                             <TrendingUp className="w-5 h-5 text-primary" />
                           </div>
-                          <div 
-                            className="text-gray-700 text-sm space-y-2"
-                            dangerouslySetInnerHTML={{ __html: metric.replace(/\. /g, '.<br/><br/>') }}
-                          />
+                          <p className="text-gray-700 text-sm">
+                            {metric}
+                          </p>
                         </motion.div>
                       ))}
                     </div>
@@ -1461,6 +1189,59 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
+            </div>
+
+            {/* Right Sidebar - Icon Navigation */}
+            <div className="hidden lg:block w-20">
+              <div className="sticky top-8">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3">
+                  <div className="space-y-3">
+                    {tabs.map((tab) => (
+                      <motion.button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`group relative w-14 h-14 rounded-xl text-2xl transition-all flex items-center justify-center ${
+                          activeTab === tab.id
+                            ? 'bg-primary text-white shadow-lg'
+                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                        }`}
+                        title={tab.label}
+                      >
+                        <span>{tab.icon}</span>
+                        
+                        {/* Tooltip on hover */}
+                        <div className="absolute right-full mr-3 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                          {tab.label}
+                          <div className="absolute top-1/2 right-0 transform translate-x-1 -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-l-4 border-transparent border-l-gray-900"></div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Bottom Navigation */}
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-50">
+            <div className="flex justify-center gap-2 overflow-x-auto">
+              {tabs.map((tab) => (
+                <motion.button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  whileTap={{ scale: 0.95 }}
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg min-w-[60px] ${
+                    activeTab === tab.id
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-gray-600'
+                  }`}
+                >
+                  <span className="text-xl mb-1">{tab.icon}</span>
+                  <span className="text-xs">{tab.label}</span>
+                </motion.button>
+              ))}
             </div>
           </div>
         </div>
