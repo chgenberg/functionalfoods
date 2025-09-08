@@ -337,6 +337,7 @@ export default function RecipePage() {
         } else if (!hasAccess && userCourses.length === 0 && user) {
           // User is logged in but courses haven't loaded yet - allow access temporarily
           console.log('⏳ User courses not loaded yet, allowing temporary access');
+          setError(null);
           setRecipe(data);
           return;
         } else if (!hasAccess) {
@@ -346,6 +347,7 @@ export default function RecipePage() {
           return;
         }
         console.log('✅ Course recipe, user has access');
+        setError(null);
         setRecipe(data);
         return;
       }
@@ -360,6 +362,7 @@ export default function RecipePage() {
       
       // 4. Free recipes or user has access
       console.log('✅ Free recipe or user has access - ALLOWING ACCESS');
+      setError(null);
       setRecipe(data);
       
       // Initialize servings from recipe data
