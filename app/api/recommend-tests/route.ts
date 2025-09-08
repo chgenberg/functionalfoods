@@ -67,24 +67,24 @@ function findBestTestMatch(gptName: string, tests: Test[]): Test | null {
 
 export async function POST(request: Request) {
   try {
-    const { gptRecommended } = await request.json();
+    const { gptRecommended } = await request.json() as { gptRecommended: string[] };
     const testsDir = path.join(process.cwd(), 'public', 'tests');
     const testFiles = fs.readdirSync(testsDir);
 
-    const tests = testFiles
-      .filter(file => file.endsWith('.txt'))
-      .map(file => {
+    const tests: Test[] = testFiles
+      .filter((file: string) => file.endsWith('.txt'))
+      .map((file: string) => {
         const content = fs.readFileSync(path.join(testsDir, file), 'utf-8');
         return parseTestFile(content);
       });
 
     // Fuzzy matcha GPT:s rekommendationer mot dina tester
-    const matchedTests = gptRecommended.map(name => {
+    const matchedTests = (gptRecommended || []).map((name: string) => {
       const match = findBestTestMatch(name, tests);
       return {
         gptName: name,
-        ...match
-      };
+        ...(match || {})
+      } as any;
     });
 
     return NextResponse.json({ recommendedTests: matchedTests });
