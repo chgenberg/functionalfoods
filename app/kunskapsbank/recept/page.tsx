@@ -147,7 +147,7 @@ const RecipesPage = () => {
       try {
         const names = fetchedRecipes.map(r => r.title);
         const slugs = fetchedRecipes.map(r => r.slug);
-        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
           cache: 'no-store',

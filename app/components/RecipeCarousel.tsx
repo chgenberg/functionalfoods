@@ -60,7 +60,7 @@ export default function RecipeCarousel() {
           try {
             const names = recipesToShow.map((r: Recipe) => r.title);
             const slugs = recipesToShow.map((r: Recipe) => r.slug);
-            const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+            const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
               cache: 'no-store',

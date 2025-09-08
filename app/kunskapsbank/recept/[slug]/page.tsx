@@ -532,7 +532,7 @@ export default function RecipePage() {
     // Always try to get optimized image from new image bank via fuzzy matching
     (async () => {
       try {
-        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
           cache: 'no-store',
