@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { HelpCircle } from "lucide-react";
 export default function AIChatBox({ analysis }: { analysis: any }) {
   const [messages, setMessages] = useState([
     { role: "system", text: "You can now ask follow-up questions about your health analysis." }
@@ -41,7 +42,7 @@ export default function AIChatBox({ analysis }: { analysis: any }) {
   // Styckeindelning: dela på dubbla radbrytningar eller \n\n
   function renderParagraphs(text: string) {
     return text
-      .split(/\n\s*\n/) // dela på tomma rader
+      .split(/\n\s*\n/)
       .map((para, i) => (
         <p key={i} className="mb-3 whitespace-pre-line">{para.trim()}</p>
       ));
@@ -93,7 +94,7 @@ export default function AIChatBox({ analysis }: { analysis: any }) {
           className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 text-xs transition-colors"
           title="Läs vår AI Policy"
         >
-          <FiHelpCircle className="w-3 h-3" />
+          <HelpCircle className="w-3 h-3" />
           <span>AI-assisterad rådgivning - Läs vår AI Policy</span>
         </Link>
       </div>
