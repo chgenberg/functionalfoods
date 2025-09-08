@@ -16,7 +16,8 @@
     "images:rematch:apply": "node scripts/rematch-recipe-images.js --apply",
     "images:check": "node scripts/check-recipe-images.js",
     "recipes:fix-links": "node scripts/fix-recipe-links.js",
-    "images:normalize": "node scripts/normalize-images.js"
+    "images:normalize": "node scripts/normalize-images.js",
+    "images:optimize": "node scripts/optimize-recipe-images.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

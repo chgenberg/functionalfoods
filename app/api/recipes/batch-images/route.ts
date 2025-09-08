@@ -42,15 +42,15 @@ function optimizeImageUrl(imageUrl: string, size: 'small' | 'medium' | 'large' =
 
 // Helper function to get a working fallback image
 function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string {
-  // Use a working image from Recept_complete2.0 as fallback
+  // Use optimized images as fallback
   const fallbackImages = [
-    '/api/images/Recept_complete2.0/images/_optimized/Agg%20i%20paprika.webp',
-    '/api/images/Recept_complete2.0/images/_optimized/Het%20ratatouille.webp',
-    '/api/images/Recept_complete2.0/images/_optimized/Agghack%20med%20kalkon.webp',
-    '/api/images/Recept_complete2.0/images/_optimized/Fruktsmoothie.webp'
+    'het-ratatouille',
+    'keso-med-granola-och-fruktsallad', 
+    'yoghurt-med-ketomusli',
+    'bananplattar-med-keso-och-hallon'
   ];
   const randomImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-  return randomImage;
+  return `/api/images/recept_images_optimized/${randomImage}-${size}.webp`;
 }
 
 // Helper to convert local public asset path to /api/images with encoded segments
@@ -64,8 +64,8 @@ function localAssetToApiUrl(assetPath: string): string {
   return `/api/images/${segments.join('/')}`;
 }
 
-// Helper to convert image filename to slugified URL
-function imageToSlugUrl(imageName: string): string {
+// Helper to convert image filename to optimized URL
+function imageToOptimizedUrl(imageName: string, size: string = 'medium'): string {
   const slugified = imageName
     .replace(/[ÅÄåä]/g, 'a')
     .replace(/[Öö]/g, 'o')
@@ -74,35 +74,42 @@ function imageToSlugUrl(imageName: string): string {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
     .toLowerCase();
-  return `/api/images/Recept_complete2.0/images/_optimized/${slugified}.webp`;
+  return `/api/images/recept_images_optimized/${slugified}-${size}.webp`;
 }
 
 // Get available image files from filesystem
 function getAvailableImages(): string[] {
   try {
-    const imagesDir = path.join(process.cwd(), 'public', 'Recept_complete2.0', 'images', '_optimized');
+    const imagesDir = path.join(process.cwd(), 'public', 'recept_images_optimized');
     const files = fs.readdirSync(imagesDir);
-    return files.filter(f => f.endsWith('.webp')).map(f => f.replace('.webp', ''));
+    // Extract base names from optimized files (remove -size.webp suffix)
+    return files
+      .filter(f => f.endsWith('-medium.webp'))
+      .map(f => f.replace('-medium.webp', ''))
+      .map(f => {
+        // Convert slugified back to readable name for matching
+        return f.replace(/-/g, ' ');
+      });
   } catch (error) {
-    console.warn('Could not read images directory:', error);
+    console.warn('Could not read optimized images directory:', error);
     return [];
   }
 }
 
 // Fuzzy match recipe name to image filename
-function findBestImageMatch(recipeName: string, availableImages: string[]): string | null {
+function findBestImageMatch(recipeName: string, availableImages: string[], size: string = 'medium'): string | null {
   const normalized = normalizeSwedish(recipeName);
   
   // 1. Exact match
   let match = availableImages.find(img => normalizeSwedish(img) === normalized);
-  if (match) return imageToSlugUrl(match);
+  if (match) return imageToOptimizedUrl(match, size);
   
   // 2. Contains match (both directions)
   match = availableImages.find(img => {
     const normalizedImg = normalizeSwedish(img);
     return normalizedImg.includes(normalized) || normalized.includes(normalizedImg);
   });
-  if (match) return imageToSlugUrl(match);
+  if (match) return imageToOptimizedUrl(match, size);
   
   // 3. Word-based matching
   const recipeWords = normalized.split(/\s+/).filter(w => w.length > 2);
@@ -114,7 +121,7 @@ function findBestImageMatch(recipeName: string, availableImages: string[]): stri
       );
       return matchedWords.length >= Math.min(2, recipeWords.length);
     });
-    if (match) return imageToSlugUrl(match);
+    if (match) return imageToOptimizedUrl(match, size);
   }
   
   return null;
@@ -185,7 +192,7 @@ export async function POST(request: Request) {
       }
 
       // 2. Try filesystem fuzzy matching
-      const fsMatch = findBestImageMatch(cleanName, availableImages);
+      const fsMatch = findBestImageMatch(cleanName, availableImages, size);
       if (fsMatch) {
         imageMap[originalName] = fsMatch;
         console.log(`✅ Filesystem match: "${originalName}" -> ${fsMatch}`);
