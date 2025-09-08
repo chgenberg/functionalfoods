@@ -241,23 +241,26 @@ function buildLocalFallback(answers: Record<number, string>, lang: string) {
   };
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(request: NextRequest) {
   try {
     const { answers } = await request.json();
     const lang = getLang(request);
 
     if (!answers || typeof answers !== 'object') {
-      return NextResponse.json(
-        { error: 'Invalid quiz answers provided' },
-        { status: 400 }
-      );
+      return new NextResponse(JSON.stringify({ error: 'Invalid quiz answers provided' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+      });
     }
 
     // If OpenAI is not configured, return a robust local fallback instead of 500
     if (!openai || !process.env.OPENAI_API_KEY) {
       console.log('OpenAI not configured, using fallback');
       const fallback = buildLocalFallback(answers, lang);
-      return NextResponse.json(fallback);
+      return new NextResponse(JSON.stringify(fallback), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     }
 
     // Hämta användare från token (om inloggad)
@@ -390,7 +393,7 @@ Returera ditt svar som en JSON med följande struktur:
         console.error('Failed to parse OpenAI response as JSON:', parseError);
         console.error('Raw response:', result);
         // Use fallback if parsing fails
-        return NextResponse.json(buildLocalFallback(answers, lang));
+        return new NextResponse(JSON.stringify(buildLocalFallback(answers, lang)), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
       }
 
       // Beräkna hälsopoäng
@@ -445,15 +448,16 @@ Returera ditt svar som en JSON med följande struktur:
         }
       }
 
-      return NextResponse.json({
+      return new NextResponse(JSON.stringify({
         success: true,
         results: { ...parsedResult, scores }
-      });
+      }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
     } catch (openAiError) {
       console.error('OpenAI API error:', openAiError);
       // Return fallback data on any OpenAI error
-      return NextResponse.json(buildLocalFallback(answers, lang));
+      const payload = buildLocalFallback(answers, lang);
+      return new NextResponse(JSON.stringify(payload), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     }
 
   } catch (error) {
@@ -462,12 +466,10 @@ Returera ditt svar som en JSON med följande struktur:
     try {
       const { answers } = await request.json().catch(() => ({ answers: {} }));
       const lang = getLang(request);
-      return NextResponse.json(buildLocalFallback(answers || {}, lang));
+      const payload = buildLocalFallback(answers || {}, lang);
+      return new NextResponse(JSON.stringify(payload), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     } catch {
-      return NextResponse.json(
-        { error: 'Failed to analyze quiz results' },
-        { status: 500 }
-      );
+      return new NextResponse(JSON.stringify({ error: 'Failed to analyze quiz results' }), { status: 500, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     }
   } finally {
     await prisma.$disconnect();

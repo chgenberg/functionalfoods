@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Lazily create OpenAI client only when an API key exists
 function getOpenAIClient(): OpenAI | null {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -164,7 +167,7 @@ export async function POST(req: Request) {
     const data: HealthTestData = await req.json();
     
     if (!data.answers || Object.keys(data.answers).length === 0) {
-      return NextResponse.json({ error: 'Quiz answers required' }, { status: 400 });
+      return new NextResponse(JSON.stringify({ error: 'Quiz answers required' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     }
 
     const analysis = analyzeQuizAnswers(data.answers);
@@ -277,7 +280,7 @@ Maxlängd: 1500 ord. Fokus på kvalitet över kvantitet.`;
       }
     };
 
-    return NextResponse.json({
+    return new NextResponse(JSON.stringify({
       success: true,
       report: structuredRecommendations,
       metadata: {
@@ -290,13 +293,10 @@ Maxlängd: 1500 ord. Fokus på kvalitet över kvantitet.`;
           researchStudies: data.contextData?.enhanced?.research?.length || 0
         }
       }
-    });
+    }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
   } catch (error) {
     console.error('AI Moderator error:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate health report', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    return new NextResponse(JSON.stringify({ error: 'Failed to generate health report', details: error instanceof Error ? error.message : 'Unknown error' }), { status: 500, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   }
 } 

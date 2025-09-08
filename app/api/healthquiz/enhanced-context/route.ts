@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Cache for expensive API calls
 const cache = new Map<string, { expiresAt: number; data: any }>();
 const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
@@ -314,7 +317,7 @@ export async function POST(req: Request) {
     const { lat, lon, medications, healthGoals } = await req.json();
     
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-      return NextResponse.json({ error: 'lat and lon are required' }, { status: 400 });
+      return new NextResponse(JSON.stringify({ error: 'lat and lon are required' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     }
     
     // Fetch all data in parallel
@@ -345,13 +348,10 @@ export async function POST(req: Request) {
       }
     };
     
-    return NextResponse.json(response);
+    return new NextResponse(JSON.stringify(response), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     
   } catch (error) {
     console.error('Enhanced context API error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch enhanced context', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    return new NextResponse(JSON.stringify({ error: 'Failed to fetch enhanced context', details: error instanceof Error ? error.message : 'Unknown error' }), { status: 500, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   }
 } 

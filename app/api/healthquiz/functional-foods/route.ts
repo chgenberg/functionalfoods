@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Functional Foods & Longevity criteria
 const FUNCTIONAL_INGREDIENTS = [
   // Omega-3 sources
@@ -294,19 +297,17 @@ export async function POST(req: Request) {
       })
       .slice(0, 20); // Top 20 recommendations
     
-    return NextResponse.json({
+    return new NextResponse(JSON.stringify({
       recommendations: functionalProducts.length > 0 ? functionalProducts : LOCAL_FALLBACK,
       searchTerms,
       totalFound: allProducts.length,
       functionalFound: functionalProducts.length,
       timestamp: new Date().toISOString()
-    });
+    }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
     
   } catch (error) {
     console.error('Functional foods API error:', error);
     // Graceful fallback instead of 500 to avoid spinner lock
-    return NextResponse.json(
-      { recommendations: LOCAL_FALLBACK, message: 'Using local fallback due to API error.' }
-    );
+    return new NextResponse(JSON.stringify({ recommendations: LOCAL_FALLBACK, message: 'Using local fallback due to API error.' }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   }
 } 

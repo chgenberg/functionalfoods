@@ -173,9 +173,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       const defRaw = answers[11];
       const deficiencies = Array.isArray(defRaw) ? (defRaw as string[]) : ([defRaw].filter(Boolean) as string[]);
       
-      const response = await fetch('/api/healthquiz/functional-foods', {
+      const response = await fetch(`/api/healthquiz/functional-foods?v=${Date.now()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+        cache: 'no-store',
         body: JSON.stringify({
           healthGoals,
           currentDeficiencies: deficiencies,
@@ -261,9 +262,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
           headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const response = await fetch('/api/quiz-results', {
+        const response = await fetch(`/api/quiz-results?v=${Date.now()}`, {
           method: 'POST',
           headers,
+          cache: 'no-store',
           body: JSON.stringify({ answers: quizData }),
         });
 
@@ -309,9 +311,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       
       setLoadingAiReport(true);
       try {
-        const response = await fetch('/api/healthquiz/ai-moderator', {
+        const response = await fetch(`/api/healthquiz/ai-moderator?v=${Date.now()}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+          cache: 'no-store',
           body: JSON.stringify({
             answers: quizData,
             contextData,
