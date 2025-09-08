@@ -8,7 +8,7 @@ export interface RawMaterial {
 }
 
 // Cache for raw materials to avoid repeated API calls
-let rawMaterialsCache: RawMaterial[] | null = null;
+let rawMaterialsCache: RawMaterial[] = [];
 let cacheTimestamp: number | null = null;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
