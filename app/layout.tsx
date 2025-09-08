@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
 import ChatBot from './components/ChatBot';
+import CookieConsentBanner from './components/CookieConsentBanner';
 import AutoTranslate from './lib/i18n/useAutoTranslate';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './context/ToastContext';
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </footer>
                 </div>
                 <ChatBot />
+                <CookieConsentBanner />
               </CartProvider>
             </LanguageProvider>
           </ToastProvider>

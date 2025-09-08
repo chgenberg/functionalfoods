@@ -9,6 +9,7 @@ import {
 import { GiFruitBowl, GiHealthNormal } from 'react-icons/gi';
 import { useAuth } from '@/app/hooks/useAuth';
 import OnboardingGuide from '@/app/components/OnboardingGuide';
+import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 
 interface Course {
   id: string;
@@ -115,6 +116,11 @@ export default function CoursesPage() {
         <h1 className="text-3xl font-bold text-text-primary mb-2">Mina kurser</h1>
         <p className="text-text-secondary">Hantera och fortsätt dina kurser</p>
       </div>
+
+      {/* Health Disclaimer for course participants */}
+      {purchasedCourses.length > 0 && (
+        <HealthDisclaimer variant="card" className="mb-2" />
+      )}
 
       {/* Purchased Courses */}
       {purchasedCourses.length > 0 && (

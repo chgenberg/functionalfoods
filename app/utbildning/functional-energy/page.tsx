@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
+import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight, Battery, Coffee, Moon } from 'lucide-react';
 
 export default function FunctionalEnergyPage() {
@@ -479,6 +480,13 @@ export default function FunctionalEnergyPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Health Disclaimer */}
+      <section className="py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <HealthDisclaimer variant="banner" />
         </div>
       </section>
 

@@ -57,10 +57,51 @@ export default function AnvandarvillkorPage() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-primary mb-4">
-                Ångerrätt
+                🎓 Kursspecifika villkor
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">📚 Kursinnehåll och uppdateringar</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Vi förbehåller oss rätten att uppdatera och förbättra kursinnehållet för att säkerställa 
+                    högsta kvalitet. Sådana uppdateringar påverkar inte dina rättigheter som kund.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">⚡ Tekniska problem</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Vid tekniska problem som påverkar din kursupplevelse erbjuder vi kostnadsfri support. 
+                    Kontakta oss på info@functionalfoods.se så hjälper vi dig inom 24 timmar.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">🏥 Hälsorådgivning och ansvar</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Våra kurser ersätter inte medicinsk rådgivning.</strong> Innehållet är utformat för 
+                    allmän utbildning. Konsultera alltid din läkare innan du gör större förändringar i din 
+                    kost eller livsstil. Vi ansvarar inte för hälsokonsekvenser av att följa våra råd.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">📊 Resultat och förväntningar</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Individuella resultat kan variera.</strong> Vi kan inte garantera specifika 
+                    hälsoeffekter eller viktförlust. Våra kurser ger dig verktyg och kunskap, men ditt 
+                    engagemang och individuella förutsättningar påverkar resultatet.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-primary mb-4">
+                🔄 Ångerrätt
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Att bli kund hos Ulrikas Kickstart innebär att du som Kund skall känna dig trygg med 
+                Att bli kund hos Functional Foods innebär att du som kund ska känna dig trygg med 
                 ditt köp. Som privatkund har du rätt till 14 dagars ångerrätt. Din ångerrätt börjar gälla 
                 från det att du mottagit din bokningsbekräftelse till en kurs eller leverans av produkt. 
                 Din ångerrätt upphör att gälla efter 14 dagar alternativt när du tagit del av 

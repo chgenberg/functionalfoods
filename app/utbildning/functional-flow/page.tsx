@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
+import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Video, User, ChevronRight } from 'lucide-react';
 
 export default function FunctionalFlowPage() {
@@ -487,7 +488,10 @@ export default function FunctionalFlowPage() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Health Disclaimer */}
+        <HealthDisclaimer variant="banner" />
+        
         <CourseReviews courseId="functional-flow" />
       </div>
     </main>
