@@ -147,12 +147,10 @@ export async function POST(request: NextRequest) {
             title: articleData.title,
             slug: articleData.slug,
             content: articleData.content,
-            imageUrl: imagePublicUrl,
-            imageAlt: articleData.imagePrompt, // Använder prompten som alt-text
-            metaTitle: articleData.metaTitle,
-            metaDesc: articleData.metaDesc,
-            status: 'scheduled',
-            scheduledAt: scheduledAt,
+            coverImage: imagePublicUrl,
+            excerpt: articleData.metaDesc || undefined,
+            published: false,
+            publishedAt: null,
             authorId: adminUser.id,
         }
     });
