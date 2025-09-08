@@ -17,9 +17,9 @@ export default function FunctionalFlowPage() {
     return;
     
     // Calculate current week and day based on start date
-    const savedStartDate = localStorage.getItem('flowStartDate');
+    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem('flowStartDate') : null;
     if (savedStartDate) {
-      const startDate = new Date(savedStartDate);
+      const startDate = new Date(savedStartDate as string);
       setCourseStartDate(startDate);
       
       const today = new Date();
@@ -30,7 +30,7 @@ export default function FunctionalFlowPage() {
       
       setCurrentWeek(calculatedWeek);
       setCurrentDay(calculatedDay);
-    } else {
+    } else if (typeof window !== 'undefined') {
       // New user - start course today
       const startDate = new Date();
       localStorage.setItem('flowStartDate', startDate.toISOString());

@@ -19,9 +19,9 @@ export default function FunctionalEnergyOverview() {
   const [currentDay, setCurrentDay] = useState(1);
   
   useEffect(() => {
-    const savedStartDate = localStorage.getItem('energyStartDate');
+    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem('energyStartDate') : null;
     if (savedStartDate) {
-      const startDate = new Date(savedStartDate);
+      const startDate = new Date(savedStartDate as string);
       setCourseStartDate(startDate);
       
       const today = new Date();

@@ -19,9 +19,9 @@ export default function FunctionalBasicsOverview() {
   const [currentDay, setCurrentDay] = useState(1);
   
   useEffect(() => {
-    const savedStartDate = localStorage.getItem('basicsStartDate');
+    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem('basicsStartDate') : null;
     if (savedStartDate) {
-      const startDate = new Date(savedStartDate);
+      const startDate = new Date(savedStartDate as string);
       setCourseStartDate(startDate);
       
       const today = new Date();

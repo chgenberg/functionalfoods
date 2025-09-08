@@ -19,9 +19,9 @@ export default function FunctionalFlowOverview() {
   const [currentDay, setCurrentDay] = useState(1);
   
   useEffect(() => {
-    const savedStartDate = localStorage.getItem('flowStartDate');
+    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem('flowStartDate') : null;
     if (savedStartDate) {
-      const startDate = new Date(savedStartDate);
+      const startDate = new Date(savedStartDate as string);
       setCourseStartDate(startDate);
       
       const today = new Date();
