@@ -248,9 +248,9 @@ export async function POST(req: Request) {
     
   } catch (error) {
     console.error('Functional foods API error:', error);
+    // Graceful fallback instead of 500 to avoid spinner lock
     return NextResponse.json(
-      { error: 'Failed to fetch functional food recommendations' },
-      { status: 500 }
+      { recommendations: [], message: 'Could not load functional foods right now. Please try again later.' }
     );
   }
 } 

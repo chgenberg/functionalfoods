@@ -67,31 +67,62 @@ function getLang(req: NextRequest): 'sv'|'en'|'es'|'de'|'fr' {
   return 'sv';
 }
 
+function buildLocalFallback(answers: Record<number, string>, lang: string) {
+  const scores = calculateHealthScores(answers);
+  const t = (sv: string, en?: string) => lang === 'en' && en ? en : sv;
+  return {
+    success: true,
+    results: {
+      profile: t(
+        '<p>Baserat på dina quiz-svar visar din hälsoprofil både styrkor och områden med potential för förbättring. Vi kan optimera energi, sömn och stress med riktade functional foods och rutiner.</p>',
+        '<p>Based on your answers, your profile shows strengths and opportunities. We can optimize energy, sleep and stress with targeted functional foods and routines.</p>'
+      ),
+      recommendations: [
+        { title: t('Magnesium för återhämtning', 'Magnesium for recovery'), description: '<p>Stödjer sömn och muskler. Kombinera med kvällsrutin.</p>', howToUse: '<p>200–400 mg magnesiumcitrat 1 h före sänggående.</p>' },
+        { title: t('Omega‑3 för hjärna och hjärta', 'Omega‑3 for brain & heart'), description: '<p>Minskar inflammation och stödjer kognition.</p>', howToUse: '<p>1 000 mg EPA/DHA dagligen eller fet fisk 2–3 ggr/vecka.</p>' },
+        { title: t('Probiotika för tarmhälsa', 'Probiotics for gut'), description: '<p>Stödjer mikrobiom och immunförsvar.</p>', howToUse: '<p>Minst 10 miljarder CFU dagligen i 4–6 veckor.</p>' }
+      ],
+      lifestyleAdvice: [
+        t('30 min daglig rörelse', '30 min daily movement'),
+        t('7–9 h sömn med regelbunden läggtid', '7–9h sleep with consistent schedule'),
+        t('2–3 L vatten/dag', '2–3 L water/day')
+      ],
+      nextSteps: [t('Vecka 1: Lägg till magnesium och kvällsrutin', 'Week 1: Add magnesium and evening routine')],
+      scientificReferences: ['Omega‑3 benefits', 'Magnesium and sleep'],
+      warningSignals: [t('Avsluta vid biverkningar och kontakta vård', 'Stop if adverse effects and consult care')],
+      successMetrics: [t('Energiskala 1–10 dagligen', 'Daily energy scale 1–10')],
+      courseRecommendation: scores.energyScore + scores.sleepScore < 14
+        ? t('Vi rekommenderar Functional Basics som grund.', 'We recommend Functional Basics as your foundation.')
+        : t('Vi rekommenderar Functional Flow för rutiner.', 'We recommend Functional Flow to build routines.'),
+      scores
+    }
+  };
+}
+
 export async function POST(request: NextRequest) {
   try {
-    if (!openai) {
-      return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
-        { status: 500 }
-      );
-    }
-
     const { answers } = await request.json();
     const lang = getLang(request);
-    
-    // Hämta användare från token (om inloggad)
-    const authorization = request.headers.get('authorization');
-    let userId = null;
-    if (authorization?.startsWith('Bearer ')) {
-      const token = authorization.substring(7);
-      userId = getUserIdFromToken(token);
-    }
 
     if (!answers || typeof answers !== 'object') {
       return NextResponse.json(
         { error: 'Invalid quiz answers provided' },
         { status: 400 }
       );
+    }
+
+    // If OpenAI is not configured, return a robust local fallback instead of 500
+    if (!openai) {
+      const fallback = buildLocalFallback(answers, lang);
+      return NextResponse.json(fallback);
+    }
+
+    // Hämta användare från token (om inloggad)
+    const authorization = request.headers.get('authorization');
+    let userId = null;
+    if (authorization?.startsWith('Bearer ')) {
+      const token = authorization.substring(7);
+      userId = getUserIdFromToken(token);
     }
 
     // Convert answers to readable format for analysis
@@ -183,21 +214,14 @@ Formatera svaret som JSON med följande struktur:
     const completion = await openai.chat.completions.create({
       model: resolveModel('gpt-5-mini'),
       messages: [
-        {
-          role: "system",
-          content: `Du är Ulrika Davidsson, en expert på functional foods och hälsa. Du ger personaliserade råd baserat på quiz-svar. Svara på språket: ${lang}. Använd HTML-formatering: <strong> för fetstil, <br> för radbrytningar, <p> för stycken.`
-        },
-        {
-          role: "user",
-          content: prompt
-        }
+        { role: "system", content: `Du är Ulrika Davidsson, en expert på functional foods och hälsa. Du ger personaliserade råd baserat på quiz-svar. Svara på språket: ${lang}. Använd HTML-formatering: <strong> för fetstil, <br> för radbrytningar, <p> för stycken.` },
+        { role: "user", content: prompt }
       ],
       temperature: 0.7,
       max_tokens: 8000,
     });
 
     const result = completion.choices[0]?.message?.content;
-    
     if (!result) {
       throw new Error('No response from OpenAI');
     }
@@ -207,42 +231,19 @@ Formatera svaret som JSON med följande struktur:
     try {
       // Clean the result string first
       let cleanResult = result.trim();
-      
-      // Remove any markdown code blocks
       cleanResult = cleanResult.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-      
-      // Try to find JSON content between first { and last }
       const firstBrace = cleanResult.indexOf('{');
       const lastBrace = cleanResult.lastIndexOf('}');
-      
       if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
         cleanResult = cleanResult.substring(firstBrace, lastBrace + 1);
       }
-      
       parsedResult = JSON.parse(cleanResult);
-      
-      // Validate the structure
       if (!parsedResult.profile || !parsedResult.recommendations) {
         throw new Error('Invalid structure');
       }
-      
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', result);
-      // Create a better fallback using the raw result
-      const cleanText = result.replace(/```json|```/g, '').replace(/^\s*\{.*?\}\s*/, '').trim();
-      
-      parsedResult = {
-        profile: "<p>Baserat på dina quiz-svar visar din hälsoprofil både styrkor och områden med potential för förbättring. Din energinivå och allmänna välbefinnande kan optimeras genom riktade functional foods och livsstilsförändringar. Vi ser möjligheter att stärka din kropp inifrån och skapa hållbara vanor som stödjer din långsiktiga hälsa. Genom att implementera personaliserade strategier kan du uppnå betydande förbättringar inom 4-8 veckor.</p>",
-        recommendations: [
-          { title: "Omega-3 från alger", description: "<p>...</p>", howToUse: "<p>...</p>" }
-        ],
-        lifestyleAdvice: ["Drick vatten", "Rör dig dagligen"],
-        nextSteps: ["Vecka 1: Börja med kefir och sömnrutin"],
-        scientificReferences: ["Omega-3 studie"],
-        warningSignals: ["Sök vård vid ihållande besvär"],
-        successMetrics: ["Mät energi 1-10"],
-        courseRecommendation: "Functional Flow"
-      };
+      parsedResult = buildLocalFallback(answers, lang).results;
     }
 
     // Beräkna hälsopoäng
@@ -274,7 +275,6 @@ Formatera svaret som JSON med följande struktur:
         });
       } catch (dbError) {
         console.error('Failed to save quiz result to database:', dbError);
-        // Fortsätt ändå, returnera resultatet även om DB-sparningen misslyckades
       }
     }
 
