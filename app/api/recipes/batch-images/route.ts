@@ -64,7 +64,7 @@ function localAssetToApiUrl(assetPath: string): string {
   return `/api/images/${segments.join('/')}`;
 }
 
-// Helper to convert image filename to optimized URL with correct format
+// Helper to convert image filename to Vision-optimized URL
 function imageToOptimizedUrl(imageName: string, size: string = 'medium', usage: 'card' | 'detail' | 'thumb' = 'card'): string {
   const slugified = imageName
     .replace(/[ÅÄåä]/g, 'a')
@@ -75,7 +75,13 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium', usage: 
     .replace(/^-|-$/g, '')
     .toLowerCase();
   
-  // Map size to specific format based on usage
+  // Try Vision-optimized first (best quality with intelligent cropping)
+  const visionPath = path.join(process.cwd(), 'public', 'recept_images_vision_optimized', `${slugified}-${usage}.webp`);
+  if (fs.existsSync(visionPath)) {
+    return `/api/images/recept_images_vision_optimized/${slugified}-${usage}.webp`;
+  }
+  
+  // Fallback to regular optimized with format mapping
   let format;
   if (usage === 'detail') {
     format = `detail-${size}`;
@@ -85,13 +91,12 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium', usage: 
     format = `card-${size}`;
   }
   
-  // Try optimized first
   const optimizedPath = path.join(process.cwd(), 'public', 'recept_images_optimized', `${slugified}-${format}.webp`);
   if (fs.existsSync(optimizedPath)) {
     return `/api/images/recept_images_optimized/${slugified}-${format}.webp`;
   }
   
-  // Fallback to original image
+  // Final fallback to original image
   const originalDir = path.join(process.cwd(), 'recept_images_2025');
   const possibleExtensions = ['jpg', 'jpeg', 'png'];
   
@@ -102,48 +107,48 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium', usage: 
     }
   }
   
-  // Final fallback
-  return `/api/images/recept_images_optimized/het-ratatouille-${format}.webp`;
+  // Ultimate fallback
+  return `/api/images/recept_images_vision_optimized/het-ratatouille-${usage}.webp`;
 }
 
 // Get available image files from filesystem
 function getAvailableImages(): string[] {
   try {
+    const visionDir = path.join(process.cwd(), 'public', 'recept_images_vision_optimized');
     const optimizedDir = path.join(process.cwd(), 'public', 'recept_images_optimized');
     const originalDir = path.join(process.cwd(), 'recept_images_2025');
     
     let files = [];
     
-    // Try optimized first - look for card-medium format as reference
-    if (fs.existsSync(optimizedDir)) {
-      files = fs.readdirSync(optimizedDir);
-      // Extract base names from new format files (remove -format.webp suffix)
-      const optimizedNames = files
-        .filter(f => f.endsWith('-card-medium.webp'))
-        .map(f => f.replace('-card-medium.webp', ''))
-        .map(f => {
-          // Convert slugified back to readable name for matching
-          return f.replace(/-/g, ' ');
-        });
-      
-      if (optimizedNames.length > 0) {
-        console.log(`📁 Found ${optimizedNames.length} optimized images with new formats`);
-        return optimizedNames;
-      }
-      
-      // Fallback to old format if new format doesn't exist yet
-      const oldFormatNames = files
-        .filter(f => f.endsWith('-medium.webp'))
-        .map(f => f.replace('-medium.webp', ''))
+    // Try Vision-optimized first (best quality)
+    if (fs.existsSync(visionDir)) {
+      files = fs.readdirSync(visionDir);
+      const visionNames = files
+        .filter(f => f.endsWith('-card.webp'))
+        .map(f => f.replace('-card.webp', ''))
         .map(f => f.replace(/-/g, ' '));
       
-      if (oldFormatNames.length > 0) {
-        console.log(`📁 Found ${oldFormatNames.length} optimized images with old format`);
-        return oldFormatNames;
+      if (visionNames.length > 0) {
+        console.log(`📁 Found ${visionNames.length} Vision-optimized images (best quality)`);
+        return visionNames;
       }
     }
     
-    // Fallback to original images
+    // Fallback to regular optimized images
+    if (fs.existsSync(optimizedDir)) {
+      files = fs.readdirSync(optimizedDir);
+      const optimizedNames = files
+        .filter(f => f.endsWith('-card-medium.webp'))
+        .map(f => f.replace('-card-medium.webp', ''))
+        .map(f => f.replace(/-/g, ' '));
+      
+      if (optimizedNames.length > 0) {
+        console.log(`📁 Found ${optimizedNames.length} regular optimized images`);
+        return optimizedNames;
+      }
+    }
+    
+    // Final fallback to original images
     if (fs.existsSync(originalDir)) {
       files = fs.readdirSync(originalDir);
       const originalNames = files

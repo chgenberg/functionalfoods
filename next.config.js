@@ -17,6 +17,10 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: '/recept_images_vision_optimized/:path*',
+        destination: '/api/images/recept_images_vision_optimized/:path*',
+      },
+      {
         source: '/recept_images_optimized/:path*',
         destination: '/api/images/recept_images_optimized/:path*',
       },

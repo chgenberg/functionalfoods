@@ -18,7 +18,8 @@
     "recipes:fix-links": "node scripts/fix-recipe-links.js",
     "images:normalize": "node scripts/normalize-images.js",
     "images:optimize": "node scripts/optimize-recipe-images.js",
-    "images:fix-orientations": "node scripts/fix-image-orientations.js"
+    "images:fix-orientations": "node scripts/fix-image-orientations.js",
+    "images:vision-optimize": "node scripts/vision-optimize-images.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
