@@ -9,8 +9,8 @@ WORKDIR /app
 # Copy only package manifests first (better layer caching for deps)
 COPY package*.json ./
 
-# Install deps (include dev for build phase)
-RUN npm ci --include=dev
+# Install deps (include dev for build phase) – use install instead of ci to resolve lockfile drift in CI
+RUN npm install --include=dev --no-audit --no-fund
 
 # Copy prisma schema separately to allow prisma generate cache if only code changes
 COPY prisma ./prisma
