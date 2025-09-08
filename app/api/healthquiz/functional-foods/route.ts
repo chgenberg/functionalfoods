@@ -14,7 +14,7 @@ const FUNCTIONAL_INGREDIENTS = [
   'kimchi', 'miso', 'prebiotic', 'inulin', 'oligosaccharide',
   
   // Adaptogens & Nootropics
-  'ashwagandha', 'rhodiola', 'ginseng', 'lion\'s mane', 'reishi', 'cordyceps',
+  'ashwagandha', 'rhodiola', 'ginseng', "lion's mane", 'reishi', 'cordyceps',
   'bacopa', 'ginkgo', 'mcr oil', 'phosphatidylserine',
   
   // Longevity compounds
@@ -49,12 +49,24 @@ interface OpenFoodFactsProduct {
   image_url: string;
 }
 
-async function searchOpenFoodFacts(query: string, country = 'se'): Promise<OpenFoodFactsProduct[]> {
-  const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=50&country=${country}`;
-  
-  const response = await fetch(url, {
-    headers: { 'User-Agent': 'UlrikaFunctionalFoods/1.0' }
+function withTimeout<T>(promise: Promise<T>, ms = 5000): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const id = setTimeout(() => reject(new Error('Request timeout')), ms);
+    promise
+      .then((value) => { clearTimeout(id); resolve(value); })
+      .catch((err) => { clearTimeout(id); reject(err); });
   });
+}
+
+async function searchOpenFoodFacts(query: string, country = 'se'): Promise<OpenFoodFactsProduct[]> {
+  // Limit fields for faster responses
+  const base = 'https://world.openfoodfacts.org/cgi/search.pl';
+  const fields = 'product_name,brands,categories,ingredients_text,nutriments,nutriscore_grade,nova_group,ecoscore_grade,image_url,code';
+  const url = `${base}?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=50&country=${country}&fields=${encodeURIComponent(fields)}`;
+  
+  const response = await withTimeout(fetch(url, {
+    headers: { 'User-Agent': 'UlrikaFunctionalFoods/1.0' }
+  }), 7000);
   
   if (!response.ok) {
     throw new Error(`OpenFoodFacts API error: ${response.status}`);
@@ -153,6 +165,51 @@ function extractHealthBenefits(product: OpenFoodFactsProduct): string[] {
   return benefits.length > 0 ? benefits : ['Allmän hälsa och välbefinnande'];
 }
 
+const LOCAL_FALLBACK = [
+  {
+    id: 'omega3-fish-oil',
+    name: 'Fiskolja (omega‑3, EPA/DHA)',
+    brand: '',
+    category: 'omega-3',
+    healthBenefits: ['Hjärn- och hjärthälsa', 'Minskar inflammation'],
+    nutriScore: 'A',
+    novaGroup: 1,
+    ecoScore: null,
+    imageUrl: null,
+    ingredients: '',
+    nutrition: {},
+    openFoodFactsUrl: 'https://world.openfoodfacts.org'
+  },
+  {
+    id: 'probiotic-kefir',
+    name: 'Kefir (probiotika)',
+    brand: '',
+    category: 'probiotics',
+    healthBenefits: ['Tarmhälsa', 'Immunförsvar'],
+    nutriScore: 'A',
+    novaGroup: 1,
+    ecoScore: null,
+    imageUrl: null,
+    ingredients: '',
+    nutrition: {},
+    openFoodFactsUrl: 'https://world.openfoodfacts.org'
+  },
+  {
+    id: 'green-tea',
+    name: 'Grönt te (polyfenoler)',
+    brand: '',
+    category: 'antioxidants',
+    healthBenefits: ['Antioxidanter', 'Metabolism'],
+    nutriScore: 'A',
+    novaGroup: 1,
+    ecoScore: null,
+    imageUrl: null,
+    ingredients: '',
+    nutrition: {},
+    openFoodFactsUrl: 'https://world.openfoodfacts.org'
+  }
+];
+
 export async function POST(req: Request) {
   try {
     const { healthGoals, currentDeficiencies, preferences } = await req.json();
@@ -165,15 +222,15 @@ export async function POST(req: Request) {
     }
     
     if (healthGoals?.includes('brain_health')) {
-      searchTerms.push('omega-3', 'dha', 'ginkgo', 'lion\'s mane');
+      searchTerms.push('omega-3', 'dha', "lion's mane");
     }
     
     if (healthGoals?.includes('gut_health')) {
-      searchTerms.push('probiotic', 'prebiotic', 'fiber', 'fermented');
+      searchTerms.push('probiotic', 'prebiotic', 'fermented');
     }
     
     if (healthGoals?.includes('anti_aging')) {
-      searchTerms.push('collagen', 'antioxidant', 'resveratrol', 'coq10');
+      searchTerms.push('collagen', 'antioxidant', 'resveratrol');
     }
     
     if (healthGoals?.includes('immune')) {
@@ -197,13 +254,12 @@ export async function POST(req: Request) {
     const allProducts: OpenFoodFactsProduct[] = [];
     
     // Search for each term
-    for (const term of searchTerms.slice(0, 5)) { // Limit to avoid rate limits
+    for (const term of searchTerms.slice(0, 3)) { // Keep tight to avoid timeouts
       try {
         const products = await searchOpenFoodFacts(term);
         allProducts.push(...products);
-        
         // Small delay to be respectful to the API
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 120));
       } catch (error) {
         console.warn(`Search failed for term: ${term}`, error);
       }
@@ -221,7 +277,7 @@ export async function POST(req: Request) {
         nutriScore: product.nutriscore_grade?.toUpperCase() || null,
         novaGroup: product.nova_group || null,
         ecoScore: product.ecoscore_grade?.toUpperCase() || null,
-        image: product.image_url || null,
+        imageUrl: product.image_url || null,
         ingredients: product.ingredients_text || '',
         nutrition: product.nutriments || {},
         openFoodFactsUrl: `https://world.openfoodfacts.org/product/${product.code}`
@@ -239,7 +295,7 @@ export async function POST(req: Request) {
       .slice(0, 20); // Top 20 recommendations
     
     return NextResponse.json({
-      recommendations: functionalProducts,
+      recommendations: functionalProducts.length > 0 ? functionalProducts : LOCAL_FALLBACK,
       searchTerms,
       totalFound: allProducts.length,
       functionalFound: functionalProducts.length,
@@ -250,7 +306,7 @@ export async function POST(req: Request) {
     console.error('Functional foods API error:', error);
     // Graceful fallback instead of 500 to avoid spinner lock
     return NextResponse.json(
-      { recommendations: [], message: 'Could not load functional foods right now. Please try again later.' }
+      { recommendations: LOCAL_FALLBACK, message: 'Using local fallback due to API error.' }
     );
   }
 } 
