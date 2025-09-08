@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { resolveModel } from '@/app/lib/ai';
+import { resolveModel, chatWithFallback } from '@/app/lib/ai';
 import OpenAI from 'openai';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
@@ -211,17 +211,16 @@ Formatera svaret som JSON med följande struktur:
   "courseRecommendation": "Rekommendationstext"
 }`;
 
-    const completion = await openai.chat.completions.create({
-      model: resolveModel('gpt-5-mini'),
+    const completion = await chatWithFallback(openai, {
       messages: [
         { role: "system", content: `Du är Ulrika Davidsson, en expert på functional foods och hälsa. Du ger personaliserade råd baserat på quiz-svar. Svara på språket: ${lang}. Använd HTML-formatering: <strong> för fetstil, <br> för radbrytningar, <p> för stycken.` },
         { role: "user", content: prompt }
       ],
       temperature: 0.7,
       max_tokens: 8000,
-    });
+    } as any);
 
-    const result = completion.choices[0]?.message?.content;
+    const result = (completion as any).choices?.[0]?.message?.content;
     if (!result) {
       throw new Error('No response from OpenAI');
     }
