@@ -125,6 +125,9 @@ async function createOptimizedImage(inputPath, outputPath, format, cropPosition,
   try {
     const image = sharp(inputPath);
     
+    // IMPORTANT: Auto-rotate based on EXIF orientation FIRST
+    await image.rotate();
+    
     // Convert crop position to Sharp position
     let position = 'center';
     switch (cropPosition) {
