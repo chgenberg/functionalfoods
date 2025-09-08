@@ -874,18 +874,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     <p className="text-xs text-gray-600">"Bästa kursen jag har gått - Lisa J"</p>
                   </motion.div>
 
-                  <motion.div
-                    initial={{ rotate: -180, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    transition={{ delay: 1, duration: 0.8 }}
-                    whileHover={{ rotate: 10, scale: 1.1 }}
-                    className="absolute -top-4 -left-4 bg-primary text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg cursor-default"
-                  >
-                    <div className="text-center">
-                      <div className="text-2xl font-bold">25+</div>
-                      <div className="text-xs">års erfarenhet</div>
-                    </div>
-                  </motion.div>
+
                   
                   {/* Additional floating decorative elements */}
                   <motion.div
