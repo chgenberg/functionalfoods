@@ -64,6 +64,19 @@ function localAssetToApiUrl(assetPath: string): string {
   return `/api/images/${segments.join('/')}`;
 }
 
+// Helper to convert image filename to slugified URL
+function imageToSlugUrl(imageName: string): string {
+  const slugified = imageName
+    .replace(/[ÅÄåä]/g, 'a')
+    .replace(/[Öö]/g, 'o')
+    .replace(/[Üü]/g, 'u')
+    .replace(/[^A-Za-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
+  return `/api/images/Recept_complete2.0/images/_optimized/${slugified}.webp`;
+}
+
 // Get available image files from filesystem
 function getAvailableImages(): string[] {
   try {
@@ -82,14 +95,14 @@ function findBestImageMatch(recipeName: string, availableImages: string[]): stri
   
   // 1. Exact match
   let match = availableImages.find(img => normalizeSwedish(img) === normalized);
-  if (match) return `/api/images/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
+  if (match) return imageToSlugUrl(match);
   
   // 2. Contains match (both directions)
   match = availableImages.find(img => {
     const normalizedImg = normalizeSwedish(img);
     return normalizedImg.includes(normalized) || normalized.includes(normalizedImg);
   });
-  if (match) return `/api/images/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
+  if (match) return imageToSlugUrl(match);
   
   // 3. Word-based matching
   const recipeWords = normalized.split(/\s+/).filter(w => w.length > 2);
@@ -101,7 +114,7 @@ function findBestImageMatch(recipeName: string, availableImages: string[]): stri
       );
       return matchedWords.length >= Math.min(2, recipeWords.length);
     });
-    if (match) return `/api/images/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
+    if (match) return imageToSlugUrl(match);
   }
   
   return null;
