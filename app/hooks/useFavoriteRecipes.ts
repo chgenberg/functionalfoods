@@ -87,7 +87,7 @@ export function useFavoriteRecipes() {
     }
   };
 
-  const getFavoritesByCoursetype = (courseType: 'basics' | 'flow') => {
+  const getFavoritesByCoursetype = (courseType: 'basics' | 'flow' | 'energy') => {
     return favorites.filter(fav => fav.courseType === courseType);
   };
 

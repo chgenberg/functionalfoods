@@ -12,29 +12,26 @@ export default function FunctionalBasicsPage() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Redirect to overview page
+    // Redirect to overview page and stop executing the rest of this effect
     router.push('/dashboard/courses/functional-basics/oversikt');
-    return;
-    
-    // Calculate current week and day based on start date
-    const savedStartDate = localStorage.getItem('basicsStartDate');
+  }, [router]);
+
+  // The rest is kept for potential future use if redirect is removed
+  useEffect(() => {
+    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem('basicsStartDate') : null;
     if (savedStartDate) {
-      const startDate = new Date(savedStartDate);
-      setCourseStartDate(startDate);
-      
+      const start = new Date(savedStartDate as string);
+      setCourseStartDate(start);
       const today = new Date();
-      const daysDiff = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
-      // Always start at week 1 for new users, but allow progression for existing users
+      const daysDiff = Math.floor((today.getTime() - start.getTime()) / (1000 * 3600 * 24));
       const calculatedWeek = daysDiff < 0 ? 1 : Math.min(6, Math.max(1, Math.ceil((daysDiff + 1) / 7)));
       const calculatedDay = daysDiff < 0 ? 1 : Math.min(7, Math.max(1, (daysDiff % 7) + 1));
-      
       setCurrentWeek(calculatedWeek);
       setCurrentDay(calculatedDay);
-    } else {
-      // New user - start course today
-      const startDate = new Date();
-      localStorage.setItem('basicsStartDate', startDate.toISOString());
-      setCourseStartDate(startDate);
+    } else if (typeof window !== 'undefined') {
+      const start = new Date();
+      localStorage.setItem('basicsStartDate', start.toISOString());
+      setCourseStartDate(start);
       setCurrentWeek(1);
       setCurrentDay(1);
     }
