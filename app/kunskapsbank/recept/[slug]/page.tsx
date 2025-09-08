@@ -68,6 +68,41 @@ export default function RecipePage() {
   const [userHasAccess, setUserHasAccess] = useState(false);
   const [userCourses, setUserCourses] = useState<string[]>([]);
   const [imageLoading, setImageLoading] = useState(true);
+  const [smartIngredients, setSmartIngredients] = useState<string[]>([]);
+  const [resterNote, setResterNote] = useState<string | null>(null);
+
+  // Get course context from URL params
+  const fromCourse = searchParams.get('from');
+  const fromWeek = searchParams.get('week');
+
+  // Load smart ingredients with rester logic
+  useEffect(() => {
+    if (!recipe) return;
+    
+    (async () => {
+      try {
+        const response = await fetch('/api/recipes/ingredients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipeSlug: recipe.slug,
+            servings: servings,
+            courseType: fromCourse,
+            weekNumber: fromWeek ? parseInt(fromWeek) : undefined
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setSmartIngredients(data.ingredients || []);
+          setResterNote(data.note);
+          console.log(`🥘 Smart ingredients loaded for ${recipe.title}:`, data);
+        }
+      } catch (error) {
+        console.error('Failed to load smart ingredients:', error);
+      }
+    })();
+  }, [recipe?.slug, servings, fromCourse, fromWeek]);
 
   // Check if this recipe appears as "rester" later in the same week
   const checkIfRecipeAppearsAsRester = (recipeSlug: string, fromCourse?: string, fromWeek?: string) => {
@@ -812,9 +847,46 @@ export default function RecipePage() {
                   <p className="font-medium text-[#014421]">{t('recipes.detail.forServings','För')} {servings} {t('recipes.detail.portions','portioner')}</p>
                 </div>
 
+                {/* Rester Note */}
+                {resterNote && (
+                  <div className="mb-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+                    <p className="text-blue-800 text-sm font-medium">{resterNote}</p>
+                  </div>
+                )}
+
                 {/* Ingredients Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-                  {(recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
+                  {smartIngredients.length > 0 ? (
+                    smartIngredients.map((ingredient, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        onClick={() => toggleIngredient(index)}
+                        className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
+                          checkedIngredients.includes(index) 
+                            ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
+                            : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
+                        }`}
+                      >
+                        <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                          checkedIngredients.includes(index) 
+                            ? 'bg-[#93C560] border-[#93C560]' 
+                            : 'border-gray-300 bg-white'
+                        }`}>
+                          {checkedIngredients.includes(index) && (
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          )}
+                        </div>
+                        <LinkedIngredient
+                          ingredient={ingredient}
+                          rawMaterial={findRawMaterial(ingredient, rawMaterials)}
+                          className={`text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}
+                        />
+                      </motion.div>
+                    ))
+                  ) : (recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
                     (recipe as any).ingredientsStructured.map((item: any, index: number) => {
                       const baseServings = recipe.servings && recipe.servings > 0 ? recipe.servings : 4;
                       const scale = servings / baseServings;
