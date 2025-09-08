@@ -83,7 +83,7 @@ export default function DayModal({
             // Set fallback for all on API error
             const placeholders: Record<string, string> = {};
             meals.forEach(meal => {
-              placeholders[meal.meal] = '/Recept_complete2.0/images/_optimized/Agg i paprika.webp';
+              placeholders[meal.meal] = '/api/images/Recept_complete2.0/images/_optimized/Agg%20i%20paprika.webp';
             });
             setRecipeImages(placeholders);
           }
@@ -92,7 +92,7 @@ export default function DayModal({
           // Set fallback for all on error
           const placeholders: Record<string, string> = {};
           meals.forEach(meal => {
-            placeholders[meal.meal] = '/Recept_complete2.0/images/_optimized/Agg i paprika.webp';
+            placeholders[meal.meal] = '/api/images/Recept_complete2.0/images/_optimized/Agg%20i%20paprika.webp';
           });
           setRecipeImages(placeholders);
         }

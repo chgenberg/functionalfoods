@@ -51,6 +51,14 @@ export async function GET(
     localized.courseTags = recipe.tags?.filter((tag: string) => ['Basic', 'Flow', 'Energy'].includes(tag)) || [];
     localized.isAdminOnly = recipe.tags?.includes('ADMIN_ONLY') || recipe.tags?.includes('UD');
 
+    // Normalize imageUrl for local assets
+    if (localized.imageUrl && typeof localized.imageUrl === 'string') {
+      let url = localized.imageUrl as string;
+      if (url.startsWith('/public/')) url = url.replace('/public', '');
+      if (url.startsWith('public/')) url = url.replace('public/', '/');
+      if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
+      localized.imageUrl = url;
+    }
     return NextResponse.json(localized);
   } catch (error) {
     console.error('Error fetching recipe:', error);

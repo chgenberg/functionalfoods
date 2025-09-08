@@ -44,13 +44,13 @@ function optimizeImageUrl(imageUrl: string, size: 'small' | 'medium' | 'large' =
 function getFallbackImage(size: 'small' | 'medium' | 'large' = 'medium'): string {
   // Use a working image from Recept_complete2.0 as fallback
   const fallbackImages = [
-    '/Recept_complete2.0/images/_optimized/Agg i paprika.webp',
-    '/Recept_complete2.0/images/_optimized/Het ratatouille.webp',
-    '/Recept_complete2.0/images/_optimized/Banankeso plättar med frukt och bär.webp',
-    '/Recept_complete2.0/images/_optimized/Bärsmoothie med apelsin.webp'
+    '/api/images/Recept_complete2.0/images/_optimized/Agg%20i%20paprika.webp',
+    '/api/images/Recept_complete2.0/images/_optimized/Het%20ratatouille.webp',
+    '/api/images/Recept_complete2.0/images/_optimized/Agghack%20med%20kalkon.webp',
+    '/api/images/Recept_complete2.0/images/_optimized/Fruktsmoothie.webp'
   ];
   const randomImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-  return optimizeImageUrl(randomImage, size);
+  return randomImage;
 }
 
 // Get available image files from filesystem
@@ -71,14 +71,14 @@ function findBestImageMatch(recipeName: string, availableImages: string[]): stri
   
   // 1. Exact match
   let match = availableImages.find(img => normalizeSwedish(img) === normalized);
-  if (match) return `/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
+  if (match) return `/api/images/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
   
   // 2. Contains match (both directions)
   match = availableImages.find(img => {
     const normalizedImg = normalizeSwedish(img);
     return normalizedImg.includes(normalized) || normalized.includes(normalizedImg);
   });
-  if (match) return `/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
+  if (match) return `/api/images/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
   
   // 3. Word-based matching
   const recipeWords = normalized.split(/\s+/).filter(w => w.length > 2);
@@ -90,7 +90,7 @@ function findBestImageMatch(recipeName: string, availableImages: string[]): stri
       );
       return matchedWords.length >= Math.min(2, recipeWords.length);
     });
-    if (match) return `/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
+    if (match) return `/api/images/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
   }
   
   return null;
