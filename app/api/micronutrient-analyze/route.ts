@@ -15,6 +15,12 @@ export async function POST(req: NextRequest) {
 
     const { answers, blockScores, totalScore } = await req.json();
 
+    const answersList: string = Array.isArray(answers)
+      ? (answers as any[])
+          .map((a: any) => `Block: ${a.block}\nQ: ${a.question}\nA: ${a.answer}\nPoints: ${a.points}`)
+          .join("\n\n")
+      : "";
+
     const prompt = `
     You are a world-leading expert in nutritional risk assessment.
     Analyze the following 30-question micronutrient screening, based on validated tools (HHAS, NutriCheQ, etc).
@@ -25,7 +31,7 @@ export async function POST(req: NextRequest) {
     Total risk index (weighted): ${totalScore}
 
     Here are all answers (with points):
-    ${answers.map((a: any) => `Block: ${a.block}\nQ: ${a.question}\nA: ${a.answer}\nPoints: ${a.points}`).join("\n\n")}
+    ${answersList}
 
     Additionally, create a matrix (heatmap) where each row is a nutrient (e.g., Vitamin D, Iron, B12, Omega-3, etc.) and each column is one of: "Diet", "Symptoms", "Lifestyle", "Blood test". 
     For each cell, assign a risk score (0–3) and a color code ("green", "yellow", "red") based on the user's answers and risk profile. 
@@ -38,29 +44,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    For each block score and for the total risk index, estimate the user's percentile compared to the general Western population, adjusted for age and sex if possible. 
-    For example: "Your vitamin D intake is in the 65th percentile for your age and sex."
-    If you do not have exact data, make a best-guess based on published averages.
-    Return this as:
-    {
-      "percentiles": {
-        "Diet": 65,
-        "Symptoms": 40,
-        "Lifestyle": 55,
-        "Supplements": 70,
-        "Total": 60
-      }
-    }
-
-    Return the result as a JSON object with this exact structure:
-    {
-      "analysis": "...",
-      "recommendedTests": [...],
-      "references": [...],
-      "nutrientMatrix": {...},
-      "percentiles": {...}
-    }
-    Return ONLY valid JSON, nothing else. Do not include any explanation or text before or after the JSON.
+    Provide concise reasoning for the top 3 nutrients with the highest risk.
     `;
 
     const completion = await openai.chat.completions.create({
