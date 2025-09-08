@@ -774,7 +774,7 @@ function HolisticAdvicesBlock({ value }: { value: any }) {
   return <div className="whitespace-pre-line text-base text-gray-900">{value ? String(value) : ''}</div>;
 }
 
-function RiskProfileDashboard({ value, labels }: { value: any, labels: any }) {
+function RiskProfileDashboard({ value, labels }: { value: Record<string, any>, labels: Record<string, string> }) {
   const [open, setOpen] = useState<string | null>(null);
 
   function getColor(status: string) {
@@ -794,12 +794,12 @@ function RiskProfileDashboard({ value, labels }: { value: any, labels: any }) {
             className="flex flex-col items-center focus:outline-none group"
             onClick={() => setOpen(key)}
             tabIndex={0}
-            aria-label={`Show more about ${label}`}
+            aria-label={`Show more about ${String(label)}`}
           >
             <div
               className={`w-12 h-12 rounded-full mb-2 border-2 border-gray-200 flex items-center justify-center transition-all duration-200 group-hover:scale-110 ${getColor(value[key])}`}
             />
-            <span className="text-xs font-semibold text-[#4B2E19]">{label}</span>
+            <span className="text-xs font-semibold text-[#4B2E19]">{String(label)}</span>
           </button>
         ))}
       </div>
