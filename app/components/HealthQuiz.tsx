@@ -19,6 +19,7 @@ interface QuizQuestion {
   subtitle: string;
   icon: string;
   options: QuizOption[];
+  allowMultiple?: boolean;
 }
 
 const QUIZ_SV: QuizQuestion[] = [
@@ -347,6 +348,7 @@ const QUIZ_SV: QuizQuestion[] = [
     question: "Vilka hälsomål är viktigast för dig?",
     subtitle: "Välj de områden du vill förbättra mest (du kan välja flera)",
     icon: "🎯",
+    allowMultiple: true,
     options: [
       {
         label: "Mer energi och mindre trötthet",
@@ -435,6 +437,7 @@ const QUIZ_SV: QuizQuestion[] = [
     question: "Tar du några mediciner regelbundet?",
     subtitle: "För att säkerställa att våra rekommendationer är säkra för dig",
     icon: "💊",
+    allowMultiple: true,
     options: [
       {
         label: "Blodförtunnande medicin",
@@ -644,7 +647,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   };
 
   const handleAnswer = (answer: string) => {
-    const isMultiSelect = currentQuestion === 9 || currentQuestion === 11; // Health goals and medications questions (0-indexed)
+    const isMultiSelect = !!quizQuestions[currentQuestion]?.allowMultiple;
     
     let newAnswers;
     if (isMultiSelect) {
@@ -674,7 +677,6 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
       } else {
         setCurrentStep('result');
         onComplete?.(newAnswers, locationContext);
-        // Clear persisted state after completion
         try { localStorage.removeItem(STORAGE_KEY); } catch {}
       }
       setIsAnimating(false);
@@ -687,12 +689,17 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     } else {
       setCurrentStep('result');
       onComplete?.(answers, locationContext);
-      // Clear persisted state after completion
       try { localStorage.removeItem(STORAGE_KEY); } catch {}
     }
   };
   const skipQuestion = () => {
-    handleAnswer('skipped');
+    if (quizQuestions[currentQuestion]?.allowMultiple) {
+      // For multi-select, skipping means record empty array and advance
+      setAnswers({ ...answers, [currentQuestion]: [] });
+      handleMultiSelectNext();
+    } else {
+      handleAnswer('skipped');
+    }
   };
 
   const goToPrevious = () => {
@@ -1052,7 +1059,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                       onClick={() => handleAnswer(option.value)}
                       className={`relative p-2.5 sm:p-4 rounded-xl border-2 transition-all duration-200 text-left group overflow-hidden ${
                         (() => {
-                          const isMultiSelect = currentQuestion === 9 || currentQuestion === 11;
+                          const isMultiSelect = !!quizQuestions[currentQuestion]?.allowMultiple;
                           const isSelected = isMultiSelect 
                             ? Array.isArray(answers[currentQuestion]) && (answers[currentQuestion] as string[]).includes(option.value)
                             : answers[currentQuestion] === option.value;
@@ -1061,9 +1068,9 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                             : 'border-gray-200 bg-white/80 backdrop-blur-sm hover:border-primary hover:shadow-md';
                         })()
                       }`}
-                      role={(currentQuestion === 9 || currentQuestion === 11) ? "checkbox" : "radio"}
+                      role={quizQuestions[currentQuestion]?.allowMultiple ? "checkbox" : "radio"}
                       aria-checked={(() => {
-                        const isMultiSelect = currentQuestion === 9 || currentQuestion === 11;
+                        const isMultiSelect = !!quizQuestions[currentQuestion]?.allowMultiple;
                         return isMultiSelect 
                           ? Array.isArray(answers[currentQuestion]) && (answers[currentQuestion] as string[]).includes(option.value)
                           : answers[currentQuestion] === option.value;
@@ -1077,7 +1084,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                       
                       {/* Selected indicator */}
                       {(() => {
-                        const isMultiSelect = currentQuestion === 9 || currentQuestion === 11;
+                        const isMultiSelect = !!quizQuestions[currentQuestion]?.allowMultiple;
                         const isSelected = isMultiSelect 
                           ? Array.isArray(answers[currentQuestion]) && (answers[currentQuestion] as string[]).includes(option.value)
                           : answers[currentQuestion] === option.value;
@@ -1120,7 +1127,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
               </div>
 
               {/* Multi-select next button */}
-              {(currentQuestion === 9 || currentQuestion === 11) && (
+              {quizQuestions[currentQuestion]?.allowMultiple && (
                 <div className="mt-6">
                   <button
                     onClick={handleMultiSelectNext}
