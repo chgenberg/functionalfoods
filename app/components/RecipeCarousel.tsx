@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Clock, ArrowRight } from 'lucide-react';
+import { optimizeImageUrl } from '@/app/lib/imageOptimization';
 
 interface Recipe {
   id: string;
@@ -190,12 +191,12 @@ export default function RecipeCarousel() {
                         {recipe.imageUrl ? (
                           <>
                             <Image 
-                              src={recipe.imageUrl} 
+                              src={optimizeImageUrl(recipe.imageUrl, 'large', 'landscape')} 
                               alt={recipe.imageAlt || recipe.title} 
                               fill 
                               className="object-cover group-hover:scale-110 transition-transform duration-700"
                               sizes="350px"
-                              unoptimized={true}
+                              unoptimized={false}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           </>

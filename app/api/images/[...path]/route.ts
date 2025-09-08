@@ -1,3 +1,7 @@
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
@@ -51,7 +55,7 @@ export async function GET(
 
     // Check again
     if (!fs.existsSync(targetPath)) {
-      return new NextResponse('Not Found', { status: 404 });
+      return new NextResponse('Not Found', { status: 404, headers: { 'Cache-Control': 'no-store' } });
     }
 
     // Read file
@@ -83,12 +87,13 @@ export async function GET(
     return new NextResponse(fileBuffer, {
       headers: {
         'Content-Type': contentType,
+        // Allow long caching in clients/CDN while letting us bust via file name changes
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
     
   } catch (error) {
     console.error('Error serving image:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    return new NextResponse('Internal Server Error', { status: 500, headers: { 'Cache-Control': 'no-store' } });
   }
 } 
