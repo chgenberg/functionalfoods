@@ -265,7 +265,7 @@ export default function FunctionalEnergyPage() {
           >
                           <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://player.vimeo.com/video/1099286272?h=0c219534c4"
+                src="https://player.vimeo.com/video/1084929149"
                 title="Functional Energy Introduction"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

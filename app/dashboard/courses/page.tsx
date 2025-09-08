@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { GiFruitBowl, GiHealthNormal } from 'react-icons/gi';
 import { useAuth } from '@/app/hooks/useAuth';
+import OnboardingGuide from '@/app/components/OnboardingGuide';
 
 interface Course {
   id: string;
@@ -27,6 +28,8 @@ interface Course {
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingCourse, setOnboardingCourse] = useState<'basics' | 'flow' | 'energy'>('basics');
   const { user } = useAuth();
 
   useEffect(() => {
@@ -195,10 +198,21 @@ export default function CoursesPage() {
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <Link href={`${course.link}/kostschema?view=week&week=1`} className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">
-                          Fortsätt
-                          <ArrowRight />
-                        </Link>
+                        <div className="flex gap-2">
+                          <Link href={`${course.link}/kostschema?view=week&week=1`} className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">
+                            Fortsätt
+                            <ArrowRight />
+                          </Link>
+                          <button
+                            onClick={() => {
+                              setOnboardingCourse(course.id as 'basics' | 'flow' | 'energy');
+                              setShowOnboarding(true);
+                            }}
+                            className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors"
+                          >
+                            📚 Guide
+                          </button>
+                        </div>
                         <span className={`text-primary font-medium flex items-center gap-1`}>
                           <Unlock />
                           Aktiv
@@ -291,6 +305,14 @@ export default function CoursesPage() {
           </Link>
         </div>
       )}
+      
+      {/* Onboarding Guide */}
+      <OnboardingGuide
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        courseType={onboardingCourse}
+        userName={user?.name}
+      />
     </div>
   );
 } 
