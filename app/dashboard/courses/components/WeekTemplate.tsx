@@ -133,9 +133,10 @@ export default function WeekTemplate({
         console.log('🖼️ WeekTemplate fetching thumbnails for meals:', names);
         console.log('🔗 With slugs:', slugs);
 
-        const resp = await fetch('/api/recipes/batch-images', {
+        const resp = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+          cache: 'no-store',
           body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'small' })
         });
         
@@ -147,6 +148,7 @@ export default function WeekTemplate({
         const data = await resp.json();
         const images: Record<string, string> = data.images || {};
         console.log('✅ WeekTemplate received images:', images);
+        console.log('📅 WeekTemplate: Mapped', Object.keys(images).length, 'meal thumbnails via fuzzy matching');
         
         const map: Record<number, string> = {};
         names.forEach((n, idx) => {

@@ -48,12 +48,39 @@ export default function RandomRecipes({ excludeId, count = 3, title = "Fler rece
       const response = await fetch(`/api/recipes/random?${params}`, {
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        cache: 'no-store'
       });
 
       if (response.ok) {
         const data = await response.json();
-        setRecipes(data.recipes || []);
+        let fetchedRecipes = data.recipes || [];
+
+        // Batch-map images using filesystem fuzzy matching
+        if (fetchedRecipes.length > 0) {
+          try {
+            const names = fetchedRecipes.map((r: Recipe) => r.title);
+            const slugs = fetchedRecipes.map((r: Recipe) => r.slug);
+            const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+              cache: 'no-store',
+              body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'medium' })
+            });
+            if (mapRes.ok) {
+              const { images } = await mapRes.json();
+              fetchedRecipes = fetchedRecipes.map((r: Recipe) => ({
+                ...r,
+                imageUrl: images && images[r.title] ? images[r.title] : r.imageUrl
+              }));
+              console.log('🎲 RandomRecipes: Mapped', Object.keys(images || {}).length, 'recipe images via fuzzy matching');
+            }
+          } catch (e) {
+            console.warn('RandomRecipes batch-images mapping failed, using original imageUrl', e);
+          }
+        }
+
+        setRecipes(fetchedRecipes);
       }
     } catch (error) {
       console.error('Error fetching random recipes:', error);

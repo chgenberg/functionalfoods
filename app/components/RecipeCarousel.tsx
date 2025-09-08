@@ -44,18 +44,42 @@ export default function RecipeCarousel() {
         
         if (!res.ok) {
           console.warn('Recipe API failed:', res.status);
-          // Use fallback data instead of throwing
           setRecipes([]);
           setLoading(false);
           return;
         }
         
         const data = await res.json();
+        let recipesToShow = [];
         if (data.recipes && data.recipes.length > 0) {
           // Ensure we have at least 10 recipes for smooth carousel
-          const recipesToShow = data.recipes.length >= 10 ? data.recipes : [...data.recipes, ...data.recipes];
-          setRecipes(recipesToShow.slice(0, 20));
+          recipesToShow = data.recipes.length >= 10 ? data.recipes : [...data.recipes, ...data.recipes];
+          recipesToShow = recipesToShow.slice(0, 20);
+
+          // Batch-map images using filesystem fuzzy matching
+          try {
+            const names = recipesToShow.map((r: Recipe) => r.title);
+            const slugs = recipesToShow.map((r: Recipe) => r.slug);
+            const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+              cache: 'no-store',
+              body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'large' })
+            });
+            if (mapRes.ok) {
+              const { images } = await mapRes.json();
+              recipesToShow = recipesToShow.map((r: Recipe) => ({
+                ...r,
+                imageUrl: images && images[r.title] ? images[r.title] : r.imageUrl
+              }));
+              console.log('🎠 Carousel: Mapped', Object.keys(images || {}).length, 'recipe images via fuzzy matching');
+            }
+          } catch (e) {
+            console.warn('Carousel batch-images mapping failed, using original imageUrl', e);
+          }
         }
+        
+        setRecipes(recipesToShow);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching recipes:', error);

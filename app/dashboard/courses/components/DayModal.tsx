@@ -53,32 +53,33 @@ export default function DayModal({
     if (isOpen) {
       const fetchRecipeImages = async () => {
         try {
-          const recipeNames = meals.map(meal => meal.meal);
-          // Also send resolved slugs when possible
+          console.log('🖼️ DayModal fetching images for meals:', meals.map(m => m.meal));
+          
+          // Extract slugs from recipeLinks
           const recipeSlugs = meals.map(meal => {
-            const link = getRecipeLink(meal);
-            if (!link) return null;
-            const parts = link.split('/');
-            const slugPart = parts[parts.length - 1] || '';
-            return slugPart.split('?')[0] || null;
+            if (!meal.recipeLink) return null;
+            try {
+              const parts = meal.recipeLink.split('/');
+              const slugPart = parts[parts.length - 1] || '';
+              return slugPart.split('?')[0] || null;
+            } catch {
+              return null;
+            }
           });
-          
-          console.log('🖼️ DayModal fetching images for meals:', recipeNames);
           console.log('🔗 With slugs:', recipeSlugs);
-          
-          const response = await fetch('/api/recipes/batch-images', {
+
+          const response = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ recipeNames, recipeSlugs, size: 'small' })
+            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+            cache: 'no-store',
+            body: JSON.stringify({
+              recipeNames: meals.map(m => m.meal),
+              recipeSlugs: recipeSlugs,
+              size: 'medium'
+            })
           });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('✅ DayModal received images:', data.images);
-            setRecipeImages(data.images || {});
-          } else {
+
+          if (!response.ok) {
             console.error('❌ DayModal batch-images failed:', response.status);
             // Set fallback for all on API error
             const placeholders: Record<string, string> = {};
@@ -86,7 +87,14 @@ export default function DayModal({
               placeholders[meal.meal] = '/api/images/Recept_complete2.0/images/_optimized/Agg%20i%20paprika.webp';
             });
             setRecipeImages(placeholders);
+            return;
           }
+
+          const data = await response.json();
+          const images = data.images || {};
+          console.log('✅ DayModal received images:', images);
+          console.log('🍽️ DayModal: Mapped', Object.keys(images).length, 'recipe images via fuzzy matching');
+          setRecipeImages(images);
         } catch (error) {
           console.error('❌ DayModal image fetch error:', error);
           // Set fallback for all on error
