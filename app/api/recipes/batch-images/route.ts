@@ -71,14 +71,14 @@ function findBestImageMatch(recipeName: string, availableImages: string[]): stri
   
   // 1. Exact match
   let match = availableImages.find(img => normalizeSwedish(img) === normalized);
-  if (match) return `/Recept_complete2.0/images/_optimized/${match}.webp`;
+  if (match) return `/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
   
   // 2. Contains match (both directions)
   match = availableImages.find(img => {
     const normalizedImg = normalizeSwedish(img);
     return normalizedImg.includes(normalized) || normalized.includes(normalizedImg);
   });
-  if (match) return `/Recept_complete2.0/images/_optimized/${match}.webp`;
+  if (match) return `/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
   
   // 3. Word-based matching
   const recipeWords = normalized.split(/\s+/).filter(w => w.length > 2);
@@ -90,7 +90,7 @@ function findBestImageMatch(recipeName: string, availableImages: string[]): stri
       );
       return matchedWords.length >= Math.min(2, recipeWords.length);
     });
-    if (match) return `/Recept_complete2.0/images/_optimized/${match}.webp`;
+    if (match) return `/Recept_complete2.0/images/_optimized/${encodeURIComponent(match)}.webp`;
   }
   
   return null;
