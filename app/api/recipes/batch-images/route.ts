@@ -89,6 +89,7 @@ export async function POST(request: Request) {
       if (r.slug && r.imageUrl) {
         let url = r.imageUrl;
         if (url.startsWith('/public/')) url = url.replace('/public', '');
+        if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
         slugToImage[r.slug] = optimizeImageUrl(url, size);
       }
     }
@@ -129,9 +130,13 @@ export async function POST(request: Request) {
       if (match && match.imageUrl) {
         let url = match.imageUrl as string;
         if (url.startsWith('/public/')) url = url.replace('/public', '');
+        if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
         imageMap[originalName] = optimizeImageUrl(url, size as 'small' | 'medium' | 'large');
+        console.log(`✅ Found match: "${originalName}" -> ${imageMap[originalName]}`);
       } else {
-        imageMap[originalName] = getFallbackImage(size as 'small' | 'medium' | 'large');
+        const fallback = getFallbackImage(size as 'small' | 'medium' | 'large');
+        imageMap[originalName] = fallback;
+        console.log(`⚠️ No match for "${originalName}", using fallback: ${fallback}`);
       }
     }
 

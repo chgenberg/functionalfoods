@@ -130,22 +130,38 @@ export default function WeekTemplate({
 
         if (names.length === 0) return;
 
+        console.log('🖼️ WeekTemplate fetching thumbnails for meals:', names);
+        console.log('🔗 With slugs:', slugs);
+
         const resp = await fetch('/api/recipes/batch-images', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ recipeNames: names, recipeSlugs: slugs, size: 'small' })
         });
-        if (!resp.ok) return;
+        
+        if (!resp.ok) {
+          console.error('❌ WeekTemplate batch-images failed:', resp.status);
+          return;
+        }
+        
         const data = await resp.json();
         const images: Record<string, string> = data.images || {};
+        console.log('✅ WeekTemplate received images:', images);
+        
         const map: Record<number, string> = {};
         names.forEach((n, idx) => {
           const dayNum = indexToDay[idx];
           const url = images[n];
-          if (url) map[dayNum] = url;
+          if (url) {
+            map[dayNum] = url;
+            console.log(`✅ Day ${dayNum}: ${n} -> ${url}`);
+          } else {
+            console.log(`⚠️ No image for day ${dayNum}: ${n}`);
+          }
         });
         setDayThumbnails(map);
       } catch (e) {
+        console.error('❌ WeekTemplate thumbnail error:', e);
         // ignore, fallback will be used
       }
     };

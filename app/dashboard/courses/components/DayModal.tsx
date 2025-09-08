@@ -62,6 +62,10 @@ export default function DayModal({
             const slugPart = parts[parts.length - 1] || '';
             return slugPart.split('?')[0] || null;
           });
+          
+          console.log('🖼️ DayModal fetching images for meals:', recipeNames);
+          console.log('🔗 With slugs:', recipeSlugs);
+          
           const response = await fetch('/api/recipes/batch-images', {
             method: 'POST',
             headers: {
@@ -72,14 +76,23 @@ export default function DayModal({
           
           if (response.ok) {
             const data = await response.json();
+            console.log('✅ DayModal received images:', data.images);
             setRecipeImages(data.images || {});
+          } else {
+            console.error('❌ DayModal batch-images failed:', response.status);
+            // Set fallback for all on API error
+            const placeholders: Record<string, string> = {};
+            meals.forEach(meal => {
+              placeholders[meal.meal] = '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp';
+            });
+            setRecipeImages(placeholders);
           }
         } catch (error) {
-          console.error('Error fetching recipe images:', error);
-          // Set placeholder for all on error
+          console.error('❌ DayModal image fetch error:', error);
+          // Set fallback for all on error
           const placeholders: Record<string, string> = {};
           meals.forEach(meal => {
-            placeholders[meal.meal] = '/images/recipe-placeholder.svg';
+            placeholders[meal.meal] = '/Bilder_basic/_optimized/agg-med-majonnas-och-kaffe.webp';
           });
           setRecipeImages(placeholders);
         }
