@@ -248,7 +248,7 @@ export const db = DatabaseManager.getInstance();
 // Export Prisma client for direct use
 export const prisma = db.getClient();
 
-// Initialize health monitoring in production
-if (process.env.NODE_ENV === 'production') {
+// Initialize health monitoring in production (but not during build)
+if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PHASE && !process.argv.includes('build')) {
   db.startHealthMonitoring(60000); // Check every minute in production
 } 
