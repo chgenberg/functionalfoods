@@ -7,8 +7,8 @@ import fs from 'fs';
 import path from 'path';
 
 function slugifyFilename(name: string): string {
-  const decoded = decodeURIComponent(name);
-  const withoutExt = decoded.replace(/\.[^/.]+$/, '');
+  // Don't decode if already decoded - just normalize
+  const withoutExt = name.replace(/\.[^/.]+$/, '');
   const translit = withoutExt
     .replace(/[ÅÄåä]/g, 'a')
     .replace(/[Öö]/g, 'o')
@@ -30,8 +30,11 @@ export async function GET(
   { params }: { params: { path: string[] } }
 ) {
   try {
-    const imagePath = params.path.join('/');
-    const filePath = path.join(process.cwd(), 'public', imagePath);
+    // Decode each path segment properly
+    const decodedPath = params.path.map(segment => decodeURIComponent(segment)).join('/');
+    const filePath = path.join(process.cwd(), 'public', decodedPath);
+    
+    console.log('🖼️ Image request:', decodedPath);
     
     // Security check - ensure path is within public directory
     const publicDir = path.join(process.cwd(), 'public');
@@ -48,15 +51,20 @@ export async function GET(
       const base = path.basename(resolvedPath);
       const fallback = slugifyFilename(base);
       const candidate = path.join(dir, fallback);
+      console.log('🔄 Trying slugified fallback:', fallback);
       if (fs.existsSync(candidate)) {
         targetPath = candidate;
+        console.log('✅ Found slugified version');
       }
     }
 
     // Check again
     if (!fs.existsSync(targetPath)) {
+      console.log('❌ File not found:', targetPath);
       return new NextResponse('Not Found', { status: 404, headers: { 'Cache-Control': 'no-store' } });
     }
+
+    console.log('✅ Serving:', targetPath);
 
     // Read file
     const fileBuffer = fs.readFileSync(targetPath);
