@@ -169,8 +169,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     try {
       // Extract health goals and deficiencies from quiz answers
       const answers = quizData as Record<number, string | string[]>;
-      const healthGoals = Array.isArray(answers[9]) ? answers[9] : [];
-      const deficiencies = Array.isArray(answers[10]) ? answers[10] : [answers[10]].filter(Boolean);
+      const healthGoals = Array.isArray(answers[10]) ? (answers[10] as string[]) : [];
+      const defRaw = answers[11];
+      const deficiencies = Array.isArray(defRaw) ? (defRaw as string[]) : ([defRaw].filter(Boolean) as string[]);
       
       const response = await fetch('/api/healthquiz/functional-foods', {
         method: 'POST',
@@ -195,8 +196,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      // Show loading for at least 45 seconds for better UX
-      const minLoadingTime = 45000;
+      // Show loading for at least 8 seconds for better UX, not too long
+      const minLoadingTime = 8000;
       const startTime = Date.now();
 
       // Define fallback data
@@ -340,7 +341,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       generateAiReport();
     }
     
-  }, [quizData, loadingProducts, functionalFoods, contextData, aiReport, loadingAiReport]);
+  }, [quizData, contextData]);
 
   if (loading) {
     const answeredCount = isQuizAnswers(quizData) ? Object.keys(quizData).length : 10;
@@ -386,7 +387,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     ...(contextData ? [{ id: 'context', label: 'Din plats', icon: '🌍' }] : []),
     { id: 'products', label: 'Produkter', icon: '🛒' },
     ...(contextData?.enhanced?.safety?.warnings?.length > 0 ? [{ id: 'safety', label: 'Säkerhet', icon: '🛡️' }] : []),
-    ...(contextData?.enhanced?.circadian?.length > 0 ? [{ id: 'timing', label: 'Timing', icon: '🕐' }] : []),
+    { id: 'timing', label: 'Timing', icon: '🕐' },
     { id: 'course', label: 'Kursrekommendation', icon: '🎓' },
     { id: 'recommendations', label: 'Functional Foods', icon: '🥗' },
     { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' },
@@ -1083,20 +1084,22 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                       <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
                         <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.science','Vetenskaplig grund')}</h2>
                         <div className="space-y-4">
-                          {recommendations.scientificReferences.map((reference, index) => (
-                            <motion.div
-                              key={index}
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ delay: index * 0.1 }}
-                              className="flex gap-4 p-4 bg-blue-50 rounded-xl"
-                            >
-                              <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                              <p className="text-gray-700 text-sm">
-                                {reference}
-                              </p>
-                            </motion.div>
-                          ))}
+                          {recommendations.scientificReferences && recommendations.scientificReferences.length > 0 ? (
+                            recommendations.scientificReferences.map((reference, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="flex gap-4 p-4 bg-blue-50 rounded-xl"
+                              >
+                                <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                <p className="text-gray-700 text-sm">{reference}</p>
+                              </motion.div>
+                            ))
+                          ) : (
+                            <p className="text-gray-600 text-sm">Inga källor tillgängliga just nu.</p>
+                          )}
                         </div>
                       </div>
                     )}
@@ -1177,6 +1180,24 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         </ul>
                       </div>
                     </div>
+                  </div>
+                )}
+                {activeTab === 'timing' && contextData?.enhanced?.circadian && (
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-6">Timing (cirkadian)</h2>
+                    {contextData.enhanced.circadian.length === 0 ? (
+                      <p className="text-gray-600">Ingen timing-data tillgänglig just nu.</p>
+                    ) : (
+                      <div className="space-y-4">
+                        {contextData.enhanced.circadian.map((item: any, index: number) => (
+                          <div key={index} className="p-4 border border-gray-200 rounded-xl">
+                            <div className="font-medium text-gray-900">{item.timing}</div>
+                            <div className="text-sm text-gray-600">{Array.isArray(item.supplements) ? item.supplements.join(', ') : ''}</div>
+                            <div className="text-sm text-gray-500 mt-1">{item.reason}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
                 </motion.div>
