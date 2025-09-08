@@ -221,6 +221,7 @@ function buildLocalFallback(answers: Record<number, string>, lang: string) {
       exercise: [],
       stressManagement: [],
       sleepOptimization: [],
+      scientificReferences: [],
       successMetrics: [
         lang === 'en' ? 'Track energy levels daily on a 1-10 scale' : 'Spåra energinivåer dagligen på en 1-10 skala',
         lang === 'en' ? 'Monitor sleep quality and time to fall asleep' : 'Övervaka sömnkvalitet och tid till insomnande',
@@ -410,6 +411,7 @@ Returera ditt svar som en JSON med följande struktur:
         exercise: parsedResult.exercise || [],
         stressManagement: parsedResult.stressManagement || [],
         sleepOptimization: parsedResult.sleepOptimization || [],
+        scientificReferences: parsedResult.scientificReferences || [],
         successMetrics: parsedResult.successMetrics || [],
         courseRecommendation: parsedResult.courseRecommendation || ''
       };
