@@ -96,7 +96,7 @@ export default function ArticleQuickAccess() {
             style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}
           />
           <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-accent">
-            <Image src="/davidsson.png" alt="Ulrika Davidsson" fill className="object-cover" />
+            <Image src="/Ulrika_portratt/Ulrika3.jpg?v=1" alt="Ulrika Davidsson" fill className="object-cover" />
           </div>
           <span className="hidden md:inline text-text-primary font-semibold md:[writing-mode:vertical-rl] md:rotate-180">{t('articles.quick.button','Snabbläs artiklar')}</span>
           <TrendingUp className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" />
@@ -110,7 +110,7 @@ export default function ArticleQuickAccess() {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white">
-                    <Image src="/davidsson.png" alt="Ulrika Davidsson" fill className="object-cover" />
+                    <Image src="/Ulrika_portratt/Ulrika3.jpg?v=1" alt="Ulrika Davidsson" fill className="object-cover" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold">{t('articles.quick.header','Ulrikas artikeltips')}</h2>

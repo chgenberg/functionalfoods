@@ -131,7 +131,7 @@ export default function ChatBot() {
         <div className="bg-primary text-white p-4 rounded-t-2xl flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Image src="/davidsson.png" alt="Ulrika AI:sson" width={40} height={40} className="rounded-full border-2 border-white" />
+              <Image src="/Ulrika_portratt/Ulrika3.jpg?v=1" alt="Ulrika AI:sson" width={40} height={40} className="rounded-full border-2 border-white object-cover" />
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-accent rounded-full border-2 border-white" />
             </div>
             <div>
