@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { 
@@ -60,11 +60,14 @@ function DraggableComponent({ component }: { component: any }) {
     })
   });
 
+  const ref = useRef<HTMLDivElement | null>(null);
+  drag(ref);
+
   const Icon = component.icon;
 
   return (
     <div
-      ref={drag}
+      ref={ref}
       className={`p-4 bg-white rounded-lg border-2 border-gray-200 cursor-move transition-all ${
         isDragging ? 'opacity-50' : 'hover:border-[#014421] hover:shadow-lg'
       }`}
@@ -89,9 +92,12 @@ function Canvas({ components, onDrop, onUpdate, selectedId, onSelect }: any) {
     })
   });
 
+  const ref = useRef<HTMLDivElement | null>(null);
+  drop(ref);
+
   return (
     <div
-      ref={drop}
+      ref={ref}
       className={`min-h-[600px] bg-gray-50 rounded-lg p-8 transition-colors ${
         isOver ? 'bg-blue-50 border-2 border-blue-300' : 'border-2 border-gray-200'
       }`}
