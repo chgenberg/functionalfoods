@@ -191,82 +191,18 @@ export async function POST(request: Request) {
     console.log('🧹 Cleaned names:', cleanedNames);
     console.log('🔤 Normalized names:', normalizedNames);
 
-    // Fetch all recipes for database matching (as backup)
-    const recipes = await prisma.recipe.findMany({
-      where: {
-        status: 'PUBLISHED',
-        imageUrl: { not: null }
-      },
-      select: {
-        title: true,
-        imageUrl: true,
-        slug: true
-      }
-    });
-
-    console.log(`📚 Found ${recipes.length} recipes with images in database`);
-
-    // Build quick index by slug
-    const slugToImage: Record<string, string> = {};
-    for (const r of recipes) {
-      if (r.slug && r.imageUrl) {
-        let url = r.imageUrl;
-        if (url.startsWith('/public/')) url = url.replace('/public', '');
-        if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
-        // Always serve via API route to handle spaces/slugified filenames
-        slugToImage[r.slug] = localAssetToApiUrl(url);
-      }
-    }
-
-    // Create a map of recipe names to images
+    // Create a map of recipe names to images using only filesystem fuzzy matching
     const imageMap: Record<string, string> = {};
 
     for (let i = 0; i < recipeNames.length; i++) {
       const originalName = recipeNames[i];
       const cleanName = cleanedNames[i];
-      const normalizedName = normalizedNames[i];
 
-      // 1. Try slug matching first (most reliable)
-      const providedSlug = Array.isArray(recipeSlugs) ? recipeSlugs[i] : null;
-      if (providedSlug && slugToImage[providedSlug]) {
-        imageMap[originalName] = slugToImage[providedSlug];
-        console.log(`✅ Slug match: ${providedSlug} -> ${slugToImage[providedSlug]}`);
-        continue;
-      }
-
-      // 2. Try filesystem fuzzy matching
+      // Try filesystem fuzzy matching
       const fsMatch = findBestImageMatch(cleanName, availableImages, size);
       if (fsMatch) {
         imageMap[originalName] = fsMatch;
         console.log(`✅ Filesystem match: "${originalName}" -> ${fsMatch}`);
-        continue;
-      }
-
-      // 3. Try database matching
-      console.log(`🔍 DB matching "${originalName}" -> "${cleanName}" -> "${normalizedName}"`);
-      let match = recipes.find((r: any) => normalizeSwedish(r.title) === normalizedName);
-      if (!match) {
-        match = recipes.find((r: any) => {
-          const nt = normalizeSwedish(r.title);
-          return nt.includes(normalizedName) || normalizedName.includes(nt);
-        });
-      }
-      if (!match) {
-        const searchWords = normalizedName.split(/\s+/).filter((w: string) => w.length > 2);
-        match = recipes.find((r: any) => {
-          const tw = normalizeSwedish(r.title).split(/\s+/);
-          const hits = searchWords.filter((w: string) => tw.some((t: string) => t.includes(w) || w.includes(t)));
-          return hits.length >= Math.min(2, searchWords.length);
-        });
-      }
-
-      if (match && match.imageUrl) {
-        let url = match.imageUrl as string;
-        if (url.startsWith('/public/')) url = url.replace('/public', '');
-        if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
-        // Use API images route for reliability
-        imageMap[originalName] = localAssetToApiUrl(url);
-        console.log(`✅ DB match: "${originalName}" -> ${imageMap[originalName]}`);
       } else {
         const fallback = getFallbackImage(size as 'small' | 'medium' | 'large');
         imageMap[originalName] = fallback;
