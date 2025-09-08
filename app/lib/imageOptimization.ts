@@ -15,6 +15,17 @@ export const imageSizes: Record<ImageSize, ImageSizeConfig> = {
   xl: { width: 1200, height: 1200, quality: 90 }
 };
 
+function toApiImagePath(localPath: string): string {
+  if (!localPath) return localPath;
+  if (localPath.startsWith('/api/images')) return localPath;
+  if (localPath === '/images/recipe-placeholder.svg') return localPath;
+  let p = localPath;
+  if (p.startsWith('/public/')) p = p.replace('/public', '');
+  if (!p.startsWith('/')) p = `/${p}`;
+  const segments = p.split('/').filter(Boolean).map(s => encodeURIComponent(s));
+  return `/api/images/${segments.join('/')}`;
+}
+
 /**
  * Optimizes image URL with size and quality parameters
  * Works with both local and external images
@@ -28,9 +39,9 @@ export function optimizeImageUrl(
     return '/images/recipe-placeholder.svg';
   }
 
-  // For local images, return as-is since Next.js Image component handles optimization
+  // For local images, serve via API route so filenames with spaces/ÅÄÖ work
   if (imageUrl.startsWith('/')) {
-    return imageUrl;
+    return toApiImagePath(imageUrl);
   }
 
   // For external images, return as-is (could be enhanced with proxy service)
@@ -75,6 +86,11 @@ export function getValidImageUrl(imageUrl: string | null | undefined): string {
   // If it's already a placeholder, return as-is
   if (imageUrl.includes('placeholder')) {
     return imageUrl;
+  }
+  
+  // Route local images via API for reliability
+  if (imageUrl.startsWith('/')) {
+    return toApiImagePath(imageUrl);
   }
   
   // For local images that might be missing, we'll let Next.js Image component handle the error
