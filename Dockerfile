@@ -10,9 +10,13 @@ WORKDIR /app
 ARG REPO_URL=https://github.com/chgenberg/functionalfoods.git
 ARG REPO_REF=main
 
-# Explicit cache-buster for Docker layer caching
-ARG FORCE_REBUILD=2025-09-08-00-55
+# Explicit cache-buster for Docker layer caching (update this value to force rebuild)
+ARG FORCE_REBUILD=2025-09-08-02-05
 RUN echo "FORCE_REBUILD=${FORCE_REBUILD}" > /FORCE_REBUILD
+
+# Copy a small build trigger file to invalidate cache before cloning
+# This ensures Railway won't reuse cached layers for the repo clone step
+COPY build-trigger.js /CACHE_BUSTER_build_trigger.js
 
 # Bust cache by embedding the latest commit SHA for the target ref
 # Note: This step is also influenced by FORCE_REBUILD above
