@@ -3,6 +3,19 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { BookOpen, ChevronLeft, Clock, Download, Filter, Heart, Search, Share2, Star, Tag, Users } from 'lucide-react';
 
+type Recipe = {
+  id: number;
+  title: string;
+  description: string;
+  tags: string[];
+  category: string;
+  course: string;
+  difficulty: string;
+  prepTime: string;
+  servings: number;
+  rating: number;
+};
+
 export default function RecipesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
@@ -19,7 +32,7 @@ export default function RecipesPage() {
     { id: "desserter", name: "Desserter", count: 10 }
   ];
 
-  const [recipes, setRecipes] = useState<any[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +41,7 @@ export default function RecipesPage() {
         const response = await fetch('/api/recipes');
         const data = await response.json();
         if (data.recipes && Array.isArray(data.recipes)) {
-          setRecipes(data.recipes);
+          setRecipes(data.recipes as Recipe[]);
         }
       } catch (error) {
         console.error('Error fetching recipes:', error);
@@ -40,9 +53,9 @@ export default function RecipesPage() {
     fetchRecipes();
   }, []);
 
-  const filteredRecipes = recipes.filter((recipe) => {
+  const filteredRecipes = recipes.filter((recipe: Recipe) => {
     const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                         recipe.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = activeCategory === "all" || recipe.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -224,7 +237,7 @@ export default function RecipesPage() {
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {recipe.tags.slice(0, 2).map((tag, i) => (
+                  {recipe.tags.slice(0, 2).map((tag: string, i: number) => (
                     <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                       {tag}
                     </span>
