@@ -41,6 +41,7 @@ model User {
   quizResults       QuizResult[]
   recipes           Recipe[]
   symptomAnalyses   SymptomAnalysis[]
+  passwordResets    PasswordReset[]
 }
 
 model Course {
@@ -527,4 +528,17 @@ enum Language {
   ES
   DE
   FR
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([token])
+  @@index([expiresAt])
 }

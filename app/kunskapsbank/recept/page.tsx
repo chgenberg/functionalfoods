@@ -552,7 +552,40 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const canAccess = recipe.isAccessible !== false && (recipe.isFree || !recipe.isPremium || userAccess.hasAccess);
   const isComingSoon = recipe.isComingSoon === true;
   const [imageError, setImageError] = useState(false);
+  const [optimizedImageUrl, setOptimizedImageUrl] = useState<string>(recipe.imageUrl || '');
   const t = useT();
+  
+  // Load Vision-optimized image for this recipe
+  useEffect(() => {
+    if (!recipe.title) return;
+    
+    (async () => {
+      try {
+        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+          cache: 'no-store',
+          body: JSON.stringify({ 
+            recipeNames: [recipe.title], 
+            recipeSlugs: [recipe.slug], 
+            size: 'medium',
+            usage: 'card'
+          })
+        });
+        
+        if (mapRes.ok) {
+          const { images } = await mapRes.json();
+          const mapped = images && images[recipe.title];
+          if (mapped) {
+            console.log(`✅ Recipe card: Vision-optimized image found: "${recipe.title}" -> ${mapped}`);
+            setOptimizedImageUrl(mapped);
+          }
+        }
+      } catch (e) {
+        console.error('❌ Recipe card: Failed to load Vision-optimized image', e);
+      }
+    })();
+  }, [recipe.title, recipe.slug]);
 
   return (
     <Link href={canAccess && !isComingSoon ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -562,9 +595,9 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-          {recipe.imageUrl && !imageError ? (
+          {optimizedImageUrl && !imageError ? (
             <Image
-              src={optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape')}
+              src={optimizedImageUrl}
               alt={recipe.imageAlt || recipe.title}
               fill
               sizes={getResponsiveSizes('medium')}

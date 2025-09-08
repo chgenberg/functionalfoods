@@ -529,7 +529,7 @@ export default function RecipePage() {
     
     setImageLoading(true);
     
-    // Always try to get optimized image from new image bank via fuzzy matching
+    // Always try to get Vision-optimized image via fuzzy matching
     (async () => {
       try {
         const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
@@ -543,27 +543,37 @@ export default function RecipePage() {
             usage: 'detail'
           })
         });
+        
         if (mapRes.ok) {
           const { images } = await mapRes.json();
-          console.log(`🖼️ Recipe detail: Batch response:`, images);
+          console.log(`🖼️ Recipe detail: Batch response for "${recipe.title}":`, images);
+          
           const mapped = images && images[recipe.title];
           if (mapped) {
-            console.log(`✅ Recipe detail: Mapped "${recipe.title}" -> ${mapped}`);
-            setRecipe(prev => prev ? { ...prev, imageUrl: mapped } : prev);
+            console.log(`✅ Recipe detail: Vision-optimized image found: "${recipe.title}" -> ${mapped}`);
+            setRecipe(prev => prev ? { 
+              ...prev, 
+              imageUrl: mapped,
+              // Also update mobile image
+              imageMobileUrl: mapped.replace('-detail.webp', '-thumb.webp')
+            } : prev);
             setImageError(false);
           } else {
-            console.log(`⚠️ Recipe detail: No image found for "${recipe.title}" in response`);
+            console.log(`⚠️ Recipe detail: No Vision-optimized image found for "${recipe.title}"`);
+            // Keep original imageUrl as fallback
           }
         } else {
-          console.error(`❌ Recipe detail: Batch-images failed with status ${mapRes.status}`);
+          console.error(`❌ Recipe detail: Batch-images API failed with status ${mapRes.status}`);
+          const errorText = await mapRes.text();
+          console.error(`❌ Error response:`, errorText);
         }
       } catch (e) {
-        console.error('❌ Recipe detail: batch-map failed', e);
+        console.error('❌ Recipe detail: Vision-optimized image loading failed', e);
       } finally {
         setImageLoading(false);
       }
     })();
-  }, [recipe?.slug]);
+  }, [recipe?.title, recipe?.slug]); // Watch both title and slug for changes
 
   if (loading) {
     return (
