@@ -394,9 +394,9 @@ export default function MicronutrientQuestionModal({ onClose }: { onClose: () =>
             <div className="mb-4 w-full">
               <h2 className="text-md font-bold text-[#4B2E19] mb-1">Percentile Comparison</h2>
               <ul className="list-disc ml-6 text-sm text-gray-700">
-                {Object.entries(analysisResult.percentiles).map(([block, percentile]) => (
+                {(Object.entries((analysisResult.percentiles as Record<string, number | string>) || {})).map(([block, percentile]) => (
                   <li key={block}>
-                    <strong>{block}:</strong> {percentile}th percentile
+                    <strong>{block}:</strong> {String(percentile)}th percentile
                   </li>
                 ))}
               </ul>
