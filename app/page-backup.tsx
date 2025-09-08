@@ -9,11 +9,11 @@ import HealthQuiz from "./components/HealthQuiz";
 import QuizResultScreen from "./components/QuizResultScreen";
 import NewsletterSignup from "./components/NewsletterSignup";
 import ArticleQuickAccess from "./components/ArticleQuickAccess";
-import { ArrowRight, Book, Star } from 'lucide-react';
+import { ArrowRight, Book, Star, Target, Zap } from 'lucide-react';
 
 export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
-  const [quizResults, setQuizResults] = useState<Record<number, string> | null>(null);
+  const [quizResults, setQuizResults] = useState<Record<number, string | string[]> | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -49,7 +49,7 @@ export default function Home() {
     };
   }, []);
 
-  const handleQuizComplete = (answers: Record<number, string>) => {
+  const handleQuizComplete = (answers: Record<number, string | string[]>) => {
     console.log('Quiz completed with answers:', answers);
     setQuizResults(answers);
     setShowQuiz(false);
@@ -94,13 +94,13 @@ export default function Home() {
       color: "from-green-400 to-green-600"
     },
     {
-      icon: <FiTarget className="w-8 h-8" />,
+      icon: <Target className="w-8 h-8" />,
       title: "Personaliserat",
       description: "Anpassat efter dina unika behov och mål",
       color: "from-blue-400 to-blue-600"
     },
     {
-      icon: <FiZap className="w-8 h-8" />,
+      icon: <Zap className="w-8 h-8" />,
       title: "Snabba resultat",
       description: "Känn skillnad redan efter några veckor",
       color: "from-purple-400 to-purple-600"
@@ -120,7 +120,7 @@ export default function Home() {
   if (quizResults) {
     return (
       <QuizResultScreen 
-        quizData={quizResults} 
+        quizData={quizResults as Record<number, string | string[]>} 
         onRestart={handleRestartQuiz}
       />
     );
