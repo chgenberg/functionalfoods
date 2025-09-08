@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, Book, Calendar, Clock, Edit, Eye, Filter, Plus, Search, Trash2, TrendingUp, Users } from 'lucide-react';
+import { Award, Book, Calendar, Clock, Edit, Eye, Filter, MoreVertical, Plus, Search, Trash2, TrendingUp, Users } from 'lucide-react';
 
 interface Course {
   id: string;
@@ -342,7 +342,7 @@ export default function AdminCoursesPage() {
                       onClick={() => setActiveDropdown(activeDropdown === course.id ? null : course.id)}
                       className="w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition-colors"
                     >
-                      <FiMoreVertical />
+                      <MoreVertical />
                     </button>
                     
                     {activeDropdown === course.id && (
