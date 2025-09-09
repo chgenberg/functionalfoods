@@ -67,12 +67,12 @@ export default function AdminLayout({
     { icon: BookOpen, label: 'Recept', href: '/admin/recipes' },
     { icon: Users, label: 'Kunder', href: '/admin/users' },
     { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders' },
+    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales' },
     { icon: Tag, label: 'Rabattkoder', href: '/admin/coupons' },
     { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews' },
     { icon: Mail, label: 'Email', href: '/admin/emails' },
     { icon: Image, label: 'Media', href: '/admin/media' },
     { icon: Palette, label: 'Sidbyggare', href: '/admin/page-builder' },
-    { icon: BarChart3, label: 'Analys', href: '/admin/analytics' },
     { icon: Settings, label: 'Inställningar', href: '/admin/settings' },
   ];
 

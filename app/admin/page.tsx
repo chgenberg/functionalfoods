@@ -26,6 +26,13 @@ interface DashboardStats {
   recentOrders: any[];
   recentUsers: any[];
   popularContent: any[];
+  stripeStats?: {
+    totalAmount: number;
+    successful: number;
+    pending: number;
+    failed: number;
+  };
+  recentPayments?: any[];
 }
 
 export default function AdminDashboard() {
@@ -47,11 +54,44 @@ export default function AdminDashboard() {
 
   const fetchDashboardStats = async () => {
     try {
-      const res = await fetch('/api/admin/dashboard/stats');
-      if (res.ok) {
-        const data = await res.json();
-        setStats(data);
+      // Fetch both database stats and Stripe data
+      const [dbStatsRes, stripeRes] = await Promise.all([
+        fetch('/api/admin/dashboard/stats'),
+        fetch('/api/admin/stripe-payments?limit=10')
+      ]);
+
+      let dbData = {
+        totalUsers: 0,
+        totalOrders: 0,
+        totalRevenue: 0,
+        totalRecipes: 0,
+        totalBlogPosts: 0,
+        recentOrders: [],
+        recentUsers: [],
+        popularContent: []
+      };
+
+      let stripeData = {
+        summary: { totalAmount: 0, successful: 0, pending: 0, failed: 0 },
+        payments: []
+      };
+
+      if (dbStatsRes.ok) {
+        dbData = await dbStatsRes.json();
       }
+
+      if (stripeRes.ok) {
+        stripeData = await stripeRes.json();
+      }
+
+      // Combine data with Stripe as primary source for revenue
+      setStats({
+        ...dbData,
+        totalRevenue: stripeData.summary.totalAmount, // Use real Stripe revenue
+        stripeStats: stripeData.summary,
+        recentPayments: stripeData.payments.slice(0, 5) // Show 5 most recent
+      });
+
     } catch (error) {
       console.error('Failed to fetch dashboard stats:', error);
     } finally {
