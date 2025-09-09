@@ -36,8 +36,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ogiltiga inloggningsuppgifter' }, { status: 401 });
     }
 
-    // Check if user has admin role
-    if (user.role !== 'ADMIN') {
+    // Check if user has admin role (case insensitive)
+    if (user.role.toLowerCase() !== 'admin') {
       return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 });
     }
 

@@ -33,8 +33,13 @@ export default function AdminLayout({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Skip auth check on login page
+    if (pathname === '/admin/login') {
+      setIsLoading(false);
+      return;
+    }
     checkAuth();
-  }, []);
+  }, [pathname]);
 
   const checkAuth = async () => {
     try {
@@ -79,6 +84,11 @@ export default function AdminLayout({
     );
   }
 
+  // Don't render admin layout on login page
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+  
   if (!isAuthenticated) {
     return null;
   }
