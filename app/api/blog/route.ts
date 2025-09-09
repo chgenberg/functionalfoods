@@ -89,7 +89,14 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ error: 'Not available during build' });
+  }
+
+  // TODO: Add proper admin authentication
+  // For now, require admin role check
   try {
     const body = await req.json();
     
