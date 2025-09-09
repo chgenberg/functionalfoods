@@ -72,7 +72,7 @@ export default function AdminLayout({
     { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews' },
     { icon: Mail, label: 'Email', href: '/admin/emails' },
     { icon: Image, label: 'Media', href: '/admin/media' },
-    { icon: Palette, label: 'Sidbyggare', href: '/admin/page-builder' },
+
     { icon: Settings, label: 'Inställningar', href: '/admin/settings' },
   ];
 

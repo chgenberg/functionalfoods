@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { withRateLimit, apiRateLimit } from '@/app/lib/rate-limit';
+import { withAdminAuth } from '@/app/lib/admin-auth';
 import { logInfo, logError } from '@/app/lib/monitoring';
 
 const prisma = new PrismaClient();

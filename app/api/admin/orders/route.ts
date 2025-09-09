@@ -1,173 +1,217 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
+import { withAdminAuth } from '@/app/lib/admin-auth';
+import { logInfo, logError } from '@/app/lib/monitoring';
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request) {
-  try {
-    // Hämta token från headers
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Ingen giltig token' },
-        { status: 401 }
-      );
-    }
+export const dynamic = 'force-dynamic';
 
-    const token = authHeader.split(' ')[1];
-    
-    // Verifiera token
-    let decoded: any;
+/**
+ * GET /api/admin/orders - Get all orders with payment info
+ */
+export async function GET(request: NextRequest) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json([]);
+  }
+
+  return withAdminAuth(async (req, adminUser) => {
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Ogiltig token' },
-        { status: 401 }
-      );
-    }
+      logInfo('Admin fetching orders', { adminUser: adminUser.email });
 
-    // Kontrollera att användaren är admin
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId }
-    });
+      const { searchParams } = new URL(req.url);
+      const status = searchParams.get('status');
+      const limit = parseInt(searchParams.get('limit') || '50');
+      const offset = parseInt(searchParams.get('offset') || '0');
 
-    if (!user || user.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Otillräckliga behörigheter' },
-        { status: 403 }
-      );
-    }
+      // Build where clause
+      const where: any = {};
+      if (status && status !== 'ALL') {
+        where.status = status;
+      }
 
-    // Hämta alla orders med relaterad data
-    const orders = await prisma.order.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        },
-        items: {
-          include: {
-            course: {
-              select: {
-                name: true
+      // Fetch orders with full related data
+      const orders = await prisma.order.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              createdAt: true
+            }
+          },
+          items: {
+            include: {
+              course: {
+                select: {
+                  name: true,
+                  title: true
+                }
               }
+            }
+          },
+          payment: {
+            select: {
+              id: true,
+              status: true,
+              paymentMethod: true,
+              externalId: true,
+              processedAt: true,
+              failureReason: true,
+              gatewayResponse: true
             }
           }
         },
-        payment: {
-          select: {
-            id: true,
-            status: true,
-            paymentMethod: true,
-            externalId: true,
-            processedAt: true,
-            failureReason: true
-          }
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: limit,
+        skip: offset
+      });
+
+      // Get total count for pagination
+      const totalCount = await prisma.order.count({ where });
+
+      // Format response
+      const formattedOrders = orders.map(order => ({
+        id: order.id,
+        orderNumber: order.orderNumber,
+        status: order.status,
+        totalAmount: order.totalAmount,
+        currency: 'SEK',
+        createdAt: order.createdAt.toISOString(),
+        user: {
+          id: order.user.id,
+          name: order.user.name,
+          email: order.user.email,
+          customerSince: order.user.createdAt.toISOString()
+        },
+        items: order.items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          type: item.type,
+          course: item.course ? {
+            name: item.course.name || item.course.title
+          } : null
+        })),
+        payment: order.payment ? {
+          id: order.payment.id,
+          status: order.payment.status,
+          paymentMethod: order.payment.paymentMethod,
+          externalId: order.payment.externalId,
+          processedAt: order.payment.processedAt?.toISOString(),
+          failureReason: order.payment.failureReason
+        } : null
+      }));
+
+      logInfo('Orders fetched successfully', { 
+        count: formattedOrders.length,
+        totalCount,
+        adminUser: adminUser.email 
+      });
+
+      return NextResponse.json({
+        orders: formattedOrders,
+        pagination: {
+          total: totalCount,
+          limit,
+          offset,
+          hasMore: offset + limit < totalCount
         }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+      });
 
-    return NextResponse.json(orders);
-
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    return NextResponse.json(
-      { error: 'Ett fel uppstod vid hämtning av beställningar' },
-      { status: 500 }
-    );
-  } finally {
-    await prisma.$disconnect();
-  }
+    } catch (error) {
+      logError('Failed to fetch orders', { error, adminUser: adminUser.email });
+      return NextResponse.json(
+        { error: 'Ett fel uppstod vid hämtning av beställningar' },
+        { status: 500 }
+      );
+    } finally {
+      await prisma.$disconnect();
+    }
+  });
 }
 
-// PUT endpoint för att uppdatera order status (för framtida användning)
-export async function PUT(request: Request) {
-  try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Ingen giltig token' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split(' ')[1];
-    let decoded: any;
-    
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Ogiltig token' },
-        { status: 401 }
-      );
-    }
-
-    // Kontrollera admin behörighet
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId }
-    });
-
-    if (!user || user.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Otillräckliga behörigheter' },
-        { status: 403 }
-      );
-    }
-
-    const { orderId, status, note } = await request.json();
-
-    if (!orderId || !status) {
-      return NextResponse.json(
-        { error: 'Order ID och status krävs' },
-        { status: 400 }
-      );
-    }
-
-    // Uppdatera order
-    const updatedOrder = await prisma.order.update({
-      where: { id: orderId },
-      data: { 
-        status: status,
-        updatedAt: new Date()
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        },
-        items: true,
-        payment: true
-      }
-    });
-
-    // TODO: Skicka notification till kund om statusändring
-    // TODO: Logga admin-åtgärd
-
-    return NextResponse.json({
-      success: true,
-      order: updatedOrder,
-      message: `Order ${updatedOrder.orderNumber} uppdaterad till ${status}`
-    });
-
-  } catch (error) {
-    console.error('Error updating order:', error);
-    return NextResponse.json(
-      { error: 'Ett fel uppstod vid uppdatering av beställning' },
-      { status: 500 }
-    );
-  } finally {
-    await prisma.$disconnect();
+/**
+ * PUT /api/admin/orders - Update order status
+ */
+export async function PUT(request: NextRequest) {
+  // Skip during build process
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return NextResponse.json({ success: false, error: 'Not available during build' });
   }
+
+  return withAdminAuth(async (req, adminUser) => {
+    try {
+      const { orderId, status, note } = await req.json();
+
+      if (!orderId || !status) {
+        return NextResponse.json(
+          { error: 'Order ID och status krävs' },
+          { status: 400 }
+        );
+      }
+
+      logInfo('Admin updating order status', { 
+        orderId, 
+        newStatus: status, 
+        adminUser: adminUser.email 
+      });
+
+      // Update order
+      const updatedOrder = await prisma.order.update({
+        where: { id: orderId },
+        data: { 
+          status: status,
+          updatedAt: new Date()
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          },
+          items: {
+            include: {
+              course: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          },
+          payment: true
+        }
+      });
+
+      logInfo('Order status updated successfully', {
+        orderId: updatedOrder.id,
+        orderNumber: updatedOrder.orderNumber,
+        newStatus: status,
+        adminUser: adminUser.email
+      });
+
+      return NextResponse.json({
+        success: true,
+        order: updatedOrder,
+        message: `Order ${updatedOrder.orderNumber} uppdaterad till ${status}`
+      });
+
+    } catch (error) {
+      logError('Failed to update order', { error, adminUser: adminUser.email });
+      return NextResponse.json(
+        { error: 'Ett fel uppstod vid uppdatering av beställning' },
+        { status: 500 }
+      );
+    } finally {
+      await prisma.$disconnect();
+    }
+  });
 } 
