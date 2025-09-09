@@ -34,6 +34,8 @@ export default function Footer() {
       { label: t('footer.links.privacy','Integritetspolicy'), href: '/integritetspolicy' },
       { label: t('footer.links.cookie','Cookie-policy'), href: '/cookie-policy' },
       { label: t('footer.links.aiPolicy','AI Policy'), href: '/ai-policy' },
+      // Add admin link if user is admin
+      ...(user?.role === 'admin' ? [{ label: '🔐 Admin', href: '/admin/login' }] : []),
     ],
   };
 
