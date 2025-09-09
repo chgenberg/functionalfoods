@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Save, Info, Lock, CreditCard, User, Eye, EyeOff, Bell } from 'lucide-react';
 
 const SettingsCard = ({ title, subtitle, children }: { title: string, subtitle?: string, children: React.ReactNode }) => (
@@ -42,6 +42,58 @@ export default function AdminSettingsPage() {
     newPassword: '',
     confirmPassword: ''
   });
+  const [settings, setSettings] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Load settings on component mount
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    try {
+      const response = await fetch('/api/admin/settings');
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data.settings);
+      }
+    } catch (error) {
+      console.error('Failed to load settings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveSettings = async () => {
+    setSaving(true);
+    try {
+      const response = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ settings })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('✅ Inställningar sparade: ' + data.message);
+      } else {
+        const error = await response.json();
+        alert('❌ Fel: ' + error.error);
+      }
+    } catch (error) {
+      alert('❌ Tekniskt fel vid sparande');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updateSetting = (key: string, value: any, type: string = 'text', description: string = '') => {
+    setSettings((prev: any) => ({
+      ...prev,
+      [key]: { value, type, description }
+    }));
+  };
 
   const tabs = [
     { id: 'general', label: 'Allmänt', icon: Info },
@@ -55,10 +107,36 @@ export default function AdminSettingsPage() {
         return (
           <SettingsCard title="Allmänna inställningar" subtitle="Grundläggande information för din webbplats.">
             <FormRow label="Webbplatsens namn">
-              <input type="text" defaultValue="Functional Foods" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" />
+              <input 
+                type="text" 
+                value={settings['site.name']?.value || 'Functional Foods'} 
+                onChange={(e) => updateSetting('site.name', e.target.value, 'text', 'Webbplatsens namn')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-[#014421]" 
+              />
             </FormRow>
-             <FormRow label="Primär e-post" description="Denna e-postadress används för viktig kommunikation.">
-              <input type="email" defaultValue="admin@functionalfoods.com" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" />
+            <FormRow label="Primär e-post" description="Denna e-postadress används för viktig kommunikation.">
+              <input 
+                type="email" 
+                value={settings['site.email']?.value || 'info@functionalfoods.se'} 
+                onChange={(e) => updateSetting('site.email', e.target.value, 'text', 'Primär kontakt-email')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-[#014421]" 
+              />
+            </FormRow>
+            <FormRow label="Primär färg" description="Huvudfärg för webbplatsen">
+              <input 
+                type="color" 
+                value={settings['colors.primary']?.value || '#014421'} 
+                onChange={(e) => updateSetting('colors.primary', e.target.value, 'text', 'Primär färg')}
+                className="w-20 h-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421]" 
+              />
+            </FormRow>
+            <FormRow label="Sekundär färg" description="Accentfärg för knappar och highlights">
+              <input 
+                type="color" 
+                value={settings['colors.secondary']?.value || '#93C560'} 
+                onChange={(e) => updateSetting('colors.secondary', e.target.value, 'text', 'Sekundär färg')}
+                className="w-20 h-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421]" 
+              />
             </FormRow>
             <FormRow label="Underhållsläge" description="Visar en underhållssida för alla icke-inloggade besökare.">
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -190,6 +268,31 @@ export default function AdminSettingsPage() {
         
         <div>
             {renderContent()}
+        </div>
+
+        {/* Global Save Button */}
+        <div className="mt-8 flex justify-end">
+          <button
+            onClick={saveSettings}
+            disabled={saving || loading}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+              saving || loading
+                ? 'bg-gray-400 cursor-not-allowed text-white'
+                : 'bg-[#014421] hover:bg-[#116530] text-white shadow-lg hover:shadow-xl'
+            }`}
+          >
+            {saving ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                Sparar...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                💾 Spara alla ändringar
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
