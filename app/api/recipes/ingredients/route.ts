@@ -183,13 +183,13 @@ export async function POST(request: NextRequest) {
     // Use structured ingredients if available
     if (recipe.ingredientsStructured && Array.isArray(recipe.ingredientsStructured)) {
       scaledIngredients = recipe.ingredientsStructured.map((item: any) => {
-        const baseAmount = item.baseAmount || 0;
-        const baseUnit = item.baseUnit || '';
-        const label = item.label || '';
+        const baseAmount = item.amount || 0; // Changed from item.baseAmount
+        const baseUnit = item.unit || ''; // Changed from item.baseUnit
+        const label = item.name || ''; // Changed from item.label to item.name
         
         if (baseAmount > 0) {
-          const scaleFactor = (servings / originalServings) * resterMultiplier;
-          const scaledAmount = baseAmount * scaleFactor;
+          // Scale directly by servings since ingredients are already per portion
+          const scaledAmount = baseAmount * servings * resterMultiplier;
           
           // Format amount
           let formattedAmount: string;
