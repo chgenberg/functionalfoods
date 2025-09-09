@@ -57,7 +57,7 @@ export default function RecipePage() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [servings, setServings] = useState(4);
+  const [servings, setServings] = useState(1); // Changed from 4 to 1
   const [checkedIngredients, setCheckedIngredients] = useState<number[]>([]);
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
   const [nutrition, setNutrition] = useState<any>(null);
@@ -941,12 +941,13 @@ export default function RecipePage() {
                     ))
                   ) : (recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
                     (recipe as any).ingredientsStructured.map((item: any, index: number) => {
-                      const baseServings = recipe.servings && recipe.servings > 0 ? recipe.servings : 4;
-                      const scale = servings / baseServings;
+                      // Note: The ingredients in the database are already per serving (1 portion)
+                      // So we scale directly by the number of servings
+                      const scale = servings;
                       
-                      // Calculate scaled amount
-                      const amount = typeof item.baseAmount === 'number' ? item.baseAmount * scale : null;
-                      const unit = item.baseUnit || '';
+                      // Calculate scaled amount using the correct field names
+                      const amount = typeof item.amount === 'number' ? item.amount * scale : null;
+                      const unit = item.unit || '';
                       
                       // Format amount text
                       let amountText = '';
@@ -964,8 +965,8 @@ export default function RecipePage() {
                         }
                       }
                       
-                      // Extract ingredient name without parentheses
-                      const labelText = (item.label || '').replace(/\([^\)]*\)/g, '').trim();
+                      // Use name field directly instead of extracting from label
+                      const labelText = item.name || '';
                       
                       // Build display text with amount and unit
                       const display = amountText && unit ? 
