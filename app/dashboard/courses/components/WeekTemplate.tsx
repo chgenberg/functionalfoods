@@ -10,7 +10,7 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
 import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
-import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun } from 'lucide-react';
+import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun, FileText, ExternalLink, X } from 'lucide-react';
 
 interface WeekDay {
   day: number;
@@ -96,6 +96,109 @@ Nu är det dags att fortsätta ditt intresse för en bra kost och göra det till
   }
 };
 
+// Document mapping for each week
+const weekDocuments: Record<string, Record<number, string[]>> = {
+  basics: {
+    1: [], // No documents mentioned for week 1
+    2: ["Functional foods - 3 steg till ett friskare liv"],
+    3: ["Periodisk fasta", "Reflektion vecka 3"],
+    4: ["Måldokumentet - Styrelsemöte", "Motivation och reflektionsdokumentet"],
+    5: ["Topplistan Functional Foods", "Drycker", "Benbuljong", "Superpulver"],
+    6: ["Functional Foods som livsstil"]
+  },
+  flow: {
+    1: [],
+    2: ["Vanliga mag- och tarmproblem", "Kosten - en guide till bättre mage och tarm"],
+    3: ["Tillskott som kan stödja mag- och tarmhälsa", "Fermenterade livsmedel, probiotika och prebiotika"],
+    4: ["Livsstilsfaktorer: stress, sömn och fysisk aktivitet"],
+    5: ["Att välja rätt proteiner", "Att välja rätt kolhydrater"],
+    6: []
+  },
+  energy: {
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: []
+  }
+};
+
+// All available documents from InfoPopupGrid
+const allDocuments = [
+  { title: "Frågor och svar", filename: "fragor-och-svars.txt", icon: "❓", description: "Vanliga frågor om kursen och kosten" },
+  { title: "Dags att komma igång!", filename: "dags-att-komma-igang.txt", icon: "🚀", description: "Kom igång med din hälsoresa" },
+  { title: "Måldokument - styrelsemöte 1", filename: "maldokument-styrelsemote-1.txt", icon: "📋", description: "Sätt upp dina hälsomål" },
+  { title: "Functional foods topplista", filename: "functional-foods-topplista.txt", icon: "🏆", description: "De bästa functional foods" },
+  { title: "Reflektion vecka 3", filename: "reflektion-vecka-3.txt", icon: "💭", description: "Reflektera över din framsteg" },
+  { title: "Fördelarna med functional foods", filename: "fordelarna-med-functional-foods.txt", icon: "✨", description: "Varför functional foods fungerar" },
+  { title: "Att äta ute med functional foods", filename: "att-ata-ute-med-functional-foods.txt", icon: "🍽️", description: "Tips för restaurangbesök" },
+  { title: "Benbuljong", filename: "benbuljong.txt", icon: "🍲", description: "Hälsosam benbuljong och dess fördelar" },
+  { title: "Att välja rätt proteiner", filename: "att-valja-ratt-proteiner.txt", icon: "💪", description: "Guide till bästa proteinval" },
+  { title: "Ersättningsguide för kolhydrater", filename: "ersattningsguide-for-kolhydrater.txt", icon: "🌾", description: "Smarta kolhydratsalternativ" },
+  { title: "Vad är functional foods?", filename: "vad-ar-functional-foods-2.txt", icon: "🤔", description: "Grundläggande om functional foods" },
+  { title: "3 steg till ett friskare liv", filename: "functional-foods-3-steg-till-ett-friskare-liv.txt", icon: "🎯", description: "Enkla steg mot bättre hälsa" },
+  { title: "Måldokument - styrelsemöte 2", filename: "maldokument-styrelsemote-2.txt", icon: "📊", description: "Utveckla dina hälsomål vidare" },
+  { title: "Motivation & reflektion", filename: "motivation-och-reflektion.txt", icon: "🌟", description: "Håll motivationen uppe" },
+  { title: "Ät mer functional foods enkelt", filename: "at-mer-functional-foods-pa-ett-enkelt-satt.txt", icon: "🥗", description: "Praktiska tips för vardagen" },
+  { title: "Functional foods som livsstil", filename: "functional-foods-som-livsstil.txt", icon: "🌱", description: "Gör det till en livsstil" },
+  { title: "Naturens egna hälsobomber", filename: "naturens-egna-halsobomber.txt", icon: "💥", description: "Kraftfulla superfoods från naturen" },
+  { title: "Drycker", filename: "drycker.txt", icon: "🥤", description: "Hälsosamma dryckesval" },
+  { title: "Att välja rätt kolhydrater", filename: "att-valja-ratt-kolhydrater.txt", icon: "🍞", description: "Smarta kolhydratsval" },
+  { title: "Periodisk fasta ger klarhet och energi", filename: "periodisk-fasta-ger-klarhet-och-energi.txt", icon: "⏰", description: "Fördelarna med periodisk fasta" },
+  // Additional potential documents for Flow course (these might not exist but are referenced)
+  { title: "Vanliga mag- och tarmproblem", filename: "vanliga-mag-och-tarmproblem.txt", icon: "🤧", description: "Vanliga problem och lösningar" },
+  { title: "Kosten - en guide till bättre mage och tarm", filename: "kosten-guide-mage-tarm.txt", icon: "📖", description: "Kostguide för maghälsa" },
+  { title: "Tillskott som kan stödja mag- och tarmhälsa", filename: "tillskott-mag-tarm.txt", icon: "💊", description: "Tillskott för maghälsa" },
+  { title: "Fermenterade livsmedel, probiotika och prebiotika", filename: "fermenterade-livsmedel.txt", icon: "🥒", description: "Fermenterad mat för tarmhälsa" },
+  { title: "Livsstilsfaktorer: stress, sömn och fysisk aktivitet", filename: "livsstilsfaktorer.txt", icon: "🧘", description: "Livsstil för bättre hälsa" },
+  { title: "Superpulver", filename: "superpulver.txt", icon: "✨", description: "Kraftfulla superpulver" }
+];
+
+// Function to match document references with actual documents using fuzzy matching
+const findMatchingDocuments = (references: string[]) => {
+  const matches: typeof allDocuments = [];
+  
+  references.forEach(ref => {
+    const refLower = ref.toLowerCase();
+    const refWords = refLower.split(/\s+/);
+    
+    const match = allDocuments.find(doc => {
+      const titleLower = doc.title.toLowerCase();
+      const filenameLower = doc.filename.toLowerCase();
+      
+      // Direct title match
+      if (titleLower.includes(refLower) || refLower.includes(titleLower)) {
+        return true;
+      }
+      
+      // Check if all reference words are in title
+      if (refWords.every(word => titleLower.includes(word))) {
+        return true;
+      }
+      
+      // Special cases
+      if (ref.includes("3 steg") && titleLower.includes("3 steg")) return true;
+      if (ref.includes("Måldokument") && titleLower.includes("måldokument")) return true;
+      if (ref.includes("Motivation och reflektion") && titleLower.includes("motivation")) return true;
+      if (ref.includes("Topplistan") && titleLower.includes("topplista")) return true;
+      if (ref.includes("Periodisk fasta") && titleLower.includes("periodisk fasta")) return true;
+      if (ref.includes("mag- och tarm") && filenameLower.includes("mag")) return true;
+      if (ref.includes("Fermenterade") && filenameLower.includes("ferment")) return true;
+      if (ref.includes("Livsstilsfaktorer") && filenameLower.includes("livsstil")) return true;
+      if (ref.includes("Superpulver") && filenameLower.includes("super")) return true;
+      
+      return false;
+    });
+    
+    if (match && !matches.includes(match)) {
+      matches.push(match);
+    }
+  });
+  
+  return matches;
+};
+
 export default function WeekTemplate({
   courseType,
   weekNumber,
@@ -111,6 +214,9 @@ export default function WeekTemplate({
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [dayThumbnails, setDayThumbnails] = useState<Record<number, string>>({});
   const [mealImages, setMealImages] = useState<Record<string, string>>({});
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [documentContent, setDocumentContent] = useState<string>('');
+  const [documentLoading, setDocumentLoading] = useState(false);
 
   useEffect(() => {
     const handler = () => {
@@ -254,6 +360,41 @@ export default function WeekTemplate({
   // Get the appropriate welcome message
   const welcomeMessage = weekMessages[courseType]?.[weekNumber] || '';
 
+  // Get documents for current week
+  const weekDocumentRefs = weekDocuments[courseType]?.[weekNumber] || [];
+  const weekSpecificDocuments = findMatchingDocuments(weekDocumentRefs);
+
+  // Function to open document popup
+  const openDocument = async (doc: any) => {
+    setSelectedDocument(doc);
+    setDocumentLoading(true);
+    
+    try {
+      const response = await fetch(`/api/scraped-content/${doc.filename}`);
+      if (response.ok) {
+        const text = await response.text();
+        
+        // The files are already cleaned, just extract content after separator
+        let cleanContent = text;
+        
+        if (text.includes('--------------------------------------------------------------------------------')) {
+          const parts = text.split('--------------------------------------------------------------------------------');
+          if (parts.length > 1) {
+            cleanContent = parts[1].trim();
+          }
+        }
+        
+        setDocumentContent(cleanContent);
+      } else {
+        setDocumentContent('Kunde inte ladda innehållet. Försök igen senare.');
+      }
+    } catch (error) {
+      setDocumentContent('Fel vid laddning av innehåll.');
+    }
+    
+    setDocumentLoading(false);
+  };
+
   return (
     <>
       {/* Welcome Message Box */}
@@ -297,6 +438,54 @@ export default function WeekTemplate({
           </motion.div>
         </div>
       </div>
+
+      {/* Week Documents - Show only if there are documents for this week */}
+      {weekSpecificDocuments.length > 0 && (
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 pb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-[#014421]/10"
+          >
+            <h3 className="text-xl md:text-2xl font-bold text-[#014421] mb-4">
+              Veckans läsning
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Klicka på dokumenten nedan för att fördjupa din kunskap denna vecka
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {weekSpecificDocuments.map((doc, index) => (
+                <motion.button
+                  key={doc.filename}
+                  onClick={() => openDocument(doc)}
+                  className="bg-gradient-to-br from-[#F3EFE3] to-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 text-left group hover:scale-105 border border-[#014421]/10"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                  whileHover={{ x: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="text-3xl group-hover:scale-110 transition-transform">
+                      {doc.icon}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-[#014421] mb-1 group-hover:text-[#116530] transition-colors">
+                        {doc.title}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {doc.description}
+                      </p>
+                    </div>
+                    <ExternalLink className="w-5 h-5 text-[#014421] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Course Navigation */}
       <div className="bg-white shadow-lg -mt-2">
@@ -538,6 +727,77 @@ export default function WeekTemplate({
           courseType={courseType}
         />
       )}
+
+      {/* Document Popup Modal */}
+      <AnimatePresence>
+        {selectedDocument && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="text-3xl">{selectedDocument.icon}</div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{selectedDocument.title}</h2>
+                </div>
+                <button
+                  onClick={() => setSelectedDocument(null)}
+                  className="text-gray-500 hover:text-gray-700 transition-colors p-2"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                {documentLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#014421]"></div>
+                  </div>
+                ) : (
+                  <div className="prose prose-lg max-w-none">
+                    {documentContent.split('\n').map((paragraph, index) => {
+                      if (paragraph.trim() === '') return null;
+                      
+                      // Handle headings
+                      if (paragraph.match(/^[A-ZÅÄÖ\s]+$/)) {
+                        return <h3 key={index} className="text-xl font-bold text-[#014421] mt-6 mb-3">{paragraph}</h3>;
+                      }
+                      
+                      // Handle list items
+                      if (paragraph.trim().startsWith('•') || paragraph.trim().startsWith('-')) {
+                        return <li key={index} className="ml-4 mb-2">{paragraph.replace(/^[•-]\s*/, '')}</li>;
+                      }
+                      
+                      // Regular paragraphs
+                      return <p key={index} className="mb-4">{paragraph}</p>;
+                    })}
+                  </div>
+                )}
+              </div>
+              
+              {/* Footer */}
+              <div className="p-6 border-t border-gray-200">
+                <button
+                  onClick={() => setSelectedDocument(null)}
+                  className="w-full sm:w-auto px-6 py-3 bg-[#014421] text-white rounded-full font-bold hover:bg-[#116530] transition-colors"
+                >
+                  Stäng
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 } 
