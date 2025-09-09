@@ -43,19 +43,48 @@ Du kommer att tacka dig själv, även om det kan finnas dagar när det känns tu
 Varmt välkommen till framtidens kost för en god hälsa och ett friskare liv!
 
 /Ulrika`,
-    2: "Vecka 2 fokuserar på proteiner och aminosyror - kroppens byggstenar. Du kommer att lära dig om olika proteinkällor och hur du optimerar ditt proteinintag för bättre hälsa och återhämtning.",
-    3: "Denna vecka dyker vi djupt in i fetter och kolhydrater. Du får lära dig skillnaden mellan olika typer av fetter och kolhydrater samt hur de påverkar din kropp och energinivåer.",
-    4: "Vecka 4 handlar om vitaminer och mineraler - de essentiella mikronäringsämnena. Du upptäcker hur du säkerställer att du får i dig alla viktiga vitaminer och mineraler genom din kost.",
-    5: "Nu utforskar vi antioxidanter och fytokemikalier - naturens egna försvarssystem. Lär dig hur dessa kraftfulla ämnen skyddar din kropp och främjar långsiktig hälsa.",
-    6: "Sista veckan! Nu sätter vi ihop alla pusselbitar och skapar en hållbar livsstil. Du får verktyg och strategier för att fortsätta din resa mot optimal hälsa."
+    2: `Välkommen till vecka 2
+Nu har du kommit in i din nya livsstil och kroppen börjar ge dig positiv återkoppling. Genom att ge den näring i form av antioxidanter, fibrer, probiotika, mineraler och vitaminer håller du blodsockret på en jämn nivå, vilket gör det lättare att stå emot socker och snabba kolhydrater. Den nya rutinen ger dig mer energi, och du märker säkert redan skillnad. För att fortsätta på bästa sätt, planera veckan noggrant. Den här veckan ska du också läsa dokumentet "Functional foods - 3 steg till ett friskare liv" för att ta nästa steg i din utveckling.`,
+    3: `Välkommen till vecka 3
+Ny vecka med nya härliga recept i ditt kostschema! Du kanske har hittat en favoritfrukost och vill hålla dig till den – kostschemat är en guide och ger dig stor flexibilitet. Om du vill kan du också prova 16:8 fasta, där du hoppar över frukosten och börjar äta vid lunch. Det ger fördelar för matsmältningen, men lyssna på din kropp och variera vid behov. Nu har du även matlådor i frysen som sparar både tid och pengar. Den här veckan ska kan du också läsa dokumenten "Periodisk fasta" och "Reflektion vecka 3".`,
+    4: `Välkommen till vecka 4
+Nu har du genomfört halva kursen, fått prova att laga många nya recept och ätit en varierad kost med mycket frukt och grönt, fiberrika råvaror, naturligt protein, bra fetter och använt många olika kryddor som förgyller din matlagning. Din nya livsstil skapar nya vanor, tankar och beteende samt att du lär dig hur din kropp känns när den är i balans. Nu är det dags att reflektera över de förändringar du känner och ser, och jag rekommenderar att du går igenom "Måldokumentet - Styrelsemöte" för att påminna dig om hur du upplevde din hälsa när du startade för 3 veckor sedan och vika skillnader du känner i din kropp. En bra hjälp är "Motivation och reflektionsdokumentet" för att synliggöra förbättringar och öka din motivation att fortsätta med din hälsoinvestering.`,
+    5: `Välkommen till vecka 5
+Tycker du att det är bra att allt är planerat för dig, eller önskar du mer flexibilitet? Vill du byta ut några recept eller skapa egna, använd dokumentet "Topplistan Functional Foods" för att välja råvaror du har hemma eller vill börja använda mer av. Ju mer du lär dig desto mer självständig blir du i att skapa hälsosamma vanor för din framtida hälsa. Vill du boosta kroppen ytterligare kan du börja använda superpulver som spirulina, chlorella eller vetegräs i shots på morgonen, eller göra egen benbuljong för att få i dig mer kollagen. Det finns många sätt att utvecklas inom Functional Foods och du läsa mer i dokumenten "Drycker", "Benbuljong" och "Superpulver".`,
+    6: `Välkommen till vecka 6
+Nu är det sista veckan i baskursen och du har lärt dig grunderna för hur råvaror och tillagning påverkar din hälsa. Under dessa veckor har du fått prova många maträtter och lärt dig recept som du kan anpassa efter egna smakpreferenser. Förhoppningsvis har du också blivit inspirerad att använda näringsrika grönsaker som kål, rotfrukter och bladgrönsaker, som är rika på antioxidanter och fibrer. Du har ätit en naturligt glutenfri kost och ersatt mindre hälsosamma alternativ som pasta, vete och socker med bättre val. Du får i dig mer protein, grönsaker, frukt, baljväxter och omega-3, samt både prebiotika och probiotika. Nu är det dags att anamma detta som livsstil och det kan du läsa mer om i dokumentet "Functional Foods som livsstil".`
   },
   flow: {
-    1: "Välkommen till Functional Flow! Under dessa 6 veckor kommer du att optimera din energi och prestationsförmåga genom avancerad näringsplanering.",
-    2: "Vecka 2 fokuserar på avancerad näringsoptimering. Du lär dig att finjustera din kost för maximal energi och mental klarhet.",
-    3: "Denna vecka handlar om prestationshöjande kost. Upptäck hur du kan använda mat som ett verktyg för att nå dina mål.",
-    4: "Vecka 4 introducerar antiinflammatorisk livsstil. Lär dig hur du minskar inflammation och främjar återhämtning genom kosten.",
-    5: "Nu utforskar vi longevity och återhämtning. Få insikter i hur du kan optimera din kost för ett långt och hälsosamt liv.",
-    6: "Sista veckan fokuserar på personlig optimering. Du får verktyg att skräddarsy din kost efter dina unika behov och mål."
+    1: `Vecka 1 - Välkommen till Functional Flow
+Nu har du en spännande resa framför dig under 6 veckor med näringsrika recept och grunderna i Functional Foods. Du får praktiska kostscheman, recept för alla måltider och inköpslistor varje vecka.
+
+Efter dessa veckor kommer du ha lärt dig om matlagning och de fördelar som kommer med en näringsrik kost: bättre matsmältning, hjärthälsa, ökad energi, minskad inflammation och ett starkare immunförsvar.
+
+Mitt bästa tips är planering – laga flera maträtter samtidigt för att vara väl förberedd.
+
+Varmt välkommen till framtidens kost för bättre hälsa och ett friskare liv!
+
+/Ulrika`,
+    2: `Välkommen till vecka 2
+Nu när du kommit igång med kursen kanske du redan märker att din mage känns mindre uppsvälld och fungerar bättre. Matlagningen börjar kännas mer naturlig och det blir lättare att följa kostschemat.
+
+Fortsätt planera väl inför veckan och se till att förbereda måltider i förväg. Läs gärna dokumenten "Vanliga mag- och tarmproblem" och "Kosten - en guide till bättre mage och tarm" för mer kunskap om hur kosten påverkar din mag- och tarmhälsa.`,
+    3: `Välkommen till vecka 3
+Vi hoppas att din mage och tarm redan känns bättre och att du märker positiva förändringar. Ibland kan det vara bra att komplettera kosten med kosttillskott för att ge extra stöd till din mag- och tarmhälsa, särskilt om du vill ge tarmfloran ett extra lyft. Denna vecka vill vi även lyfta fördelarna med fermenterad mat, som inte bara är näringsrik utan också främjar en sund tarmflora. Genom att inkludera probiotiska och prebiotiska livsmedel i kosten kan du få en ännu starkare grund för din maghälsa.
+
+Läs gärna dokumenten "Tillskott som kan stödja mag- och tarmhälsa" och "Fermenterade livsmedel, probiotika och prebiotika" för att få mer kunskap om hur du kan stärka tarmen med kosttillskott och naturliga livsmedel.`,
+    4: `Välkommen till vecka 4
+Nu har du genomfört halva kursen, och det är dags att göra en ordentlig reflektion över hur din mage känns. Jämför med hur det kändes i vecka 1 och fundera på vilka förändringar kosten har gjort hittills. Kanske har du märkt att magbesvär som uppsvälldhet eller obehag har minskat?
+
+Den här veckan vill vi också lyfta andra livsstilsfaktorer som påverkar din mag- och tarmhälsa, såsom stress, sömn och fysisk aktivitet. Läs gärna dokumentet "Livsstilsfaktorer: stress, sömn och fysisk aktivitet" för att få en bättre förståelse för hur dessa faktorer samverkar med kosten och kan bidra till en ännu mer balanserad mage.`,
+    5: `Välkommen till vecka 5
+Nu har du fått mycket kunskap och en bättre förståelse för kosten som fungerar för din mage. Du har lärt dig vad som får din mage att må bra och vad som kan orsaka obehag. Det är nu dags att börja använda denna kunskap för att skapa måltider som verkligen stödjer din maghälsa.
+
+Den här veckan vill vi att du fördjupar dig i hur du väljer rätt proteiner och kolhydrater för att bygga balanserade måltider. Läs dokumenten "Att välja rätt proteiner" och "Att välja rätt kolhydrater" för att lära dig mer om hur du kan skapa hälsosamma, magevänliga måltider som du kan anpassa efter dina egna behov.`,
+    6: `Välkommen till vecka 6
+Nu har du nått sista veckan av kursen, och du har lärt dig att laga mat som verkligen gör gott för din mage och dina tarmar. Du har fått massor av nya recept att ta med dig och fortsätta använda i framtiden. Förhoppningsvis märker du att magen mår bättre – jämför gärna med hur du upplevde den när du startade kursen och se de förändringar du har åstadkommit.
+
+Nu är det dags att fortsätta ditt intresse för en bra kost och göra det till en hållbar livsstil. När du gör kostval som stödjer din maghälsa kommer din mage att tacka dig – för både nu och i framtiden!`
   },
   energy: {
     1: "Välkommen till Functional Energy! Under dessa 6 veckor kommer du att lära dig att stabilisera din energi och blodsocker genom smart mat.",
