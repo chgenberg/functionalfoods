@@ -123,7 +123,7 @@
     {
       "name": "Sockerärtor",
       "amount": 50,
-      "unit": "kg",
+      "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
@@ -134,7 +134,7 @@
     },
     {
       "name": "Spenat",
-      "amount": 8000,
+      "amount": 800,
       "unit": "g",
       "category": "Frukt & Grönt"
     },
@@ -159,18 +159,18 @@
     {
       "name": "Fryst ananas",
       "amount": 100,
-      "unit": "st",
+      "unit": "g",
       "category": "Fryst"
     },
     {
       "name": "Fryst mango",
       "amount": 100,
-      "unit": "st",
+      "unit": "g",
       "category": "Fryst"
     },
     {
       "name": "Frysta sojabönor",
-      "amount": 80000,
+      "amount": 800,
       "unit": "g",
       "category": "Fryst"
     },
@@ -182,19 +182,19 @@
     },
     {
       "name": "Kycklingfilé",
-      "amount": 125000,
+      "amount": 1250,
       "unit": "g",
       "category": "Kött & Fisk"
     },
     {
       "name": "Kycklinglårfilé",
-      "amount": 200000,
+      "amount": 2000,
       "unit": "g",
       "category": "Kött & Fisk"
     },
     {
       "name": "Nötfärs",
-      "amount": 275000,
+      "amount": 2750,
       "unit": "g",
       "category": "Kött & Fisk"
     },
@@ -230,8 +230,8 @@
     },
     {
       "name": "Salt och peppar",
-      "amount": 4500,
-      "unit": "g",
+      "amount": 1,
+      "unit": "förp",
       "category": "Kryddor & Såser"
     },
     {
@@ -266,7 +266,7 @@
     },
     {
       "name": "Fetaost",
-      "amount": 5000,
+      "amount": 500,
       "unit": "g",
       "category": "Mejeri"
     },
