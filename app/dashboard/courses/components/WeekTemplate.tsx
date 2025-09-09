@@ -229,34 +229,48 @@ export default function WeekTemplate({
     <>
       {/* Welcome Message Box */}
       <div className="bg-gradient-to-b from-[#F3EFE3] to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-[#014421]/10"
+            className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-[#014421]/10 relative overflow-hidden"
           >
-            <div className="text-center mb-4">
-              <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-2">
-                {weekTitle}
-              </h1>
-              <p className="text-lg text-gray-600">
-                Vecka {weekNumber}
-              </p>
-            </div>
-            <div className="prose prose-lg max-w-none text-gray-700">
-              {welcomeMessage.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-4 leading-relaxed">
-                  {paragraph}
+            {/* Subtle pulsing glow effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-[#014421]/5 via-[#014421]/10 to-[#014421]/5"
+              animate={{
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <div className="relative z-10">
+              <div className="text-center mb-4">
+                <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-2">
+                  {weekTitle}
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Vecka {weekNumber}
                 </p>
-              ))}
+              </div>
+              <div className="prose prose-lg max-w-none text-gray-700">
+                {welcomeMessage.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4 leading-relaxed">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>
       </div>
 
       {/* Course Navigation */}
-      <div className="bg-white shadow-lg">
+      <div className="bg-white shadow-lg -mt-2">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
         </div>

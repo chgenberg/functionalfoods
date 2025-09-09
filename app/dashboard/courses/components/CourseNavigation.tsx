@@ -68,7 +68,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
   return (
     <>
       {/* Desktop Navigation */}
-      <div className="hidden md:block bg-white shadow-lg border-b-4 border-[#014421] relative z-10 pt-20">
+      <div className="hidden md:block bg-white shadow-lg relative z-10 pt-20">
         <div className="max-w-full mx-auto px-1 md:px-2 py-4">
           <div className="flex items-center justify-center gap-1 md:gap-2">
             {/* Overview Link */}
