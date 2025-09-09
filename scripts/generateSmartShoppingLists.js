@@ -106,7 +106,7 @@ async function curateWeeklyList(courseType, week) {
 (async () => {
   try {
     const opts = parseArgs();
-    const courses = opts.all ? ['basics', 'flow'] : (opts.course ? [opts.course] : ['basics']);
+    const courses = opts.all ? ['basics', 'flow', 'energy'] : (opts.course ? [opts.course] : ['basics']);
     const weeks = opts.all ? [1,2,3,4,5,6] : (opts.weeks.length ? opts.weeks : [1]);
 
     for (const c of courses) {
