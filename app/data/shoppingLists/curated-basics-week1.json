@@ -224,8 +224,8 @@
     },
     {
       "name": "Salt",
-      "amount": 500,
-      "unit": "g",
+      "amount": 1,
+      "unit": "förp",
       "category": "Kryddor & Såser"
     },
     {
@@ -260,7 +260,7 @@
     },
     {
       "name": "Ägg",
-      "amount": 72,
+      "amount": 7,
       "unit": "st",
       "category": "Mejeri"
     },
@@ -332,8 +332,8 @@
     },
     {
       "name": "Konserverade krossade tomater",
-      "amount": 800,
-      "unit": "st",
+      "amount": 8,
+      "unit": "burk",
       "category": "Skafferi"
     },
     {

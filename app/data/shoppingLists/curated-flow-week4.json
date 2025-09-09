@@ -80,8 +80,8 @@
     },
     {
       "name": "Fryst mango",
-      "amount": 1,
-      "unit": "st",
+      "amount": 100,
+      "unit": "g",
       "category": "Frukt & Grönt"
     },
     {
@@ -332,8 +332,8 @@
     },
     {
       "name": "Salt och peppar",
-      "amount": 500,
-      "unit": "g",
+      "amount": 1,
+      "unit": "förp",
       "category": "Kryddor & Såser"
     },
     {

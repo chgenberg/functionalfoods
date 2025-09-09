@@ -248,14 +248,14 @@
     },
     {
       "name": "Salt",
-      "amount": 500,
-      "unit": "g",
+      "amount": 1,
+      "unit": "förp",
       "category": "Kryddor & Såser"
     },
     {
       "name": "Salt och peppar",
-      "amount": 500,
-      "unit": "g",
+      "amount": 1,
+      "unit": "förp",
       "category": "Kryddor & Såser"
     },
     {
