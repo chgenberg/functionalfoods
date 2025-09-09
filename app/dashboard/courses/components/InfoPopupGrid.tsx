@@ -58,7 +58,7 @@ const allDocuments = [
   { 
     title: "Benbuljong", 
     filename: "benbuljong.txt", 
-    icon: "🥄", 
+    icon: "🍲", 
     description: "Hälsosam benbuljong och dess fördelar",
     courseTypes: ['basics', 'flow', 'energy'] as const
   },
@@ -130,7 +130,7 @@ const allDocuments = [
   { 
     title: "Vanliga mag- och tarmproblem", 
     filename: "vanliga-mag-och-tarmproblem.txt", 
-    icon: "⚕️", 
+    icon: "🤧", 
     description: "Förstå mag- och tarmproblem",
     courseTypes: ['flow'] as const
   },
@@ -158,7 +158,7 @@ const allDocuments = [
   { 
     title: "Fermenterade livsmedel, probiotika och prebiotika", 
     filename: "fermenterade-livsmedel-probiotika-prebiotika.txt", 
-    icon: "🦠", 
+    icon: "🥒", 
     description: "Stärk din tarmflora",
     courseTypes: ['flow'] as const
   },
@@ -202,7 +202,7 @@ const allDocuments = [
   { 
     title: "Reflektion vecka 3", 
     filename: "reflektion-vecka-3.txt", 
-    icon: "🪞", 
+    icon: "💭", 
     description: "Reflektera över din framsteg",
     courseTypes: ['energy'] as const
   }
