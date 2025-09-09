@@ -189,7 +189,7 @@ export default function DayModal({
     if (meal.recipeLink) {
       // Add query parameters for course and week
       const url = new URL(meal.recipeLink, window.location.origin);
-      url.searchParams.set('course', courseType);
+      url.searchParams.set('from', courseType);
       url.searchParams.set('week', weekNumber.toString());
       const token = localStorage.getItem('token');
       if (token) {

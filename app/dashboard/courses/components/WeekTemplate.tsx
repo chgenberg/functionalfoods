@@ -356,7 +356,11 @@ export default function WeekTemplate({
                           className="group cursor-pointer"
                           onClick={() => {
                             if (meal.data.recipeLink) {
-                              window.location.href = meal.data.recipeLink;
+                              // Add query parameters to track where user came from
+                              const url = new URL(meal.data.recipeLink, window.location.origin);
+                              url.searchParams.set('from', courseType);
+                              url.searchParams.set('week', weekNumber.toString());
+                              window.location.href = url.toString();
                             }
                           }}
                         >

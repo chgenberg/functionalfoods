@@ -75,6 +75,29 @@ export default function RecipePage() {
   const fromCourse = searchParams.get('from');
   const fromWeek = searchParams.get('week');
 
+  // Determine back button URL and text
+  const getBackButtonInfo = () => {
+    if (fromCourse && fromWeek) {
+      // Coming from a course week page
+      const courseNames: Record<string, string> = {
+        'basics': 'Functional Basics',
+        'flow': 'Functional Flow', 
+        'energy': 'Functional Energy'
+      };
+      return {
+        url: `/dashboard/courses/functional-${fromCourse}/week/${fromWeek}`,
+        text: `Tillbaka till ${courseNames[fromCourse] || 'kursen'} - Vecka ${fromWeek}`
+      };
+    }
+    // Default to recipes page
+    return {
+      url: '/kunskapsbank/recept',
+      text: t('recipes.detail.backToRecipes', 'Tillbaka till recept')
+    };
+  };
+
+  const backButtonInfo = getBackButtonInfo();
+
   // Load smart ingredients with rester logic
   useEffect(() => {
     if (!recipe) return;
@@ -627,9 +650,9 @@ export default function RecipePage() {
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.premiumRequiredTitle','Premium-prenumeration krävs')}</h1>
             <p className="text-gray-600 mb-6">{t('recipes.detail.premiumRequiredText','Detta recept kräver en premium-prenumeration för att du ska kunna se det.')}</p>
-            <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
+            <Link href={backButtonInfo.url} className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
               <ArrowLeft />
-              {t('recipes.detail.backToRecipes','Tillbaka till recept')}
+              {backButtonInfo.text}
             </Link>
           </div>
         </div>
@@ -643,9 +666,9 @@ export default function RecipePage() {
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.adminOnlyTitle','Administratörsbara recept')}</h1>
             <p className="text-gray-600 mb-6">{t('recipes.detail.adminOnlyText','Detta recept är endast för administratörer.')}</p>
-            <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
+            <Link href={backButtonInfo.url} className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
               <ArrowLeft />
-              {t('recipes.detail.backToRecipes','Tillbaka till recept')}
+              {backButtonInfo.text}
             </Link>
           </div>
         </div>
@@ -659,9 +682,9 @@ export default function RecipePage() {
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('recipes.detail.notFoundTitle','Receptet hittades inte')}</h1>
             <p className="text-gray-600 mb-6">{error || t('recipes.detail.notFoundText','Det verkar som att receptet du letar efter inte finns.')}</p>
-            <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
+            <Link href={backButtonInfo.url} className="inline-flex items-center gap-2 bg-[#FF7E70] text-white px-6 py-3 rounded-full hover:bg-[#ff6b5a] transition-colors">
               <ArrowLeft />
-              {t('recipes.detail.backToRecipes','Tillbaka till recept')}
+              {backButtonInfo.text}
             </Link>
           </div>
         </div>
@@ -746,9 +769,9 @@ export default function RecipePage() {
       <div id="printable-recipe" className="bg-[#F3EFE3] min-h-screen">
         {/* Back Button - No Print */}
         <div className="max-w-7xl mx-auto px-4 pb-4 md:pb-6 no-print header-safe">
-          <Link href="/kunskapsbank/recept" className="inline-flex items-center gap-2 text-[#014421] hover:text-[#93C560] transition-colors font-medium text-sm md:text-base">
+          <Link href={backButtonInfo.url} className="inline-flex items-center gap-2 text-[#014421] hover:text-[#93C560] transition-colors font-medium text-sm md:text-base">
             <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
-            <span>{t('recipes.detail.backToRecipes','Tillbaka till recept')}</span>
+            <span>{backButtonInfo.text}</span>
           </Link>
         </div>
 
