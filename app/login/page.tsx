@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
@@ -417,5 +417,18 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
-  return <LoginForm />;
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center p-8">
+          <div className="w-20 h-20 bg-accent rounded-full mx-auto flex items-center justify-center mb-4 animate-bounce">
+            <span className="text-white text-2xl font-bold">FF</span>
+          </div>
+          <p className="text-text-secondary">Laddar...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
+  );
 } 
