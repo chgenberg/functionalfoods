@@ -11,126 +11,200 @@ interface InfoItem {
   description: string;
 }
 
-const infoItems: InfoItem[] = [
-  {
-    title: "Frågor och svar",
-    filename: "fragor-och-svars.txt",
-    icon: "❓",
-    description: "Vanliga frågor om kursen och kosten"
+const allDocuments = [
+  // Basics Course Documents
+  { 
+    title: "Frågor och svar", 
+    filename: "fragor-och-svar.txt", 
+    icon: "❓", 
+    description: "Vanliga frågor om kursen och kosten",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Dags att komma igång!",
-    filename: "dags-att-komma-igang.txt",
-    icon: "🚀",
-    description: "Kom igång med din hälsoresa"
+  { 
+    title: "Dags att komma igång!", 
+    filename: "dags-att-komma-igang.txt", 
+    icon: "🚀", 
+    description: "Kom igång med din hälsoresa",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Måldokument - styrelsemöte 1",
-    filename: "maldokument-styrelsemote-1.txt",
-    icon: "📋",
-    description: "Sätt upp dina hälsomål"
+  { 
+    title: "Att äta ute med functional foods", 
+    filename: "att-ata-ute-med-functional-foods.txt", 
+    icon: "🍽️", 
+    description: "Tips för restaurangbesök",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Functional foods topplista",
-    filename: "functional-foods-topplista.txt",
-    icon: "🏆",
-    description: "De bästa functional foods"
+  { 
+    title: "Måldokument - styrelsemöte 1", 
+    filename: "maldokument-styrelsemote-1.txt", 
+    icon: "📋", 
+    description: "Sätt upp dina hälsomål",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Reflektion vecka 3",
-    filename: "reflektion-vecka-3.txt",
-    icon: "💭",
-    description: "Reflektera över din framsteg"
+  { 
+    title: "Fördelarna med functional foods", 
+    filename: "fordelarna-med-functional-foods.txt", 
+    icon: "💪", 
+    description: "Varför functional foods fungerar",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Fördelarna med functional foods",
-    filename: "fordelarna-med-functional-foods.txt",
-    icon: "✨",
-    description: "Varför functional foods fungerar"
+  { 
+    title: "Att äta ute med functional foods", 
+    filename: "att-ata-ute-med-functional-foods.txt", 
+    icon: "🍽️", 
+    description: "Tips för restaurangbesök",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Att äta ute med functional foods",
-    filename: "att-ata-ute-med-functional-foods.txt",
-    icon: "🍽️",
-    description: "Tips för restaurangbesök"
+  { 
+    title: "Benbuljong", 
+    filename: "benbuljong.txt", 
+    icon: "🥄", 
+    description: "Hälsosam benbuljong och dess fördelar",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Benbuljong",
-    filename: "benbuljong.txt",
-    icon: "🍲",
-    description: "Hälsosam benbuljong och dess fördelar"
+  { 
+    title: "Att välja rätt kolhydrater", 
+    filename: "att-valja-ratt-kolhydrater.txt", 
+    icon: "🌾", 
+    description: "Smarta kolhydratsalternativ",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Att välja rätt proteiner",
-    filename: "att-valja-ratt-proteiner.txt",
-    icon: "💪",
-    description: "Guide till bästa proteinval"
+  { 
+    title: "Ersättningsguide för kolhydrater", 
+    filename: "ersattningsguide-for-kolhydrater.txt", 
+    icon: "🔄", 
+    description: "Smarta kolhydratsalternativ",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Ersättningsguide för kolhydrater",
-    filename: "ersattningsguide-for-kolhydrater.txt",
-    icon: "🌾",
-    description: "Smarta kolhydratsalternativ"
+  { 
+    title: "3 steg till ett friskare liv", 
+    filename: "functional-foods-3-steg-till-ett-friskare-liv.txt", 
+    icon: "🎯", 
+    description: "Enkla steg mot bättre hälsa",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Vad är functional foods?",
-    filename: "vad-ar-functional-foods-2.txt",
-    icon: "🤔",
-    description: "Grundläggande om functional foods"
+  { 
+    title: "Functional foods topplista", 
+    filename: "functional-foods-topplista.txt", 
+    icon: "🏆", 
+    description: "De bästa functional foods",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "3 steg till ett friskare liv",
-    filename: "functional-foods-3-steg-till-ett-friskare-liv.txt",
-    icon: "🎯",
-    description: "Enkla steg mot bättre hälsa"
+  { 
+    title: "Motivation & reflektion", 
+    filename: "motivation-och-reflektion.txt", 
+    icon: "🌟", 
+    description: "Håll motivationen uppe",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Måldokument - styrelsemöte 2",
-    filename: "maldokument-styrelsemote-2.txt",
-    icon: "📊",
-    description: "Utveckla dina hälsomål vidare"
+  { 
+    title: "Ät mer functional foods enkelt", 
+    filename: "at-mer-functional-foods-pa-ett-enkelt-satt.txt", 
+    icon: "🥗", 
+    description: "Praktiska tips för vardagen",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Motivation & reflektion",
-    filename: "motivation-och-reflektion.txt",
-    icon: "🌟",
-    description: "Håll motivationen uppe"
+  { 
+    title: "Functional foods som livsstil", 
+    filename: "functional-foods-som-livsstil.txt", 
+    icon: "🌱", 
+    description: "Gör det till en livsstil",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Ät mer functional foods enkelt",
-    filename: "at-mer-functional-foods-pa-ett-enkelt-satt.txt",
-    icon: "🥗",
-    description: "Praktiska tips för vardagen"
+  { 
+    title: "Vad är functional foods?", 
+    filename: "vad-ar-functional-foods.txt", 
+    icon: "🤔", 
+    description: "Grundläggande om functional foods",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Functional foods som livsstil",
-    filename: "functional-foods-som-livsstil.txt",
-    icon: "🌱",
-    description: "Gör det till en livsstil"
+  
+  // Flow Course Specific Documents
+  { 
+    title: "Kosten - en guide till bättre mage och tarm", 
+    filename: "kosten-guide-mage-tarm.txt", 
+    icon: "📖", 
+    description: "Kostguide för maghälsa",
+    courseTypes: ['flow'] as const
   },
-  {
-    title: "Naturens egna hälsobomber",
-    filename: "naturens-egna-halsobomber.txt",
-    icon: "💥",
-    description: "Kraftfulla superfoods från naturen"
+  { 
+    title: "Vanliga mag- och tarmproblem", 
+    filename: "vanliga-mag-och-tarmproblem.txt", 
+    icon: "⚕️", 
+    description: "Förstå mag- och tarmproblem",
+    courseTypes: ['flow'] as const
   },
-  {
-    title: "Drycker",
-    filename: "drycker.txt",
-    icon: "🥤",
-    description: "Hälsosamma dryckesval"
+  { 
+    title: "Tillskott som kan stödja mag- och tarmhälsa", 
+    filename: "tillskott-mag-tarm.txt", 
+    icon: "💊", 
+    description: "Kosttillskott för mage och tarm",
+    courseTypes: ['flow'] as const
   },
-  {
-    title: "Att välja rätt kolhydrater",
-    filename: "att-valja-ratt-kolhydrater.txt",
-    icon: "🍞",
-    description: "Smarta kolhydratsval"
+  { 
+    title: "Superpulver", 
+    filename: "superpulver.txt", 
+    icon: "✨", 
+    description: "Kraftfulla superpulver",
+    courseTypes: ['basics', 'flow', 'energy'] as const
   },
-  {
-    title: "Periodisk fasta ger klarhet och energi",
-    filename: "periodisk-fasta-ger-klarhet-och-energi.txt",
-    icon: "⏰",
-    description: "Fördelarna med periodisk fasta"
+  { 
+    title: "Drycker", 
+    filename: "drycker.txt", 
+    icon: "🥤", 
+    description: "Hälsosamma dryckesval",
+    courseTypes: ['basics', 'flow', 'energy'] as const
+  },
+  { 
+    title: "Fermenterade livsmedel, probiotika och prebiotika", 
+    filename: "fermenterade-livsmedel-probiotika-prebiotika.txt", 
+    icon: "🦠", 
+    description: "Stärk din tarmflora",
+    courseTypes: ['flow'] as const
+  },
+  { 
+    title: "Livsstilsfaktorer: stress, sömn och fysisk aktivitet", 
+    filename: "livsstilsfaktorer-stress-somn-aktivitet.txt", 
+    icon: "🧘", 
+    description: "Balansera livsstilsfaktorer",
+    courseTypes: ['flow'] as const
+  },
+  { 
+    title: "Att välja rätt proteiner", 
+    filename: "att-valja-ratt-proteiner.txt", 
+    icon: "💪", 
+    description: "Guide till bästa proteinval",
+    courseTypes: ['basics', 'flow', 'energy'] as const
+  },
+  
+  // Energy Course Documents
+  { 
+    title: "Naturens egna hälsobomber", 
+    filename: "naturens-egna-halsobomber.txt", 
+    icon: "💥", 
+    description: "Kraftfulla superfoods från naturen",
+    courseTypes: ['energy'] as const
+  },
+  { 
+    title: "Måldokument - styrelsemöte 2", 
+    filename: "maldokument-styrelsemote-2.txt", 
+    icon: "📊", 
+    description: "Utveckla dina hälsomål vidare",
+    courseTypes: ['energy'] as const
+  },
+  { 
+    title: "Periodisk fasta ger klarhet och energi", 
+    filename: "periodisk-fasta-klarhet-energi.txt", 
+    icon: "⏰", 
+    description: "Fördelarna med periodisk fasta",
+    courseTypes: ['energy'] as const
+  },
+  { 
+    title: "Reflektion vecka 3", 
+    filename: "reflektion-vecka-3.txt", 
+    icon: "🪞", 
+    description: "Reflektera över din framsteg",
+    courseTypes: ['energy'] as const
   }
 ];
 
@@ -142,6 +216,28 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
   const [selectedInfo, setSelectedInfo] = useState<InfoItem | null>(null);
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(false);
+
+  // Function to convert markdown to HTML
+  const markdownToHtml = (text: string): string => {
+    // Replace **text** with <strong>text</strong>
+    let html = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
+    // Replace single * for emphasis
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    
+    // Replace line breaks with <br> tags
+    html = html.replace(/\n/g, '<br>');
+    
+    // Replace bullet points
+    html = html.replace(/^- (.+)$/gm, '• $1');
+    
+    // Handle headings
+    html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-bold text-[#014421] mt-4 mb-2">$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold text-[#014421] mt-6 mb-3">$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold text-[#014421] mt-8 mb-4">$1</h1>');
+    
+    return html;
+  };
 
   const openPopup = async (item: InfoItem) => {
     setSelectedInfo(item);
@@ -185,7 +281,7 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {infoItems.map((item, index) => (
+          {allDocuments.map((item, index) => (
             <motion.button
               key={item.filename}
               onClick={() => openPopup(item)}
@@ -254,88 +350,10 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {content.split('\n').map((paragraph, index) => {
-                      const trimmed = paragraph.trim();
-                      if (!trimmed) return null;
-                      
-                      // Handle markdown bold formatting
-                      const renderFormattedText = (text: string) => {
-                        const parts = text.split(/(\*\*.*?\*\*)/g);
-                        return parts.map((part, i) => {
-                          if (part.startsWith('**') && part.endsWith('**')) {
-                            return <strong key={i} className="font-bold text-[#014421]">{part.slice(2, -2)}</strong>;
-                          }
-                          return part;
-                        });
-                      };
-                      
-                      // Check if it's a main heading (all caps, longer text, or starts with #)
-                      const isMainHeading = (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 100 && !trimmed.includes('?')) || trimmed.startsWith('# ');
-                      
-                      // Check if it's a subheading (starts with ## or ###)
-                      const isSubHeading = trimmed.startsWith('## ') || trimmed.startsWith('### ');
-                      
-                      // Check if it's a question (ends with ?)
-                      const isQuestion = trimmed.endsWith('?') && trimmed.length < 200 && !trimmed.startsWith('#');
-                      
-                      // Check if it's a TIPS section
-                      const isTips = trimmed.startsWith('**TIPS!**') || trimmed.startsWith('TIPS!') || trimmed.startsWith('Tips!');
-                      
-                      // Check if it's a list item
-                      const isListItem = trimmed.startsWith('- ') || trimmed.startsWith('• ') || /^\d+\.\s/.test(trimmed);
-                      
-                      if (isMainHeading) {
-                        const cleanTitle = trimmed.replace(/^#+\s*/, '');
-                        return (
-                          <div key={index} className="border-l-4 border-[#014421] pl-4 my-6">
-                            <h3 className="text-xl font-bold text-[#014421] mb-2">
-                              {renderFormattedText(cleanTitle)}
-                            </h3>
-                          </div>
-                        );
-                      } else if (isSubHeading) {
-                        const cleanTitle = trimmed.replace(/^#+\s*/, '');
-                        return (
-                          <h4 key={index} className="text-lg font-semibold text-[#014421] mt-6 mb-3">
-                            {renderFormattedText(cleanTitle)}
-                          </h4>
-                        );
-                      } else if (isQuestion) {
-                        return (
-                          <div key={index} className="bg-[#014421]/5 rounded-lg p-4 my-4">
-                            <h4 className="text-lg font-semibold text-[#014421] mb-2">
-                              {renderFormattedText(trimmed)}
-                            </h4>
-                          </div>
-                        );
-                      } else if (isTips) {
-                        const cleanTips = trimmed.replace(/^\*\*TIPS!\*\*\s*/i, '').replace(/^TIPS!\s*/i, '');
-                        return (
-                          <div key={index} className="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4">
-                            <p className="text-gray-800 font-medium">
-                              <span className="font-bold text-yellow-700">💡 TIPS!</span> {renderFormattedText(cleanTips)}
-                            </p>
-                          </div>
-                        );
-                      } else if (isListItem) {
-                        return (
-                          <div key={index} className="flex items-start gap-2 mb-2">
-                            <span className="text-[#014421] font-bold mt-1">•</span>
-                            <p className="text-gray-700 leading-relaxed flex-1">
-                              {renderFormattedText(trimmed.replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, ''))}
-                            </p>
-                          </div>
-                        );
-                      } else {
-                        return (
-                          <p key={index} className="text-gray-700 leading-relaxed mb-3">
-                            {renderFormattedText(trimmed)}
-                          </p>
-                        );
-                      }
-                    }).filter(Boolean)}
-                  </div>
+                  <div 
+                    className="prose prose-lg max-w-none space-y-4"
+                    dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }}
+                  />
                 )}
               </div>
 

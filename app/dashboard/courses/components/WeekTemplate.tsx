@@ -145,17 +145,17 @@ const weekDocuments: Record<string, Record<number, string[]>> = {
 
 // All available documents from InfoPopupGrid
 const allDocuments = [
-  { title: "Frågor och svar", filename: "fragor-och-svars.txt", icon: "❓", description: "Vanliga frågor om kursen och kosten" },
+  { title: "Frågor och svar", filename: "fragor-och-svar.txt", icon: "❓", description: "Vanliga frågor om kursen och kosten" },
   { title: "Dags att komma igång!", filename: "dags-att-komma-igang.txt", icon: "🚀", description: "Kom igång med din hälsoresa" },
   { title: "Måldokument - styrelsemöte 1", filename: "maldokument-styrelsemote-1.txt", icon: "📋", description: "Sätt upp dina hälsomål" },
   { title: "Functional foods topplista", filename: "functional-foods-topplista.txt", icon: "🏆", description: "De bästa functional foods" },
-  { title: "Reflektion vecka 3", filename: "reflektion-vecka-3.txt", icon: "💭", description: "Reflektera över din framsteg" },
-  { title: "Fördelarna med functional foods", filename: "fordelarna-med-functional-foods.txt", icon: "✨", description: "Varför functional foods fungerar" },
+  { title: "Reflektion vecka 3", filename: "reflektion-vecka-3.txt", icon: "🪞", description: "Reflektera över din framsteg" },
+  { title: "Fördelarna med functional foods", filename: "fordelarna-med-functional-foods.txt", icon: "💪", description: "Varför functional foods fungerar" },
   { title: "Att äta ute med functional foods", filename: "att-ata-ute-med-functional-foods.txt", icon: "🍽️", description: "Tips för restaurangbesök" },
-  { title: "Benbuljong", filename: "benbuljong.txt", icon: "🍲", description: "Hälsosam benbuljong och dess fördelar" },
+  { title: "Benbuljong", filename: "benbuljong.txt", icon: "🥄", description: "Hälsosam benbuljong och dess fördelar" },
+  { title: "Ersättningsguide för kolhydrater", filename: "ersattningsguide-for-kolhydrater.txt", icon: "🔄", description: "Smarta kolhydratsalternativ" },
   { title: "Att välja rätt proteiner", filename: "att-valja-ratt-proteiner.txt", icon: "💪", description: "Guide till bästa proteinval" },
-  { title: "Ersättningsguide för kolhydrater", filename: "ersattningsguide-for-kolhydrater.txt", icon: "🌾", description: "Smarta kolhydratsalternativ" },
-  { title: "Vad är functional foods?", filename: "vad-ar-functional-foods-2.txt", icon: "🤔", description: "Grundläggande om functional foods" },
+  { title: "Att välja rätt kolhydrater", filename: "att-valja-ratt-kolhydrater.txt", icon: "🌾", description: "Smarta kolhydratsval" },
   { title: "3 steg till ett friskare liv", filename: "functional-foods-3-steg-till-ett-friskare-liv.txt", icon: "🎯", description: "Enkla steg mot bättre hälsa" },
   { title: "Måldokument - styrelsemöte 2", filename: "maldokument-styrelsemote-2.txt", icon: "📊", description: "Utveckla dina hälsomål vidare" },
   { title: "Motivation & reflektion", filename: "motivation-och-reflektion.txt", icon: "🌟", description: "Håll motivationen uppe" },
@@ -163,14 +163,12 @@ const allDocuments = [
   { title: "Functional foods som livsstil", filename: "functional-foods-som-livsstil.txt", icon: "🌱", description: "Gör det till en livsstil" },
   { title: "Naturens egna hälsobomber", filename: "naturens-egna-halsobomber.txt", icon: "💥", description: "Kraftfulla superfoods från naturen" },
   { title: "Drycker", filename: "drycker.txt", icon: "🥤", description: "Hälsosamma dryckesval" },
-  { title: "Att välja rätt kolhydrater", filename: "att-valja-ratt-kolhydrater.txt", icon: "🍞", description: "Smarta kolhydratsval" },
   { title: "Periodisk fasta ger klarhet och energi", filename: "periodisk-fasta-ger-klarhet-och-energi.txt", icon: "⏰", description: "Fördelarna med periodisk fasta" },
-  // Additional potential documents for Flow course (these might not exist but are referenced)
-  { title: "Vanliga mag- och tarmproblem", filename: "vanliga-mag-och-tarmproblem.txt", icon: "🤧", description: "Vanliga problem och lösningar" },
   { title: "Kosten - en guide till bättre mage och tarm", filename: "kosten-guide-mage-tarm.txt", icon: "📖", description: "Kostguide för maghälsa" },
-  { title: "Tillskott som kan stödja mag- och tarmhälsa", filename: "tillskott-mag-tarm.txt", icon: "💊", description: "Tillskott för maghälsa" },
-  { title: "Fermenterade livsmedel, probiotika och prebiotika", filename: "fermenterade-livsmedel.txt", icon: "🥒", description: "Fermenterad mat för tarmhälsa" },
-  { title: "Livsstilsfaktorer: stress, sömn och fysisk aktivitet", filename: "livsstilsfaktorer.txt", icon: "🧘", description: "Livsstil för bättre hälsa" },
+  { title: "Vanliga mag- och tarmproblem", filename: "vanliga-mag-och-tarmproblem.txt", icon: "⚕️", description: "Förstå mag- och tarmproblem" },
+  { title: "Tillskott som kan stödja mag- och tarmhälsa", filename: "tillskott-mag-tarm.txt", icon: "💊", description: "Kosttillskott för mage och tarm" },
+  { title: "Fermenterade livsmedel, probiotika och prebiotika", filename: "fermenterade-livsmedel-probiotika-prebiotika.txt", icon: "🦠", description: "Stärk din tarmflora" },
+  { title: "Livsstilsfaktorer: stress, sömn och fysisk aktivitet", filename: "livsstilsfaktorer-stress-somn-aktivitet.txt", icon: "🧘", description: "Balansera livsstilsfaktorer" },
   { title: "Superpulver", filename: "superpulver.txt", icon: "✨", description: "Kraftfulla superpulver" }
 ];
 
@@ -383,6 +381,23 @@ export default function WeekTemplate({
   const weekDocumentRefs = weekDocuments[courseType]?.[weekNumber] || [];
   const weekSpecificDocuments = findMatchingDocuments(weekDocumentRefs);
 
+  // Function to convert markdown to HTML
+  const markdownToHtml = (text: string): string => {
+    // Replace **text** with <strong>text</strong>
+    let html = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
+    // Replace single * for emphasis
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    
+    // Replace line breaks with <br> tags
+    html = html.replace(/\n/g, '<br>');
+    
+    // Replace bullet points
+    html = html.replace(/^- (.+)$/gm, '• $1');
+    
+    return html;
+  };
+
   // Function to open document popup
   const openDocument = async (doc: any) => {
     setSelectedDocument(doc);
@@ -422,74 +437,74 @@ export default function WeekTemplate({
   const getFallbackContent = (title: string) => {
     const fallbacks: Record<string, string> = {
       "3 steg till ett friskare liv": `
-Här är tre enkla steg för att komma igång med Functional Foods:
+<p>Här är tre enkla steg för att komma igång med Functional Foods:</p>
 
-1. **Börja med grunderna**
-   Fokusera på näringsrika, naturliga livsmedel som ger kroppen de byggstenar den behöver.
+<h3><strong>1. Börja med grunderna</strong></h3>
+<p>Fokusera på näringsrika, naturliga livsmedel som ger kroppen de byggstenar den behöver.</p>
 
-2. **Planera dina måltider**
-   Förbered dig för veckan genom att planera måltider och handla smart.
+<h3><strong>2. Planera dina måltider</strong></h3>
+<p>Förbered dig för veckan genom att planera måltider och handla smart.</p>
 
-3. **Var konsekvent**
-   Små förändringar över tid ger stora resultat. Håll dig till dina nya vanor.
+<h3><strong>3. Var konsekvent</strong></h3>
+<p>Små förändringar över tid ger stora resultat. Håll dig till dina nya vanor.</p>
 
-Genom att följa dessa steg kommer du att märka positiva förändringar i din energi, hälsa och välmående.`,
+<p>Genom att följa dessa steg kommer du att märka positiva förändringar i din energi, hälsa och välmående.</p>`,
       
       "Functional foods topplista": `
-Här är några av de bästa functional foods att inkludera i din kost:
+<p>Här är några av de bästa functional foods att inkludera i din kost:</p>
 
-**Grönsaker:**
-- Grönkål och spenat (rika på järn och folsyra)
-- Broccoli och blomkål (antioxidanter)
-- Rödbetor (nitrater för blodcirkulation)
+<h3><strong>Grönsaker:</strong></h3>
+<p>• Grönkål och spenat (rika på järn och folsyra)<br>
+• Broccoli och blomkål (antioxidanter)<br>
+• Rödbetor (nitrater för blodcirkulation)</p>
 
-**Proteiner:**
-- Lax och fet fisk (omega-3)
-- Ägg (komplett protein)
-- Baljväxter (fiber och protein)
+<h3><strong>Proteiner:</strong></h3>
+<p>• Lax och fet fisk (omega-3)<br>
+• Ägg (komplett protein)<br>
+• Baljväxter (fiber och protein)</p>
 
-**Fetter:**
-- Avokado (enkelomättade fetter)
-- Nötter och frön (E-vitamin och magnesium)
-- Olivolja (antiinflammatoriska egenskaper)
+<h3><strong>Fetter:</strong></h3>
+<p>• Avokado (enkelomättade fetter)<br>
+• Nötter och frön (E-vitamin och magnesium)<br>
+• Olivolja (antiinflammatoriska egenskaper)</p>
 
-Dessa livsmedel ger inte bara näring utan har också specifika hälsofördelar.`,
+<p>Dessa livsmedel ger inte bara näring utan har också specifika hälsofördelar.</p>`,
       
       "Periodisk fasta ger klarhet och energi": `
-Periodisk fasta, särskilt 16:8-metoden, kan ge flera hälsofördelar:
+<p>Periodisk fasta, särskilt 16:8-metoden, kan ge flera hälsofördelar:</p>
 
-**Fördelar:**
-- Förbättrad insulinkänslighet
-- Ökad mental klarhet
-- Bättre energinivåer
-- Förenklad måltidsplanering
+<h3><strong>Fördelar:</strong></h3>
+<p>• Förbättrad insulinkänslighet<br>
+• Ökad mental klarhet<br>
+• Bättre energinivåer<br>
+• Förenklad måltidsplanering</p>
 
-**Så här gör du:**
-- Ät inom en 8-timmarsperiod (t.ex. 12:00-20:00)
-- Fasta i 16 timmar (inklusive sömn)
-- Drick vatten, te eller kaffe under fasteperioden
+<h3><strong>Så här gör du:</strong></h3>
+<p>• Ät inom en 8-timmarsperiod (t.ex. 12:00-20:00)<br>
+• Fasta i 16 timmar (inklusive sömn)<br>
+• Drick vatten, te eller kaffe under fasteperioden</p>
 
-**Tips:**
-- Börja gradvis
-- Lyssna på din kropp
-- Anpassa efter dina behov
+<h3><strong>Tips:</strong></h3>
+<p>• Börja gradvis<br>
+• Lyssna på din kropp<br>
+• Anpassa efter dina behov</p>
 
-Kom ihåg att periodisk fasta inte passar alla, så konsultera gärna en vårdgivare först.`
+<p>Kom ihåg att periodisk fasta inte passar alla, så konsultera gärna en vårdgivare först.</p>`
     };
 
     return fallbacks[title] || `
-Detta dokument är för närvarande inte tillgängligt, men här är några allmänna råd:
+<p>Detta dokument är för närvarande inte tillgängligt, men här är några allmänna råd:</p>
 
-**${title}**
+<h2><strong>${title}</strong></h2>
 
-Vi arbetar på att göra detta innehåll tillgängligt. Under tiden kan du:
+<p>Vi arbetar på att göra detta innehåll tillgängligt. Under tiden kan du:</p>
 
-- Fortsätta följa ditt kostschema
-- Fokusera på näringsrika, naturliga livsmedel
-- Planera dina måltider i förväg
-- Lyssna på din kropp och dess behov
+<p>• Fortsätta följa ditt kostschema<br>
+• Fokusera på näringsrika, naturliga livsmedel<br>
+• Planera dina måltider i förväg<br>
+• Lyssna på din kropp och dess behov</p>
 
-För mer information, besök vår kunskapsbank eller kontakta oss via info@functionalfoods.se.`;
+<p>För mer information, besök vår kunskapsbank eller kontakta oss via info@functionalfoods.se.</p>`;
   };
 
   return (
@@ -861,24 +876,10 @@ För mer information, besök vår kunskapsbank eller kontakta oss via info@funct
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#014421]"></div>
                   </div>
                 ) : (
-                  <div className="prose prose-lg max-w-none">
-                    {documentContent.split('\n').map((paragraph, index) => {
-                      if (paragraph.trim() === '') return null;
-                      
-                      // Handle headings
-                      if (paragraph.match(/^[A-ZÅÄÖ\s]+$/)) {
-                        return <h3 key={index} className="text-xl font-bold text-[#014421] mt-6 mb-3">{paragraph}</h3>;
-                      }
-                      
-                      // Handle list items
-                      if (paragraph.trim().startsWith('•') || paragraph.trim().startsWith('-')) {
-                        return <li key={index} className="ml-4 mb-2">{paragraph.replace(/^[•-]\s*/, '')}</li>;
-                      }
-                      
-                      // Regular paragraphs
-                      return <p key={index} className="mb-4">{paragraph}</p>;
-                    })}
-                  </div>
+                  <div 
+                    className="prose prose-lg max-w-none"
+                    dangerouslySetInnerHTML={{ __html: markdownToHtml(documentContent) }}
+                  />
                 )}
               </div>
               
