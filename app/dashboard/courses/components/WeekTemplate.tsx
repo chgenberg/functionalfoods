@@ -7,8 +7,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import HelpGuide from '@/app/components/HelpGuide';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
-import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
-import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
 import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
@@ -33,6 +31,42 @@ interface WeekTemplateProps {
   courseStartDate: Date | null;
 }
 
+// Week-specific welcome messages
+const weekMessages: Record<string, Record<number, string>> = {
+  basics: {
+    1: `Nu har du en spännande resa framför dig under dessa 6 veckor med näringsrika och hälsobringade recept och du kommer att få lära dig grunderna i Functional Foods. Du får praktiska kostscheman att följa, recept för alla måltider och inköpslistor för varje vecka.
+
+Efter dessa 6 veckor har du dels lärt dig mycket om matlagning och hur du får in alla näringsämnen i din kost samt fördelarna som kommer: ökad näringsnivå, förbättrad matsmältning, bättre hjärthälsa, minskad inflammation i kroppen, ökade energinivåer och ett bättre immunförsvar.
+
+Du kommer att tacka dig själv, även om det kan finnas dagar när det känns tufft. Mitt bästa tips är planering! Förbered dig för veckan och laga gärna upp flera maträtter på samma gång så att du är väl förberedd.
+
+Varmt välkommen till framtidens kost för en god hälsa och ett friskare liv!
+
+/Ulrika`,
+    2: "Vecka 2 fokuserar på proteiner och aminosyror - kroppens byggstenar. Du kommer att lära dig om olika proteinkällor och hur du optimerar ditt proteinintag för bättre hälsa och återhämtning.",
+    3: "Denna vecka dyker vi djupt in i fetter och kolhydrater. Du får lära dig skillnaden mellan olika typer av fetter och kolhydrater samt hur de påverkar din kropp och energinivåer.",
+    4: "Vecka 4 handlar om vitaminer och mineraler - de essentiella mikronäringsämnena. Du upptäcker hur du säkerställer att du får i dig alla viktiga vitaminer och mineraler genom din kost.",
+    5: "Nu utforskar vi antioxidanter och fytokemikalier - naturens egna försvarssystem. Lär dig hur dessa kraftfulla ämnen skyddar din kropp och främjar långsiktig hälsa.",
+    6: "Sista veckan! Nu sätter vi ihop alla pusselbitar och skapar en hållbar livsstil. Du får verktyg och strategier för att fortsätta din resa mot optimal hälsa."
+  },
+  flow: {
+    1: "Välkommen till Functional Flow! Under dessa 6 veckor kommer du att optimera din energi och prestationsförmåga genom avancerad näringsplanering.",
+    2: "Vecka 2 fokuserar på avancerad näringsoptimering. Du lär dig att finjustera din kost för maximal energi och mental klarhet.",
+    3: "Denna vecka handlar om prestationshöjande kost. Upptäck hur du kan använda mat som ett verktyg för att nå dina mål.",
+    4: "Vecka 4 introducerar antiinflammatorisk livsstil. Lär dig hur du minskar inflammation och främjar återhämtning genom kosten.",
+    5: "Nu utforskar vi longevity och återhämtning. Få insikter i hur du kan optimera din kost för ett långt och hälsosamt liv.",
+    6: "Sista veckan fokuserar på personlig optimering. Du får verktyg att skräddarsy din kost efter dina unika behov och mål."
+  },
+  energy: {
+    1: "Välkommen till Functional Energy! Under dessa 6 veckor kommer du att lära dig att stabilisera din energi och blodsocker genom smart mat.",
+    2: "Vecka 2 fokuserar på blodsocker och energi. Du får djupare förståelse för hur olika livsmedel påverkar dina energinivåer.",
+    3: "Denna vecka handlar om måltidsplanering för stabil energi. Lär dig att strukturera dina måltider för jämn energi hela dagen.",
+    4: "Vecka 4 introducerar smarta kolhydrater. Upptäck vilka kolhydrater som ger långvarig energi utan blodsockertoppar.",
+    5: "Nu fokuserar vi på energistabila vanor. Du får praktiska strategier för att skapa rutiner som stödjer din energi.",
+    6: "Sista veckan handlar om långsiktig hållbarhet. Du får verktyg att bibehålla dina nya vanor och fortsätta må bra."
+  }
+};
+
 export default function WeekTemplate({
   courseType,
   weekNumber,
@@ -47,6 +81,7 @@ export default function WeekTemplate({
   const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [dayThumbnails, setDayThumbnails] = useState<Record<number, string>>({});
+  const [mealImages, setMealImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const handler = () => {
@@ -95,15 +130,13 @@ export default function WeekTemplate({
 
   const weekDays = getDaysForWeek(weekNumber);
 
-  // Load day thumbnails from real recipe images (first available meal per day)
+  // Load meal images for all meals in the week
   useEffect(() => {
-    const loadThumbnails = async () => {
+    const loadMealImages = async () => {
       try {
         if (!mealPlan || !mealPlan.days) return;
         const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-        const names: string[] = [];
-        const slugs: (string | null)[] = [];
-        const indexToDay: number[] = [];
+        const allMeals: { name: string; slug: string | null; key: string }[] = [];
 
         for (let i = 0; i < 7; i++) {
           const dayNum = i + 1;
@@ -111,37 +144,41 @@ export default function WeekTemplate({
           const numberDayKey = `day${dayNum}`;
           const dayData = mealPlan.days[swedishDayKey] || mealPlan.days[numberDayKey];
           if (!dayData) continue;
-          const firstMeal = dayData.breakfast || dayData.lunch || dayData.dinner || dayData.snack || dayData.dessert;
-          if (!firstMeal) continue;
-          const mealName: string = firstMeal.name || `Dag ${dayNum}`;
-          names.push(mealName);
-          // Extract slug from recipeLink if present
-          let slug: string | null = null;
-          if (firstMeal.recipeLink) {
-            try {
-              const url = new URL(firstMeal.recipeLink, window.location.origin);
-              const parts = url.pathname.split('/');
-              slug = parts[parts.length - 1] || null;
-            } catch {}
-          }
-          slugs.push(slug);
-          indexToDay.push(dayNum);
+
+          // Collect all meals for this day
+          ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'].forEach(mealType => {
+            const meal = dayData[mealType];
+            if (meal && meal.name) {
+              let slug: string | null = null;
+              if (meal.recipeLink) {
+                try {
+                  const url = new URL(meal.recipeLink, window.location.origin);
+                  const parts = url.pathname.split('/');
+                  slug = parts[parts.length - 1] || null;
+                } catch {}
+              }
+              allMeals.push({ 
+                name: meal.name, 
+                slug: slug,
+                key: `${dayNum}-${mealType}`
+              });
+            }
+          });
         }
 
-        if (names.length === 0) return;
+        if (allMeals.length === 0) return;
 
-        console.log('🖼️ WeekTemplate fetching thumbnails for meals:', names);
-        console.log('🔗 With slugs:', slugs);
+        console.log('🖼️ WeekTemplate fetching images for all meals:', allMeals.length);
 
         const resp = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
           cache: 'no-store',
           body: JSON.stringify({ 
-            recipeNames: names, 
-            recipeSlugs: slugs, 
+            recipeNames: allMeals.map(m => m.name), 
+            recipeSlugs: allMeals.map(m => m.slug), 
             size: 'small',
-            usage: 'thumb'
+            usage: 'card'
           })
         });
         
@@ -152,27 +189,23 @@ export default function WeekTemplate({
         
         const data = await resp.json();
         const images: Record<string, string> = data.images || {};
-        console.log('✅ WeekTemplate received images:', images);
-        console.log('📅 WeekTemplate: Mapped', Object.keys(images).length, 'meal thumbnails via fuzzy matching');
         
-        const map: Record<number, string> = {};
-        names.forEach((n, idx) => {
-          const dayNum = indexToDay[idx];
-          const url = images[n];
+        // Map images by meal key
+        const imageMap: Record<string, string> = {};
+        allMeals.forEach((meal, idx) => {
+          const url = images[meal.name];
           if (url) {
-            map[dayNum] = url;
-            console.log(`✅ Day ${dayNum}: ${n} -> ${url}`);
-          } else {
-            console.log(`⚠️ No image for day ${dayNum}: ${n}`);
+            imageMap[meal.key] = url;
           }
         });
-        setDayThumbnails(map);
+        
+        setMealImages(imageMap);
+        console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images');
       } catch (e) {
-        console.error('❌ WeekTemplate thumbnail error:', e);
-        // ignore, fallback will be used
+        console.error('❌ WeekTemplate image loading error:', e);
       }
     };
-    loadThumbnails();
+    loadMealImages();
   }, [mealPlan, weekNumber]);
 
   // Format date for display
@@ -189,18 +222,40 @@ export default function WeekTemplate({
     return `${dayNames[targetDate.getDay()]} ${targetDate.getDate()} ${monthNames[targetDate.getMonth()]}`;
   };
 
+  // Get the appropriate welcome message
+  const welcomeMessage = weekMessages[courseType]?.[weekNumber] || '';
+
   return (
     <>
-      {/* Hero Section with Video */}
-      <WeekHeroWithVideo
-        weekNumber={weekNumber}
-        weekTitle={weekTitle}
-        weekSubtitle={weekSubtitle}
-        heroImage={heroImage}
-        videoUrl={videoUrl}
-      />
+      {/* Welcome Message Box */}
+      <div className="bg-gradient-to-b from-[#F3EFE3] to-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-[#014421]/10"
+          >
+            <div className="text-center mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-2">
+                {weekTitle}
+              </h1>
+              <p className="text-lg text-gray-600">
+                Vecka {weekNumber}
+              </p>
+            </div>
+            <div className="prose prose-lg max-w-none text-gray-700">
+              {welcomeMessage.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="mb-4 leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
 
-      {/* Course Navigation - After Hero Section */}
+      {/* Course Navigation */}
       <div className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
@@ -209,91 +264,91 @@ export default function WeekTemplate({
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-        {/* Week Overview */}
+        {/* Week Meals */}
         <div className="mb-12">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-[#014421] mb-4">Veckans måltider</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Klicka på en dag för att se dagens måltider och recept
+              Klicka på en måltid för att se receptet
             </p>
           </div>
 
-          {/* Week Days Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+          {/* Days with Meals */}
+          <div className="space-y-8">
             {weekDays.map((day) => {
-              const dayContent = (
-                <motion.div
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`
-                    relative rounded-2xl p-4 shadow-lg border-2 transition-all duration-300 cursor-pointer
-                    ${day.current 
-                      ? 'bg-[#014421] border-[#014421] shadow-xl scale-105' 
-                      : day.completed
-                      ? 'bg-white border-green-200 hover:shadow-lg'
-                      : day.locked
-                      ? 'bg-gray-50 border-gray-200 opacity-60'
-                      : 'bg-white border-gray-200 hover:shadow-lg'
-                    }
-                  `}
-                >
+              const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+              const swedishDayKey = dayNames[day.day - 1];
+              const numberDayKey = `day${day.day}`;
+              const dayData = mealPlan?.days?.[swedishDayKey] || mealPlan?.days?.[numberDayKey];
+              
+              if (!dayData) return null;
 
-                  <div className="text-center">
-                    <span className={`text-xs md:text-sm mb-1 ${day.current ? 'text-white' : 'text-gray-600'}`}>{formatDate(weekNumber, day.day)}</span>
-                    <h3 className={`font-bold text-sm sm:text-base md:text-lg mb-3 ${day.current ? 'text-white' : 'text-gray-900'}`}>{day.name}</h3>
-                    <div className={`
-                      w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto overflow-hidden relative
-                      ${day.completed ? 'bg-green-100' : day.current ? 'bg-white' : 'bg-gray-100'}
-                    `}>
-                      {dayThumbnails[day.day] || dayImages[weekNumber.toString()]?.[day.day.toString()] ? (
-                        <>
-                          <Image
-                            src={(dayThumbnails[day.day] || dayImages[weekNumber.toString()][day.day.toString()]!) as string}
-                            alt={`Day ${day.day} meal`}
-                            fill
-                            className="object-cover"
-                          />
-                          {day.completed && (
-                            <div className="absolute inset-0 bg-green-600/80 flex items-center justify-center">
-                              <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                            </div>
-                          )}
-                          {day.current && (
-                            <div className="absolute inset-0 bg-[#014421]/20 flex items-center justify-center">
-                              <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        // Fallback to original circles if no image
-                        <>
-                          {day.completed ? (
-                            <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
-                          ) : day.current ? (
-                            <div className="w-3 h-3 bg-[#014421] rounded-full animate-pulse"></div>
-                          ) : (
-                            <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-                          )}
-                        </>
-                      )}
-                    </div>
-                    <span className={`
-                      text-xs md:text-sm font-medium
-                      ${day.completed ? 'text-green-600' : day.current ? 'text-white' : 'text-gray-600'}
-                    `}>
-                      {day.completed ? 'Genomförd' : day.current ? 'Påbörjad' : 'Planerad'}
-                    </span>
-                  </div>
-                </motion.div>
-              );
+              const meals = [
+                { type: 'breakfast', label: 'Frukost', data: dayData.breakfast },
+                { type: 'lunch', label: 'Lunch', data: dayData.lunch },
+                { type: 'dinner', label: 'Middag', data: dayData.dinner }
+              ];
 
               return (
-                <div 
-                  key={day.day} 
-                  className={`${day.locked ? 'pointer-events-none' : 'cursor-pointer'}`}
-                  onClick={() => !day.locked && setSelectedDay(day.day)}
-                >
-                  {dayContent}
+                <div key={day.day} className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-[#014421]">{day.name}</h3>
+                    <p className="text-sm text-gray-500">{formatDate(weekNumber, day.day)}</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {meals.map((meal) => {
+                      if (!meal.data) return null;
+                      
+                      const mealName = meal.data.name.replace(/\s*\(\d+\s*kcal\)/, '');
+                      const calorieMatch = meal.data.name.match(/\((\d+\s*kcal)\)/);
+                      const calories = calorieMatch ? calorieMatch[1] : '';
+                      const imageUrl = mealImages[`${day.day}-${meal.type}`];
+
+                      return (
+                        <motion.div
+                          key={meal.type}
+                          whileHover={{ scale: 1.02, y: -4 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="group cursor-pointer"
+                          onClick={() => {
+                            if (meal.data.recipeLink) {
+                              window.location.href = meal.data.recipeLink;
+                            }
+                          }}
+                        >
+                          <div className="relative overflow-hidden rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300">
+                            <div className="aspect-[4/3] relative bg-gray-100">
+                              {imageUrl ? (
+                                <Image
+                                  src={imageUrl}
+                                  alt={mealName}
+                                  fill
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="text-center">
+                                    <div className="w-16 h-16 bg-[#014421]/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                                      <span className="text-2xl">🍽️</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </div>
+                            <div className="p-4 bg-white">
+                              <h4 className="font-semibold text-[#014421] mb-1">{meal.label}</h4>
+                              <p className="text-sm text-gray-700 line-clamp-2">{mealName}</p>
+                              {calories && (
+                                <p className="text-xs text-gray-500 mt-1">{calories}</p>
+                              )}
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 </div>
               );
             })}
