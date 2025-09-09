@@ -59,6 +59,8 @@ export async function GET(
       if (!url.startsWith('/') && !url.startsWith('http')) url = `/${url}`;
       localized.imageUrl = url;
     }
+
+    console.log(`🖼️ Recipe API: Serving recipe "${localized.title}" with imageUrl: ${localized.imageUrl}`);
     return NextResponse.json(localized);
   } catch (error) {
     console.error('Error fetching recipe:', error);

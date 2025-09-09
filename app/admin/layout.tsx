@@ -62,46 +62,49 @@ export default function AdminLayout({
   };
 
   const menuItems = [
-    { icon: Home, label: 'Dashboard', href: '/admin' },
-    { icon: FileText, label: 'Blogginlägg', href: '/admin/blog' },
-    { icon: BookOpen, label: 'Recept', href: '/admin/recipes' },
-    { icon: Users, label: 'Kunder', href: '/admin/users' },
-    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders' },
-    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales' },
-    { icon: Tag, label: 'Rabattkoder', href: '/admin/coupons' },
-    { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews' },
-    { icon: Mail, label: 'Email', href: '/admin/emails' },
-    { icon: Image, label: 'Media', href: '/admin/media' },
-
-    { icon: Settings, label: 'Inställningar', href: '/admin/settings' },
+    { icon: Home, label: 'Dashboard', href: '/admin', emoji: '🏠' },
+    { icon: FileText, label: 'Blogg', href: '/admin/blog', emoji: '📝' },
+    { icon: BookOpen, label: 'Recept', href: '/admin/recipes', emoji: '🥗' },
+    { icon: BookOpen, label: 'Kurser', href: '/admin/courses', emoji: '📚' },
+    { icon: Users, label: 'Användare', href: '/admin/users', emoji: '👥' },
+    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders', emoji: '🛒' },
+    { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews', emoji: '⭐' },
+    { icon: Tag, label: 'Kuponger', href: '/admin/coupons', emoji: '🎟️' },
+    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales', emoji: '📊' },
+    { icon: Image, label: 'Media', href: '/admin/media', emoji: '🖼️' },
+    { icon: Settings, label: 'Inställningar', href: '/admin/settings', emoji: '⚙️' },
+    { icon: Eye, label: 'Debug', href: '/admin/debug', emoji: '🔍' },
   ];
+
+  // Don't render layout on login page
+  if (pathname === '/admin/login') {
+    return children;
+  }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
       </div>
     );
   }
 
-  // Don't render admin layout on login page
-  if (pathname === '/admin/login') {
-    return <>{children}</>;
-  }
-  
   if (!isAuthenticated) {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F7F1E8]">
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 bg-white rounded-lg shadow-lg"
+          className="p-3 bg-white rounded-xl shadow-lg border border-[#F3EFE3] hover:shadow-xl transition-all"
         >
-          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isSidebarOpen ? 
+            <X className="w-5 h-5 text-[#014421]" /> : 
+            <Menu className="w-5 h-5 text-[#014421]" />
+          }
         </button>
       </div>
 
@@ -109,13 +112,15 @@ export default function AdminLayout({
       <aside className={`
         fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transform transition-transform duration-300
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0
+        lg:translate-x-0 border-r border-[#F3EFE3]
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-6 border-b">
-            <h1 className="text-2xl font-bold text-[#014421]">Admin Panel</h1>
-            <p className="text-sm text-gray-500 mt-1">Functional Foods</p>
+          <div className="p-6 border-b border-[#F3EFE3]">
+            <h1 className="text-2xl font-bold text-[#014421] flex items-center gap-2">
+              <span className="text-2xl">🌱</span> Admin Panel
+            </h1>
+            <p className="text-sm text-gray-600 mt-1">Functional Foods</p>
           </div>
 
           {/* Navigation */}
@@ -131,15 +136,15 @@ export default function AdminLayout({
                     <Link
                       href={item.href}
                       className={`
-                        flex items-center gap-3 px-4 py-3 rounded-lg transition-all
+                        flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
                         ${isActive 
-                          ? 'bg-[#014421] text-white' 
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-[#93C560]/20 text-[#014421] shadow-sm border border-[#93C560]/30' 
+                          : 'text-gray-700 hover:bg-[#F3EFE3] hover:text-[#014421]'
                         }
                       `}
                       onClick={() => setIsSidebarOpen(false)}
                     >
-                      <Icon className="w-5 h-5" />
+                      <span className="text-xl">{item.emoji}</span>
                       <span className="font-medium">{item.label}</span>
                     </Link>
                   </li>
@@ -148,38 +153,43 @@ export default function AdminLayout({
             </ul>
           </nav>
 
-          {/* Footer */}
-          <div className="p-4 border-t">
-            <Link
-              href="/"
-              target="_blank"
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#014421] transition-colors"
-            >
-              <Eye className="w-4 h-4" />
-              <span className="text-sm">Visa hemsida</span>
-            </Link>
+          {/* Logout */}
+          <div className="p-4 border-t border-[#F3EFE3]">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 transition-colors w-full"
+              className="flex items-center gap-3 w-full px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200"
             >
-              <LogOut className="w-4 h-4" />
-              <span className="text-sm">Logga ut</span>
+              <LogOut className="w-5 h-5" />
+              <span className="font-medium">Logga ut</span>
             </button>
           </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <main className="lg:ml-64">
+      <main className={`
+        lg:ml-64 min-h-screen
+        ${isSidebarOpen ? 'opacity-50 lg:opacity-100' : ''}
+      `}>
         <div className="p-4 lg:p-8">
-          {children}
+          {/* Mobile header */}
+          <div className="lg:hidden mb-6 ml-14">
+            <h2 className="text-xl font-bold text-[#014421] flex items-center gap-2">
+              <span>🌱</span> Admin Panel
+            </h2>
+          </div>
+          
+          {/* Page content with responsive padding */}
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
         </div>
       </main>
 
-      {/* Overlay for mobile */}
+      {/* Mobile overlay */}
       {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}

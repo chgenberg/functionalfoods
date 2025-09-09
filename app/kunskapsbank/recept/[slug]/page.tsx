@@ -193,7 +193,7 @@ export default function RecipePage() {
     if (slug) {
       fetchRecipe();
     }
-  }, [slug, userCourses]); // Changed dependency to userCourses instead of user
+  }, [slug]); // Keep simple dependency
 
   useEffect(() => {
     // Fetch raw materials for ingredient linking
@@ -370,18 +370,25 @@ export default function RecipePage() {
           setError('login');
           setRecipe(data);
           return;
-        } else if (!hasAccess && userCourses.length === 0 && user) {
-          // User is logged in but courses haven't loaded yet - allow access temporarily
+        } 
+        
+        // If user courses haven't loaded yet (empty array) and user is logged in,
+        // allow temporary access without showing error
+        if (userCourses.length === 0 && isLoggedIn) {
           console.log('⏳ User courses not loaded yet, allowing temporary access');
           setError(null);
           setRecipe(data);
           return;
-        } else if (!hasAccess) {
+        }
+        
+        // Now check actual access after courses have loaded
+        if (!hasAccess) {
           console.log('❌ Course recipe, user has no access to required courses');
           setError('course');
           setRecipe(data);
           return;
         }
+        
         console.log('✅ Course recipe, user has access');
         setError(null);
         setRecipe(data);
@@ -522,20 +529,27 @@ export default function RecipePage() {
   };
 
   useEffect(() => {
-    if (!recipe) return;
+    if (!recipe || !recipe.title || !recipe.slug) {
+      console.log('🖼️ Recipe detail: No recipe data yet, skipping image load');
+      return;
+    }
     
     console.log(`🖼️ Recipe detail: Loading image for "${recipe.title}" (slug: ${recipe.slug})`);
     console.log(`🖼️ Current imageUrl:`, recipe.imageUrl);
     
     setImageLoading(true);
+    setImageError(false);
     
     // Always try to get Vision-optimized image via fuzzy matching
     (async () => {
       try {
-        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
+        console.log(`🔍 Fetching optimized image for: "${recipe.title}"`);
+        
+        const mapRes = await fetch(`/api/recipes/batch-images`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-          cache: 'no-store',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({ 
             recipeNames: [recipe.title], 
             recipeSlugs: [recipe.slug], 
@@ -544,32 +558,49 @@ export default function RecipePage() {
           })
         });
         
+        console.log(`📡 Batch-images response status: ${mapRes.status}`);
+        
         if (mapRes.ok) {
-          const { images } = await mapRes.json();
-          console.log(`🖼️ Recipe detail: Batch response for "${recipe.title}":`, images);
+          const responseData = await mapRes.json();
+          console.log(`🖼️ Recipe detail: Full batch response:`, responseData);
           
+          const { images } = responseData;
           const mapped = images && images[recipe.title];
-          if (mapped) {
-            console.log(`✅ Recipe detail: Vision-optimized image found: "${recipe.title}" -> ${mapped}`);
+          
+          if (mapped && mapped !== '/api/images/recept_images_vision_optimized/het-ratatouille-detail.webp') {
+            console.log(`✅ Recipe detail: Found optimized image: "${recipe.title}" -> ${mapped}`);
             setRecipe(prev => prev ? { 
               ...prev, 
               imageUrl: mapped,
-              // Also update mobile image
               imageMobileUrl: mapped.replace('-detail.webp', '-thumb.webp')
             } : prev);
             setImageError(false);
           } else {
-            console.log(`⚠️ Recipe detail: No Vision-optimized image found for "${recipe.title}"`);
-            // Keep original imageUrl as fallback
+            console.log(`⚠️ Recipe detail: No specific image found for "${recipe.title}", using fallback`);
+            // If we get the fallback image, don't update the recipe
+            if (!recipe.imageUrl || recipe.imageUrl.includes('placeholder')) {
+              setImageError(true);
+            }
           }
         } else {
           console.error(`❌ Recipe detail: Batch-images API failed with status ${mapRes.status}`);
           const errorText = await mapRes.text();
           console.error(`❌ Error response:`, errorText);
+          
+          // If API fails and we don't have a good image URL, show error
+          if (!recipe.imageUrl || recipe.imageUrl.includes('placeholder')) {
+            setImageError(true);
+          }
         }
       } catch (e) {
         console.error('❌ Recipe detail: Vision-optimized image loading failed', e);
+        
+        // If fetch fails and we don't have a good image URL, show error
+        if (!recipe.imageUrl || recipe.imageUrl.includes('placeholder')) {
+          setImageError(true);
+        }
       } finally {
+        console.log(`🏁 Image loading finished for "${recipe.title}"`);
         setImageLoading(false);
       }
     })();
@@ -730,7 +761,14 @@ export default function RecipePage() {
                 {/* Image Container - Optimized for Portrait Images */}
                 <div className="relative w-full bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden">
                   <div className="relative aspect-[3/4] md:aspect-[3/4] lg:aspect-[4/5]">
-                    {!imageLoading && recipe.imageUrl && !imageError && !recipe.imageUrl.includes('Recept_complete2.0') ? (
+                    {imageLoading ? (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#93C560] mx-auto mb-3"></div>
+                          <p className="text-sm text-[#014421]/60">Laddar bild...</p>
+                        </div>
+                      </div>
+                    ) : recipe.imageUrl && !imageError && !recipe.imageUrl.includes('Recept_complete2.0') ? (
                       <Image
                         src={optimizeImageUrl(recipe.imageUrl || recipe.imageMobileUrl, 'large', 'portrait')}
                         alt={recipe.imageAlt || recipe.title}
@@ -739,15 +777,20 @@ export default function RecipePage() {
                         style={{ objectFit: 'cover', objectPosition: 'center' }}
                         priority
                         sizes={getResponsiveSizes('large')}
-                        onError={() => setImageError(true)}
+                        onError={() => {
+                          console.log(`❌ Image load error for: ${recipe.imageUrl}`);
+                          setImageError(true);
+                        }}
+                        onLoad={() => {
+                          console.log(`✅ Image loaded successfully: ${recipe.imageUrl}`);
+                        }}
                       />
-                    ) : imageLoading ? (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#93C560]"></div>
-                      </div>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">
-                        <Camera className="w-16 h-16 md:w-20 md:h-20 text-[#014421]/30" />
+                        <div className="text-center">
+                          <Camera className="w-16 h-16 md:w-20 md:h-20 text-[#014421]/30 mb-3" />
+                          <p className="text-sm text-[#014421]/60">Ingen bild tillgänglig</p>
+                        </div>
                       </div>
                     )}
                   </div>

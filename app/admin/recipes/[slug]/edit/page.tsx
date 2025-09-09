@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ArrowLeft, Save, Trash2, Eye, Loader, Check, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Eye, Loader, Check, AlertCircle, Upload, X, Image as ImageIcon } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -58,6 +58,8 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error' | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   
   const [formData, setFormData] = useState<EditRecipeForm>({
     title: '',
@@ -79,6 +81,13 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   useEffect(() => {
     fetchRecipe();
   }, [params.slug]);
+
+  useEffect(() => {
+    // Set image preview when recipe loads
+    if (recipe?.imageUrl) {
+      setImagePreview(recipe.imageUrl);
+    }
+  }, [recipe]);
 
   const fetchRecipe = async () => {
     try {
@@ -215,6 +224,49 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Bilden är för stor. Max 5MB tillåten.');
+      return;
+    }
+
+    setUploadingImage(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const data = await response.json();
+      setFormData(prev => ({ ...prev, imageUrl: data.url }));
+      setImagePreview(data.url);
+      setSaveStatus(null);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Fel vid uppladdning av bild');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const removeImage = () => {
+    setFormData(prev => ({ ...prev, imageUrl: '' }));
+    setImagePreview(null);
+    setSaveStatus(null);
+  };
+
   const addIngredient = () => {
     setFormData(prev => ({
       ...prev,
@@ -259,9 +311,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F7F1E8] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#93C560] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Laddar recept...</p>
         </div>
       </div>
@@ -270,14 +322,14 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F7F1E8] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">Fel vid laddning</h2>
+          <h2 className="text-2xl font-semibold text-[#014421] mb-2">Fel vid laddning</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <Link
             href="/admin/recipes"
-            className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors"
+            className="bg-gradient-to-r from-[#FF7E70] to-[#ff6b5a] text-white px-6 py-3 rounded-xl hover:from-[#ff6b5a] hover:to-[#FF7E70] transition-all shadow-md hover:shadow-lg"
           >
             Tillbaka till receptlistan
           </Link>
@@ -287,65 +339,61 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F7F1E8]">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className="bg-white shadow-sm border-b border-[#F3EFE3]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
               <Link
                 href="/admin/recipes"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center gap-2 text-gray-600 hover:text-[#014421] transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Tillbaka
               </Link>
-              <div className="h-6 w-px bg-gray-300" />
-              <h1 className="text-2xl font-bold text-gray-900">Redigera recept</h1>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <h1 className="text-xl font-semibold text-[#014421] flex items-center gap-2">
+                <span className="text-xl">✏️</span> Redigera recept
+              </h1>
             </div>
             
+            {/* Save Status */}
+            {saveStatus && (
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${
+                saveStatus === 'saved' ? 'bg-[#93C560]/20 text-[#014421]' : 
+                saveStatus === 'saving' ? 'bg-yellow-100 text-yellow-800' : 
+                'bg-red-100 text-red-800'
+              }`}>
+                {saveStatus === 'saved' && <><Check className="w-4 h-4" /> Sparad!</>}
+                {saveStatus === 'saving' && <><Loader className="w-4 h-4 animate-spin" /> Sparar...</>}
+                {saveStatus === 'error' && <><AlertCircle className="w-4 h-4" /> Fel vid sparning</>}
+              </div>
+            )}
+            
             <div className="flex items-center gap-3">
-              {saveStatus === 'saved' && (
-                <div className="flex items-center gap-2 text-primary">
-                  <Check className="w-4 h-4" />
-                  <span className="text-sm">Sparat!</span>
-                </div>
+              {recipe && recipe.status === 'publish' && (
+                <Link
+                  href={`/kunskapsbank/recept/${recipe.slug}`}
+                  target="_blank"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#014421] hover:bg-gray-50 rounded-xl transition-all"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span className="hidden sm:inline">Visa recept</span>
+                </Link>
               )}
-              {saveStatus === 'saving' && (
-                <div className="flex items-center gap-2 text-orange-600">
-                  <Loader className="w-4 h-4 animate-spin" />
-                  <span className="text-sm">Sparar...</span>
-                </div>
-              )}
-              {saveStatus === 'error' && (
-                <div className="flex items-center gap-2 text-red-600">
-                  <AlertCircle className="w-4 h-4" />
-                  <span className="text-sm">Fel vid sparning</span>
-                </div>
-              )}
-              
-              <Link
-                href={`/kunskapsbank/recept/${recipe?.slug}`}
-                target="_blank"
-                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                <Eye className="w-4 h-4" />
-                Förhandsgranska
-              </Link>
-              
               <button
                 onClick={handleDelete}
                 disabled={saving}
-                className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all disabled:opacity-50"
               >
                 <Trash2 className="w-4 h-4" />
-                Ta bort
+                <span className="hidden sm:inline">Ta bort</span>
               </button>
-              
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-[#93C560] to-[#84b351] text-white rounded-xl hover:from-[#84b351] hover:to-[#93C560] transition-all shadow-md hover:shadow-lg disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Sparar...' : 'Spara ändringar'}
@@ -357,11 +405,72 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
 
       {/* Form */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border border-[#F3EFE3] overflow-hidden">
           <div className="p-6 space-y-8">
+            {/* Image Upload Section */}
+            <div>
+              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
+                <span className="text-lg">🖼️</span> Receptbild
+              </h2>
+              <div className="space-y-4">
+                {imagePreview ? (
+                  <div className="relative">
+                    <img
+                      src={imagePreview}
+                      alt="Receptbild"
+                      className="w-full h-64 object-cover rounded-xl border border-[#F3EFE3]"
+                    />
+                    <button
+                      onClick={removeImage}
+                      className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-lg shadow-md transition-all"
+                      title="Ta bort bild"
+                    >
+                      <X className="w-4 h-4 text-red-600" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8">
+                    <div className="text-center">
+                      <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
+                      <p className="mt-2 text-sm text-gray-600">Ingen bild uppladdad</p>
+                    </div>
+                  </div>
+                )}
+                
+                <div>
+                  <label htmlFor="image-upload" className="cursor-pointer">
+                    <div className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F3EFE3] hover:bg-[#F7F1E8] text-[#014421] rounded-xl transition-all">
+                      {uploadingImage ? (
+                        <>
+                          <Loader className="w-4 h-4 animate-spin" />
+                          Laddar upp...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4" />
+                          {imagePreview ? 'Byt bild' : 'Ladda upp bild'}
+                        </>
+                      )}
+                    </div>
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploadingImage}
+                      className="hidden"
+                    />
+                  </label>
+                  <p className="text-xs text-gray-500 mt-2">Max 5MB. JPG, PNG eller WebP.</p>
+                </div>
+              </div>
+            </div>
+
             {/* Basic Information */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Grundläggande information</h2>
+              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
+                <span className="text-lg">📝</span> Grundläggande information
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -371,7 +480,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                     placeholder="Namn på receptet"
                   />
                 </div>
@@ -384,7 +493,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
                     >
                       <option value="Frukost">Frukost</option>
                       <option value="Lunch">Lunch</option>
@@ -408,7 +517,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     value={formData.excerpt}
                     onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                     placeholder="En kort, lockande beskrivning av receptet"
                   />
                 </div>
@@ -417,7 +526,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
 
             {/* Recipe Details */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Receptdetaljer</h2>
+              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
+                <span className="text-lg">⚙️</span> Receptdetaljer
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -427,7 +538,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     <select
                       value={formData.difficulty}
                       onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
+                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
                     >
                       <option value="Lätt">Lätt</option>
                       <option value="Medel">Medel</option>
@@ -449,7 +560,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     type="text"
                     value={formData.prepTime}
                     onChange={(e) => setFormData(prev => ({ ...prev, prepTime: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                     placeholder="t.ex. 15 min"
                   />
                 </div>
@@ -462,7 +573,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     type="text"
                     value={formData.cookTime}
                     onChange={(e) => setFormData(prev => ({ ...prev, cookTime: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                     placeholder="t.ex. 30 min"
                   />
                 </div>
@@ -475,7 +586,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     type="number"
                     value={formData.servings}
                     onChange={(e) => setFormData(prev => ({ ...prev, servings: parseInt(e.target.value) || 1 }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                     min="1"
                   />
                 </div>
@@ -484,7 +595,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
 
             {/* Ingredients */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Ingredienser</h2>
+              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
+                <span className="text-lg">🧂</span> Ingredienser
+              </h2>
               <div className="space-y-3">
                 {formData.ingredients.map((ingredient, index) => (
                   <div key={index} className="flex items-center gap-3">
@@ -492,7 +605,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                       type="text"
                       value={ingredient}
                       onChange={(e) => updateIngredient(index, e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                       placeholder={`Ingrediens ${index + 1}`}
                     />
                     <button
@@ -505,27 +618,29 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                 ))}
                 <button
                   onClick={addIngredient}
-                  className="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-orange-500 hover:text-orange-600 transition-colors"
+                  className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-[#93C560] hover:text-[#93C560] transition-all flex items-center justify-center gap-2"
                 >
-                  + Lägg till ingrediens
+                  <span className="text-xl">➕</span> Lägg till ingrediens
                 </button>
               </div>
             </div>
 
             {/* Instructions */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Instruktioner</h2>
+              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
+                <span className="text-lg">📝</span> Instruktioner
+              </h2>
               <div className="space-y-3">
                 {formData.instructions.map((instruction, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-sm font-medium mt-1">
+                    <span className="flex-shrink-0 w-6 h-6 bg-[#93C560]/20 text-[#014421] rounded-full flex items-center justify-center text-sm font-medium mt-1">
                       {index + 1}
                     </span>
                     <textarea
                       value={instruction}
                       onChange={(e) => updateInstruction(index, e.target.value)}
                       rows={2}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                       placeholder={`Steg ${index + 1}`}
                     />
                     <button
@@ -538,28 +653,32 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                 ))}
                 <button
                   onClick={addInstruction}
-                  className="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-orange-500 hover:text-orange-600 transition-colors"
+                  className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-[#93C560] hover:text-[#93C560] transition-all flex items-center justify-center gap-2"
                 >
-                  + Lägg till instruktion
+                  <span className="text-xl">➕</span> Lägg till instruktion
                 </button>
               </div>
             </div>
 
             {/* Tips */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Tips från kocken</h2>
+              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
+                <span className="text-lg">💡</span> Tips från kocken
+              </h2>
               <textarea
                 value={formData.tips}
                 onChange={(e) => setFormData(prev => ({ ...prev, tips: e.target.value }))}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
                 placeholder="Extra tips för att lyckas med receptet..."
               />
             </div>
 
             {/* Status and Settings */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Inställningar</h2>
+              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
+                <span className="text-lg">⚙️</span> Inställningar
+              </h2>
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <label className="flex items-center gap-2">
@@ -569,7 +688,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                       value="publish"
                       checked={formData.status === 'publish'}
                       onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'publish' | 'draft' }))}
-                      className="text-orange-600 focus:ring-orange-500"
+                      className="text-[#93C560] focus:ring-[#93C560] rounded transition-all"
                     />
                     <span className="text-sm text-gray-700">Publicerad</span>
                   </label>
@@ -580,7 +699,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                       value="draft"
                       checked={formData.status === 'draft'}
                       onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'publish' | 'draft' }))}
-                      className="text-orange-600 focus:ring-orange-500"
+                      className="text-[#93C560] focus:ring-[#93C560] rounded transition-all"
                     />
                     <span className="text-sm text-gray-700">Utkast</span>
                   </label>
@@ -591,7 +710,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                     type="checkbox"
                     checked={formData.isPremium}
                     onChange={(e) => setFormData(prev => ({ ...prev, isPremium: e.target.checked }))}
-                    className="text-orange-600 focus:ring-orange-500"
+                    className="text-[#93C560] focus:ring-[#93C560] rounded transition-all"
                   />
                   <span className="text-sm text-gray-700">Premium-recept (kräver köpt kurs)</span>
                 </label>

@@ -65,7 +65,7 @@ export default function AdminOrdersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'COMPLETED': return 'bg-background-secondary text-secondary';
+      case 'COMPLETED': return 'bg-[#93C560]/20 text-[#014421]';
       case 'PENDING': return 'bg-yellow-100 text-yellow-800';
       case 'PROCESSING': return 'bg-blue-100 text-blue-800';
       case 'CANCELLED': return 'bg-red-100 text-red-800';
@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
-      case 'COMPLETED': return 'text-primary';
+      case 'COMPLETED': return 'text-[#93C560]';
       case 'PENDING': return 'text-yellow-600';
       case 'PROCESSING': return 'text-blue-600';
       case 'FAILED': return 'text-red-600';
@@ -91,9 +91,9 @@ export default function AdminOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-[400px] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421] mx-auto"></div>
           <p className="mt-4 text-gray-600">Laddar beställningar...</p>
         </div>
       </div>
@@ -101,177 +101,174 @@ export default function AdminOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Beställningar</h1>
-          <p className="mt-2 text-gray-600">Hantera alla beställningar och betalningar</p>
-        </div>
+    <div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-[#014421] flex items-center gap-3">
+          <span className="text-3xl">🛒</span> Beställningar
+        </h1>
+        <p className="mt-2 text-gray-600">Hantera alla beställningar och betalningar</p>
+      </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <div className="flex flex-wrap gap-4 items-center">
-            <label className="text-sm font-medium text-gray-700">Status:</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm"
-            >
-              <option value="ALL">Alla</option>
-              <option value="PENDING">Väntande</option>
-              <option value="PROCESSING">Behandlas</option>
-              <option value="COMPLETED">Slutförd</option>
-              <option value="CANCELLED">Avbruten</option>
-              <option value="REFUNDED">Återbetald</option>
-            </select>
-            
-            <div className="ml-auto text-sm text-gray-600">
-              {filteredOrders.length} beställningar
-            </div>
+      {/* Filters */}
+      <div className="bg-white rounded-2xl shadow-sm border border-[#F3EFE3] p-6 mb-6">
+        <div className="flex flex-wrap gap-4 items-center">
+          <label className="text-sm font-medium text-gray-700">Status:</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
+          >
+            <option value="ALL">Alla</option>
+            <option value="PENDING">Väntande</option>
+            <option value="PROCESSING">Behandlas</option>
+            <option value="COMPLETED">Slutförd</option>
+            <option value="CANCELLED">Avbruten</option>
+            <option value="REFUNDED">Återbetald</option>
+          </select>
+          
+          <div className="ml-auto text-sm text-gray-600">
+            {filteredOrders.length} beställningar
           </div>
         </div>
+      </div>
 
-        {/* Orders List */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+      {/* Orders List */}
+      <div className="bg-white rounded-2xl shadow-sm border border-[#F3EFE3] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-[#F3EFE3]">
+            <thead className="bg-[#F7F1E8]">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Beställning
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Kund
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Produkter
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Belopp
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Betalning
+                </th>
+                <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Åtgärder
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#F3EFE3]">
+              {filteredOrders.length === 0 ? (
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Beställning
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kund
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Produkter
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Belopp
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Betalning
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Datum
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Åtgärder
-                  </th>
+                  <td colSpan={7} className="px-6 py-16 text-center text-gray-500">
+                    <span className="text-5xl mb-4 block">📦</span>
+                    Inga beställningar hittades
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
+              ) : (
+                filteredOrders.map((order) => (
+                  <tr key={order.id} className="hover:bg-[#F7F1E8]/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <Package className="w-5 h-5 text-gray-400 mr-2" />
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {order.orderNumber}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {order.id.slice(0, 8)}...
-                          </div>
-                        </div>
+                      <div className="text-sm">
+                        <p className="font-medium text-[#014421]">#{order.orderNumber}</p>
+                        <p className="text-gray-500 text-xs flex items-center gap-1 mt-1">
+                          <span>📅</span> {new Date(order.createdAt).toLocaleDateString('sv-SE')}
+                        </p>
                       </div>
                     </td>
-                    
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <User className="w-4 h-4 text-gray-400 mr-2" />
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {order.user.name || 'Ingen namn'}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {order.user.email}
-                          </div>
-                        </div>
+                      <div className="text-sm">
+                        <p className="font-medium text-gray-900">{order.user.name || 'Okänd'}</p>
+                        <p className="text-gray-500">{order.user.email}</p>
                       </div>
                     </td>
-                    
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">
-                        {order.items.map((item, index) => (
-                          <div key={item.id} className={index > 0 ? 'mt-1' : ''}>
-                            {item.name} ({item.quantity}x)
+                        {order.items.map((item) => (
+                          <div key={item.id} className="mb-1">
+                            {item.type === 'COURSE' ? (
+                              <span className="flex items-center gap-1">
+                                <span>📚</span> {item.course?.name || item.name}
+                              </span>
+                            ) : (
+                              <span>{item.name}</span>
+                            )}
                           </div>
                         ))}
                       </div>
                     </td>
-                    
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <DollarSign className="w-4 h-4 text-gray-400 mr-1" />
-                        <span className="text-sm font-medium text-gray-900">
-                          {order.totalAmount.toFixed(2)} {order.currency}
-                        </span>
+                      <div className="text-sm font-medium text-[#014421]">
+                        {order.totalAmount.toLocaleString('sv-SE', { 
+                          style: 'currency', 
+                          currency: order.currency 
+                        })}
                       </div>
                     </td>
-                    
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                        {order.status}
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                        {order.status === 'COMPLETED' && '✅'}
+                        {order.status === 'PENDING' && '⏰'}
+                        {order.status === 'PROCESSING' && '⚡'}
+                        {order.status === 'CANCELLED' && '❌'}
+                        {order.status === 'REFUNDED' && '💸'}
+                        <span className="ml-1">
+                          {order.status === 'COMPLETED' && 'Slutförd'}
+                          {order.status === 'PENDING' && 'Väntande'}
+                          {order.status === 'PROCESSING' && 'Behandlas'}
+                          {order.status === 'CANCELLED' && 'Avbruten'}
+                          {order.status === 'REFUNDED' && 'Återbetald'}
+                        </span>
                       </span>
                     </td>
-                    
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {order.payment ? (
-                        <div>
-                          <div className={`text-sm font-medium ${getPaymentStatusColor(order.payment.status)}`}>
-                            {order.payment.status}
-                          </div>
-                          <div className="text-xs text-gray-500 capitalize">
+                      {order.payment && (
+                        <div className="text-sm">
+                          <p className={`font-medium ${getPaymentStatusColor(order.payment.status)}`}>
+                            {order.payment.status === 'COMPLETED' && '✅ Betald'}
+                            {order.payment.status === 'PENDING' && '⏰ Väntar'}
+                            {order.payment.status === 'PROCESSING' && '⚡ Behandlas'}
+                            {order.payment.status === 'FAILED' && '❌ Misslyckad'}
+                            {order.payment.status === 'CANCELLED' && '🚫 Avbruten'}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
                             {order.payment.paymentMethod}
-                          </div>
+                          </p>
                         </div>
-                      ) : (
-                        <span className="text-sm text-gray-400">Ingen betalning</span>
                       )}
                     </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <Calendar className="w-4 h-4 text-gray-400 mr-2" />
-                        <span className="text-sm text-gray-900">
-                          {new Date(order.createdAt).toLocaleDateString('sv-SE')}
-                        </span>
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                       <button
                         onClick={() => setSelectedOrder(order)}
-                        className="text-primary hover:text-primary-dark flex items-center"
+                        className="text-[#93C560] hover:text-[#84b351] font-medium transition-colors"
                       >
-                        <Eye className="w-4 h-4 mr-1" />
-                        Visa
+                        Visa detaljer
                       </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-
-        {filteredOrders.length === 0 && (
-          <div className="text-center py-12">
-            <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Inga beställningar</h3>
-            <p className="text-gray-500">
-              {statusFilter === 'ALL' 
-                ? 'Inga beställningar ännu.' 
-                : `Inga beställningar med status "${statusFilter}".`
-              }
-            </p>
-          </div>
-        )}
       </div>
+
+      {filteredOrders.length === 0 && (
+        <div className="text-center py-12">
+          <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Inga beställningar</h3>
+          <p className="text-gray-500">
+            {statusFilter === 'ALL' 
+              ? 'Inga beställningar ännu.' 
+              : `Inga beställningar med status "${statusFilter}".`
+            }
+          </p>
+        </div>
+      )}
 
       {/* Order Detail Modal */}
       {selectedOrder && (
