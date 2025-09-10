@@ -163,21 +163,11 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Hero Section with Video */}
-      <WeekHeroWithVideo
-        weekNumber={0}
-        weekTitle="Inställningar"
-        weekSubtitle="Hantera din profil och dina kursinställningar"
-        heroImage="/Ulrika_portratt/udavidssondesktop.png"
-        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
-      />
-
-      {/* Course Navigation - After Hero Section */}
-      <div className="bg-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
-          <CourseNavigation courseType="basics" currentWeek={1} />
-        </div>
-      </div>
+      {/* Top spacer to avoid header overlap */}
+      <div className="h-16 md:h-0" />
+      
+      {/* Course Navigation - At the very top like overview page */}
+      <CourseNavigation courseType="basics" currentWeek={1} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-[#014421] mb-8">Kontoinställningar</h1>

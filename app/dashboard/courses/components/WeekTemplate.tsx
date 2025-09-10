@@ -509,9 +509,15 @@ export default function WeekTemplate({
 
   return (
     <>
-      {/* Welcome Message Box */}
+      {/* Top spacer to avoid header overlap */}
+      <div className="h-16 md:h-0" />
+      
+      {/* Course Navigation - At the very top like overview page */}
+      <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
+
+      {/* Welcome Message Box with Week Documents Combined */}
       <div className="bg-gradient-to-b from-[#F3EFE3] to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -546,63 +552,49 @@ export default function WeekTemplate({
                   </p>
                 ))}
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
 
-      {/* Week Documents - Show only if there are documents for this week */}
-      {weekSpecificDocuments.length > 0 && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-[#014421]/10"
-          >
-            <h3 className="text-xl md:text-2xl font-bold text-[#014421] mb-4">
-              Veckans läsning
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Klicka på dokumenten nedan för att fördjupa din kunskap denna vecka
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {weekSpecificDocuments.map((doc, index) => (
-                <motion.button
-                  key={doc.filename}
-                  onClick={() => openDocument(doc)}
-                  className="bg-gradient-to-br from-[#F3EFE3] to-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 text-left group hover:scale-105 border border-[#014421]/10"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  whileHover={{ x: 5 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="text-3xl group-hover:scale-110 transition-transform">
-                      {doc.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-[#014421] mb-1 group-hover:text-[#116530] transition-colors">
-                        {doc.title}
-                      </h4>
-                      <p className="text-sm text-gray-600">
-                        {doc.description}
-                      </p>
-                    </div>
-                    <ExternalLink className="w-5 h-5 text-[#014421] opacity-0 group-hover:opacity-100 transition-opacity" />
+              {/* Week Documents - Integrated in same box without border */}
+              {weekSpecificDocuments.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="text-xl md:text-2xl font-bold text-[#014421] mb-4">
+                    Veckans läsning
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Klicka på dokumenten nedan för att fördjupa din kunskap denna vecka
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {weekSpecificDocuments.map((doc, index) => (
+                      <motion.button
+                        key={doc.filename}
+                        onClick={() => openDocument(doc)}
+                        className="bg-gradient-to-br from-[#F3EFE3] to-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 text-left group hover:scale-105 border border-[#014421]/10"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 + index * 0.1 }}
+                        whileHover={{ x: 5 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="text-3xl group-hover:scale-110 transition-transform">
+                            {doc.icon}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-bold text-[#014421] mb-1 group-hover:text-[#116530] transition-colors">
+                              {doc.title}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                              {doc.description}
+                            </p>
+                          </div>
+                          <ExternalLink className="w-5 h-5 text-[#014421] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </motion.button>
+                    ))}
                   </div>
-                </motion.button>
-              ))}
+                </div>
+              )}
             </div>
           </motion.div>
-        </div>
-      )}
-
-      {/* Course Navigation */}
-      <div className="bg-white shadow-lg -mt-2">
-        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
-          <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
         </div>
       </div>
 
