@@ -51,7 +51,7 @@ export default function FunctionalEnergyPage() {
     name: 'Functional Energy',
     price: 2295,
     type: 'course' as const,
-    image: '/recept_images_optimized/kokosgrot-med-kanelstekta-applen-card.webp',
+    image: '/recept_images_optimized/havregrynsgrot-med-apelsin-och-kokos-card-medium.webp',
     quantity: 1
   };
 
@@ -161,8 +161,8 @@ export default function FunctionalEnergyPage() {
             <div className="relative group">
               <div className={`transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/recept_images_optimized/kokosgrot-med-kanelstekta-applen-card.webp" 
-                  alt="Functional Energy - Kokosgröt med kanelstekta äpplen" 
+                  src="/recept_images_optimized/havregrynsgrot-med-apelsin-och-kokos-card-medium.webp" 
+                  alt="Functional Energy - Havregrynsgrön med apelsin och kokos" 
                   width={450}
                   height={450}
                   className="rounded-2xl shadow-2xl object-cover"
