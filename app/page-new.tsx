@@ -173,16 +173,15 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  type="button"
-                  onClick={(e) => { e.preventDefault(); console.log('Health test start (button)'); setShowQuiz(true); try { router.replace('/?quiz=1', { scroll: false }); } catch {} }}
+                <Link
+                  href="/?quiz=1"
                   className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
                   style={{ position: 'relative', zIndex: 50, pointerEvents: 'auto' }}
                   aria-label="Starta hälsotest"
                 >
                   Starta Hälsotest
                   <ArrowRight className="w-5 h-5" />
-                </button>
+                </Link>
                 <Link
                   href="/utbildning"
                   className="bg-white/90 border-2 border-white/30 text-gray-700 px-8 py-5 rounded-full font-semibold text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
@@ -278,13 +277,13 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
               >
-                <button
-                  onClick={() => setShowQuiz(true)}
-                  className="group relative bg-primary hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-3 shadow-lg hover:shadow-xl"
+                <Link
+                  href="/?quiz=1"
+                  className="group relative bg-primary hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-3 shadow-lg hover:shadow-xl inline-flex"
                 >
                   <span>Starta hälsotestet</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
+                </Link>
 
                 <div className="mt-6 space-y-2">
                   <input

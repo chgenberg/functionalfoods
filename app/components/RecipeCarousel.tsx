@@ -1,10 +1,9 @@
-'use client';
-
+"use client";
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { motion, useMotionValue, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Clock, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight, Clock, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { optimizeImageUrl } from '@/app/lib/imageOptimization';
 
 interface Recipe {
@@ -12,7 +11,7 @@ interface Recipe {
   title: string;
   slug: string;
   imageUrl: string | null;
-  imageAlt: string | null;
+  imageAlt?: string | null;
   excerpt: string;
   prepTime: string | null;
   categories: string[];
@@ -22,19 +21,14 @@ export default function RecipeCarousel() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
-  const x = useMotionValue(0);
-  const controls = useAnimation();
-
   // Fetch recipes
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const res = await fetch('/api/recipes/random', {
+        const res = await fetch('/api/recipes?featured=true&limit=12&free=true', {
           cache: 'no-store',
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -95,70 +89,98 @@ export default function RecipeCarousel() {
     fetchRecipes();
   }, []);
 
-  // Auto-scroll
+  // Enhanced auto-rotation
   useEffect(() => {
-    if (!isDragging && recipes.length > 0) {
-      intervalRef.current = setInterval(() => {
-        handleNext();
-      }, 4000);
-    }
+    if (!isAutoPlaying || recipes.length === 0) return;
+    
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % recipes.length);
+    }, 3500);
     
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [currentIndex, isDragging, recipes.length]);
+  }, [currentIndex, isAutoPlaying, recipes.length]);
 
   const handlePrevious = () => {
+    setIsAutoPlaying(false);
     setCurrentIndex((prev) => (prev - 1 + recipes.length) % recipes.length);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   const handleNext = () => {
+    setIsAutoPlaying(false);
     setCurrentIndex((prev) => (prev + 1) % recipes.length);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
-  const handleDragStart = () => {
-    setIsDragging(true);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
+  const goToSlide = (index: number) => {
+    setIsAutoPlaying(false);
+    setCurrentIndex(index);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   // Loading skeleton
   if (loading) {
     return (
-      <div className="py-12 md:py-20 overflow-hidden">
+      <section className="py-16 md:py-24 overflow-hidden bg-gradient-to-b from-white via-[#F3EFE3]/30 to-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <div className="h-12 w-64 bg-gray-200 rounded-lg mx-auto mb-4 animate-pulse" />
-            <div className="h-6 w-96 bg-gray-100 rounded mx-auto animate-pulse" />
+            <div className="h-12 w-96 bg-gray-200 rounded-lg mx-auto mb-4 animate-pulse" />
+            <div className="h-6 w-64 bg-gray-100 rounded mx-auto animate-pulse" />
           </div>
           <div className="flex gap-6 justify-center">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="w-[350px] h-[450px] bg-gray-100 rounded-2xl animate-pulse" />
+              <div key={i} className="w-[380px] h-[500px] bg-gray-100 rounded-3xl animate-pulse" />
             ))}
           </div>
         </div>
-      </div>
+      </section>
     );
   }
 
   if (recipes.length === 0) return null;
 
+  // Calculate visible recipes (3 on desktop, 1 on mobile)
+  const visibleCount = 3;
+  const getVisibleRecipes = () => {
+    const visible = [];
+    for (let i = 0; i < visibleCount; i++) {
+      visible.push(recipes[(currentIndex + i) % recipes.length]);
+    }
+    return visible;
+  };
+
   return (
-    <section className="py-12 md:py-20 overflow-hidden bg-gradient-to-b from-[#F3EFE3] to-white">
-      <div className="container mx-auto px-4">
+    <section className="py-16 md:py-24 overflow-hidden bg-gradient-to-b from-white via-[#F3EFE3]/30 to-white relative">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-x-48 -translate-y-48" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl translate-x-48 translate-y-48" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 md:mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4"
+          >
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Gratis recept</span>
+          </motion.div>
+          
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-5xl font-playfair text-[#014421] mb-4"
+            className="text-3xl md:text-5xl font-bold text-gray-800 mb-4"
           >
-            Utforska våra gratis recept
+            Upptäck våra hälsosamma recept
           </motion.h2>
+          
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -166,142 +188,161 @@ export default function RecipeCarousel() {
             transition={{ delay: 0.1 }}
             className="text-lg text-gray-600 max-w-2xl mx-auto"
           >
-            Hälsosamma måltider för varje dag
+            Functional foods för varje måltid - från frukost till middag
           </motion.p>
-          
-          {/* Snabblås button removed as requested */}
         </div>
 
         {/* Carousel Container */}
-        <div className="relative" ref={containerRef}>
-          {/* Navigation Buttons - Desktop */}
+        <div className="relative max-w-[1400px] mx-auto">
+          {/* Navigation Buttons */}
           <button
             onClick={handlePrevious}
-            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur rounded-full items-center justify-center shadow-lg hover:bg-white transition-all -translate-x-6"
-            aria-label="Previous recipe"
+            className="absolute left-0 md:-left-16 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 bg-white shadow-lg rounded-full flex items-center justify-center hover:shadow-xl transition-all group"
+            aria-label="Föregående recept"
           >
-            <ChevronLeft className="w-6 h-6 text-[#014421]" />
+            <ChevronLeft className="w-6 h-6 text-gray-700 group-hover:text-primary transition-colors" />
           </button>
           
           <button
             onClick={handleNext}
-            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur rounded-full items-center justify-center shadow-lg hover:bg-white transition-all translate-x-6"
-            aria-label="Next recipe"
+            className="absolute right-0 md:-right-16 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 bg-white shadow-lg rounded-full flex items-center justify-center hover:shadow-xl transition-all group"
+            aria-label="Nästa recept"
           >
-            <ChevronRight className="w-6 h-6 text-[#014421]" />
+            <ChevronRight className="w-6 h-6 text-gray-700 group-hover:text-primary transition-colors" />
           </button>
 
-          {/* Carousel */}
-          <div 
-            ref={carouselRef}
-            className="overflow-hidden mx-auto max-w-[1200px]"
-          >
-            <motion.div
-              drag="x"
-              dragConstraints={{ left: -((recipes.length - 1) * 380), right: 0 }}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-              animate={{ x: -(currentIndex * 380) }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="flex gap-6 cursor-grab active:cursor-grabbing"
-              style={{ x }}
-            >
-              {recipes.map((recipe, index) => (
-                <motion.div
-                  key={`${recipe.id}-${index}`}
-                  className="flex-shrink-0 w-[350px]"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <Link href={`/kunskapsbank/recept/${recipe.slug}`} className="block group">
-                    <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-[450px] flex flex-col">
-                      {/* Image Container */}
-                      <div className="relative h-[250px] overflow-hidden">
-                        {recipe.imageUrl ? (
-                          <>
-                            <Image 
-                              src={optimizeImageUrl(recipe.imageUrl, 'large', 'landscape')} 
-                              alt={recipe.imageAlt || recipe.title} 
-                              fill 
-                              className="object-cover group-hover:scale-110 transition-transform duration-700"
-                              sizes="350px"
-                              unoptimized={false}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          </>
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-[#014421]/10 to-[#014421]/5 flex items-center justify-center">
-                            <span className="text-6xl opacity-50">🍽️</span>
-                          </div>
-                        )}
-                        
-                        {/* Category Badge */}
-                        {recipe.categories && recipe.categories.length > 0 && (
-                          <div className="absolute top-4 left-4">
-                            <span className="px-3 py-1 bg-white/90 backdrop-blur text-[#014421] text-sm font-medium rounded-full">
-                              {recipe.categories[0]}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Content */}
-                      <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-xl font-semibold text-[#014421] mb-2 line-clamp-2 group-hover:text-[#014421]/80 transition-colors">
-                          {recipe.title}
-                        </h3>
-                        
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">
-                          {recipe.excerpt}
-                        </p>
-                        
-                        <div className="flex items-center justify-between mt-auto">
-                          {recipe.prepTime && (
-                            <div className="flex items-center gap-1 text-sm text-gray-500">
-                              <Clock className="w-4 h-4" />
-                              <span>{recipe.prepTime}</span>
+          {/* Recipe Cards */}
+          <div className="flex justify-center">
+            <div className="flex gap-6 overflow-hidden px-4">
+              <AnimatePresence mode="popLayout">
+                {getVisibleRecipes().map((recipe, index) => (
+                  <motion.div
+                    key={`${recipe.id}-${currentIndex}-${index}`}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8, x: 100 }}
+                    animate={{ 
+                      opacity: index === 1 ? 1 : 0.7,
+                      scale: index === 1 ? 1 : 0.95,
+                      x: 0,
+                      zIndex: index === 1 ? 10 : 1
+                    }}
+                    exit={{ opacity: 0, scale: 0.8, x: -100 }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 30
+                    }}
+                    className={`flex-shrink-0 w-[320px] md:w-[380px] ${
+                      index === 0 ? 'hidden md:block' : ''
+                    } ${
+                      index === 2 ? 'hidden md:block' : ''
+                    }`}
+                  >
+                    <Link href={`/kunskapsbank/recept/${recipe.slug}`} className="block group">
+                      <div className={`bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 h-[480px] md:h-[520px] flex flex-col transform ${
+                        index === 1 ? 'scale-100' : 'scale-95 opacity-80'
+                      }`}>
+                        {/* Image Container */}
+                        <div className="relative h-[280px] md:h-[300px] overflow-hidden">
+                          {recipe.imageUrl ? (
+                            <>
+                              <Image 
+                                src={optimizeImageUrl(recipe.imageUrl, 'large', 'landscape')} 
+                                alt={recipe.imageAlt || recipe.title} 
+                                fill 
+                                className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                sizes="(max-width: 768px) 320px, 380px"
+                                priority={index === 1}
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            </>
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                              <span className="text-7xl opacity-50">🥗</span>
                             </div>
                           )}
                           
-                          <span className="text-[#014421] font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                            Läs mer
-                            <ArrowRight className="w-4 h-4" />
-                          </span>
+                          {/* Category Badge */}
+                          {recipe.categories && recipe.categories.length > 0 && (
+                            <div className="absolute top-4 left-4">
+                              <span className="px-4 py-2 bg-white/95 backdrop-blur-sm text-primary text-sm font-semibold rounded-full shadow-md">
+                                {recipe.categories[0]}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Free badge */}
+                          <div className="absolute top-4 right-4">
+                            <span className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-md">
+                              GRATIS
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {/* Content */}
+                        <div className="p-6 flex-1 flex flex-col">
+                          <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+                            {recipe.title}
+                          </h3>
+                          
+                          <p className="text-gray-600 text-sm md:text-base mb-4 line-clamp-2 flex-1">
+                            {recipe.excerpt}
+                          </p>
+                          
+                          <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                            {recipe.prepTime && (
+                              <div className="flex items-center gap-2 text-sm text-gray-500">
+                                <Clock className="w-4 h-4" />
+                                <span>{recipe.prepTime}</span>
+                              </div>
+                            )}
+                            
+                            <span className="text-primary font-semibold text-sm group-hover:gap-3 transition-all inline-flex items-center gap-2">
+                              Se recept
+                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           </div>
 
-          {/* Dots Indicator */}
+          {/* Progress Dots */}
           <div className="flex justify-center gap-2 mt-8">
-            {recipes.slice(0, Math.min(recipes.length, 8)).map((_, index) => (
+            {recipes.slice(0, Math.min(recipes.length, 10)).map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex % Math.min(recipes.length, 8)
-                    ? 'w-8 bg-[#014421]'
-                    : 'bg-gray-300 hover:bg-gray-400'
+                onClick={() => goToSlide(index)}
+                className={`transition-all duration-300 ${
+                  index === currentIndex % Math.min(recipes.length, 10)
+                    ? 'w-8 h-2 bg-primary rounded-full'
+                    : 'w-2 h-2 bg-gray-300 hover:bg-gray-400 rounded-full'
                 }`}
-                aria-label={`Go to recipe ${index + 1}`}
+                aria-label={`Gå till recept ${index + 1}`}
               />
             ))}
           </div>
         </div>
 
-        {/* Mobile swipe hint */}
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="text-center text-sm text-gray-500 mt-4 md:hidden"
+        {/* View All Button */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
         >
-          Svep för att se fler recept →
-        </motion.p>
+          <Link 
+            href="/kunskapsbank/recept"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl group"
+          >
+            <span>Se alla gratis recept</span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
