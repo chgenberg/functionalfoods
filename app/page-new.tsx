@@ -199,6 +199,181 @@ export default function Home() {
 
       <RecipeCarousel />
 
+      {/* Health Test Section with Interactive Frame */}
+      <section className="py-20 px-4 bg-gradient-to-b from-white to-[#F3EFE3]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left content */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <div>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-2">
+                  Ditt personliga
+                </h2>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary">
+                  HÄLSOTEST
+                </h2>
+                <p className="text-lg md:text-xl text-gray-600 mt-4">
+                  2 minuter till bättre hälsa
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  className="flex items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+                    <span className="text-2xl">🎯</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Personliga råd</h3>
+                    <p className="text-sm text-gray-600">Anpassade rekommendationer just för dig</p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  className="flex items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                    <span className="text-2xl">🧬</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Vetenskaplig grund</h3>
+                    <p className="text-sm text-gray-600">Baserat på forskning inom functional foods</p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center">
+                    <span className="text-2xl">⚡</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Snabbt resultat</h3>
+                    <p className="text-sm text-gray-600">Få dina resultat direkt</p>
+                  </div>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+              >
+                <button
+                  onClick={() => setShowQuiz(true)}
+                  className="group relative bg-primary hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-3 shadow-lg hover:shadow-xl"
+                >
+                  <span>Starta hälsotestet</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                <div className="mt-6 space-y-2">
+                  <input
+                    type="text"
+                    placeholder="Namn (frivilligt)"
+                    className="w-full max-w-sm px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border border-gray-200 focus:border-primary focus:outline-none transition-colors"
+                  />
+                  <p className="text-sm text-gray-500">
+                    Kostnadsfritt • Inga mejl krävs
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Right side - Interactive image frame */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="relative group cursor-pointer">
+                {/* Animated background gradient */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-blue-500/20 to-primary/20 rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition-opacity animate-pulse" />
+                
+                {/* Main container with minimalist frame */}
+                <div className="relative">
+                  {/* Subtle shadow frame */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 rounded-3xl transform translate-x-2 translate-y-2" />
+                  
+                  {/* Main image container */}
+                  <div className="relative overflow-hidden rounded-3xl bg-white p-1">
+                    {/* Inner frame with gradient border */}
+                    <div className="relative overflow-hidden rounded-[22px] bg-gradient-to-br from-primary via-green-600 to-primary p-[2px]">
+                      <div className="relative overflow-hidden rounded-[20px] bg-white">
+                        <Image
+                          src="/Ulrika_portratt/Ulrika3.jpg"
+                          alt="Ulrika Davidsson"
+                          width={600}
+                          height={700}
+                          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                          priority
+                        />
+                        
+                        {/* Subtle gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Interactive corner accents */}
+                  <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-primary rounded-tl-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-primary rounded-tr-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-primary rounded-bl-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-primary rounded-br-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  {/* Floating UI elements */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                    className="absolute -top-4 -right-4 bg-white rounded-full p-3 shadow-lg"
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      2
+                    </div>
+                    <p className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-600 whitespace-nowrap">
+                      minuter
+                    </p>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                    className="absolute bottom-8 -left-4 bg-white rounded-2xl px-4 py-2 shadow-lg"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <p className="text-sm font-medium text-gray-700">AI-driven analys</p>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-12 md:py-20 px-4 bg-[#F3EFE3]">
         <div className="max-w-6xl mx-auto">
           <motion.div
