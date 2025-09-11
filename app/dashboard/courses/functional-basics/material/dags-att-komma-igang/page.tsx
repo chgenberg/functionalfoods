@@ -286,7 +286,7 @@ export default function DagsAttKommaIgangPage() {
           transition={{ delay: 0.6 }}
           className="bg-gradient-to-r from-primary to-accent text-white rounded-2xl shadow-xl p-8 mb-8"
         >
-          <h2 className="text-2xl font-bold mb-4">Tänk positivt! 🌟</h2>
+                          <h2 className="text-2xl font-bold mb-4">Tänk positivt! <span className="dashboard-emoji">🌟</span></h2>
           <p className="text-lg leading-relaxed mb-6">
             Att du både vill och har lust är viktigt för att du ska lyckas. Ha roligt när du handlar råvaror och lagar Functional Foods! 
             Gör det lustfyllt och intressant att följa kroppens förändring både kroppsligt och mentalt.

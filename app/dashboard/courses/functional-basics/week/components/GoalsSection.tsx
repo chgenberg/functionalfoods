@@ -258,7 +258,7 @@ export function GoalsSection({ weekNumber }: GoalsSectionProps) {
                 className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:border-orange-400 transition-all group gap-3"
               >
                 <div className="flex items-start sm:items-center space-x-3 flex-1">
-                  <div className="text-xl sm:text-2xl flex-shrink-0">{predefinedGoal.icon}</div>
+                  <div className="dashboard-emoji flex-shrink-0">{predefinedGoal.icon}</div>
                   <div className="flex-1 min-w-0">
                     <h5 className="font-medium text-gray-800 group-hover:text-gray-900 text-sm sm:text-base break-words">
                       {predefinedGoal.title.replace(predefinedGoal.icon, '').trim()}

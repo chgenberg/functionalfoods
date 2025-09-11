@@ -165,7 +165,7 @@ export default function FunctionalEnergyKostschemaPage() {
                     {/* Breakfast */}
                     <div className="bg-yellow-50 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">{getMealIcon('breakfast')}</span>
+                        <span className="dashboard-emoji">{getMealIcon('breakfast')}</span>
                         <h4 className="font-medium text-gray-700">Frukost</h4>
                       </div>
                       <p className="text-sm text-gray-600">{meals.breakfast.name}</p>
@@ -174,7 +174,7 @@ export default function FunctionalEnergyKostschemaPage() {
                     {/* Lunch */}
                     <div className="bg-orange-50 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">{getMealIcon('lunch')}</span>
+                        <span className="dashboard-emoji">{getMealIcon('lunch')}</span>
                         <h4 className="font-medium text-gray-700">Lunch</h4>
                       </div>
                       <p className="text-sm text-gray-600">{meals.lunch.name}</p>
@@ -183,7 +183,7 @@ export default function FunctionalEnergyKostschemaPage() {
                     {/* Dinner */}
                     <div className="bg-blue-50 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">{getMealIcon('dinner')}</span>
+                        <span className="dashboard-emoji">{getMealIcon('dinner')}</span>
                         <h4 className="font-medium text-gray-700">Middag</h4>
                       </div>
                       <p className="text-sm text-gray-600">{meals.dinner.name}</p>

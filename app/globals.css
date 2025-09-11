@@ -11,6 +11,15 @@
   font-variant-emoji: emoji;
 }
 
+/* Unified emoji styling for dashboard components */
+.dashboard-emoji {
+  @apply text-2xl md:text-3xl;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji', 'EmojiSymbols', sans-serif;
+  font-variant-emoji: emoji;
+  line-height: 1;
+  display: inline-block;
+}
+
 /* Förbättrad emoji-rendering för alla element */
 * {
   font-variant-emoji: emoji;

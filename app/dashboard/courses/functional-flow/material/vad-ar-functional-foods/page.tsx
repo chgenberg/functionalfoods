@@ -289,7 +289,7 @@ export default function VadArFunctionalFoodsPage() {
           transition={{ delay: 0.6 }}
           className="bg-gradient-to-r from-primary to-accent text-white rounded-2xl shadow-xl p-8 mb-8"
         >
-          <h2 className="text-2xl font-bold mb-4">Testa din kunskap! 🎯</h2>
+                          <h2 className="text-2xl font-bold mb-4">Testa din kunskap! <span className="dashboard-emoji">🎯</span></h2>
           
           {!showQuiz ? (
             <div>

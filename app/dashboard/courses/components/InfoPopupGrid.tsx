@@ -292,7 +292,7 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              <div className="text-3xl mb-2 group-hover:scale-110 transition-transform emoji-support">
+              <div className="dashboard-emoji mb-2 group-hover:scale-110 transition-transform">
                 {item.icon}
               </div>
               <h4 className="font-semibold text-sm text-[#014421] mb-1 line-clamp-2">

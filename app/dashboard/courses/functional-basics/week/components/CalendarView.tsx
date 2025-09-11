@@ -201,7 +201,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
           {/* Lunch */}
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">☀️</span>
+                              <span className="dashboard-emoji">☀️</span>
               <h5 className="font-semibold text-gray-900">Lunch</h5>
               <Clock className="w-4 h-4 text-gray-500 ml-auto" />
               <span className="text-sm text-gray-500">12:00</span>
