@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
         coverImage,
         published: published || false,
         publishedAt: published ? new Date() : null,
-        authorId: authResult.isDemo ? 'demo-admin' : authResult.userId
+        authorId: authResult.userId
       },
       include: {
         author: {

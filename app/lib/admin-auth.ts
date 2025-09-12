@@ -55,8 +55,33 @@ export async function requireAdminAuth(request: NextRequest) {
 // Helper to create an admin user if none exists
 export async function ensureAdminUserExists() {
   try {
+    // Check if demo admin exists
+    const demoAdmin = await prisma.user.findUnique({
+      where: { id: 'demo-admin' }
+    });
+
+    if (!demoAdmin) {
+      // Create demo admin user
+      await prisma.user.create({
+        data: {
+          id: 'demo-admin',
+          email: 'admin@functionalfoods.se',
+          password: 'demo', // Not used for demo account
+          name: 'Demo Admin',
+          role: 'admin',
+          isActive: true
+        }
+      });
+      
+      console.log('✅ Demo admin user created');
+    }
+
+    // Check if any other admin exists
     const adminExists = await prisma.user.findFirst({
-      where: { role: 'admin' }
+      where: { 
+        role: 'admin',
+        id: { not: 'demo-admin' }
+      }
     });
 
     if (!adminExists) {
@@ -66,7 +91,7 @@ export async function ensureAdminUserExists() {
       
       await prisma.user.create({
         data: {
-          email: 'admin@functionalfoods.se',
+          email: 'real-admin@functionalfoods.se',
           password: hashedPassword,
           name: 'Admin',
           role: 'admin',
@@ -78,5 +103,7 @@ export async function ensureAdminUserExists() {
     }
   } catch (error) {
     console.error('Error ensuring admin user exists:', error);
+  } finally {
+    await prisma.$disconnect();
   }
 } 

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withRateLimit, apiRateLimit } from '@/app/lib/rate-limit';
-import { logInfo, logError } from '@/app/lib/monitoring';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,112 +9,79 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   // Skip during build process
   if (process.env.NEXT_PHASE === 'phase-production-build') {
-    return NextResponse.json({ payments: [] });
+    return NextResponse.json({ 
+      payments: [],
+      summary: { totalAmount: 0, successful: 0, pending: 0, failed: 0 }
+    });
   }
 
-  return withRateLimit(request, apiRateLimit, async () => {
-    try {
-      // TODO: Add admin authentication check
-      
-      const { searchParams } = new URL(request.url);
-      const limit = parseInt(searchParams.get('limit') || '50');
-      const startingAfter = searchParams.get('starting_after');
-      const status = searchParams.get('status'); // succeeded, pending, failed, etc.
+  const authResult = await requireAdminAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
 
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
-      logInfo('Fetching Stripe payments', { limit, status });
-
-      // Fetch payment intents from Stripe
-      const paymentIntentsParams: any = {
-        limit: Math.min(limit, 100), // Stripe max is 100
-        expand: ['data.customer', 'data.invoice']
-      };
-
-      if (startingAfter) {
-        paymentIntentsParams.starting_after = startingAfter;
-      }
-
-      const paymentIntents = await stripe.paymentIntents.list(paymentIntentsParams);
-
-      // Fetch charges for more detailed payment info
-      const charges = await stripe.charges.list({
-        limit: Math.min(limit, 100),
-        expand: ['data.customer', 'data.payment_method']
-      });
-
-      // Combine and format data
-      const payments = paymentIntents.data.map((pi: any) => {
-        // Find corresponding charge
-        const charge = charges.data.find((c: any) => c.payment_intent === pi.id);
-        
-        return {
-          id: pi.id,
-          amount: pi.amount / 100, // Convert from cents
-          currency: pi.currency.toUpperCase(),
-          status: pi.status,
-          created: new Date(pi.created * 1000).toISOString(),
-          description: pi.description,
-          customer: {
-            email: pi.receipt_email || charge?.billing_details?.email || 'Ingen email',
-            name: charge?.billing_details?.name || 'Ingen namn'
-          },
-          paymentMethod: {
-            type: charge?.payment_method_details?.type || 'Okänd',
-            card: charge?.payment_method_details?.card ? {
-              brand: charge.payment_method_details.card.brand,
-              last4: charge.payment_method_details.card.last4,
-              exp_month: charge.payment_method_details.card.exp_month,
-              exp_year: charge.payment_method_details.card.exp_year
-            } : null
-          },
-          metadata: pi.metadata,
-          receiptUrl: charge?.receipt_url,
-          refunded: charge?.refunded || false,
-          refundAmount: charge?.amount_refunded ? charge.amount_refunded / 100 : 0,
-          failureCode: pi.last_payment_error?.code,
-          failureMessage: pi.last_payment_error?.message
-        };
-      });
-
-      // Filter by status if requested
-      const filteredPayments = status 
-        ? payments.filter((p: any) => p.status === status)
-        : payments;
-
-      // Get summary statistics
-      const summary = {
-        total: paymentIntents.data.length,
-        successful: payments.filter((p: any) => p.status === 'succeeded').length,
-        pending: payments.filter((p: any) => p.status === 'processing' || p.status === 'requires_action').length,
-        failed: payments.filter((p: any) => p.status === 'failed' || p.status === 'canceled').length,
-        totalAmount: payments
-          .filter((p: any) => p.status === 'succeeded')
-          .reduce((sum: number, p: any) => sum + p.amount, 0),
-        refundedAmount: payments.reduce((sum: number, p: any) => sum + p.refundAmount, 0)
-      };
-
-      logInfo('Stripe payments fetched successfully', { 
-        count: filteredPayments.length,
-        summary 
-      });
-
+  try {
+    const { searchParams } = new URL(request.url);
+    const limit = parseInt(searchParams.get('limit') || '50');
+    
+    // Check if Stripe is configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.warn('Stripe not configured, returning mock data');
       return NextResponse.json({
-        payments: filteredPayments,
-        summary,
-        hasMore: paymentIntents.has_more,
-        nextCursor: paymentIntents.data.length > 0 ? paymentIntents.data[paymentIntents.data.length - 1].id : null
+        payments: [],
+        summary: { totalAmount: 0, successful: 0, pending: 0, failed: 0 }
       });
-
-    } catch (error) {
-      logError('Failed to fetch Stripe payments', { error });
-      
-      return NextResponse.json({
-        error: 'Failed to fetch payment data',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      }, { status: 500 });
     }
-  });
+
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+    console.log('Fetching Stripe payments...');
+
+    // Fetch payment intents from Stripe
+    const paymentIntents = await stripe.paymentIntents.list({
+      limit: Math.min(limit, 100),
+      expand: ['data.customer']
+    });
+
+    // Format payments data
+    const payments = paymentIntents.data.map((pi: any) => ({
+      id: pi.id,
+      amount: pi.amount / 100, // Convert from cents
+      currency: pi.currency.toUpperCase(),
+      status: pi.status,
+      created: new Date(pi.created * 1000).toISOString(),
+      description: pi.description || 'No description',
+      customer: {
+        email: pi.receipt_email || 'No email',
+        name: pi.customer?.name || 'No name'
+      },
+      metadata: pi.metadata
+    }));
+
+    // Calculate summary statistics
+    const summary = {
+      totalAmount: payments
+        .filter((p: any) => p.status === 'succeeded')
+        .reduce((sum: number, p: any) => sum + p.amount, 0),
+      successful: payments.filter((p: any) => p.status === 'succeeded').length,
+      pending: payments.filter((p: any) => p.status === 'processing' || p.status === 'requires_action').length,
+      failed: payments.filter((p: any) => p.status === 'failed' || p.status === 'canceled').length
+    };
+
+    console.log('Stripe payments fetched successfully:', { count: payments.length });
+
+    return NextResponse.json({
+      payments,
+      summary
+    });
+
+  } catch (error) {
+    console.error('Failed to fetch Stripe payments:', error);
+    
+    return NextResponse.json({
+      error: 'Failed to fetch payment data',
+      payments: [],
+      summary: { totalAmount: 0, successful: 0, pending: 0, failed: 0 }
+    }, { status: 500 });
+  }
 }
 
 /**
@@ -127,60 +93,65 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: 'Not available during build' });
   }
 
-  return withRateLimit(request, apiRateLimit, async () => {
-    try {
-      // TODO: Add admin authentication check
-      
-      const { paymentIntentId, amount, reason = 'requested_by_customer' } = await request.json();
+  const authResult = await requireAdminAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
 
-      if (!paymentIntentId) {
-        return NextResponse.json({
-          error: 'Payment Intent ID is required'
-        }, { status: 400 });
-      }
+  try {
+    const { paymentIntentId, amount, reason = 'requested_by_customer' } = await request.json();
 
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
-      logInfo('Processing refund request', { paymentIntentId, amount, reason });
-
-      // Create refund
-      const refundParams: any = {
-        payment_intent: paymentIntentId,
-        reason
-      };
-
-      if (amount) {
-        refundParams.amount = Math.round(amount * 100); // Convert to cents
-      }
-
-      const refund = await stripe.refunds.create(refundParams);
-
-      logInfo('Refund processed successfully', {
-        refundId: refund.id,
-        amount: refund.amount / 100,
-        status: refund.status
-      });
-
+    if (!paymentIntentId) {
       return NextResponse.json({
-        success: true,
-        refund: {
-          id: refund.id,
-          amount: refund.amount / 100,
-          currency: refund.currency.toUpperCase(),
-          status: refund.status,
-          created: new Date(refund.created * 1000).toISOString(),
-          reason: refund.reason
-        },
-        message: `Återbetalning på ${refund.amount / 100} ${refund.currency.toUpperCase()} har skapats`
-      });
+        error: 'Payment Intent ID is required'
+      }, { status: 400 });
+    }
 
-    } catch (error) {
-      logError('Refund processing failed', { error });
-
+    if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json({
-        error: 'Failed to process refund',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: 'Stripe not configured'
       }, { status: 500 });
     }
-  });
+
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+    console.log('Processing refund request:', { paymentIntentId, amount, reason });
+
+    // Create refund
+    const refundParams: any = {
+      payment_intent: paymentIntentId,
+      reason
+    };
+
+    if (amount) {
+      refundParams.amount = Math.round(amount * 100); // Convert to cents
+    }
+
+    const refund = await stripe.refunds.create(refundParams);
+
+    console.log('Refund processed successfully:', {
+      refundId: refund.id,
+      amount: refund.amount / 100,
+      status: refund.status
+    });
+
+    return NextResponse.json({
+      success: true,
+      refund: {
+        id: refund.id,
+        amount: refund.amount / 100,
+        currency: refund.currency.toUpperCase(),
+        status: refund.status,
+        created: new Date(refund.created * 1000).toISOString(),
+        reason: refund.reason
+      },
+      message: `Återbetalning på ${refund.amount / 100} ${refund.currency.toUpperCase()} har skapats`
+    });
+
+  } catch (error) {
+    console.error('Refund processing failed:', error);
+
+    return NextResponse.json({
+      error: 'Failed to process refund',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
 } 
