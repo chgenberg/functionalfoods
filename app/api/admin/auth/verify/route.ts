@@ -13,7 +13,7 @@ export async function GET() {
 
     // Verify the token
     try {
-      const decoded = jwt.verify(token.value, process.env.JWT_SECRET!);
+      const decoded = jwt.verify(token.value, process.env.JWT_SECRET || 'functional-foods-secret-2025');
       return NextResponse.json({ authenticated: true, user: decoded });
     } catch (error) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });

@@ -104,7 +104,7 @@ export default function AdminOrdersPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#014421] flex items-center gap-3">
-          <span className="text-3xl">🛒</span> Beställningar
+                      Beställningar
         </h1>
         <p className="mt-2 text-gray-600">Hantera alla beställningar och betalningar</p>
       </div>

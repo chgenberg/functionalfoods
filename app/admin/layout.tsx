@@ -62,18 +62,18 @@ export default function AdminLayout({
   };
 
   const menuItems = [
-    { icon: Home, label: 'Dashboard', href: '/admin', emoji: '🏠' },
-    { icon: FileText, label: 'Blogg', href: '/admin/blog', emoji: '📝' },
-    { icon: BookOpen, label: 'Recept', href: '/admin/recipes', emoji: '🥗' },
-    { icon: BookOpen, label: 'Kurser', href: '/admin/courses', emoji: '📚' },
-    { icon: Users, label: 'Användare', href: '/admin/users', emoji: '👥' },
-    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders', emoji: '🛒' },
-    { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews', emoji: '⭐' },
-    { icon: Tag, label: 'Kuponger', href: '/admin/coupons', emoji: '🎟️' },
-    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales', emoji: '📊' },
-    { icon: Image, label: 'Media', href: '/admin/media', emoji: '🖼️' },
-    { icon: Settings, label: 'Inställningar', href: '/admin/settings', emoji: '⚙️' },
-    { icon: Eye, label: 'Debug', href: '/admin/debug', emoji: '🔍' },
+    { icon: Home, label: 'Dashboard', href: '/admin' },
+    { icon: FileText, label: 'Blogg', href: '/admin/blog' },
+    { icon: BookOpen, label: 'Recept', href: '/admin/recipes' },
+    { icon: BookOpen, label: 'Kurser', href: '/admin/courses' },
+    { icon: Users, label: 'Användare', href: '/admin/users' },
+    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders' },
+    { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews' },
+    { icon: Tag, label: 'Kuponger', href: '/admin/coupons' },
+    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales' },
+    { icon: Image, label: 'Media', href: '/admin/media' },
+    { icon: Settings, label: 'Inställningar', href: '/admin/settings' },
+    { icon: Eye, label: 'Debug', href: '/admin/debug' },
   ];
 
   // Don't render layout on login page
@@ -84,7 +84,7 @@ export default function AdminLayout({
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F3EFE3] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -94,7 +94,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F1E8]">
+    <div className="min-h-screen bg-[#F3EFE3]">
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
@@ -116,11 +116,11 @@ export default function AdminLayout({
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-6 border-b border-[#F3EFE3]">
-            <h1 className="text-2xl font-bold text-[#014421] flex items-center gap-2">
-              <span className="text-2xl">🌱</span> Admin Panel
+          <div className="p-6 border-b border-[#F3EFE3] bg-gradient-to-b from-white to-[#F3EFE3]/20">
+            <h1 className="text-2xl font-bold text-[#014421]">
+              Admin Panel
             </h1>
-            <p className="text-sm text-gray-600 mt-1">Functional Foods</p>
+            <p className="text-sm text-[#014421]/70 mt-1">Functional Foods</p>
           </div>
 
           {/* Navigation */}
@@ -138,13 +138,13 @@ export default function AdminLayout({
                       className={`
                         flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
                         ${isActive 
-                          ? 'bg-[#93C560]/20 text-[#014421] shadow-sm border border-[#93C560]/30' 
-                          : 'text-gray-700 hover:bg-[#F3EFE3] hover:text-[#014421]'
+                          ? 'bg-primary/20 text-primary shadow-sm border border-primary/30' 
+                          : 'text-gray-700 hover:bg-primary/10 hover:text-primary'
                         }
                       `}
                       onClick={() => setIsSidebarOpen(false)}
                     >
-                      <span className="text-xl">{item.emoji}</span>
+                      <Icon className="w-5 h-5" />
                       <span className="font-medium">{item.label}</span>
                     </Link>
                   </li>

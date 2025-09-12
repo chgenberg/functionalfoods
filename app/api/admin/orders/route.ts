@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 const prisma = new PrismaClient();
 
@@ -11,9 +12,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json([]);
   }
 
+  const authResult = await requireAdminAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
+
   try {
-    // Simple admin check - in production, add proper auth
-    // For now, just fetch orders
     
     const orders = await prisma.order.findMany({
       include: {

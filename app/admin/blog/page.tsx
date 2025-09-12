@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Plus, Search, Edit3, Trash2, Eye, Tag, User, Calendar, FileText, Clock } from 'lucide-react';
+import { Plus, Search, Edit3, Trash2, Eye, Tag, User, Calendar, FileText, Clock, Zap } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -46,9 +46,14 @@ export default function AdminBlogPage() {
         params.append('search', searchTerm);
       }
 
-      const response = await fetch(`/api/blog?${params}`);
-      const data = await response.json();
-      setPosts(data.posts || []);
+      const response = await fetch(`/api/admin/blog?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data.posts || []);
+      } else {
+        console.error('Failed to fetch posts');
+        setPosts([]);
+      }
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
@@ -62,7 +67,7 @@ export default function AdminBlogPage() {
     }
 
     try {
-      const response = await fetch(`/api/blog/${id}`, {
+      const response = await fetch(`/api/admin/blog/${id}`, {
         method: 'DELETE'
       });
 
@@ -101,8 +106,8 @@ export default function AdminBlogPage() {
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-[#014421] mb-2 flex items-center gap-3">
-              <span className="text-3xl">📝</span> Blogghantering
+            <h1 className="text-3xl font-bold text-[#014421] mb-2">
+              Blogghantering
             </h1>
             <p className="text-gray-600">Hantera artiklar och innehåll</p>
           </div>
@@ -111,7 +116,7 @@ export default function AdminBlogPage() {
               href="/admin/blog/auto-generator" 
               className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-[#93C560] to-[#84b351] text-white px-5 py-3 rounded-xl hover:from-[#84b351] hover:to-[#93C560] transition-all shadow-md hover:shadow-lg"
             >
-              <span className="text-lg">🤖</span>
+              <Zap className="w-5 h-5" />
               <span className="hidden sm:inline">AI Generator</span>
               <span className="sm:hidden">AI</span>
             </Link>
@@ -140,7 +145,7 @@ export default function AdminBlogPage() {
                 <p className="text-2xl font-bold text-[#014421]">{posts.length}</p>
               </div>
               <div className="w-12 h-12 bg-[#FF7E70]/20 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">📄</span>
+                <FileText className="w-6 h-6 text-[#FF7E70]" />
               </div>
             </div>
           </motion.div>

@@ -1,9 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const authResult = await requireAdminAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
   // Skip during build process
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     return NextResponse.json({
@@ -85,5 +88,7 @@ export async function GET() {
   } catch (error) {
     console.error('Dashboard stats error:', error);
     return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 } 

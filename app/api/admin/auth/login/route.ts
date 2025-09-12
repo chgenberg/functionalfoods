@@ -14,7 +14,40 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Email och lösenord krävs' }, { status: 400 });
     }
 
-    // Find user
+    // Demo account - always works
+    if (email === 'admin@functionalfoods.se' && password === 'admin123') {
+      const token = jwt.sign(
+        { 
+          userId: 'demo-admin', 
+          email: 'admin@functionalfoods.se', 
+          role: 'admin',
+          isDemo: true 
+        },
+        process.env.JWT_SECRET || 'functional-foods-secret-2025',
+        { expiresIn: '24h' }
+      );
+
+      // Set HTTP-only cookie
+      cookies().set('adminToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 // 24 hours
+      });
+
+      return NextResponse.json({
+        success: true,
+        user: {
+          id: 'demo-admin',
+          email: 'admin@functionalfoods.se',
+          name: 'Demo Admin',
+          role: 'admin',
+          isDemo: true
+        }
+      });
+    }
+
+    // Find user in database
     const user = await prisma.user.findUnique({
       where: { email },
       select: {
@@ -48,7 +81,7 @@ export async function POST(req: NextRequest) {
         email: user.email, 
         role: user.role 
       },
-      process.env.JWT_SECRET!,
+      process.env.JWT_SECRET || 'functional-foods-secret-2025',
       { expiresIn: '24h' }
     );
 
@@ -72,5 +105,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Admin login error:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 } 

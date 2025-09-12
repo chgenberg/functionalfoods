@@ -107,10 +107,10 @@ export default function AdminDashboard() {
   };
 
   const quickActions = [
-    { icon: Plus, label: 'Nytt blogginlägg', href: '/admin/blog/new', color: 'bg-blue-500' },
-    { icon: Plus, label: 'Nytt recept', href: '/admin/recipes/new', color: 'bg-green-500' },
-    { icon: Users, label: 'Hantera kunder', href: '/admin/users', color: 'bg-purple-500' },
-    { icon: ShoppingCart, label: 'Se ordrar', href: '/admin/orders', color: 'bg-orange-500' },
+    { icon: Plus, label: 'Nytt blogginlägg', href: '/admin/blog/new', color: 'bg-primary' },
+    { icon: Plus, label: 'Nytt recept', href: '/admin/recipes/new', color: 'bg-[#93C560]' },
+    { icon: Users, label: 'Hantera kunder', href: '/admin/users', color: 'bg-[#FF7E70]' },
+    { icon: ShoppingCart, label: 'Se ordrar', href: '/admin/orders', color: 'bg-[#014421]' },
   ];
 
   // Update loading screen
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Laddar statistik...</p>
         </div>
       </div>
@@ -129,8 +129,8 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#F3EFE3]">
-        <h1 className="text-3xl font-bold text-[#014421] flex items-center gap-3">
-          <span className="text-3xl">✨</span> Välkommen tillbaka!
+        <h1 className="text-3xl font-bold text-[#014421]">
+          Välkommen tillbaka!
         </h1>
         <p className="text-gray-600 mt-2">Här är en översikt av din verksamhet</p>
       </div>
@@ -173,7 +173,7 @@ export default function AdminDashboard() {
             <div className="w-12 h-12 bg-[#93C560]/20 rounded-xl flex items-center justify-center">
               <Users className="w-6 h-6 text-[#93C560]" />
             </div>
-            <span className="text-2xl">👥</span>
+
           </div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">Totalt antal användare</h3>
           <p className="text-2xl font-bold text-[#014421]">{stats.totalUsers.toLocaleString('sv-SE')}</p>
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
             <div className="w-12 h-12 bg-[#FF7E70]/20 rounded-xl flex items-center justify-center">
               <GraduationCap className="w-6 h-6 text-[#FF7E70]" />
             </div>
-            <span className="text-2xl">📚</span>
+
           </div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">Aktiva kurser</h3>
           <p className="text-2xl font-bold text-[#014421]">{stats.activeCourses}</p>
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
             <div className="w-12 h-12 bg-[#93C560]/20 rounded-xl flex items-center justify-center">
               <BookOpen className="w-6 h-6 text-[#93C560]" />
             </div>
-            <span className="text-2xl">🥗</span>
+
           </div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">Totalt antal recept</h3>
           <p className="text-2xl font-bold text-[#014421]">{stats.totalRecipes}</p>
@@ -260,7 +260,7 @@ export default function AdminDashboard() {
           className="bg-white rounded-2xl p-6 shadow-sm border border-[#F3EFE3]"
         >
           <h2 className="text-xl font-bold text-[#014421] mb-4 flex items-center gap-2">
-            <span className="text-xl">🛒</span> Senaste ordrar
+            Senaste ordrar
           </h2>
           <div className="space-y-4">
             {[1, 2, 3].map((_, i) => (
@@ -292,7 +292,7 @@ export default function AdminDashboard() {
           className="bg-white rounded-2xl p-6 shadow-sm border border-[#F3EFE3]"
         >
           <h2 className="text-xl font-bold text-[#014421] mb-4 flex items-center gap-2">
-            <span className="text-xl">⭐</span> Populära recept
+            Populära recept
           </h2>
           <div className="space-y-4">
             {[
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
                   <p className="font-medium text-[#014421]">{recipe.name}</p>
                   <p className="text-sm text-gray-600">{recipe.views} visningar</p>
                 </div>
-                <span className="text-2xl">🥗</span>
+                                  <BookOpen className="w-6 h-6 text-[#93C560]" />
               </div>
             ))}
           </div>
