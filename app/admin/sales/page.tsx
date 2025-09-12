@@ -28,7 +28,7 @@ interface StripePayment {
     email: string;
     name: string;
   };
-  paymentMethod: {
+  paymentMethod?: {
     type: string;
     card?: {
       brand: string;
@@ -149,7 +149,7 @@ export default function AdminSalesPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">💳 Försäljning & Betalningar</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Försäljning & Betalningar</h1>
             <p className="mt-2 text-gray-600">Live-data från Stripe betalningssystem</p>
           </div>
           
@@ -339,10 +339,10 @@ export default function AdminSalesPage() {
                     
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 capitalize">
-                        {payment.paymentMethod.type}
-                        {payment.paymentMethod.card && (
+                        {payment.paymentMethod?.type || 'Okänd'}
+                        {payment.paymentMethod?.card && (
                           <div className="text-xs text-gray-500">
-                            {payment.paymentMethod.card.brand.toUpperCase()} •••• {payment.paymentMethod.card.last4}
+                            {payment.paymentMethod.card.brand?.toUpperCase() || ''} •••• {payment.paymentMethod.card.last4}
                           </div>
                         )}
                       </div>
@@ -452,14 +452,14 @@ export default function AdminSalesPage() {
                       
                       <div className="flex justify-between">
                         <span className="text-gray-600">Betalmetod:</span>
-                        <span className="font-medium capitalize">{selectedPayment.paymentMethod.type}</span>
+                        <span className="font-medium capitalize">{selectedPayment.paymentMethod?.type || 'Okänd'}</span>
                       </div>
                       
-                      {selectedPayment.paymentMethod.card && (
+                      {selectedPayment.paymentMethod?.card && (
                         <div className="flex justify-between">
                           <span className="text-gray-600">Kort:</span>
                           <span className="font-mono">
-                            {selectedPayment.paymentMethod.card.brand.toUpperCase()} •••• {selectedPayment.paymentMethod.card.last4}
+                            {selectedPayment.paymentMethod.card.brand?.toUpperCase() || ''} •••• {selectedPayment.paymentMethod.card.last4}
                           </span>
                         </div>
                       )}

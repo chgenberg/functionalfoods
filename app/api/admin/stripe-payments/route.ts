@@ -50,10 +50,16 @@ export async function GET(request: NextRequest) {
       created: new Date(pi.created * 1000).toISOString(),
       description: pi.description || 'No description',
       customer: {
-        email: pi.receipt_email || 'No email',
+        email: pi.receipt_email || pi.customer?.email || 'No email',
         name: pi.customer?.name || 'No name'
       },
-      metadata: pi.metadata
+      paymentMethod: pi.payment_method_types?.[0] ? {
+        type: pi.payment_method_types[0],
+        card: null // Card details would need separate API call
+      } : undefined,
+      metadata: pi.metadata,
+      refunded: false,
+      refundAmount: 0
     }));
 
     // Calculate summary statistics
