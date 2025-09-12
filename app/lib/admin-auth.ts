@@ -61,19 +61,26 @@ export async function ensureAdminUserExists() {
     });
 
     if (!demoAdmin) {
-      // Create demo admin user
-      await prisma.user.create({
-        data: {
-          id: 'demo-admin',
-          email: 'admin@functionalfoods.se',
-          password: 'demo', // Not used for demo account
-          name: 'Demo Admin',
-          role: 'admin',
-          isActive: true
-        }
+      // Check if user with this email already exists
+      const existingEmailUser = await prisma.user.findUnique({
+        where: { email: 'admin@functionalfoods.se' }
       });
-      
-      console.log('✅ Demo admin user created');
+
+      if (!existingEmailUser) {
+        // Create demo admin user
+        await prisma.user.create({
+          data: {
+            id: 'demo-admin',
+            email: 'admin@functionalfoods.se',
+            password: 'demo', // Not used for demo account
+            name: 'Demo Admin',
+            role: 'admin',
+            isActive: true
+          }
+        });
+        
+        console.log('✅ Demo admin user created');
+      }
     }
 
     // Check if any other admin exists
@@ -85,21 +92,28 @@ export async function ensureAdminUserExists() {
     });
 
     if (!adminExists) {
-      // Create a default admin user
-      const bcrypt = require('bcrypt');
-      const hashedPassword = await bcrypt.hash('admin123', 10);
-      
-      await prisma.user.create({
-        data: {
-          email: 'real-admin@functionalfoods.se',
-          password: hashedPassword,
-          name: 'Admin',
-          role: 'admin',
-          isActive: true
-        }
+      // Check if real-admin email exists
+      const existingRealAdmin = await prisma.user.findUnique({
+        where: { email: 'real-admin@functionalfoods.se' }
       });
-      
-      console.log('✅ Default admin user created');
+
+      if (!existingRealAdmin) {
+        // Create a default admin user
+        const bcrypt = require('bcrypt');
+        const hashedPassword = await bcrypt.hash('admin123', 10);
+        
+        await prisma.user.create({
+          data: {
+            email: 'real-admin@functionalfoods.se',
+            password: hashedPassword,
+            name: 'Admin',
+            role: 'admin',
+            isActive: true
+          }
+        });
+        
+        console.log('✅ Default admin user created');
+      }
     }
   } catch (error) {
     console.error('Error ensuring admin user exists:', error);

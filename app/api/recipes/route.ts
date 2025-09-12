@@ -201,12 +201,32 @@ export async function GET(request: NextRequest) {
     // Räkna totalt antal recept (före filtrering)
     const totalRecipes = await prisma.recipe.count({ where });
 
+    // Normalize image URLs
+    function normalizeImageUrl(url: string | null): string {
+      if (!url) return '/images/recipe-placeholder.svg';
+      
+      let normalized = url;
+      if (normalized.startsWith('/public/')) {
+        normalized = normalized.replace('/public', '');
+      }
+      if (normalized.startsWith('public/')) {
+        normalized = '/' + normalized.substring(7);
+      }
+      
+      // Ensure leading slash for local assets
+      if (!normalized.startsWith('/') && !normalized.startsWith('http')) {
+        normalized = '/' + normalized;
+      }
+      
+      return normalized;
+    }
+
     // Konvertera till API-format
     const formattedRecipes: Recipe[] = processedRecipes.map(recipe => ({
       id: recipe.id,
       title: recipe.title,
       excerpt: recipe.excerpt || '',
-      imageUrl: recipe.imageUrl || '/images/recipe-placeholder.svg',
+      imageUrl: normalizeImageUrl(recipe.imageUrl),
       imageAlt: recipe.imageAlt || recipe.title,
       categories: recipe.isComingSoon ? ['Kommer snart'] : recipe.categories,
       ingredients: recipe.ingredients,

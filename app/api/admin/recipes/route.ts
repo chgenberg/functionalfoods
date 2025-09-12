@@ -4,6 +4,27 @@ import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 const prisma = new PrismaClient();
 
+// Normalize image URLs for display
+function normalizeImageUrl(url: string | null): string | null {
+  if (!url) return null;
+  
+  // Remove duplicate /public
+  let normalized = url;
+  if (normalized.startsWith('/public/')) {
+    normalized = normalized.replace('/public', '');
+  }
+  if (normalized.startsWith('public/')) {
+    normalized = '/' + normalized.substring(7);
+  }
+  
+  // Ensure leading slash for local assets
+  if (!normalized.startsWith('/') && !normalized.startsWith('http')) {
+    normalized = '/' + normalized;
+  }
+  
+  return normalized;
+}
+
 // GET /api/admin/recipes - Get all recipes with admin view
 export async function GET(request: NextRequest) {
   const authResult = await requireAdminAuth(request);
@@ -55,9 +76,15 @@ export async function GET(request: NextRequest) {
       }),
       prisma.recipe.count({ where })
     ]);
+    
+    // Normalize image URLs
+    const recipesWithNormalizedImages = recipes.map(recipe => ({
+      ...recipe,
+      imageUrl: normalizeImageUrl(recipe.imageUrl)
+    }));
 
     return NextResponse.json({
-      recipes,
+      recipes: recipesWithNormalizedImages,
       pagination: {
         page,
         limit,

@@ -35,7 +35,7 @@ export default function EditBlogPostPage() {
           return res.json();
         })
         .then(data => {
-          setPost(data);
+          setPost(data.post || data);
           setLoading(false);
         })
         .catch(err => {

@@ -7,9 +7,6 @@ const prisma = new PrismaClient();
 export async function GET(request: NextRequest) {
   const authResult = await requireAdminAuth(request);
   if (authResult instanceof NextResponse) return authResult;
-
-  // Ensure admin user exists
-  await ensureAdminUserExists();
   // Skip during build process
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     return NextResponse.json({
