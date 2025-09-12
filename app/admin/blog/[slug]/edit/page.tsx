@@ -186,8 +186,39 @@ export default function EditBlogPostPage() {
               <label className="block text-xs font-bold text-primary uppercase tracking-wider mb-2">
                 Bild
               </label>
-              <div className="relative w-full h-64 rounded-xl overflow-hidden">
-                <Image src={post.imageUrl} alt={post.imageAlt} layout="fill" objectFit="cover" />
+              <div className="space-y-3">
+                <div className="relative w-full h-64 rounded-xl overflow-hidden bg-gray-100 border">
+                  {post.imageUrl ? (
+                    <Image src={post.imageUrl} alt={post.imageAlt} layout="fill" objectFit="cover" />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                      Ingen bild vald
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      formData.append('folder', 'blog');
+                      try {
+                        const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.error || 'Kunde inte ladda upp bild');
+                        setPost({ ...post, imageUrl: data.url, imageAlt: post.imageAlt || post.title });
+                      } catch (err) {
+                        alert((err as any).message || 'Fel vid bilduppladdning');
+                      }
+                    }}
+                    className="block text-sm"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -196,7 +227,7 @@ export default function EditBlogPostPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center justify-center gap-2 bg-primary hover:bg-secondary text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 disabled:bg-gray-400 uppercase text-sm tracking-wider group"
+              className="flex items-center justify-center gap-2 bg-primary hover:bg-[#014421] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 disabled:bg-gray-400 uppercase text-sm tracking-wider group"
             >
               {saving ? (
                 <>

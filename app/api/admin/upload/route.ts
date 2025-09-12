@@ -1,32 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
-import { cookies } from 'next/headers';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
-// Verify admin authentication
-async function verifyAdmin() {
-  const cookieStore = cookies();
-  const token = cookieStore.get('admin-token');
-  
-  if (!token) {
-    return false;
-  }
-  
-  // Simple token verification (you should improve this with proper JWT validation)
-  return token.value === 'admin-authenticated';
-}
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
-  try {
-    // Verify admin
-    const isAdmin = await verifyAdmin();
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+  // Authenticate admin
+  const authResult = await requireAdminAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
 
+  try {
     const formData = await request.formData();
-    const file = formData.get('file') as File;
-    
+    const file = formData.get('file') as File | null;
+    const folder = (formData.get('folder') as string | null) || 'blog'; // blog | recipes | media
+
     if (!file) {
       return NextResponse.json({ error: 'No file received' }, { status: 400 });
     }
@@ -39,29 +27,26 @@ export async function POST(request: NextRequest) {
 
     // Create unique filename
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9.-]/g, '-');
-    
+    const safeName = (file.name || 'upload')
+      .replace(/[^a-zA-Z0-9.\- ]/g, '-')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+    const filename = `${Date.now()}-${safeName}`;
+
     // Ensure uploads directory exists
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'recipes');
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
     await mkdir(uploadDir, { recursive: true });
-    
+
     // Save file
     const filepath = path.join(uploadDir, filename);
     await writeFile(filepath, buffer);
-    
+
     // Return public URL
-    const publicUrl = `/uploads/recipes/${filename}`;
-    
-    return NextResponse.json({ 
-      url: publicUrl,
-      filename: filename 
-    });
-    
+    const publicUrl = `/uploads/${folder}/${filename}`;
+
+    return NextResponse.json({ url: publicUrl, filename });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json(
-      { error: 'Failed to upload file' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
   }
 } 
