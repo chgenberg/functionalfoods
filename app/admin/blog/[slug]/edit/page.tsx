@@ -10,9 +10,11 @@ interface BlogPost {
   id: string;
   title: string;
   content: string;
-  imageUrl: string;
-  imageAlt: string;
+  imageUrl?: string;
+  coverImage?: string;
+  imageAlt?: string;
   status: string;
+  published?: boolean;
 }
 
 export default function EditBlogPostPage() {
@@ -48,7 +50,14 @@ export default function EditBlogPostPage() {
           data = payload.post || payload;
         }
 
-        setPost(data);
+        // Normalize for UI
+        const normalized: any = {
+          ...data,
+          status: data.status || (data.published ? 'published' : 'draft'),
+          // Prefer coverImage in admin model; keep imageUrl for compatibility
+          coverImage: data.coverImage || data.imageUrl || '',
+        };
+        setPost(normalized);
       } catch (err: any) {
         setError(err.message || 'Kunde inte hämta inlägget.');
       } finally {
@@ -74,6 +83,7 @@ export default function EditBlogPostPage() {
           title: post.title,
           content: post.content,
           slug: (post as any).slug,
+          coverImage: (post as any).coverImage || (post as any).imageUrl || '',
           published: post.status === 'published'
         }),
       });
@@ -84,6 +94,7 @@ export default function EditBlogPostPage() {
         body: JSON.stringify({
           title: post.title,
           content: post.content,
+          coverImage: (post as any).coverImage || (post as any).imageUrl || '',
           published: post.status === 'published',
         }),
       });
@@ -95,7 +106,8 @@ export default function EditBlogPostPage() {
       }
       
       setSuccess('Inlägget har sparats!');
-      setPost(data); // Uppdatera med eventuell ny data från servern
+      // Normalize after save
+      setPost({ ...data, status: data.status || (data.published ? 'published' : 'draft'), coverImage: data.coverImage || data.imageUrl || '' });
       setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
       setError(err.message);
@@ -113,7 +125,7 @@ export default function EditBlogPostPage() {
       const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Kunde inte ladda upp bild');
-      setPost({ ...post!, imageUrl: data.url, imageAlt: post?.imageAlt || post?.title || 'Bild' });
+      setPost({ ...post!, coverImage: data.url, imageAlt: post?.imageAlt || post?.title || 'Bild' });
     } catch (err: any) {
       alert(err.message || 'Fel vid bilduppladdning');
     } finally {
@@ -220,8 +232,8 @@ export default function EditBlogPostPage() {
                   }}
                   className={`relative block w-full h-64 rounded-xl overflow-hidden border ${dragging ? 'border-dashed border-[#014421] bg-[#F3EFE3]' : 'bg-gray-100 border-gray-200'}`}
                 >
-                  {post.imageUrl ? (
-                    <Image src={post.imageUrl} alt={post.imageAlt} layout="fill" objectFit="cover" />
+                  {post.coverImage ? (
+                    <Image src={post.coverImage} alt={post.imageAlt || post.title} layout="fill" objectFit="cover" />
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 text-sm gap-2">
                       {uploading ? (
