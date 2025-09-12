@@ -21,6 +21,8 @@ export default function EditBlogPostPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const params = useParams();
   const router = useRouter();
   const { slug } = params;
@@ -99,6 +101,23 @@ export default function EditBlogPostPage() {
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const uploadFile = async (file: File) => {
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'blog');
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Kunde inte ladda upp bild');
+      setPost({ ...post!, imageUrl: data.url, imageAlt: post?.imageAlt || post?.title || 'Bild' });
+    } catch (err: any) {
+      alert(err.message || 'Fel vid bilduppladdning');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -186,16 +205,39 @@ export default function EditBlogPostPage() {
               <label className="block text-xs font-bold text-primary uppercase tracking-wider mb-2">
                 Bild
               </label>
-              <div className="space-y-3">
-                <div className="relative w-full h-64 rounded-xl overflow-hidden bg-gray-100 border">
+              <div 
+                className="space-y-3"
+              >
+                <label
+                  htmlFor="file-input"
+                  onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={async (e) => {
+                    e.preventDefault();
+                    setDragging(false);
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) await uploadFile(file);
+                  }}
+                  className={`relative block w-full h-64 rounded-xl overflow-hidden border ${dragging ? 'border-dashed border-[#014421] bg-[#F3EFE3]' : 'bg-gray-100 border-gray-200'}`}
+                >
                   {post.imageUrl ? (
                     <Image src={post.imageUrl} alt={post.imageAlt} layout="fill" objectFit="cover" />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
-                      Ingen bild vald
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 text-sm gap-2">
+                      {uploading ? (
+                        <>
+                          <Loader className="w-5 h-5 animate-spin text-primary" />
+                          <span>Laddar upp...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Dra & släpp bild här</span>
+                          <span className="text-xs text-gray-400">eller klicka för att välja fil</span>
+                        </>
+                      )}
                     </div>
                   )}
-                </div>
+                </label>
                 <div className="flex items-center gap-3">
                   <input
                     id="file-input"
@@ -203,18 +245,7 @@ export default function EditBlogPostPage() {
                     accept="image/*"
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
-                      if (!file) return;
-                      const formData = new FormData();
-                      formData.append('file', file);
-                      formData.append('folder', 'blog');
-                      try {
-                        const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
-                        const data = await res.json();
-                        if (!res.ok) throw new Error(data.error || 'Kunde inte ladda upp bild');
-                        setPost({ ...post, imageUrl: data.url, imageAlt: post.imageAlt || post.title });
-                      } catch (err) {
-                        alert((err as any).message || 'Fel vid bilduppladdning');
-                      }
+                      if (file) await uploadFile(file);
                     }}
                     className="block text-sm"
                   />
