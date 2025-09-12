@@ -26,23 +26,35 @@ export default function EditBlogPostPage() {
   const { slug } = params;
 
   useEffect(() => {
-    if (slug) {
-      fetch(`/api/blog/slug/${slug}`)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error('Kunde inte hämta inlägget.');
-          }
-          return res.json();
-        })
-        .then(data => {
-          setPost(data.post || data);
-          setLoading(false);
-        })
-        .catch(err => {
-          setError(err.message);
-          setLoading(false);
-        });
-    }
+    const load = async () => {
+      if (!slug) return;
+      try {
+        setLoading(true);
+        setError('');
+
+        // Try admin route by ID first
+        let res = await fetch(`/api/admin/blog/${slug}`);
+        let data: any;
+
+        if (res.ok) {
+          data = await res.json();
+        } else {
+          // Fallback to public slug route
+          res = await fetch(`/api/blog/slug/${slug}`);
+          if (!res.ok) throw new Error('Kunde inte hämta inlägget.');
+          const payload = await res.json();
+          data = payload.post || payload;
+        }
+
+        setPost(data);
+      } catch (err: any) {
+        setError(err.message || 'Kunde inte hämta inlägget.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
   }, [slug]);
 
   const handleSave = async () => {
@@ -52,13 +64,25 @@ export default function EditBlogPostPage() {
     setSuccess('');
 
     try {
-      const response = await fetch(`/api/blog/slug/${slug}`, {
+      // Prefer admin update by ID when available, else fallback to slug update
+      const updateAdmin = await fetch(`/api/admin/blog/${(post as any).id || slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: post.title,
           content: post.content,
-          status: post.status,
+          slug: (post as any).slug,
+          published: post.status === 'published'
+        }),
+      });
+
+      const response = updateAdmin.ok ? updateAdmin : await fetch(`/api/blog/slug/${slug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: post.title,
+          content: post.content,
+          published: post.status === 'published',
         }),
       });
 

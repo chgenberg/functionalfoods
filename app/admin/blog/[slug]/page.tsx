@@ -96,7 +96,7 @@ export default function ViewBlogPostPage() {
                       </div>
                     )}
                 </div>
-                <Link href={`/admin/blog/${post.slug}/edit`} className="flex items-center gap-2 text-primary hover:text-secondary font-semibold transition-colors">
+                <Link href={`/admin/blog/${post.id || post.slug}/edit`} className="flex items-center gap-2 text-primary hover:text-secondary font-semibold transition-colors">
                     <Edit className="w-4 h-4" />
                     <span>Redigera inlägg</span>
                 </Link>

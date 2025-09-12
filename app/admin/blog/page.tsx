@@ -348,7 +348,7 @@ export default function AdminBlogPage() {
                           </Link>
                         )}
                         <Link
-                          href={`/admin/blog/${post.id}/edit`}
+                          href={`/admin/blog/${post.slug}/edit`}
                           className="p-2 text-[#93C560] hover:text-[#84b351] hover:bg-[#93C560]/10 rounded-lg transition-all"
                           title="Redigera"
                         >
