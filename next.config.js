@@ -11,9 +11,12 @@ const nextConfig = {
     // Disable some build optimizations to speed up
     optimizeCss: false,
   },
+  swcMinify: false,
+  compress: false,
   // Reduce build memory
   webpack: (config, { isServer }) => {
     if (!isServer) {
+      config.optimization.minimize = false;
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
