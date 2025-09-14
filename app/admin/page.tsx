@@ -16,7 +16,8 @@ import {
   GraduationCap,
   ArrowUpRight,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -209,6 +210,15 @@ export default function AdminDashboard() {
             </motion.div>
           );
         })}
+        <Link href="/admin/meal-plans" className="group">
+            <div className="p-4 rounded-lg bg-gradient-to-br from-yellow-400 to-orange-500 text-white shadow hover:shadow-md transition-all h-full flex items-center justify-between">
+              <div>
+                <h3 className="text-xs sm:text-sm whitespace-nowrap tracking-tight font-semibold">Kostscheman</h3>
+                <p className="text-xs opacity-90">Hantera veckomenyer</p>
+              </div>
+              <Calendar className="h-6 w-6 opacity-90" />
+            </div>
+          </Link>
       </div>
 
       {/* Stats Grid with Glassmorphism */}

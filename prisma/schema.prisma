@@ -583,3 +583,16 @@ model KnowledgeDocument {
   @@index([course])
   @@index([order])
 }
+
+model MealPlanWeek {
+  id         String   @id @default(uuid())
+  course     String   // 'basic' | 'flow' | 'energy'
+  weekNumber Int
+  title      String?
+  days       Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([course, weekNumber])
+  @@index([course])
+}
