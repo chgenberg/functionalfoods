@@ -210,9 +210,19 @@ export default function KnowledgeDocumentTemplate({
                   </button>
                   
                   <button className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all" onClick={() => {
-                    const url = new URL(window.location.href);
-                    url.pathname = url.pathname.replace('/knowledge/', '/knowledge/print/');
-                    window.open(url.toString(), '_blank');
+                    const current = new URL(window.location.href);
+                    // Open print-friendly view in new tab
+                    const printUrl = new URL(current.toString());
+                    printUrl.pathname = printUrl.pathname.replace('/knowledge/', '/knowledge/print/');
+                    window.open(printUrl.toString(), '_blank');
+                    // Also trigger direct PDF download via API
+                    const match = current.pathname.match(/\/dashboard\/courses\/(.*?)\/knowledge\/(.*)$/);
+                    if (match) {
+                      const courseId = match[1];
+                      const slug = match[2];
+                      const apiUrl = `/api/knowledge/pdf?courseId=${encodeURIComponent(courseId)}&slug=${encodeURIComponent(slug)}`;
+                      setTimeout(() => { window.open(apiUrl, '_self'); }, 200);
+                    }
                   }}>
                     <Download className="w-5 h-5" />
                     Ladda ner PDF
