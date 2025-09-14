@@ -192,6 +192,14 @@ export default function CookieConsentBanner() {
                     <Link href="/cookie-policy" className="text-[#014421] hover:underline">
                       cookie-policy
                     </Link>
+                    {', '}
+                    <Link href="/integritetspolicy" className="text-[#014421] hover:underline">
+                      integritetspolicy
+                    </Link>
+                    {' och '}
+                    <Link href="/anvandarvillkor" className="text-[#014421] hover:underline">
+                      användarvillkor
+                    </Link>
                   </p>
                 </div>
               ) : (
