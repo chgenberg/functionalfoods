@@ -69,14 +69,14 @@ class EnvironmentValidator {
       // Optional-at-boot: webhook and email keys
       STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
       MAILCHIMP_TRANSACTIONAL_API_KEY: process.env.MAILCHIMP_TRANSACTIONAL_API_KEY,
-      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL,
       NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test'
     };
     
     // Check for missing required variables (skip during build)
     if (!isBuildTime) {
-      // Only treat truly critical vars as fatal for boot
-      const criticalKeys = ['DATABASE_URL','NEXTAUTH_SECRET','NEXTAUTH_URL','PASSWORD_SALT','STRIPE_SECRET_KEY','STRIPE_PUBLISHABLE_KEY','NEXT_PUBLIC_SITE_URL'] as const;
+      // Only treat truly critical vars as fatal for boot (auth not critical for boot here)
+      const criticalKeys = ['DATABASE_URL','PASSWORD_SALT','STRIPE_SECRET_KEY','STRIPE_PUBLISHABLE_KEY','NEXT_PUBLIC_SITE_URL'] as const;
       const criticalMissing = criticalKeys.filter((key) => {
         const val = (requiredVars as any)[key];
         return !val || (typeof val === 'string' && val.trim() === '');
@@ -156,7 +156,7 @@ class EnvironmentValidator {
     this.config = {
       DATABASE_URL: requiredVars.DATABASE_URL || 'postgresql://localhost:5432/dev',
       NEXTAUTH_SECRET: requiredVars.NEXTAUTH_SECRET || 'build-time-secret-32-characters-minimum-xxxxxxxx',
-      NEXTAUTH_URL: requiredVars.NEXTAUTH_URL || 'http://localhost:3000',
+      NEXTAUTH_URL: requiredVars.NEXTAUTH_URL || requiredVars.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
       PASSWORD_SALT: requiredVars.PASSWORD_SALT || 'build-time-salt-16-chars-minimum',
       STRIPE_SECRET_KEY: requiredVars.STRIPE_SECRET_KEY || 'sk_test_build',
       STRIPE_PUBLISHABLE_KEY: requiredVars.STRIPE_PUBLISHABLE_KEY || 'pk_test_build',

@@ -158,6 +158,9 @@ async function handleStripeWebhook(body: string, signature: string): Promise<Nex
       case 'payment_intent.processing':
         await handlePaymentProcessing(event.data.object);
         break;
+      case 'checkout.session.completed':
+        await handleCheckoutSessionCompleted(event.data.object);
+        break;
       default:
         console.log(`Unhandled Stripe event type: ${event.type}`);
     }
@@ -234,6 +237,25 @@ async function handlePaymentProcessing(paymentIntent: any) {
         gatewayResponse: paymentIntent
       }
     });
+  }
+}
+
+async function handleCheckoutSessionCompleted(session: any) {
+  try {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const paymentIntentId = typeof session.payment_intent === 'string'
+      ? session.payment_intent
+      : session.payment_intent?.id;
+
+    if (!paymentIntentId) {
+      console.warn('checkout.session.completed received without payment_intent');
+      return;
+    }
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    await handlePaymentSuccess(paymentIntent);
+  } catch (error) {
+    console.error('Failed to handle checkout.session.completed:', error);
   }
 }
 
