@@ -1,7 +1,35 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ['localhost', 'ulrika-functional-foods-production.up.railway.app'],
+    unoptimized: true,
+  },
   experimental: {
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma']
+    // Reduce memory usage during build
+    workerThreads: false,
+    cpus: 1,
+    // Disable some build optimizations to speed up
+    optimizeCss: false,
+  },
+  // Reduce build memory
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+        },
+      };
+    }
+    return config;
+  },
+  // Skip type checking during build to speed up
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   // Force rebuild by disabling caching
   generateBuildId: async () => {

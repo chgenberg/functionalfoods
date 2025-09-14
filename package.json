@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "rm -rf .next node_modules/.cache tsconfig.tsbuildinfo && npm install --no-audit --no-fund && next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=512' next build",
     "start": "next start",
     "lint": "next lint",
     "clean": "rm -rf .next node_modules/.cache",
