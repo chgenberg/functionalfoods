@@ -22,6 +22,13 @@ function allowRequest(key: string, limit: number) {
 }
 
 export function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  
+  // Bypass all middleware logic for healthcheck endpoints
+  if (path.startsWith('/api/health')) {
+    return NextResponse.next();
+  }
+
   const response = NextResponse.next();
   
   // Add security headers to all responses
@@ -48,7 +55,6 @@ export function middleware(request: NextRequest) {
   
   // Security checks for suspicious requests
   const userAgent = request.headers.get('user-agent') || '';
-  const path = request.nextUrl.pathname;
   
   // Block common attack patterns
   const suspiciousPatterns = [
@@ -158,7 +164,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - robots.txt, sitemap.xml (SEO files)
+     * - api/health* (healthcheck endpoints)
      */
-    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|api/health).*)',
   ],
 }; 
