@@ -4,6 +4,10 @@ import { emailService } from '../../lib/email';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
+  // Hide in production unless explicitly allowed
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_TEST_EMAILS !== 'true') {
+    return new Response('Not Found', { status: 404 });
+  }
   try {
     console.log('🧪 Testar email-systemet...');
     

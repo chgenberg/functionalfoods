@@ -4,6 +4,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function GET() {
+  // Hide this test endpoint in production
+  if (process.env.NODE_ENV === 'production') {
+    return new Response('Not Found', { status: 404 });
+  }
+
   // Skip during build process
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     return NextResponse.json({ message: 'Skipped during build' });

@@ -14,8 +14,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Email och lösenord krävs' }, { status: 400 });
     }
 
-    // Demo account - always works
-    if (email === 'admin@functionalfoods.se' && password === 'admin123') {
+    // Demo account (disabled by default). Enable only if ALLOW_DEMO_LOGIN=true
+    if (process.env.ALLOW_DEMO_LOGIN === 'true' && email === 'admin@functionalfoods.se' && password === 'admin123') {
       const token = jwt.sign(
         { 
           userId: 'demo-admin', 
