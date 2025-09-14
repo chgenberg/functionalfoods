@@ -1,7 +1,7 @@
 FROM node:18-alpine
 
-# Optional: tools you still need
-RUN apk add --no-cache git git-lfs && git lfs install || true
+# System deps required for Prisma/Sharp on Alpine
+RUN apk add --no-cache openssl libc6-compat git git-lfs && git lfs install || true
 
 # App dir
 WORKDIR /app
@@ -9,7 +9,7 @@ WORKDIR /app
 # Copy only package manifests first (better layer caching for deps)
 COPY package*.json ./
 
-# Install deps (include dev for build phase) – use install instead of ci to resolve lockfile drift in CI
+# Install deps (include dev for build phase)
 RUN npm install --include=dev --no-audit --no-fund
 
 # Copy prisma schema separately to allow prisma generate cache if only code changes
@@ -28,6 +28,10 @@ RUN rm -rf .next tsconfig.tsbuildinfo && npm run build
 
 # Prune dev deps for runtime image size
 RUN npm prune --production
+
+# Runtime env
+ENV NODE_ENV=production
+ENV PORT=3000
 
 EXPOSE 3000
 CMD ["npm", "start"] 
