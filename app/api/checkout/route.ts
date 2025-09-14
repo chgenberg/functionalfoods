@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
 
     const sessionParams: any = {
       mode: 'payment',
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'swish'],
       line_items,
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,
