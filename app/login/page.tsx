@@ -72,11 +72,21 @@ function LoginForm() {
                 } else if (ownedCourses.includes('Functional Basics') && !ownedCourses.includes('Functional Flow')) {
                   // Only Basic course
                   router.push('/dashboard/courses/functional-basics');
+                } else if (ownedCourses.includes('Functional Flow') && ownedCourses.includes('Functional Basics')) {
+                  // Has both courses - show course selection
+                  router.push('/mina-kurser');
+                } else if (ownedCourses.includes('Functional Energy')) {
+                  // Has Energy course (alone or with others)
+                  if (ownedCourses.length === 1) {
+                    router.push('/dashboard/courses/functional-energy');
+                  } else {
+                    router.push('/mina-kurser');
+                  }
                 } else if (ownedCourses.includes('Functional Flow')) {
-                  // If they have both, prioritize Flow (advanced course)
+                  // Only Flow
                   router.push('/dashboard/courses/functional-flow');
                 } else if (ownedCourses.includes('Functional Basics')) {
-                  // Fallback to Basic
+                  // Only Basic
                   router.push('/dashboard/courses/functional-basics');
                 } else {
                   // Has purchases but not these specific courses

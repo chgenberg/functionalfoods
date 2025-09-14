@@ -45,7 +45,14 @@ export default function DashboardPage() {
               router.push('/dashboard/courses/functional-basics');
             } else if (ownedCourses.includes('Functional Flow') && ownedCourses.includes('Functional Basics')) {
               // Has both courses - show course selection
-              router.push('/dashboard/courses');
+              router.push('/mina-kurser');
+            } else if (ownedCourses.includes('Functional Energy')) {
+              // Has Energy course (alone or with others)
+              if (ownedCourses.length === 1) {
+                router.push('/dashboard/courses/functional-energy');
+              } else {
+                router.push('/mina-kurser');
+              }
             } else {
               // Has other courses or no specific handling
               router.push('/mina-kurser');
