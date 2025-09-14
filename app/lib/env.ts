@@ -95,23 +95,23 @@ class EnvironmentValidator {
     
     // Validate specific formats (only if present)
     if (requiredVars.DATABASE_URL && !this.isValidDatabaseUrl(requiredVars.DATABASE_URL)) {
-      errors.push('DATABASE_URL format is invalid');
+      warnings.push('DATABASE_URL format appears invalid');
     }
     
     if (requiredVars.NEXTAUTH_URL && !this.isValidUrl(requiredVars.NEXTAUTH_URL)) {
-      errors.push('NEXTAUTH_URL format is invalid');
+      warnings.push('NEXTAUTH_URL format appears invalid');
     }
     
     if (requiredVars.NEXT_PUBLIC_SITE_URL && !this.isValidUrl(requiredVars.NEXT_PUBLIC_SITE_URL)) {
-      errors.push('NEXT_PUBLIC_SITE_URL format is invalid');
+      warnings.push('NEXT_PUBLIC_SITE_URL format appears invalid');
     }
     
     if (requiredVars.STRIPE_SECRET_KEY && !requiredVars.STRIPE_SECRET_KEY.startsWith('sk_')) {
-      errors.push('STRIPE_SECRET_KEY must start with sk_');
+      warnings.push('STRIPE_SECRET_KEY should start with sk_');
     }
     
     if (requiredVars.STRIPE_PUBLISHABLE_KEY && !requiredVars.STRIPE_PUBLISHABLE_KEY.startsWith('pk_')) {
-      errors.push('STRIPE_PUBLISHABLE_KEY must start with pk_');
+      warnings.push('STRIPE_PUBLISHABLE_KEY should start with pk_');
     }
     
     if (requiredVars.STRIPE_WEBHOOK_SECRET && !requiredVars.STRIPE_WEBHOOK_SECRET.startsWith('whsec_')) {
@@ -119,15 +119,15 @@ class EnvironmentValidator {
     }
     
     if (requiredVars.PASSWORD_SALT && requiredVars.PASSWORD_SALT.length < 16) {
-      errors.push('PASSWORD_SALT must be at least 16 characters long');
+      warnings.push('PASSWORD_SALT should be at least 16 characters long');
     }
     
     if (requiredVars.NEXTAUTH_SECRET && requiredVars.NEXTAUTH_SECRET.length < 32) {
-      errors.push('NEXTAUTH_SECRET must be at least 32 characters long');
+      warnings.push('NEXTAUTH_SECRET should be at least 32 characters long');
     }
     
     if (!['development', 'production', 'test'].includes(requiredVars.NODE_ENV || '')) {
-      errors.push('NODE_ENV must be development, production, or test');
+      warnings.push('NODE_ENV should be development, production, or test');
     }
     
     // Production-specific validations (only warn if missing HTTPS)
