@@ -58,10 +58,16 @@ export async function GET(
       }
     }
 
-    // Check again
+    // Final fallback to placeholder to avoid broken thumbnails
     if (!fs.existsSync(targetPath)) {
-      console.log('❌ File not found:', targetPath);
-      return new NextResponse('Not Found', { status: 404, headers: { 'Cache-Control': 'no-store' } });
+      const placeholder = path.join(publicDir, 'images', 'blog-placeholder.jpg');
+      if (fs.existsSync(placeholder)) {
+        console.log('ℹ️ Using placeholder image');
+        targetPath = placeholder;
+      } else {
+        console.log('❌ File not found and no placeholder available:', targetPath);
+        return new NextResponse('Not Found', { status: 404, headers: { 'Cache-Control': 'no-store' } });
+      }
     }
 
     console.log('✅ Serving:', targetPath);

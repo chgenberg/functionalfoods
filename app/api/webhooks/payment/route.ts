@@ -11,29 +11,26 @@ const paymentService = new PaymentService();
 export async function POST(request: Request) {
   try {
     const body = await request.text();
-    const signature = request.headers.get('signature') || '';
-    const provider = request.headers.get('x-payment-provider') || '';
+    const providerHeader = request.headers.get('x-payment-provider') || '';
+    const stripeSig = request.headers.get('stripe-signature');
 
-    // Verify webhook signature (implementation depends on provider)
-    if (!await verifyWebhookSignature(body, signature, provider)) {
-      return NextResponse.json(
-        { error: 'Invalid webhook signature' },
-        { status: 401 }
-      );
+    // If this is a Stripe webhook, handle it directly using Stripe's signature
+    if (stripeSig) {
+      return await handleStripeWebhook(body, stripeSig);
     }
+
+    const provider = providerHeader.toLowerCase();
 
     const payload = JSON.parse(body);
 
-    // Process webhook based on provider
+    // Process webhook based on provider (non-Stripe)
     switch (provider) {
       case 'klarna':
         return await handleKlarnaWebhook(payload);
-      case 'stripe':
-        return await handleStripeWebhook(payload);
       case 'swish':
         return await handleSwishWebhook(payload);
       default:
-        console.warn(`Unknown payment provider: ${provider}`);
+        console.warn(`Unknown or missing payment provider header: ${providerHeader}`);
         return NextResponse.json({ received: true });
     }
 
@@ -120,9 +117,8 @@ async function handleKlarnaWebhook(payload: any): Promise<NextResponse> {
   }
 }
 
-async function handleStripeWebhook(payload: any): Promise<NextResponse> {
+async function handleStripeWebhook(body: string, signature: string): Promise<NextResponse> {
   try {
-    const sig = payload.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     if (!webhookSecret) {
@@ -137,7 +133,7 @@ async function handleStripeWebhook(payload: any): Promise<NextResponse> {
 
     try {
       const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-      event = stripe.webhooks.constructEvent(payload.body, sig, webhookSecret);
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err);
       return NextResponse.json(
