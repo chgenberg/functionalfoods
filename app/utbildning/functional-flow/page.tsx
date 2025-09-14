@@ -22,7 +22,7 @@ export default function FunctionalFlowPage() {
     price: 1836,
     originalPrice: 2295,
     type: 'course' as const,
-    image: '/Bilder_flow/smoothiebowl-med-tropiska-frukter-och-notter.JPG',
+    image: '/functional_flow.png',
     quantity: 1
   };
 
