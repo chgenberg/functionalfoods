@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, BookOpen, Info, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface KnowledgeDocument {
   title: string;
@@ -124,10 +125,11 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
             >
               {/* Image preview */}
               <div className="relative h-32 overflow-hidden bg-gray-100">
-                <img 
+                <Image 
                   src={doc.headerImage} 
                   alt={doc.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 <div className="absolute bottom-2 left-2 text-white">
@@ -186,10 +188,11 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
             >
               {/* Modal Header with Image */}
               <div className="relative h-48 md:h-64">
-                <img 
+                <Image 
                   src={selectedDoc.headerImage} 
                   alt={selectedDoc.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">

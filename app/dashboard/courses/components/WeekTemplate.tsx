@@ -31,6 +31,19 @@ interface WeekTemplateProps {
   courseStartDate: Date | null;
 }
 
+interface KnowledgeDocument {
+  title: string;
+  slug: string;
+  content: string;
+  headerImage: string;
+  relatedImages: string[];
+  keyTakeaways: string[];
+  readTime: number;
+  course: 'basic' | 'flow';
+  order: number;
+  week?: number; // We'll add this to map documents to weeks
+}
+
 // Week-specific welcome messages
 const weekMessages: Record<string, Record<number, string>> = {
   basics: {
@@ -115,22 +128,22 @@ Nu är det dags att fortsätta ditt intresse för en bra kost och göra det till
   }
 };
 
-// Document mapping for each week
-const weekDocuments: Record<string, Record<number, string[]>> = {
+// Document mapping for each week - now using actual document order numbers
+const weekDocuments: Record<string, Record<number, number[]>> = {
   basics: {
-    1: [], // No documents mentioned for week 1
-    2: ["Functional foods - 3 steg till ett friskare liv"],
-    3: ["Periodisk fasta", "Reflektion vecka 3"],
-    4: ["Måldokumentet - Styrelsemöte", "Motivation och reflektionsdokumentet"],
-    5: ["Topplistan Functional Foods", "Drycker", "Benbuljong", "Superpulver"],
-    6: ["Functional Foods som livsstil"]
+    1: [0, 1], // Order 0 and 1 documents for week 1
+    2: [2], // Order 2 document for week 2
+    3: [9], // Order 9 (periodisk fasta) for week 3
+    4: [], // Motivation documents (order -1, handled separately)
+    5: [6, 7, 8], // Drycker, superpulver, benbuljong
+    6: [13, 14] // Topplista, livsstil
   },
   flow: {
     1: [],
-    2: ["Vanliga mag- och tarmproblem", "Kosten - en guide till bättre mage och tarm"],
-    3: ["Tillskott som kan stödja mag- och tarmhälsa", "Fermenterade livsmedel, probiotika och prebiotika"],
-    4: ["Livsstilsfaktorer: stress, sömn och fysisk aktivitet"],
-    5: ["Att välja rätt proteiner", "Att välja rätt kolhydrater"],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
     6: []
   },
   energy: {
@@ -141,79 +154,6 @@ const weekDocuments: Record<string, Record<number, string[]>> = {
     5: [],
     6: []
   }
-};
-
-// All available documents from InfoPopupGrid
-const allDocuments = [
-  { title: "Frågor och svar", filename: "fragor-och-svar.txt", icon: "❓", description: "Vanliga frågor om kursen och kosten" },
-  { title: "Dags att komma igång!", filename: "dags-att-komma-igang.txt", icon: "🚀", description: "Kom igång med din hälsoresa" },
-  { title: "Måldokument - styrelsemöte 1", filename: "maldokument-styrelsemote-1.txt", icon: "📋", description: "Sätt upp dina hälsomål" },
-  { title: "Functional foods topplista", filename: "functional-foods-topplista.txt", icon: "🏆", description: "De bästa functional foods" },
-  { title: "Reflektion vecka 3", filename: "reflektion-vecka-3.txt", icon: "💭", description: "Reflektera över din framsteg" },
-  { title: "Fördelarna med functional foods", filename: "fordelarna-med-functional-foods.txt", icon: "💪", description: "Varför functional foods fungerar" },
-  { title: "Att äta ute med functional foods", filename: "att-ata-ute-med-functional-foods.txt", icon: "🍽️", description: "Tips för restaurangbesök" },
-  { title: "Benbuljong", filename: "benbuljong.txt", icon: "🍲", description: "Hälsosam benbuljong och dess fördelar" },
-  { title: "Ersättningsguide för kolhydrater", filename: "ersattningsguide-for-kolhydrater.txt", icon: "🔄", description: "Smarta kolhydratsalternativ" },
-  { title: "Att välja rätt proteiner", filename: "att-valja-ratt-proteiner.txt", icon: "💪", description: "Guide till bästa proteinval" },
-  { title: "Att välja rätt kolhydrater", filename: "att-valja-ratt-kolhydrater.txt", icon: "🌾", description: "Smarta kolhydratsval" },
-  { title: "3 steg till ett friskare liv", filename: "functional-foods-3-steg-till-ett-friskare-liv.txt", icon: "🎯", description: "Enkla steg mot bättre hälsa" },
-  { title: "Måldokument - styrelsemöte 2", filename: "maldokument-styrelsemote-2.txt", icon: "📊", description: "Utveckla dina hälsomål vidare" },
-  { title: "Motivation & reflektion", filename: "motivation-och-reflektion.txt", icon: "🌟", description: "Håll motivationen uppe" },
-  { title: "Ät mer functional foods enkelt", filename: "at-mer-functional-foods-pa-ett-enkelt-satt.txt", icon: "🥗", description: "Praktiska tips för vardagen" },
-  { title: "Functional foods som livsstil", filename: "functional-foods-som-livsstil.txt", icon: "🌱", description: "Gör det till en livsstil" },
-  { title: "Naturens egna hälsobomber", filename: "naturens-egna-halsobomber.txt", icon: "💥", description: "Kraftfulla superfoods från naturen" },
-  { title: "Drycker", filename: "drycker.txt", icon: "🥤", description: "Hälsosamma dryckesval" },
-  { title: "Periodisk fasta ger klarhet och energi", filename: "periodisk-fasta-ger-klarhet-och-energi.txt", icon: "⏰", description: "Fördelarna med periodisk fasta" },
-  { title: "Kosten - en guide till bättre mage och tarm", filename: "kosten-guide-mage-tarm.txt", icon: "📖", description: "Kostguide för maghälsa" },
-  { title: "Vanliga mag- och tarmproblem", filename: "vanliga-mag-och-tarmproblem.txt", icon: "🤧", description: "Förstå mag- och tarmproblem" },
-  { title: "Tillskott som kan stödja mag- och tarmhälsa", filename: "tillskott-mag-tarm.txt", icon: "💊", description: "Kosttillskott för mage och tarm" },
-  { title: "Fermenterade livsmedel, probiotika och prebiotika", filename: "fermenterade-livsmedel-probiotika-prebiotika.txt", icon: "🥒", description: "Stärk din tarmflora" },
-  { title: "Livsstilsfaktorer: stress, sömn och fysisk aktivitet", filename: "livsstilsfaktorer-stress-somn-aktivitet.txt", icon: "🧘", description: "Balansera livsstilsfaktorer" },
-  { title: "Superpulver", filename: "superpulver.txt", icon: "✨", description: "Kraftfulla superpulver" }
-];
-
-// Function to match document references with actual documents using fuzzy matching
-const findMatchingDocuments = (references: string[]) => {
-  const matches: typeof allDocuments = [];
-  
-  references.forEach(ref => {
-    const refLower = ref.toLowerCase();
-    const refWords = refLower.split(/\s+/);
-    
-    const match = allDocuments.find(doc => {
-      const titleLower = doc.title.toLowerCase();
-      const filenameLower = doc.filename.toLowerCase();
-      
-      // Direct title match
-      if (titleLower.includes(refLower) || refLower.includes(titleLower)) {
-        return true;
-      }
-      
-      // Check if all reference words are in title
-      if (refWords.every(word => titleLower.includes(word))) {
-        return true;
-      }
-      
-      // Special cases
-      if (ref.includes("3 steg") && titleLower.includes("3 steg")) return true;
-      if (ref.includes("Måldokument") && titleLower.includes("måldokument")) return true;
-      if (ref.includes("Motivation och reflektion") && titleLower.includes("motivation")) return true;
-      if (ref.includes("Topplistan") && titleLower.includes("topplista")) return true;
-      if (ref.includes("Periodisk fasta") && titleLower.includes("periodisk fasta")) return true;
-      if (ref.includes("mag- och tarm") && filenameLower.includes("mag")) return true;
-      if (ref.includes("Fermenterade") && filenameLower.includes("ferment")) return true;
-      if (ref.includes("Livsstilsfaktorer") && filenameLower.includes("livsstil")) return true;
-      if (ref.includes("Superpulver") && filenameLower.includes("super")) return true;
-      
-      return false;
-    });
-    
-    if (match && !matches.includes(match)) {
-      matches.push(match);
-    }
-  });
-  
-  return matches;
 };
 
 export default function WeekTemplate({
@@ -231,9 +171,7 @@ export default function WeekTemplate({
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [dayThumbnails, setDayThumbnails] = useState<Record<number, string>>({});
   const [mealImages, setMealImages] = useState<Record<string, string>>({});
-  const [selectedDocument, setSelectedDocument] = useState<any>(null);
-  const [documentContent, setDocumentContent] = useState<string>('');
-  const [documentLoading, setDocumentLoading] = useState(false);
+  const [knowledgeDocuments, setKnowledgeDocuments] = useState<KnowledgeDocument[]>([]);
 
   useEffect(() => {
     const handler = () => {
@@ -242,6 +180,21 @@ export default function WeekTemplate({
     window.addEventListener('open-dashboard-help', handler as EventListener);
     return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);
+
+  // Load knowledge documents for this course
+  useEffect(() => {
+    const loadKnowledgeDocuments = async () => {
+      try {
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'basic';
+        const response = await fetch(`/data/knowledge-documents-${course}.json`);
+        const documents: KnowledgeDocument[] = await response.json();
+        setKnowledgeDocuments(documents);
+      } catch (error) {
+        console.error('Error loading knowledge documents:', error);
+      }
+    };
+    loadKnowledgeDocuments();
+  }, [courseType]);
 
   // Get current week's meal plan
   const weekKey = `week${weekNumber}`;
@@ -377,135 +330,12 @@ export default function WeekTemplate({
   // Get the appropriate welcome message
   const welcomeMessage = weekMessages[courseType]?.[weekNumber] || '';
 
-  // Get documents for current week
-  const weekDocumentRefs = weekDocuments[courseType]?.[weekNumber] || [];
-  const weekSpecificDocuments = findMatchingDocuments(weekDocumentRefs);
-
-  // Function to convert markdown to HTML
-  const markdownToHtml = (text: string): string => {
-    // Replace **text** with <strong>text</strong>
-    let html = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    
-    // Replace single * for emphasis
-    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    
-    // Replace line breaks with <br> tags
-    html = html.replace(/\n/g, '<br>');
-    
-    // Replace bullet points
-    html = html.replace(/^- (.+)$/gm, '• $1');
-    
-    return html;
-  };
-
-  // Function to open document popup
-  const openDocument = async (doc: any) => {
-    setSelectedDocument(doc);
-    setDocumentLoading(true);
-    
-    try {
-      const response = await fetch(`/api/scraped-content/${doc.filename}`);
-      if (response.ok) {
-        const text = await response.text();
-        
-        // The files are already cleaned, just extract content after separator
-        let cleanContent = text;
-        
-        if (text.includes('--------------------------------------------------------------------------------')) {
-          const parts = text.split('--------------------------------------------------------------------------------');
-          if (parts.length > 1) {
-            cleanContent = parts[1].trim();
-          }
-        }
-        
-        setDocumentContent(cleanContent);
-      } else {
-        // Provide helpful fallback content for missing documents
-        const fallbackContent = getFallbackContent(doc.title);
-        setDocumentContent(fallbackContent);
-      }
-    } catch (error) {
-      console.error('Error loading document:', error);
-      const fallbackContent = getFallbackContent(doc.title);
-      setDocumentContent(fallbackContent);
-    }
-    
-    setDocumentLoading(false);
-  };
-
-  // Function to provide fallback content for missing documents
-  const getFallbackContent = (title: string) => {
-    const fallbacks: Record<string, string> = {
-      "3 steg till ett friskare liv": `
-<p>Här är tre enkla steg för att komma igång med Functional Foods:</p>
-
-<h3><strong>1. Börja med grunderna</strong></h3>
-<p>Fokusera på näringsrika, naturliga livsmedel som ger kroppen de byggstenar den behöver.</p>
-
-<h3><strong>2. Planera dina måltider</strong></h3>
-<p>Förbered dig för veckan genom att planera måltider och handla smart.</p>
-
-<h3><strong>3. Var konsekvent</strong></h3>
-<p>Små förändringar över tid ger stora resultat. Håll dig till dina nya vanor.</p>
-
-<p>Genom att följa dessa steg kommer du att märka positiva förändringar i din energi, hälsa och välmående.</p>`,
-      
-      "Functional foods topplista": `
-<p>Här är några av de bästa functional foods att inkludera i din kost:</p>
-
-<h3><strong>Grönsaker:</strong></h3>
-<p>• Grönkål och spenat (rika på järn och folsyra)<br>
-• Broccoli och blomkål (antioxidanter)<br>
-• Rödbetor (nitrater för blodcirkulation)</p>
-
-<h3><strong>Proteiner:</strong></h3>
-<p>• Lax och fet fisk (omega-3)<br>
-• Ägg (komplett protein)<br>
-• Baljväxter (fiber och protein)</p>
-
-<h3><strong>Fetter:</strong></h3>
-<p>• Avokado (enkelomättade fetter)<br>
-• Nötter och frön (E-vitamin och magnesium)<br>
-• Olivolja (antiinflammatoriska egenskaper)</p>
-
-<p>Dessa livsmedel ger inte bara näring utan har också specifika hälsofördelar.</p>`,
-      
-      "Periodisk fasta ger klarhet och energi": `
-<p>Periodisk fasta, särskilt 16:8-metoden, kan ge flera hälsofördelar:</p>
-
-<h3><strong>Fördelar:</strong></h3>
-<p>• Förbättrad insulinkänslighet<br>
-• Ökad mental klarhet<br>
-• Bättre energinivåer<br>
-• Förenklad måltidsplanering</p>
-
-<h3><strong>Så här gör du:</strong></h3>
-<p>• Ät inom en 8-timmarsperiod (t.ex. 12:00-20:00)<br>
-• Fasta i 16 timmar (inklusive sömn)<br>
-• Drick vatten, te eller kaffe under fasteperioden</p>
-
-<h3><strong>Tips:</strong></h3>
-<p>• Börja gradvis<br>
-• Lyssna på din kropp<br>
-• Anpassa efter dina behov</p>
-
-<p>Kom ihåg att periodisk fasta inte passar alla, så konsultera gärna en vårdgivare först.</p>`
-    };
-
-    return fallbacks[title] || `
-<p>Detta dokument är för närvarande inte tillgängligt, men här är några allmänna råd:</p>
-
-<h2><strong>${title}</strong></h2>
-
-<p>Vi arbetar på att göra detta innehåll tillgängligt. Under tiden kan du:</p>
-
-<p>• Fortsätta följa ditt kostschema<br>
-• Fokusera på näringsrika, naturliga livsmedel<br>
-• Planera dina måltider i förväg<br>
-• Lyssna på din kropp och dess behov</p>
-
-<p>För mer information, besök vår kunskapsbank eller kontakta oss via info@functionalfoods.se.</p>`;
-  };
+  // Get documents for current week based on order numbers
+  const weekDocumentOrders = weekDocuments[courseType]?.[weekNumber] || [];
+  const weekSpecificDocuments = knowledgeDocuments.filter(doc => 
+    weekDocumentOrders.includes(doc.order) || 
+    (weekNumber === 4 && doc.order === -1 && (doc.title.includes('måldokument') || doc.title.includes('motivation')))
+  );
 
   return (
     <>
@@ -564,31 +394,50 @@ export default function WeekTemplate({
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {weekSpecificDocuments.map((doc, index) => (
-                      <motion.button
-                        key={doc.filename}
-                        onClick={() => openDocument(doc)}
-                        className="bg-gradient-to-br from-[#F3EFE3] to-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 text-left group hover:scale-105 border border-[#014421]/10"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 + index * 0.1 }}
-                        whileHover={{ x: 5 }}
-                        whileTap={{ scale: 0.95 }}
+                      <Link
+                        key={doc.slug}
+                        href={`/dashboard/courses/functional-${courseType}/knowledge/${doc.slug}`}
+                        className="group"
                       >
-                        <div className="flex items-start gap-4">
-                          <div className="text-3xl group-hover:scale-110 transition-transform">
-                            {doc.icon}
+                        <motion.div
+                          className="bg-gradient-to-br from-[#F3EFE3] to-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 text-left group hover:scale-105 border border-[#014421]/10 overflow-hidden"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 + index * 0.1 }}
+                          whileHover={{ x: 5 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          {/* Document Image */}
+                          <div className="aspect-[16/9] relative bg-gray-100">
+                            <Image
+                              src={doc.headerImage}
+                              alt={doc.title}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                            <div className="absolute bottom-2 right-2">
+                              <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium text-gray-700">
+                                {doc.readTime} min läsning
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex-1">
-                            <h4 className="font-bold text-[#014421] mb-1 group-hover:text-[#116530] transition-colors">
+                          
+                          {/* Document Content */}
+                          <div className="p-4">
+                            <h4 className="font-bold text-[#014421] mb-2 group-hover:text-[#116530] transition-colors capitalize">
                               {doc.title}
                             </h4>
-                            <p className="text-sm text-gray-600">
-                              {doc.description}
+                            <p className="text-sm text-gray-600 line-clamp-2">
+                              {doc.content.replace(/<[^>]*>/g, '').substring(0, 100)}...
                             </p>
+                            <div className="flex items-center justify-between mt-3">
+                              <span className="text-xs text-gray-500">Förhandsgranska</span>
+                              <ExternalLink className="w-4 h-4 text-[#014421] opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
                           </div>
-                          <ExternalLink className="w-5 h-5 text-[#014421] opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                      </motion.button>
+                        </motion.div>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -831,63 +680,6 @@ export default function WeekTemplate({
           courseType={courseType}
         />
       )}
-
-      {/* Document Popup Modal */}
-      <AnimatePresence>
-        {selectedDocument && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
-            >
-              {/* Header */}
-              <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="text-3xl">{selectedDocument.icon}</div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{selectedDocument.title}</h2>
-                </div>
-                <button
-                  onClick={() => setSelectedDocument(null)}
-                  className="text-gray-500 hover:text-gray-700 transition-colors p-2"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-              
-              {/* Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                {documentLoading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#014421]"></div>
-                  </div>
-                ) : (
-                  <div 
-                    className="prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: markdownToHtml(documentContent) }}
-                  />
-                )}
-              </div>
-              
-              {/* Footer */}
-              <div className="p-6 border-t border-gray-200">
-                <button
-                  onClick={() => setSelectedDocument(null)}
-                  className="w-full sm:w-auto px-6 py-3 bg-[#014421] text-white rounded-full font-bold hover:bg-[#116530] transition-colors"
-                >
-                  Stäng
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 } 
