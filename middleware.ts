@@ -2,6 +2,25 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { addSecurityHeaders, isAllowedOrigin, logSecurityEvent } from './app/lib/security';
 
+// Simple in-memory rate limit (per IP, per route). For serverless, consider an external store (Upstash/Redis)
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX = 60; // 60 requests/minute (adjust per endpoint below)
+
+// Keep a small LRU-like store
+const buckets: Record<string, { count: number; resetAt: number }> = {};
+
+function allowRequest(key: string, limit: number) {
+  const now = Date.now();
+  const bucket = buckets[key] || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+  if (now > bucket.resetAt) {
+    bucket.count = 0;
+    bucket.resetAt = now + RATE_LIMIT_WINDOW_MS;
+  }
+  bucket.count += 1;
+  buckets[key] = bucket;
+  return bucket.count <= limit;
+}
+
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
   
@@ -91,6 +110,42 @@ export function middleware(request: NextRequest) {
   // Add request ID for tracking
   const requestId = crypto.randomUUID();
   response.headers.set('X-Request-ID', requestId);
+
+  const url = request.nextUrl;
+
+  // 1) Force HTTPS (on production)
+  const proto = request.headers.get('x-forwarded-proto');
+  if (process.env.NODE_ENV === 'production' && proto && proto !== 'https') {
+    url.protocol = 'https:';
+    return NextResponse.redirect(url);
+  }
+
+  // 2) Rate limiting for selected POST endpoints
+  const pathname = url.pathname;
+  const isSensitivePost = request.method === 'POST' && (
+    pathname.startsWith('/api/checkout') ||
+    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/api/admin/auth') ||
+    pathname.startsWith('/api/contact') ||
+    pathname.startsWith('/api/analyze') ||
+    pathname.startsWith('/api/generate') ||
+    pathname.startsWith('/api/personalized-chat') ||
+    pathname.startsWith('/api/health') ||
+    pathname.startsWith('/api/healthquiz')
+  );
+
+  if (isSensitivePost) {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || '127.0.0.1';
+    const key = `${pathname}:${ip}`;
+    // Tighter limit for very sensitive endpoints
+    const limit = pathname.startsWith('/api/checkout') ? 15 : 60;
+    if (!allowRequest(key, limit)) {
+      return new NextResponse(
+        JSON.stringify({ error: 'Too many requests' }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+  }
   
   return response;
 }

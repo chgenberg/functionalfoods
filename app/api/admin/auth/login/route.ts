@@ -31,7 +31,8 @@ export async function POST(req: NextRequest) {
       cookies().set('adminToken', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: 'strict',
+        path: '/',
         maxAge: 24 * 60 * 60 // 24 hours
       });
 
@@ -89,7 +90,8 @@ export async function POST(req: NextRequest) {
     cookies().set('adminToken', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',
+      path: '/',
       maxAge: 24 * 60 * 60 // 24 hours
     });
 
