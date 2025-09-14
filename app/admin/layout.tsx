@@ -23,7 +23,10 @@ import {
   Eye,
   ChevronRight,
   Sparkles,
-  GraduationCap
+  GraduationCap,
+  Coffee,
+  ShoppingBag,
+  Star
 } from 'lucide-react';
 
 export default function AdminLayout({
@@ -76,6 +79,7 @@ export default function AdminLayout({
     { icon: Tag, label: 'Kuponger', href: '/admin/coupons', gradient: 'from-pink-400 to-rose-500' },
     { icon: BarChart3, label: 'Försäljning', href: '/admin/sales', gradient: 'from-indigo-400 to-purple-500' },
     { icon: Image, label: 'Media', href: '/admin/media', gradient: 'from-teal-400 to-emerald-500' },
+    { icon: FileText, label: 'Kunskapsdokument', href: '/admin/knowledge', gradient: 'from-purple-400 to-pink-500' },
     { icon: Settings, label: 'Inställningar', href: '/admin/settings', gradient: 'from-gray-400 to-gray-600' },
     { icon: Eye, label: 'Debug', href: '/admin/debug', gradient: 'from-red-400 to-pink-500' },
   ];

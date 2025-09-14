@@ -11,6 +11,7 @@ import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
 import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun, FileText, ExternalLink, X } from 'lucide-react';
+import InfoPopupGrid from '@/app/dashboard/courses/components/InfoPopupGrid';
 
 interface WeekDay {
   day: number;
@@ -409,54 +410,11 @@ export default function WeekTemplate({
                   <p className="text-gray-600 mb-6">
                     Klicka på dokumenten nedan för att fördjupa din kunskap denna vecka
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {weekSpecificDocuments.map((doc, index) => (
-                      <Link
-                        key={doc.slug}
-                        href={`/dashboard/courses/functional-${courseType}/knowledge/${doc.slug}`}
-                        className="group"
-                      >
-                        <motion.div
-                          className="bg-gradient-to-br from-[#F3EFE3] to-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 text-left group hover:scale-105 border border-[#014421]/10 overflow-hidden"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.3 + index * 0.1 }}
-                          whileHover={{ x: 5 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          {/* Document Image */}
-                          <div className="aspect-[16/9] relative bg-gray-100">
-                            <Image
-                              src={doc.headerImage.startsWith('/api/images/') ? doc.headerImage : `/api/images${doc.headerImage.startsWith('/') ? '' : '/'}${doc.headerImage}`}
-                              alt={doc.title}
-                              fill
-                              className="object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                            <div className="absolute bottom-2 right-2">
-                              <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium text-gray-700">
-                                {doc.readTime} min läsning
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Document Content */}
-                          <div className="p-4">
-                            <h4 className="font-bold text-[#014421] mb-2 group-hover:text-[#116530] transition-colors capitalize">
-                              {doc.title}
-                            </h4>
-                            <p className="text-sm text-gray-600 line-clamp-2">
-                              {doc.content.replace(/<[^>]*>/g, '').substring(0, 100)}...
-                            </p>
-                            <div className="flex items-center justify-between mt-3">
-                              <span className="text-xs text-gray-500">Förhandsgranska</span>
-                              <ExternalLink className="w-4 h-4 text-[#014421] opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                          </div>
-                        </motion.div>
-                      </Link>
-                    ))}
-                  </div>
+                  <InfoPopupGrid 
+                    courseType={courseType === 'basics' ? 'basics' : 'flow'} 
+                    courseId={`functional-${courseType}`}
+                    currentWeek={weekNumber}
+                  />
                 </div>
               )}
             </div>
