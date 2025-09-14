@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import WysiwygEditor from '@/app/components/WysiwygEditor';
 
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Save, X, Plus, Check, Eye, Calendar, Tag } from 'lucide-react';
@@ -337,26 +338,60 @@ export default function NewBlogPage() {
       case 2:
         return (
           <div className="space-y-6">
+            {/* Language Tabs för innehåll */}
+            <div className="flex gap-2 flex-wrap">
+              {LOCALES.map(l => (
+                <button key={l} onClick={()=>setActiveLocale(l)} className={`px-3 py-1 rounded-full text-sm border ${activeLocale===l?'bg-primary text-white border-primary':'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'}`}>{l.toUpperCase()}</button>
+              ))}
+            </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Innehåll</label>
-              <textarea
-                value={blogData.content}
-                onChange={(e) => updateBlogData('content', e.target.value)}
-                rows={12}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              {activeLocale!=='sv' && (
-                <textarea value={(blogData as any)[`content_${activeLocale}`]||''} onChange={(e)=>updateBlogData(`content_${activeLocale}` as any, e.target.value)} rows={8} className="mt-2 w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder={`Innehåll (${activeLocale.toUpperCase()})`} />
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Innehåll {activeLocale !== 'sv' && `(${activeLocale.toUpperCase()})`}
+              </label>
+              
+              {activeLocale === 'sv' ? (
+                <WysiwygEditor
+                  value={blogData.content}
+                  onChange={(value) => updateBlogData('content', value)}
+                  placeholder="Skriv ditt blogginlägg här... Använd verktygsfältet för formatering."
+                  height={500}
+                />
+              ) : (
+                <WysiwygEditor
+                  value={(blogData as any)[`content_${activeLocale}`] || ''}
+                  onChange={(value) => updateBlogData(`content_${activeLocale}` as any, value)}
+                  placeholder={`Skriv innehållet på ${activeLocale.toUpperCase()} här...`}
+                  height={400}
+                />
               )}
             </div>
 
-            <div className="bg-background border border-border rounded-lg p-4">
-              <h3 className="font-medium text-secondary mb-2">Skrivtips</h3>
-              <ul className="text-sm text-secondary space-y-1">
-                <li>• Använd tydliga rubriker för att strukturera innehållet</li>
-                <li>• Inkludera praktiska tips och råd</li>
-                <li>• Referera till vetenskapliga studier när det är relevant</li>
-                <li>• Fokusera på functional foods och deras hälsofördelar</li>
+            <div className="bg-gradient-to-r from-[#93C560]/10 to-[#FF7E70]/10 border border-gray-200 rounded-2xl p-6">
+              <h3 className="font-medium text-[#014421] mb-3 flex items-center gap-2">
+                <span>✍️</span> Skrivtips för bra innehåll
+              </h3>
+              <ul className="text-sm text-gray-700 space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#93C560] mt-1">•</span>
+                  <span>Använd <strong>rubriker</strong> (H1, H2, H3) för att strukturera innehållet</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#93C560] mt-1">•</span>
+                  <span>Markera viktiga ord med <strong>fetstil</strong> eller <em>kursiv</em></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#93C560] mt-1">•</span>
+                  <span>Skapa listor för att göra innehållet lättläst</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#93C560] mt-1">•</span>
+                  <span>Använd citat för att framhäva viktiga poänger</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#93C560] mt-1">•</span>
+                  <span>Fokusera på functional foods och deras hälsofördelar</span>
+                </li>
               </ul>
             </div>
           </div>

@@ -1,144 +1,185 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { requireAdminAuth } from '@/app/lib/admin-auth';
+
+export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
 
-// Normalize image URLs for display
-function normalizeImageUrl(url: string | null): string | null {
-  if (!url) return null;
-  
-  // Remove duplicate /public
-  let normalized = url;
-  if (normalized.startsWith('/public/')) {
-    normalized = normalized.replace('/public', '');
-  }
-  if (normalized.startsWith('public/')) {
-    normalized = '/' + normalized.substring(7);
-  }
-  
-  // Ensure leading slash for local assets
-  if (!normalized.startsWith('/') && !normalized.startsWith('http')) {
-    normalized = '/' + normalized;
-  }
-  
-  return normalized;
+interface Recipe {
+  id: string;
+  title: string;
+  excerpt?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  categories: string[];
+  ingredients: string[];
+  slug: string;
+  status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
+  isPremium: boolean;
+  isFree: boolean;
+  date: string;
+  author: {
+    name: string;
+    username: string;
+  };
+  difficulty?: string;
+  prepTime?: string;
+  cookTime?: string;
+  totalTime?: string;
+  servings?: number;
+  instructions?: string[];
+  nutrition?: any;
+  tips?: string;
+  tags?: string[];
 }
 
-// GET /api/admin/recipes - Get all recipes with admin view
 export async function GET(request: NextRequest) {
-  const authResult = await requireAdminAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
   try {
     const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search');
-    const category = searchParams.get('category');
+    const limit = parseInt(searchParams.get('limit') || '50');
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const skip = (page - 1) * limit;
+    const adminFilter = searchParams.get('adminFilter') || 'all';
+    const search = searchParams.get('search') || '';
+    const adminMode = searchParams.get('adminMode') === 'true';
 
-    // Build where clause
+    // Bygg Prisma filter för admin - visa ALLA recept
     const where: any = {};
-    
+
+    // Admin-specifik filtrering
+    if (adminFilter === 'free') {
+      where.isFree = true;
+      where.isPremium = false;
+    } else if (adminFilter === 'premium') {
+      where.isPremium = true;
+    }
+    // För 'all' lägger vi inte till några statusfilter - visa allt
+
+    // Sökfilter
     if (search) {
       where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } }
+        {
+          title: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        },
+        {
+          excerpt: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        },
+        {
+          ingredients: {
+            hasSome: [search]
+          }
+        },
+        {
+          categories: {
+            hasSome: [search]
+          }
+        }
       ];
     }
-    
-    if (category) {
-      where.categories = { has: category };
+
+    // Hämta recept från databasen
+    const recipes = await prisma.recipe.findMany({
+      where,
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      skip: (page - 1) * limit,
+      take: limit
+    });
+
+    // Räkna totalt antal recept (före filtrering)
+    const totalRecipes = await prisma.recipe.count({ where });
+
+    // Normalize image URLs
+    function normalizeImageUrl(url: string | null): string {
+      if (!url) return '/images/recipe-placeholder.svg';
+      
+      let normalized = url;
+      if (normalized.startsWith('/public/')) {
+        normalized = normalized.replace('/public', '');
+      }
+      if (normalized.startsWith('public/')) {
+        normalized = '/' + normalized.substring(7);
+      }
+      
+      // Ensure leading slash for local assets
+      if (!normalized.startsWith('/') && !normalized.startsWith('http')) {
+        normalized = '/' + normalized;
+      }
+      
+      return normalized;
     }
 
-    // Get recipes with pagination
-    const [recipes, total] = await Promise.all([
-      prisma.recipe.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          excerpt: true,
-          imageUrl: true,
-          categories: true,
-          cookTime: true,
-          prepTime: true,
-          servings: true,
-          isFree: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      }),
-      prisma.recipe.count({ where })
-    ]);
-    
-    // Normalize image URLs
-    const recipesWithNormalizedImages = recipes.map(recipe => ({
-      ...recipe,
-      imageUrl: normalizeImageUrl(recipe.imageUrl)
+    // Konvertera till API-format
+    const formattedRecipes: Recipe[] = recipes.map(recipe => ({
+      id: recipe.id,
+      title: recipe.title,
+      excerpt: recipe.excerpt || '',
+      imageUrl: normalizeImageUrl(recipe.imageUrl),
+      imageAlt: recipe.imageAlt || recipe.title,
+      categories: recipe.categories,
+      ingredients: recipe.ingredients,
+      slug: recipe.slug,
+      status: recipe.status as 'PUBLISHED' | 'DRAFT' | 'ARCHIVED',
+      isPremium: recipe.isPremium,
+      isFree: recipe.isFree,
+      date: recipe.createdAt.toISOString(),
+      author: {
+        name: recipe.author?.name || 'Ulrika Davidsson',
+        username: 'ulrika'
+      },
+      difficulty: recipe.difficulty || undefined,
+      prepTime: recipe.prepTime || undefined,
+      cookTime: recipe.cookTime || undefined,
+      totalTime: recipe.totalTime || undefined,
+      servings: recipe.servings || undefined,
+      instructions: recipe.instructions ? recipe.instructions.split('\n').filter(step => step.trim()) : undefined,
+      tips: recipe.tips || undefined,
+      tags: recipe.tags || undefined
     }));
 
+    // Beräkna statistik för admin
+    const statistics = {
+      total: await prisma.recipe.count(),
+      free: await prisma.recipe.count({ where: { isFree: true, isPremium: false } }),
+      premium: await prisma.recipe.count({ where: { isPremium: true } }),
+      visible: await prisma.recipe.count({ where: { status: 'PUBLISHED' } }),
+      draft: await prisma.recipe.count({ where: { status: 'DRAFT' } }),
+      archived: await prisma.recipe.count({ where: { status: 'ARCHIVED' } })
+    };
+
+    const headers = new Headers();
+    headers.set('Cache-Control', 'no-store'); // Admin-data ska inte cachas
+
     return NextResponse.json({
-      recipes: recipesWithNormalizedImages,
+      recipes: formattedRecipes,
       pagination: {
         page,
         limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
-    });
+        total: totalRecipes,
+        totalPages: Math.ceil(totalRecipes / limit),
+        hasMore: (page * limit) < totalRecipes
+      },
+      statistics
+    }, { headers });
+
   } catch (error) {
-    console.error('Error fetching recipes:', error);
+    console.error('Error in admin recipes API:', error);
     return NextResponse.json(
       { error: 'Failed to fetch recipes' },
-      { status: 500 }
-    );
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
-// POST /api/admin/recipes - Create new recipe
-export async function POST(request: NextRequest) {
-  const authResult = await requireAdminAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
-
-  try {
-    const data = await request.json();
-    
-    // Check if slug already exists
-    if (data.slug) {
-      const existing = await prisma.recipe.findUnique({
-        where: { slug: data.slug }
-      });
-      
-      if (existing) {
-        return NextResponse.json(
-          { error: 'A recipe with this slug already exists' },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Create recipe
-    const recipe = await prisma.recipe.create({
-      data: {
-        ...data,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    });
-
-    return NextResponse.json(recipe);
-  } catch (error) {
-    console.error('Error creating recipe:', error);
-    return NextResponse.json(
-      { error: 'Failed to create recipe' },
       { status: 500 }
     );
   } finally {

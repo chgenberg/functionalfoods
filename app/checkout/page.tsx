@@ -3,18 +3,22 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { GiSparkles } from 'react-icons/gi';
 import { useT } from '../lib/i18n/LanguageProvider';
-import { ArrowLeft, Lock, CreditCard, User, Mail } from 'lucide-react';
+import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X } from 'lucide-react';
 
 export default function Checkout() {
   const t = useT();
-  const { items, total, clearCart } = useCart();
+  const { items, total, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState('stripe');
+  const [couponInput, setCouponInput] = useState('');
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [applying, setApplying] = useState(false);
   
   // Guest checkout form data
   const [guestMode, setGuestMode] = useState(!user);
@@ -35,6 +39,15 @@ export default function Checkout() {
     }
   }, [user]);
 
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setApplying(true);
+    setCouponError(null);
+    const res = await applyCoupon(couponInput.trim());
+    if (!res.success) setCouponError(res.message || 'Ogiltig rabattkod');
+    setApplying(false);
+  };
+
   const handleCheckout = async () => {
     setIsProcessing(true);
     setError(null);
@@ -46,8 +59,8 @@ export default function Checkout() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items,
-          customerInfo: guestMode ? customerInfo : undefined,
-          createAccount: guestMode ? customerInfo.createAccount : false
+          customer: guestMode ? { name: customerInfo.name, email: customerInfo.email } : (user ? { name: user.name, email: user.email, id: user.id } : undefined),
+          couponCode: appliedCoupon?.code || undefined
         })
       });
 
@@ -239,12 +252,21 @@ export default function Checkout() {
               <div className="p-6">
                 <div className="space-y-4 mb-6">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="font-medium text-gray-900">{item.name}</h3>
-                        <p className="text-sm text-gray-600">
-                          {(item.type === 'course' ? t('checkout.course','Kurs') : t('checkout.book','Bok'))} • {t('checkout.quantity','Antal')}: {item.quantity}
-                        </p>
+                    <div key={item.id} className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
+                          {item.image ? (
+                            <Image src={item.image} alt={item.name} width={48} height={48} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200" />
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-gray-900 leading-tight">{item.name}</h3>
+                          <p className="text-sm text-gray-600">
+                            {(item.type === 'course' ? t('checkout.course','Kurs') : t('checkout.book','Bok'))} • {t('checkout.quantity','Antal')}: {item.quantity}
+                          </p>
+                        </div>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-gray-900">{(item.price * item.quantity).toLocaleString()} kr</p>
@@ -253,14 +275,48 @@ export default function Checkout() {
                   ))}
                 </div>
 
+                {/* Coupon */}
+                <div className="mb-6">
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
+                      <div className="flex items-center gap-2 text-green-700 text-sm">
+                        <Tag className="w-4 h-4" />
+                        <span>Rabattkod tillämpad: <strong>{appliedCoupon.code}</strong></span>
+                      </div>
+                      <button onClick={removeCoupon} className="text-green-700 hover:text-green-900" aria-label="Ta bort rabattkod">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value)}
+                        placeholder="Rabattkod"
+                        className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#93C560]"
+                      />
+                      <button onClick={handleApplyCoupon} disabled={applying} className="px-4 py-2 bg-[#014421] text-white rounded-lg disabled:opacity-60">
+                        {applying ? 'Lägger till...' : 'Lägg till'}
+                      </button>
+                    </div>
+                  )}
+                  {couponError && <p className="mt-2 text-sm text-red-600">{couponError}</p>}
+                </div>
+
                 <div className="border-t pt-6">
-                  <div className="flex justify-between items-center mb-4">
+                  <div className="flex justify-between items-center mb-2">
                     <span className="text-lg font-medium text-gray-700">{t('checkout.subtotal','Delsumma')}</span>
                     <span className="text-lg font-semibold text-gray-900">{total.toLocaleString()} kr</span>
                   </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between items-center mb-2 text-green-700">
+                      <span className="font-medium">{t('checkout.discount','Rabatt')}</span>
+                      <span>-{discount.toLocaleString()} kr</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-xl font-bold text-gray-800">{t('checkout.total','Totalt')}</span>
-                    <span className="text-2xl font-bold text-[#014421]">{total} kr</span>
+                    <span className="text-2xl font-bold text-[#014421]">{finalTotal.toLocaleString()} kr</span>
                   </div>
                   <p className="text-sm text-gray-600 mb-6">{t('checkout.vatIncluded','Inklusive moms')}</p>
 

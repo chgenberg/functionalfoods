@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* React Quill CSS */
+@import 'quill/dist/quill.snow.css';
+
 /* Import Work Sans font - primary typeface */
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
 

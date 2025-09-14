@@ -468,6 +468,7 @@ export default function FunctionalFlowPage() {
               name="Functional Flow"
               price={1497}
               type="course"
+              image={course.image}
             />
             <Link
               href="#kostschema"

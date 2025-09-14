@@ -1,320 +1,180 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, BookOpen, Info } from 'lucide-react';
+import { X, ExternalLink, BookOpen, Info, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
-interface InfoItem {
+interface KnowledgeDocument {
   title: string;
-  filename: string;
-  icon: string;
-  description: string;
+  slug: string;
+  content: string;
+  headerImage: string;
+  relatedImages: string[];
+  keyTakeaways: string[];
+  readTime: number;
+  course: 'basic' | 'flow';
+  order: number;
 }
-
-const allDocuments = [
-  // Basics Course Documents
-  { 
-    title: "Frågor och svar", 
-    filename: "fragor-och-svar.txt", 
-    icon: "❓", 
-    description: "Vanliga frågor om kursen och kosten",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Dags att komma igång!", 
-    filename: "dags-att-komma-igang.txt", 
-    icon: "🚀", 
-    description: "Kom igång med din hälsoresa",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Att äta ute med functional foods", 
-    filename: "att-ata-ute-med-functional-foods.txt", 
-    icon: "🍽️", 
-    description: "Tips för restaurangbesök",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Måldokument - styrelsemöte 1", 
-    filename: "maldokument-styrelsemote-1.txt", 
-    icon: "📋", 
-    description: "Sätt upp dina hälsomål",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Fördelarna med functional foods", 
-    filename: "fordelarna-med-functional-foods.txt", 
-    icon: "💪", 
-    description: "Varför functional foods fungerar",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Att äta ute med functional foods", 
-    filename: "att-ata-ute-med-functional-foods.txt", 
-    icon: "🍽️", 
-    description: "Tips för restaurangbesök",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Benbuljong", 
-    filename: "benbuljong.txt", 
-    icon: "🍲", 
-    description: "Hälsosam benbuljong och dess fördelar",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Att välja rätt kolhydrater", 
-    filename: "att-valja-ratt-kolhydrater.txt", 
-    icon: "🌾", 
-    description: "Smarta kolhydratsalternativ",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Ersättningsguide för kolhydrater", 
-    filename: "ersattningsguide-for-kolhydrater.txt", 
-    icon: "🔄", 
-    description: "Smarta kolhydratsalternativ",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "3 steg till ett friskare liv", 
-    filename: "functional-foods-3-steg-till-ett-friskare-liv.txt", 
-    icon: "🎯", 
-    description: "Enkla steg mot bättre hälsa",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Functional foods topplista", 
-    filename: "functional-foods-topplista.txt", 
-    icon: "🏆", 
-    description: "De bästa functional foods",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Motivation & reflektion", 
-    filename: "motivation-och-reflektion.txt", 
-    icon: "🌟", 
-    description: "Håll motivationen uppe",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Ät mer functional foods enkelt", 
-    filename: "at-mer-functional-foods-pa-ett-enkelt-satt.txt", 
-    icon: "🥗", 
-    description: "Praktiska tips för vardagen",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Functional foods som livsstil", 
-    filename: "functional-foods-som-livsstil.txt", 
-    icon: "🌱", 
-    description: "Gör det till en livsstil",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Vad är functional foods?", 
-    filename: "vad-ar-functional-foods.txt", 
-    icon: "🤔", 
-    description: "Grundläggande om functional foods",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  
-  // Flow Course Specific Documents
-  { 
-    title: "Kosten - en guide till bättre mage och tarm", 
-    filename: "kosten-guide-mage-tarm.txt", 
-    icon: "📖", 
-    description: "Kostguide för maghälsa",
-    courseTypes: ['flow'] as const
-  },
-  { 
-    title: "Vanliga mag- och tarmproblem", 
-    filename: "vanliga-mag-och-tarmproblem.txt", 
-    icon: "🤧", 
-    description: "Förstå mag- och tarmproblem",
-    courseTypes: ['flow'] as const
-  },
-  { 
-    title: "Tillskott som kan stödja mag- och tarmhälsa", 
-    filename: "tillskott-mag-tarm.txt", 
-    icon: "💊", 
-    description: "Kosttillskott för mage och tarm",
-    courseTypes: ['flow'] as const
-  },
-  { 
-    title: "Superpulver", 
-    filename: "superpulver.txt", 
-    icon: "✨", 
-    description: "Kraftfulla superpulver",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Drycker", 
-    filename: "drycker.txt", 
-    icon: "🥤", 
-    description: "Hälsosamma dryckesval",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  { 
-    title: "Fermenterade livsmedel, probiotika och prebiotika", 
-    filename: "fermenterade-livsmedel-probiotika-prebiotika.txt", 
-    icon: "🥒", 
-    description: "Stärk din tarmflora",
-    courseTypes: ['flow'] as const
-  },
-  { 
-    title: "Livsstilsfaktorer: stress, sömn och fysisk aktivitet", 
-    filename: "livsstilsfaktorer-stress-somn-aktivitet.txt", 
-    icon: "🧘", 
-    description: "Balansera livsstilsfaktorer",
-    courseTypes: ['flow'] as const
-  },
-  { 
-    title: "Att välja rätt proteiner", 
-    filename: "att-valja-ratt-proteiner.txt", 
-    icon: "💪", 
-    description: "Guide till bästa proteinval",
-    courseTypes: ['basics', 'flow', 'energy'] as const
-  },
-  
-  // Energy Course Documents
-  { 
-    title: "Naturens egna hälsobomber", 
-    filename: "naturens-egna-halsobomber.txt", 
-    icon: "💥", 
-    description: "Kraftfulla superfoods från naturen",
-    courseTypes: ['energy'] as const
-  },
-  { 
-    title: "Måldokument - styrelsemöte 2", 
-    filename: "maldokument-styrelsemote-2.txt", 
-    icon: "📊", 
-    description: "Utveckla dina hälsomål vidare",
-    courseTypes: ['energy'] as const
-  },
-  { 
-    title: "Periodisk fasta ger klarhet och energi", 
-    filename: "periodisk-fasta-klarhet-energi.txt", 
-    icon: "⏰", 
-    description: "Fördelarna med periodisk fasta",
-    courseTypes: ['energy'] as const
-  },
-  { 
-    title: "Reflektion vecka 3", 
-    filename: "reflektion-vecka-3.txt", 
-    icon: "💭", 
-    description: "Reflektera över din framsteg",
-    courseTypes: ['energy'] as const
-  }
-];
 
 interface InfoPopupGridProps {
   courseType: 'basics' | 'flow' | 'energy';
 }
 
+// Icons for different document types
+const documentIcons: { [key: string]: string } = {
+  'vad är functional foods': '🤔',
+  'dags att komma igång': '🚀',
+  'min resa till en lugnare mage': '🌟',
+  'vanliga mag- och tarmproblem': '🤧',
+  'kosten – en guide till en bättre mage och tarm': '📖',
+  'fermenterade livsmedel, probiotika och prebiotika': '🥒',
+  'tillskott som kan stödja mag- och tarmhälsa': '💊',
+  'livsstilsfaktorer': '🧘',
+  'att välja rätt kolhydrater': '🌾',
+  'att välja rätt proteiner': '🥩',
+  'drycker': '🥤',
+  'superpulver': '✨',
+  'benbuljong': '🍲',
+  'ersättningsguide för kolhydrater': '🔄',
+  'att äta ute med functional foods': '🍽️',
+  'topplista med functional foods': '🏆',
+  'frågor och svar': '❓',
+  'sammanfattning och källor': '📚',
+  'functional foods - 3 steg till ett friskare liv': '🎯',
+  'fördelarna-med-functional-foods': '💪',
+  'periodisk fasta': '⏰',
+  'ät mer functional foods på ett enkelt sätt': '🥗',
+  'functional foods som livsstil': '🌱',
+  'motivation och reflektion': '💭',
+  'måldokument - styrelsemöte 1': '📋',
+  'måldokument - styrelsemöte 2': '📊',
+  'reflektion - vecka 3': '💭'
+};
+
 export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
-  const [selectedInfo, setSelectedInfo] = useState<InfoItem | null>(null);
-  const [content, setContent] = useState<string>('');
-  const [loading, setLoading] = useState(false);
+  const [documents, setDocuments] = useState<KnowledgeDocument[]>([]);
+  const [selectedDoc, setSelectedDoc] = useState<KnowledgeDocument | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Function to convert markdown to HTML
-  const markdownToHtml = (text: string): string => {
-    // Replace **text** with <strong>text</strong>
-    let html = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    
-    // Replace single * for emphasis
-    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    
-    // Replace line breaks with <br> tags
-    html = html.replace(/\n/g, '<br>');
-    
-    // Replace bullet points
-    html = html.replace(/^- (.+)$/gm, '• $1');
-    
-    // Handle headings
-    html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-bold text-[#014421] mt-4 mb-2">$1</h3>');
-    html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold text-[#014421] mt-6 mb-3">$1</h2>');
-    html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold text-[#014421] mt-8 mb-4">$1</h1>');
-    
-    return html;
-  };
-
-  const openPopup = async (item: InfoItem) => {
-    setSelectedInfo(item);
-    setLoading(true);
-    
-    try {
-      const response = await fetch(`/api/scraped-content/${item.filename}`);
-      if (response.ok) {
-        const text = await response.text();
+  useEffect(() => {
+    const loadDocuments = async () => {
+      try {
+        const course = courseType === 'basics' ? 'basic' : courseType;
+        const response = await fetch(`/data/knowledge-documents-${course}.json`);
         
-        // The files are already cleaned, just extract content after separator
-        let cleanContent = text;
-        
-        if (text.includes('--------------------------------------------------------------------------------')) {
-          const parts = text.split('--------------------------------------------------------------------------------');
-          if (parts.length > 1) {
-            cleanContent = parts[1].trim();
-          }
+        if (response.ok) {
+          const data: KnowledgeDocument[] = await response.json();
+          setDocuments(data);
         }
-        
-        setContent(cleanContent);
-      } else {
-        setContent('Kunde inte ladda innehållet. Försök igen senare.');
+      } catch (error) {
+        console.error('Error loading documents:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setContent('Fel vid laddning av innehåll.');
-    }
-    
-    setLoading(false);
+    };
+
+    loadDocuments();
+  }, [courseType]);
+
+  const getCourseSlug = () => {
+    return courseType === 'basics' ? 'functional-basics' : 
+           courseType === 'flow' ? 'functional-flow' : 
+           'functional-energy';
   };
+
+  const openPreview = (doc: KnowledgeDocument) => {
+    setSelectedDoc(doc);
+  };
+
+  const formatTitle = (title: string) => {
+    return title.split(' ').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#93C560]"></div>
+      </div>
+    );
+  }
 
   return (
     <>
-      {/* Info Grid */}
+      {/* Knowledge Documents Grid */}
       <div className="mb-12">
         <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-[#014421] mb-4">Kunskap och information</h3>
+          <h3 className="text-2xl font-bold text-[#014421] mb-4">Kunskapsdokument</h3>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Utforska våra guider och artiklar för att fördjupa din kunskap om functional foods
+            Utforska våra omfattande guider och fördjupa din kunskap om functional foods
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {allDocuments.map((item, index) => (
-            <motion.button
-              key={item.filename}
-              onClick={() => openPopup(item)}
-              className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 text-center group hover:scale-105"
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {documents.map((doc, index) => (
+            <motion.div
+              key={doc.slug}
+              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ y: -4 }}
             >
-              <div className="dashboard-emoji mb-2 group-hover:scale-110 transition-transform">
-                {item.icon}
+              {/* Image preview */}
+              <div className="relative h-32 overflow-hidden bg-gray-100">
+                <img 
+                  src={doc.headerImage} 
+                  alt={doc.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute bottom-2 left-2 text-white">
+                  <span className="text-2xl">{documentIcons[doc.title.toLowerCase()] || '📄'}</span>
+                </div>
               </div>
-              <h4 className="font-semibold text-sm text-[#014421] mb-1 line-clamp-2">
-                {item.title}
-              </h4>
-              <p className="text-xs text-gray-500 line-clamp-2">
-                {item.description}
-              </p>
-            </motion.button>
+
+              {/* Content */}
+              <div className="p-4">
+                <h4 className="font-semibold text-sm text-[#014421] mb-1 line-clamp-2">
+                  {formatTitle(doc.title)}
+                </h4>
+                <div className="flex items-center justify-between mt-3">
+                  <span className="text-xs text-gray-500">
+                    {doc.readTime} min läsning
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => openPreview(doc)}
+                      className="text-xs text-gray-600 hover:text-[#93C560] transition-colors"
+                    >
+                      Förhandsgranska
+                    </button>
+                    <Link
+                      href={`/dashboard/courses/${getCourseSlug()}/knowledge/${doc.slug}`}
+                      className="text-xs text-[#93C560] hover:text-[#7BA94D] font-medium flex items-center gap-1 group"
+                    >
+                      Läs mer
+                      <ArrowRight className="w-3 h-3 transform group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
-      {/* Info Modal */}
+      {/* Preview Modal */}
       <AnimatePresence>
-        {selectedInfo && (
+        {selectedDoc && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedInfo(null)}
+            onClick={() => setSelectedDoc(null)}
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0, y: 20 }}
@@ -324,51 +184,83 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
               className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header - Solid Green */}
-              <div className="bg-[#014421] text-white p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">{selectedInfo.icon}</div>
-                    <div>
-                      <h2 className="text-2xl font-bold mb-2">{selectedInfo.title}</h2>
-                      <p className="text-white/80">{selectedInfo.description}</p>
-                    </div>
+              {/* Modal Header with Image */}
+              <div className="relative h-48 md:h-64">
+                <img 
+                  src={selectedDoc.headerImage} 
+                  alt={selectedDoc.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-2">
+                    {formatTitle(selectedDoc.title)}
+                  </h2>
+                  <div className="flex items-center gap-4 text-sm">
+                    <span className="flex items-center gap-1">
+                      <BookOpen className="w-4 h-4" />
+                      {selectedDoc.readTime} min läsning
+                    </span>
+                    <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full">
+                      Del {selectedDoc.order + 1}
+                    </span>
                   </div>
-                  <button
-                    onClick={() => setSelectedInfo(null)}
-                    className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
                 </div>
+                <button
+                  onClick={() => setSelectedDoc(null)}
+                  className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors flex items-center justify-center"
+                >
+                  <X className="w-6 h-6 text-white" />
+                </button>
               </div>
 
               {/* Modal Content */}
-              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 200px)' }}>
-                {loading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 320px)' }}>
+                {/* Key Takeaways */}
+                {selectedDoc.keyTakeaways.length > 0 && (
+                  <div className="mb-6 p-4 bg-[#F3EFE3] rounded-xl">
+                    <h3 className="font-semibold text-[#014421] mb-2">Huvudpunkter:</h3>
+                    <ul className="space-y-1">
+                      {selectedDoc.keyTakeaways.map((takeaway, index) => (
+                        <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
+                          <span className="text-[#93C560] mt-0.5">•</span>
+                          <span>{takeaway}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                ) : (
-                  <div 
-                    className="prose prose-lg max-w-none space-y-4"
-                    dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }}
-                  />
                 )}
+
+                {/* Content preview */}
+                <div 
+                  className="prose prose-lg max-w-none line-clamp-6"
+                  dangerouslySetInnerHTML={{ 
+                    __html: selectedDoc.content.substring(0, 500) + '...' 
+                  }}
+                />
               </div>
 
-              {/* Modal Footer - Always visible */}
+              {/* Modal Footer */}
               <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <Info className="w-4 h-4" />
-                  <span>Del av Functional Foods kunskapsbank</span>
+                  <span>Functional {courseType === 'basics' ? 'Basics' : 'Flow'} kunskapsdokument</span>
                 </div>
-                <button
-                  onClick={() => setSelectedInfo(null)}
-                  className="px-6 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#116530] transition-colors font-medium"
-                >
-                  Stäng
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setSelectedDoc(null)}
+                    className="px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
+                  >
+                    Stäng
+                  </button>
+                  <Link
+                    href={`/dashboard/courses/${getCourseSlug()}/knowledge/${selectedDoc.slug}`}
+                    className="px-6 py-2 bg-gradient-to-r from-[#93C560] to-[#7BA94D] text-white rounded-lg hover:shadow-lg transition-all font-medium flex items-center gap-2"
+                  >
+                    Läs hela dokumentet
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
             </motion.div>
           </motion.div>

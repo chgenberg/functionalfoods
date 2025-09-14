@@ -1,20 +1,32 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { ArrowLeft, Book, Clock, CreditCard, Lock, Minus, Plus, Shield, ShoppingBag, Trash2, Truck } from 'lucide-react';
+import { ArrowLeft, Book, Clock, CreditCard, Lock, Minus, Plus, Shield, ShoppingBag, Trash2, Truck, Tag, X } from 'lucide-react';
 import { GiSparkles } from 'react-icons/gi';
 import Image from 'next/image';
 import { useState } from 'react';
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, total, isLoaded } = useCart();
+  const { items, removeItem, updateQuantity, total, isLoaded, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const [removingItem, setRemovingItem] = useState<string | null>(null);
+  const [couponInput, setCouponInput] = useState('');
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [applying, setApplying] = useState(false);
 
   const handleRemove = async (id: string) => {
     setRemovingItem(id);
     await new Promise(resolve => setTimeout(resolve, 300));
     removeItem(id);
     setRemovingItem(null);
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setApplying(true);
+    setCouponError(null);
+    const res = await applyCoupon(couponInput.trim());
+    if (!res.success) setCouponError(res.message || 'Ogiltig rabattkod');
+    setApplying(false);
   };
 
   if (!isLoaded) {
@@ -198,6 +210,34 @@ export default function CartPage() {
                 </div>
               </div>
 
+              {/* Coupon */}
+              <div className="mb-6">
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
+                    <div className="flex items-center gap-2 text-green-700 text-sm">
+                      <Tag className="w-4 h-4" />
+                      <span>Rabattkod tillämpad: <strong>{appliedCoupon.code}</strong></span>
+                    </div>
+                    <button onClick={removeCoupon} className="text-green-700 hover:text-green-900" aria-label="Ta bort rabattkod">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
+                      placeholder="Rabattkod"
+                      className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#93C560]"
+                    />
+                    <button onClick={handleApplyCoupon} disabled={applying} className="px-4 py-2 bg-[#014421] text-white rounded-lg disabled:opacity-60">
+                      {applying ? 'Lägger till...' : 'Lägg till'}
+                    </button>
+                  </div>
+                )}
+                {couponError && <p className="mt-2 text-sm text-red-600">{couponError}</p>}
+              </div>
+
               {/* Price Breakdown */}
               <div className="space-y-3 mb-6">
                 {items.map((item) => (
@@ -211,9 +251,19 @@ export default function CartPage() {
                   </div>
                 ))}
                 <div className="border-t border-gray-200 pt-3">
-                  <div className="flex justify-between text-lg font-bold">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Delsumma</span>
+                    <span className="text-gray-900">{total.toLocaleString('sv-SE')} kr</span>
+                  </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-sm text-green-700">
+                      <span>Rabatt</span>
+                      <span>-{discount.toLocaleString('sv-SE')} kr</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-lg font-bold mt-2">
                     <span>Totalt</span>
-                    <span>{total.toLocaleString('sv-SE')} kr</span>
+                    <span>{finalTotal.toLocaleString('sv-SE')} kr</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Inklusive moms</p>
                 </div>

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, Save, Loader, AlertTriangle } from 'lucide-react';
+import WysiwygEditor from '@/app/components/WysiwygEditor';
 
 interface BlogPost {
   id: string;
@@ -185,15 +186,14 @@ export default function EditBlogPostPage() {
             </div>
             
             <div>
-              <label className="block text-xs font-bold text-primary uppercase tracking-wider mb-2" htmlFor="post-content">
-                Innehåll (Markdown)
+              <label className="block text-xs font-bold text-primary uppercase tracking-wider mb-3" htmlFor="post-content">
+                Innehåll
               </label>
-              <textarea
-                id="post-content"
+              <WysiwygEditor
                 value={post.content}
-                onChange={(e) => setPost({ ...post, content: e.target.value })}
-                rows={15}
-                className="w-full px-4 py-3 bg-background border-2 border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 font-mono text-sm"
+                onChange={(value) => setPost({ ...post, content: value })}
+                placeholder="Redigera ditt blogginlägg här..."
+                height={500}
               />
             </div>
 

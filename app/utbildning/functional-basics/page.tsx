@@ -558,6 +558,7 @@ export default function FunctionalBasicsPage() {
                 name="Functional Basics"
                 price={997}
                 type="course"
+                image={course.image}
               />
               <Link
                 href="#kostschema"
