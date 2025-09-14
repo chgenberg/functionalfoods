@@ -277,13 +277,13 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
               >
-                <Link
-                  href="/?quiz=1"
+                <button
+                  onClick={() => setShowQuiz(true)}
                   className="group relative bg-primary hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-3 shadow-lg hover:shadow-xl inline-flex"
                 >
                   <span>Starta hälsotestet</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
+                </button>
 
                 <div className="mt-6 space-y-2">
                   <input
