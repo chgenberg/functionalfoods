@@ -69,63 +69,38 @@ function normalizeImageUrl(url: string | null): string | null {
 }
 
 export async function GET(request: Request) {
-  // Skip during build process
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    return NextResponse.json({ recipes: [] });
-  }
-  
   try {
     const { searchParams } = new URL(request.url);
-    const count = Math.min(50, Math.max(1, parseInt(searchParams.get('count') || '10')));
-    const excludeId = searchParams.get('excludeId');
+    const count = Math.min(parseInt(searchParams.get('count') || '10', 10), 50);
 
-    // Get free recipes with images
-    const freeRecipes = await prisma.recipe.findMany({
-      where: {
-        status: 'PUBLISHED',
-        isFree: true,
-        isPremium: false,
-        imageUrl: { not: null },
-        ...(excludeId && { id: { not: excludeId } })
-      },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        imageUrl: true,
-        imageAlt: true,
-        excerpt: true,
-        prepTime: true,
-        categories: true
-      },
-      take: count * 2 // Get more to shuffle from
+    const recipes = await prisma.recipe.findMany({
+      where: { status: 'PUBLISHED', isPremium: false },
+      select: { id: true, title: true, slug: true, imageUrl: true, imageAlt: true, excerpt: true, prepTime: true, categories: true },
+      take: count,
+      orderBy: { createdAt: 'desc' }
     });
 
-    if (freeRecipes.length === 0) {
-      return NextResponse.json(
-        { recipes: sampleFallback().slice(0, count) },
-        { headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' } }
-      );
+    if (recipes.length === 0) {
+      // In production, do not serve demo content
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ recipes: [] }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
+      }
+      return NextResponse.json({ recipes: sampleFallback().slice(0, count) }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
     }
 
-    // Shuffle and return requested count
-    const shuffled = freeRecipes.sort(() => 0.5 - Math.random());
-    const selectedRecipes = shuffled.slice(0, count).map(r => ({
+    const normalized = recipes.map(r => ({
       ...r,
       imageUrl: normalizeImageUrl(r.imageUrl)
     }));
 
-    return NextResponse.json(
-      { recipes: selectedRecipes },
-      { headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' } }
-    );
-
+    return NextResponse.json({ recipes: normalized }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } });
   } catch (error) {
     console.error('Error fetching random recipes:', error);
-    return NextResponse.json(
-      { recipes: sampleFallback().slice(0, 10) },
-      { status: 500, headers: { 'Cache-Control': 'public, s-maxage=60' } }
-    );
+    // Avoid demo data in production on error as well
+    if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ recipes: [] }, { status: 200 });
+    }
+    return NextResponse.json({ recipes: sampleFallback().slice(0, 10) }, { status: 200 });
   } finally {
     await prisma.$disconnect();
   }
