@@ -210,7 +210,16 @@ export default function AdminDashboard() {
             </motion.div>
           );
         })}
-        <Link href="/admin/meal-plans" className="group">
+        <Link href="/admin/course-weeks" className="group">
+            <div className="p-4 rounded-lg bg-gradient-to-br from-sky-400 to-blue-500 text-white shadow hover:shadow-md transition-all h-full flex items-center justify-between">
+              <div>
+                <h3 className="text-xs sm:text-sm whitespace-nowrap tracking-tight font-semibold">Vecko-metadata</h3>
+                <p className="text-xs opacity-90">Rubrik, bild, video</p>
+              </div>
+              <FileText className="h-6 w-6 opacity-90" />
+            </div>
+          </Link>
+          <Link href="/admin/meal-plans" className="group">
             <div className="p-4 rounded-lg bg-gradient-to-br from-yellow-400 to-orange-500 text-white shadow hover:shadow-md transition-all h-full flex items-center justify-between">
               <div>
                 <h3 className="text-xs sm:text-sm whitespace-nowrap tracking-tight font-semibold">Kostscheman</h3>

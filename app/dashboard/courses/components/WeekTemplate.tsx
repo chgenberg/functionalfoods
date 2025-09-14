@@ -192,6 +192,26 @@ export default function WeekTemplate({
     return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);
 
+  // Load course week meta (title/subtitle/hero/video) and override props if present
+  useEffect(() => {
+    const loadMeta = async () => {
+      try {
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
+        const res = await fetch(`/api/course-weeks?course=${course}&week=${weekNumber}`);
+        const meta = await res.json();
+        if (meta) {
+          if (meta.weekTitle) weekTitle = meta.weekTitle;
+          if (meta.weekSubtitle) weekSubtitle = meta.weekSubtitle;
+          if (meta.heroImage) heroImage = meta.heroImage;
+          if (meta.videoUrl) videoUrl = meta.videoUrl;
+        }
+      } catch (e) {
+        // ignore, fallback to passed props
+      }
+    };
+    loadMeta();
+  }, [courseType, weekNumber]);
+
   // Load knowledge documents for this course
   useEffect(() => {
     const loadKnowledgeDocuments = async () => {

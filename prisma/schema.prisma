@@ -596,3 +596,18 @@ model MealPlanWeek {
   @@unique([course, weekNumber])
   @@index([course])
 }
+
+model CourseWeekMeta {
+  id          String   @id @default(uuid())
+  course      String   // 'basic' | 'flow' | 'energy'
+  weekNumber  Int
+  weekTitle   String?
+  weekSubtitle String?
+  heroImage   String?
+  videoUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([course, weekNumber])
+  @@index([course])
+}
