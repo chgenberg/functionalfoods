@@ -1,28 +1,15 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { cookies } from 'next/headers';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
 
-// Verify admin authentication
-async function verifyAdmin(request: Request) {
-  const cookieStore = cookies();
-  const adminToken = cookieStore.get('adminToken');
-  
-  if (!adminToken?.value || adminToken.value !== 'admin-authenticated') {
-    return false;
-  }
-  
-  return true;
-}
-
 export async function GET(request: Request) {
   try {
-    if (!await verifyAdmin(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireAdminAuth(request as any);
+    if (auth instanceof NextResponse) return auth;
 
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search');
@@ -68,9 +55,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    if (!await verifyAdmin(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireAdminAuth(request as any);
+    if (auth instanceof NextResponse) return auth;
 
     const data = await request.json();
 

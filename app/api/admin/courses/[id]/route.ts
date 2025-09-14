@@ -1,40 +1,24 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { cookies } from 'next/headers';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 const prisma = new PrismaClient();
-
-// Verify admin authentication
-async function verifyAdmin(request: Request) {
-  const cookieStore = cookies();
-  const adminToken = cookieStore.get('adminToken');
-  
-  if (!adminToken?.value || adminToken.value !== 'admin-authenticated') {
-    return false;
-  }
-  
-  return true;
-}
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    if (!await verifyAdmin(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireAdminAuth(request as any);
+    if (auth instanceof NextResponse) return auth;
 
     const course = await prisma.course.findUnique({
       where: { id: params.id },
       include: {
         user: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-      },
+          select: { name: true, email: true }
+        }
+      }
     });
 
     if (!course) {
@@ -56,9 +40,8 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    if (!await verifyAdmin(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireAdminAuth(request as any);
+    if (auth instanceof NextResponse) return auth;
 
     const data = await request.json();
 
@@ -81,7 +64,7 @@ export async function PUT(
         weeks: data.weeks,
         materials: data.materials,
         downloads: data.downloads
-      },
+      }
     });
 
     return NextResponse.json(course);
@@ -99,12 +82,11 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    if (!await verifyAdmin(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await requireAdminAuth(request as any);
+    if (auth instanceof NextResponse) return auth;
 
     await prisma.course.delete({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     return NextResponse.json({ success: true });

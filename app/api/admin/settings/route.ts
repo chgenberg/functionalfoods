@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,10 @@ export async function GET(request: NextRequest) {
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     return NextResponse.json({ settings: {} });
   }
+
+  // Require admin
+  const auth = await requireAdminAuth(request);
+  if (auth instanceof NextResponse) return auth;
 
   try {
     // Return default settings for now
@@ -73,6 +78,10 @@ export async function POST(request: NextRequest) {
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     return NextResponse.json({ success: false, error: 'Not available during build' });
   }
+
+  // Require admin
+  const auth = await requireAdminAuth(request);
+  if (auth instanceof NextResponse) return auth;
 
   try {
     const { settings } = await request.json();
