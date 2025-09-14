@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import WeekTemplate from '@/app/dashboard/courses/components/WeekTemplate';
-import { mealPlans } from '@/app/data/mealPlans';
 
 export default function Week1Page() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
+  const [mealPlan, setMealPlan] = useState<any>(null);
 
   useEffect(() => {
     const savedStartDate = localStorage.getItem('basicsStartDate');
@@ -23,6 +23,21 @@ export default function Week1Page() {
     }
   }, []);
 
+  useEffect(() => {
+    const loadMealPlan = async () => {
+      try {
+        const res = await fetch('/api/meal-plans?course=basic&week=1');
+        const data = await res.json();
+        setMealPlan({ week1: data });
+      } catch (e) {
+        setMealPlan(null);
+      }
+    };
+    loadMealPlan();
+  }, []);
+
+  if (!mealPlan) return null;
+
   return (
     <WeekTemplate
       courseType="basics"
@@ -31,7 +46,7 @@ export default function Week1Page() {
       weekSubtitle="Vecka 1 - Lär dig grunderna i functional foods och hur du optimerar din hälsa"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
       videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
-      mealPlans={mealPlans}
+      mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />
   );

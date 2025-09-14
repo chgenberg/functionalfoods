@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import WeekTemplate from '@/app/dashboard/courses/components/WeekTemplate';
-import { mealPlans } from '@/app/data/mealPlans';
 
 export default function Week5Page() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
+  const [mealPlan, setMealPlan] = useState<any>(null);
 
   useEffect(() => {
     const savedStartDate = localStorage.getItem('basicsStartDate');
@@ -16,6 +16,19 @@ export default function Week5Page() {
       localStorage.setItem('basicsStartDate', startDate.toISOString());
       setCourseStartDate(startDate);
     }
+  }, []);
+
+  useEffect(() => {
+    const loadMealPlan = async () => {
+      try {
+        const res = await fetch('/api/meal-plans?course=basic&week=5');
+        const data = await res.json();
+        setMealPlan({ week5: data });
+      } catch (e) {
+        setMealPlan(null);
+      }
+    };
+    loadMealPlan();
   }, []);
 
   const weekTitles = {
@@ -34,6 +47,8 @@ export default function Week5Page() {
     6: 'Vecka 6 - Implementera allt du lärt dig i din vardag'
   };
 
+  if (!mealPlan) return null;
+
   return (
     <WeekTemplate
       courseType="basics"
@@ -42,7 +57,7 @@ export default function Week5Page() {
       weekSubtitle={weekSubtitles[5]}
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
       videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
-      mealPlans={mealPlans}
+      mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />
   );

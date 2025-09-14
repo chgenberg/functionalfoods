@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import WeekTemplate from '@/app/dashboard/courses/components/WeekTemplate';
-import { energyMealPlans } from '@/app/data/mealPlans';
 
 export default function Week2Page() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
+  const [mealPlan, setMealPlan] = useState<any>(null);
 
   useEffect(() => {
     const savedStartDate = localStorage.getItem('energyStartDate');
@@ -13,6 +13,21 @@ export default function Week2Page() {
       setCourseStartDate(new Date(savedStartDate));
     }
   }, []);
+
+  useEffect(() => {
+    const loadMealPlan = async () => {
+      try {
+        const res = await fetch('/api/meal-plans?course=energy&week=2');
+        const data = await res.json();
+        setMealPlan({ week2: data });
+      } catch (e) {
+        setMealPlan(null);
+      }
+    };
+    loadMealPlan();
+  }, []);
+
+  if (!mealPlan) return null;
 
   return (
     <WeekTemplate
@@ -22,7 +37,7 @@ export default function Week2Page() {
       weekSubtitle="Vecka 2 - Fördjupning i sambandet mellan mat och energi"
       heroImage="/lax-med-sellerisallad-och-valnotter.JPG"
       videoUrl="https://player.vimeo.com/video/1054236789?h=0c219534c4"
-      mealPlans={energyMealPlans}
+      mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />
   );
