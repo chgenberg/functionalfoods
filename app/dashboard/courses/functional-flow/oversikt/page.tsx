@@ -213,7 +213,7 @@ export default function FunctionalFlowOverview() {
         </motion.div>
 
         {/* Info Popup Grid */}
-        <InfoPopupGrid courseType="flow" />
+        <InfoPopupGrid courseType="flow" courseId="functional-flow" />
       </div>
 
       {/* Help Modal */}

@@ -183,8 +183,6 @@ export default function FunctionalEnergyOverview() {
           </div>
         </motion.div>
 
-        {/* Info Popup Grid */}
-        <InfoPopupGrid courseType="energy" />
       </div>
 
       {/* Help Modal */}
