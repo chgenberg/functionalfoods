@@ -5,8 +5,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
-import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
-import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
 import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
 import HelpGuide from '@/app/components/HelpGuide';
@@ -15,7 +13,6 @@ import { ArrowLeft, Check, Star, Target, BookOpen } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export default function CompletionPage() {
-  const [showVideo, setShowVideo] = useState(true);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
 
   // Listen for help button clicks
@@ -30,16 +27,7 @@ export default function CompletionPage() {
 
   return (
     <div className="min-h-screen bg-[#F3EFE3]">
-      {/* Hero Section with Video */}
-      <WeekHeroWithVideo
-        weekNumber={7}
-        weekTitle="Kursen avslutad"
-        weekSubtitle="Stort grattis! Här är din avslutningsfilm och nästa steg"
-        heroImage="/Ulrika_portratt/udavidssondesktop.png"
-        videoUrl="https://player.vimeo.com/video/1058943393"
-      />
-
-      {/* Course Navigation - After Hero Section */}
+      {/* Course Navigation */}
       <div className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType="flow" currentWeek={6} />
@@ -50,24 +38,6 @@ export default function CompletionPage() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-[#014421] text-center mb-8">Kursen avslutad</h1>
         
-        {/* Video Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <div className="relative bg-black rounded-2xl overflow-hidden aspect-video shadow-2xl">
-            <iframe
-              src="https://player.vimeo.com/video/1058943393"
-              className="w-full h-full"
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
-              title="Functional Flow Completion"
-            />
-          </div>
-        </motion.div>
-
         {/* Congratulations Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -76,7 +46,7 @@ export default function CompletionPage() {
           className="bg-white rounded-2xl shadow-lg p-8 mb-8"
         >
           <div className="flex items-center justify-center mb-6">
-            <div className="w-20 h-20 bg-[#014421] rounded-full flex items-center justify-center">
+            <div className="w-20 h-20 bg-[#93C560] rounded-full flex items-center justify-center">
               <Check className="w-10 h-10 text-white" />
             </div>
           </div>
@@ -87,7 +57,7 @@ export default function CompletionPage() {
           
           <div className="space-y-4 text-gray-700 leading-relaxed">
             <p>
-              Nu har du genomfört Functional Flow och tagit din hälsa till nästa nivå! Under 6 veckor har du fördjupat din kunskap om avancerad näringsoptimering, prestationshöjande kost och antiinflammatoriska livsstilsval. Du har lärt dig att optimera din energi, förbättra återhämtning och skapa en personlig hälsostrategi som fungerar för dig.
+              Nu har du genomfört Functional Flow och tagit din hälsa till nästa nivå! Under 6 veckor har du fördjupat din kunskap om avancerad näringsoptimering, prestationshöjande kost och antiinflammatoriska livssstilsval. Du har lärt dig att optimera din energi, förbättra återhämtning och skapa en personlig hälsostrategi som fungerar för dig.
             </p>
             
             <p>
@@ -103,7 +73,7 @@ export default function CompletionPage() {
             href="mailto:info@functionalfoods.se?subject=Min upplevelse av Functional Flow"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="mt-8 mx-auto flex items-center gap-2 bg-gradient-to-r from-[#014421] to-[#027A48] text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all max-w-fit"
+            className="mt-8 mx-auto flex items-center gap-2 bg-gradient-to-r from-[#93C560] to-[#7BA94D] text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all max-w-fit"
           >
             <Star className="w-5 h-5" />
             Berätta vad du tycker och få vår e-bok "Functional Foods" utan kostnad
@@ -202,15 +172,6 @@ export default function CompletionPage() {
       <HelpGuide 
         isOpen={showHelpGuide} 
         onClose={() => setShowHelpGuide(false)} 
-      />
-
-      {/* Video Modal */}
-      <VideoModal
-        isOpen={false}
-        onClose={() => {}}
-        weekNumber={7}
-        weekTitle="Kursen avslutad"
-        videoUrl="https://player.vimeo.com/video/1058943393"
       />
     </div>
   );

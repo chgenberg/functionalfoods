@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Plus, Edit3, Trash2, Search, Filter, Coffee, Clock, Users } from 'lucide-react';
 
@@ -38,6 +38,8 @@ export default function AdminRecipesPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'free' | 'premium'>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [imageError, setImageError] = useState<Record<string, boolean>>({});
+  const [fallbackImages, setFallbackImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchRecipes();
@@ -80,6 +82,27 @@ export default function AdminRecipesPage() {
       setLoading(false);
     }
   };
+
+  // After recipes load, compute fallbacks for any missing/placeholder images
+  useEffect(() => {
+    const titlesNeedingImages = recipes
+      .filter(r => !r.imageUrl || r.imageUrl.includes('placeholder'))
+      .map(r => r.title);
+    if (titlesNeedingImages.length === 0) return;
+
+    fetch('/api/recipes/batch-images', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recipeNames: titlesNeedingImages, size: 'small', usage: 'card' })
+    })
+      .then(res => res.ok ? res.json() : Promise.reject(new Error('failed')))
+      .then(data => {
+        if (data && data.images) {
+          setFallbackImages((prev) => ({ ...prev, ...data.images }));
+        }
+      })
+      .catch(() => {});
+  }, [recipes]);
 
   const handleDeleteRecipe = async (id: string, title: string) => {
     if (!confirm(`Är du säker på att du vill ta bort receptet "${title}"?`)) {
@@ -315,22 +338,26 @@ export default function AdminRecipesPage() {
           >
             {/* Recipe Image */}
             <div className="h-48 bg-gray-200 relative overflow-hidden">
-              {recipe.imageUrl && recipe.imageUrl !== '/images/recipe-placeholder.svg' ? (
-                <img
-                  src={normalizeImageUrl(recipe.imageUrl)}
-                  alt={recipe.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/images/recipe-placeholder.svg';
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-200">
-                  <Coffee className="w-16 h-16 text-orange-400" />
-                </div>
-              )}
-              
+              {(() => {
+                const primary = normalizeImageUrl(recipe.imageUrl);
+                const fallback = fallbackImages[recipe.title];
+                const useFallback = imageError[recipe.id] || !primary || primary.includes('placeholder');
+                const finalSrc = useFallback ? (fallback || '/images/recipe-placeholder.svg') : primary;
+                return finalSrc ? (
+                  <Image
+                    src={finalSrc}
+                    alt={recipe.title}
+                    fill
+                    className="object-cover"
+                    onError={() => setImageError(prev => ({ ...prev, [recipe.id]: true }))}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-200">
+                    <Coffee className="w-16 h-16 text-orange-400" />
+                  </div>
+                );
+              })()}
+
               {/* Status badges */}
               <div className="absolute top-3 left-3 flex gap-2">
                 {recipe.isPremium && (

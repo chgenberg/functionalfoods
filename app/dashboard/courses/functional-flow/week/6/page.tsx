@@ -25,7 +25,6 @@ export default function Week6Page() {
       weekTitle="Personlig optimering"
       weekSubtitle="Vecka 6 - Skräddarsy din kost för dina unika behov"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
       mealPlans={flowMealPlans}
       courseStartDate={courseStartDate}
     />

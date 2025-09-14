@@ -70,7 +70,6 @@ export default function AdminLayout({
     { icon: Home, label: 'Dashboard', href: '/admin', gradient: 'from-blue-400 to-indigo-500' },
     { icon: FileText, label: 'Blogg', href: '/admin/blog', gradient: 'from-emerald-400 to-teal-500' },
     { icon: BookOpen, label: 'Recept', href: '/admin/recipes', gradient: 'from-lime-400 to-green-500' },
-    { icon: GraduationCap, label: 'Kurser', href: '/admin/courses', gradient: 'from-purple-400 to-pink-500' },
     { icon: Users, label: 'Användare', href: '/admin/users', gradient: 'from-orange-400 to-red-500' },
     { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders', gradient: 'from-blue-400 to-cyan-500' },
     { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews', gradient: 'from-yellow-400 to-orange-500' },

@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                     </div>
                     <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors duration-300" />
                   </div>
-                  <h3 className="font-medium text-[#014421] group-hover:text-white transition-colors duration-300">{action.label}</h3>
+                  <h3 className="font-medium text-xs sm:text-sm whitespace-nowrap tracking-tight text-[#014421] group-hover:text-white transition-colors duration-300">{action.label}</h3>
                 </div>
               </Link>
             </motion.div>

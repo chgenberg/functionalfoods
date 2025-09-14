@@ -156,6 +156,16 @@ const weekDocuments: Record<string, Record<number, number[]>> = {
   }
 };
 
+// Map Flow knowledge documents explicitly by slug per week for accurate "Veckans läsning"
+const flowWeekSlugs: Record<number, string[]> = {
+  1: ['vad-a-r-functional-foods'],
+  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-battre-mage-och-tarm'],
+  3: ['tillskott-som-kan-sto-dja-mag-och-tarmha-lsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
+  4: ['livsstilsfaktorer'],
+  5: ['att-valja-ratt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
+  6: ['topplista-med-functional-foods']
+};
+
 export default function WeekTemplate({
   courseType,
   weekNumber,
@@ -331,11 +341,18 @@ export default function WeekTemplate({
   const welcomeMessage = weekMessages[courseType]?.[weekNumber] || '';
 
   // Get documents for current week based on order numbers
-  const weekDocumentOrders = weekDocuments[courseType]?.[weekNumber] || [];
-  const weekSpecificDocuments = knowledgeDocuments.filter(doc => 
-    weekDocumentOrders.includes(doc.order) || 
-    (weekNumber === 4 && doc.order === -1 && (doc.title.includes('måldokument') || doc.title.includes('motivation')))
-  );
+  // (Flow uses explicit slug mapping for precision)
+  let weekSpecificDocuments: KnowledgeDocument[] = [];
+  if (courseType === 'flow') {
+    const slugs = flowWeekSlugs[weekNumber] || [];
+    weekSpecificDocuments = knowledgeDocuments.filter(doc => slugs.includes(doc.slug));
+  } else {
+    const weekDocumentOrders = weekDocuments[courseType]?.[weekNumber] || [];
+    weekSpecificDocuments = knowledgeDocuments.filter(doc => 
+      weekDocumentOrders.includes(doc.order) || 
+      (weekNumber === 4 && doc.order === -1 && (doc.title.toLowerCase().includes('måldokument') || doc.title.toLowerCase().includes('motivation')))
+    );
+  }
 
   return (
     <>

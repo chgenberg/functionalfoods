@@ -115,55 +115,55 @@ export default function InfoPopupGrid({ courseType }: InfoPopupGridProps) {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {documents.map((doc, index) => (
-            <motion.div
+            <Link
               key={doc.slug}
-              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ y: -4 }}
+              href={`/dashboard/courses/${getCourseSlug()}/knowledge/${doc.slug}`}
+              className="group"
             >
-              {/* Image preview */}
-              <div className="relative h-32 overflow-hidden bg-gray-100">
-                <Image 
-                  src={doc.headerImage} 
-                  alt={doc.title}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                <div className="absolute bottom-2 left-2 text-white">
-                  <span className="text-2xl">{documentIcons[doc.title.toLowerCase()] || '📄'}</span>
+              <motion.div
+                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ y: -4 }}
+              >
+                {/* Image preview */}
+                <div className="relative h-32 overflow-hidden bg-gray-100">
+                  <Image 
+                    src={doc.headerImage} 
+                    alt={doc.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  <div className="absolute bottom-2 left-2 text-white">
+                    <span className="text-2xl">{documentIcons[doc.title.toLowerCase()] || '📄'}</span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-4">
-                <h4 className="font-semibold text-sm text-[#014421] mb-1 line-clamp-2">
-                  {formatTitle(doc.title)}
-                </h4>
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-xs text-gray-500">
-                    {doc.readTime} min läsning
-                  </span>
-                  <div className="flex gap-2">
+                {/* Content */}
+                <div className="p-4">
+                  <h4 className="font-semibold text-sm text-[#014421] mb-1 line-clamp-2 group-hover:text-[#116530] transition-colors">
+                    {formatTitle(doc.title)}
+                  </h4>
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-xs text-gray-500">
+                      {doc.readTime} min läsning
+                    </span>
                     <button
-                      onClick={() => openPreview(doc)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openPreview(doc);
+                      }}
                       className="text-xs text-gray-600 hover:text-[#93C560] transition-colors"
                     >
                       Förhandsgranska
                     </button>
-                    <Link
-                      href={`/dashboard/courses/${getCourseSlug()}/knowledge/${doc.slug}`}
-                      className="text-xs text-[#93C560] hover:text-[#7BA94D] font-medium flex items-center gap-1 group"
-                    >
-                      Läs mer
-                      <ArrowRight className="w-3 h-3 transform group-hover:translate-x-1 transition-transform" />
-                    </Link>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>
