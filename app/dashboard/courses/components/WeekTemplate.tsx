@@ -427,7 +427,7 @@ export default function WeekTemplate({
                           {/* Document Image */}
                           <div className="aspect-[16/9] relative bg-gray-100">
                             <Image
-                              src={doc.headerImage}
+                              src={doc.headerImage.startsWith('/api/images/') ? doc.headerImage : `/api/images${doc.headerImage.startsWith('/') ? '' : '/'}${doc.headerImage}`}
                               alt={doc.title}
                               fill
                               className="object-cover group-hover:scale-110 transition-transform duration-500"

@@ -105,7 +105,7 @@ export default function KnowledgeDocumentTemplate({
           transition={{ duration: 1.5 }}
         >
           <Image
-            src={headerImage}
+            src={headerImage?.startsWith('/api/images/') ? headerImage : `/api/images${headerImage?.startsWith('/') ? '' : '/'}${headerImage}`}
             alt={headerImageAlt || title}
             fill
             className="object-cover"
@@ -209,7 +209,11 @@ export default function KnowledgeDocumentTemplate({
                     Dela
                   </button>
                   
-                  <button className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all">
+                  <button className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all" onClick={() => {
+                    const url = new URL(window.location.href);
+                    url.pathname = url.pathname.replace('/knowledge/', '/knowledge/print/');
+                    window.open(url.toString(), '_blank');
+                  }}>
                     <Download className="w-5 h-5" />
                     Ladda ner PDF
                   </button>
