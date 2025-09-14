@@ -1,0 +1,30 @@
+# Railway ignore file - excludes files from being uploaded to Railway build environment
+
+# Large image directories that aren't needed during build
+recept_images_2025/
+Recept-Final/
+QUIZ-Functional/
+Ulrika_Lookalike/
+bodymap/
+
+# Development files
+scripts/vision-*.js
+scripts/test-*.js
+*.test.js
+*.test.ts
+
+# Temporary and backup files
+*.tmp
+*.bak
+*.swp
+.DS_Store
+
+# Large data files
+data/*.csv
+data/*.xlsx
+
+# Development dependencies
+node_modules/sharp/
+node_modules/@img/
+
+# Keep public images since they're served at runtime 
