@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       const coupon = await prisma.coupon.findUnique({ where: { code } });
       const now = new Date();
       if (coupon && coupon.active && (!coupon.startsAt || now >= coupon.startsAt) && (!coupon.expiresAt || now <= coupon.expiresAt) && (coupon.usageLimit == null || coupon.timesUsed < coupon.usageLimit)) {
-        const applicableIds = coupon.applicableCourseIds && Array.isArray(coupon.applicableCourseIds) ? coupon.applicableCourseIds as string[] : null;
+        const applicableIds = coupon.applicableCourseIds && Array.isArray(coupon.applicableCourseIds) ? (coupon.applicableCourseIds as string[]) : null;
         const applicableItems = applicableIds && applicableIds.length > 0 ? items.filter(i => applicableIds.includes(i.id)) : items;
         const applicableSubtotal = applicableItems.reduce((sum, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
         if (applicableSubtotal > 0) {
@@ -76,7 +76,8 @@ export async function POST(req: NextRequest) {
 
     const sessionParams: any = {
       mode: 'payment',
-      payment_method_types: ['card', 'swish'],
+      // Let Stripe decide available payment methods based on account, currency and country
+      automatic_payment_methods: { enabled: true },
       line_items,
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,

@@ -339,18 +339,8 @@ export default function MyCoursesPage() {
                           )}
                         </div>
                         
-                        {/* CTA Button */}
-                        <AnimatePresence>
-                          <motion.button 
-                            className="w-full text-white py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
-                            style={{ backgroundColor: metadata.color }}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            Fortsätt kursen
-                            <ChevronRight className="w-5 h-5" />
-                          </motion.button>
-                        </AnimatePresence>
+                        {/* CTA Button removed per request */}
+                        {/* Previously here: Fortsätt kursen button */}
                       </div>
                     </div>
                   </motion.div>
