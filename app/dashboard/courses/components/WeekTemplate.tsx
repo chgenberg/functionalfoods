@@ -159,11 +159,11 @@ const weekDocuments: Record<string, Record<number, number[]>> = {
 
 // Map Flow knowledge documents explicitly by slug per week for accurate "Veckans läsning"
 const flowWeekSlugs: Record<number, string[]> = {
-  1: ['vad-a-r-functional-foods'],
-  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-battre-mage-och-tarm'],
+  1: ['vad-ar-functional-foods'],
+  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-ba-ttre-mage-och-tarm'],
   3: ['tillskott-som-kan-sto-dja-mag-och-tarmha-lsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
   4: ['livsstilsfaktorer'],
-  5: ['att-valja-ratt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
+  5: ['att-va-lja-ra-tt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
   6: ['topplista-med-functional-foods']
 };
 
