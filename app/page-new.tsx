@@ -284,17 +284,6 @@ export default function Home() {
                   <span>Starta hälsotestet</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
-
-                <div className="mt-6 space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Namn (frivilligt)"
-                    className="w-full max-w-sm px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border border-gray-200 focus:border-primary focus:outline-none transition-colors"
-                  />
-                  <p className="text-sm text-gray-500">
-                    Kostnadsfritt • Inga mejl krävs
-                  </p>
-                </div>
               </motion.div>
             </motion.div>
 
