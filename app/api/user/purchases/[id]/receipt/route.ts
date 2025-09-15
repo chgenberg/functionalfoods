@@ -21,47 +21,84 @@ function generateReceiptHTML(purchase: any, user: any) {
       size: A4;
       margin: 0;
     }
+    
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .page-container {
+        page-break-after: always;
+      }
+    }
+    
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       margin: 0;
-      padding: 40px;
+      padding: 0;
       color: #333;
       background: white;
+      font-size: 14px;
+      line-height: 1.5;
     }
+    
+    .page-container {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 20mm 25mm;
+      margin: 0 auto;
+      background: white;
+      box-sizing: border-box;
+    }
+    
+    @media screen {
+      .page-container {
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin: 20px auto;
+      }
+    }
+    
     .header {
       display: flex;
       justify-content: space-between;
       align-items: start;
-      margin-bottom: 40px;
-      padding-bottom: 20px;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
       border-bottom: 2px solid #014421;
     }
     .logo {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
       color: #014421;
+    }
+    .logo-subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
     }
     .receipt-info {
       text-align: right;
     }
     .receipt-title {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: bold;
       margin-bottom: 5px;
+      color: #014421;
     }
     .receipt-number {
       color: #666;
-      font-size: 14px;
+      font-size: 12px;
     }
     .section {
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
     .section-title {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: #014421;
       margin-bottom: 10px;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .info-grid {
       display: grid;
@@ -74,11 +111,12 @@ function generateReceiptHTML(purchase: any, user: any) {
     .label {
       font-weight: 600;
       color: #666;
-      font-size: 14px;
+      font-size: 12px;
     }
     .value {
-      font-size: 16px;
+      font-size: 14px;
       margin-top: 2px;
+      color: #333;
     }
     .table {
       width: 100%;
@@ -87,36 +125,44 @@ function generateReceiptHTML(purchase: any, user: any) {
     }
     .table th {
       background: #f8f9fa;
-      padding: 12px;
+      padding: 10px 12px;
       text-align: left;
       font-weight: 600;
-      border-bottom: 2px solid #e9ecef;
+      font-size: 13px;
+      color: #495057;
+      border-bottom: 2px solid #dee2e6;
     }
     .table td {
       padding: 12px;
       border-bottom: 1px solid #e9ecef;
+      vertical-align: top;
     }
     .table .amount {
       text-align: right;
+      white-space: nowrap;
     }
     .total-row {
       font-weight: bold;
-      font-size: 18px;
+      font-size: 16px;
     }
     .total-row td {
-      padding-top: 20px;
+      padding-top: 15px;
+      padding-bottom: 15px;
       border-bottom: none;
+      border-top: 2px solid #014421;
     }
     .footer {
-      margin-top: 60px;
+      margin-top: auto;
       padding-top: 30px;
       border-top: 1px solid #e9ecef;
       text-align: center;
       color: #666;
-      font-size: 14px;
+      font-size: 12px;
+      line-height: 1.6;
     }
     .company-info {
-      margin-top: 40px;
+      margin-top: 30px;
+      margin-bottom: 30px;
       background: #f8f9fa;
       padding: 20px;
       border-radius: 8px;
@@ -125,101 +171,105 @@ function generateReceiptHTML(purchase: any, user: any) {
       display: inline-block;
       background: #014421;
       color: white;
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 4px;
-      font-size: 12px;
-      margin-top: 10px;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+    .description-text {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div>
-      <div class="logo">🥗 Functional Foods</div>
-      <div style="margin-top: 10px; color: #666;">
-        Hälsosam mat för kropp och själ
+  <div class="page-container">
+    <div class="header">
+      <div>
+        <div class="logo">🥗 Functional Foods</div>
+        <div class="logo-subtitle">Hälsosam mat för kropp och själ</div>
+      </div>
+      <div class="receipt-info">
+        <div class="receipt-title">KVITTO</div>
+        <div class="receipt-number">${receiptNumber}</div>
       </div>
     </div>
-    <div class="receipt-info">
-      <div class="receipt-title">KVITTO</div>
-      <div class="receipt-number">${receiptNumber}</div>
-    </div>
-  </div>
 
-  <div class="info-grid">
-    <div class="section">
-      <div class="section-title">Kundinformation</div>
-      <div class="info-item">
-        <div class="label">Namn</div>
-        <div class="value">${user.name || 'Ej angivet'}</div>
+    <div class="info-grid">
+      <div class="section">
+        <div class="section-title">Kundinformation</div>
+        <div class="info-item">
+          <div class="label">Namn</div>
+          <div class="value">${user.name || 'Ej angivet'}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">E-post</div>
+          <div class="value">${user.email}</div>
+        </div>
+        ${user.addressLine1 ? `
+        <div class="info-item">
+          <div class="label">Adress</div>
+          <div class="value">
+            ${user.addressLine1}<br>
+            ${user.addressLine2 ? user.addressLine2 + '<br>' : ''}
+            ${user.postalCode} ${user.city}<br>
+            ${user.country || 'Sverige'}
+          </div>
+        </div>
+        ` : ''}
       </div>
-      <div class="info-item">
-        <div class="label">E-post</div>
-        <div class="value">${user.email}</div>
-      </div>
-      ${user.addressLine1 ? `
-      <div class="info-item">
-        <div class="label">Adress</div>
-        <div class="value">
-          ${user.addressLine1}<br>
-          ${user.addressLine2 ? user.addressLine2 + '<br>' : ''}
-          ${user.postalCode} ${user.city}<br>
-          ${user.country || 'Sverige'}
+
+      <div class="section">
+        <div class="section-title">Kvittoinformation</div>
+        <div class="info-item">
+          <div class="label">Kvittonummer</div>
+          <div class="value">${receiptNumber}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Datum</div>
+          <div class="value">${purchaseDate.toLocaleDateString('sv-SE', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Betalsätt</div>
+          <div class="value">Kort/Swish</div>
         </div>
       </div>
-      ` : ''}
     </div>
 
     <div class="section">
-      <div class="section-title">Kvittoinformation</div>
-      <div class="info-item">
-        <div class="label">Kvittonummer</div>
-        <div class="value">${receiptNumber}</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Datum</div>
-        <div class="value">${purchaseDate.toLocaleDateString('sv-SE', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        })}</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Betalsätt</div>
-        <div class="value">Kort/Swish</div>
-      </div>
+      <div class="section-title">Orderdetaljer</div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 60%">Beskrivning</th>
+            <th style="width: 15%; text-align: center;">Antal</th>
+            <th style="width: 25%;" class="amount">Belopp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>${purchase.course.name}</strong><br>
+              <span class="description-text">${purchase.course.description}</span>
+              <div class="badge">Utbildning - Momsfri enligt 3 kap. 8 § ML</div>
+            </td>
+            <td style="text-align: center;">1</td>
+            <td class="amount">${purchase.amount.toFixed(2)} kr</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Totalt att betala</td>
+            <td class="amount">${purchase.amount.toFixed(2)} kr</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
 
-  <div class="section">
-    <div class="section-title">Orderdetaljer</div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Beskrivning</th>
-          <th style="text-align: center;">Antal</th>
-          <th class="amount">Belopp</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <strong>${purchase.course.name}</strong><br>
-            <span style="color: #666; font-size: 14px;">${purchase.course.description}</span>
-            <div class="badge">Utbildning - Momsfri enligt 3 kap. 8 § ML</div>
-          </td>
-          <td style="text-align: center;">1</td>
-          <td class="amount">${purchase.amount.toFixed(2)} kr</td>
-        </tr>
-        <tr class="total-row">
-          <td colspan="2">Totalt att betala</td>
-          <td class="amount">${purchase.amount.toFixed(2)} kr</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-      <div class="company-info">
+    <div class="company-info">
       <div class="section-title">Företagsinformation</div>
       <div style="margin-top: 15px;">
         <div class="info-item">
@@ -237,10 +287,11 @@ function generateReceiptHTML(purchase: any, user: any) {
       </div>
     </div>
 
-  <div class="footer">
-    <p><strong>Viktigt för friskvårdsbidrag:</strong></p>
-    <p>Detta kvitto avser en hälsofrämjande utbildning och kan användas för friskvårdsbidrag enligt Skatteverkets regler.</p>
-    <p style="margin-top: 20px;">Tack för ditt köp! Vid frågor, kontakta oss på info@functionalfoods.se</p>
+    <div class="footer">
+      <p><strong>Viktigt för friskvårdsbidrag:</strong></p>
+      <p>Detta kvitto avser en hälsofrämjande utbildning och kan användas för friskvårdsbidrag enligt Skatteverkets regler.</p>
+      <p style="margin-top: 20px;">Tack för ditt köp! Vid frågor, kontakta oss på info@functionalfoods.se</p>
+    </div>
   </div>
 </body>
 </html>
