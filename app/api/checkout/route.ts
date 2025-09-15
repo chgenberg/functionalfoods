@@ -74,10 +74,15 @@ export async function POST(req: NextRequest) {
 
     const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
+    // Configure allowed payment methods explicitly (Stripe Checkout does not support automatic_payment_methods)
+    const paymentMethodTypes: string[] = ['card'];
+    if (process.env.ENABLE_SWISH === 'true') {
+      paymentMethodTypes.push('swish');
+    }
+
     const sessionParams: any = {
       mode: 'payment',
-      // Let Stripe decide available payment methods based on account, currency and country
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: paymentMethodTypes,
       line_items,
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,
