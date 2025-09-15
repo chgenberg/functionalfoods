@@ -69,15 +69,7 @@ export default function CompletionPage() {
             </p>
           </div>
 
-          <motion.a
-            href="mailto:info@functionalfoods.se?subject=Min upplevelse av Functional Flow"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-8 mx-auto flex items-center gap-2 bg-gradient-to-r from-[#93C560] to-[#7BA94D] text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all max-w-fit"
-          >
-            <Star className="w-5 h-5" />
-            Berätta vad du tycker och få vår e-bok "Functional Foods" utan kostnad
-          </motion.a>
+
         </motion.div>
 
         {/* Motivation and Reflection Section */}

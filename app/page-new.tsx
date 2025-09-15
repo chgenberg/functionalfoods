@@ -93,24 +93,40 @@ export default function Home() {
         <div className="absolute inset-0 z-0 overflow-hidden">
           <iframe
             src="https://player.vimeo.com/video/1107419263?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
-            className="absolute inset-0"
+            className="absolute inset-0 w-full h-full"
             style={{ 
               zIndex: 10,
               opacity: 1,
-              width: '100vw',
-              height: '100vh',
-              minWidth: '120%',
-              minHeight: '120%',
-              left: '-10%',
-              top: '-10%',
-              transform: 'scale(1.1)',
-              objectFit: 'cover'
             }}
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
             title="Functional Foods Hero Video"
           />
+          {/* Add mobile-specific video styling */}
+          <style jsx>{`
+            @media (max-width: 768px) {
+              iframe {
+                width: 177.77vh !important;
+                height: 100vh !important;
+                left: 50% !important;
+                top: 0 !important;
+                transform: translateX(-50%) !important;
+                min-width: 100vw !important;
+              }
+            }
+            @media (min-width: 769px) {
+              iframe {
+                width: 100vw !important;
+                height: 100vh !important;
+                min-width: 120% !important;
+                min-height: 120% !important;
+                left: -10% !important;
+                top: -10% !important;
+                transform: scale(1.1) !important;
+              }
+            }
+          `}</style>
           <div className="absolute inset-0 bg-black/40 pointer-events-none" style={{ zIndex: 15 }} />
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"

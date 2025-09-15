@@ -9,14 +9,12 @@ import { Clock, ChevronRight, Loader2 } from 'lucide-react';
 interface Document {
   title: string;
   slug: string;
-  excerpt: string;
+  excerpt?: string;
+  headerImage: string;
   readTime: number;
-  headerImage?: string;
-  relatedImages?: { src: string; alt: string }[];
-  keyTakeaways?: string[];
-  content?: string;
-  course?: string;
-  weekNumber?: number | null;
+  course: 'basic' | 'flow';
+  order: number;
+  weekNumber?: number;
 }
 
 interface InfoPopupGridProps {
@@ -24,6 +22,16 @@ interface InfoPopupGridProps {
   courseId: string;
   currentWeek?: number;
 }
+
+// Slug mapping for Flow course weeks
+const flowWeekSlugs: Record<number, string[]> = {
+  1: ['vad-ar-functional-foods'],
+  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-battre-mage-och-tarm'],
+  3: ['tillskott-som-kan-stodja-mag-och-tarmhalsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
+  4: ['livsstilsfaktorer'],
+  5: ['att-va-lja-ra-tt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
+  6: ['topplista-med-functional-foods']
+};
 
 const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, currentWeek }) => {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -39,9 +47,16 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
         
         let docs = data.documents || [];
         
-        // Filter by current week if provided
+        // Filter by current week
         if (currentWeek !== undefined) {
-          docs = docs.filter((doc: Document) => doc.weekNumber === currentWeek);
+          if (courseType === 'flow') {
+            // For Flow course, use slug mapping since weekNumber isn't in JSON
+            const weekSlugs = flowWeekSlugs[currentWeek] || [];
+            docs = docs.filter((doc: Document) => weekSlugs.includes(doc.slug));
+          } else {
+            // For Basics course, use weekNumber if available
+            docs = docs.filter((doc: Document) => doc.weekNumber === currentWeek);
+          }
         }
         
         setDocuments(docs);

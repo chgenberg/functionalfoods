@@ -84,7 +84,7 @@ export default function MobileMenu({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" 
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]" 
             onClick={onClose}
           />
 
@@ -95,7 +95,7 @@ export default function MobileMenu({
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 left-0 bottom-0 w-80 bg-white shadow-2xl z-50 flex flex-col"
+            className="fixed top-0 left-0 bottom-0 w-80 bg-white shadow-2xl z-[9999] flex flex-col"
           >
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 flex items-center justify-between">
