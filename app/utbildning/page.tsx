@@ -85,20 +85,13 @@ export default function UtbildningPage() {
                   ))}
                 </ul>
 
-                <div className="mt-5 flex items-center justify-between">
+                <div className="mt-5">
                   <Link
                     href={course.href}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors"
                   >
                     Läs mer
                     <ArrowRight className="w-4 h-4" />
-                  </Link>
-
-                  <Link
-                    href={course.id === 'basics' ? '/dashboard/courses/functional-basics' : '/dashboard/courses/functional-flow'}
-                    className="text-primary hover:text-secondary font-medium"
-                  >
-                    Gå till kursen →
                   </Link>
                 </div>
               </div>
