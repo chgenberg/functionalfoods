@@ -38,11 +38,17 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
   useEffect(() => {
     const fetchDocument = async () => {
       try {
+        console.log('Fetching document with slug:', documentSlug);
         const res = await fetch(`/api/knowledge?slug=${documentSlug}`);
+        console.log('Response status:', res.status);
         const data = await res.json();
+        console.log('Response data:', data);
         
         if (data.documents && data.documents.length > 0) {
           setDocument(data.documents[0]);
+          console.log('Document set:', data.documents[0].title);
+        } else {
+          console.error('No documents found in response');
         }
       } catch (error) {
         console.error('Error loading document:', error);

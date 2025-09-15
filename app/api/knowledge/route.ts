@@ -37,9 +37,35 @@ export async function GET(req: NextRequest) {
     // Fallback to JSON files under /public/data
     const fallbackCourse = course || 'basic';
     const filePath = path.join(process.cwd(), 'public', 'data', `knowledge-documents-${fallbackCourse}.json`);
+    console.log('Looking for knowledge JSON at:', filePath);
+    
     if (!fs.existsSync(filePath)) {
+      console.error('Knowledge JSON file not found:', filePath);
+      // Try both course types if no course specified
+      if (!course && slug) {
+        const basicPath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-basic.json');
+        const flowPath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-flow.json');
+        
+        if (fs.existsSync(basicPath)) {
+          const basicDocs = JSON.parse(fs.readFileSync(basicPath, 'utf8'));
+          const basicDoc = basicDocs.find((d: any) => d.slug === slug);
+          if (basicDoc) {
+            return NextResponse.json({ documents: [basicDoc] }, { headers: { 'Cache-Control': 'no-store' } });
+          }
+        }
+        
+        if (fs.existsSync(flowPath)) {
+          const flowDocs = JSON.parse(fs.readFileSync(flowPath, 'utf8'));
+          const flowDoc = flowDocs.find((d: any) => d.slug === slug);
+          if (flowDoc) {
+            return NextResponse.json({ documents: [flowDoc] }, { headers: { 'Cache-Control': 'no-store' } });
+          }
+        }
+      }
+      
       return NextResponse.json({ documents: [] }, { headers: { 'Cache-Control': 'no-store' } });
     }
+    
     const raw = fs.readFileSync(filePath, 'utf8');
     const docs = JSON.parse(raw);
     const filtered = slug ? docs.filter((d: any) => d.slug === slug) : docs;

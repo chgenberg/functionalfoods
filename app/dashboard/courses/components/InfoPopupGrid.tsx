@@ -137,7 +137,7 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
               </h3>
               
               <p className="text-gray-600 mb-4 line-clamp-3">
-                {doc.excerpt}
+                {doc.excerpt || 'Klicka för att läsa mer...'}
               </p>
               
               <div className="flex items-center justify-between">
