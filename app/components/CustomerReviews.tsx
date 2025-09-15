@@ -151,6 +151,7 @@ export default function CustomerReviews() {
                         alt={reviews[currentIndex].name}
                         fill
                         className="object-cover"
+                        style={{ objectPosition: (reviews[currentIndex].name === 'Zandra Östlin' ? '50% 20%' : 'center') }}
                       />
                     )}
                   </div>
@@ -163,7 +164,7 @@ export default function CustomerReviews() {
                     {[...Array(reviews[currentIndex].rating)].map((_, i) => (
                       <Star
                         key={i}
-                        className="w-5 h-5 fill-[#93C560] text-[#93C560]"
+                        className="w-5 h-5 fill-[#FFE135] text-[#FFE135]"
                       />
                     ))}
                   </div>
