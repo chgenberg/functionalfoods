@@ -219,31 +219,23 @@ function generateReceiptHTML(purchase: any, user: any) {
     </table>
   </div>
 
-  <div class="company-info">
-    <div class="section-title">Företagsinformation</div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
-      <div>
+      <div class="company-info">
+      <div class="section-title">Företagsinformation</div>
+      <div style="margin-top: 15px;">
         <div class="info-item">
           <div class="label">Företag</div>
-          <div class="value">Functional Foods AB</div>
+          <div class="value">Ulrikas Kickstart AB</div>
         </div>
         <div class="info-item">
-          <div class="label">Organisationsnummer</div>
-          <div class="value">559XXX-XXXX</div>
-        </div>
-      </div>
-      <div>
-        <div class="info-item">
-          <div class="label">Momsregistreringsnummer</div>
-          <div class="value">SE559XXXXXXX01</div>
+          <div class="label">Org. nummer</div>
+          <div class="value">559051-3387</div>
         </div>
         <div class="info-item">
-          <div class="label">E-post</div>
-          <div class="value">info@functionalfoods.se</div>
+          <div class="label">Adress</div>
+          <div class="value">Odengatan 106 Lgh 1603<br/>113 22, Stockholm</div>
         </div>
       </div>
     </div>
-  </div>
 
   <div class="footer">
     <p><strong>Viktigt för friskvårdsbidrag:</strong></p>
