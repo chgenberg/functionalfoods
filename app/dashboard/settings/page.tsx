@@ -77,7 +77,8 @@ export default function SettingsPage() {
       }
 
       const data = await res.json();
-      setUserData(data.user);
+      const normalized = { ...data.user, purchases: data.user?.purchases || [] };
+      setUserData(normalized as any);
       setName(data.user.name || '');
       setEmail(data.user.email);
     } catch (error) {
@@ -143,7 +144,9 @@ export default function SettingsPage() {
 
       // Update local user data
       if (data.user) {
-        setUserData(data.user);
+        setUserData({ ...data.user, purchases: userData?.purchases || [] } as any);
+        // Re-fetch to include purchases from server
+        fetchUserData();
       }
 
     } catch (error: any) {
@@ -272,7 +275,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Purchase Receipts Section */}
-          {userData && userData.purchases.length > 0 && (
+          {userData?.purchases?.length > 0 && (
             <div className="border-t pt-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <FileText className="text-primary" />
@@ -284,7 +287,7 @@ export default function SettingsPage() {
               </p>
 
               <div className="space-y-3">
-                {userData.purchases.map((purchase: any) => (
+                {userData?.purchases?.map((purchase: any) => (
                   <div key={purchase.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                     <div>
                       <h3 className="font-medium text-gray-900">{purchase.course.name}</h3>
@@ -346,7 +349,7 @@ export default function SettingsPage() {
               <h3 className="text-sm font-medium text-gray-700 mb-3">Kontoinformation</h3>
               <div className="space-y-2 text-sm text-gray-600">
                 <p>Medlem sedan: {new Date(userData.createdAt).toLocaleDateString('sv-SE')}</p>
-                <p>Antal kurser: {userData.purchases.length}</p>
+                <p>Antal kurser: {userData.purchases?.length ?? 0}</p>
               </div>
             </div>
           )}
