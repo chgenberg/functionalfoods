@@ -9,7 +9,7 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import HelpGuide from '@/app/components/HelpGuide';
-import { User, Mail, Lock, Save, Check, AlertCircle } from 'lucide-react';
+import { User, Mail, Lock, Save, Check, AlertCircle, FileText, Download } from 'lucide-react';
 interface UserData {
   id: string;
   email: string;
@@ -270,6 +270,75 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
+
+          {/* Purchase Receipts Section */}
+          {userData && userData.purchases.length > 0 && (
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <FileText className="text-primary" />
+                Kvitton
+              </h2>
+              
+              <p className="text-sm text-gray-600 mb-4">
+                Ladda ner kvitton för dina kursköp. Dessa kan användas för friskvårdsbidrag.
+              </p>
+
+              <div className="space-y-3">
+                {userData.purchases.map((purchase: any) => (
+                  <div key={purchase.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <h3 className="font-medium text-gray-900">{purchase.course.name}</h3>
+                      <p className="text-sm text-gray-600">
+                        Köpt: {new Date(purchase.createdAt).toLocaleDateString('sv-SE')}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const token = localStorage.getItem('token');
+                        if (!token) return;
+
+                        // Open receipt in new window
+                        const receiptWindow = window.open('', '_blank');
+                        if (!receiptWindow) return;
+
+                        // Fetch and display receipt
+                        fetch(`/api/user/purchases/${purchase.id}/receipt`, {
+                          headers: {
+                            'Authorization': `Bearer ${token}`
+                          }
+                        })
+                        .then(res => res.text())
+                        .then(html => {
+                          receiptWindow.document.write(html);
+                          receiptWindow.document.close();
+                          
+                          // Auto-print after a short delay
+                          setTimeout(() => {
+                            receiptWindow.print();
+                          }, 500);
+                        })
+                        .catch(err => {
+                          console.error('Error fetching receipt:', err);
+                          receiptWindow.close();
+                          setMessage({ type: 'error', text: 'Kunde inte hämta kvittot' });
+                        });
+                      }}
+                      className="inline-flex items-center gap-2 text-primary hover:text-primary-dark transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span className="text-sm font-medium">Ladda ner kvitto</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 p-4 bg-background rounded-lg">
+                <p className="text-sm text-secondary">
+                  💡 <strong>Tips:</strong> För att spara som PDF, klicka på "Ladda ner kvitto" och välj sedan "Skriv ut" → "Spara som PDF" i utskriftsdialogrutan.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Account Info */}
           {userData && (
