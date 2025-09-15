@@ -63,6 +63,26 @@ export async function POST(
       }
     });
 
+    // Create notification for thread author if it's not their own reply
+    if (thread.authorId !== decoded.userId) {
+      const threadWithAuthor = await prisma.forumThread.findUnique({
+        where: { id: params.threadId },
+        include: {
+          author: { select: { name: true } }
+        }
+      });
+
+      await prisma.notification.create({
+        data: {
+          userId: thread.authorId,
+          type: 'forum_reply',
+          title: 'Nytt svar på din diskussion',
+          message: `${reply.author.name} har svarat på "${thread.title}"`,
+          link: `/dashboard/community/thread/${thread.id}`
+        }
+      });
+    }
+
     return NextResponse.json(reply, { status: 201 });
   } catch (error) {
     console.error('Error creating reply:', error);

@@ -138,16 +138,17 @@ export default function FunctionalFlowOverview() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-3xl shadow-xl p-8 mb-8"
+          style={{ fontFamily: "'Work Sans', sans-serif" }}
         >
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Din kursframsteg</h2>
+            <h2 className="text-3xl font-bold text-[#014421] mb-2">Din kursframsteg</h2>
             <p className="text-gray-600">Du har kommit {Math.round(progressPercentage)}% genom kursen</p>
           </div>
           
           {/* Progress Bar */}
           <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden mb-6">
             <motion.div
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#014421] to-[#116530] rounded-full"
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#93C560] to-[#7BA94D] rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercentage}%` }}
               transition={{ duration: 1.5, ease: "easeOut" }}
@@ -156,24 +157,24 @@ export default function FunctionalFlowOverview() {
           
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="text-center p-4 bg-green-50 rounded-2xl">
-              <Calendar className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{completedDays}</div>
+            <div className="text-center p-4 bg-[#93C560]/10 rounded-2xl border border-[#93C560]/20">
+              <Calendar className="w-8 h-8 text-[#93C560] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#014421]">{completedDays}</div>
               <div className="text-sm text-gray-600">Dagar genomförda</div>
             </div>
-            <div className="text-center p-4 bg-blue-50 rounded-2xl">
-              <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{daysRemaining}</div>
+            <div className="text-center p-4 bg-[#6B8DD6]/10 rounded-2xl border border-[#6B8DD6]/20">
+              <Clock className="w-8 h-8 text-[#6B8DD6] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#014421]">{daysRemaining}</div>
               <div className="text-sm text-gray-600">Dagar kvar</div>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-2xl">
-              <BookOpen className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{currentWeek}</div>
+            <div className="text-center p-4 bg-[#F0B45A]/10 rounded-2xl border border-[#F0B45A]/20">
+              <BookOpen className="w-8 h-8 text-[#F0B45A] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#014421]">{currentWeek}</div>
               <div className="text-sm text-gray-600">Aktuell vecka</div>
             </div>
-            <div className="text-center p-4 bg-orange-50 rounded-2xl">
-              <TrendingUp className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">117</div>
+            <div className="text-center p-4 bg-[#E07A5F]/10 rounded-2xl border border-[#E07A5F]/20">
+              <TrendingUp className="w-8 h-8 text-[#E07A5F] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-[#014421]">117</div>
               <div className="text-sm text-gray-600">Recept totalt</div>
             </div>
           </div>

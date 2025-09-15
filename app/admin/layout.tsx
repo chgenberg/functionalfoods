@@ -76,6 +76,7 @@ export default function AdminLayout({
     { icon: Users, label: 'Användare', href: '/admin/users', gradient: 'from-orange-400 to-red-500' },
     { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders', gradient: 'from-blue-400 to-cyan-500' },
     { icon: MessageSquare, label: 'Recensioner', href: '/admin/reviews', gradient: 'from-yellow-400 to-orange-500' },
+    { icon: MessageSquare, label: 'Community', href: '/admin/community', gradient: 'from-green-400 to-emerald-500' },
     { icon: Tag, label: 'Kuponger', href: '/admin/coupons', gradient: 'from-pink-400 to-rose-500' },
     { icon: BarChart3, label: 'Försäljning', href: '/admin/sales', gradient: 'from-indigo-400 to-purple-500' },
     { icon: Image, label: 'Media', href: '/admin/media', gradient: 'from-teal-400 to-emerald-500' },
