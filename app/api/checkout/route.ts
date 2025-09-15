@@ -80,9 +80,8 @@ export async function POST(req: NextRequest) {
       paymentMethodTypes.push('swish');
     }
 
-    const sessionParams: any = {
+    const baseSessionParams: any = {
       mode: 'payment',
-      payment_method_types: paymentMethodTypes,
       line_items,
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,
@@ -96,12 +95,29 @@ export async function POST(req: NextRequest) {
     };
 
     if (stripeDiscount) {
-      sessionParams.discounts = [stripeDiscount];
+      baseSessionParams.discounts = [stripeDiscount];
     }
 
-    const session = await stripe.checkout.sessions.create(sessionParams);
-
-    return NextResponse.json({ url: session.url });
+    // Try with configured methods first
+    try {
+      const session = await stripe.checkout.sessions.create({
+        ...baseSessionParams,
+        payment_method_types: paymentMethodTypes
+      });
+      return NextResponse.json({ url: session.url });
+    } catch (err: any) {
+      const msg = String(err?.message || '').toLowerCase();
+      const isSwishInvalid = msg.includes('payment method type') && msg.includes('swish');
+      if (isSwishInvalid && paymentMethodTypes.includes('swish')) {
+        console.warn('Swish not available. Retrying Checkout Session with card only.');
+        const session = await stripe.checkout.sessions.create({
+          ...baseSessionParams,
+          payment_method_types: ['card']
+        });
+        return NextResponse.json({ url: session.url });
+      }
+      throw err;
+    }
   } catch (err: any) {
     console.error('Create Checkout Session error:', err);
     return NextResponse.json({ error: err?.message || 'Kunde inte skapa betalning' }, { status: 500 });
