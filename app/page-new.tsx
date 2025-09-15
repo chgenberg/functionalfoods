@@ -15,6 +15,7 @@ import NewsletterSignup from "./components/NewsletterSignup";
 import ArticleQuickAccess from "./components/ArticleQuickAccess";
 import FeaturePopup from "./components/FeaturePopup";
 import RecipeCarousel from "./components/RecipeCarousel";
+import CustomerReviews from "./components/CustomerReviews";
 import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 
@@ -361,6 +362,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <CustomerReviews />
 
       <section className="py-12 md:py-20 px-4 bg-[#F3EFE3]">
         <div className="max-w-6xl mx-auto">

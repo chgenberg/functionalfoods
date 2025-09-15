@@ -636,7 +636,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
           )}
           {!isComingSoon && recipe.isFree && !recipe.isPremium && (
             <div className="absolute top-3 right-3">
-              <span className="bg-primary text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+              <span className="bg-[#93C560] md:bg-primary text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                 {t('recipes.card.badgeFree','Gratis')}
               </span>
             </div>

@@ -273,7 +273,7 @@ export default function RecipeCarousel() {
 
                           {/* Free badge */}
                           <div className="absolute top-4 right-4">
-                            <span className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-md">
+                            <span className="px-3 py-1 bg-[#93C560] md:bg-green-500 text-white text-xs font-bold rounded-full shadow-md">
                               GRATIS
                             </span>
                           </div>
