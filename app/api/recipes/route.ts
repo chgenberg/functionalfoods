@@ -263,7 +263,7 @@ export async function GET(request: NextRequest) {
     const statistics = {
       total: totalRecipes,
       free: await prisma.recipe.count({ where: { status: 'PUBLISHED', isFree: true } }),
-      premium: await prisma.recipe.count({ where: { isPremium: true } }),
+      premium: await prisma.recipe.count({ where: { status: 'PUBLISHED', isFree: false } }),
       visible: await prisma.recipe.count({ where: { status: 'PUBLISHED' } })
     };
 

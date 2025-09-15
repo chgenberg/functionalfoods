@@ -206,13 +206,6 @@ export default function Checkout() {
                     desc: 'Visa, Mastercard, Amex', 
                     icon: CreditCard,
                     recommended: true 
-                  },
-                  { 
-                    id: 'swish', 
-                    name: 'Swish', 
-                    desc: 'Betala direkt med mobilen', 
-                    icon: Smartphone,
-                    recommended: false 
                   }
                 ].map((method) => (
                   <label 
@@ -251,13 +244,53 @@ export default function Checkout() {
                 ))}
               </div>
 
-              {selectedPayment === 'swish' && (
-                <div className="mt-4 p-4 bg-blue-50 rounded-xl">
-                  <p className="text-sm text-blue-800">
-                    <strong>Obs:</strong> Swish är tillgängligt för svenska betalare. Du kommer att omdirigeras till Stripe där du kan välja Swish som betalmetod.
-                  </p>
+              {/* Payment method logos */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-600 mb-3">Accepterade betalningsmetoder:</p>
+                <div className="flex flex-wrap items-center gap-3">
+                  {/* Visa */}
+                  <div className="h-8 w-12 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
+                    <svg viewBox="0 0 48 32" className="h-full">
+                      <path fill="#1A1F71" d="M24.5 19.3l-1.6-7.5h-2.7l2.5 11.7h3.6l3.6-11.7h-2.6l-2.8 7.5zm-7.5-7.5l-2.1 8-1.2-6.3c-.1-.6-.6-1.7-1.8-1.7H7.6l-.1.5c.9.2 1.9.5 2.5.8.4.2.5.3.6.8l2 9.6h2.7l4.1-11.7h-2.4zm20.6 7.6c0-.2.1-.3.2-.4.1-.1.3-.2.5-.2.5 0 1.2.2 1.9.6l.4-2.2c-.6-.2-1.3-.4-2.1-.4-2.3 0-3.9 1.2-3.9 2.9 0 1.3 1.1 2 2 2.3.9.4 1.2.6 1.2.9 0 .5-.7.7-1.4.7-.9 0-1.4-.2-2.1-.5l-.4 2.2c.7.3 1.9.5 3.2.5 2.4 0 4-1.2 4-3 0-2.3-3.5-2.4-3.5-3.4zm-4.5-5.5c-1.5 0-2.5.4-3.2 1.9l-4.5 9.8h2.7l.6-1.7h3.3l.4 1.7h2.4l-2.1-11.7h-2zm-1.2 7.8l1.4-3.8.8 3.8h-2.2z"/>
+                    </svg>
+                  </div>
+                  {/* Mastercard */}
+                  <div className="h-8 w-12 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
+                    <svg viewBox="0 0 48 32" className="h-full">
+                      <circle fill="#EB001B" cx="16" cy="16" r="13"/>
+                      <circle fill="#F79E1B" cx="32" cy="16" r="13"/>
+                      <path fill="#FF5F00" d="M24 5.5c3.3 2.5 5.5 6.4 5.5 10.5s-2.2 8-5.5 10.5c-3.3-2.5-5.5-6.4-5.5-10.5s2.2-8 5.5-10.5z"/>
+                    </svg>
+                  </div>
+                  {/* Amex */}
+                  <div className="h-8 w-12 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
+                    <svg viewBox="0 0 48 32" className="h-full">
+                      <path fill="#2E77BB" d="M0 0h48v32H0z"/>
+                      <path fill="#FFF" d="M10.7 13.5L8.9 9.3 7.1 13.5h3.6zm13.5 0l-1.8-4.2-1.8 4.2h3.6zm-7.5 6.1h-2.3l-1.1-2.7H9.5l-1.1 2.7H6.1L9.9 11h2.5l3.8 8.6h-2.5zm7.5 0l-3.8-8.6h2.5l2.2 5.3 2.2-5.3h2.5l-3.8 8.6h-1.8zm15.5-5.3l-1.7 2.1 1.7 3.2h-2.6l-1.6-3.2-1.6 3.2h-2.6l1.7-3.2-1.7-2.1h2.6l1.6 2.1 1.6-2.1h2.6z"/>
+                    </svg>
+                  </div>
+                  {/* Apple Pay */}
+                  <div className="h-8 px-3 bg-black text-white rounded flex items-center gap-1">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                    </svg>
+                    <span className="text-xs font-medium">Pay</span>
+                  </div>
+                  {/* Google Pay */}
+                  <div className="h-8 px-3 bg-white border border-gray-200 rounded flex items-center gap-1">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"/>
+                      <path fill="#34A853" d="M5.27 14.31c-.456-1.337-.717-2.764-.717-4.31s.261-2.973.717-4.31l-3.826-2.978C.489 4.898 0 7.379 0 10s.489 5.102 1.444 7.29l3.826-2.98z"/>
+                      <path fill="#FBBC05" d="M12.24 24c3.24 0 5.956-1.075 7.94-2.912l-3.771-3.009c-1.075.72-2.449 1.146-4.169 1.146-3.214 0-5.938-2.162-6.911-5.068l-3.826 2.98C3.515 20.569 7.586 24 12.24 24z"/>
+                      <path fill="#EA4335" d="M19.18 21.088c1.984-1.837 3.34-4.459 3.34-7.814 0-.788-.085-1.39-.189-1.989H12.24V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-1.72 0-3.279-.574-4.399-1.417l-3.826 2.98c1.974 1.986 4.747 3.173 7.401 3.173 3.24 0 5.956-1.075 7.94-2.912l-3.771-3.009z"/>
+                    </svg>
+                    <span className="text-xs font-medium text-gray-700">Pay</span>
+                  </div>
                 </div>
-              )}
+                <p className="text-xs text-gray-500 mt-3">
+                  Apple Pay och Google Pay visas automatiskt vid betalning om de är tillgängliga på din enhet
+                </p>
+              </div>
             </div>
           </div>
 
