@@ -6,57 +6,74 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 interface Review {
-  id: number;
+  id: string;
   name: string;
   image: string;
   text: string;
   rating: number;
 }
 
-const reviews: Review[] = [
-  {
-    id: 1,
-    name: "Zandra Östlin",
-    image: "/Kundcitat/Zandra/Zandra-Ostlin-bild-optimized.webp",
-    text: "Min mage har slutat krångla efter att jag började med functional foods. Känner mig piggare och har mer energi genom hela dagen!",
-    rating: 5
-  },
-  {
-    id: 2,
-    name: "Jennie",
-    image: "/Kundcitat/Jennie/Jennie-optimized.webp",
-    text: "Något av det lättaste och godaste jag har testat! Recepten är enkla att följa och resultaten märks verkligen.",
-    rating: 5
-  },
-  {
-    id: 3,
-    name: "Monica",
-    image: "/Kundcitat/Monica/Monica-bild-5-optimized.webp",
-    text: "Fantastisk kurs! Jag har lärt mig så mycket om hur maten påverkar min hälsa. Rekommenderar verkligen!",
-    rating: 5
-  },
-  {
-    id: 4,
-    name: "Natalie Salerian",
-    image: "/Kundcitat/Natalie /Natalie-optimized.webp",
-    text: "Största skillnaden är att jag känner mig mätt och inte alls uppblåst. Functional foods har förändrat mitt sätt att äta!",
-    rating: 5
-  }
-];
+// Fallback images for known customers
+const customerImages: Record<string, string> = {
+  "Zandra Östlin": "/Kundcitat/Zandra/Zandra-Ostlin-bild-optimized.webp",
+  "Jennie": "/Kundcitat/Jennie/Jennie-optimized.webp",
+  "Monica": "/Kundcitat/Monica/Monica-bild-5-optimized.webp",
+  "Natalie Salerian": "/Kundcitat/Natalie /Natalie-optimized.webp"
+};
 
 export default function CustomerReviews() {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch('/api/reviews?status=APPROVED&limit=10');
+        const data = await response.json();
+        
+        if (data.reviews && Array.isArray(data.reviews)) {
+          const formattedReviews = data.reviews.map((review: any) => {
+            const userName = review.user?.name || 'Anonym';
+            const feedbackText = typeof review.answers === 'object' && review.answers?.feedback 
+              ? review.answers.feedback 
+              : Array.isArray(review.answers) && review.answers[0]?.a 
+                ? review.answers[0].a 
+                : 'Fantastisk kurs!';
+            
+            return {
+              id: review.id,
+              name: userName,
+              image: customerImages[userName] || '/images/avatar-placeholder.svg',
+              text: feedbackText,
+              rating: review.rating || 5
+            };
+          }).filter((review: Review) => review.text && review.text.length > 10); // Filter out empty reviews
+          
+          if (formattedReviews.length > 0) {
+            setReviews(formattedReviews);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
+  useEffect(() => {
+    if (!isAutoPlaying || reviews.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % reviews.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, reviews.length]);
 
   const handlePrevious = () => {
     setIsAutoPlaying(false);
@@ -72,6 +89,27 @@ export default function CustomerReviews() {
     setIsAutoPlaying(false);
     setCurrentIndex(index);
   };
+
+  if (loading) {
+    return (
+      <section className="py-16 px-4 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Vad våra kunder säger
+            </h2>
+          </div>
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-pulse text-gray-400">Laddar recensioner...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return null; // Don't show section if no reviews
+  }
 
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-white to-gray-50">
@@ -101,12 +139,20 @@ export default function CustomerReviews() {
                 {/* Image */}
                 <div className="mb-6 md:mb-0 md:mr-12 flex-shrink-0">
                   <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-xl">
-                    <Image
-                      src={reviews[currentIndex].image}
-                      alt={reviews[currentIndex].name}
-                      fill
-                      className="object-cover"
-                    />
+                    {reviews[currentIndex].image.includes('avatar-placeholder') ? (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                        <span className="text-4xl font-bold text-primary">
+                          {reviews[currentIndex].name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    ) : (
+                      <Image
+                        src={reviews[currentIndex].image}
+                        alt={reviews[currentIndex].name}
+                        fill
+                        className="object-cover"
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -141,39 +187,45 @@ export default function CustomerReviews() {
             </AnimatePresence>
           </div>
 
-          {/* Navigation Arrows */}
-          <button
-            onClick={handlePrevious}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow duration-300 text-gray-600 hover:text-primary"
-            aria-label="Föregående recension"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
+          {/* Navigation Arrows - only show if more than one review */}
+          {reviews.length > 1 && (
+            <>
+              <button
+                onClick={handlePrevious}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow duration-300 text-gray-600 hover:text-primary"
+                aria-label="Föregående recension"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
 
-          <button
-            onClick={handleNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow duration-300 text-gray-600 hover:text-primary"
-            aria-label="Nästa recension"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+              <button
+                onClick={handleNext}
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow duration-300 text-gray-600 hover:text-primary"
+                aria-label="Nästa recension"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
         </div>
 
-        {/* Dots Indicator */}
-        <div className="flex justify-center mt-8 gap-2">
-          {reviews.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handleDotClick(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex
-                  ? 'w-8 bg-primary'
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-              aria-label={`Gå till recension ${index + 1}`}
-            />
-          ))}
-        </div>
+        {/* Dots Indicator - only show if more than one review */}
+        {reviews.length > 1 && (
+          <div className="flex justify-center mt-8 gap-2">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleDotClick(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? 'w-8 bg-primary'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Gå till recension ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Trust Indicators */}
         <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-center">

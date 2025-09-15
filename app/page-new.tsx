@@ -24,7 +24,7 @@ export default function Home() {
   const { locale, setLocale } = useLanguage();
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizResults, setQuizResults] = useState<{ answers: Record<number, string | string[]>; context?: any } | null>(null);
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
   const [videosLoaded, setVideosLoaded] = useState(0);
   const [videoError, setVideoError] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
@@ -54,43 +54,7 @@ export default function Home() {
     }
   }, [locale]);
 
-  const [testimonials, setTestimonials] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const response = await fetch('/api/reviews?status=APPROVED&limit=3');
-        const data = await response.json();
-        if (data.reviews && Array.isArray(data.reviews)) {
-          const formattedTestimonials = data.reviews.map((review: any) => ({
-            name: review.user?.name ? review.user.name.split(' ')[0] + ' ' + (review.user.name.split(' ')[1]?.[0] || '') + '.' : 'Anonym',
-            text: typeof review.answers === 'object' && review.answers?.feedback 
-              ? review.answers.feedback 
-              : Array.isArray(review.answers) && review.answers[0]?.a 
-                ? review.answers[0].a 
-                : 'Fantastisk kurs som verkligen förändrade min hälsa!',
-            rating: review.rating || 5
-          }));
-          setTestimonials(formattedTestimonials);
-        }
-      } catch (error) {
-        console.error('Error fetching testimonials:', error);
-        // Fallback to empty array - no testimonials shown if API fails
-        setTestimonials([]);
-      }
-    };
-
-    fetchTestimonials();
-  }, []);
-
-  useEffect(() => {
-    if (testimonials.length > 0) {
-      const interval = setInterval(() => {
-        setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [testimonials.length]);
 
   const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
     setQuizResults({ answers, context });
@@ -502,61 +466,6 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="py-12 md:py-20 px-4 bg-[#F3EFE3]">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-8 md:mb-12"
-          >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              {t('home.testimonials.title','Vad våra kunder säger')}
-            </h2>
-          </motion.div>
-          
-          {testimonials.length > 0 && (
-            <div className="relative">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTestimonial}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 lg:p-12 shadow-lg md:shadow-xl"
-                >
-                  <div className="flex items-center gap-1 mb-4 md:mb-6 justify-center md:justify-start">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 md:w-6 md:h-6 text-[#FFE135] fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-4 md:mb-6 italic text-center md:text-left">
-                    "{testimonials[activeTestimonial].text}"
-                  </p>
-                  <p className="font-semibold text-gray-800 text-center md:text-left">
-                    — {testimonials[activeTestimonial].name}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="flex justify-center gap-2 mt-6 md:mt-8">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setActiveTestimonial(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      index === activeTestimonial
-                        ? "w-8 bg-primary"
-                        : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
