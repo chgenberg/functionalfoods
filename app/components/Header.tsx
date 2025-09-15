@@ -150,7 +150,7 @@ export default function Header() {
                 type="button" 
                 className="relative w-11 h-11 rounded-lg bg-[#014421] hover:bg-[#116530] transition-all duration-300 flex items-center justify-center group shadow-sm"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label="Öppna meny"
+                aria-label={mobileMenuOpen ? "Stäng meny" : "Öppna meny"}
               >
                 <div className="w-6 h-5 relative flex flex-col justify-between">
                   <span className={`block h-0.5 w-full bg-white transform transition-all duration-300 origin-left ${mobileMenuOpen ? 'rotate-45 translate-x-px' : ''}`}></span>
@@ -206,11 +206,7 @@ export default function Header() {
                   <User className="w-6 h-6 text-primary" />
                 </button>
               )}
-              {user ? (
-                <button className="rounded-full p-2 hover:bg-primary/10 transition relative md:hidden" onClick={() => setMobileMenuOpen(true)} aria-label={t('nav.openMenu','Meny')}>
-                  <User className="w-5 h-5 text-primary" />
-                </button>
-              ) : (
+              {!user && (
                 <button className="rounded-full p-2 hover:bg-primary/10 transition relative md:hidden" onClick={() => setShowLogin(true)} aria-label={t('auth.login','Logga in')}>
                   <User className="w-5 h-5 text-primary" />
                 </button>
