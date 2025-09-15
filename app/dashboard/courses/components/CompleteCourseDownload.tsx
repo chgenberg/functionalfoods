@@ -381,7 +381,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
               const weekNumber = weekKey.replace('week', '');
               return `
                 <div class="toc-item">
-                    <div class="toc-title">Vecka ${weekNumber}: ${week.title}</div>
+                    <div class="toc-title">Vecka ${weekNumber}</div>
                     <div class="toc-page">Sida ${index + 3}</div>
                 </div>
               `;
@@ -401,7 +401,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             <div class="week-section">
                 <div class="week-header">
                     <div class="week-number">Vecka ${weekNumber}</div>
-                    <div class="week-title">${week.title}</div>
+                    <div class="week-title">Kostschema för vecka ${weekNumber}</div>
                 </div>
                 
                 <div class="days-container">
