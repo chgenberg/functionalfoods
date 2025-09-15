@@ -6,6 +6,11 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
+  // Disable legacy endpoint in production unless explicitly allowed
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_DEMO_LOGIN !== 'true') {
+    return NextResponse.json({ error: 'Not Found' }, { status: 404 });
+  }
+
   try {
     const { email, password } = await request.json();
 
@@ -84,11 +89,9 @@ export async function POST(request: NextRequest) {
         role: user.role
       }
     });
-
   } catch (error) {
-    console.error('Admin login error:', error);
     return NextResponse.json(
-      { error: 'Serverfel. Försök igen.' },
+      { error: 'Ett fel uppstod' },
       { status: 500 }
     );
   }
