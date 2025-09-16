@@ -133,7 +133,48 @@ const localNutritionData = {
   'créme fraiche': { energy: 292, protein: 2.6, fat: 30, carbohydrates: 4, fiber: 0, sugar: 4, salt: 0.035 },
   'tandoorikrydda': { energy: 325, protein: 14, fat: 14, carbohydrates: 34, fiber: 14, sugar: 6, salt: 0.5 },
   'granatäppelkärnor': { energy: 83, protein: 1.7, fat: 1.2, carbohydrates: 19, fiber: 4, sugar: 14, salt: 0.003 },
-  'pistagenötter': { energy: 560, protein: 20, fat: 45, carbohydrates: 28, fiber: 10, sugar: 8, salt: 0.001 }
+  'pistagenötter': { energy: 560, protein: 20, fat: 45, carbohydrates: 28, fiber: 10, sugar: 8, salt: 0.001 },
+  // Ytterligare saknade ingredienser
+  'agavesirap': { energy: 310, protein: 0.1, fat: 0, carbohydrates: 76, fiber: 0, sugar: 68, salt: 0.004 },
+  'cayennepeppar': { energy: 318, protein: 12, fat: 17, carbohydrates: 57, fiber: 27, sugar: 10, salt: 0.03 },
+  'morot- och kesolimpa': { energy: 250, protein: 8, fat: 4, carbohydrates: 45, fiber: 6, sugar: 3, salt: 1.2 },
+  'skiva morot- och kesolimpa': { energy: 250, protein: 8, fat: 4, carbohydrates: 45, fiber: 6, sugar: 3, salt: 1.2 },
+  'squash': { energy: 16, protein: 1.2, fat: 0.2, carbohydrates: 3.4, fiber: 1.1, sugar: 2.2, salt: 0.001 },
+  'vattenmelon': { energy: 30, protein: 0.6, fat: 0.2, carbohydrates: 8, fiber: 0.4, sugar: 6.2, salt: 0.001 },
+  'ketomüsli': { energy: 520, protein: 15, fat: 45, carbohydrates: 12, fiber: 8, sugar: 4, salt: 0.1 },
+  'mandarin': { energy: 53, protein: 0.8, fat: 0.3, carbohydrates: 13, fiber: 1.8, sugar: 11, salt: 0.002 },
+  'halloumi': { energy: 321, protein: 24, fat: 25, carbohydrates: 0, fiber: 0, sugar: 0, salt: 2.7 },
+  'pumpakärnor': { energy: 559, protein: 19, fat: 49, carbohydrates: 11, fiber: 6, sugar: 1.4, salt: 0.007 },
+  'bakpulver': { energy: 53, protein: 0, fat: 0, carbohydrates: 28, fiber: 0, sugar: 0, salt: 27 },
+  'kakaopulver': { energy: 228, protein: 20, fat: 14, carbohydrates: 58, fiber: 37, sugar: 2, salt: 0.021 },
+  'mörka chokladknappar': { energy: 546, protein: 5, fat: 31, carbohydrates: 61, fiber: 7, sugar: 48, salt: 0.006 },
+  'mörk choklad': { energy: 546, protein: 5, fat: 31, carbohydrates: 61, fiber: 7, sugar: 48, salt: 0.006 },
+  'paranötter': { energy: 659, protein: 14, fat: 67, carbohydrates: 12, fiber: 7.5, sugar: 2.3, salt: 0.003 },
+  'hasselnötter': { energy: 628, protein: 15, fat: 61, carbohydrates: 17, fiber: 9.7, sugar: 4.3, salt: 0.0002 },
+  'fiberhonung': { energy: 304, protein: 0.3, fat: 0, carbohydrates: 82, fiber: 0, sugar: 82, salt: 0.004 },
+  'honung': { energy: 304, protein: 0.3, fat: 0, carbohydrates: 82, fiber: 0, sugar: 82, salt: 0.004 },
+  'kanel': { energy: 247, protein: 4, fat: 1.2, carbohydrates: 81, fiber: 53, sugar: 2.2, salt: 0.01 },
+  'kardemumma': { energy: 311, protein: 11, fat: 6.7, carbohydrates: 68, fiber: 28, sugar: 0, salt: 0.018 },
+  'kokosflingor': { energy: 660, protein: 6.9, fat: 65, carbohydrates: 24, fiber: 16, sugar: 7.4, salt: 0.02 },
+  // Sista saknade ingredienserna
+  'palsternacka': { energy: 75, protein: 1.2, fat: 0.3, carbohydrates: 18, fiber: 4.9, sugar: 4.8, salt: 0.01 },
+  'kålrot': { energy: 35, protein: 1.1, fat: 0.2, carbohydrates: 8.6, fiber: 2.3, sugar: 6.2, salt: 0.02 },
+  'spiskummin': { energy: 375, protein: 18, fat: 22, carbohydrates: 44, fiber: 11, sugar: 2.2, salt: 0.168 },
+  'lagerblad': { energy: 313, protein: 7.6, fat: 8.4, carbohydrates: 75, fiber: 26, sugar: 0, salt: 0.023 },
+  'tomatpuré': { energy: 82, protein: 4.3, fat: 0.2, carbohydrates: 19, fiber: 4.1, sugar: 12, salt: 0.059 },
+  'grönsaksbuljongtärning': { energy: 259, protein: 11, fat: 2.8, carbohydrates: 51, fiber: 3.5, sugar: 31, salt: 23 },
+  'aprikos': { energy: 48, protein: 1.4, fat: 0.4, carbohydrates: 11, fiber: 2, sugar: 9.2, salt: 0.001 },
+  'äppelgranola': { energy: 471, protein: 13, fat: 20, carbohydrates: 60, fiber: 10, sugar: 12, salt: 0.2 },
+  'kiwi': { energy: 61, protein: 1.1, fat: 0.5, carbohydrates: 15, fiber: 3, sugar: 9, salt: 0.003 },
+  'mandlar': { energy: 579, protein: 21, fat: 50, carbohydrates: 22, fiber: 12, sugar: 4.4, salt: 0.001 },
+  'blomkål': { energy: 25, protein: 1.9, fat: 0.3, carbohydrates: 5, fiber: 2, sugar: 1.9, salt: 0.03 },
+  'blomkålshuvud': { energy: 25, protein: 1.9, fat: 0.3, carbohydrates: 5, fiber: 2, sugar: 1.9, salt: 0.03 },
+  'chiliflakes': { energy: 318, protein: 12, fat: 17, carbohydrates: 57, fiber: 27, sugar: 10, salt: 0.03 },
+  'flytande honung': { energy: 304, protein: 0.3, fat: 0, carbohydrates: 82, fiber: 0, sugar: 82, salt: 0.004 },
+  'torkade örter': { energy: 233, protein: 9, fat: 4.9, carbohydrates: 48, fiber: 18, sugar: 4, salt: 0.25 },
+  'rucola': { energy: 25, protein: 2.6, fat: 0.7, carbohydrates: 3.7, fiber: 1.6, sugar: 2, salt: 0.027 },
+  'blåbär': { energy: 57, protein: 0.7, fat: 0.3, carbohydrates: 14, fiber: 2.4, sugar: 10, salt: 0.001 },
+  'färska blåbär': { energy: 57, protein: 0.7, fat: 0.3, carbohydrates: 14, fiber: 2.4, sugar: 10, salt: 0.001 }
 };
 
 // Parse amount from ingredient string
@@ -147,7 +188,7 @@ const parseAmount = (ingredient) => {
     // Special handling for nuts and small items
     if (unit === 'st') {
       const ingredientLower = ingredient.toLowerCase();
-      if (ingredientLower.includes('nöt') || ingredientLower.includes('mandel')) {
+      if (ingredientLower.includes('nöt') || ingredientLower.includes('mandel') || ingredientLower.includes('mandlar')) {
         amount = amount * 3; // ~3g per nut
       } else if (ingredientLower.includes('ägg')) {
         amount = amount * 50; // ~50g per egg
@@ -201,16 +242,27 @@ const normalizeIngredientName = (ingredient) => {
     return cleaned;
   }
 
+  // Priority matching for compound ingredients
+  if (cleaned.includes('bovetegranola') || cleaned.includes('bovete')) {
+    return 'bovetegranola';
+  }
+  if (cleaned.includes('äppelgranola')) {
+    return 'äppelgranola';
+  }
+  if (cleaned.includes('ketomüsli')) {
+    return 'ketomüsli';
+  }
+
   // Check for partial matches (but avoid false positives)
   for (const key of Object.keys(localNutritionData)) {
-    if (cleaned.includes(key)) {
+    if (cleaned.includes(key) && key.length > 3) {
       return key;
     }
   }
   
   // Only check reverse match for longer keys to avoid false positives
   for (const key of Object.keys(localNutritionData)) {
-    if (key.length > 4 && key.includes(cleaned)) {
+    if (key.length > 5 && key.includes(cleaned)) {
       return key;
     }
   }
