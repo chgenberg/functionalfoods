@@ -170,7 +170,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     const sleepQuality = answers[2];
     const stressLevel = answers[3];
     
-    let recommendation = "Baserat på dina svar rekommenderar vi starkt vår **Functional Flow** kurs. ";
+    let recommendation = "Baserat på dina svar rekommenderar vi starkt vår <strong>Functional Flow</strong> kurs. ";
     
     // Personalize based on specific answers
     if (energyLevel === 'low_energy' || energyLevel === 'afternoon_dip') {
@@ -210,7 +210,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       recommendation += "Kursen inkluderar omfattande information om anti-aging functional foods och longevity. ";
     }
     
-    recommendation += "\n\n**Functional Flow** är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
+    recommendation += "\n\n<strong>Functional Flow</strong> är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
     
     return recommendation;
   };
@@ -341,7 +341,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto text-center"
         >
-          <div className="text-6xl mb-4">⚠️</div>
+          <div className="mb-4 text-red-500 flex justify-center">
+            <AlertCircle className="w-16 h-16" />
+          </div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">Något gick fel</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
@@ -358,26 +360,25 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const totalScore = calculateTotalScore();
   
   const getScoreMessage = (score: number) => {
-    if (score >= 80) return { text: "Utmärkt! Du är på rätt väg!", emoji: "🌟", color: "text-primary" };
-    if (score >= 60) return { text: "Bra! Det finns potential för förbättring", emoji: "💪", color: "text-blue-600" };
-    if (score >= 40) return { text: "Okej start! Låt oss förbättra din hälsa", emoji: "🌱", color: "text-yellow-600" };
-    return { text: "Tid för förändring! Vi hjälper dig", emoji: "🚀", color: "text-orange-600" };
+    if (score >= 80) return { text: "Utmärkt! Du är på rätt väg!", icon: Star, color: "text-primary" };
+    if (score >= 60) return { text: "Bra! Det finns potential för förbättring", icon: Zap, color: "text-blue-600" };
+    if (score >= 40) return { text: "Okej start! Låt oss förbättra din hälsa", icon: Sprout, color: "text-yellow-600" };
+    return { text: "Tid för förändring! Vi hjälper dig", icon: Rocket, color: "text-orange-600" };
   };
 
   const scoreMessage = getScoreMessage(totalScore);
 
   const tabs = [
-    { id: 'summary', label: 'Översikt', icon: '📊' },
-    ...(contextData ? [{ id: 'context', label: 'Din plats', icon: '🌍' }] : []),
-    ...(contextData?.enhanced?.safety?.warnings?.length > 0 ? [{ id: 'safety', label: 'Säkerhet', icon: '🛡️' }] : []),
-    { id: 'timing', label: 'Timing', icon: '🕐' },
-    { id: 'course', label: 'Kursrekommendation', icon: '🎓' },
-    { id: 'recommendations', label: 'Functional Foods', icon: '🥗' },
-    { id: 'lifestyle', label: 'Livsstil', icon: '🏃‍♀️' },
-    { id: 'nextsteps', label: 'Handlingsplan', icon: '⭐' },
-    { id: 'science', label: 'Forskning', icon: '🔬' },
-    { id: 'warnings', label: 'Varningar', icon: '⚠️' },
-    { id: 'metrics', label: 'Mätning', icon: '📈' }
+    { id: 'summary', label: 'Översikt', icon: TrendingUp },
+    ...(contextData ? [{ id: 'context', label: 'Din plats', icon: MapPin }] : []),
+    ...(contextData?.enhanced?.safety?.warnings?.length > 0 ? [{ id: 'safety', label: 'Säkerhet', icon: Shield }] : []),
+    { id: 'course', label: 'Kursrekommendation', icon: BookOpen },
+    { id: 'recommendations', label: 'Functional Foods', icon: Salad },
+    { id: 'lifestyle', label: 'Livsstil', icon: Activity },
+    { id: 'nextsteps', label: 'Handlingsplan', icon: Star },
+    { id: 'science', label: 'Forskning', icon: Microscope },
+    { id: 'warnings', label: 'Varningar', icon: AlertCircle },
+    { id: 'metrics', label: 'Mätning', icon: TrendingUp }
   ];
   const orderedTabIds = tabs.map(t => t.id);
   const currentTabIndex = orderedTabIds.indexOf(activeTab);
@@ -505,8 +506,8 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                           <span className="text-3xl font-bold text-gray-900">{totalScore}</span>
                           <span className="text-gray-600">/100</span>
                         </div>
-                        <div className={`text-lg font-medium ${scoreMessage.color}`}>
-                          <span className="text-2xl mr-2">{scoreMessage.emoji}</span>
+                        <div className={`text-lg font-medium ${scoreMessage.color} flex items-center`}>
+                          <scoreMessage.icon className="w-6 h-6 mr-2" />
                           {scoreMessage.text}
                         </div>
                       </div>
@@ -613,10 +614,10 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                           <div className="bg-green-50 rounded-lg p-4">
                             <p className="text-green-800 font-medium">
                               {contextData.weather.current.uv_index < 8 && contextData.weather.current.precipitation < 0.5
-                                ? '✅ Perfekt väder för utomhusträning!'
+                                                                  ? 'Perfekt väder för utomhusträning!'
                                 : contextData.weather.current.precipitation > 2
-                                ? '🏠 Rekommenderar inomhusträning idag'
-                                : '⚠️ Var försiktig med solen, träna i skuggan eller inomhus'}
+                                                                  ? 'Rekommenderar inomhusträning idag'
+                                : 'Var försiktig med solen, träna i skuggan eller inomhus'}
                             </p>
                           </div>
                         </div>
@@ -907,9 +908,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                       </div>
                       
                       <div className="prose prose-gray max-w-none">
-                        <div className="text-gray-600 leading-relaxed whitespace-pre-line">
-                          {recommendations.courseRecommendation}
-                        </div>
+                        <div className="text-gray-600 leading-relaxed whitespace-pre-line" dangerouslySetInnerHTML={{ __html: recommendations.courseRecommendation }} />
                       </div>
                     </div>
                     
@@ -1087,24 +1086,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                     </div>
                   </div>
                 )}
-                {activeTab === 'timing' && contextData?.enhanced?.circadian && (
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-6">Timing (cirkadian)</h2>
-                    {contextData.enhanced.circadian.length === 0 ? (
-                      <p className="text-gray-600">Ingen timing-data tillgänglig just nu.</p>
-                    ) : (
-                      <div className="space-y-4">
-                        {contextData.enhanced.circadian.map((item: any, index: number) => (
-                          <div key={index} className="p-4 border border-gray-200 rounded-xl">
-                            <div className="font-medium text-gray-900">{item.timing}</div>
-                            <div className="text-sm text-gray-600">{Array.isArray(item.supplements) ? item.supplements.join(', ') : ''}</div>
-                            <div className="text-sm text-gray-500 mt-1">{item.reason}</div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
+
                 </motion.div>
               </AnimatePresence>
 
@@ -1135,7 +1117,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         }`}
                         title={tab.label}
                       >
-                        <span>{tab.icon}</span>
+                        <tab.icon className="w-6 h-6" />
                         
                         {/* Tooltip on hover */}
                         <div className="absolute right-full mr-3 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
@@ -1164,7 +1146,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                       : 'text-gray-600'
                   }`}
                 >
-                  <span className="text-xl mb-1">{tab.icon}</span>
+                  <tab.icon className="w-5 h-5 mb-1" />
                   <span className="text-xs">{tab.label}</span>
                 </motion.button>
               ))}
