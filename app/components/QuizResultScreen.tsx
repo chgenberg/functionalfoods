@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GiFruitBowl, GiMeal, GiMeat, GiGrainBundle, GiMilkCarton, GiWheat, GiCoffeeCup, GiChocolateBar, GiSaltShaker } from 'react-icons/gi';
-import { Activity, AlertCircle, BookOpen, Brain, CheckCircle, ChevronRight, Clock, Coffee, Flower, Heart, Lightbulb, Loader2, Mail, MapPin, Microscope, Moon, Phone, RefreshCw, Rocket, Salad, Shield, ShoppingCart, Sprout, Star, Sun, Target, TrendingUp, Wind, Zap } from "lucide-react";;
+import { Activity, AlertCircle, BookOpen, Brain, CheckCircle, ChevronRight, Clock, Coffee, Flower, Heart, Lightbulb, Loader2, Mail, MapPin, Microscope, Moon, RefreshCw, Rocket, Salad, Shield, ShoppingCart, Sprout, Star, Sun, Target, TrendingUp, Wind, Zap } from "lucide-react";;
 import Link from 'next/link';
 import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
@@ -375,8 +375,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     { id: 'recommendations', label: 'Functional Foods', icon: Salad },
     { id: 'lifestyle', label: 'Livsstil', icon: Activity },
     { id: 'nextsteps', label: 'Handlingsplan', icon: Star },
-
-    { id: 'warnings', label: 'Varningar', icon: AlertCircle },
     { id: 'metrics', label: 'Mätning', icon: TrendingUp }
   ];
   const orderedTabIds = tabs.map(t => t.id);
@@ -850,40 +848,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
 
 
 
-                {activeTab === 'warnings' && recommendations && (
-                  <div className="space-y-4">
-                    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                      <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.warnings','Viktigt att tänka på')}</h2>
-                      <div className="space-y-4">
-                        {recommendations.warningSignals.map((warning, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="flex gap-4 p-4 bg-orange-50 rounded-xl border border-orange-100"
-                          >
-                            <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-gray-700">
-                              {warning}
-                            </p>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="bg-red-50 rounded-2xl p-6 border border-red-100">
-                      <div className="flex items-center gap-3 mb-3">
-                        <Phone className="w-6 h-6 text-red-600" />
-                        <h3 className="text-lg font-medium text-gray-900">{t('quiz.emergency','Vid akuta besvär')}</h3>
-                      </div>
-                      <p className="text-gray-700">
-                        Ring <strong>1177</strong> för vårdguiden eller <strong>112</strong> vid nödsituationer.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
                 {activeTab === 'metrics' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
                     <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.metrics','Följ dina framsteg')}</h2>
@@ -952,7 +916,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         whileTap={{ scale: 0.95 }}
                         className={`group relative w-14 h-14 rounded-xl text-2xl transition-all flex items-center justify-center ${
                           activeTab === tab.id
-                            ? 'bg-primary text-white shadow-lg'
+                            ? 'bg-primary text-black shadow-lg'
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                         }`}
                         title={tab.label}
