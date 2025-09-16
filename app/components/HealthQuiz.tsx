@@ -761,7 +761,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                 >
                   <h1 className="text-4xl md:text-6xl font-light mb-6 text-gray-800 leading-tight">
                     Ditt personliga
-                    <span className="text-primary font-bold block">HÄLSOTEST</span>
+                    <span className="text-primary font-bold block">HÄLSOQUIZ</span>
                   </h1>
                   <p className="text-xl text-gray-600 mb-8">
                     2 minuter till bättre hälsa
@@ -799,7 +799,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                     onTouchStart={() => { console.log('Start health test clicked (touchstart)'); startQuiz(); }}
                     className="w-full bg-primary text-white px-8 py-6 rounded-full font-bold text-xl hover:bg-secondary transition-all duration-300 inline-flex items-center justify-center gap-3 relative z-10 pointer-events-auto shadow-xl"
                   >
-                    <span>Starta hälsotestet</span>
+                    <span>Starta hälsoquizet</span>
                     <ChevronRight className="w-6 h-6" />
                   </motion.button>
                   

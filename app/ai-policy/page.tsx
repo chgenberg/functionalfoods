@@ -62,9 +62,9 @@ export default function AIPolicy() {
             
             <div className="space-y-6">
               <div>
-                              <h3 className="text-lg font-semibold text-gray-900 mb-2">Hälsotest och Resultat</h3>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-2">Hälsoquiz och Resultat</h3>
               <p className="text-gray-700">
-                Vårt hälsotest använder AI för att analysera dina svar och generera personliga rekommendationer. 
+                Vårt hälsoquiz använder AI för att analysera dina svar och generera personliga rekommendationer. 
                   Resultaten är baserade på algoritmer och ska ses som allmän vägledning, inte medicinsk rådgivning.
                 </p>
               </div>

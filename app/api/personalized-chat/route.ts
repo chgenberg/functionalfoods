@@ -241,7 +241,7 @@ GRUNDINFO:
             // Lägg till quiz-resultat
             if (user.quizResults.length > 0) {
               const latestQuiz = user.quizResults[0];
-              userContext += `SENASTE HÄLSOTEST (${latestQuiz.createdAt.toLocaleDateString('sv-SE')}):
+              userContext += `SENASTE HÄLSOQUIZ (${latestQuiz.createdAt.toLocaleDateString('sv-SE')}):
 - Total hälsopoäng: ${latestQuiz.healthScore}/100
 - Energi: ${latestQuiz.energyScore}/10
 - Sömn: ${latestQuiz.sleepScore}/10  

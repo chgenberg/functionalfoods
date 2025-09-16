@@ -95,7 +95,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                 onClick={onQuizStart}
                 className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
               >
-                                    Starta Hälsotest
+                                    Starta Hälsoquiz
                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
               <Link

@@ -157,9 +157,9 @@ export default function Home() {
                   onClick={() => setShowQuiz(true)}
                   className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
                   style={{ position: 'relative', zIndex: 50, pointerEvents: 'auto' }}
-                  aria-label="Starta hälsotest"
+                  aria-label="Starta hälsoquiz"
                 >
-                  Starta Hälsotest
+                  Starta Hälsoquiz
                   <ArrowRight className="w-5 h-5" />
                 </button>
                 <Link
@@ -202,7 +202,7 @@ export default function Home() {
                   Ditt personliga
                 </h2>
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary">
-                  HÄLSOTEST
+                  HÄLSOQUIZ
                 </h2>
                 <p className="text-lg md:text-xl text-gray-600 mt-4">
                   2 minuter till bättre hälsa
@@ -269,7 +269,7 @@ export default function Home() {
                   onClick={() => setShowQuiz(true)}
                   className="group relative bg-primary hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-3 shadow-lg hover:shadow-xl inline-flex"
                 >
-                  <span>Starta hälsotestet</span>
+                  <span>Starta hälsoquizet</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </motion.div>
