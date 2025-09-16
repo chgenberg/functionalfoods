@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
 import RadarChart from './RadarChart';
+import FunctionalFoodsOverview from './FunctionalFoodsOverview';
 
 interface QuizResultData {
   profile: string;
@@ -72,6 +73,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const [activeTab, setActiveTab] = useState('summary');
   const [email, setEmail] = useState('');
   const [emailStatus, setEmailStatus] = useState<'idle'|'sending'|'sent'|'error'>('idle');
+  const [showOverview, setShowOverview] = useState(true);
   const [healthScores, setHealthScores] = useState<HealthScores>({
     energi: 7,
     sömn: 6,
@@ -443,6 +445,11 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       document.body.removeChild(textarea);
     }
   };
+
+  // Show overview first
+  if (showOverview) {
+    return <FunctionalFoodsOverview onContinue={() => setShowOverview(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-background">

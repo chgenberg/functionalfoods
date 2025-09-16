@@ -201,7 +201,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-700">
                   <Sparkles className="w-6 h-6 inline text-accent" />
-                  <span>Livstidsåtkomst till material</span>
+                  <span>1 års åtkomst till material</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-700">
                   <Shield className="w-6 h-6 inline text-accent" />

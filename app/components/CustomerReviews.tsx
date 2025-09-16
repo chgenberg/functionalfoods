@@ -13,7 +13,7 @@ interface Review {
   rating: number;
 }
 
-// Fallback images for known customers
+// Images for known customers - only show reviews from these customers
 const customerImages: Record<string, string> = {
   "Zandra Östlin": "/Kundcitat/Zandra/Zandra-Ostlin-bild-optimized.webp",
   "Jennie": "/Kundcitat/Jennie/Jennie-optimized.webp",
@@ -49,7 +49,9 @@ export default function CustomerReviews() {
               text: feedbackText,
               rating: review.rating || 5
             };
-          }).filter((review: Review) => review.text && review.text.length > 10); // Filter out empty reviews
+          })
+          .filter((review: Review) => review.text && review.text.length > 10) // Filter out empty reviews
+          .filter((review: Review) => review.name !== 'Anonym' && customerImages[review.name]); // Only show reviews from known customers with images
           
           if (formattedReviews.length > 0) {
             setReviews(formattedReviews);
@@ -139,21 +141,13 @@ export default function CustomerReviews() {
                 {/* Image */}
                 <div className="mb-6 md:mb-0 md:mr-12 flex-shrink-0">
                   <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-xl">
-                    {reviews[currentIndex].image.includes('avatar-placeholder') ? (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                        <span className="text-4xl font-bold text-primary">
-                          {reviews[currentIndex].name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                    ) : (
-                      <Image
-                        src={reviews[currentIndex].image}
-                        alt={reviews[currentIndex].name}
-                        fill
-                        className="object-cover"
-                        style={{ objectPosition: (reviews[currentIndex].name === 'Zandra Östlin' ? '50% 20%' : 'center') }}
-                      />
-                    )}
+                    <Image
+                      src={reviews[currentIndex].image}
+                      alt={reviews[currentIndex].name}
+                      fill
+                      className="object-cover"
+                      style={{ objectPosition: (reviews[currentIndex].name === 'Zandra Östlin' ? '50% 20%' : 'center') }}
+                    />
                   </div>
                 </div>
 

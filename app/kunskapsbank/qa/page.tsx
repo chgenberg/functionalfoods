@@ -82,11 +82,11 @@ const sections: Section[] = [
       },
       {
         question: 'Vad ingår i Functional Basics?',
-        answer: '75 recept, veckovisa videolektioner, 1-på-1-coaching, livstidsåtkomst.',
+        answer: '75 recept, veckovisa videolektioner, 1-på-1-coaching, 1 års åtkomst.',
       },
       {
         question: 'Vad ingår i Functional Flow?',
-        answer: '85 recept, videolektioner, premiumsupport, livstidsåtkomst och fokus på maghälsa & antiinflammation.',
+        answer: '85 recept, videolektioner, premiumsupport, 1 års åtkomst och fokus på maghälsa & antiinflammation.',
       },
       {
         question: 'Ingår gemenskap?',
@@ -114,11 +114,11 @@ const sections: Section[] = [
       },
       {
         question: 'Hur länge har jag tillgång till materialet?',
-        answer: 'Livstidsåtkomst utlovas för båda kurserna.',
+        answer: '1 års åtkomst utlovas för båda kurserna.',
       },
       {
         question: 'Kan jag gå kursen flera gånger?',
-        answer: 'Ja – livstidsåtkomst betyder att du kan repetera när du vill.',
+        answer: 'Ja – 1 års åtkomst betyder att du kan repetera när du vill under det året.',
       },
       {
         question: 'Får jag intyg efter avslutad kurs?',

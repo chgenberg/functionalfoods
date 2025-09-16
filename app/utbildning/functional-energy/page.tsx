@@ -271,7 +271,7 @@ export default function FunctionalEnergyPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <CheckCircle className="w-4 h-4 text-[#93C560]" />
-                  Livstidsåtkomst
+                  1 års åtkomst
                 </div>
               </div>
             </motion.div>

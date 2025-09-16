@@ -39,7 +39,10 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
       );
 
       if (result) {
-        const reviewList = result;
+        // Filter out anonymous reviews - only show reviews from users with names
+        const reviewList = result.filter((review: Review) => {
+          return review.user?.name && review.user.name.trim() !== '';
+        });
         setReviews(limit && limit > 0 ? reviewList.slice(0, limit) : reviewList);
       }
       setLoading(false);
@@ -115,10 +118,8 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
     if (review.user?.name) {
       return review.user.name.split(' ')[0]; // First name only
     }
-    if (review.user?.email) {
-      return review.user.email.split('@')[0].charAt(0).toUpperCase() + review.user.email.split('@')[0].slice(1);
-    }
-    return 'Anonym';
+    // Should not happen since we filter out reviews without names
+    return '';
   };
 
   const getFeedbackText = (review: Review) => {

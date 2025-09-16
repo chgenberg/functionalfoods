@@ -299,7 +299,7 @@ export default function FunctionalBasicsPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <Clock className="w-4 h-4 text-primary" />
-                  Livstidsåtkomst
+                  1 års åtkomst
                 </div>
               </div>
             </motion.div>

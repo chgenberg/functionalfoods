@@ -378,7 +378,7 @@ export default function MyCoursesPage() {
                     <Sparkles className="w-8 h-8 text-[#FF7E70]" />
                   </div>
                   <p className="text-3xl font-bold text-[#014421]">∞</p>
-                  <p className="text-gray-600">Livstidsåtkomst</p>
+                  <p className="text-gray-600">1 års åtkomst</p>
                 </div>
               </div>
             </motion.div>
