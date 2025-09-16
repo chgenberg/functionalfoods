@@ -376,7 +376,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     { id: 'recommendations', label: 'Functional Foods', icon: Salad },
     { id: 'lifestyle', label: 'Livsstil', icon: Activity },
     { id: 'nextsteps', label: 'Handlingsplan', icon: Star },
-    { id: 'science', label: 'Forskning', icon: Microscope },
+
     { id: 'warnings', label: 'Varningar', icon: AlertCircle },
     { id: 'metrics', label: 'Mätning', icon: TrendingUp }
   ];
@@ -932,83 +932,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                   </div>
                 )}
 
-                {activeTab === 'science' && (
-                  <div className="space-y-6">
-                    {/* PubMed Research */}
-                    {contextData?.enhanced?.research && contextData.enhanced.research.length > 0 && (
-                      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          <BookOpen className="w-5 h-5 text-blue-500" />
-                          Aktuell Forskning för Dina Hälsomål
-                        </h3>
-                        
-                        <div className="space-y-4">
-                          {contextData.enhanced.research.map((study: any, index: number) => (
-                            <motion.div
-                              key={study.pmid}
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: index * 0.1 }}
-                              className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all bg-gradient-to-r from-blue-50 to-white"
-                            >
-                              <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                  <BookOpen className="w-5 h-5 text-blue-600" />
-                                </div>
-                                <div className="flex-1">
-                                  <h4 className="font-medium text-gray-900 mb-2 text-sm leading-tight">
-                                    {study.title}
-                                  </h4>
-                                  <div className="flex items-center gap-4 text-xs text-gray-500 mb-2">
-                                    <span>{study.authors}</span>
-                                    <span>{study.pubdate}</span>
-                                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                                      {study.goal.replace('_', ' ')}
-                                    </span>
-                                  </div>
-                                  <a
-                                    href={study.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:text-secondary text-xs font-medium flex items-center gap-1"
-                                  >
-                                    Läs studien
-                                    <ChevronRight className="w-3 h-3" />
-                                  </a>
-                                </div>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Fallback to original science content */}
-                    {recommendations && (
-                      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                        <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.science','Vetenskaplig grund')}</h2>
-                        <div className="space-y-4">
-                          {recommendations.scientificReferences && recommendations.scientificReferences.length > 0 ? (
-                            recommendations.scientificReferences.map((reference, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="flex gap-4 p-4 bg-blue-50 rounded-xl"
-                              >
-                                <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                                <p className="text-gray-700 text-sm">{reference}</p>
-                              </motion.div>
-                            ))
-                          ) : (
-                            <p className="text-gray-600 text-sm">Inga källor tillgängliga just nu.</p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+
 
                 {activeTab === 'warnings' && recommendations && (
                   <div className="space-y-4">
