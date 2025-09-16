@@ -2,19 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, 
-  ChevronRight, 
-  ChevronLeft, 
-  CheckCircle, 
-  Play, 
-  BookOpen, 
-  Users, 
-  Target,
-  Coffee,
-  Utensils,
-  Calendar
-} from 'lucide-react';
+import { BookOpen, Calendar, CheckCircle, ChevronLeft, ChevronRight, Coffee, PartyPopper, Play, Star, Target, Users, Utensils, X, Zap } from "lucide-react";;
 
 interface OnboardingStep {
   id: string;

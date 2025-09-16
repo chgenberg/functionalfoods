@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 import { useGoals, Goal } from '@/app/hooks/useGoals';
 import Link from 'next/link';
-import { Target, CheckCircle, Calendar, TrendingUp, Award, Star, Clock, Filter, ArrowRight, Flag } from 'lucide-react';
+import { Apple, ArrowRight, Award, Book, Calendar, CheckCircle, ChefHat, Cherry, Clock, Coffee, Droplets, FileText, Filter, Fish, Flag, Heart, Leaf, Lettuce, Lightbulb, Microscope, Milk, Moon, Nut, PartyPopper, Rocket, Salad, Star, Target, TrendingUp, Trophy, Wheat, Zap } from "lucide-react";;
 
 // Samma fördefinierade mål som i huvudsidan
 const PREDEFINED_GOALS = {

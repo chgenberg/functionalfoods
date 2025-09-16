@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Plus, Search, Edit3, Trash2, Eye, Tag, User, Calendar, FileText, Clock, Zap } from 'lucide-react';
+import { Calendar, Clock, Edit3, Eye, FileText, Plus, Search, Tag, Trash2, User, Zap } from "lucide-react";;
 
 interface BlogPost {
   id: string;
@@ -263,7 +263,7 @@ export default function AdminBlogPage() {
               {filteredPosts.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-16 text-center">
-                    <span className="text-5xl mb-4 block">📝</span>
+                    <span className="text-5xl mb-4 block"><FileText className="w-5 h-5 inline" /></span>
                     <p className="text-gray-500 mb-4">
                       {searchTerm ? 'Inga artiklar hittades för din sökning.' : 'Inga artiklar hittades.'}
                     </p>

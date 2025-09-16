@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
-import { CheckCircle, Award, Users, Settings, HelpCircle } from 'lucide-react';
+import { Award, CheckCircle, HelpCircle, Settings, Star, Users } from "lucide-react";;
 
 interface CourseNavigationProps {
   courseType: 'basics' | 'flow' | 'energy';
@@ -202,7 +202,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                 pathname.includes('/oversikt') ? 'bg-white text-[#014421]' : 'bg-[#014421] text-white'
               }`}>
-                ⭐
+                <Star className="w-5 h-5 inline" />
               </div>
               <span className="text-xs font-medium">Översikt</span>
             </Link>

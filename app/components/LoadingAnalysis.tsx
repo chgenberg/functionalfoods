@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { GiBrain, GiStomach, GiFruitBowl, GiMeal, GiBodyBalance, GiHeartBeats, GiMeditation } from 'react-icons/gi';
-import { Activity, Heart, Zap, Shield, TrendingUp, CheckCircle } from 'lucide-react';
+import { Activity, CheckCircle, Heart, Leaf, Lightbulb, Moon, Shield, TrendingUp, Zap } from "lucide-react";;
 
 export default function LoadingAnalysis({ totalMs = 45000 }: { totalMs?: number }) {
   const [mounted, setMounted] = useState(false);

@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Book, Users, Heart, Zap, Target, Award, Check, Play, Star, ClipboardCheck, Microscope, FileText, Rocket } from "lucide-react";
+import { ArrowRight, Award, Book, Check, ClipboardCheck, FileText, Heart, Microscope, Play, Rocket, Star, Target, Users, Zap } from "lucide-react";;
 import { GiFruitBowl, GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
@@ -211,7 +211,7 @@ export default function Home() {
                   className="flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-                    <span className="text-2xl">🎯</span>
+                    <Target className="w-8 h-8 inline text-accent" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">Personliga råd</h3>
@@ -227,7 +227,7 @@ export default function Home() {
                   className="flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                    <span className="text-2xl">🧬</span>
+                    <Microscope className="w-8 h-8 inline text-accent" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">Vetenskaplig grund</h3>
@@ -243,7 +243,7 @@ export default function Home() {
                   className="flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center">
-                    <span className="text-2xl">⚡</span>
+                    <Zap className="w-8 h-8 inline text-accent" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">Snabbt resultat</h3>

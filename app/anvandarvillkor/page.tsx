@@ -1,4 +1,5 @@
 import React from 'react';
+import { Book, Zap } from "lucide-react";
 
 export default function AnvandarvillkorPage() {
   return (
@@ -61,7 +62,7 @@ export default function AnvandarvillkorPage() {
               </h2>
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">📚 Kursinnehåll och uppdateringar</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2"><Book className="w-5 h-5 inline" /> Kursinnehåll och uppdateringar</h3>
                   <p className="text-gray-700 leading-relaxed">
                     Vi förbehåller oss rätten att uppdatera och förbättra kursinnehållet för att säkerställa 
                     högsta kvalitet. Sådana uppdateringar påverkar inte dina rättigheter som kund.
@@ -69,7 +70,7 @@ export default function AnvandarvillkorPage() {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">⚡ Tekniska problem</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2"><Zap className="w-5 h-5 inline" /> Tekniska problem</h3>
                   <p className="text-gray-700 leading-relaxed">
                     Vid tekniska problem som påverkar din kursupplevelse erbjuder vi kostnadsfri support. 
                     Kontakta oss på info@functionalfoods.se så hjälper vi dig inom 24 timmar.

@@ -9,7 +9,7 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import HelpGuide from '@/app/components/HelpGuide';
-import { User, Mail, Lock, Save, Check, AlertCircle, FileText, Download } from 'lucide-react';
+import { AlertCircle, Check, Download, FileText, Lightbulb, Lock, Mail, Save, User } from "lucide-react";;
 interface UserData {
   id: string;
   email: string;
@@ -337,7 +337,7 @@ export default function SettingsPage() {
 
               <div className="mt-4 p-4 bg-background rounded-lg">
                 <p className="text-sm text-secondary">
-                  💡 <strong>Tips:</strong> För att spara som PDF, klicka på "Ladda ner kvitto" och välj sedan "Skriv ut" → "Spara som PDF" i utskriftsdialogrutan.
+                  <Lightbulb className="w-5 h-5 inline" /> <strong>Tips:</strong> För att spara som PDF, klicka på "Ladda ner kvitto" och välj sedan "Skriv ut" → "Spara som PDF" i utskriftsdialogrutan.
                 </p>
               </div>
             </div>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, User, ChevronRight, BookOpen, Clock, Award, Sparkles, ArrowRight, Zap, TrendingUp } from 'lucide-react';
+import { ArrowRight, Award, BookOpen, ChevronRight, Clock, LogOut, Sparkles, Sprout, TrendingUp, User, Waves, Zap } from "lucide-react";;
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 

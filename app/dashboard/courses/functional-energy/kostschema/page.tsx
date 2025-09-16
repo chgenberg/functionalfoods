@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, Clock, Utensils, Download, FileText } from 'lucide-react';
+import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, Clock, Download, FileText, Moon, Sun, Utensils } from "lucide-react";;
 import { motion, AnimatePresence } from 'framer-motion';
 import { getEnergyWeekData } from '@/app/data/mealPlans';
 import DayModal from '../../components/DayModal';
@@ -33,9 +33,9 @@ export default function FunctionalEnergyKostschemaPage() {
 
   const getMealIcon = (mealType: string) => {
     switch(mealType) {
-      case 'breakfast': return '🌅';
-      case 'lunch': return '☀️';
-      case 'dinner': return '🌙';
+      case 'breakfast': return '<Sun className="w-5 h-5 inline" />';
+      case 'lunch': return '<Sun className="w-5 h-5 inline" />';
+      case 'dinner': return '<Moon className="w-5 h-5 inline" />';
       default: return '🍽️';
     }
   };

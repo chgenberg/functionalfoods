@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, Check, Clock, Activity, Target, Moon, Heart, AlertCircle, Coffee, Brain, Zap, MapPin, Loader2 } from 'lucide-react';
+import { Activity, AlertCircle, Brain, Check, ChevronLeft, ChevronRight, Clock, Coffee, Fish, Heart, Leaf, Loader2, MapPin, Microscope, Moon, Rocket, Salad, Shield, Sparkles, Sprout, Star, Sun, Target, X, Zap } from "lucide-react";;
 import Image from 'next/image';
 import QuizResultScreen from './QuizResultScreen';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
@@ -775,15 +775,15 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                   className="space-y-6 mb-12"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="text-3xl">🎯</div>
+                    <div className="text-3xl"><Target className="w-5 h-5 inline" /></div>
                     <span className="text-lg text-gray-700">Personliga råd</span>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <div className="text-3xl">🧬</div>
+                    <div className="text-3xl"><Microscope className="w-5 h-5 inline" /></div>
                     <span className="text-lg text-gray-700">Vetenskaplig grund</span>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <div className="text-3xl">⚡</div>
+                    <div className="text-3xl"><Zap className="w-5 h-5 inline" /></div>
                     <span className="text-lg text-gray-700">Snabbt resultat</span>
                   </div>
                 </motion.div>

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { Check, Salad, Target, X } from "lucide-react";;
 
 interface OnboardingData {
   diet?: string;

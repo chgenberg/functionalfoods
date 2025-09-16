@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cookie, Settings, Check, X, Shield, BarChart, Target } from 'lucide-react';
+import { BarChart, Check, Cookie, Settings, Shield, Target, X } from "lucide-react";;
 import Link from 'next/link';
 
 interface CookiePreferences {
@@ -77,7 +77,7 @@ export default function CookieConsentBanner() {
     
     if (prefs.marketing) {
       // Enable marketing cookies
-      console.log('🎯 Marketing cookies enabled');
+      console.log('<Target className="w-5 h-5 inline" /> Marketing cookies enabled');
     }
     
     if (prefs.preferences) {

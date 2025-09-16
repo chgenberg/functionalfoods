@@ -3,9 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { 
-  BookOpen, Clock, User, TrendingUp, Loader, Calendar, ArrowRight, PlayCircle, Lock, Unlock
-} from 'lucide-react';
+import { ArrowRight, Book, BookOpen, Calendar, Clock, Loader, Lock, PlayCircle, TrendingUp, Unlock, User } from "lucide-react";;
 import { GiFruitBowl, GiHealthNormal } from 'react-icons/gi';
 import { useAuth } from '@/app/hooks/useAuth';
 import OnboardingGuide from '@/app/components/OnboardingGuide';
@@ -216,7 +214,7 @@ export default function CoursesPage() {
                             }}
                             className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors"
                           >
-                            <span className="dashboard-emoji">📚</span> Guide
+                            <Book className="w-5 h-5 inline text-accent" /> Guide
                           </button>
                         </div>
                         <span className={`text-primary font-medium flex items-center gap-1`}>

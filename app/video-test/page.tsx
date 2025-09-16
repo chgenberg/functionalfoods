@@ -1,3 +1,4 @@
+import { Monitor } from "lucide-react";
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -90,7 +91,7 @@ export default function VideoTest() {
               ref={(el) => {
                 if (el && !el.src) {
                   el.src = "/introvideo_compressed.mp4";
-                  addLog('🖥️ Desktop video src set');
+                  addLog('<Monitor className="w-5 h-5 inline" /> Desktop video src set');
                 }
               }}
               className="w-full h-48 bg-black rounded"

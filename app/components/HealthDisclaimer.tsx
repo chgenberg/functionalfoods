@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Heart, AlertTriangle, Stethoscope, Shield } from 'lucide-react';
+import { AlertTriangle, Heart, Lightbulb, Shield, Stethoscope } from "lucide-react";;
 import Link from 'next/link';
 
 interface HealthDisclaimerProps {
@@ -39,7 +39,7 @@ export default function HealthDisclaimer({
                 livsstil, särskilt om du har befintliga hälsoproblem eller tar mediciner.
               </p>
               <p className="text-blue-600">
-                <strong>💡 Individuella resultat kan variera</strong> - vi kan inte garantera specifika hälsoeffekter.
+                <strong><Lightbulb className="w-5 h-5 inline" /> Individuella resultat kan variera</strong> - vi kan inte garantera specifika hälsoeffekter.
               </p>
             </div>
           </div>

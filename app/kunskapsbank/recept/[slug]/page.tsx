@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Bookmark, Check, Clock, Heart, Minus, Plus, Printer, Star, Users, X, Camera, ChefHat, Flame, Utensils } from 'lucide-react';
+import { ArrowLeft, Bookmark, Camera, Check, ChefHat, Clock, Flame, Heart, Lightbulb, Minus, Plus, Printer, Star, Users, Utensils, X } from "lucide-react";;
 
 import { useAuth } from '../../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
@@ -1100,7 +1100,7 @@ export default function RecipePage() {
                 {/* Tips Section */}
                 {recipe.tips && (
                   <div className="mt-6 md:mt-8 p-4 md:p-6 bg-[#93C560]/10 rounded-xl md:rounded-2xl border-2 border-[#93C560]/20">
-                    <h3 className="font-bold text-[#014421] mb-2 text-base md:text-lg">💡 Tips</h3>
+                    <h3 className="font-bold text-[#014421] mb-2 text-base md:text-lg"><Lightbulb className="w-5 h-5 inline" /> Tips</h3>
                     <p className="text-[#014421] text-sm md:text-base">{recipe.tips}</p>
                   </div>
                 )}

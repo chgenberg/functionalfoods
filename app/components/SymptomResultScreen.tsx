@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, CheckCircle, ShoppingCart, Book, Heart } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Book, CheckCircle, Heart, Salad, ShoppingCart, Target } from "lucide-react";;
 
 interface SymptomResultScreenProps {
   analysisResult: {

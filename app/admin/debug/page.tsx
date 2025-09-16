@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Copy, Check, Key, User, Database, Server } from 'lucide-react';
+import { Check, Copy, CreditCard, Database, Key, Server, User } from "lucide-react";;
 import { useRouter } from 'next/navigation';
 
 export default function AdminDebugPage() {
@@ -134,7 +134,7 @@ export default function AdminDebugPage() {
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">💳 Stripe</p>
+                  <p className="text-sm text-gray-600"><CreditCard className="w-5 h-5 inline" /> Stripe</p>
                   <p className={`font-semibold ${systemInfo.checks?.stripe?.status === 'healthy' ? 'text-green-600' : 'text-red-600'}`}>
                     {systemInfo.checks?.stripe?.status === 'healthy' ? '✅ Fungerar' : '❌ Problem'}
                   </p>

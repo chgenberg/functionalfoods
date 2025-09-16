@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Package, Check, X, Clock, DollarSign, User, Calendar, Eye } from 'lucide-react';
+import { Book, Calendar, Check, Clock, DollarSign, Eye, Package, User, X, Zap } from "lucide-react";;
 
 interface OrderItem {
   id: string;
@@ -192,7 +192,7 @@ export default function AdminOrdersPage() {
                           <div key={item.id} className="mb-1">
                             {item.type === 'COURSE' ? (
                               <span className="flex items-center gap-1">
-                                <span>📚</span> {item.course?.name || item.name}
+                                <span><Book className="w-5 h-5 inline" /></span> {item.course?.name || item.name}
                               </span>
                             ) : (
                               <span>{item.name}</span>
@@ -213,7 +213,7 @@ export default function AdminOrdersPage() {
                       <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                         {order.status === 'COMPLETED' && '✅'}
                         {order.status === 'PENDING' && '⏰'}
-                        {order.status === 'PROCESSING' && '⚡'}
+                        {order.status === 'PROCESSING' && '<Zap className="w-5 h-5 inline" />'}
                         {order.status === 'CANCELLED' && '❌'}
                         {order.status === 'REFUNDED' && '💸'}
                         <span className="ml-1">
@@ -231,7 +231,7 @@ export default function AdminOrdersPage() {
                           <p className={`font-medium ${getPaymentStatusColor(order.payment.status)}`}>
                             {order.payment.status === 'COMPLETED' && '✅ Betald'}
                             {order.payment.status === 'PENDING' && '⏰ Väntar'}
-                            {order.payment.status === 'PROCESSING' && '⚡ Behandlas'}
+                            {order.payment.status === 'PROCESSING' && '<Zap className="w-5 h-5 inline" /> Behandlas'}
                             {order.payment.status === 'FAILED' && '❌ Misslyckad'}
                             {order.payment.status === 'CANCELLED' && '🚫 Avbruten'}
                           </p>

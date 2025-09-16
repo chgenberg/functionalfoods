@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GiFruitBowl, GiMeal, GiMeat, GiGrainBundle, GiMilkCarton, GiWheat, GiCoffeeCup, GiChocolateBar, GiSaltShaker } from 'react-icons/gi';
-import { CheckCircle, AlertCircle, TrendingUp, Zap, RefreshCw, ChevronRight, Mail, Heart, Target, Brain, Activity, Coffee, Moon, Sun, Star, BookOpen, Phone, Wind, Flower, MapPin, Loader2, Clock, ShoppingCart } from 'lucide-react';
+import { Activity, AlertCircle, BookOpen, Brain, CheckCircle, ChevronRight, Clock, Coffee, Flower, Heart, Lightbulb, Loader2, Mail, MapPin, Microscope, Moon, Phone, RefreshCw, Rocket, Salad, Shield, ShoppingCart, Sprout, Star, Sun, Target, TrendingUp, Wind, Zap } from "lucide-react";;
 import Link from 'next/link';
 import { useT, useLanguage } from '@/app/lib/i18n/LanguageProvider';
 import LoadingAnalysis from './LoadingAnalysis';
@@ -688,7 +688,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                             const latest = Object.keys(contextData.air.hourly.time || {}).length - 1;
                             const pm25 = contextData.air.hourly.pm2_5?.[latest] || 0;
                             return pm25 < 25 
-                              ? '💚 Utmärkt luftkvalitet - perfekt för träning utomhus!'
+                              ? '<Heart className="w-5 h-5 inline" /> Utmärkt luftkvalitet - perfekt för träning utomhus!'
                               : pm25 < 50
                               ? '💛 Acceptabel luftkvalitet - undvik intensiv träning utomhus'
                               : '🔴 Dålig luftkvalitet - träna inomhus idag';
@@ -730,7 +730,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         </div>
                         
                         <div className="text-sm text-gray-600">
-                          💡 Tips för allergiker: Ta antihistamin 30 min före träning och välj tidiga morgnar eller sena kvällar.
+                          <Lightbulb className="w-5 h-5 inline" /> Tips för allergiker: Ta antihistamin 30 min före träning och välj tidiga morgnar eller sena kvällar.
                         </div>
                       </motion.div>
                     )}
@@ -864,7 +864,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                       
                       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                         <p className="text-sm text-blue-800">
-                          💡 <strong>Tips:</strong> Dessa produkter är filtrerade för functional foods och longevity. 
+                          <Lightbulb className="w-5 h-5 inline" /> <strong>Tips:</strong> Dessa produkter är filtrerade för functional foods och longevity. 
                           Vi visar endast produkter med dokumenterade hälsofördelar och undviker processad mat.
                         </p>
                       </div>

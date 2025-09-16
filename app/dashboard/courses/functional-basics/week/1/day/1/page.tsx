@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { MdDinnerDining } from 'react-icons/md';
 import { getWeekData } from '@/app/data/mealPlans';
 import Image from 'next/image';
-import { ArrowLeft, ArrowRight, Clock, Check, Sun, Coffee, ShoppingCart, Heart, Share2, Calendar } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Check, Clock, Coffee, Heart, Lightbulb, Share2, ShoppingCart, Sun } from "lucide-react";;
 
 export default function Week1Day1Page() {
   const [completedMeals, setCompletedMeals] = useState<string[]>([]);
@@ -252,7 +252,7 @@ export default function Week1Day1Page() {
           transition={{ delay: 0.6 }}
           className="mt-8 bg-gradient-to-r from-[#014421] to-[#112A12] rounded-2xl shadow-lg p-6 text-white"
         >
-          <h3 className="text-xl font-bold mb-3">💡 Dagens tips</h3>
+          <h3 className="text-xl font-bold mb-3"><Lightbulb className="w-5 h-5 inline" /> Dagens tips</h3>
           <p className="text-white/90">
             Börja dagen med ett glas vatten för att kickstarta din ämnesomsättning. 
             Yoghurt med ketomüsli ger dig en perfekt balans av protein och hälsosamma fetter 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-import { Calendar, ShoppingCart, ChevronRight, Clock, CheckCircle, Download, ExternalLink } from 'lucide-react';
+import { Book, Calendar, CheckCircle, ChevronRight, Clock, Download, ExternalLink, ShoppingCart } from "lucide-react";;
 import { 
   GiFruitBowl, GiMeal, GiCookingPot, GiMeat, 
   GiWheat, GiWaterBottle, GiHerbsBundle
@@ -457,7 +457,7 @@ export function KnowledgeSection() {
 
         <div className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            📚 Veckans fokus: "Functional Foods - 3 steg till ett friskare liv"
+            <Book className="w-5 h-5 inline" /> Veckans fokus: "Functional Foods - 3 steg till ett friskare liv"
           </h3>
           <p className="text-gray-700">
             Detta dokument är särskilt viktigt denna vecka. Det ger dig en tydlig struktur för hur du kan 

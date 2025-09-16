@@ -2,20 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  TrendingDown, 
-  CreditCard, 
-  RefreshCw,
-  Download,
-  Eye,
-  RotateCcw,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  XCircle
-} from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, CreditCard, DollarSign, Download, Eye, RefreshCw, RotateCcw, TrendingDown, TrendingUp, XCircle } from "lucide-react";;
 
 interface StripePayment {
   id: string;
@@ -410,7 +397,7 @@ export default function AdminSalesPage() {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold text-gray-900">
-                    💳 Betalningsdetaljer
+                    <CreditCard className="w-5 h-5 inline" /> Betalningsdetaljer
                   </h2>
                   <button
                     onClick={() => setSelectedPayment(null)}

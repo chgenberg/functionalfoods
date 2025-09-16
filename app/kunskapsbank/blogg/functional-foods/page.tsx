@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Clock, Calendar, Share2, Bookmark } from 'lucide-react';
+import { ArrowLeft, Bookmark, Calendar, Clock, Share2, Star } from "lucide-react";;
 
 export default function FunctionalFoodsBlogPost() {
   return (
@@ -74,7 +74,7 @@ export default function FunctionalFoodsBlogPost() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="border-b-2 border-accent">
-                    <th className="text-left py-4 px-4 text-lg font-medium">⭐ Stjärna</th>
+                    <th className="text-left py-4 px-4 text-lg font-medium"><Star className="w-5 h-5 inline" /> Stjärna</th>
                     <th className="text-left py-4 px-4 text-lg font-medium">Varför den är guld värd</th>
                     <th className="text-left py-4 px-4 text-lg font-medium">Så får du in den varje dag</th>
                   </tr>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Mail, Lock, Shield } from 'lucide-react';
+import { Lock, Mail, Shield, Sparkles, User, X } from "lucide-react";;
 
 interface AddUserModalProps {
   onClose: () => void;
@@ -170,7 +170,7 @@ export default function AddUserModal({ onClose, onAdd }: AddUserModalProps) {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-400">🛡️</span>
+                  <span className="text-gray-400"><Shield className="w-5 h-5 inline" /></span>
                 </div>
                 <select
                   value={formData.role}
@@ -197,7 +197,7 @@ export default function AddUserModal({ onClose, onAdd }: AddUserModalProps) {
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-[#93C560] to-[#84b351] text-white rounded-xl hover:from-[#84b351] hover:to-[#93C560] transition-all font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-2"
               >
                 <span>Lägg till</span>
-                <span>✨</span>
+                <span><Sparkles className="w-5 h-5 inline" /></span>
               </button>
             </div>
           </form>

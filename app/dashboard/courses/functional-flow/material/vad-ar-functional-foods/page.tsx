@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { GiBrain, GiStomach, GiFruitBowl, GiWheat, GiMeal, GiHerbsBundle, GiWaterBottle, GiMeat, GiAlgae } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle, Book, Coffee, Heart, Activity, Target, Award, ChevronRight } from 'lucide-react';
+import { Activity, ArrowLeft, Award, Book, CheckCircle, ChevronRight, Coffee, Heart, Lightbulb, Target } from "lucide-react";;
 
 interface FoodCategory {
   id: number;
@@ -175,7 +175,7 @@ export default function VadArFunctionalFoodsPage() {
 
             <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 mb-6">
               <p className="text-lg font-medium text-gray-800 mb-0">
-                💡 Tänk dig "läkande" livsmedel som mättar, gynnar ditt immunförsvar, förbättrar din matsmältning 
+                <Lightbulb className="w-5 h-5 inline" /> Tänk dig "läkande" livsmedel som mättar, gynnar ditt immunförsvar, förbättrar din matsmältning 
                 och ger din hjärna en riktig boost!
               </p>
             </div>
@@ -289,7 +289,7 @@ export default function VadArFunctionalFoodsPage() {
           transition={{ delay: 0.6 }}
           className="bg-gradient-to-r from-primary to-accent text-white rounded-2xl shadow-xl p-8 mb-8"
         >
-                          <h2 className="text-2xl font-bold mb-4">Testa din kunskap! <span className="dashboard-emoji">🎯</span></h2>
+                          <h2 className="text-2xl font-bold mb-4">Testa din kunskap! <Target className="w-5 h-5 inline text-accent" /></h2>
           
           {!showQuiz ? (
             <div>

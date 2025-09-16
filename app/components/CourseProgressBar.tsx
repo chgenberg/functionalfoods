@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, CheckCircle, Clock } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, PartyPopper } from "lucide-react";;
 
 interface CourseProgressBarProps {
   startDate: string; // ISO date string
@@ -73,7 +73,7 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
             <h3 className="font-semibold text-gray-800">{courseName}</h3>
             <p className="text-sm text-gray-600">
               {isCompleted ? (
-                'Grattis! Du har genomfört kursen! 🎉'
+                'Grattis! Du har genomfört kursen! <PartyPopper className="w-5 h-5 inline" />'
               ) : (
                 <>Dag {currentDay} av {totalDays} • Vecka {currentWeek}</>
               )}

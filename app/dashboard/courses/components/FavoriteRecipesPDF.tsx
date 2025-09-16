@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Download, Heart, Calendar } from 'lucide-react';
+import { Calendar, Download, Heart, Star } from "lucide-react";;
 
 import { useFavoriteRecipes, FavoriteRecipe } from '@/app/hooks/useFavoriteRecipes';
 
@@ -504,7 +504,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
             Stjärnmarkera recept i dina måltidsplaner för att samla dem här!
           </p>
           <div className="text-sm text-gray-500">
-            Klicka på ⭐ bredvid måltider för att lägga till dem som favoriter
+            Klicka på <Star className="w-5 h-5 inline" /> bredvid måltider för att lägga till dem som favoriter
           </div>
         </div>
       </motion.div>

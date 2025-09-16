@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useGoals } from '@/app/hooks/useGoals';
-import { Target, CheckCircle, Check, TrendingUp, Clock } from 'lucide-react';
+import { Apple, Book, Check, CheckCircle, ChefHat, Cherry, Clock, Coffee, Droplets, FileText, Fish, Heart, Leaf, Lettuce, Lightbulb, Microscope, Milk, Moon, Nut, PartyPopper, Rocket, Salad, Target, TrendingUp, Trophy, Wheat, Zap } from "lucide-react";;
 
 // Samma fördefinierade mål som på huvudsidan
 const PREDEFINED_GOALS = {

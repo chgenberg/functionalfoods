@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Check, Clock } from 'lucide-react';
+import { Calendar, Check, Clock, Moon, Nut, Sun } from "lucide-react";;
 
 interface MealItem {
   name: string;
@@ -175,7 +175,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
           {/* Breakfast */}
           <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🌅</span>
+              <Sun className="w-8 h-8 inline text-accent" />
               <h5 className="font-semibold text-gray-900">Frukost</h5>
               <Clock className="w-4 h-4 text-gray-500 ml-auto" />
               <span className="text-sm text-gray-500">07:00</span>
@@ -194,7 +194,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
           {/* Lunch */}
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
-                              <span className="dashboard-emoji">☀️</span>
+                              <Sun className="w-5 h-5 inline text-accent" />
               <h5 className="font-semibold text-gray-900">Lunch</h5>
               <Clock className="w-4 h-4 text-gray-500 ml-auto" />
               <span className="text-sm text-gray-500">12:00</span>
@@ -218,7 +218,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
           {/* Dinner */}
           <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🌙</span>
+              <Moon className="w-8 h-8 inline text-accent" />
               <h5 className="font-semibold text-gray-900">Middag</h5>
               <Clock className="w-4 h-4 text-gray-500 ml-auto" />
               <span className="text-sm text-gray-500">18:00</span>
@@ -246,7 +246,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
             {currentDayMeals.snack && (
               <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-2xl">🥜</span>
+                  <Nut className="w-8 h-8 inline text-accent" />
                   <h5 className="font-semibold text-gray-900">Mellanmål</h5>
                 </div>
                 <p className="text-gray-700">{currentDayMeals.snack.name}</p>

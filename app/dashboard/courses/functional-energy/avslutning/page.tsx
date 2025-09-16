@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Trophy, Star, Heart, ArrowRight, Download, Share2, BookOpen, Target, Zap, Battery, Coffee, Moon } from 'lucide-react';
+import { ArrowRight, Battery, BookOpen, Coffee, Download, Heart, Lightbulb, Moon, Share2, Star, Target, Trophy, Zap } from "lucide-react";;
 
 export default function FunctionalEnergyAvslutningPage() {
   const achievements = [
@@ -90,7 +90,7 @@ export default function FunctionalEnergyAvslutningPage() {
               
               <div className="bg-[#F3EFE3] rounded-2xl p-6 my-8 border-l-4 border-[#93C560]">
                 <p className="text-[#014421] font-medium text-lg">
-                  💡 Det viktigaste för att fortsätta med Functional Foods som livsstil är de positiva resultaten du upplever. Ta en stund och reflektera över de förändringar du känner både kroppsligt och mentalt. Du mår med stor sannolikhet bättre och det är något du verkligen vill fortsätta att må – för både din hälsa och ditt välmående framöver!
+                  <Lightbulb className="w-5 h-5 inline" /> Det viktigaste för att fortsätta med Functional Foods som livsstil är de positiva resultaten du upplever. Ta en stund och reflektera över de förändringar du känner både kroppsligt och mentalt. Du mår med stor sannolikhet bättre och det är något du verkligen vill fortsätta att må – för både din hälsa och ditt välmående framöver!
                 </p>
               </div>
             </div>

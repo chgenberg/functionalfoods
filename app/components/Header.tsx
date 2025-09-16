@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShoppingCart, Menu, X, ChevronDown, User, Mail, Lock, Eye, EyeOff, ArrowRight, LogOut, Search } from 'lucide-react';
+import { ArrowRight, ChevronDown, Eye, EyeOff, Leaf, Lock, LogOut, Mail, Menu, Search, ShoppingCart, User, X } from "lucide-react";;
 import { useCart } from '../context/CartContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import MobileMenu from './MobileMenu';
@@ -327,7 +327,7 @@ export default function Header() {
                         <Link key={result.id} href={result.href} className="block p-4 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100" onClick={() => setShowSearch(false)}>
                           <div className="flex items-start gap-3">
                             <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold ${result.type === 'recipe' ? 'bg-green-500' : result.type === 'article' ? 'bg-blue-500' : 'bg-purple-500'}`}>
-                              {result.type === 'recipe' ? '🍽️' : result.type === 'article' ? '📖' : '🌿'}
+                              {result.type === 'recipe' ? '🍽️' : result.type === 'article' ? '📖' : '<Leaf className="w-5 h-5 inline" />'}
                             </div>
                             <div className="flex-1 min-w-0">
                               <h3 className="font-medium text-gray-900 mb-1 line-clamp-1">{result.title}</h3>

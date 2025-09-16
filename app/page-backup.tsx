@@ -9,7 +9,7 @@ import HealthQuiz from "./components/HealthQuiz";
 import QuizResultScreen from "./components/QuizResultScreen";
 import NewsletterSignup from "./components/NewsletterSignup";
 import ArticleQuickAccess from "./components/ArticleQuickAccess";
-import { ArrowRight, Book, Star, Target, Zap } from 'lucide-react';
+import { ArrowRight, Book, FileText, Microscope, Moon, Rocket, Shield, Star, Target, Zap } from "lucide-react";;
 
 export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);

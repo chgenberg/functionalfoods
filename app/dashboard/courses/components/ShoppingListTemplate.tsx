@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Printer, Download, Check, Search, ShoppingCart, ChevronDown, Share, Smartphone, Minus, Plus } from 'lucide-react';
+import { ArrowLeft, Check, ChevronDown, Download, FileText, Lightbulb, Minus, Plus, Printer, Search, Share, ShoppingCart, Smartphone } from "lucide-react";;
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
@@ -59,13 +59,13 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
         console.error(`❌ API Error: ${response.status} ${response.statusText}`);
         // Show empty state when API fails
         setIngredients([]);
-        console.log('📝 API failed - showing empty state');
+        console.log('<FileText className="w-5 h-5 inline" /> API failed - showing empty state');
       }
     } catch (error) {
       console.error('🚨 Error fetching shopping list:', error);
       // Show empty state on error
       setIngredients([]);
-      console.log('📝 Error occurred - showing empty state');
+      console.log('<FileText className="w-5 h-5 inline" /> Error occurred - showing empty state');
     } finally {
       setLoading(false);
     }
@@ -365,7 +365,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
     `).join('')}
     
     <div class="tips-section">
-        <div class="tips-title">💡 Shoppingtips</div>
+        <div class="tips-title"><Lightbulb className="w-5 h-5 inline" /> Shoppingtips</div>
         <div class="tips-list">
             • Börja med kött & fisk och mejeri för bästa kvalitet<br>
             • Köp frukt & grönt sist för att undvika skador<br>
@@ -650,7 +650,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
     `).join('')}
     
     <div class="tips-section">
-        <div class="tips-title">💡 Shoppingtips</div>
+        <div class="tips-title"><Lightbulb className="w-5 h-5 inline" /> Shoppingtips</div>
         <div class="tips-list">
             • Börja med kött & fisk och mejeri för bästa kvalitet<br>
             • Köp frukt & grönt sist för att undvika skador<br>

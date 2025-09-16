@@ -1,3 +1,4 @@
+import { Star } from "lucide-react";
 "use client";
 import { useEffect, useState } from "react";
 
@@ -26,7 +27,7 @@ export default function LocalExpertsList({ location }: { location: {lat: number,
         <li key={i} className="bg-white rounded-lg shadow p-3">
           <div className="font-bold text-[#4B2E19]">{e.name}</div>
           <div className="text-sm text-gray-700">{e.address}</div>
-          <div className="text-xs text-gray-500">⭐ {e.rating} ({e.userRatingsTotal} reviews)</div>
+          <div className="text-xs text-gray-500"><Star className="w-5 h-5 inline" /> {e.rating} ({e.userRatingsTotal} reviews)</div>
         </li>
       ))}
     </ul>

@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { GiMeal, GiWaterBottle, GiCookingPot, GiTargetArrows } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle, ChevronRight, Play, Calendar, ShoppingCart, Users, Droplet, Heart, Target, Clock } from 'lucide-react';
+import { ArrowLeft, Calendar, CheckCircle, ChevronRight, Clock, Droplet, Heart, Play, ShoppingCart, Star, Target, Users } from "lucide-react";;
 
 interface ChecklistItem {
   id: string;
@@ -286,7 +286,7 @@ export default function DagsAttKommaIgangPage() {
           transition={{ delay: 0.6 }}
           className="bg-gradient-to-r from-primary to-accent text-white rounded-2xl shadow-xl p-8 mb-8"
         >
-                          <h2 className="text-2xl font-bold mb-4">Tänk positivt! <span className="dashboard-emoji">🌟</span></h2>
+                          <h2 className="text-2xl font-bold mb-4">Tänk positivt! <Star className="w-5 h-5 inline text-accent" /></h2>
           <p className="text-lg leading-relaxed mb-6">
             Att du både vill och har lust är viktigt för att du ska lyckas. Ha roligt när du handlar råvaror och lagar Functional Foods! 
             Gör det lustfyllt och intressant att följa kroppens förändring både kroppsligt och mentalt.

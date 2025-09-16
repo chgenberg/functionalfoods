@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import LoadingAnalysis from './LoadingAnalysis';
 import { GiSparkles } from 'react-icons/gi';
 import SymptomResultScreen from './SymptomResultScreen';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Droplets, Leaf, Sparkles, Sprout, X } from "lucide-react";;
 
 interface QuestionnaireProps {
   bodyPart: string;
@@ -318,8 +318,8 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
               </p>
             </div>
             <div className="text-4xl opacity-20">
-              {currentQuestion < questions.length / 3 ? '🌱' : 
-               currentQuestion < (questions.length * 2) / 3 ? '🌿' : '🌳'}
+              {currentQuestion < questions.length / 3 ? '<Sprout className="w-5 h-5 inline" />' : 
+               currentQuestion < (questions.length * 2) / 3 ? '<Leaf className="w-5 h-5 inline" />' : '🌳'}
             </div>
           </div>
           
@@ -372,7 +372,7 @@ export default function Questionnaire({ bodyPart, description, onCancel }: Quest
               className="px-8 py-3 bg-gradient-to-r from-accent to-accent-hover text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2"
             >
               Slutför analys
-              <span className="text-xl">✨</span>
+              <span className="text-xl"><Sparkles className="w-5 h-5 inline" /></span>
             </button>
           )}
         </div>

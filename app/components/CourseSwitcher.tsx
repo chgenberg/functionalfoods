@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useAuth } from '../hooks/useAuth';
-import { ChevronDown, Check, Book, Lock } from 'lucide-react';
+import { Book, Check, ChevronDown, Lock, Sprout, Waves } from "lucide-react";;
 
 interface Course {
   id: string;

@@ -1,24 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { 
-  Users, 
-  ShoppingCart, 
-  FileText, 
-  BookOpen,
-  TrendingUp,
-  Eye,
-  Plus,
-  Edit,
-  BarChart3,
-  Activity,
-  DollarSign,
-  Package,
-  GraduationCap,
-  ArrowUpRight,
-  Sparkles,
-  ChevronRight,
-  Calendar
-} from 'lucide-react';
+import { Activity, ArrowUpRight, BarChart3, BookOpen, Calendar, ChevronRight, DollarSign, Edit, Eye, FileText, GraduationCap, Package, Plus, ShoppingCart, Sparkles, Sun, TrendingUp, Users } from "lucide-react";;
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -172,7 +154,7 @@ export default function AdminDashboard() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#93C560]/20 to-transparent rounded-full blur-3xl transform translate-x-32 -translate-y-32"></div>
         <div className="relative z-10">
           <h1 className="text-4xl font-light text-[#014421] mb-2">
-            God morgon! <span className="text-2xl">☀️</span>
+            God morgon! <Sun className="w-8 h-8 inline text-accent" />
           </h1>
           <p className="text-gray-600 font-light">Här är din verksamhetsöversikt</p>
         </div>

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ArrowLeft, Save, Trash2, Eye, Loader, Check, AlertCircle, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Check, Eye, FileText, Image as ImageIcon, Lightbulb, Loader, Save, Trash2, Upload, X } from "lucide-react";;
 
 interface Recipe {
   id: string;
@@ -469,7 +469,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             {/* Basic Information */}
             <div>
               <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <span className="text-lg">📝</span> Grundläggande information
+                <FileText className="w-6 h-6 inline text-accent" /> Grundläggande information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -628,7 +628,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             {/* Instructions */}
             <div>
               <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <span className="text-lg">📝</span> Instruktioner
+                <FileText className="w-6 h-6 inline text-accent" /> Instruktioner
               </h2>
               <div className="space-y-3">
                 {formData.instructions.map((instruction, index) => (
@@ -663,7 +663,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             {/* Tips */}
             <div>
               <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <span className="text-lg">💡</span> Tips från kocken
+                <Lightbulb className="w-6 h-6 inline text-accent" /> Tips från kocken
               </h2>
               <textarea
                 value={formData.tips}

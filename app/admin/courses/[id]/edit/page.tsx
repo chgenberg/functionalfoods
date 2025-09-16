@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { GiMeal } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Save, Book, Clock, Users, X, Plus, CheckCircle, AlertCircle, Image, DollarSign, Target, FileText, Download, MessageSquare, Eye } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Book, CheckCircle, Clock, DollarSign, Download, Eye, FileText, Image, Leaf, MessageSquare, Moon, Plus, Save, Sprout, Sun, Target, Users, X } from "lucide-react";;
 
 interface Recipe {
   id: string;
@@ -528,8 +528,8 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                           onChange={(e) => setFormData({ ...formData, level: e.target.value })}
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all hover:bg-gray-100 appearance-none pr-10"
                         >
-                          <option value="Beginner">🌱 Nybörjare</option>
-                          <option value="Intermediate">🌿 Medel</option>
+                          <option value="Beginner"><Sprout className="w-5 h-5 inline" /> Nybörjare</option>
+                          <option value="Intermediate"><Leaf className="w-5 h-5 inline" /> Medel</option>
                           <option value="Advanced">🌳 Avancerad</option>
                         </select>
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -776,7 +776,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                 {/* Frukost */}
                                 <div>
-                                  <label className="text-xs font-medium text-gray-600 mb-1 block">🌅 Frukost</label>
+                                  <label className="text-xs font-medium text-gray-600 mb-1 block"><Sun className="w-5 h-5 inline" /> Frukost</label>
                                   {week.mealPlan[day]?.breakfast?.name ? (
                                     <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-lg group">
                                       <span className="text-sm font-medium text-gray-700 truncate">{week.mealPlan[day].breakfast.name}</span>
@@ -804,7 +804,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
                                 {/* Lunch */}
                                 <div>
-                                  <label className="text-xs font-medium text-gray-600 mb-1 block">☀️ Lunch</label>
+                                  <label className="text-xs font-medium text-gray-600 mb-1 block"><Sun className="w-5 h-5 inline" /> Lunch</label>
                                   {week.mealPlan[day]?.lunch?.name ? (
                                     <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg group">
                                       <span className="text-sm font-medium text-gray-700 truncate">{week.mealPlan[day].lunch.name}</span>
@@ -832,7 +832,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
                                 {/* Middag */}
                                 <div>
-                                  <label className="text-xs font-medium text-gray-600 mb-1 block">🌙 Middag</label>
+                                  <label className="text-xs font-medium text-gray-600 mb-1 block"><Moon className="w-5 h-5 inline" /> Middag</label>
                                   {week.mealPlan[day]?.dinner?.name ? (
                                     <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg group">
                                       <span className="text-sm font-medium text-gray-700 truncate">{week.mealPlan[day].dinner.name}</span>

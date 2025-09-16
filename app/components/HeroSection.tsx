@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Book, Star } from 'lucide-react';
+import { ArrowRight, Book, Microscope, Moon, Shield, Star, Zap } from "lucide-react";;
 interface HeroSectionProps {
   onQuizStart: () => void;
 }

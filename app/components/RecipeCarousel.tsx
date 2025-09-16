@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Clock, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Clock, Salad, Sparkles } from "lucide-react";;
 import { optimizeImageUrl } from '@/app/lib/imageOptimization';
 
 interface Recipe {
@@ -258,7 +258,7 @@ export default function RecipeCarousel() {
                             </>
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                              <span className="text-7xl opacity-50">🥗</span>
+                              <span className="text-7xl opacity-50"><Salad className="w-5 h-5 inline" /></span>
                             </div>
                           )}
                           

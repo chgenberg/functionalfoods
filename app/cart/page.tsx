@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { ArrowLeft, Minus, Plus, Trash2, Tag, X, Check, Sparkles, Shield, Clock } from 'lucide-react';
+import { ArrowLeft, Book, Check, Clock, CreditCard, Lightbulb, Minus, Plus, Shield, Sparkles, Tag, Trash2, X, Zap } from "lucide-react";;
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -71,14 +71,14 @@ export default function CartPage() {
                   href="/utbildning" 
                   className="inline-flex items-center px-6 py-3 bg-[#014421] text-white font-medium rounded-lg hover:bg-[#116530] transition-all duration-200 shadow-md hover:shadow-lg"
                 >
-                  <span className="mr-2">📚</span>
+                  <Book className="w-5 h-5 inline mr-2" />
                   Utforska kurser
                 </Link>
                 <Link 
                   href="/kunskapsbank" 
                   className="inline-flex items-center px-6 py-3 bg-white text-[#014421] font-medium rounded-lg border-2 border-[#93C560] hover:bg-[#93C560]/10 transition-all duration-200"
                 >
-                  <span className="mr-2">💡</span>
+                  <Lightbulb className="w-5 h-5 inline mr-2" />
                   Kunskapsbank
                 </Link>
               </div>
@@ -137,7 +137,7 @@ export default function CartPage() {
                       <div>
                         <h3 className="text-lg font-semibold text-[#014421] mb-1">{item.name}</h3>
                         <p className="text-gray-600 text-sm mb-3">
-                          {item.type === 'course' ? '🎓 Online-kurs' : '📚 Digital bok'}
+                          {item.type === 'course' ? '🎓 Online-kurs' : '<Book className="w-5 h-5 inline" /> Digital bok'}
                         </p>
                       </div>
                       <button
@@ -196,15 +196,15 @@ export default function CartPage() {
               {/* Trust Indicators */}
               <div className="space-y-3 mb-6 p-4 bg-[#93C560]/10 rounded-xl">
                 <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <span className="text-lg">⚡</span>
+                  <Zap className="w-6 h-6 inline text-accent" />
                   <span>Omedelbar åtkomst efter köp</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <span className="text-lg">✨</span>
+                  <Sparkles className="w-6 h-6 inline text-accent" />
                   <span>Livstidsåtkomst till material</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <span className="text-lg">🛡️</span>
+                  <Shield className="w-6 h-6 inline text-accent" />
                   <span>30 dagars pengarna-tillbaka-garanti</span>
                 </div>
               </div>
@@ -287,7 +287,7 @@ export default function CartPage() {
               <div className="mt-6 text-center">
                 <p className="text-xs text-gray-500 mb-3">Vi accepterar</p>
                 <div className="flex justify-center items-center gap-3 text-sm text-gray-600">
-                  <span>💳 Kort</span>
+                  <span><CreditCard className="w-5 h-5 inline" /> Kort</span>
                   <span>📱 Swish</span>
                 </div>
               </div>
