@@ -1146,7 +1146,98 @@ export default function RecipePage() {
                 )}
               </div>
 
-              {/* Nutrition disabled */}
+              {/* Nutrition Section */}
+              <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl p-4 md:p-6 lg:p-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
+                  <h2 className="text-xl md:text-2xl font-bold text-[#014421] flex items-center gap-2 md:gap-3">
+                    <span className="bg-[#FF7E70]/20 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <Flame className="w-5 h-5 md:w-6 md:h-6 text-[#FF7E70]" />
+                    </span>
+                    Näringsvärden per portion
+                  </h2>
+                  
+                  {!nutrition && (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={calculateNutrition}
+                      disabled={nutritionLoading || !recipe?.ingredients?.length}
+                      className="px-4 py-2 bg-[#93C560] text-white rounded-lg hover:bg-[#014421] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
+                    >
+                      {nutritionLoading ? 'Beräknar...' : 'Beräkna näringsvärden'}
+                    </motion.button>
+                  )}
+                </div>
+
+                {nutrition ? (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                    <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                      <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                        {nutrition.perServing?.calories || 0}
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600">Kalorier</div>
+                    </div>
+                    
+                    <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                      <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                        {nutrition.perServing?.protein || 0}g
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600">Protein</div>
+                    </div>
+                    
+                    <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                      <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                        {nutrition.perServing?.carbs || 0}g
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600">Kolhydrater</div>
+                    </div>
+                    
+                    <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                      <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                        {nutrition.perServing?.fat || 0}g
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600">Fett</div>
+                    </div>
+                    
+                    {(nutrition.perServing?.fiber || nutrition.perServing?.sugar || nutrition.perServing?.salt) && (
+                      <>
+                        {nutrition.perServing?.fiber > 0 && (
+                          <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                            <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                              {nutrition.perServing.fiber}g
+                            </div>
+                            <div className="text-xs md:text-sm text-gray-600">Fiber</div>
+                          </div>
+                        )}
+                        
+                        {nutrition.perServing?.sugar > 0 && (
+                          <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                            <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                              {nutrition.perServing.sugar}g
+                            </div>
+                            <div className="text-xs md:text-sm text-gray-600">Socker</div>
+                          </div>
+                        )}
+                        
+                        {nutrition.perServing?.salt > 0 && (
+                          <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                            <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                              {nutrition.perServing.salt}g
+                            </div>
+                            <div className="text-xs md:text-sm text-gray-600">Salt</div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Flame className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500">Klicka på "Beräkna näringsvärden" för att se näringsinnehållet</p>
+                    <p className="text-sm text-gray-400 mt-1">Data hämtas från Livsmedelsverket</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
