@@ -398,7 +398,7 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {[
-              { step: "1", title: t('home.how.step1.title','Ta quizet'), desc: t('home.how.step1.desc','Besvara några enkla frågor om din hälsa'), icon: ClipboardCheck },
+              { step: "1", title: t('home.how.step1.title','Gör hälsoquizet'), desc: t('home.how.step1.desc','Besvara några enkla frågor om din hälsa'), icon: ClipboardCheck },
               { step: "2", title: t('home.how.step2.title','Få din analys'), desc: t('home.how.step2.desc','Vi analyserar dina svar med AI'), icon: Microscope },
               { step: "3", title: t('home.how.step3.title','Personlig plan'), desc: t('home.how.step3.desc','Få skräddarsydda rekommendationer'), icon: FileText },
               { step: "4", title: t('home.how.step4.title','Börja må bättre'), desc: t('home.how.step4.desc','Implementera och känn skillnad'), icon: Rocket }
