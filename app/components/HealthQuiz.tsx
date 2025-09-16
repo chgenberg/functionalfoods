@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, AlertCircle, Brain, Check, ChevronLeft, ChevronRight, Clock, Coffee, Fish, Heart, Leaf, Loader2, MapPin, Microscope, Moon, Rocket, Salad, Shield, Sparkles, Sprout, Star, Sun, Target, X, Zap, TrendingUp, Waves, Frown, User, Flame, Apple, Dumbbell, RotateCcw, CheckCircle, Scale, Wind, Dumbbell as WeightIcon, Sofa, Eye, Cloud, BarChart3, Thermometer } from "lucide-react";;
+import { Activity, AlertCircle, Brain, Check, ChevronLeft, ChevronRight, Clock, Coffee, Fish, Heart, Leaf, Loader2, MapPin, Microscope, Moon, Rocket, Salad, Shield, Sparkles, Sprout, Star, Sun, Target, X, Zap, TrendingUp, Waves, Frown, User, Flame, Apple, Dumbbell, RotateCcw, CheckCircle, Scale, Wind, Dumbbell as WeightIcon, Sofa, Eye, Cloud, BarChart3, Thermometer, HelpCircle, Smile } from "lucide-react";;
 import Image from 'next/image';
 import QuizResultScreen from './QuizResultScreen';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
@@ -52,7 +52,9 @@ const iconMap: Record<string, any> = {
   "👁️": Eye,
   "☁️": Cloud,
   "⚠️": AlertCircle,
-  "📊": BarChart3
+  "📊": BarChart3,
+  "🤔": HelpCircle,
+  "😊": Smile
 };
 
 // Component to render icon instead of emoji
