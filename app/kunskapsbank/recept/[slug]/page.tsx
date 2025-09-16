@@ -435,6 +435,22 @@ export default function RecipePage() {
       if (data.servings) {
         setServings(data.servings);
       }
+      
+      // Check if recipe already has nutrition data and set it
+      if (data.nutrition) {
+        setNutrition({
+          perServing: {
+            calories: data.nutrition.perServing?.energy || 0,
+            protein: data.nutrition.perServing?.protein || 0,
+            carbs: data.nutrition.perServing?.carbohydrates || 0,
+            fat: data.nutrition.perServing?.fat || 0,
+            fiber: data.nutrition.perServing?.fiber || 0,
+            sugar: data.nutrition.perServing?.sugar || 0,
+            salt: data.nutrition.perServing?.salt || 0
+          },
+          per100g: data.nutrition.per100g || null
+        });
+      }
     } catch (err) {
       console.error('Error fetching recipe:', err);
       setError(err instanceof Error ? err.message : t('recipes.detail.unknownError','Ett okänt fel uppstod'));
@@ -448,27 +464,51 @@ export default function RecipePage() {
     
     setNutritionLoading(true);
     try {
-      // Here you would normally call an API to calculate nutrition
-      // For now, we'll set a placeholder
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call the real nutrition sync API
+      const response = await fetch('/api/recipes/sync-nutrition', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipeId: recipe.id
+        })
+      });
       
-      // Placeholder nutrition data
+      if (!response.ok) {
+        throw new Error('Failed to calculate nutrition');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.recipe.nutrition) {
+        // Set the real nutrition data from API
+        setNutrition({
+          perServing: {
+            calories: data.recipe.nutrition.perServing.energy || 0,
+            protein: data.recipe.nutrition.perServing.protein || 0,
+            carbs: data.recipe.nutrition.perServing.carbohydrates || 0,
+            fat: data.recipe.nutrition.perServing.fat || 0,
+            fiber: data.recipe.nutrition.perServing.fiber || 0,
+            sugar: data.recipe.nutrition.perServing.sugar || 0,
+            salt: data.recipe.nutrition.perServing.salt || 0
+          },
+          per100g: data.recipe.nutrition.per100g || null
+        });
+      } else {
+        throw new Error('Invalid nutrition data received');
+      }
+    } catch (error) {
+      console.error('Error calculating nutrition:', error);
+      // Fallback to placeholder data if API fails
       setNutrition({
         perServing: {
           calories: Math.round(250 + Math.random() * 300),
           protein: Math.round(10 + Math.random() * 20),
           carbs: Math.round(20 + Math.random() * 40),
           fat: Math.round(5 + Math.random() * 15)
-        },
-        total: {
-          calories: Math.round((250 + Math.random() * 300) * servings),
-          protein: Math.round((10 + Math.random() * 20) * servings),
-          carbs: Math.round((20 + Math.random() * 40) * servings),
-          fat: Math.round((5 + Math.random() * 15) * servings)
         }
       });
-    } catch (error) {
-      console.error('Error calculating nutrition:', error);
     } finally {
       setNutritionLoading(false);
     }
