@@ -10,6 +10,25 @@ import {
   GiWheat, GiWaterBottle, GiHerbsBundle
 } from 'react-icons/gi';
 
+// Helper function to format meal names with bold "rester"
+const formatMealName = (mealName: string) => {
+  if (mealName.toLowerCase().includes('rester')) {
+    const parts = mealName.split(/(\s*rester\s*)/gi);
+    return (
+      <span>
+        {parts.map((part, index) => 
+          part.toLowerCase().includes('rester') ? (
+            <span key={index} className="font-bold text-[#014421]">rester</span>
+          ) : (
+            part
+          )
+        )}
+      </span>
+    );
+  }
+  return mealName;
+};
+
 interface MealItem {
   name: string;
   recipeLink?: string;
@@ -109,11 +128,11 @@ export function MealPlanSection({
                               href={meal.recipeLink}
                               className="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center"
                             >
-                              {meal.name}
+                              {formatMealName(meal.name)}
                               <ExternalLink className="ml-1 w-3 h-3" />
                             </Link>
                           ) : (
-                            <p className="text-sm text-gray-700">{meal.name}</p>
+                            <p className="text-sm text-gray-700">{formatMealName(meal.name)}</p>
                           )}
                         </div>
                       );

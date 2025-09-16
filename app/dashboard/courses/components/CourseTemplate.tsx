@@ -13,6 +13,25 @@ import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun } from 'lucide-react';
 
+// Helper function to format meal names with bold "rester"
+const formatMealName = (mealName: string) => {
+  if (mealName.toLowerCase().includes('rester')) {
+    const parts = mealName.split(/(\s*rester\s*)/gi);
+    return (
+      <span>
+        {parts.map((part, index) => 
+          part.toLowerCase().includes('rester') ? (
+            <span key={index} className="font-bold text-[#014421]">rester</span>
+          ) : (
+            part
+          )
+        )}
+      </span>
+    );
+  }
+  return mealName;
+};
+
 interface WeekDay {
   day: number;
   name: string;

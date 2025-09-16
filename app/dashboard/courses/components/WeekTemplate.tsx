@@ -13,6 +13,25 @@ import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans'
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun, FileText, ExternalLink, X } from 'lucide-react';
 import InfoPopupGrid from '@/app/dashboard/courses/components/InfoPopupGrid';
 
+// Helper function to format meal names with bold "rester"
+const formatMealName = (mealName: string) => {
+  if (mealName.toLowerCase().includes('rester')) {
+    const parts = mealName.split(/(\s*rester\s*)/gi);
+    return (
+      <span>
+        {parts.map((part, index) => 
+          part.toLowerCase().includes('rester') ? (
+            <span key={index} className="font-bold text-[#014421]">rester</span>
+          ) : (
+            part
+          )
+        )}
+      </span>
+    );
+  }
+  return mealName;
+};
+
 interface WeekDay {
   day: number;
   name: string;
@@ -523,7 +542,7 @@ export default function WeekTemplate({
                             </div>
                             <div className="p-4 bg-white">
                               <h4 className="font-semibold text-[#014421] mb-1">{meal.label}</h4>
-                              <p className="text-sm text-gray-700 line-clamp-2">{mealName}</p>
+                              <p className="text-sm text-gray-700 line-clamp-2">{formatMealName(mealName)}</p>
                               {calories && (
                                 <p className="text-xs text-gray-500 mt-1">{calories}</p>
                               )}
