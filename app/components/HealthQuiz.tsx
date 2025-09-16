@@ -500,14 +500,22 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
+      if (!raw) {
+        // No saved state, start fresh at quiz
+        setCurrentStep('quiz');
+        return;
+      }
       const saved = JSON.parse(raw) as { step: 'welcome'|'intro'|'location'|'quiz'|'result'; q: number; a: Record<number,string>; locationConsent?: boolean; locationContext?: any };
       if (saved && typeof saved.q === 'number' && saved.a) {
-        setCurrentStep((saved.step as any) || 'quiz');
+        // Always start directly at quiz, ignore saved step
+        setCurrentStep('quiz');
         setCurrentQuestion(saved.q);
         setAnswers(saved.a);
         if (saved.locationConsent !== undefined) setLocationConsent(saved.locationConsent);
         if (saved.locationContext) setLocationContext(saved.locationContext);
+      } else {
+        // Invalid saved state, start fresh at quiz
+        setCurrentStep('quiz');
       }
       // restore identity if available
       const idRaw = localStorage.getItem('health_test_identity_v2');
@@ -517,7 +525,10 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
         setEmail(id.email || '');
         setConsent(!!id.consent);
       }
-    } catch {}
+    } catch {
+      // Error reading localStorage, start fresh at quiz
+      setCurrentStep('quiz');
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [STORAGE_KEY]);
   // Persist state
@@ -549,7 +560,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
       }
     } catch {}
 
-    setCurrentStep('intro');
+    setCurrentStep('quiz');
   };
 
   const handleLocationConsent = async (consent: boolean) => {
@@ -686,246 +697,9 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
   const question = quizQuestions[currentQuestion];
 
-  if (currentStep === 'welcome') {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4 overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 0.1, scale: 1 }}
-            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-            className="absolute top-20 left-20 w-96 h-96 bg-accent/20 rounded-full filter blur-3xl"
-          />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 0.1, scale: 1 }}
-            transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", delay: 1 }}
-            className="absolute bottom-20 right-20 w-96 h-96 bg-primary/20 rounded-full filter blur-3xl"
-          />
-        </div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-6xl mx-auto relative z-10"
-        >
-          <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
-            <div className="grid lg:grid-cols-2 gap-0">
-              {/* Left side - Content */}
-              <div className="p-12 md:p-16 order-2 lg:order-1 flex flex-col justify-center">
-                <motion.div
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                  className="mb-12"
-                >
-                  <h1 className="text-4xl md:text-6xl font-light mb-6 text-gray-800 leading-tight">
-                    Ditt personliga
-                    <span className="text-primary font-bold block">HÄLSOQUIZ</span>
-                  </h1>
-                  <p className="text-xl text-gray-600 mb-8">
-                    2 minuter till bättre hälsa
-                  </p>
-                </motion.div>
+  // Skip welcome and intro steps - go directly to quiz
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                  className="space-y-6 mb-12"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="text-3xl"><Target className="w-5 h-5 inline" /></div>
-                    <span className="text-lg text-gray-700">Personliga råd</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-3xl"><Microscope className="w-5 h-5 inline" /></div>
-                    <span className="text-lg text-gray-700">Vetenskaplig grund</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-3xl"><Zap className="w-5 h-5 inline" /></div>
-                    <span className="text-lg text-gray-700">Snabbt resultat</span>
-                  </div>
-                </motion.div>
-
-                <div className="space-y-6">
-                  <motion.button
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    type="button"
-                    onClick={() => { console.log('Start health test clicked (click)'); startQuiz(); }}
-                    onMouseDown={() => { console.log('Start health test clicked (mousedown)'); startQuiz(); }}
-                    onTouchStart={() => { console.log('Start health test clicked (touchstart)'); startQuiz(); }}
-                    className="w-full bg-primary text-white px-8 py-6 rounded-full font-bold text-xl hover:bg-secondary transition-all duration-300 inline-flex items-center justify-center gap-3 relative z-10 pointer-events-auto shadow-xl"
-                  >
-                    <span>Starta hälsoquizet</span>
-                    <ChevronRight className="w-6 h-6" />
-                  </motion.button>
-                  
-                  <div className="space-y-4">
-                    <input 
-                      value={firstName} 
-                      onChange={e=>setFirstName(e.target.value)} 
-                      placeholder="Namn (frivilligt)" 
-                      className="w-full px-6 py-4 border border-gray-200 rounded-xl text-lg focus:outline-none focus:border-primary transition-colors" 
-                    />
-                    <input 
-                      type="email" 
-                      value={email} 
-                      onChange={e=>setEmail(e.target.value)} 
-                      placeholder="E-post (frivilligt)" 
-                      className="w-full px-6 py-4 border border-gray-200 rounded-xl text-lg focus:outline-none focus:border-primary transition-colors" 
-                    />
-                  </div>
-                  
-                  {formError && <div className="text-sm text-red-600 mt-2">{formError}</div>}
-                  
-                  <p className="text-gray-500 text-center text-sm">Kostnadsfritt • Inga mejl krävs</p>
-                </div>
-              </div>
-
-              {/* Right side - Ulrika's image */}
-              <div className="relative p-8 md:p-12 order-1 lg:order-2 bg-background">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                  className="relative"
-                >
-                  {/* Organic shape frame */}
-                  <div 
-                    className="absolute inset-0 bg-primary shadow-2xl"
-                    style={{
-                      clipPath: "polygon(30% 0%, 70% 0%, 100% 20%, 100% 70%, 80% 100%, 20% 100%, 0% 80%, 0% 30%)",
-                      transform: "scale(1.05)"
-                    }}
-                  />
-                  
-                  {/* Image container with organic shape */}
-                  <div 
-                    className="relative overflow-hidden"
-                    style={{
-                      clipPath: "polygon(30% 0%, 70% 0%, 100% 20%, 100% 70%, 80% 100%, 20% 100%, 0% 80%, 0% 30%)"
-                    }}
-                  >
-                    <Image 
-                      src="/Ulrika_portratt/Ulrika3.jpg" 
-                      alt="Ulrika Davidsson"
-                      width={400}
-                      height={500}
-                      className="w-full h-full object-cover"
-                      priority
-                    />
-                    
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-green-600/20 to-transparent" />
-                  </div>
-
-                  {/* Floating elements */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl p-4 cursor-default"
-                  >
-                    <p className="text-sm font-semibold text-gray-800">Ulrika Davidsson</p>
-                    <p className="text-xs text-gray-600">"Bästa kursen jag har gått - Lisa J"</p>
-                  </motion.div>
-
-
-                  
-                  {/* Additional floating decorative elements */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 0.6, scale: 1 }}
-                    transition={{ delay: 1.2, duration: 0.5 }}
-                    className="absolute top-1/2 -right-8 w-16 h-16 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full filter blur-xl"
-                  />
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 0.6, scale: 1 }}
-                    transition={{ delay: 1.4, duration: 0.5 }}
-                    className="absolute -bottom-8 left-1/3 w-20 h-20 bg-gradient-to-br from-blue-300 to-purple-400 rounded-full filter blur-xl"
-                  />
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'intro') {
-    return (
-      <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">{firstName ? `Hej ${firstName}!` : t('quiz.hello','Hej!')}</h2>
-          <p className="text-gray-700 mb-6">{t('quiz.intro','Vad roligt att du vill göra vårt hälso‑quiz. Nu sätter vi igång!')}</p>
-                          <button onClick={()=>setCurrentStep('location')} className="bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition">{t('healthtest.startNow','Starta nu')}</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'location') {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F9F6F0]">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden"
-        >
-          <div className="px-8 py-12 md:px-16">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-[#93C560]/20 rounded-full mb-6">
-                <MapPin className="w-10 h-10 text-[#014421]" />
-              </div>
-              <h2 className="text-3xl font-bold text-[#014421] mb-4">
-                {t('healthtest.locationTitle', 'Anpassa för din plats')}
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                {t('healthtest.locationText', 'Vi kan ge dig bättre träningsråd om vi vet var du befinner dig. Vi använder platsen för att hitta väder, luftkvalitet och träningsplatser nära dig.')}
-              </p>
-              
-              {loadingContext ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-8 h-8 animate-spin text-[#014421]" />
-                  <span className="ml-3 text-gray-600">{t('healthtest.fetchingData', 'Hämtar lokal information...')}</span>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <button
-                    onClick={() => handleLocationConsent(true)}
-                    className="w-full bg-[#014421] text-white py-4 px-6 rounded-xl font-medium hover:bg-[#025830] transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3"
-                  >
-                    <MapPin className="w-5 h-5" />
-                    {t('healthtest.allowLocation', 'Tillåt platsåtkomst')}
-                  </button>
-                  
-                  <button
-                    onClick={() => handleLocationConsent(false)}
-                    className="w-full bg-gray-100 text-gray-700 py-4 px-6 rounded-xl font-medium hover:bg-gray-200 transition-all"
-                  >
-                    {t('healthtest.skipLocation', 'Hoppa över')}
-                  </button>
-                </div>
-              )}
-              
-              <p className="text-sm text-gray-500 mt-6">
-                {t('healthtest.locationPrivacy', 'Din plats sparas endast under testet och raderas efteråt.')}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
+  // Skip location step too - go directly to quiz
 
   if (currentStep === 'quiz') {
     return (
