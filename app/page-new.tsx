@@ -6,13 +6,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Award, Book, Check, ClipboardCheck, FileText, Heart, Microscope, Play, Rocket, Star, Target, Users, Zap } from "lucide-react";;
+import { ArrowRight, Award, Book, Check, ClipboardCheck, FileText, Heart, Microscope, Play, Rocket, Star, Target, TrendingUp, Users, Zap } from "lucide-react";
 import { GiFruitBowl, GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
 import QuizResultScreen from "./components/QuizResultScreen";
 import NewsletterSignup from "./components/NewsletterSignup";
-import ArticleQuickAccess from "./components/ArticleQuickAccess";
+
 import FeaturePopup from "./components/FeaturePopup";
 import RecipeCarousel from "./components/RecipeCarousel";
 import CustomerReviews from "./components/CustomerReviews";
@@ -87,7 +87,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <ArticleQuickAccess />
       
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -153,10 +152,10 @@ export default function Home() {
                 Mat som medicin för kropp och själ
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col lg:flex-row gap-4 justify-center">
                 <button
                   onClick={() => setShowQuiz(true)}
-                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-8 py-5 rounded-full font-semibold text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
+                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
                   style={{ position: 'relative', zIndex: 50, pointerEvents: 'auto' }}
                   aria-label="Starta hälsotest"
                 >
@@ -165,11 +164,19 @@ export default function Home() {
                 </button>
                 <Link
                   href="/utbildning"
-                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-8 py-5 rounded-full font-semibold text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
                   <Book className="w-5 h-5" />
                   {t('home.ourCourses','Våra kurser')}
+                </Link>
+                <Link
+                  href="/kunskapsbank/artiklar"
+                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
+                  style={{ position: 'relative', zIndex: 50 }}
+                >
+                  <TrendingUp className="w-5 h-5" />
+                  {t('home.quickArticles','Snabbläs artiklar')}
                 </Link>
               </div>
             </div>
