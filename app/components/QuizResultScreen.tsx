@@ -70,7 +70,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const [recommendations, setRecommendations] = useState<QuizResultData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('summary');
+  const [activeTab, setActiveTab] = useState('course');
   const [email, setEmail] = useState('');
   const [emailStatus, setEmailStatus] = useState<'idle'|'sending'|'sent'|'error'>('idle');
   const [showOverview, setShowOverview] = useState(true);
@@ -369,10 +369,9 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const scoreMessage = getScoreMessage(totalScore);
 
   const tabs = [
-    { id: 'summary', label: 'Översikt', icon: TrendingUp },
+    { id: 'course', label: 'Kursrekommendation', icon: BookOpen },
     ...(contextData ? [{ id: 'context', label: 'Din plats', icon: MapPin }] : []),
     ...(contextData?.enhanced?.safety?.warnings?.length > 0 ? [{ id: 'safety', label: 'Säkerhet', icon: Shield }] : []),
-    { id: 'course', label: 'Kursrekommendation', icon: BookOpen },
     { id: 'recommendations', label: 'Functional Foods', icon: Salad },
     { id: 'lifestyle', label: 'Livsstil', icon: Activity },
     { id: 'nextsteps', label: 'Handlingsplan', icon: Star },
@@ -384,7 +383,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const currentTabIndex = orderedTabIds.indexOf(activeTab);
   const goNextTab = () => {
     if (currentTabIndex < orderedTabIds.length - 1) setActiveTab(orderedTabIds[currentTabIndex + 1]);
-    else setActiveTab('summary');
+    else setActiveTab('course');
   };
 
   const healthAreas = [
@@ -494,90 +493,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {activeTab === 'summary' && (
-                    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
-                      <h2 className="text-2xl font-light text-gray-900 mb-6">
-                        Din hälsoöversikt
-                      </h2>
-                      
-                      {/* Total Score */}
-                      <div className="mb-8 text-center">
-                        <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 mb-4">
-                          <span className="text-3xl font-bold text-gray-900">{totalScore}</span>
-                          <span className="text-gray-600">/100</span>
-                        </div>
-                        <div className={`text-lg font-medium ${scoreMessage.color} flex items-center`}>
-                          <scoreMessage.icon className="w-6 h-6 mr-2" />
-                          {scoreMessage.text}
-                        </div>
-                      </div>
 
-                      {/* Priority Areas */}
-                      {recommendations?.priorityAreas && recommendations.priorityAreas.length > 0 && (
-                        <div className="mb-8">
-                          <h3 className="text-lg font-medium text-gray-900 mb-4">Prioriterade områden</h3>
-                          <div className="space-y-4">
-                            {recommendations.priorityAreas.map((area, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="bg-gray-50 rounded-xl p-4"
-                              >
-                                <h4 className="font-medium text-gray-900 mb-2">{area.area}</h4>
-                                <p className="text-sm text-gray-600 mb-3">{area.description}</p>
-                                <div className="flex flex-wrap gap-2">
-                                  {area.suggestions.map((suggestion, i) => (
-                                    <span key={i} className="text-xs bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-200">
-                                      {suggestion}
-                                    </span>
-                                  ))}
-                                </div>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Functional Foods Grid */}
-                      {recommendations?.functionalFoods && recommendations.functionalFoods.length > 0 && (
-                        <div>
-                          <h3 className="text-lg font-medium text-gray-900 mb-4">Rekommenderade functional foods</h3>
-                          <div className="grid md:grid-cols-2 gap-4">
-                            {recommendations.functionalFoods.map((food, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-4 border border-green-100"
-                              >
-                                <h4 className="font-medium text-gray-900 mb-2">{food.name}</h4>
-                                <div className="flex flex-wrap gap-1 mb-3">
-                                  {food.benefits.map((benefit, i) => (
-                                    <span key={i} className="text-xs bg-white/80 px-2 py-1 rounded text-gray-700">
-                                      {benefit}
-                                    </span>
-                                  ))}
-                                </div>
-                                <div className="text-sm text-gray-600 space-y-1">
-                                  <div className="flex items-center gap-2">
-                                    <Clock className="w-3 h-3" />
-                                    <span>{food.timing}</span>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <Activity className="w-3 h-3" />
-                                    <span>{food.dosage}</span>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
 
                 {activeTab === 'context' && contextData && (
                   <div className="space-y-6">
