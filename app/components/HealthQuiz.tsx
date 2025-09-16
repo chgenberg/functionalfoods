@@ -357,12 +357,6 @@ const QUIZ_SV: QuizQuestion[] = [
         icon: "⚡"
       },
       {
-        label: "Bättre hjärn- och minnesfunktion",
-        description: "Förbättra fokus, minne och kognitiva förmågor",
-        value: "brain_health",
-        icon: "🧠"
-      },
-      {
         label: "Starkare immunförsvar",
         description: "Bli mindre sjuk och återhämta mig snabbare",
         value: "immune",
@@ -381,59 +375,21 @@ const QUIZ_SV: QuizQuestion[] = [
         icon: "🌿"
       },
       {
-        label: "Bättre hud, hår och naglar",
-        description: "Förbättra utseende och hudkvalitet",
-        value: "beauty",
-        icon: "✨"
+        label: "Bättre hormonell balans",
+        description: "Balansera hormoner för bättre välmående",
+        value: "hormonal_balance",
+        icon: "⚖️"
+      },
+      {
+        label: "Stabilisera mitt blodsocker",
+        description: "Få mer stabil energi och mindre socker-dips",
+        value: "blood_sugar",
+        icon: "📊"
       }
     ]
   },
   {
     id: 11,
-    question: "Har du några kända näringsbrister?",
-    subtitle: "Baserat på blodprover eller symtom du känner igen",
-    icon: "🔬",
-    options: [
-      {
-        label: "Vitamin D-brist",
-        description: "Låga D-vitamin nivåer eller lite sol",
-        value: "vitamin_d",
-        icon: "☀️"
-      },
-      {
-        label: "Omega-3 brist",
-        description: "Äter sällan fet fisk eller omega-3 källor",
-        value: "omega_3",
-        icon: "🐟"
-      },
-      {
-        label: "B12-brist",
-        description: "Särskilt vanligt för veganer/vegetarianer",
-        value: "b12",
-        icon: "🥗"
-      },
-      {
-        label: "Järnbrist",
-        description: "Känner mig trött, har bleka naglar",
-        value: "iron",
-        icon: "🩸"
-      },
-      {
-        label: "Magnesiumbrist",
-        description: "Muskelkramper, sömnproblem, stress",
-        value: "magnesium",
-        icon: "💪"
-      },
-      {
-        label: "Inga kända brister",
-        description: "Jag har inga kända näringsbrister",
-        value: "none",
-        icon: "✅"
-      }
-    ]
-  },
-  {
-    id: 12,
     question: "Tar du några mediciner regelbundet?",
     subtitle: "För att säkerställa att våra rekommendationer är säkra för dig",
     icon: "💊",
@@ -468,6 +424,12 @@ const QUIZ_SV: QuizQuestion[] = [
         description: "Levaxin eller andra sköldkörtelhormon",
         value: "thyroid",
         icon: "🦋"
+      },
+      {
+        label: "Medicin för mage och tarm",
+        description: "Protonpumpshämmare, antacida eller liknande",
+        value: "stomach_intestinal",
+        icon: "🫄"
       },
       {
         label: "Inga mediciner",

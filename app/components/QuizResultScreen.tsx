@@ -79,8 +79,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     kost: 7,
     motion: 5
   });
-  const [functionalFoods, setFunctionalFoods] = useState<any[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState(false);
+
   const [aiReport, setAiReport] = useState<any>(null);
   const [loadingAiReport, setLoadingAiReport] = useState(false);
 
@@ -162,38 +161,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     return out;
   };
 
-  const fetchFunctionalFoods = async () => {
-    if (loadingProducts) return;
-    
-    setLoadingProducts(true);
-    try {
-      // Extract health goals and deficiencies from quiz answers
-      const answers = quizData as Record<number, string | string[]>;
-      const healthGoals = Array.isArray(answers[10]) ? (answers[10] as string[]) : [];
-      const defRaw = answers[11];
-      const deficiencies = Array.isArray(defRaw) ? (defRaw as string[]) : ([defRaw].filter(Boolean) as string[]);
-      
-      const response = await fetch(`/api/healthquiz/functional-foods?v=${Date.now()}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-        cache: 'no-store',
-        body: JSON.stringify({
-          healthGoals,
-          currentDeficiencies: deficiencies,
-          preferences: [] // Could add diet preferences later
-        })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setFunctionalFoods(data.recommendations || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch functional foods:', error);
-    } finally {
-      setLoadingProducts(false);
-    }
-  };
+
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -303,46 +271,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     };
 
     fetchRecommendations();
-    fetchFunctionalFoods();
-    
-    // Generate AI report after all data is collected
-    const generateAiReport = async () => {
-      if (loadingAiReport || !functionalFoods.length) return;
-      
-      setLoadingAiReport(true);
-      try {
-        const response = await fetch(`/api/healthquiz/ai-moderator?v=${Date.now()}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-          cache: 'no-store',
-          body: JSON.stringify({
-            answers: quizData,
-            contextData,
-            functionalFoods,
-            userProfile: {
-              firstName: localStorage.getItem('health_test_identity_v2') ? 
-                JSON.parse(localStorage.getItem('health_test_identity_v2') || '{}').firstName : 'Användare',
-              email: localStorage.getItem('health_test_identity_v2') ? 
-                JSON.parse(localStorage.getItem('health_test_identity_v2') || '{}').email : ''
-            }
-          })
-        });
-        
-        if (response.ok) {
-          const report = await response.json();
-          setAiReport(report.report);
-        }
-      } catch (error) {
-        console.error('Failed to generate AI report:', error);
-      } finally {
-        setLoadingAiReport(false);
-      }
-    };
-    
-    // Generate AI report when functional foods are loaded
-    if (functionalFoods.length > 0 && !aiReport && !loadingAiReport) {
-      generateAiReport();
-    }
     
   }, [quizData, contextData]);
 
@@ -388,7 +316,6 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const tabs = [
     { id: 'summary', label: 'Översikt', icon: '📊' },
     ...(contextData ? [{ id: 'context', label: 'Din plats', icon: '🌍' }] : []),
-    { id: 'products', label: 'Produkter', icon: '🛒' },
     ...(contextData?.enhanced?.safety?.warnings?.length > 0 ? [{ id: 'safety', label: 'Säkerhet', icon: '🛡️' }] : []),
     { id: 'timing', label: 'Timing', icon: '🕐' },
     { id: 'course', label: 'Kursrekommendation', icon: '🎓' },
@@ -770,107 +697,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                   </div>
                 )}
 
-                {activeTab === 'products' && (
-                  <div className="space-y-6">
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                      <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                        <ShoppingCart className="w-5 h-5 text-green-500" />
-                        Rekommenderade produkter
-                      </h3>
-                      
-                      {loadingProducts ? (
-                        <div className="flex items-center justify-center py-8">
-                          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                          <span className="ml-3 text-gray-600">Söker efter produkter...</span>
-                        </div>
-                      ) : functionalFoods.length > 0 ? (
-                        <div className="grid md:grid-cols-2 gap-4">
-                          {functionalFoods.slice(0, 8).map((product: any, index: number) => (
-                            <motion.div
-                              key={product.code || index}
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: index * 0.1 }}
-                              className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                            >
-                              <div className="flex gap-4">
-                                {product.imageUrl && (
-                                  <img 
-                                    src={product.imageUrl} 
-                                    alt={product.name}
-                                    className="w-16 h-16 object-cover rounded-lg"
-                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                                  />
-                                )}
-                                <div className="flex-1">
-                                  <h4 className="font-medium text-gray-900 mb-1 text-sm">{translateToSwedish(product.name)}</h4>
-                                  {product.brand && (
-                                    <p className="text-xs text-gray-500 mb-2">{translateToSwedish(product.brand)}</p>
-                                  )}
-                                  
-                                  <div className="flex flex-wrap gap-1 mb-2">
-                                    {product.healthBenefits.slice(0, 2).map((benefit: string, i: number) => (
-                                      <span key={i} className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                                        {translateToSwedish(benefit)}
-                                      </span>
-                                    ))}
-                                  </div>
-                                  
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex gap-2">
-                                      {product.nutriScore && (
-                                        <span className={`text-xs px-2 py-1 rounded font-medium ${
-                                          product.nutriScore === 'A' ? 'bg-green-100 text-green-700' :
-                                          product.nutriScore === 'B' ? 'bg-yellow-100 text-yellow-700' : 
-                                          'bg-gray-100 text-gray-700'
-                                        }`}>
-                                          {product.nutriScore}
-                                        </span>
-                                      )}
-                                      {product.ecoScore && (
-                                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-medium">
-                                          Eco {product.ecoScore}
-                                        </span>
-                                      )}
-                                    </div>
-                                    
-                                    <a
-                                      href={product.openFoodFactsUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:text-secondary text-xs font-medium flex items-center gap-1"
-                                    >
-                                      Info
-                                      <ChevronRight className="w-3 h-3" />
-                                    </a>
-                                  </div>
-                                </div>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-8">
-                          <div className="text-gray-400 mb-4">🔍</div>
-                          <p className="text-gray-600">Inga produkter hittades för dina specifika behov.</p>
-                          <button 
-                            onClick={fetchFunctionalFoods}
-                            className="mt-4 text-primary hover:text-secondary font-medium text-sm"
-                          >
-                            Försök igen
-                          </button>
-                        </div>
-                      )}
-                      
-                      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                        <p className="text-sm text-blue-800">
-                          <Lightbulb className="w-5 h-5 inline" /> <strong>Tips:</strong> Dessa produkter är filtrerade för functional foods och longevity. 
-                          Vi visar endast produkter med dokumenterade hälsofördelar och undviker processad mat.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+
 
                 {activeTab === 'recommendations' && recommendations && (
                   <div className="space-y-4">
