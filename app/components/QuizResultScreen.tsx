@@ -161,6 +161,57 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     return out;
   };
 
+  // Generate personalized Functional Flow recommendation based on user's answers
+  const generatePersonalizedCourseRecommendation = (answers: Record<number, string | string[]>): string => {
+    const healthGoals = Array.isArray(answers[10]) ? (answers[10] as string[]) : [answers[10]].filter(Boolean);
+    const energyLevel = answers[1];
+    const sleepQuality = answers[2];
+    const stressLevel = answers[3];
+    
+    let recommendation = "Baserat på dina svar rekommenderar vi starkt vår **Functional Flow** kurs. ";
+    
+    // Personalize based on specific answers
+    if (energyLevel === 'low_energy' || energyLevel === 'afternoon_dip') {
+      recommendation += "Din energisituation visar att du skulle ha stor nytta av att lära dig om energigivande functional foods och hur du kan optimera din kost för stabil energi genom dagen. ";
+    }
+    
+    if (sleepQuality === 'poor_sleep' || sleepQuality === 'disrupted_sleep') {
+      recommendation += "Med dina sömnutmaningar kommer kursen att lära dig vilka functional foods som kan förbättra sömnkvaliteten naturligt. ";
+    }
+    
+    if (stressLevel === 'high_stress' || stressLevel === 'moderate_stress') {
+      recommendation += "För att hantera stress kommer du att lära dig om adaptogener och andra stressreducerande functional foods. ";
+    }
+    
+    // Add specific benefits based on health goals
+    if (healthGoals.includes('energy')) {
+      recommendation += "Kursen innehåller specifika moduler om energioptimering genom kost. ";
+    }
+    
+    if (healthGoals.includes('gut_health')) {
+      recommendation += "Du kommer att få djup kunskap om probiotika, prebiotika och tarmhälsa. ";
+    }
+    
+    if (healthGoals.includes('immune')) {
+      recommendation += "Kursen täcker immunstärkande functional foods och hur du bygger upp ditt naturliga försvar. ";
+    }
+    
+    if (healthGoals.includes('hormonal_balance')) {
+      recommendation += "Vi går igenom functional foods som stödjer hormonell balans och endokrin hälsa. ";
+    }
+    
+    if (healthGoals.includes('blood_sugar')) {
+      recommendation += "Du kommer att lära dig om blodsocker-stabiliserande functional foods och måltidstiming. ";
+    }
+    
+    if (healthGoals.includes('anti_aging')) {
+      recommendation += "Kursen inkluderar omfattande information om anti-aging functional foods och longevity. ";
+    }
+    
+    recommendation += "\n\n**Functional Flow** är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
+    
+    return recommendation;
+  };
 
 
   useEffect(() => {
@@ -217,7 +268,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
           "Notera förändringar i humör och välbefinnande",
           "Bedöm matsmältning och allmän hälsa veckovis"
         ],
-        courseRecommendation: "Du kan förbättra din hälsa ytterligare genom att gå vår Functional Basics kurs. Denna kurs ger dig djupare förståelse för hur functional foods kan påverka din hälsa och hur du kan implementera dem i din vardag."
+        courseRecommendation: generatePersonalizedCourseRecommendation(quizData as Record<number, string | string[]>)
       };
 
       try {
@@ -831,29 +882,46 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                 {activeTab === 'course' && recommendations && (
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
                     <h2 className="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6">{t('quiz.course','Rekommenderad kurs för dig')}</h2>
-                    <p className="text-gray-600 mb-8 leading-relaxed">
-                      {recommendations.courseRecommendation}
-                    </p>
                     
-                    <div className="grid md:grid-cols-2 gap-4">
+                    {/* Course presentation with image */}
+                    <div className="mb-8">
+                      <div className="relative overflow-hidden rounded-2xl mb-6">
+                        <img 
+                          src="/functional_flow.png" 
+                          alt="Functional Flow Kurs"
+                          className="w-full h-48 md:h-64 object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                          <div className="p-6 text-white">
+                            <h3 className="text-2xl font-bold mb-2">Functional Flow</h3>
+                            <p className="text-white/90">Vår mest omfattande kurs för optimal hälsa</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="prose prose-gray max-w-none">
+                        <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                          {recommendations.courseRecommendation}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Single prominent CTA for Functional Flow */}
+                    <div className="text-center">
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => window.location.href = '/utbildning/functional-flow'}
-                        className="bg-primary text-white px-6 py-4 rounded-xl font-medium hover:bg-secondary transition-colors flex items-center justify-center gap-2"
+                        className="bg-primary text-white px-8 py-4 rounded-xl font-medium hover:bg-secondary transition-colors flex items-center justify-center gap-3 mx-auto text-lg"
                       >
-                        <Star className="w-5 h-5" />
-                        <span>{t('quiz.flow','Functional Flow')}</span>
+                        <Star className="w-6 h-6" />
+                        <span>Starta Functional Flow</span>
+                        <ChevronRight className="w-5 h-5" />
                       </motion.button>
                       
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => window.location.href = '/utbildning/functional-basics'}
-                        className="bg-white text-gray-700 border-2 border-gray-200 px-6 py-4 rounded-xl font-medium hover:border-gray-300 transition-colors"
-                      >
-                        {t('quiz.basics','Functional Basics')}
-                      </motion.button>
+                      <p className="text-sm text-gray-500 mt-4">
+                        Personliga måltidsplaner • Veckovisa inköpslistor • Expert-support
+                      </p>
                     </div>
                   </div>
                 )}

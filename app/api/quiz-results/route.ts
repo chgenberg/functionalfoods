@@ -59,6 +59,80 @@ function calculateHealthScores(answers: Record<number, string>) {
   return { ...scores, healthScore };
 }
 
+// Generate personalized Functional Flow recommendation based on user's answers
+function generatePersonalizedFlowRecommendation(answers: Record<number, string | string[]>, lang: string): string {
+  const healthGoals = Array.isArray(answers[10]) ? (answers[10] as string[]) : [answers[10]].filter(Boolean);
+  const energyLevel = answers[1];
+  const sleepQuality = answers[2];
+  const stressLevel = answers[3];
+  
+  let recommendation = lang === 'en' ? 
+    "Based on your answers, we strongly recommend our **Functional Flow** course. " :
+    "Baserat på dina svar rekommenderar vi starkt vår **Functional Flow** kurs. ";
+  
+  // Personalize based on specific answers
+  if (energyLevel === 'low_energy' || energyLevel === 'afternoon_dip') {
+    recommendation += lang === 'en' ?
+      "Your energy situation shows you would greatly benefit from learning about energizing functional foods and how to optimize your diet for stable energy throughout the day. " :
+      "Din energisituation visar att du skulle ha stor nytta av att lära dig om energigivande functional foods och hur du kan optimera din kost för stabil energi genom dagen. ";
+  }
+  
+  if (sleepQuality === 'poor_sleep' || sleepQuality === 'disrupted_sleep') {
+    recommendation += lang === 'en' ?
+      "With your sleep challenges, the course will teach you which functional foods can naturally improve sleep quality. " :
+      "Med dina sömnutmaningar kommer kursen att lära dig vilka functional foods som kan förbättra sömnkvaliteten naturligt. ";
+  }
+  
+  if (stressLevel === 'high_stress' || stressLevel === 'moderate_stress') {
+    recommendation += lang === 'en' ?
+      "To manage stress, you'll learn about adaptogens and other stress-reducing functional foods. " :
+      "För att hantera stress kommer du att lära dig om adaptogener och andra stressreducerande functional foods. ";
+  }
+  
+  // Add specific benefits based on health goals
+  if (healthGoals.includes('energy')) {
+    recommendation += lang === 'en' ?
+      "The course includes specific modules on energy optimization through diet. " :
+      "Kursen innehåller specifika moduler om energioptimering genom kost. ";
+  }
+  
+  if (healthGoals.includes('gut_health')) {
+    recommendation += lang === 'en' ?
+      "You'll gain deep knowledge about probiotics, prebiotics, and gut health. " :
+      "Du kommer att få djup kunskap om probiotika, prebiotika och tarmhälsa. ";
+  }
+  
+  if (healthGoals.includes('immune')) {
+    recommendation += lang === 'en' ?
+      "The course covers immune-boosting functional foods and how to build your natural defenses. " :
+      "Kursen täcker immunstärkande functional foods och hur du bygger upp ditt naturliga försvar. ";
+  }
+  
+  if (healthGoals.includes('hormonal_balance')) {
+    recommendation += lang === 'en' ?
+      "We cover functional foods that support hormonal balance and endocrine health. " :
+      "Vi går igenom functional foods som stödjer hormonell balans och endokrin hälsa. ";
+  }
+  
+  if (healthGoals.includes('blood_sugar')) {
+    recommendation += lang === 'en' ?
+      "You'll learn about blood sugar-stabilizing functional foods and meal timing. " :
+      "Du kommer att lära dig om blodsocker-stabiliserande functional foods och måltidstiming. ";
+  }
+  
+  if (healthGoals.includes('anti_aging')) {
+    recommendation += lang === 'en' ?
+      "The course includes comprehensive information about anti-aging functional foods and longevity. " :
+      "Kursen inkluderar omfattande information om anti-aging functional foods och longevity. ";
+  }
+  
+  recommendation += lang === 'en' ?
+    "\n\n**Functional Flow** is our most comprehensive course that gives you tools to transform your health through science-based nutrition and functional foods. You get access to personal meal plans, weekly shopping lists, community support, and direct contact with our experts." :
+    "\n\n**Functional Flow** är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
+  
+  return recommendation;
+}
+
 function getLang(req: NextRequest): 'sv'|'en'|'es'|'de'|'fr' {
   try {
     const cookie = req.cookies.get('lang')?.value;
@@ -229,13 +303,7 @@ function buildLocalFallback(answers: Record<number, string>, lang: string) {
         lang === 'en' ? 'Weekly check-in on digestive health' : 'Veckovis kontroll av matsmältningshälsa',
         lang === 'en' ? 'Monthly progress photos and measurements' : 'Månatliga framstegsfoton och mätningar'
       ],
-      courseRecommendation: weakAreas.length >= 3 ?
-        (lang === 'en' ? 
-          'Based on your results, we recommend starting with Functional Basics. This comprehensive course will give you a strong foundation in functional nutrition, helping you address multiple health areas systematically. You\'ll learn the science behind functional foods and how to implement them effectively in your daily life.' :
-          'Baserat på dina resultat rekommenderar vi att börja med Functional Basics. Denna omfattande kurs ger dig en stark grund i funktionell nutrition och hjälper dig att ta itu med flera hälsoområden systematiskt. Du kommer att lära dig vetenskapen bakom functional foods och hur du implementerar dem effektivt i ditt dagliga liv.') :
-        (lang === 'en' ? 
-          'We recommend Functional Flow to help you build sustainable health routines. This course focuses on creating personalized systems that fit seamlessly into your lifestyle, ensuring long-term success with functional foods and healthy habits.' :
-          'Vi rekommenderar Functional Flow för att hjälpa dig bygga hållbara hälsorutiner. Denna kurs fokuserar på att skapa personliga system som passar sömlöst in i din livsstil och säkerställer långsiktig framgång med functional foods och hälsosamma vanor.'),
+      courseRecommendation: generatePersonalizedFlowRecommendation(answers, lang),
       scores
     }
   };
@@ -312,7 +380,7 @@ Skapa en djupgående analys som inkluderar:
 
 7. **VARNINGAR** (2-3 stycken): Viktiga säkerhetsaspekter
 
-8. **KURSREKOMMENDATION**: Baserat på quiz-svaren, rekommendera antingen Functional Basics eller Functional Flow med motivering.
+8. **KURSREKOMMENDATION**: Rekommendera alltid Functional Flow kursen och personalisera motivering baserat på quiz-svaren.
 
 VIKTIGT: Använd INTE markdown-formatering som ### eller **. Returnera ren text.
 
@@ -419,12 +487,9 @@ Returera ditt svar som en JSON med följande struktur:
         courseRecommendation: parsedResult.courseRecommendation || ''
       };
 
-      // Enkel fallback-kursrekommendation om fältet saknas
+      // Always recommend Functional Flow with personalized message
       if (!parsedResult.courseRecommendation) {
-        const weakDomains = [scores.energyScore, scores.sleepScore, scores.stressScore, scores.dietScore, scores.exerciseScore].filter(s => s <= 5).length;
-        parsedResult.courseRecommendation = weakDomains >= 3
-          ? (lang==='en' ? 'We recommend Functional Basics as your foundation.' : 'Vi rekommenderar Functional Basics som grund.')
-          : (lang==='en' ? 'We recommend Functional Flow to build strong routines.' : 'Vi rekommenderar Functional Flow för att bygga starka rutiner.');
+        parsedResult.courseRecommendation = generatePersonalizedFlowRecommendation(answers, lang);
       }
 
       // Spara quiz-resultat i databasen om användaren är inloggad
