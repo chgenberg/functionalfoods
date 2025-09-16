@@ -51,7 +51,89 @@ const localNutritionData = {
   'yoghurt': { energy: 61, protein: 3.5, fat: 3, carbohydrates: 4.7, fiber: 0, sugar: 4.7, salt: 0.046 },
   'ost': { energy: 402, protein: 25, fat: 33, carbohydrates: 0.1, fiber: 0, sugar: 0.1, salt: 1.6 },
   'fisk': { energy: 206, protein: 22, fat: 12, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0.14 },
-  'kött': { energy: 250, protein: 26, fat: 15, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0.075 }
+  'kött': { energy: 250, protein: 26, fat: 15, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0.075 },
+  // Saknade ingredienser från de misslyckade recepten
+  'apelsin': { energy: 47, protein: 0.9, fat: 0.1, carbohydrates: 12, fiber: 2.4, sugar: 9.4, salt: 0.001 },
+  'rödkål': { energy: 31, protein: 1.4, fat: 0.1, carbohydrates: 7.4, fiber: 2.5, sugar: 3.8, salt: 0.027 },
+  'ingefära': { energy: 80, protein: 1.8, fat: 0.8, carbohydrates: 18, fiber: 2, sugar: 1.7, salt: 0.013 },
+  'färsk ingefära': { energy: 80, protein: 1.8, fat: 0.8, carbohydrates: 18, fiber: 2, sugar: 1.7, salt: 0.013 },
+  'rödbetsjuice': { energy: 43, protein: 1.6, fat: 0.2, carbohydrates: 10, fiber: 2.8, sugar: 6.8, salt: 0.078 },
+  'rödbetor': { energy: 43, protein: 1.6, fat: 0.2, carbohydrates: 10, fiber: 2.8, sugar: 6.8, salt: 0.078 },
+  'citron': { energy: 29, protein: 1.1, fat: 0.3, carbohydrates: 9, fiber: 2.8, sugar: 1.5, salt: 0.002 },
+  'mango': { energy: 60, protein: 0.8, fat: 0.4, carbohydrates: 15, fiber: 1.6, sugar: 13.7, salt: 0.001 },
+  'färsk mango': { energy: 60, protein: 0.8, fat: 0.4, carbohydrates: 15, fiber: 1.6, sugar: 13.7, salt: 0.001 },
+  'jordgubbar': { energy: 32, protein: 0.7, fat: 0.3, carbohydrates: 8, fiber: 2, sugar: 4.9, salt: 0.001 },
+  'färska jordgubbar': { energy: 32, protein: 0.7, fat: 0.3, carbohydrates: 8, fiber: 2, sugar: 4.9, salt: 0.001 },
+  'vit choklad': { energy: 539, protein: 5.9, fat: 32, carbohydrates: 59, fiber: 0.2, sugar: 59, salt: 0.19 },
+  'philadelphiaost': { energy: 265, protein: 5.5, fat: 26, carbohydrates: 3.5, fiber: 0, sugar: 3.5, salt: 0.8 },
+  'färsk mynta': { energy: 70, protein: 3.8, fat: 0.9, carbohydrates: 15, fiber: 8, sugar: 0, salt: 0.031 },
+  'cantaloupemelon': { energy: 34, protein: 0.8, fat: 0.2, carbohydrates: 8, fiber: 0.9, sugar: 7.9, salt: 0.016 },
+  'ananas': { energy: 50, protein: 0.5, fat: 0.1, carbohydrates: 13, fiber: 1.4, sugar: 9.9, salt: 0.001 },
+  'kokosskivor': { energy: 354, protein: 3.3, fat: 33, carbohydrates: 15, fiber: 9, sugar: 6.2, salt: 0.02 },
+  'kvist färsk mynta': { energy: 70, protein: 3.8, fat: 0.9, carbohydrates: 15, fiber: 8, sugar: 0, salt: 0.031 },
+  'blodapelsin': { energy: 47, protein: 0.9, fat: 0.1, carbohydrates: 12, fiber: 2.4, sugar: 9.4, salt: 0.001 },
+  'björnbär': { energy: 43, protein: 1.4, fat: 0.5, carbohydrates: 10, fiber: 5.3, sugar: 4.9, salt: 0.001 },
+  'färska björnbär': { energy: 43, protein: 1.4, fat: 0.5, carbohydrates: 10, fiber: 5.3, sugar: 4.9, salt: 0.001 },
+  // Fler saknade ingredienser
+  'paprika': { energy: 31, protein: 1, fat: 0.3, carbohydrates: 7.3, fiber: 2.5, sugar: 4.2, salt: 0.004 },
+  'rödlök': { energy: 40, protein: 1.1, fat: 0.1, carbohydrates: 9.3, fiber: 1.7, sugar: 4.2, salt: 0.004 },
+  'päron': { energy: 57, protein: 0.4, fat: 0.1, carbohydrates: 15, fiber: 3.1, sugar: 10, salt: 0.001 },
+  'chevreost': { energy: 364, protein: 21, fat: 30, carbohydrates: 2.5, fiber: 0, sugar: 2.5, salt: 1.2 },
+  'pekannötter': { energy: 691, protein: 9.2, fat: 72, carbohydrates: 14, fiber: 9.6, sugar: 4, salt: 0.0004 },
+  'tranbär': { energy: 46, protein: 0.4, fat: 0.1, carbohydrates: 12, fiber: 4.6, sugar: 4, salt: 0.002 },
+  'torkade tranbär': { energy: 308, protein: 0.1, fat: 1.4, carbohydrates: 83, fiber: 5.3, sugar: 65, salt: 0.003 },
+  'balsamvinäger': { energy: 88, protein: 0.5, fat: 0, carbohydrates: 17, fiber: 0, sugar: 14, salt: 0.023 },
+  'grädde': { energy: 292, protein: 2.1, fat: 31, carbohydrates: 3.4, fiber: 0, sugar: 3.4, salt: 0.043 },
+  'majonäs': { energy: 680, protein: 1.1, fat: 75, carbohydrates: 0.6, fiber: 0, sugar: 0.6, salt: 1.1 },
+  'scampi': { energy: 106, protein: 20, fat: 1.7, carbohydrates: 1, fiber: 0, sugar: 0, salt: 0.27 },
+  'fryst scampi': { energy: 106, protein: 20, fat: 1.7, carbohydrates: 1, fiber: 0, sugar: 0, salt: 0.27 },
+  'torsk': { energy: 82, protein: 18, fat: 0.7, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0.54 },
+  'torskrygg': { energy: 82, protein: 18, fat: 0.7, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0.54 },
+  'vitlök': { energy: 149, protein: 6.4, fat: 0.5, carbohydrates: 33, fiber: 2.1, sugar: 1, salt: 0.017 },
+  'klyfta vitlök': { energy: 149, protein: 6.4, fat: 0.5, carbohydrates: 33, fiber: 2.1, sugar: 1, salt: 0.017 },
+  'klyftor vitlök': { energy: 149, protein: 6.4, fat: 0.5, carbohydrates: 33, fiber: 2.1, sugar: 1, salt: 0.017 },
+  'gul lök': { energy: 40, protein: 1.1, fat: 0.1, carbohydrates: 9.3, fiber: 1.7, sugar: 4.2, salt: 0.004 },
+  'riven ost': { energy: 402, protein: 25, fat: 33, carbohydrates: 0.1, fiber: 0, sugar: 0.1, salt: 1.6 },
+  // Ytterligare ingredienser
+  'fetaost': { energy: 264, protein: 14, fat: 21, carbohydrates: 4, fiber: 0, sugar: 4, salt: 4 },
+  'champinjoner': { energy: 22, protein: 3.1, fat: 0.3, carbohydrates: 4, fiber: 1, sugar: 1.98, salt: 0.005 },
+  'färska champinjoner': { energy: 22, protein: 3.1, fat: 0.3, carbohydrates: 4, fiber: 1, sugar: 1.98, salt: 0.005 },
+  'grönkål': { energy: 49, protein: 4.3, fat: 0.9, carbohydrates: 9, fiber: 3.6, sugar: 2.3, salt: 0.043 },
+  'grönkålsblad': { energy: 49, protein: 4.3, fat: 0.9, carbohydrates: 9, fiber: 3.6, sugar: 2.3, salt: 0.043 },
+  'sesamfrön': { energy: 573, protein: 17, fat: 50, carbohydrates: 23, fiber: 11.8, sugar: 0.3, salt: 0.011 },
+  'fiberhusk': { energy: 42, protein: 1.5, fat: 0.6, carbohydrates: 88, fiber: 84, sugar: 0, salt: 0.016 },
+  'mandelmjöl': { energy: 579, protein: 21, fat: 50, carbohydrates: 22, fiber: 12, sugar: 4.4, salt: 0.001 },
+  'vatten': { energy: 0, protein: 0, fat: 0, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0 },
+  'persilja': { energy: 36, protein: 3, fat: 0.8, carbohydrates: 6.3, fiber: 3.3, sugar: 0.9, salt: 0.056 },
+  'färsk persilja': { energy: 36, protein: 3, fat: 0.8, carbohydrates: 6.3, fiber: 3.3, sugar: 0.9, salt: 0.056 },
+  'basilika': { energy: 22, protein: 3.2, fat: 0.6, carbohydrates: 2.6, fiber: 1.6, sugar: 0.3, salt: 0.004 },
+  'färsk basilika': { energy: 22, protein: 3.2, fat: 0.6, carbohydrates: 2.6, fiber: 1.6, sugar: 0.3, salt: 0.004 },
+  'gräslök': { energy: 30, protein: 3.3, fat: 0.7, carbohydrates: 4.4, fiber: 2.5, sugar: 1.9, salt: 0.003 },
+  'färsk gräslök': { energy: 30, protein: 3.3, fat: 0.7, carbohydrates: 4.4, fiber: 2.5, sugar: 1.9, salt: 0.003 },
+  // Kritiska ingredienser som saknas
+  'selleri': { energy: 16, protein: 0.7, fat: 0.2, carbohydrates: 3, fiber: 1.6, sugar: 1.3, salt: 0.08 },
+  'selleristjälkar': { energy: 16, protein: 0.7, fat: 0.2, carbohydrates: 3, fiber: 1.6, sugar: 1.3, salt: 0.08 },
+  'jordnötssmör': { energy: 588, protein: 25, fat: 50, carbohydrates: 20, fiber: 8, sugar: 6.3, salt: 0.17 },
+  'jordnötskräm': { energy: 588, protein: 25, fat: 50, carbohydrates: 20, fiber: 8, sugar: 6.3, salt: 0.17 },
+  'kokosgrädde': { energy: 230, protein: 2.3, fat: 24, carbohydrates: 6, fiber: 2.2, sugar: 3.3, salt: 0.015 },
+  'bananmuffin': { energy: 277, protein: 4.2, fat: 11, carbohydrates: 42, fiber: 2.6, sugar: 23, salt: 0.35 },
+  'burrata': { energy: 330, protein: 17, fat: 28, carbohydrates: 3, fiber: 0, sugar: 3, salt: 0.5 },
+  'haricots verts': { energy: 31, protein: 1.8, fat: 0.1, carbohydrates: 7, fiber: 2.7, sugar: 3.3, salt: 0.006 },
+  'bearnaisesås': { energy: 468, protein: 3.1, fat: 51, carbohydrates: 1.2, fiber: 0, sugar: 1.2, salt: 1.2 },
+  'fänkål': { energy: 31, protein: 1.2, fat: 0.2, carbohydrates: 7.3, fiber: 3.1, sugar: 3.9, salt: 0.052 },
+  'grapefrukt': { energy: 42, protein: 0.8, fat: 0.1, carbohydrates: 11, fiber: 1.6, sugar: 6.9, salt: 0.001 },
+  'färskost': { energy: 98, protein: 11, fat: 4.3, carbohydrates: 3.4, fiber: 0, sugar: 3.4, salt: 0.4 },
+  'glasnudlar': { energy: 351, protein: 0.1, fat: 0.1, carbohydrates: 86, fiber: 0.5, sugar: 0, salt: 0.006 },
+  'bovete': { energy: 343, protein: 13, fat: 3.4, carbohydrates: 72, fiber: 10, sugar: 0, salt: 0.001 },
+  'bovetegranola': { energy: 471, protein: 13, fat: 20, carbohydrates: 60, fiber: 10, sugar: 12, salt: 0.2 },
+  'havregryn': { energy: 389, protein: 17, fat: 6.9, carbohydrates: 66, fiber: 10, sugar: 0.99, salt: 0.002 },
+  'entrecote': { energy: 271, protein: 26, fat: 18, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0.054 },
+  'lövbiff': { energy: 271, protein: 26, fat: 18, carbohydrates: 0, fiber: 0, sugar: 0, salt: 0.054 },
+  'aubergine': { energy: 25, protein: 1, fat: 0.2, carbohydrates: 6, fiber: 3, sugar: 3.5, salt: 0.002 },
+  'créme fraiche': { energy: 292, protein: 2.6, fat: 30, carbohydrates: 4, fiber: 0, sugar: 4, salt: 0.035 },
+  'tandoorikrydda': { energy: 325, protein: 14, fat: 14, carbohydrates: 34, fiber: 14, sugar: 6, salt: 0.5 },
+  'granatäppelkärnor': { energy: 83, protein: 1.7, fat: 1.2, carbohydrates: 19, fiber: 4, sugar: 14, salt: 0.003 },
+  'pistagenötter': { energy: 560, protein: 20, fat: 45, carbohydrates: 28, fiber: 10, sugar: 8, salt: 0.001 }
 };
 
 // Parse amount from ingredient string
@@ -62,19 +144,40 @@ const parseAmount = (ingredient) => {
     let amount = parseFloat(amountMatch[1]);
     let unit = amountMatch[2]?.toLowerCase() || 'st';
     
-    const conversions = {
-      'kg': 1000,
-      'l': 1000,
-      'dl': 100,
-      'ml': 1,
-      'msk': 15,
-      'tsk': 5,
-      'krm': 1,
-      'st': 100
-    };
-    
-    if (conversions[unit]) {
-      amount = amount * conversions[unit];
+    // Special handling for nuts and small items
+    if (unit === 'st') {
+      const ingredientLower = ingredient.toLowerCase();
+      if (ingredientLower.includes('nöt') || ingredientLower.includes('mandel')) {
+        amount = amount * 3; // ~3g per nut
+      } else if (ingredientLower.includes('ägg')) {
+        amount = amount * 50; // ~50g per egg
+      } else if (ingredientLower.includes('tomat') && ingredientLower.includes('cocktail')) {
+        amount = amount * 20; // ~20g per cherry tomato
+      } else if (ingredientLower.includes('tomat')) {
+        amount = amount * 150; // ~150g per tomato
+      } else if (ingredientLower.includes('lök')) {
+        amount = amount * 80; // ~80g per onion
+      } else if (ingredientLower.includes('vitlök') && ingredientLower.includes('klyfta')) {
+        amount = amount * 3; // ~3g per garlic clove
+      } else if (ingredientLower.includes('paprika')) {
+        amount = amount * 120; // ~120g per bell pepper
+      } else {
+        amount = amount * 100; // Default 100g per piece
+      }
+    } else {
+      const conversions = {
+        'kg': 1000,
+        'l': 1000,
+        'dl': 100,
+        'ml': 1,
+        'msk': 15,
+        'tsk': 5,
+        'krm': 1
+      };
+      
+      if (conversions[unit]) {
+        amount = amount * conversions[unit];
+      }
     }
     
     return { amount, unit: 'g' };
@@ -98,9 +201,16 @@ const normalizeIngredientName = (ingredient) => {
     return cleaned;
   }
 
-  // Check for partial matches
+  // Check for partial matches (but avoid false positives)
   for (const key of Object.keys(localNutritionData)) {
-    if (cleaned.includes(key) || key.includes(cleaned)) {
+    if (cleaned.includes(key)) {
+      return key;
+    }
+  }
+  
+  // Only check reverse match for longer keys to avoid false positives
+  for (const key of Object.keys(localNutritionData)) {
+    if (key.length > 4 && key.includes(cleaned)) {
       return key;
     }
   }
