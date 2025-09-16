@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Award, Book, Check, ClipboardCheck, FileText, Heart, Microscope, Play, Rocket, Star, Target, TrendingUp, Users, Zap } from "lucide-react";
-import { GiFruitBowl, GiMeal, GiHealthNormal } from "react-icons/gi";
+import { GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
 import QuizResultScreen from "./components/QuizResultScreen";
@@ -352,67 +352,7 @@ export default function Home() {
 
       <CustomerReviews />
 
-      <section className="py-12 md:py-20 px-4 bg-[#F3EFE3]">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-8 md:mb-16"
-          >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 mb-3 md:mb-4">
-              {t('home.features.title','Upptäck kraften i ')}<span className="font-bold text-primary">functional foods</span>
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
-              {t('home.features.subtitle','Få personaliserade rekommendationer baserat på din livsstil och hälsobehov')}
-            </p>
-          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-4 md:gap-8">
-            {[
-              {
-                icon: <GiFruitBowl className="w-8 h-8 text-white" />,
-                title: t('home.features.card.functional.title','Functional Foods'),
-                description: t('home.features.card.functional.desc','Naturliga livsmedel med specifika hälsofördelar'),
-                color: "#014421"
-              },
-              {
-                icon: <Target className="w-8 h-8 text-white" />,
-                title: t('home.features.card.personalized.title','Personaliserat'),
-                description: t('home.features.card.personalized.desc','Anpassat efter dina unika behov och mål'),
-                color: "#112A12"
-              },
-              {
-                icon: <Zap className="w-8 h-8 text-white" />,
-                title: t('home.features.card.fast.title','Snabba resultat'),
-                description: t('home.features.card.fast.desc','Känn skillnad redan efter några veckor'),
-                color: "#014421"
-              }
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                onClick={() => setSelectedFeature(feature)}
-                className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg md:shadow-xl hover:shadow-xl md:hover:shadow-2xl transition-all cursor-pointer group"
-              >
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6 group-hover:scale-110 transition-transform" style={{ backgroundColor: feature.color }}>
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800 group-hover:text-[#014421] transition-colors">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed text-sm md:text-base">{feature.description}</p>
-                                  <div className="mt-4 text-[#93C560] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-sm">
-                  <span>{t('common.readMore','Läs mer')}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="px-4">
         <div className="max-w-6xl mx-auto">
