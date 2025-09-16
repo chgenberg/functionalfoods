@@ -1,10 +1,58 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, AlertCircle, Brain, Check, ChevronLeft, ChevronRight, Clock, Coffee, Fish, Heart, Leaf, Loader2, MapPin, Microscope, Moon, Rocket, Salad, Shield, Sparkles, Sprout, Star, Sun, Target, X, Zap } from "lucide-react";;
+import { Activity, AlertCircle, Brain, Check, ChevronLeft, ChevronRight, Clock, Coffee, Fish, Heart, Leaf, Loader2, MapPin, Microscope, Moon, Rocket, Salad, Shield, Sparkles, Sprout, Star, Sun, Target, X, Zap, TrendingUp, Waves, Frown, User, Flame, Apple, Dumbbell, RotateCcw, CheckCircle } from "lucide-react";;
 import Image from 'next/image';
 import QuizResultScreen from './QuizResultScreen';
 import { useLanguage, useT } from '@/app/lib/i18n/LanguageProvider';
+
+// Icon mapping for quiz emojis
+const iconMap: Record<string, any> = {
+  "⚡": Zap,
+  "🚀": Rocket,
+  "📈": TrendingUp,
+  "🎢": Waves,
+  "😴": Moon,
+  "🌙": Moon,
+  "✨": Sparkles,
+  "🌟": Star,
+  "🌀": RotateCcw,
+  "😵": Frown,
+  "🧠": Brain,
+  "🧘": User,
+  "😰": AlertCircle,
+  "🏃‍♀️": Activity,
+  "🏃": Activity,
+  "💪": Dumbbell,
+  "🥗": Salad,
+  "🎯": Target,
+  "🔥": Flame,
+  "🍎": Apple,
+  "✅": CheckCircle,
+  "❌": X,
+  "🎊": Sparkles,
+  "🥑": Apple,
+  "🥕": Apple,
+  "🌱": Sprout,
+  "💚": Heart,
+  "❤️": Heart,
+  "🍃": Leaf,
+  "🌿": Leaf,
+  "🧬": Microscope,
+  "🔬": Microscope,
+  "🌞": Sun,
+  "☀️": Sun,
+  "💤": Moon
+};
+
+// Component to render icon instead of emoji
+const QuizIcon: React.FC<{ emoji: string; className?: string }> = ({ emoji, className = "w-5 h-5" }) => {
+  const IconComponent = iconMap[emoji];
+  if (IconComponent) {
+    return <IconComponent className={className} />;
+  }
+  return <span>{emoji}</span>; // Fallback to emoji if no icon found
+};
 
 interface QuizOption {
   label: string;
@@ -754,13 +802,13 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
             >
               {/* Question Header - More compact */}
               <div className="text-center mb-4 sm:mb-6">
-                <motion.div 
+                                <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", delay: 0.1 }}
-                  className="text-3xl sm:text-4xl mb-2 sm:mb-3"
+                  className="mb-2 sm:mb-3 text-primary"
                 >
-                  {question.icon}
+                  <QuizIcon emoji={question.icon} className="w-8 h-8 sm:w-10 sm:h-10" />
                 </motion.div>
                 <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-1 px-2">
                   {question.question}
@@ -829,9 +877,9 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
                         <motion.div 
                           whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                           transition={{ duration: 0.5 }}
-                          className="text-lg sm:text-2xl flex-shrink-0"
+                          className="flex-shrink-0 text-primary"
                         >
-                          {option.icon}
+                          <QuizIcon emoji={option.icon} className="w-5 h-5 sm:w-6 sm:h-6" />
                         </motion.div>
                         <div className="flex-1 min-w-0">
                           <div className={`font-medium text-sm sm:text-base leading-tight transition-colors ${
