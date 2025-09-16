@@ -35,7 +35,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kostscheman - ${courseName}</title>
+                <title>Måltidsplan - ${courseName}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
         
@@ -357,7 +357,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
     <!-- Cover Page -->
     <div class="cover-page">
         <h1>${courseName}</h1>
-        <div class="subtitle">Komplett kostschema för alla veckor</div>
+                        <div class="subtitle">Komplett måltidsplan för alla veckor</div>
         
         <div class="cover-stats">
             <div class="cover-stat">
@@ -391,7 +391,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         
         <!-- Weekly Meal Plans -->
         <div class="page-header">
-            <h2>Veckokostscheman</h2>
+            <h2>Måltidsplan</h2>
             <p>Komplett översikt för ${Object.keys(courseData).length} veckor</p>
         </div>
         
@@ -401,7 +401,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             <div class="week-section">
                 <div class="week-header">
                     <div class="week-number">Vecka ${weekNumber}</div>
-                    <div class="week-title">Kostschema för vecka ${weekNumber}</div>
+                    <div class="week-title">Måltidsplan för vecka ${weekNumber}</div>
                 </div>
                 
                 <div class="days-container">
@@ -488,7 +488,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             Komplett Kurspaket
           </h3>
           <p className="text-white/80 text-lg">
-            Ladda ner alla kostscheman som en snygg PDF
+                            Ladda ner alla måltidsplaner som en snygg PDF
           </p>
         </div>
       </div>
@@ -517,7 +517,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
       <div className="grid md:grid-cols-2 gap-4 mb-8">
         <div className="flex items-center gap-3">
           <Calendar className="text-xl text-white/80" />
-          <span className="text-white/90">Alla 6 veckors kostscheman</span>
+                              <span className="text-white/90">Alla 6 veckors måltidsplaner</span>
         </div>
         <div className="flex items-center gap-3">
           <User className="text-xl text-white/80" />
@@ -549,7 +549,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         ) : (
           <>
             <Download className="text-xl" />
-            <span>Ladda ner kostscheman (PDF)</span>
+                                <span>Ladda ner måltidsplan (PDF)</span>
           </>
         )}
       </motion.button>

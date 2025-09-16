@@ -221,7 +221,7 @@ export default function KostschemaPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar kostschema...</p>
+                              <p className="text-gray-600">Laddar måltidsplan...</p>
         </div>
       </div>
     );
@@ -303,15 +303,25 @@ export default function KostschemaPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
               <h1 className="text-xl md:text-2xl font-bold text-gray-900">
-                Mitt Kostschema
+                                        Min Måltidsplan
               </h1>
-              <Link
-                href="/dashboard/courses/functional-flow/inkopslista"
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-all duration-200 shadow-sm"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                <span className="hidden sm:inline">Visa Inköpslistor</span>
-              </Link>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => window.print()}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 shadow-sm"
+                  title="Skriv ut måltidsplan"
+                >
+                  <Printer className="w-5 h-5" />
+                  <span className="hidden sm:inline">Skriv ut</span>
+                </button>
+                <Link
+                  href="/dashboard/courses/functional-flow/inkopslista"
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-all duration-200 shadow-sm"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  <span className="hidden sm:inline">Visa Inköpslistor</span>
+                </Link>
+              </div>
             </div>
             <div className="flex items-center justify-between pb-4">
               <button
@@ -413,7 +423,7 @@ export default function KostschemaPage() {
                         {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={Star} />}
                       </>
                     ) : (
-                      <p>Inget kostschema för denna dag.</p>
+                      <p>Ingen måltidsplan för denna dag.</p>
                     )}
                   </div>
                 </motion.div>
@@ -498,7 +508,7 @@ export default function KostschemaPage() {
                         {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={Star} />}
                       </>
                     ) : (
-                      <p>Inget kostschema för denna dag.</p>
+                      <p>Ingen måltidsplan för denna dag.</p>
                     )}
                   </div>
                 </motion.div>

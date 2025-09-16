@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, Clock, Download, FileText, Moon, Sun, Utensils } from "lucide-react";;
+import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, Clock, Download, FileText, Moon, Printer, Sun, Utensils } from "lucide-react";;
 import { motion, AnimatePresence } from 'framer-motion';
 import { getEnergyWeekData } from '@/app/data/mealPlans';
 import DayModal from '../../components/DayModal';
@@ -51,13 +51,22 @@ export default function FunctionalEnergyKostschemaPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-[#014421]">Kostschema - Functional Energy</h1>
+                <h1 className="text-2xl font-bold text-[#014421]">Måltidsplan - Functional Energy</h1>
                 <p className="text-sm text-gray-600">6 veckors måltidsplan för stabil energi</p>
               </div>
             </div>
             
-            {/* Week selector for desktop */}
-            <div className="hidden md:flex items-center gap-2">
+            {/* Print button and week selector for desktop */}
+            <div className="hidden md:flex items-center gap-4">
+              <button
+                onClick={() => window.print()}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 shadow-sm"
+                title="Skriv ut måltidsplan"
+              >
+                <Printer className="w-5 h-5" />
+                <span>Skriv ut</span>
+              </button>
+              <div className="flex items-center gap-2">
               <Link 
                 href="/dashboard/courses/functional-energy/inkopslista"
                 className="bg-[#93C560] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#7FBA3D] transition-colors flex items-center gap-2"
@@ -73,6 +82,7 @@ export default function FunctionalEnergyKostschemaPage() {
                 <Download className="w-4 h-4" />
                 Ladda ner PDF
               </a>
+              </div>
             </div>
           </div>
         </div>

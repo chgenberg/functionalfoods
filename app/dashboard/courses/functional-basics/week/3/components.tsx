@@ -42,7 +42,7 @@ export function MealPlanSection({
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">Veckans kostschema</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-6">Veckans måltidsplan</h2>
         
         <div className="space-y-4">
           {Object.entries(mealPlan).map(([day, meals]) => (

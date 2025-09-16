@@ -100,7 +100,7 @@ export function CalendarView({ mealPlan, weekNumber }: CalendarViewProps) {
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
           <Calendar className="w-6 h-6 text-purple-600" />
-          <h3 className="text-2xl font-bold text-gray-900">Vecka {weekNumber} - Kostschema</h3>
+                      <h3 className="text-2xl font-bold text-gray-900">Vecka {weekNumber} - Måltidsplan</h3>
         </div>
 
         <div className="grid grid-cols-7 gap-2 mb-8">

@@ -257,19 +257,6 @@ export default function CourseTemplate({
                 </button>
               </Link>
             </div>
-
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg sm:col-span-2 md:col-span-1">
-              <div className="flex items-center mb-3 sm:mb-4">
-                <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
-                  <Book className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
-                </div>
-                <h3 className="font-bold text-base sm:text-lg text-[#014421]">Bonusmaterial</h3>
-              </div>
-              <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Extra recept och tips för veckan</p>
-              <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
-                Öppna material
-              </button>
-            </div>
           </div>
         </div>
       </div>
