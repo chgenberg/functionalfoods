@@ -811,7 +811,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                     <div className="mb-8">
                       <div className="relative overflow-hidden rounded-2xl mb-6">
                         <img 
-                          src="/functional_flow.png" 
+                          src="/ulrika3.png" 
                           alt="Functional Flow Kurs"
                           className="w-full h-48 md:h-64 object-cover"
                         />
