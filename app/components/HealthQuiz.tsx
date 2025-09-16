@@ -63,7 +63,9 @@ const QuizIcon: React.FC<{ emoji: string; className?: string }> = ({ emoji, clas
   if (IconComponent) {
     return <IconComponent className={className} />;
   }
-  return <span>{emoji}</span>; // Fallback to emoji if no icon found
+  // Log missing emojis to help debug
+  console.warn(`Missing icon mapping for emoji: "${emoji}"`);
+  return <AlertCircle className={className} />; // Fallback to alert icon instead of emoji
 };
 
 interface QuizOption {
