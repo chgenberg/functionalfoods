@@ -286,9 +286,9 @@ export default function FunctionalBasicsOverview() {
             
             <div className="space-y-4 text-gray-700">
               <p>
-                För att du ska få en så värdefull och lärorik tid i din kurs som möjligt så erbjuder vi coachning via vår plattform Mighty. 
-                När du laddar ned appen Mighty Network kan du hålla kontakt med oss coacher som finns tillgängliga för att svara på dina frågor. 
-                Följ den länk som du fick i ditt bekräftelsemejl när du köpte kursen för att gå med i vår community via appen Mighty Network.
+                För att du ska få en så värdefull och lärorik tid i din kurs som möjligt så erbjuder vi coachning via vår Facebook-grupp. 
+                I vår community kan du hålla kontakt med oss coacher som finns tillgängliga för att svara på dina frågor. 
+                Klicka på knappen nedan för att gå med i vår Facebook-grupp och bli en del av vår växande community.
               </p>
               
               <p>
@@ -301,15 +301,15 @@ export default function FunctionalBasicsOverview() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                 <a
-                  href="https://functional-foods-with-ulrika.mn.co/sign_up?auto_join=true&from=https%3A%2F%2Ffunctional-foods-with-ulrika.mn.co%2F%3Fautojoin%3D1&space_id=17961010"
+                  href="https://www.facebook.com/groups/1168295381877412/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-[#014421] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  className="flex items-center gap-3 p-4 bg-[#1877F2] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
                   <Users className="w-6 h-6" />
                   <div>
-                    <div className="font-bold">MIGHTY NETWORKS</div>
-                    <div className="text-sm opacity-90">Gå med i vår community</div>
+                    <div className="font-bold">FACEBOOK COMMUNITY</div>
+                    <div className="text-sm opacity-90">Gå med i vår grupp</div>
                   </div>
                 </a>
                 

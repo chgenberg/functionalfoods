@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import WeekTemplate from '@/app/dashboard/courses/components/WeekTemplate';
+import { WeekInfoSection, CelebrationSection, FutureGoalsSection } from './components';
 
 export default function Week6Page() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
@@ -29,6 +30,16 @@ export default function Week6Page() {
 
   if (!mealPlan) return null;
 
+  const customContent = (
+    <>
+      <WeekInfoSection />
+      <div className="mb-8" />
+      <CelebrationSection />
+      <div className="mb-8" />
+      <FutureGoalsSection />
+    </>
+  );
+
   return (
     <WeekTemplate
       courseType="energy"
@@ -39,6 +50,7 @@ export default function Week6Page() {
       videoUrl="https://player.vimeo.com/video/1054236789?h=0c219534c4"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
+      customContent={customContent}
     />
   );
 } 

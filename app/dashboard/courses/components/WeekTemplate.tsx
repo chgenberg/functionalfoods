@@ -12,6 +12,7 @@ import { dayImages } from '@/app/data/dayImages';
 import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun, FileText, ExternalLink, X } from 'lucide-react';
 import InfoPopupGrid from '@/app/dashboard/courses/components/InfoPopupGrid';
+import PrintableMealPlan from './PrintableMealPlan';
 
 // Helper function to format meal names with bold "rester"
 const formatMealName = (mealName: string) => {
@@ -49,6 +50,7 @@ interface WeekTemplateProps {
   videoUrl?: string;
   mealPlans: any; // The specific meal plan data for this course
   courseStartDate: Date | null;
+  customContent?: React.ReactNode;
 }
 
 interface KnowledgeDocument {
@@ -139,12 +141,19 @@ Förhoppningsvis märker du att magen mår bättre – jämför gärna med hur d
 Nu är det dags att fortsätta ditt intresse för en bra kost och göra det till en hållbar livsstil. När du gör kostval som stödjer din maghälsa kommer din mage att tacka dig – för både nu och i framtiden!`
   },
   energy: {
-    1: "Välkommen till Functional Energy! Under dessa 6 veckor kommer du att lära dig att stabilisera din energi och blodsocker genom smart mat.",
-    2: "Vecka 2 fokuserar på blodsocker och energi. Du får djupare förståelse för hur olika livsmedel påverkar dina energinivåer.",
-    3: "Denna vecka handlar om måltidsplanering för stabil energi. Lär dig att strukturera dina måltider för jämn energi hela dagen.",
-    4: "Vecka 4 introducerar smarta kolhydrater. Upptäck vilka kolhydrater som ger långvarig energi utan blodsockertoppar.",
-    5: "Nu fokuserar vi på energistabila vanor. Du får praktiska strategier för att skapa rutiner som stödjer din energi.",
-    6: "Sista veckan handlar om långsiktig hållbarhet. Du får verktyg att bibehålla dina nya vanor och fortsätta må bra."
+    1: `För att få bästa resultat i kursen är förberedelse viktigt. Handla det du behöver för veckan och förbered gärna några måltider i förväg. 
+Under kursens gång, reflektera regelbundet över hur din kropp och ditt blodsocker känns, och skriv ned dina tankar. Drick mycket vatten och fokusera på vila och återhämtning för att ge din kropp bästa möjliga förutsättningar. 
+Läs gärna dokumenten "Dags att komma igång!" och "Frågor och svar" för att förbereda dig och få en bra start. Nu kör vi igång!`,
+    2: `Nu när du kommit igång med kursen kanske du redan märker att ditt blodsocker känns stabilare och att du mår bättre. Matlagningen börjar kännas mer naturlig och det blir lättare att följa kostschemat. 
+Fortsätt planera väl inför veckan och se till att förbereda måltider i förväg. Läs gärna dokumentet "Functional foods för diabetiker" för mer kunskap om hur rätt livsmedel kan hjälpa dig att hålla blodsockret stabilt och förbättra din hälsa.`,
+    3: `Vi hoppas att du redan märker positiva förändringar och att du känner dig bättre. Denna vecka vill vi fokusera på hur rätt kost kan hjälpa till att reglera ditt blodsocker och stödja en balanserad livsstil. Att välja rätt livsmedel är en kraftfull metod för att hålla blodsockret stabilt, vilket kan ha långsiktiga fördelar för din hälsa och välbefinnande. 
+Läs gärna dokumentet "Lågkolhydratkost och functional foods för blodsockerkontroll" för att få mer kunskap om hur du kan använda mat för att optimera din hälsa och blodsockernivåer.`,
+    4: `Nu har du genomfört halva kursen, och det är dags att reflektera över hur din mage känns. Jämför med vecka 1 och fundera på vilka förändringar kosten har gjort hittills. Kanske har magbesvär som uppsvälldhet och obehag minskat? 
+Den här veckan vill vi rekommendera att du läser dokumentet "Förstå insulinresistens och betacellsfunktion". Genom att förstå hur insulin fungerar, vad som händer när man utvecklar insulinresistens, och hur betacellerna spelar en viktig roll i att reglera blodsockernivåerna, får du en djupare förståelse för hur dessa faktorer påverkar din hälsa och din blodsockerkontroll.`,
+    5: `Nu har du fått mycket kunskap och en bättre förståelse för kosten som fungerar för din hälsa och blodsockerkontroll. Du har lärt dig vad som får din kropp och mage att må bra, och vad som kan orsaka obehag. Det är nu dags att börja använda denna kunskap för att skapa måltider som stödjer både din maghälsa och ditt blodsocker. 
+Den här veckan vill vi att du fördjupar dig i fler faktorer som påverkar ditt blodsocker, förutom kosten. Läs gärna dokumentet "En hälsosam livsstil för stabilt blodsocker" för att få en bättre förståelse för hur även andra livsstilsfaktorer som motion, sömn och stress påverkar din blodsockernivå och kan hjälpa dig att skapa en hållbar och balanserad livsstil.`,
+    6: `Nu har du nått sista veckan av kursen, och du har lärt dig att laga mat som stödjer både din maghälsa och blodsockerkontroll. Du har fått massor av nya recept och kunskap som du kan använda för att fortsätta ta hand om din hälsa i framtiden. Förhoppningsvis märker du positiva förändringar – jämför gärna hur du upplevde din kropp och blodsockernivå när du startade kursen och reflektera över de framsteg du har gjort. 
+Nu är det dags att fortsätta ditt intresse för en hälsosam kost och göra det till en långsiktig livsstil. Genom att göra kostval som stödjer stabilt blodsocker och en balanserad kropp kommer du att må bra både nu och i framtiden.`
   }
 };
 
@@ -194,7 +203,8 @@ export default function WeekTemplate({
   heroImage = '/Ulrika_portratt/udavidssondesktop.png',
   videoUrl = 'https://www.youtube.com/embed/dQw4w9WgXcQ',
   mealPlans,
-  courseStartDate
+  courseStartDate,
+  customContent
 }: WeekTemplateProps) {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
@@ -461,15 +471,38 @@ export default function WeekTemplate({
         </div>
       </div>
 
+      {/* Custom Content - If provided */}
+      {customContent && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {customContent}
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
         {/* Week Meals */}
         <div className="mb-12">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#014421] mb-4">Veckans måltider</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Klicka på en måltid för att se receptet
-            </p>
+            <div className="flex justify-between items-start flex-wrap gap-4 max-w-4xl mx-auto">
+              <div className="flex-1">
+                <h2 className="text-2xl md:text-3xl font-bold text-[#014421] mb-4">Veckans måltider</h2>
+                <p className="text-gray-600">
+                  Klicka på en måltid för att se receptet
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <PrintableMealPlan 
+                  mealPlan={Object.fromEntries(
+                    ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'].map((day, index) => {
+                      const dayData = mealPlan?.days?.[day] || mealPlan?.days?.[`day${index + 1}`];
+                      return [day, dayData || { breakfast: { name: '' }, lunch: { name: '' }, dinner: { name: '' } }];
+                    })
+                  )}
+                  weekNumber={weekNumber}
+                  courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Days with Meals */}

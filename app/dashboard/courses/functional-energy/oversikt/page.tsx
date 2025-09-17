@@ -76,11 +76,20 @@ export default function FunctionalEnergyOverview() {
             {/* Text Content */}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-4">
-                Välkommen till Functional Energy
+                Välkommen till Functional Insulin balance/Energy
               </h1>
               <div className="space-y-4 text-gray-700 leading-relaxed">
-                <p className="text-gray-500 italic">
-                  [Texten kommer snart - inväntar innehåll från Ulrika]
+                <p>
+                  Nu har du en viktig och spännande resa framför dig under 6 veckor med näringsrika recept och grunderna i Functional Foods, särskilt utformade för att stödja din hälsa och hjälpa dig att hantera typ 2-diabetes eller prediabetes. Du kommer att få praktiska kostscheman, recept för alla måltider och inköpslistor varje vecka.
+                </p>
+                <p>
+                  Under dessa veckor kommer du att lära dig hur en näringsrik kost kan bidra till att stabilisera ditt blodsocker, minska inflammation och öka din energi. Genom att följa denna kostplan och förstå hur maten påverkar din kropp, kan du förbättra både ditt blodsocker och ditt allmänna välbefinnande.
+                </p>
+                <p>
+                  Mitt bästa tips är planering – laga gärna flera maträtter i förväg så att du är väl förberedd och kan hålla dig till din nya, hälsosamma livsstil.
+                </p>
+                <p>
+                  Varmt välkommen till en livsstil som kan förbättra din hälsa och hjälpa dig att kontrollera blodsockret för ett friskare liv!
                 </p>
                 <p className="text-[#014421] font-signature text-xl">
                   /Ulrika
@@ -151,6 +160,9 @@ export default function FunctionalEnergyOverview() {
 
         </motion.div>
 
+        {/* Info Popup Grid */}
+        <InfoPopupGrid courseType="energy" courseId="functional-energy" />
+
         {/* Complete Course Download */}
         <CompleteCourseDownload courseType="energy" />
 
@@ -206,14 +218,94 @@ export default function FunctionalEnergyOverview() {
               </div>
               <button
                 onClick={() => setShowHelpModal(false)}
-                className="mt-6 bg-[#014421] text-white px-6 py-2 rounded-full hover:bg-[#116530] transition-colors"
+                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors"
               >
-                Stäng
+                Förstått!
               </button>
             </div>
           </motion.div>
         </div>
       )}
+
+      {/* Coaching Modal */}
+      {showCoachingModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-8"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-lg sm:text-2xl font-bold text-gray-900 pr-4">COACHNING OCH FUNCTIONAL FOODS PÅ SOCIALA MEDIER</h2>
+              <button
+                onClick={() => setShowCoachingModal(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4 text-gray-700">
+              <p>
+                För att du ska få en så värdefull och lärorik tid i din kurs som möjligt så erbjuder vi coachning via vår Facebook-grupp. 
+                I vår community kan du hålla kontakt med oss coacher som finns tillgängliga för att svara på dina frågor. 
+                Klicka på knappen nedan för att gå med i vår Facebook-grupp och bli en del av vår växande community.
+              </p>
+              
+              <p>
+                Du kan alltid kontakta oss via vår kundsupport: <a href="mailto:info@functionalfoods.se" className="text-[#014421] font-medium hover:underline">info@functionalfoods.se</a>
+              </p>
+              
+              <p className="font-medium">
+                Vill du följa vad som händer kring Functional Foods och ta del av tips, recept, nyheter, erbjudanden och vår härliga gemenskap så häng med oss här →
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                <a
+                  href="https://www.facebook.com/groups/1168295381877412/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 bg-[#1877F2] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                >
+                  <Users className="w-6 h-6" />
+                  <div>
+                    <div className="font-bold">FACEBOOK COMMUNITY</div>
+                    <div className="text-sm opacity-90">Gå med i vår grupp</div>
+                  </div>
+                </a>
+                
+                <a
+                  href="https://www.instagram.com/functionalfoods.se/?hl=sv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 bg-[#F4B4C3] text-[#014421] rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                >
+                  <Instagram className="w-6 h-6" />
+                  <div>
+                    <div className="font-bold">INSTAGRAM</div>
+                    <div className="text-sm opacity-90">@functionalfoods.se</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setShowCoachingModal(false)}
+              className="mt-8 w-full bg-[#014421] text-white px-6 py-3 rounded-full font-bold hover:bg-[#116530] transition-colors"
+            >
+              Stäng
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpModal} 
+        onClose={() => setShowHelpModal(false)} 
+      />
 
       {/* Bottom navigation for mobile */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 md:hidden z-20">

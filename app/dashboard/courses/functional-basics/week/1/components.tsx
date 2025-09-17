@@ -256,16 +256,7 @@ export function RecipeHighlights() {
 }
 
 // Meal Plan Section Component
-export function MealPlanSection({ 
-  mealPlan, 
-  expandedDay, 
-  setExpandedDay 
-}: {
-  mealPlan: Record<string, DayMeals>;
-  expandedDay: string | null;
-  setExpandedDay: (day: string | null) => void;
-}) {
-  const mealIcons = {
+export { MealPlanSectionWithPrint as MealPlanSection } from '../../components/MealPlanSectionWithPrint';
     breakfast: { icon: GiCookingPot, color: 'text-orange-600', bg: 'bg-orange-100' },
     lunch: { icon: GiMeal, color: 'text-blue-600', bg: 'bg-blue-100' },
     dinner: { icon: GiFruitBowl, color: 'text-purple-600', bg: 'bg-purple-100' },
