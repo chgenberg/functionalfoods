@@ -12,7 +12,7 @@ interface CompleteCourseDownloadProps {
 
 export default function CompleteCourseDownload({ courseType }: CompleteCourseDownloadProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Flow' : 'Functional Energy';
+  const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy';
   const courseData: Record<string, WeekMealPlan> = courseType === 'basics' ? mealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
 
   // Count total meals

@@ -134,7 +134,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
 
   const handlePrint = () => {
     const today = new Date().toLocaleDateString('sv-SE');
-    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
+    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Gut Health/Flow';
     
     // Create the same beautiful HTML template for printing
     const htmlContent = `
@@ -400,7 +400,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
 
   const handleExport = () => {
     const today = new Date().toLocaleDateString('sv-SE');
-    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Flow';
+    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Gut Health/Flow';
     
     // Create beautiful HTML template for export/print
     const htmlContent = `

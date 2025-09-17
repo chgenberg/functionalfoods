@@ -74,7 +74,7 @@ const sections: Section[] = [
     faqs: [
       {
         question: 'Vilka kurser erbjuder ni?',
-        answer: 'Functional Basics (grund) och Functional Flow (avancerad).',
+        answer: 'Functional Basics (grund) och Functional Gut Health/Flow (avancerad).',
       },
       {
         question: 'Hur långa är kurserna?',
@@ -85,7 +85,7 @@ const sections: Section[] = [
         answer: '75 recept, veckovisa videolektioner, 1-på-1-coaching, 1 års åtkomst.',
       },
       {
-        question: 'Vad ingår i Functional Flow?',
+        question: 'Vad ingår i Functional Gut Health/Flow?',
         answer: '85 recept, videolektioner, premiumsupport, 1 års åtkomst och fokus på maghälsa & antiinflammation.',
       },
       {
@@ -146,7 +146,7 @@ const sections: Section[] = [
       },
       {
         question: 'Finns rabattkoder?',
-        answer: 'Functional Flow visar just nu −20% lanseringsrabatt. Håll utkik på kampanjsidan för fler erbjudanden.',
+        answer: 'Functional Gut Health/Flow visar just nu −20% lanseringsrabatt. Håll utkik på kampanjsidan för fler erbjudanden.',
       },
       {
         question: 'Är priset engångsbetalning eller abonnemang?',

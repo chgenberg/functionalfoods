@@ -15,7 +15,7 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
   const { getFavoritesByCoursetype } = useFavoriteRecipes();
   const normalizedType: 'basics' | 'flow' = courseType === 'flow' ? 'flow' : 'basics';
   const favorites = getFavoritesByCoursetype(normalizedType);
-  const courseName = normalizedType === 'basics' ? 'Functional Basics' : 'Functional Flow';
+  const courseName = normalizedType === 'basics' ? 'Functional Basics' : 'Functional Gut Health/Flow';
 
   // Group favorites by week - moved to component level
   const favoritesByWeek = favorites.reduce((acc, fav) => {

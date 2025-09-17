@@ -81,8 +81,8 @@ export default function RecipePage() {
       // Coming from a course week page
       const courseNames: Record<string, string> = {
         'basics': 'Functional Basics',
-        'flow': 'Functional Flow', 
-        'energy': 'Functional Energy'
+        'flow': 'Functional Gut Health/Flow', 
+        'energy': 'Functional Insulin balance/Energy'
       };
       return {
         url: `/dashboard/courses/functional-${fromCourse}/week/${fromWeek}`,
@@ -289,8 +289,8 @@ export default function RecipePage() {
             const courseNames = data.courses?.map((course: any) => {
               // Map course titles to course tags used in recipes
               if (course.title.includes('Functional Basics') || course.slug === 'functional-basics') return 'Basic';
-              if (course.title.includes('Functional Flow') || course.slug === 'functional-flow') return 'Flow';
-              if (course.title.includes('Functional Energy') || course.slug === 'functional-energy') return 'Energy';
+              if (course.title.includes('Functional Gut Health/Flow') || course.slug === 'functional-flow') return 'Flow';
+              if (course.title.includes('Functional Insulin balance/Energy') || course.slug === 'functional-energy') return 'Energy';
               return course.slug;
             }).filter(Boolean) || [];
             

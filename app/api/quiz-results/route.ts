@@ -59,7 +59,7 @@ function calculateHealthScores(answers: Record<number, string>) {
   return { ...scores, healthScore };
 }
 
-// Generate personalized Functional Flow recommendation based on user's answers
+// Generate personalized Functional Gut Health/Flow recommendation based on user's answers
 function generatePersonalizedFlowRecommendation(answers: Record<number, string | string[]>, lang: string): string {
   const healthGoals = Array.isArray(answers[10]) ? (answers[10] as string[]) : [answers[10]].filter(Boolean);
   const energyLevel = answers[1];
@@ -67,8 +67,8 @@ function generatePersonalizedFlowRecommendation(answers: Record<number, string |
   const stressLevel = answers[3];
   
   let recommendation = lang === 'en' ? 
-    "Based on your answers, we strongly recommend our **Functional Flow** course. " :
-    "Baserat på dina svar rekommenderar vi starkt vår **Functional Flow** kurs. ";
+    "Based on your answers, we strongly recommend our **Functional Gut Health/Flow** course. " :
+    "Baserat på dina svar rekommenderar vi starkt vår **Functional Gut Health/Flow** kurs. ";
   
   // Personalize based on specific answers
   if (energyLevel === 'low_energy' || energyLevel === 'afternoon_dip') {
@@ -127,8 +127,8 @@ function generatePersonalizedFlowRecommendation(answers: Record<number, string |
   }
   
   recommendation += lang === 'en' ?
-    "\n\n**Functional Flow** is our most comprehensive course that gives you tools to transform your health through science-based nutrition and functional foods. You get access to personal meal plans, weekly shopping lists, community support, and direct contact with our experts." :
-    "\n\n**Functional Flow** är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
+    "\n\n**Functional Gut Health/Flow** is our most comprehensive course that gives you tools to transform your health through science-based nutrition and functional foods. You get access to personal meal plans, weekly shopping lists, community support, and direct contact with our experts." :
+    "\n\n**Functional Gut Health/Flow** är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
   
   return recommendation;
 }
@@ -380,7 +380,7 @@ Skapa en djupgående analys som inkluderar:
 
 7. **VARNINGAR** (2-3 stycken): Viktiga säkerhetsaspekter
 
-8. **KURSREKOMMENDATION**: Rekommendera alltid Functional Flow kursen och personalisera motivering baserat på quiz-svaren.
+8. **KURSREKOMMENDATION**: Rekommendera alltid Functional Gut Health/Flow kursen och personalisera motivering baserat på quiz-svaren.
 
 VIKTIGT: Använd INTE markdown-formatering som ### eller **. Returnera ren text.
 
@@ -487,7 +487,7 @@ Returera ditt svar som en JSON med följande struktur:
         courseRecommendation: parsedResult.courseRecommendation || ''
       };
 
-      // Always recommend Functional Flow with personalized message
+      // Always recommend Functional Gut Health/Flow with personalized message
       if (!parsedResult.courseRecommendation) {
         parsedResult.courseRecommendation = generatePersonalizedFlowRecommendation(answers, lang);
       }

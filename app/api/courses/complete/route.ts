@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    const courseName = courseId === 'functional-flow' ? 'Functional Flow' : 'Functional Basics';
+    const courseName = courseId === 'functional-flow' ? 'Functional Gut Health/Flow' : 'Functional Basics';
     
     // Send review reminder email (only if no review exists)
     if (!existingReview) {

@@ -192,12 +192,12 @@ Du har djup kunskap om:
 - Hälsa, nutrition och välmående
 - Recept och matlagning för optimal hälsa
 - Longevity och livsstilsfaktorer
-- Våra kurser: Functional Basics och Functional Flow
+- Våra kurser: Functional Basics och Functional Gut Health/Flow
 - Funktionella råvaror och deras hälsofördelar
 
 Kursinformation:
 Functional Basics: ${basicsText.substring(0, 500)}...
-Functional Flow: ${flowText.substring(0, 500)}
+Functional Gut Health/Flow: ${flowText.substring(0, 500)}
 
 VÅRA RECEPT (${recipes.length} tillgängliga):
 ${recipes.slice(0, 10).map((recipe: any) => 

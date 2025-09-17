@@ -74,17 +74,17 @@ export default function CoursesPage() {
           },
           {
             id: 'functional-flow',
-            title: 'Functional Flow',
+            title: 'Functional Gut Health/Flow',
             description: 'Avancerat program för optimal hälsa och livsstil',
             duration: '6 veckor',
             modules: 6,
             progress: 0,
-            status: purchasedCourseNames.includes('Functional Flow') && accessByName['Functional Flow'] ? 'active' : purchasedCourseNames.includes('Functional Flow') ? 'locked' : 'locked',
+            status: purchasedCourseNames.includes('Functional Gut Health/Flow') && accessByName['Functional Gut Health/Flow'] ? 'active' : purchasedCourseNames.includes('Functional Gut Health/Flow') ? 'locked' : 'locked',
             icon: GiHealthNormal,
             color: 'primary',
             gradient: 'from-green-800 to-green-900',
             link: '/dashboard/courses/functional-flow',
-            isPurchased: purchasedCourseNames.includes('Functional Flow')
+            isPurchased: purchasedCourseNames.includes('Functional Gut Health/Flow')
           }
         ];
         

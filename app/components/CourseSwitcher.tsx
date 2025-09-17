@@ -27,8 +27,8 @@ const availableCourses: Course[] = [
   },
   {
     id: 'functional-flow',
-    name: 'Functional Flow',
-    displayName: 'Functional Flow',
+    name: 'Functional Gut Health/Flow',
+    displayName: 'Functional Gut Health/Flow',
     color: 'text-secondary',
     gradient: 'from-green-800 to-green-900',
     icon: '🌊'
@@ -82,7 +82,7 @@ export default function CourseSwitcher() {
         const purchases = Array.isArray(data) ? data : (data.purchases || []);
         const courseNames = purchases.map((p: any) => {
           if (p.course.name === 'Functional Basics') return 'functional-basics';
-          if (p.course.name === 'Functional Flow') return 'functional-flow';
+          if (p.course.name === 'Functional Gut Health/Flow') return 'functional-flow';
           return null;
         }).filter(Boolean);
         

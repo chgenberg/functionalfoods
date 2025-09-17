@@ -67,7 +67,7 @@ const onboardingSteps: Record<string, OnboardingStep[]> = {
   flow: [
     {
       id: 'welcome',
-      title: 'Välkommen till Functional Flow! 🌟',
+      title: 'Välkommen till Functional Gut Health/Flow! 🌟',
       description: 'Du har tagit steget till vårt avancerade program för optimal hälsa och livsstil. Här fördjupar vi kunskaperna!',
       icon: <Target className="w-8 h-8" />,
     },
@@ -89,7 +89,7 @@ const onboardingSteps: Record<string, OnboardingStep[]> = {
       description: 'Starta med vecka 1 och följ din personliga utvecklingsplan mot optimal hälsa.',
       icon: <Play className="w-8 h-8" />,
       action: {
-        text: 'Starta Functional Flow',
+        text: 'Starta Functional Gut Health/Flow',
         href: '/dashboard/courses/functional-flow/week/1'
       }
     }
@@ -97,7 +97,7 @@ const onboardingSteps: Record<string, OnboardingStep[]> = {
   energy: [
     {
       id: 'welcome',
-      title: 'Välkommen till Functional Energy! ⚡',
+      title: 'Välkommen till Functional Insulin balance/Energy! ⚡',
       description: 'Maximera din energi och prestanda med vårt mest avancerade program för optimal hälsa.',
       icon: <Target className="w-8 h-8" />,
     },
@@ -119,7 +119,7 @@ const onboardingSteps: Record<string, OnboardingStep[]> = {
       description: 'Börja din resa mot maximal energi och prestanda med vårt expertutformade program.',
       icon: <Play className="w-8 h-8" />,
       action: {
-        text: 'Starta Functional Energy',
+        text: 'Starta Functional Insulin balance/Energy',
         href: '/dashboard/courses/functional-energy/week/1'
       }
     }

@@ -31,14 +31,14 @@ export default function FAQ() {
       questions: [
         {
           q: "Vilka kurser erbjuder ni?",
-          a: "– Functional Basics – ger grunderna i functional foods.\n– Functional Flow – fokuserar på maghälsa och antiinflammatorisk kost."
+          a: "– Functional Basics – ger grunderna i functional foods.\n– Functional Gut Health/Flow – fokuserar på maghälsa och antiinflammatorisk kost."
         },
         {
           q: "Vad ingår i Functional Basics?",
           a: "Recept, måltidsplaner, inköpslistor samt videolektioner som lär dig laga näringsrik mat och bygga hållbara vanor."
         },
         {
-          q: "Vad ingår i Functional Flow?",
+          q: "Vad ingår i Functional Gut Health/Flow?",
           a: "Verktyg för att stötta tarmfloran, minska inflammation och ge jämn energi – inklusive recept, inköpslistor och måltidsplaner."
         },
         {

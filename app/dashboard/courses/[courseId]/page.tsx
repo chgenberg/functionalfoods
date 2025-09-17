@@ -349,7 +349,7 @@ export default function CoursePage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Nivå:</span>
-                    <span className="font-medium">{course.name === 'Functional Flow' ? 'Avancerad' : 'Grundläggande'}</span>
+                    <span className="font-medium">{course.name === 'Functional Gut Health/Flow' ? 'Avancerad' : 'Grundläggande'}</span>
                   </div>
                 </div>
               </div>

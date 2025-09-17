@@ -63,7 +63,7 @@ const courseMetadata: Record<string, {
     progress: 35,
     nextLesson: 'Vecka 2: Antiinflammatorisk kost'
   },
-  'Functional Flow': {
+  'Functional Gut Health/Flow': {
     color: '#6B8DD6',
     bgColor: 'bg-[#6B8DD6]/10',
     icon: '🌊',
@@ -74,7 +74,7 @@ const courseMetadata: Record<string, {
     progress: 60,
     nextLesson: 'Vecka 4: Stresshantering'
   },
-  'Functional Energy': {
+  'Functional Insulin balance/Energy': {
     color: '#FF7E70',
     bgColor: 'bg-[#FF7E70]/10',
     icon: '⚡',

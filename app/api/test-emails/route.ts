@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
         totalAmount: 2295,
         courses: [
           {
-            name: 'Functional Energy',
+            name: 'Functional Insulin balance/Energy',
             price: 2295
           }
         ],
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
       const reviewData = {
         email: testEmail,
         name: testName,
-        courseName: 'Functional Energy',
+        courseName: 'Functional Insulin balance/Energy',
         courseId: 'functional-energy',
         userId: 'test-user-123'
       };

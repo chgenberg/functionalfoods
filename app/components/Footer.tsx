@@ -18,7 +18,7 @@ export default function Footer() {
     utbildning: [
       { label: t('footer.links.allCourses','Alla kurser'), href: '/utbildning/alla-kurser' },
       { label: t('footer.links.functionalBasics','Functional Basics'), href: '/utbildning/functional-basics' },
-      { label: t('footer.links.functionalFlow','Functional Flow'), href: '/utbildning/functional-flow' },
+      { label: t('footer.links.functionalFlow','Functional Gut Health/Flow'), href: '/utbildning/functional-flow' },
       { label: t('footer.links.catalog','Kurskatalog'), href: '/utbildning/kurskatalog' },
     ],
     kunskapsbank: [

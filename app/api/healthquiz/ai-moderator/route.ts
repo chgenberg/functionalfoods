@@ -205,7 +205,7 @@ INSTRUKTIONER:
 2. Integrera ALL information naturligt - väder, mediciner, forskning, produkter
 3. Ge konkreta, actionable råd baserat på HELA bilden
 4. Inkludera timing (cirkadian), säkerhet och miljöfaktorer
-5. Rekommendera Functional Flow-kursen naturligt i slutet
+5. Rekommendera Functional Gut Health/Flow-kursen naturligt i slutet
 6. Skriv på svenska, använd "du"-form, var uppmuntrande men ärlig
 7. Struktur: Sammanfattning → Prioriterade åtgärder → Functional foods → Livsstil → Nästa steg
 
@@ -263,13 +263,13 @@ Maxlängd: 1500 ord. Fokus på kvalitet över kvantitet.`;
         'Implementera en förändring i taget',
         'Håll en hälsodagbok i 2 veckor', 
         'Boka läkarkonsultation om du tar mediciner',
-        'Överväg vår Functional Flow-kurs för djupare kunskap',
+        'Överväg vår Functional Gut Health/Flow-kurs för djupare kunskap',
         'Följ upp resultaten efter 4-6 veckor'
       ],
 
       courseRecommendation: {
-        title: 'Functional Flow - Din nästa nivå',
-        description: 'Baserat på din profil skulle du ha stor nytta av vår Functional Flow-kurs som går djupare in på personaliserad nutrition och advanced functional foods.',
+        title: 'Functional Gut Health/Flow - Din nästa nivå',
+        description: 'Baserat på din profil skulle du ha stor nytta av vår Functional Gut Health/Flow-kurs som går djupare in på personaliserad nutrition och advanced functional foods.',
         benefits: [
           'Avancerade functional foods för dina specifika mål',
           'Personaliserad måltidsplanering',

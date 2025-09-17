@@ -48,7 +48,7 @@ export default function FunctionalEnergyPage() {
 
   const course = {
     id: 'functional-energy',
-    name: 'Functional Energy',
+    name: 'Functional Insulin balance/Energy',
     price: 2295,
     type: 'course' as const,
     image: '/recept_images_optimized/havregrynsgrot-med-apelsin-och-kokos-card-medium.webp',
@@ -207,7 +207,7 @@ export default function FunctionalEnergyPage() {
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 tracking-tight"
             >
-              Functional <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">Energy</span>
+              Functional <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">Insulin balance/Energy</span>
             </motion.h1>
             
             <motion.div 
@@ -287,7 +287,7 @@ export default function FunctionalEnergyPage() {
               viewport={{ once: true }}
               className="text-center mb-8"
             >
-              <h2 className="text-3xl font-bold text-[#014421] mb-4">Upptäck Functional Energy</h2>
+              <h2 className="text-3xl font-bold text-[#014421] mb-4">Upptäck Functional Insulin balance/Energy</h2>
               <p className="text-lg text-gray-600">Se hur kursen hjälper dig få stabilt blodsocker och jämn energi</p>
             </motion.div>
 
@@ -325,7 +325,7 @@ export default function FunctionalEnergyPage() {
                   <iframe
                     className="absolute inset-0 w-full h-full"
                     src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                    title="Functional Energy - Kursöversikt"
+                    title="Functional Insulin balance/Energy - Kursöversikt"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen

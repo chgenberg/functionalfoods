@@ -170,7 +170,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
     const sleepQuality = answers[2];
     const stressLevel = answers[3];
     
-    let recommendation = "Baserat på dina svar rekommenderar vi starkt vår <strong>Functional Flow</strong> kurs. ";
+    let recommendation = "Baserat på dina svar rekommenderar vi starkt vår <strong>Functional Gut Health/Flow</strong> kurs. ";
     
     // Personalize based on specific answers
     if (energyLevel === 'low_energy' || energyLevel === 'afternoon_dip') {
@@ -210,7 +210,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       recommendation += "Kursen inkluderar omfattande information om anti-aging functional foods och longevity. ";
     }
     
-    recommendation += "\n\n<strong>Functional Flow</strong> är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
+    recommendation += "\n\n<strong>Functional Gut Health/Flow</strong> är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
     
     return recommendation;
   };
@@ -794,7 +794,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         onClick={() => window.location.href = '/utbildning/functional-flow'}
                         className="inline-flex items-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors"
                       >
-                        <span>{t('quiz.startFlow','Starta Functional Flow')}</span>
+                        <span>{t('quiz.startFlow','Starta Functional Gut Health/Flow')}</span>
                         <ChevronRight className="w-5 h-5" />
                       </motion.button>
                     </div>
@@ -815,7 +815,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                           <div className="p-6 text-white">
-                            <h3 className="text-2xl font-bold mb-2">Functional Flow</h3>
+                            <h3 className="text-2xl font-bold mb-2">Functional Gut Health/Flow</h3>
                             <p className="text-white/90">Vår mest omfattande kurs för optimal hälsa</p>
                           </div>
                         </div>
@@ -835,7 +835,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
                         className="bg-primary text-white px-8 py-4 rounded-xl font-medium hover:bg-secondary transition-colors flex items-center justify-center gap-3 mx-auto text-lg"
                       >
                         <Star className="w-6 h-6" />
-                        <span>Starta Functional Flow</span>
+                        <span>Starta Functional Gut Health/Flow</span>
                         <ChevronRight className="w-5 h-5" />
                       </motion.button>
                       

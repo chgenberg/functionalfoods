@@ -441,10 +441,10 @@ function ResultPageContent() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-white mb-2">
-                  Functional Flow
+                  Functional Gut Health/Flow
                 </h3>
                 <p className="text-white/80 mb-4">
-                  Baserat på din hälsoprofil rekommenderar vi Functional Flow - vår omfattande kurs som ger dig alla verktyg för att optimera din hälsa och nå nya nivåer av välbefinnande genom funktionell kost och livsstil.
+                  Baserat på din hälsoprofil rekommenderar vi Functional Gut Health/Flow - vår omfattande kurs som ger dig alla verktyg för att optimera din hälsa och nå nya nivåer av välbefinnande genom funktionell kost och livsstil.
                 </p>
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2">

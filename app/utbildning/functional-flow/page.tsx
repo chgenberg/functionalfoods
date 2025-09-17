@@ -18,7 +18,7 @@ export default function FunctionalFlowPage() {
 
   const course = {
     id: 'functional-flow',
-    name: 'Functional Flow',
+    name: 'Functional Gut Health/Flow',
     price: 1836,
     originalPrice: 2295,
     type: 'course' as const,
@@ -181,7 +181,7 @@ export default function FunctionalFlowPage() {
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 tracking-tight"
             >
-              Functional <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Flow</span>
+              Functional <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Gut Health/Flow</span>
             </motion.h1>
             
             <motion.div 
@@ -265,7 +265,7 @@ export default function FunctionalFlowPage() {
         >
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-primary/10">
             <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
-              Upptäck <span className="text-primary font-bold">Functional Flow</span>
+              Upptäck <span className="text-primary font-bold">Functional Gut Health/Flow</span>
             </h2>
             <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
               <iframe
@@ -465,7 +465,7 @@ export default function FunctionalFlowPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <AddToCart 
               id="functional-flow"
-              name="Functional Flow"
+              name="Functional Gut Health/Flow"
               price={1497}
               type="course"
               image={course.image}

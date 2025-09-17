@@ -17,7 +17,7 @@ export default function UtbildningPage() {
     },
     {
       id: 'flow',
-      title: 'Functional Flow',
+      title: 'Functional Gut Health/Flow',
       description: 'Fördjupning med fokus på maghälsa, antiinflammation och naturligt flöde i vardagen.',
       href: '/utbildning/functional-flow',
       image: '/flow.JPG',
@@ -27,7 +27,7 @@ export default function UtbildningPage() {
     },
     {
       id: 'energy',
-      title: 'Functional Energy',
+      title: 'Functional Insulin balance/Energy',
       description: 'För dig som vill stabilisera blodsockret och få jämn energi. Perfekt vid prediabetes eller energidippar.',
       href: '/utbildning/functional-energy',
       image: '/recept_images_optimized/havregrynsgrot-med-apelsin-och-kokos-card-medium.webp',

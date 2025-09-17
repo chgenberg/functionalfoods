@@ -69,7 +69,7 @@ export const mealPlans: Record<string, WeekMealPlan> = { "week1": { "days": { "M
     }, "title": "Vecka 6: Synkroniserad från DOCX" }
 };
 
-// Functional Flow meal plans
+// Functional Gut Health/Flow meal plans
 export const flowMealPlans: Record<string, WeekMealPlan> = { "week1": { "days": { "Måndag": { "breakfast": { "name": "Färskostmacka med tomat", "recipeLink": "/kunskapsbank/recept/farskostmacka-med-tomat" }, "lunch": { "name": "Linssoppa från medelhavet", "recipeLink": "/kunskapsbank/recept/linssoppa-medelhavet-soppa" }, "dinner": { "name": "Kycklingburgare med papayasallad", "recipeLink": "/kunskapsbank/recept/kycklingburgare-papayasallad-sallad" }
       }, "Tisdag": { "breakfast": { "name": "Äggröra med asiatisk avokadosallad", "recipeLink": "/kunskapsbank/recept/aggrora-asiatisk-avokadosallad" }, "lunch": { "name": "Kycklingburgare med papayasallad rester", "recipeLink": "/kunskapsbank/recept/kycklingburgare-papayasallad-sallad" }, "dinner": { "name": "Köttfärsbiffar med tomatsallad", "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-mozzarella-och-tomatsallad" }
       }, "Onsdag": { "breakfast": { "name": "Choklad- och kokoschiapudding", "recipeLink": "/kunskapsbank/recept/choklad-kokoschiapudding" }, "lunch": { "name": "Köttfärsbiffar med tomatsallad rester", "recipeLink": "/kunskapsbank/recept/kottfarsbiffar-med-mozzarella-och-tomatsallad" }, "dinner": { "name": "Laxgratäng med scampi och broccoli", "recipeLink": "/kunskapsbank/recept/laxgratang-med-broccoli-och-scampi" }
@@ -138,13 +138,13 @@ export function getWeekData(weekNumber: number): WeekMealPlan | null {
   return mealPlans[weekKey] || null;
 }
 
-// Helper function to get week data for Functional Flow
+// Helper function to get week data for Functional Gut Health/Flow
 export function getFlowWeekData(weekNumber: number): WeekMealPlan | null {
   const weekKey = `week${weekNumber}` as keyof typeof flowMealPlans;
   return flowMealPlans[weekKey] || null;
 }
 
-// Functional Energy meal plans
+// Functional Insulin balance/Energy meal plans
 export const energyMealPlans: Record<string, WeekMealPlan> = {
   "week1": {
     "title": "Vecka 1: Typ 2-diabetes kostschema",
@@ -766,7 +766,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
   }
 };
 
-// Helper function to get week data for Functional Energy
+// Helper function to get week data for Functional Insulin balance/Energy
 export function getEnergyWeekData(weekNumber: number): WeekMealPlan | null {
   const weekKey = `week${weekNumber}` as keyof typeof energyMealPlans;
   return energyMealPlans[weekKey] || null;

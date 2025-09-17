@@ -158,7 +158,7 @@ export default function KnowledgeAdminPage() {
             >
               <option value="all">Alla kurser</option>
               <option value="basic">Functional Basics</option>
-              <option value="flow">Functional Flow</option>
+              <option value="flow">Functional Gut Health/Flow</option>
             </select>
             
             <div className="relative">
@@ -319,7 +319,7 @@ export default function KnowledgeAdminPage() {
                     className="w-full px-3 py-2 border rounded-lg"
                   >
                     <option value="basic">Functional Basics</option>
-                    <option value="flow">Functional Flow</option>
+                    <option value="flow">Functional Gut Health/Flow</option>
                   </select>
                 </div>
                 
