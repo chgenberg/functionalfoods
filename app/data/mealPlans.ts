@@ -151,8 +151,12 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Yoghurt med bovetegranola",
+          "name": "Yoghurt med apelsin- och bovetegranola",
           "recipeLink": "/kunskapsbank/recept/yoghurt-bovetegranola-granola"
+        },
+        "snack": {
+          "name": "Egenbakat: Bovetegranola med apelsin och kardemumma",
+          "recipeLink": "/kunskapsbank/recept/bovetegranola-med-apelsin-och-kardemumma"
         },
         "lunch": {
           "name": "Omelett med paprika och champinjoner",
@@ -169,7 +173,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/stekt-agg-med-tomat"
         },
         "lunch": {
-          "name": "Kycklingburgare med mangosalsa och wasabi  rester",
+          "name": "Kycklingburgare med mangosalsa och wasabi rester",
           "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-mangosalsa-och-wasabi"
         },
         "dinner": {
@@ -197,26 +201,30 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/keso-hallon-granatapple"
         },
         "lunch": {
-          "name": "Köttfärswrap med röd curry och äpple  rester",
+          "name": "Köttfärswrap med röd curry och äpple rester",
           "recipeLink": "/kunskapsbank/recept/kottfarswrap-med-rod-curry-och-apple"
         },
         "dinner": {
           "name": "Apelsinkyckling med blomkålsris",
-          "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad"
+          "recipeLink": "/kunskapsbank/recept/apelsinkyckling-med-blomkalsris"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Bananpannkaka med pistagenötter och bär",
+          "name": "Bananpannkakor med pistagenötter och bär",
           "recipeLink": "/kunskapsbank/recept/bananpannkakor-med-pistagenotter-och-bar"
         },
         "lunch": {
           "name": "Apelsinkyckling med blomkålsris rester",
-          "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad"
+          "recipeLink": "/kunskapsbank/recept/apelsinkyckling-med-blomkalsris"
         },
         "dinner": {
           "name": "Fisk och skaldjursgryta från medelhavet",
           "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet"
+        },
+        "snack": {
+          "name": "Egenbakat: Kesofrallor med äpple och pumpafrön",
+          "recipeLink": "/kunskapsbank/recept/kesofrallor-med-apple-och-pumpafron"
         }
       },
       "Lördag": {
@@ -229,8 +237,12 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet"
         },
         "dinner": {
-          "name": "Biff med sötpotatis (400 kcal)Mandelkaka med choklad och hallon",
+          "name": "Biff med sötpotatis",
           "recipeLink": "/kunskapsbank/recept/biff-med-sotpotatis"
+        },
+        "dessert": {
+          "name": "Mandelkaka med choklad",
+          "recipeLink": "/kunskapsbank/recept/mandelkaka-med-choklad"
         }
       },
       "Söndag": {
@@ -239,7 +251,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/omelett-champinjoner"
         },
         "lunch": {
-          "name": "Biff med sötpotatis  rester",
+          "name": "Biff med sötpotatis rester",
           "recipeLink": "/kunskapsbank/recept/biff-med-sotpotatis"
         },
         "dinner": {
@@ -258,7 +270,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/yoghurt-med-bar-och-bovetegranola"
         },
         "lunch": {
-          "name": "Quinoasallad med halloumi  rester",
+          "name": "Quinoasallad med halloumi rester",
           "recipeLink": "/kunskapsbank/recept/quinoasallad-med-halloumi"
         },
         "dinner": {
@@ -272,7 +284,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/aggrora-lax-2"
         },
         "lunch": {
-          "name": "Kycklingwok med teriyakisås och cashewnötter  rester",
+          "name": "Kycklingwok med teriyakisås och cashewnötter rester",
           "recipeLink": "/kunskapsbank/recept/kycklingwok-med-teriyakisas-och-cashewnotter"
         },
         "dinner": {
@@ -300,7 +312,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/kesotortilla-med-tomat-pesto-och-kalkon"
         },
         "lunch": {
-          "name": "Varm tacosallad  rester",
+          "name": "Varm tacosallad rester",
           "recipeLink": "/kunskapsbank/recept/varm-tacosallad"
         },
         "dinner": {
@@ -310,11 +322,11 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       },
       "Fredag": {
         "breakfast": {
-          "name": "Kesotortilla med tomat, pesto och kalkon",
+          "name": "Kesotortilla med tomat, pesto och kalkon rester",
           "recipeLink": "/kunskapsbank/recept/kesotortilla-med-tomat-pesto-och-kalkon"
         },
         "lunch": {
-          "name": "Tofugryta med blomkålsris rester",
+          "name": "Tofugryta med blomkålsris rester",
           "recipeLink": "/kunskapsbank/recept/tofugryta-med-blomkalsris"
         },
         "dinner": {
@@ -328,26 +340,30 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/kesofralla-med-farskost-och-gurka"
         },
         "lunch": {
-          "name": "Lövbiffsrullader med cheddar och coleslaw  rester",
+          "name": "Lövbiffsrullader med cheddar och coleslaw rester",
           "recipeLink": "/kunskapsbank/recept/lovbiffsrullader-med-cheddar-och-coleslaw"
         },
         "dinner": {
-          "name": "Italiensk kycklinggratäng med mozzarella (446 kcal)Pistagekaka",
+          "name": "Italiensk kycklinggratäng med mozzarella",
           "recipeLink": "/kunskapsbank/recept/italiensk-kycklinggratang-med-mozzarella"
+        },
+        "dessert": {
+          "name": "Pistagekakor",
+          "recipeLink": "/kunskapsbank/recept/pistagekakor"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Tropisk smoothie",
+          "name": "Tropisk smoothie med kokosmjölk",
           "recipeLink": "/kunskapsbank/recept/tropisk-smoothie-med-kokosmjolk"
         },
         "lunch": {
-          "name": "Italiensk kycklinggratäng med mozzarella  rester",
+          "name": "Italiensk kycklinggratäng med mozzarella rester",
           "recipeLink": "/kunskapsbank/recept/italiensk-kycklinggratang-med-mozzarella"
         },
         "dinner": {
           "name": "Lax- och broccolipaj",
-          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj"
+          "recipeLink": "/kunskapsbank/recept/lax-broccolipaj"
         }
       }
     }
@@ -357,12 +373,12 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
     "days": {
       "Måndag": {
         "breakfast": {
-          "name": "Tropisk smoothie rester",
+          "name": "Tropisk smoothie med kokosmjölk rester",
           "recipeLink": "/kunskapsbank/recept/tropisk-smoothie-med-kokosmjolk"
         },
         "lunch": {
-          "name": "Lax- och broccolipaj  rester",
-          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj"
+          "name": "Lax- och broccolipaj rester",
+          "recipeLink": "/kunskapsbank/recept/lax-broccolipaj"
         },
         "dinner": {
           "name": "Linssallad med fetaost och pekannötter",
@@ -375,7 +391,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/aggrora-med-kalkon-och-granatapple"
         },
         "lunch": {
-          "name": "Linssallad med fetaost och pekannötter  rester",
+          "name": "Linssallad med fetaost och pekannötter rester",
           "recipeLink": "/kunskapsbank/recept/linssallad-med-fetaost-och-pekannotter"
         },
         "dinner": {
@@ -389,7 +405,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/bananpannkaka-med-keso-blabar-och-mango"
         },
         "lunch": {
-          "name": "Kalkonbolognese med morotspasta  rester",
+          "name": "Kalkonbolognese med morotspasta rester",
           "recipeLink": "/kunskapsbank/recept/kalkonbolognese-med-morotspasta"
         },
         "dinner": {
@@ -400,10 +416,10 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Torsdag": {
         "breakfast": {
           "name": "Yoghurt med bovetegranola och aprikos",
-          "recipeLink": "/kunskapsbank/recept/bovetegranola"
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola-och-aprikos"
         },
         "lunch": {
-          "name": "Lövbiffsrullad med ugnsrostade rödbetor  rester",
+          "name": "Lövbiffsrullad med ugnsrostade rödbetor rester",
           "recipeLink": "/kunskapsbank/recept/lovbiffsrullad-med-ugnsrostade-rodbetor"
         },
         "dinner": {
@@ -417,7 +433,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/kesofralla-med-ost-och-paprika"
         },
         "lunch": {
-          "name": "Minestronesoppa  rester",
+          "name": "Minestronesoppa rester",
           "recipeLink": "/kunskapsbank/recept/minestronesoppa"
         },
         "dinner": {
@@ -427,21 +443,25 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       },
       "Lördag": {
         "breakfast": {
-          "name": "Ugnsbakad gröt med päron",
+          "name": "Ugnsbakad gröt",
           "recipeLink": "/kunskapsbank/recept/ugnsbakad-grot"
         },
         "lunch": {
-          "name": "Hamburgare med fetaostkräm och rostad sötpotatis  rester",
+          "name": "Hamburgare med fetaostkräm och rostad sötpotatis rester",
           "recipeLink": "/kunskapsbank/recept/hamburgare-med-fetaostkram-och-rostad-sotpotatis"
         },
         "dinner": {
-          "name": "Halstrad tonfisk med grönsaker och sesamdressing (439 kcal)Blodapelsin med vit chokladkräm",
+          "name": "Halstrad tonfisk med grönsaker och sesamdressing",
           "recipeLink": "/kunskapsbank/recept/halstrad-tonfisk-med-gronsaker-och-sesamdressing"
+        },
+        "dessert": {
+          "name": "Blodapelsin med vit chokladkräm",
+          "recipeLink": "/kunskapsbank/recept/blodapelsin-med-vit-chokladkram"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Ugnsbakad gröt  rester",
+          "name": "Ugnsbakad gröt rester",
           "recipeLink": "/kunskapsbank/recept/ugnsbakad-grot"
         },
         "lunch": {
@@ -461,10 +481,10 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Proteingröt med äpple",
-          "recipeLink": "/kunskapsbank/recept/varm-chiagrot-apple"
+          "recipeLink": "/kunskapsbank/recept/proteingrot-med-apple"
         },
         "lunch": {
-          "name": "Tacokyckling med blomkålssallad  rester",
+          "name": "Tacokyckling med blomkålssallad rester",
           "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad"
         },
         "dinner": {
@@ -474,21 +494,25 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       },
       "Tisdag": {
         "breakfast": {
-          "name": "Stekt ägg med kalkon och senapsmajonnäs",
-          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-kalkon-och-senapsmajonnas"
+          "name": "Stekt ägg med kalkon och senapsmajonäs",
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-kalkon-och-senapsmajnas"
         },
         "lunch": {
-          "name": "Vegetarisk paprikapasta med citron  rester",
+          "name": "Vegetarisk paprikapasta med citron rester",
           "recipeLink": "/kunskapsbank/recept/vegetarisk-paprikapasta-med-citron"
         },
         "dinner": {
           "name": "Tonfisksallad med rödbetsröra",
           "recipeLink": "/kunskapsbank/recept/tonfisksallad-med-rodbetsrora"
+        },
+        "snack": {
+          "name": "Egenbakat: Jordgubbssylt",
+          "recipeLink": "/kunskapsbank/recept/jordgubbssylt"
         }
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Yoghurt med bovetegranola, keso och sylt",
+          "name": "Yoghurt med bovetegranola och sylt",
           "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola-och-sylt"
         },
         "lunch": {
@@ -496,50 +520,54 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/tonfisksallad-med-rodbetsrora"
         },
         "dinner": {
-          "name": "Kycklingfärstimbaler med ingefära, färskost och sweetchili",
+          "name": "Kycklingfärstimbaler med färskost och sweet chili",
           "recipeLink": "/kunskapsbank/recept/kycklingfarstimbaler-med-farskost-och-sweet-chili"
         }
       },
       "Torsdag": {
         "breakfast": {
           "name": "Blåbärssmoothie",
-          "recipeLink": "/kunskapsbank/recept/jordgubbar-mango-vit"
+          "recipeLink": "/kunskapsbank/recept/blåbärssmoothie"
         },
         "lunch": {
-          "name": "Kycklingfärstimbaler med ingefära, färskost och sweetchili rester",
+          "name": "Kycklingfärstimbaler med färskost och sweet chili rester",
           "recipeLink": "/kunskapsbank/recept/kycklingfarstimbaler-med-farskost-och-sweet-chili"
         },
         "dinner": {
-          "name": "Lövbiff med bacon, stekta grönsaker och pestoyoghurt",
+          "name": "Lövbiff med stekta grönsaker och pestoyoghurt",
           "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt"
         }
       },
       "Fredag": {
         "breakfast": {
-          "name": "Blåbärssmoothie  rester",
-          "recipeLink": "/kunskapsbank/recept/jordgubbar-mango-vit"
+          "name": "Blåbärssmoothie rester",
+          "recipeLink": "/kunskapsbank/recept/blåbärssmoothie"
         },
         "lunch": {
-          "name": "Lövbiff med bacon, stekta grönsaker och pestoyoghurt rester",
+          "name": "Lövbiff med stekta grönsaker och pestoyoghurt rester",
           "recipeLink": "/kunskapsbank/recept/lovbiff-med-stekta-gronsaker-och-pestoyoghurt"
         },
         "dinner": {
           "name": "Laxgratäng med blomkålsmos",
-          "recipeLink": "/kunskapsbank/recept/laxgratang-med-broccoli-och-scampi"
+          "recipeLink": "/kunskapsbank/recept/laxgratang-med-blomkalsmos"
         }
       },
       "Lördag": {
         "breakfast": {
           "name": "Äggröra med sockerärtor",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-avokado"
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-sockerartor"
         },
         "lunch": {
           "name": "Laxgratäng med blomkålsmos rester",
-          "recipeLink": "/kunskapsbank/recept/laxgratang-med-broccoli-och-scampi"
+          "recipeLink": "/kunskapsbank/recept/laxgratang-med-blomkalsmos"
         },
         "dinner": {
-          "name": "Entrecote med sparris, granatäpple och ärtpesto (639 kcal)Morotskaka med havregryn och chiafrön",
+          "name": "Entrecote med sparris och ärtpesto",
           "recipeLink": "/kunskapsbank/recept/entrecote-med-sparris-och-artpesto"
+        },
+        "dessert": {
+          "name": "Morotskaka med havregryn och chiafrön",
+          "recipeLink": "/kunskapsbank/recept/morotskaka-med-havregryn-och-chiafron"
         }
       },
       "Söndag": {
@@ -548,11 +576,11 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/havrevaffla-med-jordgubbssylt-och-vaniljkeso"
         },
         "lunch": {
-          "name": "Entrecote med sparris, granatäpple och ärtpesto rester",
+          "name": "Entrecote med sparris och ärtpesto rester",
           "recipeLink": "/kunskapsbank/recept/entrecote-med-sparris-och-artpesto"
         },
         "dinner": {
-          "name": "Fisk och skaldjursgryta från medelhavet rester från frysen",
+          "name": "Fisk och skaldjursgryta från medelhavet",
           "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet"
         }
       }
@@ -564,15 +592,15 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Måndag": {
         "breakfast": {
           "name": "Kokta ägg med kaviar",
-          "recipeLink": "/kunskapsbank/recept/kokt-agg-kaviar"
+          "recipeLink": "/kunskapsbank/recept/kokta-agg-med-kaviar"
         },
         "lunch": {
-          "name": "Lax- och broccolipaj rester från frysen",
-          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj"
+          "name": "Lax- och broccolipaj rester",
+          "recipeLink": "/kunskapsbank/recept/lax-broccolipaj"
         },
         "dinner": {
-          "name": "Mexikanskt nötfärsfräs",
-          "recipeLink": "/kunskapsbank/recept/mexikanskt-notfarsfras"
+          "name": "Mexikansk nötfärsfräs",
+          "recipeLink": "/kunskapsbank/recept/mexikansk-notfarsfras"
         }
       },
       "Tisdag": {
@@ -581,8 +609,8 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/kokos-och-jordgubbssmoothie-med-bovetegranola"
         },
         "lunch": {
-          "name": "Mexikanskt nötfärsfräs rester",
-          "recipeLink": "/kunskapsbank/recept/mexikanskt-notfarsfras"
+          "name": "Mexikansk nötfärsfräs rester",
+          "recipeLink": "/kunskapsbank/recept/mexikansk-notfarsfras"
         },
         "dinner": {
           "name": "Oneplate ugnsbakad kyckling och rödbetor",
@@ -591,11 +619,11 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       },
       "Onsdag": {
         "breakfast": {
-          "name": "Vallmogröt med apelsinfiléer",
+          "name": "Vallmogröt med apelsinfileer",
           "recipeLink": "/kunskapsbank/recept/vallmogrot-med-apelsinfileer"
         },
         "lunch": {
-          "name": "Oneplate ugnsbakad kyckling och rödbetor rester",
+          "name": "Oneplate ugnsbakad kyckling och rödbetor rester",
           "recipeLink": "/kunskapsbank/recept/oneplate-ugnsbakad-kyckling-och-rodbetor"
         },
         "dinner": {
@@ -605,11 +633,11 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Äggröra med kalkon och granatäpple",
-          "recipeLink": "/kunskapsbank/recept/aggrora-med-kalkon-och-granatapple"
+          "name": "Äggröra med avokado och granatäpple",
+          "recipeLink": "/kunskapsbank/recept/aggrora-med-avokado-och-granatapple"
         },
         "lunch": {
-          "name": "Riswrap med philadelphiaost och laxrester",
+          "name": "Riswrap med philadelphiaost och lax rester",
           "recipeLink": "/kunskapsbank/recept/riswrap-med-philadelphiaost-och-lax"
         },
         "dinner": {
@@ -623,11 +651,11 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/chiapudding-med-jordgubbssylt-och-pistagenotter"
         },
         "lunch": {
-          "name": "Poke Bowl med pankopanerad tofu  rester",
+          "name": "Poke Bowl med pankopanerad tofu rester",
           "recipeLink": "/kunskapsbank/recept/poke-bowl-med-pankopanerad-tofu"
         },
         "dinner": {
-          "name": "Fläskkarré med fylld sötpotatis och citronsås",
+          "name": "Fläskkarre med fylld sötpotatis och citronsås",
           "recipeLink": "/kunskapsbank/recept/flaskkarre-med-fylld-sotpotatis-och-citronsas"
         }
       },
@@ -637,11 +665,15 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/ugnsomelett-med-keso-och-bar"
         },
         "lunch": {
-          "name": "Fläskkarré med fylld sötpotatis och citronsås rester",
+          "name": "Fläskkarre med fylld sötpotatis och citronsås rester",
           "recipeLink": "/kunskapsbank/recept/flaskkarre-med-fylld-sotpotatis-och-citronsas"
         },
         "dinner": {
-          "name": "Kycklingbullar med soltorkade tomater  (503 kcal)Citronkaka med chiafrön",
+          "name": "Kycklingbullar med soltorkade tomater",
+          "recipeLink": "/kunskapsbank/recept/kycklingbullar-med-soltorkade-tomater"
+        },
+        "dessert": {
+          "name": "Citronkakor med chiafrön",
           "recipeLink": "/kunskapsbank/recept/citronkakor-med-chiafron"
         }
       },
@@ -651,12 +683,12 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/ugnsomelett-med-keso-och-bar"
         },
         "lunch": {
-          "name": "Kycklingbullar med soltorkade tomater   rester",
+          "name": "Kycklingbullar med soltorkade tomater rester",
           "recipeLink": "/kunskapsbank/recept/kycklingbullar-med-soltorkade-tomater"
         },
         "dinner": {
           "name": "Grönsakspannkaka med asiatisk sås",
-          "recipeLink": "/kunskapsbank/recept/gronsakspankaka-med-asiatisk-sas"
+          "recipeLink": "/kunskapsbank/recept/gronsakspannkaka-med-asiatisk-sas"
         }
       }
     }
@@ -670,7 +702,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/saffransgrot-med-bar-och-granatapple"
         },
         "lunch": {
-          "name": "Tacokyckling med blomkålssallad  rester från frysen",
+          "name": "Tacokyckling med blomkålssallad rester",
           "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad"
         },
         "dinner": {
@@ -709,7 +741,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Torsdag": {
         "breakfast": {
           "name": "Chiapudding med apelsin och mynta",
-          "recipeLink": "/kunskapsbank/recept/chiapudding-med-med-apelsin-och-mynta"
+          "recipeLink": "/kunskapsbank/recept/chiapudding-med-apelsin-och-mynta"
         },
         "lunch": {
           "name": "Ramensoppa med tofu rester",
@@ -726,7 +758,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/kesofralla-med-skinka-och-tomat"
         },
         "lunch": {
-          "name": "Paprikastekt torsk med linssallad och citronyoghurt  rester",
+          "name": "Paprikastekt torsk med linssallad och citronyoghurt rester",
           "recipeLink": "/kunskapsbank/recept/paprikastekt-torsk-med-linssallad-och-citronyoghurt"
         },
         "dinner": {
@@ -744,13 +776,17 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/enchiladas-med-notfars-och-majs"
         },
         "dinner": {
-          "name": "Stekt kyckling med asiatisk tomatsallad (503 kcal)Chokladmuffins",
+          "name": "Stekt kyckling med asiatisk tomatsallad",
           "recipeLink": "/kunskapsbank/recept/stekt-kyckling-med-asiatisk-tomatsallad"
+        },
+        "dessert": {
+          "name": "Chokladmuffins",
+          "recipeLink": "/kunskapsbank/recept/chokladmuffins"
         }
       },
       "Söndag": {
         "breakfast": {
-          "name": "Ugnsbakade ägg med spenat  rester",
+          "name": "Ugnsbakade ägg med spenat rester",
           "recipeLink": "/kunskapsbank/recept/ugnsbakade-agg-med-spenat"
         },
         "lunch": {
@@ -758,13 +794,13 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/stekt-kyckling-med-asiatisk-tomatsallad"
         },
         "dinner": {
-          "name": "Chèvresallad med blodapelsin",
+          "name": "Chevresallad med blodapelsin",
           "recipeLink": "/kunskapsbank/recept/chevresallad-med-blodapelsin"
         }
       }
     }
   }
-};
+}
 
 // Helper function to get week data for Functional Insulin balance/Energy
 export function getEnergyWeekData(weekNumber: number): WeekMealPlan | null {
