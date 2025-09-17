@@ -176,7 +176,7 @@ export default function FunctionalBasicsPage() {
               {/* Mobile image */}
               <div className={`block lg:hidden transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/basic.JPG" 
+                  src="/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg" 
                   alt="Functional Basics" 
                   width={350}
                   height={350}
@@ -188,7 +188,7 @@ export default function FunctionalBasicsPage() {
               {/* Desktop image */}
               <div className={`hidden lg:block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/basic.JPG" 
+                  src="/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg" 
                   alt="Functional Basics" 
                   width={450}
                   height={450}

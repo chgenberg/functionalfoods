@@ -11,9 +11,9 @@ import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X, Smartphone, ShoppingCa
 
 // Course images mapping
 const courseImages: Record<string, string> = {
-  'functional-flow': '/functional_flow.png',
-  'functional-basics': '/functional_basic.png',
-  'functional-energy': '/functional_energy.png'
+  'functional-flow': '/Kurser_bilder/Functional_Gut Health.jpg',
+  'functional-basics': '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
+  'functional-energy': '/Kurser_bilder/Functional_insulin balance.jpg'
 };
 
 export default function Checkout() {

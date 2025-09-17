@@ -51,7 +51,7 @@ export default function FunctionalEnergyPage() {
     name: 'Functional Insulin balance/Energy',
     price: 2295,
     type: 'course' as const,
-    image: '/recept_images_optimized/havregrynsgrot-med-apelsin-och-kokos-card-medium.webp',
+    image: '/Kurser_bilder/Functional_insulin balance.jpg',
     quantity: 1
   };
 
@@ -161,7 +161,7 @@ export default function FunctionalEnergyPage() {
             <div className="relative group">
               <div className={`transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/recept_images_optimized/havregrynsgrot-med-apelsin-och-kokos-card-medium.webp" 
+                  src="/Kurser_bilder/Functional_insulin balance.jpg" 
                   alt="Functional Energy - Havregrynsgrön med apelsin och kokos" 
                   width={450}
                   height={450}

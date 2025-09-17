@@ -59,7 +59,7 @@ const courseMetadata: Record<string, {
     dashboardPath: '/dashboard/courses/functional-basics',
     duration: '6 veckor',
     level: 'Nybörjare',
-    image: '/functional_basic.png',
+    image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
     progress: 35,
     nextLesson: 'Vecka 2: Antiinflammatorisk kost'
   },
@@ -70,7 +70,7 @@ const courseMetadata: Record<string, {
     dashboardPath: '/dashboard/courses/functional-flow',
     duration: '6 veckor',
     level: 'Fortsättning',
-    image: '/functional_flow.png',
+    image: '/Kurser_bilder/Functional_Gut Health.jpg',
     progress: 60,
     nextLesson: 'Vecka 4: Stresshantering'
   },
@@ -81,7 +81,7 @@ const courseMetadata: Record<string, {
     dashboardPath: '/dashboard/courses/functional-energy',
     duration: '6 veckor',
     level: 'Avancerad',
-    image: '/functional_energy.png',
+    image: '/Kurser_bilder/Functional_insulin balance.jpg',
     progress: 20,
     nextLesson: 'Vecka 1: Energimetabolism'
   }

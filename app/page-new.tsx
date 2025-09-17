@@ -130,7 +130,7 @@ export default function Home() {
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: 'url(/ulrika-hero-bg.jpg)',
+              backgroundImage: 'url(/Hem/Bild_till_startsidan.jpg)',
               backgroundColor: '#F3EFE3',
               zIndex: 1
             }}

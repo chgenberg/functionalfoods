@@ -22,7 +22,7 @@ export default function FunctionalFlowPage() {
     price: 1836,
     originalPrice: 2295,
     type: 'course' as const,
-    image: '/functional_flow.png',
+    image: '/Kurser_bilder/Functional_Gut Health.jpg',
     quantity: 1
   };
 
@@ -135,7 +135,7 @@ export default function FunctionalFlowPage() {
             <div className="relative group">
               <div className={`transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
                 <Image 
-                  src="/flow.JPG" 
+                  src="/Kurser_bilder/Functional_Gut Health.jpg" 
                   alt="Functional Flow" 
                   width={450}
                   height={450}

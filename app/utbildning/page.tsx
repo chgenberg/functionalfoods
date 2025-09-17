@@ -10,7 +10,7 @@ export default function UtbildningPage() {
       title: 'Functional Basics',
       description: 'Lär dig grunderna i Functional Foods och bygg hållbara vanor som ger energi och balans.',
       href: '/utbildning/functional-basics',
-      image: '/basic.JPG',
+      image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
       duration: '6 veckor',
       level: 'Nybörjare',
       highlights: ['Grunderna i functional foods', 'Veckomenyer och recept', 'Praktiska verktyg och mål']
@@ -20,7 +20,7 @@ export default function UtbildningPage() {
       title: 'Functional Gut Health/Flow',
       description: 'Fördjupning med fokus på maghälsa, antiinflammation och naturligt flöde i vardagen.',
       href: '/utbildning/functional-flow',
-      image: '/flow.JPG',
+      image: '/Kurser_bilder/Functional_Gut Health.jpg',
       duration: '6 veckor',
       level: 'Fortsättning',
       highlights: ['Maghälsa & mikrobiom', 'Antiinflammatorisk kost', 'Vanor som håller över tid']
@@ -30,7 +30,7 @@ export default function UtbildningPage() {
       title: 'Functional Insulin balance/Energy',
       description: 'För dig som vill stabilisera blodsockret och få jämn energi. Perfekt vid prediabetes eller energidippar.',
       href: '/utbildning/functional-energy',
-      image: '/recept_images_optimized/havregrynsgrot-med-apelsin-och-kokos-card-medium.webp',
+      image: '/Kurser_bilder/Functional_insulin balance.jpg',
       duration: '6 veckor',
       level: 'Alla nivåer',
       highlights: ['Stabilt blodsocker', 'Jämn energi hela dagen', 'Minska sötsug och trötthet']
