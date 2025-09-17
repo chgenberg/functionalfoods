@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const course = searchParams.get('course') || undefined; // 'basic' | 'flow'
+    const course = searchParams.get('course') || undefined; // 'basic' | 'flow' | 'energy'
     const slug = searchParams.get('slug') || undefined;
 
     // Try DB first (if model exists)
@@ -59,6 +59,15 @@ export async function GET(req: NextRequest) {
           const flowDoc = flowDocs.find((d: any) => d.slug === slug);
           if (flowDoc) {
             return NextResponse.json({ documents: [flowDoc] }, { headers: { 'Cache-Control': 'no-store' } });
+          }
+        }
+        
+        const energyPath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-energy.json');
+        if (fs.existsSync(energyPath)) {
+          const energyDocs = JSON.parse(fs.readFileSync(energyPath, 'utf8'));
+          const energyDoc = energyDocs.find((d: any) => d.slug === slug);
+          if (energyDoc) {
+            return NextResponse.json({ documents: [energyDoc] }, { headers: { 'Cache-Control': 'no-store' } });
           }
         }
       }

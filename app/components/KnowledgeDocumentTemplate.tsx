@@ -20,7 +20,7 @@ interface Document {
 interface KnowledgeDocumentTemplateProps {
   documentSlug: string;
   courseId: string;
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
   nextDocument?: { title: string; slug: string };
   previousDocument?: { title: string; slug: string };
 }

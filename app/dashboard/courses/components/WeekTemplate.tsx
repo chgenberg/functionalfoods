@@ -176,11 +176,11 @@ const weekDocuments: Record<string, Record<number, number[]>> = {
     6: []
   },
   energy: {
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
+    1: [0, 1, 2], // Vad är functional foods, Dags att komma igång, Frågor och svar
+    2: [3], // Functional foods för diabetiker
+    3: [4], // Lågkolhydratskost och functional foods
+    4: [5], // Insulinresistens och betacellsfunktion
+    5: [6], // En hälsosam livsstil för stabilt blodsocker
     6: []
   }
 };

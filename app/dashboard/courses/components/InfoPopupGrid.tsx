@@ -18,7 +18,7 @@ interface Document {
 }
 
 interface InfoPopupGridProps {
-  courseType: 'basics' | 'flow';
+  courseType: 'basics' | 'flow' | 'energy';
   courseId: string;
   currentWeek?: number;
 }
@@ -33,6 +33,16 @@ const flowWeekSlugs: Record<number, string[]> = {
   6: ['topplista-med-functional-foods']
 };
 
+// Slug mapping for Energy course weeks
+const energyWeekSlugs: Record<number, string[]> = {
+  1: ['vad-ar-functional-foods', 'dags-att-komma-igang', 'fragor-och-svar'],
+  2: ['functional-foods-for-diabetiker'],
+  3: ['lagkolhydratskost-functional-foods'],
+  4: ['insulinresistens-betacellsfunktion'],
+  5: ['halsosam-livsstil-blodsocker'],
+  6: []
+};
+
 const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, currentWeek }) => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +51,7 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
     const fetchDocuments = async () => {
       try {
         // Map courseType to API course param
-        const course = courseType === 'basics' ? 'basic' : 'flow';
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
         const res = await fetch(`/api/knowledge?course=${course}`);
         const data = await res.json();
         
@@ -52,6 +62,10 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
           if (courseType === 'flow') {
             // For Flow course, use slug mapping since weekNumber isn't in JSON
             const weekSlugs = flowWeekSlugs[currentWeek] || [];
+            docs = docs.filter((doc: Document) => weekSlugs.includes(doc.slug));
+          } else if (courseType === 'energy') {
+            // For Energy course, use slug mapping
+            const weekSlugs = energyWeekSlugs[currentWeek] || [];
             docs = docs.filter((doc: Document) => weekSlugs.includes(doc.slug));
           } else {
             // For Basics course, use weekNumber if available
