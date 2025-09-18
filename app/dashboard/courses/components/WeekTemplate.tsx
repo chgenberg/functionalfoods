@@ -185,6 +185,16 @@ const weekDocuments: Record<string, Record<number, number[]>> = {
   }
 };
 
+// Map Basics knowledge documents explicitly by slug per week for accurate "Veckans läsning"
+const basicsWeekSlugs: Record<number, string[]> = {
+  1: ['vad-a-r-functional-foods', 'dags-att-komma-iga-ng'],
+  2: ['functional-foods-3-steg-till-ett-friskare-liv'],
+  3: ['periodisk-fasta'],
+  4: ['ma-ldokument-styrelsemo-te-1', 'ma-ldokument-styrelsemo-te-2', 'motivation-och-reflektion'],
+  5: ['drycker', 'superpulver', 'benbuljong'],
+  6: ['topplista-med-functional-foods', 'functional-foods-som-livsstil']
+};
+
 // Map Flow knowledge documents explicitly by slug per week for accurate "Veckans läsning"
 const flowWeekSlugs: Record<number, string[]> = {
   1: ['vad-a-r-functional-foods'],
@@ -410,22 +420,21 @@ export default function WeekTemplate({
   // Get the appropriate welcome message
   const welcomeMessage = weekMessages[courseType]?.[weekNumber] || '';
 
-  // Get documents for current week based on order numbers
-  // (Flow uses explicit slug mapping for precision)
+  // Get documents for current week using slug mappings for all courses
   let weekSpecificDocuments: KnowledgeDocument[] = [];
-  if (courseType === 'flow') {
-    const slugs = flowWeekSlugs[weekNumber] || [];
-    weekSpecificDocuments = knowledgeDocuments.filter(doc => slugs.includes(doc.slug));
+  let weekSlugs: string[] = [];
+  
+  if (courseType === 'basics') {
+    weekSlugs = basicsWeekSlugs[weekNumber] || [];
+  } else if (courseType === 'flow') {
+    weekSlugs = flowWeekSlugs[weekNumber] || [];
   } else if (courseType === 'energy') {
-    const slugs = energyWeekSlugs[weekNumber] || [];
-    weekSpecificDocuments = knowledgeDocuments.filter(doc => slugs.includes(doc.slug));
-  } else {
-    const weekDocumentOrders = weekDocuments[courseType]?.[weekNumber] || [];
-    weekSpecificDocuments = knowledgeDocuments.filter(doc => 
-      weekDocumentOrders.includes(doc.order) || 
-      (weekNumber === 4 && doc.order === -1 && (doc.title.toLowerCase().includes('måldokument') || doc.title.toLowerCase().includes('motivation')))
-    );
+    weekSlugs = energyWeekSlugs[weekNumber] || [];
   }
+  
+  weekSpecificDocuments = knowledgeDocuments.filter(doc => weekSlugs.includes(doc.slug));
+  console.log(`📚 WeekTemplate: Filtering ${courseType} week ${weekNumber} with slugs:`, weekSlugs);
+  console.log(`📚 WeekTemplate: Found ${weekSpecificDocuments.length} documents`);
 
   return (
     <>

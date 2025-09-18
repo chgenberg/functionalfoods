@@ -23,6 +23,16 @@ interface InfoPopupGridProps {
   currentWeek?: number;
 }
 
+// Slug mapping for Basics course weeks
+const basicsWeekSlugs: Record<number, string[]> = {
+  1: ['vad-a-r-functional-foods', 'dags-att-komma-iga-ng'],
+  2: ['functional-foods-3-steg-till-ett-friskare-liv'],
+  3: ['periodisk-fasta'],
+  4: ['ma-ldokument-styrelsemo-te-1', 'ma-ldokument-styrelsemo-te-2', 'motivation-och-reflektion'],
+  5: ['drycker', 'superpulver', 'benbuljong'],
+  6: ['topplista-med-functional-foods', 'functional-foods-som-livsstil']
+};
+
 // Slug mapping for Flow course weeks
 const flowWeekSlugs: Record<number, string[]> = {
   1: ['vad-a-r-functional-foods'],
@@ -57,20 +67,21 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
         
         let docs = data.documents || [];
         
-        // Filter by current week
+        // Filter by current week using slug mappings for all courses
         if (currentWeek !== undefined) {
-          if (courseType === 'flow') {
-            // For Flow course, use slug mapping since weekNumber isn't in JSON
-            const weekSlugs = flowWeekSlugs[currentWeek] || [];
-            docs = docs.filter((doc: Document) => weekSlugs.includes(doc.slug));
+          let weekSlugs: string[] = [];
+          
+          if (courseType === 'basics') {
+            weekSlugs = basicsWeekSlugs[currentWeek] || [];
+          } else if (courseType === 'flow') {
+            weekSlugs = flowWeekSlugs[currentWeek] || [];
           } else if (courseType === 'energy') {
-            // For Energy course, use slug mapping
-            const weekSlugs = energyWeekSlugs[currentWeek] || [];
-            docs = docs.filter((doc: Document) => weekSlugs.includes(doc.slug));
-          } else {
-            // For Basics course, use weekNumber if available
-            docs = docs.filter((doc: Document) => doc.weekNumber === currentWeek);
+            weekSlugs = energyWeekSlugs[currentWeek] || [];
           }
+          
+          docs = docs.filter((doc: Document) => weekSlugs.includes(doc.slug));
+          console.log(`📚 InfoPopupGrid: Filtering ${courseType} week ${currentWeek} with slugs:`, weekSlugs);
+          console.log(`📚 InfoPopupGrid: Found ${docs.length} documents`);
         }
         
         setDocuments(docs);
