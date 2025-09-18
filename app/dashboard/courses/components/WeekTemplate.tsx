@@ -205,6 +205,16 @@ const energyWeekSlugs: Record<number, string[]> = {
   6: []
 };
 
+// Weekly pep-talk videos - same for all courses
+const weeklyVideos: Record<number, string> = {
+  1: '', // No video for week 1
+  2: 'https://player.vimeo.com/video/1119774775',
+  3: 'https://player.vimeo.com/video/1119775282',
+  4: 'https://player.vimeo.com/video/1119775485',
+  5: 'https://player.vimeo.com/video/1119775737',
+  6: 'https://player.vimeo.com/video/1119775996'
+};
+
 export default function WeekTemplate({
   courseType,
   weekNumber,
@@ -455,12 +465,34 @@ export default function WeekTemplate({
                   {weekTitle}
                 </p>
               </div>
-              <div className="prose prose-lg max-w-none text-gray-700">
-                {welcomeMessage.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4 leading-relaxed">
-                    {paragraph.trim()}
-                  </p>
-                ))}
+              
+              {/* Content with video side by side */}
+              <div className={`${weeklyVideos[weekNumber] ? 'md:grid md:grid-cols-2 md:gap-8' : ''}`}>
+                {/* Text content */}
+                <div className="prose prose-lg max-w-none text-gray-700">
+                  {welcomeMessage.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="mb-4 leading-relaxed">
+                      {paragraph.trim()}
+                    </p>
+                  ))}
+                </div>
+                
+                {/* Video section - only show if video exists for this week */}
+                {weeklyVideos[weekNumber] && (
+                  <div className="mt-6 md:mt-0">
+                    <h3 className="text-xl font-semibold text-[#014421] mb-4">Veckans pep-talk</h3>
+                    <div className="relative rounded-xl overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
+                      <iframe
+                        className="absolute inset-0 w-full h-full"
+                        src={weeklyVideos[weekNumber]}
+                        title={`Vecka ${weekNumber} pep-talk`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Week Documents - Integrated in same box without border */}
@@ -473,7 +505,7 @@ export default function WeekTemplate({
                     Klicka på dokumenten nedan för att fördjupa din kunskap denna vecka
                   </p>
                   <InfoPopupGrid 
-                    courseType={courseType === 'basics' ? 'basics' : 'flow'} 
+                    courseType={courseType} 
                     courseId={`functional-${courseType}`}
                     currentWeek={weekNumber}
                   />
