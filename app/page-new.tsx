@@ -171,7 +171,7 @@ export default function Home() {
                   {t('home.ourCourses','Våra kurser')}
                 </Link>
                 <Link
-                  href="/kunskapsbank/artiklar"
+                  href="/kunskapsbank/blogg"
                   className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
