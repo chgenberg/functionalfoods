@@ -61,7 +61,7 @@ interface KnowledgeDocument {
   relatedImages: string[];
   keyTakeaways: string[];
   readTime: number;
-  course: 'basic' | 'flow';
+  course: 'basic' | 'flow' | 'energy';
   order: number;
   week?: number; // We'll add this to map documents to weeks
 }
@@ -168,12 +168,12 @@ const weekDocuments: Record<string, Record<number, number[]>> = {
     6: [13, 14] // Topplista, livsstil
   },
   flow: {
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    6: []
+    1: [0], // vad är functional foods
+    2: [1, 2], // vanliga mag- och tarmproblem, kosten guide
+    3: [3, 4], // tillskott, fermenterade livsmedel
+    4: [5], // livsstilsfaktorer
+    5: [6, 7], // att välja rätt proteiner, kolhydrater
+    6: [8] // topplista
   },
   energy: {
     1: [0, 1, 2], // Vad är functional foods, Dags att komma igång, Frågor och svar
@@ -187,12 +187,22 @@ const weekDocuments: Record<string, Record<number, number[]>> = {
 
 // Map Flow knowledge documents explicitly by slug per week for accurate "Veckans läsning"
 const flowWeekSlugs: Record<number, string[]> = {
-  1: ['vad-ar-functional-foods'],
-  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-ba-ttre-mage-och-tarm'],
-  3: ['tillskott-som-kan-sto-dja-mag-och-tarmha-lsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
+  1: ['vad-a-r-functional-foods'],
+  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-battre-mage-och-tarm'],
+  3: ['tillskott-som-kan-stodja-mag-och-tarmhalsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
   4: ['livsstilsfaktorer'],
-  5: ['att-va-lja-ra-tt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
+  5: ['att-valja-ratt-proteiner', 'att-valja-ratt-kolhydrater'],
   6: ['topplista-med-functional-foods']
+};
+
+// Map Energy knowledge documents explicitly by slug per week for accurate "Veckans läsning"
+const energyWeekSlugs: Record<number, string[]> = {
+  1: ['vad-ar-functional-foods', 'dags-att-komma-igang', 'fragor-och-svar'],
+  2: ['functional-foods-for-diabetiker'],
+  3: ['lagkolhydratskost-functional-foods'],
+  4: ['insulinresistens-betacellsfunktion'],
+  5: ['halsosam-livsstil-blodsocker'],
+  6: []
 };
 
 export default function WeekTemplate({
@@ -395,6 +405,9 @@ export default function WeekTemplate({
   let weekSpecificDocuments: KnowledgeDocument[] = [];
   if (courseType === 'flow') {
     const slugs = flowWeekSlugs[weekNumber] || [];
+    weekSpecificDocuments = knowledgeDocuments.filter(doc => slugs.includes(doc.slug));
+  } else if (courseType === 'energy') {
+    const slugs = energyWeekSlugs[weekNumber] || [];
     weekSpecificDocuments = knowledgeDocuments.filter(doc => slugs.includes(doc.slug));
   } else {
     const weekDocumentOrders = weekDocuments[courseType]?.[weekNumber] || [];

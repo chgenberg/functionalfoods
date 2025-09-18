@@ -12,7 +12,7 @@ interface Document {
   excerpt?: string;
   headerImage: string;
   readTime: number;
-  course: 'basic' | 'flow';
+  course: 'basic' | 'flow' | 'energy';
   order: number;
   weekNumber?: number;
 }
@@ -25,11 +25,11 @@ interface InfoPopupGridProps {
 
 // Slug mapping for Flow course weeks
 const flowWeekSlugs: Record<number, string[]> = {
-  1: ['vad-ar-functional-foods'],
+  1: ['vad-a-r-functional-foods'],
   2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-battre-mage-och-tarm'],
   3: ['tillskott-som-kan-stodja-mag-och-tarmhalsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
   4: ['livsstilsfaktorer'],
-  5: ['att-va-lja-ra-tt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
+  5: ['att-valja-ratt-proteiner', 'att-valja-ratt-kolhydrater'],
   6: ['topplista-med-functional-foods']
 };
 
