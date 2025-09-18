@@ -469,13 +469,12 @@ export default function WeekTemplate({
               {/* Video section - only show if video exists for this week */}
               {weeklyVideos[weekNumber] && (
                 <div className="mb-8">
-                  <h3 className="text-xl font-semibold text-[#014421] mb-4 text-center">Veckans pep-talk</h3>
                   <div className="max-w-4xl mx-auto">
                     <div className="relative rounded-xl overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
                       <iframe
                         className="absolute inset-0 w-full h-full"
                         src={weeklyVideos[weekNumber]}
-                        title={`Vecka ${weekNumber} pep-talk`}
+                        title={`Vecka ${weekNumber} video`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
