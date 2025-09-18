@@ -98,6 +98,14 @@ export default function RecipePage() {
 
   const backButtonInfo = getBackButtonInfo();
 
+  // Helper function to initialize nutrition data from recipe
+  const initializeNutrition = (data: any) => {
+    if (data.nutrition) {
+      console.log('🥗 Setting nutrition from database:', data.nutrition);
+      setNutrition(data.nutrition);
+    }
+  };
+
   // Load smart ingredients with rester logic
   useEffect(() => {
     if (!recipe) return;
@@ -370,6 +378,7 @@ export default function RecipePage() {
         console.log('❌ Admin only recipe, user is not admin');
         setError('adminOnly');
         setRecipe(data);
+        initializeNutrition(data);
         return;
       }
       
@@ -392,6 +401,7 @@ export default function RecipePage() {
           console.log('❌ Course recipe, user not logged in');
           setError('login');
           setRecipe(data);
+          initializeNutrition(data);
           return;
         } 
         
@@ -401,6 +411,7 @@ export default function RecipePage() {
           console.log('⏳ User courses not loaded yet, allowing temporary access');
           setError(null);
           setRecipe(data);
+          initializeNutrition(data);
           return;
         }
         
@@ -409,12 +420,14 @@ export default function RecipePage() {
           console.log('❌ Course recipe, user has no access to required courses');
           setError('course');
           setRecipe(data);
+          initializeNutrition(data);
           return;
         }
         
         console.log('✅ Course recipe, user has access');
         setError(null);
         setRecipe(data);
+        initializeNutrition(data);
         return;
       }
       
@@ -423,6 +436,7 @@ export default function RecipePage() {
         console.log('❌ Premium recipe, user has no premium access');
         setError('premium');
         setRecipe(data);
+        initializeNutrition(data);
         return;
       }
       
@@ -436,21 +450,8 @@ export default function RecipePage() {
         setServings(data.servings);
       }
       
-      // Check if recipe already has nutrition data and set it
-      if (data.nutrition) {
-        setNutrition({
-          perServing: {
-            calories: data.nutrition.perServing?.energy || 0,
-            protein: data.nutrition.perServing?.protein || 0,
-            carbs: data.nutrition.perServing?.carbohydrates || 0,
-            fat: data.nutrition.perServing?.fat || 0,
-            fiber: data.nutrition.perServing?.fiber || 0,
-            sugar: data.nutrition.perServing?.sugar || 0,
-            salt: data.nutrition.perServing?.salt || 0
-          },
-          per100g: data.nutrition.per100g || null
-        });
-      }
+      // Initialize nutrition from recipe data if available
+      initializeNutrition(data);
     } catch (err) {
       console.error('Error fetching recipe:', err);
       setError(err instanceof Error ? err.message : t('recipes.detail.unknownError','Ett okänt fel uppstod'));
@@ -1148,53 +1149,42 @@ export default function RecipePage() {
 
               {/* Nutrition Section */}
               <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl p-4 md:p-6 lg:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 md:mb-6">
+                <div className="mb-4 md:mb-6">
                   <h2 className="text-xl md:text-2xl font-bold text-[#014421] flex items-center gap-2 md:gap-3">
                     <span className="bg-[#FF7E70]/20 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0">
                       <Flame className="w-5 h-5 md:w-6 md:h-6 text-[#FF7E70]" />
                     </span>
                     Näringsvärden per portion
                   </h2>
-                  
-                  {!nutrition && (
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={calculateNutrition}
-                      disabled={nutritionLoading || !recipe?.ingredients?.length}
-                      className="px-4 py-2 bg-[#93C560] text-white rounded-lg hover:bg-[#014421] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
-                    >
-                      {nutritionLoading ? 'Beräknar...' : 'Beräkna näringsvärden'}
-                    </motion.button>
-                  )}
+                  <p className="text-sm text-gray-500 mt-2">Baserat på {recipe?.servings || 4} portioner</p>
                 </div>
 
                 {nutrition ? (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                     <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
                       <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                        {nutrition.perServing?.calories || 0}
+                        {Math.round(nutrition.perServing?.energy || 0)}
                       </div>
                       <div className="text-xs md:text-sm text-gray-600">Kalorier</div>
                     </div>
                     
                     <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
                       <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                        {nutrition.perServing?.protein || 0}g
+                        {Math.round((nutrition.perServing?.protein || 0) * 10) / 10}g
                       </div>
                       <div className="text-xs md:text-sm text-gray-600">Protein</div>
                     </div>
                     
                     <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
                       <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                        {nutrition.perServing?.carbs || 0}g
+                        {Math.round((nutrition.perServing?.carbohydrates || 0) * 10) / 10}g
                       </div>
                       <div className="text-xs md:text-sm text-gray-600">Kolhydrater</div>
                     </div>
                     
                     <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
                       <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                        {nutrition.perServing?.fat || 0}g
+                        {Math.round((nutrition.perServing?.fat || 0) * 10) / 10}g
                       </div>
                       <div className="text-xs md:text-sm text-gray-600">Fett</div>
                     </div>
@@ -1204,7 +1194,7 @@ export default function RecipePage() {
                         {nutrition.perServing?.fiber > 0 && (
                           <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
                             <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                              {nutrition.perServing.fiber}g
+                              {Math.round((nutrition.perServing.fiber || 0) * 10) / 10}g
                             </div>
                             <div className="text-xs md:text-sm text-gray-600">Fiber</div>
                           </div>
@@ -1213,7 +1203,7 @@ export default function RecipePage() {
                         {nutrition.perServing?.sugar > 0 && (
                           <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
                             <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                              {nutrition.perServing.sugar}g
+                              {Math.round((nutrition.perServing.sugar || 0) * 10) / 10}g
                             </div>
                             <div className="text-xs md:text-sm text-gray-600">Socker</div>
                           </div>
@@ -1222,7 +1212,7 @@ export default function RecipePage() {
                         {nutrition.perServing?.salt > 0 && (
                           <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
                             <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                              {nutrition.perServing.salt}g
+                              {Math.round((nutrition.perServing.salt || 0) * 10) / 10}g
                             </div>
                             <div className="text-xs md:text-sm text-gray-600">Salt</div>
                           </div>
@@ -1233,8 +1223,8 @@ export default function RecipePage() {
                 ) : (
                   <div className="text-center py-8">
                     <Flame className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500">Klicka på "Beräkna näringsvärden" för att se näringsinnehållet</p>
-                    <p className="text-sm text-gray-400 mt-1">Data hämtas från Livsmedelsverket</p>
+                    <p className="text-gray-500">Näringsvärden laddas...</p>
+                    <p className="text-sm text-gray-400 mt-1">Data från Livsmedelsverket</p>
                   </div>
                 )}
               </div>
