@@ -255,7 +255,7 @@ export default function WeekTemplate({
   useEffect(() => {
     const loadKnowledgeDocuments = async () => {
       try {
-        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'basic';
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
         const response = await fetch(`/data/knowledge-documents-${course}.json`);
         const documents: KnowledgeDocument[] = await response.json();
         setKnowledgeDocuments(documents);
