@@ -94,7 +94,7 @@ async function fixAllIncorrectLinks() {
       { mealName: "Högrevsburgare med hummus", currentLink: "/kunskapsbank/recept/hogrevsburgare-med-hummus", expectedRecipe: "Hamburgare med hummus" },
       { mealName: "Kycklinggryta med röda linser", currentLink: "/kunskapsbank/recept/kycklinggryta-med-bakad-spetskal", expectedRecipe: "Kycklinggryta med röda linser" },
       { mealName: "Grillade köttspett med grekisk sallad och morotstzatziki", currentLink: "/kunskapsbank/recept/grekisk-sallad", expectedRecipe: "Grillspett med grekisk sallad och morotstzatziki" },
-      { mealName: "Grillade köttspett med grekisk sallad och morotstzatzikirester", currentLink: "/kunskapsbank/recept/grekisk-sallad", expectedRecipe: "Grillspett med grekisk sallad och morotstzatziki" },
+      { mealName: "Grillade köttspett med grekisk sallad och morotstzatziki rester", currentLink: "/kunskapsbank/recept/grekisk-sallad", expectedRecipe: "Grillspett med grekisk sallad och morotstzatziki" },
       { mealName: "Japansk kycklingfärswok med groddar (320 kcal", currentLink: "/kunskapsbank/recept/japansk-kycklingfarswok-med-groddar", expectedRecipe: "Kycklingfärswok" },
       { mealName: "Japansk kycklingfärswok med groddar (320 kcal rester", currentLink: "/kunskapsbank/recept/japansk-kycklingfarswok-med-groddar", expectedRecipe: "Kycklingfärswok" },
       

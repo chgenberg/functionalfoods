@@ -16,27 +16,27 @@ async function main() {
       slug: "rokt-lax-med-blomkalsallad-och-citronyoghurt"
     },
     {
-      name: "Högrevsburgare med hummusrester",
+      name: "Högrevsburgare med hummus rester",
       cleanName: "Högrevsburgare med hummus", 
       slug: "hogrevsburgare-med-hummus"
     },
     {
-      name: "Köttfärslimpa med ajvar, fetaost och rostad sötpotatisrester",
+      name: "Köttfärslimpa med ajvar, fetaost och rostad sötpotatis rester",
       cleanName: "Köttfärslimpa med ajvar, fetaost och rostad sötpotatis",
       slug: "kottfarslimpa-med-ajvar-fetaost-och-rostad-sotpotatis"
     },
     {
-      name: "Lammgryta plommon och bulgurrester",
+      name: "Lammgryta plommon och bulgur rester",
       cleanName: "Lammgryta med plommon och bulgur",
       slug: "lammgryta-med-plommon-och-bulgur"
     },
     {
-      name: "Köttfärsbiffar med tomatsalladrester", 
+      name: "Köttfärsbiffar med tomatsallad rester", 
       cleanName: "Köttfärsbiffar med tomatsallad",
       slug: "kottfarsbiffar-med-tomatsallad"
     },
     {
-      name: "Laxgratäng med scampi och broccolirester",
+      name: "Laxgratäng med scampi och broccoli rester",
       cleanName: "Laxgratäng med scampi och broccoli", 
       slug: "laxgratang-med-scampi-och-broccoli"
     },
@@ -51,7 +51,7 @@ async function main() {
       slug: "spenatsoppa-med-rostade-pumpafron"
     },
     {
-      name: "Valnötslax med fetaostcrèmerester",
+      name: "Valnötslax med fetaostcrème rester",
       cleanName: "Valnötslax med fetaostcrème",
       slug: "valnotslax-med-fetaostcreme"
     },
@@ -61,7 +61,7 @@ async function main() {
       slug: "kyckling-med-blomkalsris-och-dillyoghurt"
     },
     {
-      name: "Stekt torsk med bearnaisesås och haricot vertsrester", 
+      name: "Stekt torsk med bearnaisesås och haricot verts rester", 
       cleanName: "Stekt torsk med bearnaisesås och haricot verts",
       slug: "stekt-torsk-med-bearnaisesas-och-haricot-verts"
     }

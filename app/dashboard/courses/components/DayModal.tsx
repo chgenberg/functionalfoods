@@ -209,11 +209,11 @@ export default function DayModal({
       // Pattern 2: "Meal name rester från frysen/fysen" 
       originalMealName = originalMealName.replace(/\s+rester\s+från\s+(frysen|fysen)\s*$/gi, '');
       
-      // Pattern 3: "Meal name från fysenrester" (compound case)
-      originalMealName = originalMealName.replace(/\s+från\s+(fysen|frysen)rester\s*$/gi, '');
+      // Pattern 3: "Meal name från fysen rester" (compound case)
+      originalMealName = originalMealName.replace(/\s+från\s+(fysen|frysen)\s*rester\s*$/gi, '');
       
-      // Pattern 4: "Meal name1 och meal name2rester" (compound with och)
-      originalMealName = originalMealName.replace(/rester\s*$/gi, '');
+      // Pattern 4: "Meal name1 och meal name2 rester" (compound with och)
+      originalMealName = originalMealName.replace(/\s*rester\s*$/gi, '');
       
       // Clean up any trailing "och [something]" that might be part of rester description
       originalMealName = originalMealName.replace(/\s+och\s+[^,]*rester.*$/gi, '');
