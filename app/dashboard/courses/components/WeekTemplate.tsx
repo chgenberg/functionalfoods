@@ -466,21 +466,11 @@ export default function WeekTemplate({
                 </p>
               </div>
               
-              {/* Content with video side by side */}
-              <div className={`${weeklyVideos[weekNumber] ? 'md:grid md:grid-cols-2 md:gap-8' : ''}`}>
-                {/* Text content */}
-                <div className="prose prose-lg max-w-none text-gray-700">
-                  {welcomeMessage.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="mb-4 leading-relaxed">
-                      {paragraph.trim()}
-                    </p>
-                  ))}
-                </div>
-                
-                {/* Video section - only show if video exists for this week */}
-                {weeklyVideos[weekNumber] && (
-                  <div className="mt-6 md:mt-0">
-                    <h3 className="text-xl font-semibold text-[#014421] mb-4">Veckans pep-talk</h3>
+              {/* Video section - only show if video exists for this week */}
+              {weeklyVideos[weekNumber] && (
+                <div className="mb-8">
+                  <h3 className="text-xl font-semibold text-[#014421] mb-4 text-center">Veckans pep-talk</h3>
+                  <div className="max-w-4xl mx-auto">
                     <div className="relative rounded-xl overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
                       <iframe
                         className="absolute inset-0 w-full h-full"
@@ -492,7 +482,16 @@ export default function WeekTemplate({
                       />
                     </div>
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* Text content */}
+              <div className="prose prose-lg max-w-none text-gray-700">
+                {welcomeMessage.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4 leading-relaxed">
+                    {paragraph.trim()}
+                  </p>
+                ))}
               </div>
 
               {/* Week Documents - Integrated in same box without border */}
