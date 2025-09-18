@@ -157,13 +157,9 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
             )}
             
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-green-600 transition-colors">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 group-hover:text-green-600 transition-colors">
                 {doc.title}
               </h3>
-              
-              <p className="text-gray-600 mb-4 line-clamp-3">
-                {doc.excerpt || 'Klicka för att läsa mer...'}
-              </p>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center text-sm text-gray-500">
