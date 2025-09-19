@@ -75,11 +75,5 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Handle file size limits
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
-};
+// Handle file size limits - Next.js 14 format
+export const maxDuration = 30; // 30 seconds timeout
