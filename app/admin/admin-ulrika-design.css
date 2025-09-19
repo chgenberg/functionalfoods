@@ -1,0 +1,463 @@
+/* ========================================
+   ULRIKA FUNCTIONAL FOODS - ADMIN DESIGN
+   Minimalistisk & Ren Design
+   ======================================== */
+
+/* FÄRGPALETT FRÅN ULRIKAS VARUMÄRKE */
+:root {
+  /* Primära färger */
+  --primary-green: #014421;      /* Mörkgrön - huvudfärg */
+  --primary-light-green: #93C560; /* Ljusgrön - accentfärg */
+  --primary-beige: #F3EFE3;      /* Beige - bakgrund */
+  
+  /* Sekundära färger */
+  --coral-accent: #FF7E70;       /* Korall - varningar/highlights */
+  --soft-brown: #8B7456;         /* Brun - text/detaljer */
+  --cream-white: #FEFDF9;        /* Krämvit - ljus bakgrund */
+  
+  /* Neutrala färger */
+  --text-primary: #1a1a1a;       /* Mörkgrå text */
+  --text-secondary: #6B7280;     /* Grå text */
+  --border-light: #E5E7EB;       /* Ljus kant */
+  --shadow-soft: rgba(0, 0, 0, 0.04);
+  --shadow-medium: rgba(0, 0, 0, 0.08);
+}
+
+/* GLOBAL RESET & TYPOGRAFI */
+* {
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+body {
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--primary-beige);
+  color: var(--text-primary);
+}
+
+/* MINIMALISTISK ADMIN LAYOUT */
+.admin-container {
+  background: linear-gradient(135deg, 
+    var(--primary-beige) 0%, 
+    var(--cream-white) 50%, 
+    rgba(147, 197, 96, 0.05) 100%
+  );
+  min-height: 100vh;
+}
+
+/* SIDEBAR - REN & ELEGANT */
+.admin-sidebar {
+  background: var(--cream-white);
+  border-right: 1px solid var(--border-light);
+  box-shadow: 2px 0 12px var(--shadow-soft);
+}
+
+.admin-sidebar-logo {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-light-green) 100%);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* NAVIGATION - MINIMALISTISK */
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.admin-nav-item:hover {
+  color: var(--primary-green);
+  background: rgba(1, 68, 33, 0.04);
+  border-left-color: var(--primary-light-green);
+}
+
+.admin-nav-item.active {
+  color: var(--primary-green);
+  background: rgba(147, 197, 96, 0.08);
+  border-left-color: var(--primary-green);
+  font-weight: 500;
+}
+
+/* KORT & PANELER - ULTRA CLEAN */
+.admin-card {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px var(--shadow-soft);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-card:hover {
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+/* STATS KORT - MINIMALISTISK */
+.admin-stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.admin-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-green) 0%, var(--primary-light-green) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-stat-card:hover::before {
+  opacity: 1;
+}
+
+.admin-stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* TABELLER - REN DESIGN */
+.admin-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px var(--shadow-soft);
+}
+
+.admin-table thead {
+  background: var(--primary-beige);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.admin-table th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.admin-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+}
+
+.admin-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(243, 239, 227, 0.3);
+}
+
+/* KNAPPAR - MINIMALISTISK STIL */
+.admin-btn {
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.3px;
+}
+
+.admin-btn-primary {
+  background: var(--primary-green);
+  color: white;
+}
+
+.admin-btn-primary:hover {
+  background: #012a14;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(1, 68, 33, 0.2);
+}
+
+.admin-btn-secondary {
+  background: white;
+  color: var(--primary-green);
+  border: 1px solid var(--border-light);
+}
+
+.admin-btn-secondary:hover {
+  background: var(--primary-beige);
+  border-color: var(--primary-light-green);
+}
+
+.admin-btn-success {
+  background: var(--primary-light-green);
+  color: white;
+}
+
+.admin-btn-danger {
+  background: var(--coral-accent);
+  color: white;
+}
+
+/* FORMULÄR - REN DESIGN */
+.admin-input,
+.admin-select,
+.admin-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+  background: white;
+  color: var(--text-primary);
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+  outline: none;
+  border-color: var(--primary-light-green);
+  box-shadow: 0 0 0 3px rgba(147, 197, 96, 0.1);
+}
+
+.admin-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  letter-spacing: 0.3px;
+}
+
+/* BADGES - MINIMALISTISK */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.admin-badge-success {
+  background: rgba(147, 197, 96, 0.1);
+  color: var(--primary-green);
+}
+
+.admin-badge-warning {
+  background: rgba(255, 126, 112, 0.1);
+  color: var(--coral-accent);
+}
+
+.admin-badge-info {
+  background: rgba(1, 68, 33, 0.08);
+  color: var(--primary-green);
+}
+
+/* ALERTS - SUBTIL DESIGN */
+.admin-alert {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.admin-alert-success {
+  background: rgba(147, 197, 96, 0.08);
+  border-color: rgba(147, 197, 96, 0.3);
+  color: var(--primary-green);
+}
+
+.admin-alert-error {
+  background: rgba(255, 126, 112, 0.08);
+  border-color: rgba(255, 126, 112, 0.3);
+  color: #cc3333;
+}
+
+/* LOADING STATES - ELEGANT */
+.admin-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--primary-beige) 0%,
+    rgba(147, 197, 96, 0.1) 20%,
+    var(--primary-beige) 40%
+  );
+  background-size: 200% 100%;
+  animation: admin-skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes admin-skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* DASHBOARD GRID - RESPONSIV */
+.admin-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.admin-grid-cols-4 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* CHARTS & GRAPHS - MINIMALISTISK */
+.admin-chart-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px var(--shadow-soft);
+}
+
+/* FILE UPLOAD - ELEGANT */
+.admin-upload-zone {
+  border: 2px dashed var(--border-light);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: rgba(243, 239, 227, 0.3);
+}
+
+.admin-upload-zone:hover {
+  border-color: var(--primary-light-green);
+  background: rgba(147, 197, 96, 0.05);
+}
+
+.admin-upload-zone.dragging {
+  border-color: var(--primary-green);
+  background: rgba(147, 197, 96, 0.1);
+}
+
+/* MODAL - MINIMALISTISK */
+.admin-modal-backdrop {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+.admin-modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+/* SCROLLBAR - SUBTIL */
+.admin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: var(--primary-beige);
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(1, 68, 33, 0.2);
+  border-radius: 4px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(1, 68, 33, 0.3);
+}
+
+/* RESPONSIV DESIGN */
+@media (max-width: 768px) {
+  .admin-stat-value {
+    font-size: 2rem;
+  }
+  
+  .admin-card {
+    padding: 1rem;
+  }
+  
+  .admin-table {
+    font-size: 0.875rem;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* ANIMATIONER - SUBTILA */
+.admin-fade-in {
+  animation: adminFadeIn 0.3s ease-out;
+}
+
+@keyframes adminFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* FOKUS & TILLGÄNGLIGHET */
+.admin-focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(147, 197, 96, 0.5);
+}
+
+/* STATUS INDICATORS - MINIMALISTISK */
+.admin-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.admin-status-active {
+  background: var(--primary-light-green);
+}
+
+.admin-status-inactive {
+  background: var(--text-secondary);
+}
+
+.admin-status-error {
+  background: var(--coral-accent);
+}

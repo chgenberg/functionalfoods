@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { AlertCircle, ArrowLeft, Check, Eye, FileText, Image as ImageIcon, Lightbulb, Loader, Save, Trash2, Upload, X } from "lucide-react";;
+import { AlertCircle, ArrowLeft, Check, Eye, FileText, Image as ImageIcon, Lightbulb, Loader, Save, Trash2, Upload, X, BookOpen, Edit3 } from "lucide-react";
 
 interface Recipe {
   id: string;
@@ -17,19 +16,25 @@ interface Recipe {
   categories: string[];
   ingredients: string[];
   slug: string;
-  status: 'publish' | 'draft';
+  status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
   isPremium: boolean;
   date: string;
-  author: {
-    name: string;
-    username: string;
-  };
   difficulty?: string;
   prepTime?: string;
   cookTime?: string;
   servings?: number;
-  instructions?: string[];
-  nutrition?: any;
+  instructions?: string;
+  nutrition?: {
+    perServing?: {
+      energy?: number;
+      protein?: number;
+      carbohydrates?: number;
+      fat?: number;
+      fiber?: number;
+      sugar?: number;
+      salt?: number;
+    }
+  };
   tips?: string;
   tags?: string[];
 }
@@ -46,9 +51,19 @@ interface EditRecipeForm {
   instructions: string[];
   tips: string;
   tags: string[];
-  status: 'publish' | 'draft';
+  status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
   isPremium: boolean;
   imageUrl: string;
+  courseTags: string[]; // Ny: Kurskoppling
+  nutrition: {
+    energy: number;
+    protein: number;
+    carbohydrates: number;
+    fat: number;
+    fiber: number;
+    sugar: number;
+    salt: number;
+  };
 }
 
 export default function EditRecipePage({ params }: { params: { slug: string } }) {
@@ -60,6 +75,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error' | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showNutritionEdit, setShowNutritionEdit] = useState(false);
   
   const [formData, setFormData] = useState<EditRecipeForm>({
     title: '',
@@ -73,17 +89,33 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
     instructions: [],
     tips: '',
     tags: [],
-    status: 'publish',
+    status: 'PUBLISHED',
     isPremium: false,
-    imageUrl: ''
+    imageUrl: '',
+    courseTags: [],
+    nutrition: {
+      energy: 0,
+      protein: 0,
+      carbohydrates: 0,
+      fat: 0,
+      fiber: 0,
+      sugar: 0,
+      salt: 0
+    }
   });
+
+  // Tillgängliga kurser
+  const availableCourses = [
+    { id: 'functional-basics', name: 'Functional Basics', color: 'bg-blue-100 text-blue-800' },
+    { id: 'functional-flow', name: 'Functional Flow', color: 'bg-green-100 text-green-800' },
+    { id: 'functional-energy', name: 'Functional Energy', color: 'bg-orange-100 text-orange-800' }
+  ];
 
   useEffect(() => {
     fetchRecipe();
   }, [params.slug]);
 
   useEffect(() => {
-    // Set image preview when recipe loads
     if (recipe?.imageUrl) {
       setImagePreview(recipe.imageUrl);
     }
@@ -94,44 +126,45 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
       setLoading(true);
       setError(null);
 
-      // Hämta alla recept och hitta det specifika
-      const response = await fetch('/api/recipes?limit=1000');
+      const response = await fetch(`/api/recipes/${params.slug}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch recipes');
+        throw new Error('Failed to fetch recipe');
       }
 
-      const data = await response.json();
-      const foundRecipe = data.recipes.find((r: Recipe) => r.slug === params.slug);
-      
-      if (!foundRecipe) {
-        throw new Error('Recipe not found');
-      }
-
+      const foundRecipe = await response.json();
       setRecipe(foundRecipe);
       
       // Populera formuläret med befintlig data
       setFormData({
         title: foundRecipe.title,
-        excerpt: foundRecipe.excerpt,
-        category: foundRecipe.categories[0] || 'Middag',
+        excerpt: foundRecipe.excerpt || '',
+        category: foundRecipe.categories?.[0] || 'Middag',
         difficulty: foundRecipe.difficulty || 'Medel',
         prepTime: foundRecipe.prepTime || '',
         cookTime: foundRecipe.cookTime || '',
         servings: foundRecipe.servings || 4,
-        ingredients: Array.isArray(foundRecipe.ingredients) ? foundRecipe.ingredients : 
-                    (foundRecipe.ingredients ? [foundRecipe.ingredients] : []),
-        instructions: Array.isArray(foundRecipe.instructions) ? foundRecipe.instructions : 
-                     (foundRecipe.instructions ? 
-                       (typeof foundRecipe.instructions === 'string' ? 
-                         foundRecipe.instructions.split('\n').filter((line: string) => line.trim()) : 
-                         [foundRecipe.instructions.toString()]) : 
-                       []),
+        ingredients: Array.isArray(foundRecipe.ingredients) ? foundRecipe.ingredients : [],
+        instructions: foundRecipe.instructions ? 
+          (typeof foundRecipe.instructions === 'string' ? 
+            foundRecipe.instructions.split('\n').filter((line: string) => line.trim()) : 
+            Array.isArray(foundRecipe.instructions) ? foundRecipe.instructions : []) : [],
         tips: foundRecipe.tips || '',
-        tags: Array.isArray(foundRecipe.tags) ? foundRecipe.tags : 
-              (foundRecipe.tags ? [foundRecipe.tags] : []),
-        status: foundRecipe.status,
-        isPremium: foundRecipe.isPremium,
-        imageUrl: foundRecipe.imageUrl || ''
+        tags: Array.isArray(foundRecipe.tags) ? foundRecipe.tags : [],
+        status: foundRecipe.status || 'PUBLISHED',
+        isPremium: foundRecipe.isPremium || false,
+        imageUrl: foundRecipe.imageUrl || '',
+        courseTags: foundRecipe.tags?.filter((tag: string) => 
+          ['functional-basics', 'functional-flow', 'functional-energy'].includes(tag)
+        ) || [],
+        nutrition: {
+          energy: foundRecipe.nutrition?.perServing?.energy || 0,
+          protein: foundRecipe.nutrition?.perServing?.protein || 0,
+          carbohydrates: foundRecipe.nutrition?.perServing?.carbohydrates || 0,
+          fat: foundRecipe.nutrition?.perServing?.fat || 0,
+          fiber: foundRecipe.nutrition?.perServing?.fiber || 0,
+          sugar: foundRecipe.nutrition?.perServing?.sugar || 0,
+          salt: foundRecipe.nutrition?.perServing?.salt || 0
+        }
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -145,22 +178,39 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
       setSaving(true);
       setSaveStatus('saving');
       
+      // Kombinera vanliga tags med kurskopplingar
+      const allTags = [...new Set([
+        ...formData.tags.filter(tag => tag.trim() !== ''),
+        ...formData.courseTags
+      ])];
+
       // Skicka uppdateringsdata till API
       const updateData = {
         title: formData.title,
         excerpt: formData.excerpt,
-        category: formData.category,
+        categories: [formData.category],
         difficulty: formData.difficulty,
         prepTime: formData.prepTime,
         cookTime: formData.cookTime,
         servings: formData.servings,
         ingredients: formData.ingredients.filter(ing => ing.trim() !== ''),
-        instructions: formData.instructions.filter(inst => inst.trim() !== ''),
+        instructions: formData.instructions.filter(inst => inst.trim() !== '').join('\n'),
         tips: formData.tips,
-        tags: formData.tags.filter(tag => tag.trim() !== ''),
+        tags: allTags,
         status: formData.status,
         isPremium: formData.isPremium,
-        imageUrl: formData.imageUrl
+        imageUrl: formData.imageUrl,
+        nutrition: {
+          perServing: {
+            energy: Number(formData.nutrition.energy),
+            protein: Number(formData.nutrition.protein),
+            carbohydrates: Number(formData.nutrition.carbohydrates),
+            fat: Number(formData.nutrition.fat),
+            fiber: Number(formData.nutrition.fiber),
+            sugar: Number(formData.nutrition.sugar),
+            salt: Number(formData.nutrition.salt)
+          }
+        }
       };
 
       const response = await fetch(`/api/recipes/${params.slug}`, {
@@ -180,7 +230,6 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
       
       setSaveStatus('saved');
       
-      // Återgå till listan efter 2 sekunder
       setTimeout(() => {
         router.push('/admin/recipes');
       }, 2000);
@@ -200,8 +249,6 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
     }
 
     try {
-      setSaving(true);
-      
       const response = await fetch(`/api/recipes/${params.slug}`, {
         method: 'DELETE'
       });
@@ -210,17 +257,10 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         throw new Error('Failed to delete recipe');
       }
 
-      const result = await response.json();
-      console.log('Recipe deleted successfully:', result);
-      
-      alert(`Receptet "${result.deletedRecipe}" har tagits bort. Backup sparad som: ${result.backupFile}`);
       router.push('/admin/recipes');
-      
     } catch (error) {
       console.error('Error deleting recipe:', error);
-      alert('Fel vid borttagning av recept: ' + (error instanceof Error ? error.message : 'Okänt fel'));
-    } finally {
-      setSaving(false);
+      alert('Fel vid borttagning av recept');
     }
   };
 
@@ -228,17 +268,12 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Bilden är för stor. Max 5MB tillåten.');
-      return;
-    }
-
     setUploadingImage(true);
     
     try {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('type', 'recipe');
 
       const response = await fetch('/api/admin/upload', {
         method: 'POST',
@@ -252,7 +287,6 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
       const data = await response.json();
       setFormData(prev => ({ ...prev, imageUrl: data.url }));
       setImagePreview(data.url);
-      setSaveStatus(null);
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Fel vid uppladdning av bild');
@@ -261,464 +295,565 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
     }
   };
 
-  const removeImage = () => {
-    setFormData(prev => ({ ...prev, imageUrl: '' }));
-    setImagePreview(null);
-    setSaveStatus(null);
-  };
-
-  const addIngredient = () => {
+  const toggleCourseTag = (courseId: string) => {
     setFormData(prev => ({
       ...prev,
-      ingredients: [...prev.ingredients, '']
-    }));
-  };
-
-  const removeIngredient = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      ingredients: prev.ingredients.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updateIngredient = (index: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      ingredients: prev.ingredients.map((ing, i) => i === index ? value : ing)
-    }));
-  };
-
-  const addInstruction = () => {
-    setFormData(prev => ({
-      ...prev,
-      instructions: [...prev.instructions, '']
-    }));
-  };
-
-  const removeInstruction = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      instructions: prev.instructions.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updateInstruction = (index: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      instructions: prev.instructions.map((inst, i) => i === index ? value : inst)
+      courseTags: prev.courseTags.includes(courseId)
+        ? prev.courseTags.filter(id => id !== courseId)
+        : [...prev.courseTags, courseId]
     }));
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F1E8] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#93C560] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar recept...</p>
-        </div>
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader className="w-8 h-8 animate-spin text-[var(--primary-green)]" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#F7F1E8] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-semibold text-[#014421] mb-2">Fel vid laddning</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <Link
-            href="/admin/recipes"
-            className="bg-gradient-to-r from-[#FF7E70] to-[#ff6b5a] text-white px-6 py-3 rounded-xl hover:from-[#ff6b5a] hover:to-[#FF7E70] transition-all shadow-md hover:shadow-lg"
-          >
-            Tillbaka till receptlistan
-          </Link>
+      <div className="p-8">
+        <div className="bg-red-50 p-4 rounded-lg">
+          <p className="text-red-600">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F1E8]">
+    <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-[#F3EFE3]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/admin/recipes"
-                className="flex items-center gap-2 text-gray-600 hover:text-[#014421] transition-colors"
+      <div className="mb-8">
+        <Link 
+          href="/admin/recipes" 
+          className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--primary-green)] mb-4 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm">Tillbaka till recept</span>
+        </Link>
+        
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-light text-[var(--primary-green)]">Redigera recept</h1>
+          
+          <div className="flex items-center gap-4">
+            {saveStatus === 'saved' && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center gap-2 text-green-600"
               >
-                <ArrowLeft className="w-5 h-5" />
-                Tillbaka
-              </Link>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-xl font-semibold text-[#014421] flex items-center gap-2">
-                <span className="text-xl">✏️</span> Redigera recept
-              </h1>
-            </div>
-            
-            {/* Save Status */}
-            {saveStatus && (
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${
-                saveStatus === 'saved' ? 'bg-[#93C560]/20 text-[#014421]' : 
-                saveStatus === 'saving' ? 'bg-yellow-100 text-yellow-800' : 
-                'bg-red-100 text-red-800'
-              }`}>
-                {saveStatus === 'saved' && <><Check className="w-4 h-4" /> Sparad!</>}
-                {saveStatus === 'saving' && <><Loader className="w-4 h-4 animate-spin" /> Sparar...</>}
-                {saveStatus === 'error' && <><AlertCircle className="w-4 h-4" /> Fel vid sparning</>}
-              </div>
+                <Check className="w-4 h-4" />
+                <span className="text-sm">Sparat!</span>
+              </motion.div>
             )}
             
-            <div className="flex items-center gap-3">
-              {recipe && recipe.status === 'publish' && (
-                <Link
-                  href={`/kunskapsbank/recept/${recipe.slug}`}
-                  target="_blank"
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#014421] hover:bg-gray-50 rounded-xl transition-all"
-                >
-                  <Eye className="w-4 h-4" />
-                  <span className="hidden sm:inline">Visa recept</span>
-                </Link>
-              )}
-              <button
-                onClick={handleDelete}
-                disabled={saving}
-                className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all disabled:opacity-50"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Ta bort</span>
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-[#93C560] to-[#84b351] text-white rounded-xl hover:from-[#84b351] hover:to-[#93C560] transition-all shadow-md hover:shadow-lg disabled:opacity-50"
-              >
+            <button
+              onClick={handleDelete}
+              className="admin-btn admin-btn-danger"
+            >
+              <Trash2 className="w-4 h-4" />
+              Ta bort
+            </button>
+            
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="admin-btn admin-btn-primary"
+            >
+              {saving ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
                 <Save className="w-4 h-4" />
-                {saving ? 'Sparar...' : 'Spara ändringar'}
-              </button>
-            </div>
+              )}
+              Spara ändringar
+            </button>
           </div>
         </div>
       </div>
 
       {/* Form */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-[#F3EFE3] overflow-hidden">
-          <div className="p-6 space-y-8">
-            {/* Image Upload Section */}
-            <div>
-              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <span className="text-lg">🖼️</span> Receptbild
-              </h2>
-              <div className="space-y-4">
-                {imagePreview ? (
-                  <div className="relative">
-                    <img
-                      src={imagePreview}
-                      alt="Receptbild"
-                      className="w-full h-64 object-cover rounded-xl border border-[#F3EFE3]"
-                    />
-                    <button
-                      onClick={removeImage}
-                      className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-lg shadow-md transition-all"
-                      title="Ta bort bild"
-                    >
-                      <X className="w-4 h-4 text-red-600" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8">
-                    <div className="text-center">
-                      <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">Ingen bild uppladdad</p>
-                    </div>
-                  </div>
-                )}
-                
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Basic info */}
+          <div className="admin-card">
+            <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Grundläggande information</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="admin-label">Titel</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  className="admin-input"
+                  placeholder="Receptets namn"
+                />
+              </div>
+
+              <div>
+                <label className="admin-label">Beskrivning</label>
+                <textarea
+                  value={formData.excerpt}
+                  onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+                  className="admin-textarea"
+                  rows={3}
+                  placeholder="En kort beskrivning av receptet"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="image-upload" className="cursor-pointer">
-                    <div className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F3EFE3] hover:bg-[#F7F1E8] text-[#014421] rounded-xl transition-all">
-                      {uploadingImage ? (
-                        <>
-                          <Loader className="w-4 h-4 animate-spin" />
-                          Laddar upp...
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="w-4 h-4" />
-                          {imagePreview ? 'Byt bild' : 'Ladda upp bild'}
-                        </>
-                      )}
-                    </div>
-                    <input
-                      id="image-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      disabled={uploadingImage}
-                      className="hidden"
-                    />
-                  </label>
-                  <p className="text-xs text-gray-500 mt-2">Max 5MB. JPG, PNG eller WebP.</p>
+                  <label className="admin-label">Kategori</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                    className="admin-select"
+                  >
+                    <option value="Frukost">Frukost</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Middag">Middag</option>
+                    <option value="Mellanmål">Mellanmål</option>
+                    <option value="Dessert">Dessert</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="admin-label">Svårighetsgrad</label>
+                  <select
+                    value={formData.difficulty}
+                    onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
+                    className="admin-select"
+                  >
+                    <option value="Lätt">Lätt</option>
+                    <option value="Medel">Medel</option>
+                    <option value="Svår">Svår</option>
+                  </select>
                 </div>
               </div>
-            </div>
 
-            {/* Basic Information */}
-            <div>
-              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <FileText className="w-6 h-6 inline text-accent" /> Grundläggande information
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Recepttitel
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
-                    placeholder="Namn på receptet"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Kategori
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={formData.category}
-                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
-                    >
-                      <option value="Frukost">Frukost</option>
-                      <option value="Lunch">Lunch</option>
-                      <option value="Middag">Middag</option>
-                      <option value="Mellanmål">Mellanmål</option>
-                      <option value="Efterrätt">Efterrätt</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Beskrivning
-                  </label>
-                  <textarea
-                    value={formData.excerpt}
-                    onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
-                    placeholder="En kort, lockande beskrivning av receptet"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Recipe Details */}
-            <div>
-              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <span className="text-lg">⚙️</span> Receptdetaljer
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Svårighetsgrad
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={formData.difficulty}
-                      onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
-                    >
-                      <option value="Lätt">Lätt</option>
-                      <option value="Medel">Medel</option>
-                      <option value="Svår">Svår</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Förberedelsetid
-                  </label>
+                  <label className="admin-label">Förberedelse</label>
                   <input
                     type="text"
                     value={formData.prepTime}
                     onChange={(e) => setFormData(prev => ({ ...prev, prepTime: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
-                    placeholder="t.ex. 15 min"
+                    className="admin-input"
+                    placeholder="15 min"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tillagningstid
-                  </label>
+                  <label className="admin-label">Tillagningstid</label>
                   <input
                     type="text"
                     value={formData.cookTime}
                     onChange={(e) => setFormData(prev => ({ ...prev, cookTime: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
-                    placeholder="t.ex. 30 min"
+                    className="admin-input"
+                    placeholder="30 min"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Portioner
-                  </label>
+                  <label className="admin-label">Portioner</label>
                   <input
                     type="number"
                     value={formData.servings}
-                    onChange={(e) => setFormData(prev => ({ ...prev, servings: parseInt(e.target.value) || 1 }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
+                    onChange={(e) => setFormData(prev => ({ ...prev, servings: parseInt(e.target.value) || 4 }))}
+                    className="admin-input"
                     min="1"
                   />
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Ingredients */}
-            <div>
-              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <span className="text-lg">🧂</span> Ingredienser
-              </h2>
-              <div className="space-y-3">
-                {formData.ingredients.map((ingredient, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <input
-                      type="text"
-                      value={ingredient}
-                      onChange={(e) => updateIngredient(index, e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
-                      placeholder={`Ingrediens ${index + 1}`}
-                    />
-                    <button
-                      onClick={() => removeIngredient(index)}
-                      className="p-2 text-red-600 hover:text-red-700 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={addIngredient}
-                  className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-[#93C560] hover:text-[#93C560] transition-all flex items-center justify-center gap-2"
+          {/* Kurskoppling */}
+          <div className="admin-card">
+            <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              Kurskoppling
+            </h2>
+            
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              Välj vilka kurser detta recept ska vara tillgängligt för:
+            </p>
+
+            <div className="space-y-2">
+              {availableCourses.map(course => (
+                <label 
+                  key={course.id}
+                  className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors"
+                  style={{
+                    borderColor: formData.courseTags.includes(course.id) ? 'var(--primary-light-green)' : 'var(--border-light)',
+                    backgroundColor: formData.courseTags.includes(course.id) ? 'rgba(147, 197, 96, 0.05)' : 'transparent'
+                  }}
                 >
-                  <span className="text-xl">➕</span> Lägg till ingrediens
-                </button>
-              </div>
-            </div>
-
-            {/* Instructions */}
-            <div>
-              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <FileText className="w-6 h-6 inline text-accent" /> Instruktioner
-              </h2>
-              <div className="space-y-3">
-                {formData.instructions.map((instruction, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 bg-[#93C560]/20 text-[#014421] rounded-full flex items-center justify-center text-sm font-medium mt-1">
-                      {index + 1}
-                    </span>
-                    <textarea
-                      value={instruction}
-                      onChange={(e) => updateInstruction(index, e.target.value)}
-                      rows={2}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
-                      placeholder={`Steg ${index + 1}`}
-                    />
-                    <button
-                      onClick={() => removeInstruction(index)}
-                      className="p-2 text-red-600 hover:text-red-700 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={addInstruction}
-                  className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-[#93C560] hover:text-[#93C560] transition-all flex items-center justify-center gap-2"
-                >
-                  <span className="text-xl">➕</span> Lägg till instruktion
-                </button>
-              </div>
-            </div>
-
-            {/* Tips */}
-            <div>
-              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <Lightbulb className="w-6 h-6 inline text-accent" /> Tips från kocken
-              </h2>
-              <textarea
-                value={formData.tips}
-                onChange={(e) => setFormData(prev => ({ ...prev, tips: e.target.value }))}
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
-                placeholder="Extra tips för att lyckas med receptet..."
-              />
-            </div>
-
-            {/* Status and Settings */}
-            <div>
-              <h2 className="text-lg font-semibold text-[#014421] mb-4 flex items-center gap-2">
-                <span className="text-lg">⚙️</span> Inställningar
-              </h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="publish"
-                      checked={formData.status === 'publish'}
-                      onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'publish' | 'draft' }))}
-                      className="text-[#93C560] focus:ring-[#93C560] rounded transition-all"
-                    />
-                    <span className="text-sm text-gray-700">Publicerad</span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="draft"
-                      checked={formData.status === 'draft'}
-                      onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'publish' | 'draft' }))}
-                      className="text-[#93C560] focus:ring-[#93C560] rounded transition-all"
-                    />
-                    <span className="text-sm text-gray-700">Utkast</span>
-                  </label>
-                </div>
-                
-                <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    checked={formData.isPremium}
-                    onChange={(e) => setFormData(prev => ({ ...prev, isPremium: e.target.checked }))}
-                    className="text-[#93C560] focus:ring-[#93C560] rounded transition-all"
+                    checked={formData.courseTags.includes(course.id)}
+                    onChange={() => toggleCourseTag(course.id)}
+                    className="w-4 h-4 text-[var(--primary-green)] rounded"
                   />
-                  <span className="text-sm text-gray-700">Premium-recept (kräver köpt kurs)</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${course.color}`}>
+                    {course.name}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Näringsvärden */}
+          <div className="admin-card">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-medium text-[var(--primary-green)] flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Näringsvärden
+              </h2>
+              <button
+                onClick={() => setShowNutritionEdit(!showNutritionEdit)}
+                className="admin-btn admin-btn-secondary text-sm"
+              >
+                <Edit3 className="w-4 h-4" />
+                {showNutritionEdit ? 'Dölj' : 'Redigera'}
+              </button>
+            </div>
+
+            {showNutritionEdit ? (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="admin-label">Energi (kcal)</label>
+                  <input
+                    type="number"
+                    value={formData.nutrition.energy}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      nutrition: { ...prev.nutrition, energy: parseInt(e.target.value) || 0 }
+                    }))}
+                    className="admin-input"
+                    min="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="admin-label">Protein (g)</label>
+                  <input
+                    type="number"
+                    value={formData.nutrition.protein}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      nutrition: { ...prev.nutrition, protein: parseFloat(e.target.value) || 0 }
+                    }))}
+                    className="admin-input"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div>
+                  <label className="admin-label">Kolhydrater (g)</label>
+                  <input
+                    type="number"
+                    value={formData.nutrition.carbohydrates}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      nutrition: { ...prev.nutrition, carbohydrates: parseFloat(e.target.value) || 0 }
+                    }))}
+                    className="admin-input"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div>
+                  <label className="admin-label">Fett (g)</label>
+                  <input
+                    type="number"
+                    value={formData.nutrition.fat}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      nutrition: { ...prev.nutrition, fat: parseFloat(e.target.value) || 0 }
+                    }))}
+                    className="admin-input"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div>
+                  <label className="admin-label">Fiber (g)</label>
+                  <input
+                    type="number"
+                    value={formData.nutrition.fiber}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      nutrition: { ...prev.nutrition, fiber: parseFloat(e.target.value) || 0 }
+                    }))}
+                    className="admin-input"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div>
+                  <label className="admin-label">Socker (g)</label>
+                  <input
+                    type="number"
+                    value={formData.nutrition.sugar}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      nutrition: { ...prev.nutrition, sugar: parseFloat(e.target.value) || 0 }
+                    }))}
+                    className="admin-input"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div>
+                  <label className="admin-label">Salt (g)</label>
+                  <input
+                    type="number"
+                    value={formData.nutrition.salt}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      nutrition: { ...prev.nutrition, salt: parseFloat(e.target.value) || 0 }
+                    }))}
+                    className="admin-input"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="bg-[var(--primary-beige)] rounded-lg p-3 text-center">
+                  <div className="text-2xl font-semibold text-[var(--primary-green)]">
+                    {formData.nutrition.energy || 0}
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)]">Kalorier</div>
+                </div>
+                <div className="bg-[var(--primary-beige)] rounded-lg p-3 text-center">
+                  <div className="text-2xl font-semibold text-[var(--primary-green)]">
+                    {formData.nutrition.protein || 0}g
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)]">Protein</div>
+                </div>
+                <div className="bg-[var(--primary-beige)] rounded-lg p-3 text-center">
+                  <div className="text-2xl font-semibold text-[var(--primary-green)]">
+                    {formData.nutrition.carbohydrates || 0}g
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)]">Kolhydrater</div>
+                </div>
+                <div className="bg-[var(--primary-beige)] rounded-lg p-3 text-center">
+                  <div className="text-2xl font-semibold text-[var(--primary-green)]">
+                    {formData.nutrition.fat || 0}g
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)]">Fett</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Ingredients */}
+          <div className="admin-card">
+            <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Ingredienser</h2>
+            
+            <div className="space-y-2">
+              {formData.ingredients.map((ingredient, index) => (
+                <div key={index} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={ingredient}
+                    onChange={(e) => {
+                      const newIngredients = [...formData.ingredients];
+                      newIngredients[index] = e.target.value;
+                      setFormData(prev => ({ ...prev, ingredients: newIngredients }));
+                    }}
+                    className="admin-input"
+                    placeholder="T.ex. 2 dl mjölk"
+                  />
+                  <button
+                    onClick={() => {
+                      const newIngredients = formData.ingredients.filter((_, i) => i !== index);
+                      setFormData(prev => ({ ...prev, ingredients: newIngredients }));
+                    }}
+                    className="admin-btn admin-btn-secondary"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              
+              <button
+                onClick={() => setFormData(prev => ({ ...prev, ingredients: [...prev.ingredients, ''] }))}
+                className="admin-btn admin-btn-secondary"
+              >
+                Lägg till ingrediens
+              </button>
+            </div>
+          </div>
+
+          {/* Instructions */}
+          <div className="admin-card">
+            <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Instruktioner</h2>
+            
+            <div className="space-y-2">
+              {formData.instructions.map((instruction, index) => (
+                <div key={index} className="flex gap-2">
+                  <span className="text-sm text-[var(--text-secondary)] pt-3">{index + 1}.</span>
+                  <textarea
+                    value={instruction}
+                    onChange={(e) => {
+                      const newInstructions = [...formData.instructions];
+                      newInstructions[index] = e.target.value;
+                      setFormData(prev => ({ ...prev, instructions: newInstructions }));
+                    }}
+                    className="admin-textarea"
+                    rows={2}
+                    placeholder="Beskriv steget..."
+                  />
+                  <button
+                    onClick={() => {
+                      const newInstructions = formData.instructions.filter((_, i) => i !== index);
+                      setFormData(prev => ({ ...prev, instructions: newInstructions }));
+                    }}
+                    className="admin-btn admin-btn-secondary"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              
+              <button
+                onClick={() => setFormData(prev => ({ ...prev, instructions: [...prev.instructions, ''] }))}
+                className="admin-btn admin-btn-secondary"
+              >
+                Lägg till steg
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Image */}
+          <div className="admin-card">
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Bild</h3>
+            
+            {imagePreview ? (
+              <div className="space-y-4">
+                <div className="relative aspect-video rounded-lg overflow-hidden">
+                  <Image
+                    src={imagePreview}
+                    alt={formData.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                
+                <button
+                  onClick={() => {
+                    setImagePreview(null);
+                    setFormData(prev => ({ ...prev, imageUrl: '' }));
+                  }}
+                  className="admin-btn admin-btn-secondary w-full"
+                >
+                  Ta bort bild
+                </button>
+              </div>
+            ) : (
+              <div className="admin-upload-zone">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="image-upload"
+                  disabled={uploadingImage}
+                />
+                <label htmlFor="image-upload" className="cursor-pointer text-center">
+                  {uploadingImage ? (
+                    <Loader className="w-8 h-8 animate-spin mx-auto text-[var(--primary-green)]" />
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 mx-auto mb-2 text-[var(--primary-green)]" />
+                      <p className="text-sm text-[var(--text-secondary)]">
+                        Klicka för att ladda upp bild
+                      </p>
+                    </>
+                  )}
                 </label>
               </div>
+            )}
+          </div>
+
+          {/* Status */}
+          <div className="admin-card">
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Status</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="admin-label">Publiceringsstatus</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as any }))}
+                  className="admin-select"
+                >
+                  <option value="PUBLISHED">Publicerad</option>
+                  <option value="DRAFT">Utkast</option>
+                  <option value="ARCHIVED">Arkiverad</option>
+                </select>
+              </div>
+
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.isPremium}
+                  onChange={(e) => setFormData(prev => ({ ...prev, isPremium: e.target.checked }))}
+                  className="w-4 h-4 text-[var(--primary-green)] rounded"
+                />
+                <span className="text-sm text-[var(--text-primary)]">Premium-recept</span>
+              </label>
             </div>
+          </div>
+
+          {/* Tips */}
+          <div className="admin-card">
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Tips</h3>
+            
+            <textarea
+              value={formData.tips}
+              onChange={(e) => setFormData(prev => ({ ...prev, tips: e.target.value }))}
+              className="admin-textarea"
+              rows={4}
+              placeholder="Lägg till tips för receptet..."
+            />
+          </div>
+
+          {/* Tags */}
+          <div className="admin-card">
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Taggar</h3>
+            
+            <input
+              type="text"
+              value={formData.tags.join(', ')}
+              onChange={(e) => setFormData(prev => ({ 
+                ...prev, 
+                tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
+              }))}
+              className="admin-input"
+              placeholder="vegetarisk, glutenfri, snabb"
+            />
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
+              Separera taggar med kommatecken
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}
