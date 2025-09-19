@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, Mail, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import '../admin.css';
+import '../admin-ulrika-design.css';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
