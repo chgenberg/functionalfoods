@@ -8,6 +8,7 @@ import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
 import InfoPopupGrid from '../../components/InfoPopupGrid';
 import CompleteCourseDownload from '../../components/CompleteCourseDownload';
+import CourseRecipesPDF from '../../components/CourseRecipesPDF';
 import { energyMealPlans } from '@/app/data/mealPlans';
 import { HelpCircle, Check, Clock, Lock, BookOpen, Award, Calendar, TrendingUp, Users, Instagram } from 'lucide-react';
 
@@ -109,6 +110,17 @@ export default function FunctionalEnergyOverview() {
               />
             </div>
           </div>
+          
+          {/* Course Help Section */}
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => setShowHelpModal(true)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#F3EFE3] hover:bg-[#93C560] hover:text-white text-[#014421] rounded-full transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+            >
+              <HelpCircle className="w-5 h-5" />
+              Så använder du kursen
+            </button>
+          </div>
         </div>
       </div>
 
@@ -163,8 +175,11 @@ export default function FunctionalEnergyOverview() {
         {/* Info Popup Grid */}
         <InfoPopupGrid courseType="energy" courseId="functional-energy" />
 
-        {/* Complete Course Download */}
-        <CompleteCourseDownload courseType="energy" />
+        {/* Course Downloads */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <CompleteCourseDownload courseType="energy" />
+          <CourseRecipesPDF courseType="energy" />
+        </div>
 
         {/* Next Steps Section */}
         <motion.div
@@ -264,14 +279,12 @@ export default function FunctionalEnergyOverview() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                 <a
-                  href="https://www.facebook.com/groups/1168295381877412/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-[#1877F2] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  href="/dashboard/community"
+                  className="flex items-center gap-3 p-4 bg-[#014421] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
                   <Users className="w-6 h-6" />
                   <div>
-                    <div className="font-bold">FACEBOOK COMMUNITY</div>
+                    <div className="font-bold">COMMUNITY</div>
                     <div className="text-sm opacity-90">Gå med i vår grupp</div>
                   </div>
                 </a>

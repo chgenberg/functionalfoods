@@ -9,11 +9,11 @@ const prisma = new PrismaClient();
 const SUPPORTED = ['sv', 'en', 'es', 'de', 'fr'] as const;
 type Lang = typeof SUPPORTED[number];
 const M: Record<Lang, Record<string,string>> = {
-  sv: { receipt: 'Kvitto', orderNo: 'Ordernummer', date: 'Datum', customer: 'Kund', products: 'Produkter', total: 'Totalt', payStatus: 'Betalstatus', tx: 'Transaktion', missingOrderId: 'orderId krävs', noAuth: 'Ingen auktorisering', notFound: 'Order hittades inte', genErr: 'Kunde inte generera kvitto' },
-  en: { receipt: 'Receipt', orderNo: 'Order number', date: 'Date', customer: 'Customer', products: 'Products', total: 'Total', payStatus: 'Payment status', tx: 'Transaction', missingOrderId: 'orderId is required', noAuth: 'No authorization', notFound: 'Order not found', genErr: 'Could not generate receipt' },
-  es: { receipt: 'Recibo', orderNo: 'Número de pedido', date: 'Fecha', customer: 'Cliente', products: 'Productos', total: 'Total', payStatus: 'Estado de pago', tx: 'Transacción', missingOrderId: 'se requiere orderId', noAuth: 'Sin autorización', notFound: 'Pedido no encontrado', genErr: 'No se pudo generar el recibo' },
-  de: { receipt: 'Quittung', orderNo: 'Bestellnummer', date: 'Datum', customer: 'Kunde', products: 'Produkte', total: 'Summe', payStatus: 'Zahlungsstatus', tx: 'Transaktion', missingOrderId: 'orderId erforderlich', noAuth: 'Keine Autorisierung', notFound: 'Bestellung nicht gefunden', genErr: 'Quittung konnte nicht erstellt werden' },
-  fr: { receipt: 'Reçu', orderNo: 'Numéro de commande', date: 'Date', customer: 'Client', products: 'Produits', total: 'Total', payStatus: 'Statut de paiement', tx: 'Transaction', missingOrderId: 'orderId requis', noAuth: 'Aucune autorisation', notFound: 'Commande introuvable', genErr: 'Impossible de générer le reçu' }
+  sv: { receipt: 'Kvitto', orderNo: 'Ordernummer', date: 'Datum', customer: 'Kund', products: 'Produkter', total: 'Totalt', payStatus: 'Betalstatus', tx: 'Transaktion', missingOrderId: 'orderId krävs', noAuth: 'Ingen auktorisering', notFound: 'Order hittades inte', genErr: 'Kunde inte generera kvitto', subtotal: 'Summa exkl. moms', vat: 'Moms (25%)', vatAmount: '25%' },
+  en: { receipt: 'Receipt', orderNo: 'Order number', date: 'Date', customer: 'Customer', products: 'Products', total: 'Total', payStatus: 'Payment status', tx: 'Transaction', missingOrderId: 'orderId is required', noAuth: 'No authorization', notFound: 'Order not found', genErr: 'Could not generate receipt', subtotal: 'Subtotal excl. VAT', vat: 'VAT (25%)', vatAmount: '25%' },
+  es: { receipt: 'Recibo', orderNo: 'Número de pedido', date: 'Fecha', customer: 'Cliente', products: 'Productos', total: 'Total', payStatus: 'Estado de pago', tx: 'Transacción', missingOrderId: 'se requiere orderId', noAuth: 'Sin autorización', notFound: 'Pedido no encontrado', genErr: 'No se pudo generar el recibo', subtotal: 'Subtotal sin IVA', vat: 'IVA (25%)', vatAmount: '25%' },
+  de: { receipt: 'Quittung', orderNo: 'Bestellnummer', date: 'Datum', customer: 'Kunde', products: 'Produkte', total: 'Summe', payStatus: 'Zahlungsstatus', tx: 'Transaktion', missingOrderId: 'orderId erforderlich', noAuth: 'Keine Autorisierung', notFound: 'Bestellung nicht gefunden', genErr: 'Quittung konnte nicht erstellt werden', subtotal: 'Zwischensumme ohne MwSt.', vat: 'MwSt. (25%)', vatAmount: '25%' },
+  fr: { receipt: 'Reçu', orderNo: 'Numéro de commande', date: 'Date', customer: 'Client', products: 'Produits', total: 'Total', payStatus: 'Statut de paiement', tx: 'Transaction', missingOrderId: 'orderId requis', noAuth: 'Aucune autorisation', notFound: 'Commande introuvable', genErr: 'Impossible de générer le reçu', subtotal: 'Sous-total HT', vat: 'TVA (25%)', vatAmount: '25%' }
 };
 function getLang(req: NextRequest): Lang {
   const hdr = req.headers.get('cookie') || '';
@@ -69,8 +69,14 @@ export async function GET(req: NextRequest) {
       doc.fontSize(12).text(`${it.name} x${it.quantity} – ${it.price} ${order.currency}`);
     });
     doc.moveDown();
-    doc.fontSize(12).text(`${L.total}: ${order.totalAmount} ${order.currency}`);
+    const subtotal = order.totalAmount / 1.25;
+    const vatAmount = order.totalAmount - subtotal;
+    doc.fontSize(11).text(`${L.subtotal}: ${subtotal.toFixed(2)} ${order.currency}`);
+    doc.text(`${L.vat}: ${vatAmount.toFixed(2)} ${order.currency}`);
+    doc.moveDown(0.5);
+    doc.fontSize(12).text(`${L.total}: ${order.totalAmount} ${order.currency}`, { underline: true });
     if (order.payment) {
+      doc.moveDown();
       doc.text(`${L.payStatus}: ${order.payment.status}`);
       if (order.payment.externalId) doc.text(`${L.tx}: ${order.payment.externalId}`);
     }

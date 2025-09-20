@@ -1,183 +1,89 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-export const dynamic = 'force-dynamic';
-
 const prisma = new PrismaClient();
 
-interface Recipe {
-  id: string;
-  title: string;
-  excerpt?: string;
-  imageUrl?: string;
-  imageAlt?: string;
-  categories: string[];
-  ingredients: string[];
-  slug: string;
-  status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED';
-  isPremium: boolean;
-  isFree: boolean;
-  date: string;
-  author: {
-    name: string;
-    username: string;
-  };
-  difficulty?: string;
-  prepTime?: string;
-  cookTime?: string;
-  totalTime?: string;
-  servings?: number;
-  instructions?: string[];
-  nutrition?: any;
-  tips?: string;
-  tags?: string[];
-}
-
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const page = parseInt(searchParams.get('page') || '1');
+    const { searchParams } = new URL(req.url);
     const adminFilter = searchParams.get('adminFilter') || 'all';
-    const search = searchParams.get('search') || '';
-    const adminMode = searchParams.get('adminMode') === 'true';
+    const courseFilter = searchParams.get('courseFilter');
+    const search = searchParams.get('search');
+    const limit = parseInt(searchParams.get('limit') || '50');
 
-    // Bygg Prisma filter för admin - visa ALLA recept
-    const where: any = {};
+    // Bygg where-klausul
+    let where: any = {};
 
-    // Admin-specifik filtrering
+    // Admin-filter
     if (adminFilter === 'free') {
       where.isFree = true;
       where.isPremium = false;
     } else if (adminFilter === 'premium') {
       where.isPremium = true;
     }
-    // För 'all' lägger vi inte till några statusfilter - visa allt
+
+    // Kursfilter
+    if (courseFilter) {
+      where.tags = {
+        has: courseFilter
+      };
+    }
 
     // Sökfilter
     if (search) {
       where.OR = [
-        {
-          title: {
-            contains: search,
-            mode: 'insensitive'
-          }
-        },
-        {
-          excerpt: {
-            contains: search,
-            mode: 'insensitive'
-          }
-        },
-        {
-          ingredients: {
-            hasSome: [search]
-          }
-        },
-        {
-          categories: {
-            hasSome: [search]
-          }
-        }
+        { title: { contains: search, mode: 'insensitive' } },
+        { excerpt: { contains: search, mode: 'insensitive' } },
+        { searchText: { contains: search, mode: 'insensitive' } }
       ];
     }
 
-    // Hämta recept från databasen
+    // Hämta recept
     const recipes = await prisma.recipe.findMany({
       where,
       include: {
         author: {
-          select: {
-            name: true,
-            email: true
-          }
+          select: { name: true, email: true }
         }
       },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      skip: (page - 1) * limit,
+      orderBy: { updatedAt: 'desc' },
       take: limit
     });
 
-    // Räkna totalt antal recept (före filtrering)
-    const totalRecipes = await prisma.recipe.count({ where });
+    // Beräkna statistik
+    const allRecipes = await prisma.recipe.findMany({
+      select: { isPremium: true, isFree: true, tags: true, status: true }
+    });
 
-    // Normalize image URLs
-    function normalizeImageUrl(url: string | null): string {
-      if (!url) return '/images/recipe-placeholder.svg';
-      
-      let normalized = url;
-      if (normalized.startsWith('/public/')) {
-        normalized = normalized.replace('/public', '');
-      }
-      if (normalized.startsWith('public/')) {
-        normalized = '/' + normalized.substring(7);
-      }
-      
-      // Ensure leading slash for local assets
-      if (!normalized.startsWith('/') && !normalized.startsWith('http')) {
-        normalized = '/' + normalized;
-      }
-      
-      return normalized;
-    }
-
-    // Konvertera till API-format
-    const formattedRecipes: Recipe[] = recipes.map(recipe => ({
-      id: recipe.id,
-      title: recipe.title,
-      excerpt: recipe.excerpt || '',
-      imageUrl: normalizeImageUrl(recipe.imageUrl),
-      imageAlt: recipe.imageAlt || recipe.title,
-      categories: recipe.categories,
-      ingredients: recipe.ingredients,
-      slug: recipe.slug,
-      status: recipe.status as 'PUBLISHED' | 'DRAFT' | 'ARCHIVED',
-      isPremium: recipe.isPremium,
-      isFree: recipe.isFree,
-      date: recipe.createdAt.toISOString(),
-      author: {
-        name: recipe.author?.name || 'Ulrika Davidsson',
-        username: 'ulrika'
-      },
-      difficulty: recipe.difficulty || undefined,
-      prepTime: recipe.prepTime || undefined,
-      cookTime: recipe.cookTime || undefined,
-      totalTime: recipe.totalTime || undefined,
-      servings: recipe.servings || undefined,
-      instructions: recipe.instructions ? recipe.instructions.split('\n').filter(step => step.trim()) : undefined,
-      tips: recipe.tips || undefined,
-      tags: recipe.tags || undefined
-    }));
-
-    // Beräkna statistik för admin
     const statistics = {
-      total: await prisma.recipe.count(),
-      free: await prisma.recipe.count({ where: { isFree: true, isPremium: false } }),
-      premium: await prisma.recipe.count({ where: { isPremium: true } }),
-      visible: await prisma.recipe.count({ where: { status: 'PUBLISHED' } }),
-      draft: await prisma.recipe.count({ where: { status: 'DRAFT' } }),
-      archived: await prisma.recipe.count({ where: { status: 'ARCHIVED' } })
+      total: allRecipes.length,
+      free: allRecipes.filter(r => r.isFree && !r.isPremium).length,
+      premium: allRecipes.filter(r => r.isPremium).length,
+      visible: allRecipes.filter(r => r.status === 'PUBLISHED').length,
+      byCourse: {
+        'functional-basics': allRecipes.filter(r => r.tags?.includes('functional-basics')).length,
+        'functional-flow': allRecipes.filter(r => r.tags?.includes('functional-flow')).length,
+        'functional-energy': allRecipes.filter(r => r.tags?.includes('functional-energy')).length
+      }
     };
 
-    const headers = new Headers();
-    headers.set('Cache-Control', 'no-store'); // Admin-data ska inte cachas
+    // Formatera recept för admin
+    const formattedRecipes = recipes.map(recipe => ({
+      ...recipe,
+      date: recipe.createdAt.toISOString(),
+      courseTags: recipe.tags?.filter(tag => 
+        ['functional-basics', 'functional-flow', 'functional-energy'].includes(tag)
+      ) || []
+    }));
 
     return NextResponse.json({
       recipes: formattedRecipes,
-      pagination: {
-        page,
-        limit,
-        total: totalRecipes,
-        totalPages: Math.ceil(totalRecipes / limit),
-        hasMore: (page * limit) < totalRecipes
-      },
-      statistics
-    }, { headers });
+      statistics,
+      total: recipes.length
+    });
 
   } catch (error) {
-    console.error('Error in admin recipes API:', error);
+    console.error('Error fetching admin recipes:', error);
     return NextResponse.json(
       { error: 'Failed to fetch recipes' },
       { status: 500 }
@@ -185,4 +91,51 @@ export async function GET(request: NextRequest) {
   } finally {
     await prisma.$disconnect();
   }
-} 
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    
+    // Skapa nytt recept
+    const recipe = await prisma.recipe.create({
+      data: {
+        title: body.title,
+        slug: body.title.toLowerCase()
+          .replace(/[åä]/g, 'a')
+          .replace(/ö/g, 'o')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, ''),
+        excerpt: body.excerpt,
+        content: body.description,
+        imageUrl: body.imageUrl,
+        categories: body.categories || [body.category],
+        ingredients: body.ingredients || [],
+        instructions: Array.isArray(body.instructions) 
+          ? body.instructions.join('\n') 
+          : body.instructions,
+        difficulty: body.difficulty,
+        prepTime: body.prepTime,
+        cookTime: body.cookTime,
+        servings: body.servings,
+        nutrition: body.nutrition,
+        tips: body.tips,
+        tags: body.tags || [],
+        status: body.status || 'PUBLISHED',
+        isPremium: body.isPremium || false,
+        isFree: body.isFree !== false
+      }
+    });
+
+    return NextResponse.json(recipe);
+
+  } catch (error) {
+    console.error('Error creating recipe:', error);
+    return NextResponse.json(
+      { error: 'Failed to create recipe' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}

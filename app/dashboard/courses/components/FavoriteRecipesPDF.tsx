@@ -516,37 +516,43 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-6 border border-yellow-200"
+      className="bg-white rounded-2xl shadow-sm p-8 border border-gray-200"
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
-            <Heart className="text-red-500" />
+      <div className="flex items-start gap-6 mb-8">
+        <div className="flex-shrink-0">
+          <div className="w-14 h-14 bg-[#014421] rounded-xl flex items-center justify-center">
+            <Heart className="w-7 h-7 text-white" />
+          </div>
+        </div>
+        <div className="flex-grow">
+          <h3 className="text-2xl font-bold text-[#014421] mb-2">
             Mina Favoritrecept
           </h3>
-          <p className="text-gray-600 text-sm">
-            {favorites.length} recept från {courseName}
+          <p className="text-gray-600">
+            {favorites.length} sparade recept från {courseName}
           </p>
         </div>
-        
+      </div>
+
+      {/* Action Button */}
+      <div className="mb-8">
         <motion.button
           onClick={generatePDF}
           disabled={isGenerating}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 bg-[#014421] text-white px-4 py-2 rounded-lg hover:bg-[#116530] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-xl bg-[#014421] text-white hover:bg-[#112A12] transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
         >
           {isGenerating ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              <span className="hidden sm:inline">Genererar PDF...</span>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <span>Genererar PDF...</span>
             </>
           ) : (
             <>
-              <Download className="text-lg" />
-              <span className="hidden sm:inline">Ladda ner PDF</span>
-              <span className="sm:hidden">PDF</span>
+              <Download className="w-5 h-5" />
+              <span>Ladda ner PDF för Mina Favoritrecept</span>
             </>
           )}
         </motion.button>
@@ -554,40 +560,40 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white/60 rounded-lg p-3 text-center">
+        <div className="bg-gray-50 rounded-xl p-4 text-center">
           <div className="text-2xl font-bold text-[#014421]">{favorites.length}</div>
-          <div className="text-xs text-gray-600">Recept</div>
+          <div className="text-sm text-gray-600">Recept</div>
         </div>
-        <div className="bg-white/60 rounded-lg p-3 text-center">
+        <div className="bg-gray-50 rounded-xl p-4 text-center">
           <div className="text-2xl font-bold text-[#014421]">{Object.keys(favoritesByWeek).length}</div>
-          <div className="text-xs text-gray-600">Veckor</div>
+          <div className="text-sm text-gray-600">Veckor</div>
         </div>
-        <div className="bg-white/60 rounded-lg p-3 text-center">
+        <div className="bg-gray-50 rounded-xl p-4 text-center">
           <div className="text-2xl font-bold text-[#014421]">{new Set(favorites.map(f => f.mealType)).size}</div>
-          <div className="text-xs text-gray-600">Måltidstyper</div>
+          <div className="text-sm text-gray-600">Måltidstyper</div>
         </div>
       </div>
 
       {/* Favorites Preview */}
-      <div className="space-y-4 max-h-60 overflow-y-auto">
+      <div className="space-y-3 max-h-64 overflow-y-auto mb-6">
         {Object.entries(favoritesByWeek)
           .sort(([a], [b]) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]))
           .map(([week, recipes]) => (
-            <div key={week} className="bg-white/60 rounded-lg p-4">
-              <h4 className="font-semibold text-[#014421] mb-2 flex items-center gap-2">
-                <Calendar className="text-sm" />
+            <div key={week} className="bg-gray-50 rounded-xl p-4">
+              <h4 className="font-semibold text-[#014421] mb-3 flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
                 {week}
               </h4>
               <div className="space-y-2">
                 {recipes.slice(0, 3).map((recipe, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-sm">
-                    <Star className="text-yellow-500 text-xs" />
-                    <span className="text-gray-700 truncate">{recipe.name}</span>
+                  <div key={idx} className="flex items-center gap-3 text-sm">
+                    <Star className="w-4 h-4 text-[#93C560] flex-shrink-0" />
+                    <span className="text-gray-700 truncate flex-grow">{recipe.name}</span>
                     <span className="text-gray-500 text-xs">({getMealTypeSwedish(recipe.mealType)})</span>
                   </div>
                 ))}
                 {recipes.length > 3 && (
-                  <div className="text-xs text-gray-500 italic">
+                  <div className="text-sm text-gray-500 italic mt-2">
                     +{recipes.length - 3} fler recept...
                   </div>
                 )}
@@ -596,16 +602,18 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
           ))}
       </div>
 
-      {/* Call to Action */}
-      <div className="mt-6 p-4 bg-white/60 rounded-lg border border-yellow-300">
+      {/* Info Box */}
+      <div className="bg-[#F7F1E8] rounded-xl p-4 border border-[#E8E0D4]">
         <div className="flex items-start gap-3">
-          <Heart className="text-red-500 text-lg flex-shrink-0 mt-0.5" />
+          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+            <Heart className="w-5 h-5 text-[#014421]" />
+          </div>
           <div>
-            <p className="text-sm font-medium text-gray-900 mb-1">
-              Spara dina favoritrecept!
+            <p className="text-sm font-semibold text-[#014421] mb-1">
+              Dina favoritrecept samlade
             </p>
-            <p className="text-xs text-gray-600">
-              Ladda ner som PDF för att ha med dig i köket eller dela med familj och vänner.
+            <p className="text-sm text-gray-600">
+              PDF:en innehåller alla dina sparade recept med ingredienser, instruktioner och näringsinformation.
             </p>
           </div>
         </div>

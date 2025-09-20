@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Loader2, Plus, Edit, Trash2, Search } from 'lucide-react';
+import Link from 'next/link';
 
 interface KnowledgeDocument {
   id: string;
@@ -173,13 +174,23 @@ export default function KnowledgeAdminPage() {
             </div>
           </div>
           
-          <button
-            onClick={handleCreateNew}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Nytt dokument
-          </button>
+          <div className="flex gap-3">
+            <Link 
+              href="/admin/knowledge/edit"
+              className="admin-btn admin-btn-secondary"
+            >
+              <Edit className="w-4 h-4" />
+              Redigera dokument
+            </Link>
+            
+            <button
+              onClick={handleCreateNew}
+              className="admin-btn admin-btn-primary"
+            >
+              <Plus className="h-4 w-4" />
+              Nytt dokument
+            </button>
+          </div>
         </div>
       </div>
 

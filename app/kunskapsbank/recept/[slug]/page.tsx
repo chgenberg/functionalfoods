@@ -14,6 +14,7 @@ import { getRawMaterials, findRawMaterial, type RawMaterial } from '../../../lib
 import LinkedIngredient from '../../../components/LinkedIngredient';
 import { useSearchParams } from 'next/navigation';
 import { mealPlans, flowMealPlans, energyMealPlans } from '../../../data/mealPlans';
+import { generateRecipePrintHTML } from '../../../lib/recipePrint';
 
 interface Recipe {
   id: string;
@@ -516,7 +517,30 @@ export default function RecipePage() {
   };
 
   const handlePrint = () => {
-    window.print();
+    if (!recipe) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const htmlContent = generateRecipePrintHTML(
+      recipe,
+      servings,
+      nutrition,
+      smartIngredients,
+      imageError
+    );
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // Wait for content and images to load
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 500);
+    };
   };
 
   const handleToggleFavorite = () => {
@@ -1156,7 +1180,9 @@ export default function RecipePage() {
                     </span>
                     Näringsvärden per portion
                   </h2>
-                  <p className="text-sm text-gray-500 mt-2">Baserat på {recipe?.servings || 4} portioner</p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    {servings === 1 ? 'Per person' : `För ${servings} personer`}
+                  </p>
                 </div>
 
                 {nutrition ? (

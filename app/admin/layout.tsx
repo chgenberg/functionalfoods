@@ -65,13 +65,14 @@ export default function AdminLayout({
     { icon: Home, label: 'Dashboard', href: '/admin' },
     { icon: FileText, label: 'Blogg', href: '/admin/blog' },
     { icon: BookOpen, label: 'Recept', href: '/admin/recipes' },
+    { icon: BookOpen, label: 'Kurser', href: '/admin/courses' },
     { icon: Users, label: 'Användare', href: '/admin/users' },
     { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders' },
+    { icon: ShoppingCart, label: 'Inköpslistor', href: '/admin/shopping-lists' },
     { icon: Star, label: 'Recensioner', href: '/admin/reviews' },
     { icon: MessageSquare, label: 'Community', href: '/admin/community' },
     { icon: Tag, label: 'Kuponger', href: '/admin/coupons' },
     { icon: BarChart3, label: 'Försäljning', href: '/admin/sales' },
-    { icon: Image, label: 'Media', href: '/admin/media' },
     { icon: FileText, label: 'Kunskapsdokument', href: '/admin/knowledge' },
     { icon: Settings, label: 'Inställningar', href: '/admin/settings' }
   ];

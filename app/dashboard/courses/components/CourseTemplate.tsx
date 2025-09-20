@@ -117,19 +117,6 @@ export default function CourseTemplate({
 
   const weekDays = getDaysForWeek(currentWeek);
 
-  // Format date for display
-  const formatDate = (week: number, day: number) => {
-    if (!courseStartDate) return `Dag ${day}`;
-    
-    const startDate = new Date(courseStartDate);
-    const dayOffset = (week - 1) * 7 + (day - 1);
-    const targetDate = new Date(startDate.getTime() + dayOffset * 24 * 60 * 60 * 1000);
-    
-    const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
-    const monthNames = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
-    
-    return `${dayNames[targetDate.getDay()]} ${targetDate.getDate()} ${monthNames[targetDate.getMonth()]}`;
-  };
 
   return (
     <>
@@ -181,7 +168,6 @@ export default function CourseTemplate({
                 >
 
                   <div className="text-center">
-                    <span className={`text-xs md:text-sm mb-1 ${day.current ? 'text-white' : 'text-gray-600'}`}>{formatDate(currentWeek, day.day)}</span>
                     <h3 className={`font-bold text-sm sm:text-base md:text-lg mb-3 ${day.current ? 'text-white' : 'text-gray-900'}`}>{day.name}</h3>
                     <div className={`
                       w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-3 mx-auto overflow-hidden relative
@@ -366,6 +352,34 @@ export default function CourseTemplate({
                 meal: mealName,
                 calories: calories,
                 recipeLink: dayData.dinner.recipeLink
+              });
+            }
+            
+            if (dayData.snack) {
+              const match = dayData.snack.name.match(/\((\d+\s*kcal)\)/);
+              const calories = match ? match[1] : '';
+              const mealName = dayData.snack.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              
+              meals.push({
+                mealType: 'Mellanmål',
+                time: '15:00',
+                meal: mealName,
+                calories: calories,
+                recipeLink: dayData.snack.recipeLink
+              });
+            }
+            
+            if (dayData.dessert) {
+              const match = dayData.dessert.name.match(/\((\d+\s*kcal)\)/);
+              const calories = match ? match[1] : '';
+              const mealName = dayData.dessert.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              
+              meals.push({
+                mealType: 'Efterrätt',
+                time: '20:00',
+                meal: mealName,
+                calories: calories,
+                recipeLink: dayData.dessert.recipeLink
               });
             }
             

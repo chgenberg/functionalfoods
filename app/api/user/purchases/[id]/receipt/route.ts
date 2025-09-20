@@ -256,10 +256,18 @@ function generateReceiptHTML(purchase: any, user: any) {
             <td>
               <strong>${purchase.course.name}</strong><br>
               <span class="description-text">${purchase.course.description}</span>
-              <div class="badge">Utbildning - Momsfri enligt 3 kap. 8 § ML</div>
+              <div class="badge">Utbildningstjänst - Moms 25%</div>
             </td>
             <td style="text-align: center;">1</td>
             <td class="amount">${purchase.amount.toFixed(2)} kr</td>
+          </tr>
+          <tr style="border-bottom: none;">
+            <td colspan="2" style="text-align: right; padding-top: 15px; padding-bottom: 5px;">Summa exkl. moms:</td>
+            <td class="amount" style="padding-top: 15px; padding-bottom: 5px;">${(purchase.amount / 1.25).toFixed(2)} kr</td>
+          </tr>
+          <tr style="border-bottom: none;">
+            <td colspan="2" style="text-align: right; padding-top: 5px; padding-bottom: 5px; color: #666;">Moms (25%):</td>
+            <td class="amount" style="padding-top: 5px; padding-bottom: 5px; color: #666;">${(purchase.amount - (purchase.amount / 1.25)).toFixed(2)} kr</td>
           </tr>
           <tr class="total-row">
             <td colspan="2">Totalt att betala</td>

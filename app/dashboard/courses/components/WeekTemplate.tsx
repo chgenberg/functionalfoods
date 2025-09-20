@@ -403,19 +403,6 @@ export default function WeekTemplate({
     loadMealImages();
   }, [mealPlan, weekNumber]);
 
-  // Format date for display
-  const formatDate = (week: number, day: number) => {
-    if (!courseStartDate) return `Dag ${day}`;
-    
-    const startDate = new Date(courseStartDate);
-    const dayOffset = (week - 1) * 7 + (day - 1);
-    const targetDate = new Date(startDate.getTime() + dayOffset * 24 * 60 * 60 * 1000);
-    
-    const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
-    const monthNames = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
-    
-    return `${dayNames[targetDate.getDay()]} ${targetDate.getDate()} ${monthNames[targetDate.getMonth()]}`;
-  };
 
   // Get the appropriate welcome message
   const welcomeMessage = weekMessages[courseType]?.[weekNumber] || '';
@@ -557,6 +544,43 @@ export default function WeekTemplate({
             </div>
           </div>
 
+          {/* Week Materials */}
+          <div className="mb-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#014421] mb-4 sm:mb-6">Veckans material</h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
+                <div className="flex items-center mb-3 sm:mb-4">
+                  <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
+                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
+                  </div>
+                  <h3 className="font-bold text-base sm:text-lg text-[#014421]">Inköpslista</h3>
+                </div>
+                <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Skapa inköpslista för veckans måltider</p>
+                <Link href={`/dashboard/courses/functional-${courseType}/inkopslista?week=${weekNumber}`}>
+                  <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
+                    Visa inköpslista
+                  </button>
+                </Link>
+              </div>
+
+              <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
+                <div className="flex items-center mb-3 sm:mb-4">
+                  <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
+                    <Users className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
+                  </div>
+                  <h3 className="font-bold text-base sm:text-lg text-[#014421]">Community</h3>
+                </div>
+                <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Diskutera och dela erfarenheter</p>
+                <Link href="/dashboard/community">
+                  <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
+                    Gå till community
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
           {/* Days with Meals */}
           <div className="space-y-8">
             {weekDays.map((day) => {
@@ -577,7 +601,6 @@ export default function WeekTemplate({
                 <div key={day.day} className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                   <div className="mb-4">
                     <h3 className="text-xl font-bold text-[#014421]">{day.name}</h3>
-                    <p className="text-sm text-gray-500">{formatDate(weekNumber, day.day)}</p>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -640,43 +663,6 @@ export default function WeekTemplate({
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* Week Materials */}
-        <div className="mb-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#014421] mb-4 sm:mb-6">Veckans material</h2>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
-              <div className="flex items-center mb-3 sm:mb-4">
-                <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
-                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
-                </div>
-                <h3 className="font-bold text-base sm:text-lg text-[#014421]">Inköpslista</h3>
-              </div>
-              <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Skapa inköpslista för veckans måltider</p>
-              <Link href={`/dashboard/courses/functional-${courseType}/inkopslista?week=${weekNumber}`}>
-                <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
-                  Visa inköpslista
-                </button>
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
-              <div className="flex items-center mb-3 sm:mb-4">
-                <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
-                  <Users className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
-                </div>
-                <h3 className="font-bold text-base sm:text-lg text-[#014421]">Community</h3>
-              </div>
-              <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Diskutera och dela erfarenheter</p>
-              <Link href="/dashboard/community">
-                <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
-                  Gå till community
-                </button>
-              </Link>
-            </div>
           </div>
         </div>
       </div>
@@ -758,6 +744,34 @@ export default function WeekTemplate({
                 meal: mealName,
                 calories: calories,
                 recipeLink: dayData.dinner.recipeLink
+              });
+            }
+            
+            if (dayData.snack) {
+              const match = dayData.snack.name.match(/\((\d+\s*kcal)\)/);
+              const calories = match ? match[1] : '';
+              const mealName = dayData.snack.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              
+              meals.push({
+                mealType: 'Mellanmål',
+                time: '15:00',
+                meal: mealName,
+                calories: calories,
+                recipeLink: dayData.snack.recipeLink
+              });
+            }
+            
+            if (dayData.dessert) {
+              const match = dayData.dessert.name.match(/\((\d+\s*kcal)\)/);
+              const calories = match ? match[1] : '';
+              const mealName = dayData.dessert.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              
+              meals.push({
+                mealType: 'Efterrätt',
+                time: '20:00',
+                meal: mealName,
+                calories: calories,
+                recipeLink: dayData.dessert.recipeLink
               });
             }
             

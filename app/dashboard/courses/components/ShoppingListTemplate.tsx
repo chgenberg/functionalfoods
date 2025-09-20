@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ArrowLeft, Check, ChevronDown, Download, FileText, Lightbulb, Minus, Plus, Printer, Search, Share, ShoppingCart, Smartphone } from "lucide-react";;
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
-import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 
 // Kategorier för ingredienser
 const CATEGORIES = {
@@ -686,116 +685,109 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F5F0]">
-      {/* Hero Section with Video */}
-      <WeekHeroWithVideo
-        weekNumber={0}
-        weekTitle="Inköpslista"
-        weekSubtitle={`Vecka ${weekNumber} - Alla ingredienser för veckans recept`}
-        heroImage="/Ulrika_portratt/udavidssondesktop.png"
-        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
-      />
-
-      {/* Course Navigation - After Hero Section */}
-      <div className="bg-white shadow-lg print:hidden">
+    <div className="min-h-screen bg-gray-50">
+      {/* Course Navigation */}
+      <div className="bg-white shadow-sm border-b print:hidden sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
           <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
         </div>
       </div>
 
       {/* Page Title and Actions */}
-      <div className="bg-white border-b print:hidden">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white print:hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
               <Link
                 href={`/dashboard/courses/functional-${courseType}/week/${weekNumber}`}
-                className="flex items-center text-gray-600 hover:text-[#014421] transition-colors mb-2 text-sm"
+                className="inline-flex items-center text-gray-600 hover:text-[#014421] transition-colors mb-3 text-sm font-medium"
               >
-                <ArrowLeft className="w-4 h-4 mr-1" />
+                <ArrowLeft className="w-4 h-4 mr-2" />
                 Tillbaka till vecka {weekNumber}
               </Link>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[#014421]">
-                Handla smart
+              <h1 className="text-3xl sm:text-4xl font-bold text-[#014421] mb-2">
+                Inköpslista - Vecka {weekNumber}
               </h1>
-              <p className="text-gray-600 mt-1 text-sm sm:text-base">Organiserad inköpslista för hela veckan</p>
+              <p className="text-gray-600 text-base sm:text-lg">Alla ingredienser för veckans recept</p>
             </div>
             
-            {/* Mobile-optimized action buttons */}
-            <div className="flex items-center gap-2 flex-wrap">
+            {/* Action buttons */}
+            <div className="flex items-center gap-3 flex-wrap">
               {/* Servings selector */}
-              <div className="flex items-center gap-2 bg-[#F3EFE3] rounded-full px-3 py-1.5">
+              <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-2 border border-gray-200 shadow-sm">
+                <span className="text-sm font-medium text-gray-700">Portioner:</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setServings(prev => Math.max(1, prev - 1))}
+                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    aria-label="Minska portioner"
+                  >
+                    <Minus className="w-4 h-4 text-[#014421]" />
+                  </button>
+                  <span className="min-w-[3ch] text-center font-bold text-[#014421] text-lg">{servings}</span>
+                  <button
+                    onClick={() => setServings(prev => prev + 1)}
+                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    aria-label="Öka portioner"
+                  >
+                    <Plus className="w-4 h-4 text-[#014421]" />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setServings(prev => Math.max(1, prev - 1))}
-                  className="w-8 h-8 rounded-full bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center"
-                  aria-label="Minska portioner"
+                  onClick={handlePrint}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-sm font-medium"
+                  title="Skriv ut"
                 >
-                  <Minus className="w-4 h-4 text-[#014421]" />
+                  <Printer className="w-4 h-4" />
+                  <span className="hidden sm:inline">Skriv ut</span>
                 </button>
-                <span className="min-w-[2ch] text-center font-bold text-[#014421]">{servings}</span>
                 <button
-                  onClick={() => setServings(prev => prev + 1)}
-                  className="w-8 h-8 rounded-full bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center"
-                  aria-label="Öka portioner"
+                  onClick={handleShare}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-sm font-medium"
+                  title="Dela"
                 >
-                  <Plus className="w-4 h-4 text-[#014421]" />
+                  <Share className="w-4 h-4" />
+                  <span className="hidden sm:inline">Dela</span>
+                </button>
+                <button
+                  onClick={handleExport}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors text-sm font-medium"
+                  title="Ladda ner"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Ladda ner</span>
                 </button>
               </div>
-              <button
-                onClick={handlePrint}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
-                title="Skriv ut"
-              >
-                <Printer className="w-4 h-4" />
-                <span>Skriv ut</span>
-              </button>
-              <button
-                onClick={handleShare}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
-                title="Dela/Kopiera"
-              >
-                <Share className="w-4 h-4" />
-                <span>Dela</span>
-              </button>
-              <button
-                onClick={handleiOSShortcuts}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition-colors text-sm"
-                title="Skicka till iPhone Påminnelser"
-              >
-                <Smartphone className="w-4 h-4" />
-                <span className="hidden xs:inline">iPhone</span>
-              </button>
-              <button
-                onClick={handleExport}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors text-sm"
-                title="Ladda ner som HTML"
-              >
-                <Download className="w-4 h-4" />
-                <span>Ladda ner</span>
-              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="bg-[#F3EFE3] print:hidden sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
+      <div className="bg-white border-b print:hidden sticky top-[73px] z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="bg-gray-50 rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5 text-[#014421]" />
-                <span className="font-medium text-gray-900">
-                  {checkedCount} av {totalCount} ingredienser
-                </span>
+              <div className="flex items-center gap-3">
+                <div className="bg-[#014421] rounded-full p-2">
+                  <ShoppingCart className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <span className="font-semibold text-gray-900 text-lg">
+                    {checkedCount} av {totalCount} ingredienser
+                  </span>
+                  <p className="text-sm text-gray-600">
+                    {totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0}% av listan avklarad
+                  </p>
+                </div>
               </div>
-              <span className="text-sm font-bold text-[#014421]">
-                {totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0}% klart
-              </span>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-[#014421] to-[#FFB5A7] h-full rounded-full transition-all duration-500 ease-out"
+                className="bg-gradient-to-r from-[#014421] to-[#93C560] h-full rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${totalCount > 0 ? (checkedCount / totalCount) * 100 : 0}%` }}
               />
             </div>
@@ -803,36 +795,45 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
         </div>
       </div>
 
-      {/* Search and Filter */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 print:hidden">
-        <div className="bg-white rounded-xl p-6 shadow-sm">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Sök ingrediens..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:bg-white transition-colors"
-              />
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar - Search and Filter */}
+          <div className="lg:col-span-1 print:hidden">
+            <div className="bg-white rounded-xl p-6 shadow-sm sticky top-[180px]">
+              <h3 className="font-semibold text-gray-900 mb-4">Filtrera</h3>
+              
+              <div className="space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Sök ingrediens..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:bg-white transition-colors text-sm"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">Kategori</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:bg-white cursor-pointer transition-colors text-sm"
+                  >
+                    <option value="all">Alla kategorier</option>
+                    {Object.keys(CATEGORIES).map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:bg-white cursor-pointer transition-colors"
-            >
-              <option value="all">Alla kategorier</option>
-              {Object.keys(CATEGORIES).map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
           </div>
-        </div>
-      </div>
 
-      {/* Shopping List */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          {/* Shopping List */}
+          <div className="lg:col-span-3">
         {Object.keys(groupedIngredients).length === 0 ? (
           <div className="bg-white rounded-xl p-12 text-center">
             <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -929,8 +930,9 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
             })}
           </div>
         )}
+          </div>
+        </div>
       </div>
-
     </div>
   );
 } 
