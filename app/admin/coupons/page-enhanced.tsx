@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Edit3, Trash2, Search, Tag, Calendar, Percent, DollarSign, AlertCircle, Clock, CheckCircle } from 'lucide-react';
+import { Plus, Edit3, Trash2, Search, Tag, Calendar, Percent, DollarSign, AlertCircle, Clock, CheckCircle, X } from 'lucide-react';
 
 interface Coupon {
   id: string;
