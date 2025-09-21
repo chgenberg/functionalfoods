@@ -123,13 +123,44 @@ export default function FunctionalBasicsOverview() {
           
           {/* Course Help Section */}
           <div className="mt-8 text-center">
-            <button
+            <motion.button
               onClick={() => setShowHelpModal(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary-beige)] hover:bg-[var(--primary-light-green)] hover:text-white text-[var(--primary-green)] rounded-full transition-all duration-300 font-medium"
+              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#014421] to-[#116530] text-white rounded-full font-medium shadow-lg hover:shadow-xl transform transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
             >
-              <HelpCircle className="w-5 h-5" />
-              Så använder du kursen
-            </button>
+              {/* Animated background glow */}
+              <motion.div
+                className="absolute inset-0 rounded-full bg-[#93C560] opacity-0 group-hover:opacity-20 blur-xl"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              
+              {/* Icon with rotation on hover */}
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <HelpCircle className="w-6 h-6" />
+              </motion.div>
+              
+              <span className="relative z-10 text-lg">Så använder du kursen</span>
+              
+              {/* Arrow animation */}
+              <motion.svg 
+                className="w-5 h-5 ml-1"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </motion.svg>
+            </motion.button>
           </div>
         </div>
       </div>
