@@ -69,9 +69,15 @@ export async function GET(request: NextRequest) {
         pi.metadata?.orderNumber === order.orderNumber // Match by order number
       );
 
-      // Get product description from order items
+      // Get product description from order items or Stripe metadata
       let productDescription = pi.description || 'Ingen beskrivning';
-      if (matchingOrder && matchingOrder.items.length > 0) {
+      
+      // First try to get from Stripe metadata (for newer orders)
+      if (pi.metadata?.courseNames) {
+        productDescription = pi.metadata.courseNames;
+      } 
+      // Fallback to database order items (for older orders)
+      else if (matchingOrder && matchingOrder.items.length > 0) {
         const courseNames = matchingOrder.items
           .map(item => item.course?.name || item.name)
           .filter(name => name)
@@ -107,13 +113,14 @@ export async function GET(request: NextRequest) {
         created: new Date(pi.created * 1000).toISOString(),
         description: productDescription,
         customer: {
-          email: pi.receipt_email || pi.customer?.email || matchingOrder?.user?.email || 'Ingen e-post',
-          name: pi.customer?.name || matchingOrder?.user?.name || 'Inget namn',
+          email: pi.receipt_email || pi.customer?.email || pi.metadata?.customerEmail || matchingOrder?.user?.email || 'Ingen e-post',
+          name: pi.customer?.name || pi.metadata?.customerName || matchingOrder?.user?.name || 'Inget namn',
           metadata: {
             phone: pi.customer?.phone || matchingOrder?.user?.phone,
             country: pi.customer?.address?.country || 'SE',
-            course: matchingOrder?.items?.[0]?.course?.name,
-            userId: matchingOrder?.userId
+            course: pi.metadata?.courseNames || matchingOrder?.items?.[0]?.course?.name,
+            userId: matchingOrder?.userId,
+            totalItems: pi.metadata?.totalItems
           }
         },
         paymentMethod: paymentMethodDetails,

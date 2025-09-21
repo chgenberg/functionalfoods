@@ -90,7 +90,11 @@ export async function POST(req: NextRequest) {
         items: JSON.stringify(items),
         website: 'ulrika-functional-foods',
         orderType: 'course_purchase',
-        couponCode: couponCode || ''
+        couponCode: couponCode || '',
+        courseNames: items.map(item => item.name).join(', '),
+        totalItems: items.length.toString(),
+        customerEmail: customer?.email || '',
+        customerName: customer?.name || ''
       }
     };
 

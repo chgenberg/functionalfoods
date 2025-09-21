@@ -188,6 +188,7 @@ export default function KnowledgeAdminPage() {
               <option value="all">Alla kurser</option>
               <option value="basic">Functional Basics</option>
               <option value="flow">Functional Gut Health/Flow</option>
+              <option value="energy">Functional Energy</option>
             </select>
             
             <div className="relative">
@@ -265,9 +266,11 @@ export default function KnowledgeAdminPage() {
                     <span className={`px-2 py-1 text-xs rounded-full ${
                       doc.course === 'basic' 
                         ? 'bg-blue-100 text-blue-800' 
-                        : 'bg-purple-100 text-purple-800'
+                        : doc.course === 'flow'
+                        ? 'bg-purple-100 text-purple-800'
+                        : 'bg-orange-100 text-orange-800'
                     }`}>
-                      {doc.course === 'basic' ? 'Basics' : 'Flow'}
+                      {doc.course === 'basic' ? 'Basics' : doc.course === 'flow' ? 'Flow' : 'Energy'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -378,6 +381,7 @@ export default function KnowledgeAdminPage() {
                   >
                     <option value="basic">Functional Basics</option>
                     <option value="flow">Functional Gut Health/Flow</option>
+                    <option value="energy">Functional Energy</option>
                   </select>
                 </div>
                 
