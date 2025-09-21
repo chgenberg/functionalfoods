@@ -45,6 +45,41 @@ export default function AdminRecipesPage() {
     fetchRecipes();
   }, [filter, searchTerm]);
 
+  // Fetch optimized images after recipes are loaded
+  useEffect(() => {
+    if (recipes.length > 0) {
+      fetchRecipeImages();
+    }
+  }, [recipes]);
+
+  const fetchRecipeImages = async () => {
+    try {
+      const recipeNames = recipes.map(recipe => recipe.title);
+      const response = await fetch('/api/recipes/batch-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          recipeNames,
+          size: 'medium',
+          usage: 'card'
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Update recipes with optimized image URLs
+        setRecipes(prevRecipes => 
+          prevRecipes.map(recipe => ({
+            ...recipe,
+            imageUrl: data.images[recipe.title] || recipe.imageUrl
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching recipe images:', error);
+    }
+  };
+
   const fetchRecipes = async () => {
     try {
       setLoading(true);
