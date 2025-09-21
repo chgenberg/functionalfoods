@@ -19,7 +19,16 @@ export default function AdminCouponsPage() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
   const [editing, setEditing] = useState<Coupon | null>(null);
-  const [form, setForm] = useState<any>({ code: '', type: 'percent', amount: 10, active: true });
+  const [form, setForm] = useState<any>({ 
+    code: '', 
+    type: 'percent', 
+    amount: 10, 
+    active: true,
+    startsAtDate: '',
+    startsAtTime: '00:00',
+    expiresAtDate: '',
+    expiresAtTime: '23:59'
+  });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -44,16 +53,32 @@ export default function AdminCouponsPage() {
 
   const openNew = () => { 
     setEditing(null); 
-    setForm({ code: '', type: 'percent', amount: 10, active: true }); 
+    setForm({ 
+      code: '', 
+      type: 'percent', 
+      amount: 10, 
+      active: true,
+      startsAtDate: '',
+      startsAtTime: '00:00',
+      expiresAtDate: '',
+      expiresAtTime: '23:59'
+    }); 
     setError('');
   };
   
   const openEdit = (c: Coupon) => { 
     setEditing(c); 
+    
+    // Parse existing datetime strings
+    const startsAtDate = c.startsAt ? new Date(c.startsAt) : null;
+    const expiresAtDate = c.expiresAt ? new Date(c.expiresAt) : null;
+    
     setForm({ 
       ...c, 
-      startsAt: c.startsAt?.slice(0,10), 
-      expiresAt: c.expiresAt?.slice(0,10) 
+      startsAtDate: startsAtDate ? startsAtDate.toISOString().slice(0,10) : '',
+      startsAtTime: startsAtDate ? startsAtDate.toTimeString().slice(0,5) : '00:00',
+      expiresAtDate: expiresAtDate ? expiresAtDate.toISOString().slice(0,10) : '',
+      expiresAtTime: expiresAtDate ? expiresAtDate.toTimeString().slice(0,5) : '23:59'
     }); 
     setError('');
   };
@@ -63,9 +88,25 @@ export default function AdminCouponsPage() {
     setSaving(true);
     
     try {
+      // Combine date and time for startsAt and expiresAt
+      let startsAt = null;
+      let expiresAt = null;
+      
+      if (form.startsAtDate) {
+        startsAt = new Date(`${form.startsAtDate}T${form.startsAtTime || '00:00'}:00`).toISOString();
+      }
+      
+      if (form.expiresAtDate) {
+        expiresAt = new Date(`${form.expiresAtDate}T${form.expiresAtTime || '23:59'}:00`).toISOString();
+      }
+      
       const payload = { 
-        ...form, 
+        code: form.code,
+        type: form.type,
         amount: Number(form.amount), 
+        active: form.active,
+        startsAt,
+        expiresAt,
         usageLimit: form.usageLimit ? Number(form.usageLimit) : null 
       };
       
@@ -108,7 +149,13 @@ export default function AdminCouponsPage() {
   const formatDate = (dateStr: string | null | undefined) => {
     if (!dateStr) return '—';
     const date = new Date(dateStr);
-    return date.toLocaleDateString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    return date.toLocaleDateString('sv-SE', { 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   const isExpired = (expiresAt: string | null | undefined) => {

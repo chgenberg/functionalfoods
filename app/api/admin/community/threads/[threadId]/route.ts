@@ -1,71 +1,89 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 const prisma = new PrismaClient();
 
 export async function PATCH(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: { threadId: string } }
 ) {
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
+
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({ error: 'No token provided' }, { status: 401 });
-    }
+    const data = await req.json();
+    const { isPinned, isLocked } = data;
 
-    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET || 'secret') as any;
-    
-    // Verify admin
-    const admin = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: { role: true }
-    });
-
-    if (!admin || admin.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
-
-    const body = await request.json();
-    const { isSticky, isLocked } = body;
+    const updateData: any = {};
+    if (isPinned !== undefined) updateData.isPinned = isPinned;
+    if (isLocked !== undefined) updateData.isLocked = isLocked;
 
     const thread = await prisma.forumThread.update({
       where: { id: params.threadId },
-      data: {
-        ...(isSticky !== undefined && { isSticky }),
-        ...(isLocked !== undefined && { isLocked })
+      data: updateData,
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        category: true,
+        _count: {
+          select: {
+            replies: true,
+            likes: true
+          }
+        }
       }
     });
 
-    return NextResponse.json(thread);
+    return NextResponse.json({
+      id: thread.id,
+      title: thread.title,
+      content: thread.content,
+      author: thread.author,
+      category: thread.category,
+      views: thread.views,
+      replies: thread._count.replies,
+      likes: thread._count.likes,
+      isPinned: thread.isPinned,
+      isLocked: thread.isLocked,
+      createdAt: thread.createdAt.toISOString(),
+      updatedAt: thread.updatedAt.toISOString()
+    });
   } catch (error) {
     console.error('Error updating thread:', error);
-    return NextResponse.json({ error: 'Failed to update thread' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to update thread' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
 export async function DELETE(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: { threadId: string } }
 ) {
-  try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({ error: 'No token provided' }, { status: 401 });
-    }
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
 
-    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET || 'secret') as any;
-    
-    // Verify admin
-    const admin = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: { role: true }
+  try {
+    // First delete all replies
+    await prisma.forumReply.deleteMany({
+      where: { threadId: params.threadId }
     });
 
-    if (!admin || admin.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
+    // Then delete all likes
+    await prisma.forumLike.deleteMany({
+      where: { threadId: params.threadId }
+    });
 
+    // Finally delete the thread
     await prisma.forumThread.delete({
       where: { id: params.threadId }
     });
@@ -73,6 +91,11 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting thread:', error);
-    return NextResponse.json({ error: 'Failed to delete thread' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to delete thread' },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
   }
-} 
+}

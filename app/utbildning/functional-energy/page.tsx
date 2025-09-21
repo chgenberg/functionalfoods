@@ -48,7 +48,7 @@ export default function FunctionalEnergyPage() {
 
   const course = {
     id: 'functional-energy',
-    name: 'Functional Energy',
+    name: 'Functional Insulin balance/Energy',
     price: 2295,
     type: 'course' as const,
     image: '/Kurser_bilder/Functional_insulin balance.jpg',

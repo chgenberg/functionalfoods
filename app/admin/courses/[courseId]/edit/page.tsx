@@ -62,7 +62,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         enrollments: 892
       },
       'functional-energy': {
-        name: 'Functional Energy',
+        name: 'Functional Insulin balance/Energy',
         description: 'Avancerad kurs för energioptimering',
         level: 'Avancerad',
         enrollments: 634
