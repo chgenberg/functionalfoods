@@ -34,11 +34,24 @@ export default function KnowledgeAdminPage() {
       const url = courseFilter === 'all' 
         ? '/api/admin/knowledge' 
         : `/api/admin/knowledge?course=${courseFilter}`;
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       const data = await res.json();
+      
+      if (res.status === 401) {
+        console.error('Admin authentication failed');
+        setDocuments([]);
+        return;
+      }
+      
       setDocuments(data.documents || []);
     } catch (error) {
       console.error('Error fetching documents:', error);
+      setDocuments([]);
     } finally {
       setLoading(false);
     }
@@ -55,6 +68,7 @@ export default function KnowledgeAdminPage() {
       const method = editingDoc.id ? 'PUT' : 'POST';
       const res = await fetch('/api/admin/knowledge', {
         method,
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingDoc)
       });
@@ -63,6 +77,8 @@ export default function KnowledgeAdminPage() {
         fetchDocuments();
         setIsEditing(false);
         setEditingDoc(null);
+      } else {
+        console.error('Failed to save document:', await res.text());
       }
     } catch (error) {
       console.error('Error saving document:', error);
@@ -74,11 +90,15 @@ export default function KnowledgeAdminPage() {
     
     try {
       const res = await fetch(`/api/admin/knowledge?id=${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
       });
       
       if (res.ok) {
         fetchDocuments();
+      } else {
+        console.error('Failed to delete document:', await res.text());
       }
     } catch (error) {
       console.error('Error deleting document:', error);
