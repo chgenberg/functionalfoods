@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { getToken } from '@/app/lib/auth';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -116,9 +116,20 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const token = await getToken(req);
+    // Get token from cookie or header
+    const token = req.cookies.get('token')?.value || req.headers.get('authorization')?.replace('Bearer ', '');
+    
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Verify token
+    let userId: string;
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+      userId = decoded.userId;
+    } catch (error) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const data = await req.json();
@@ -136,7 +147,7 @@ export async function POST(req: NextRequest) {
         title,
         content,
         categoryId,
-        authorId: token.userId,
+        authorId: userId,
         views: 0,
         isPinned: false,
         isLocked: false
