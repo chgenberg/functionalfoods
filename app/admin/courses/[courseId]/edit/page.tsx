@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Save, Eye, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, Eye, AlertCircle, Calendar, BookOpen, ShoppingCart, FileText } from 'lucide-react';
 
 interface Course {
   id: string;
@@ -185,74 +185,209 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         </div>
       </div>
 
-      {/* Simple Course Editor */}
-      <div className="admin-card">
-        <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6">Kursredigering</h2>
-        
-        <div className="space-y-6">
-          <div>
-            <label className="admin-label">Kursnamn</label>
-            <input
-              type="text"
-              value={course.name}
-              onChange={(e) => setCourse(prev => prev ? { ...prev, name: e.target.value } : null)}
-              className="admin-input"
-            />
-          </div>
-          
-          <div>
-            <label className="admin-label">Beskrivning</label>
-            <textarea
-              value={course.description || ''}
-              onChange={(e) => setCourse(prev => prev ? { ...prev, description: e.target.value } : null)}
-              className="admin-textarea"
-              rows={4}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="admin-label">Pris (kr)</label>
-              <input
-                type="number"
-                value={course.price}
-                onChange={(e) => setCourse(prev => prev ? { ...prev, price: parseInt(e.target.value) } : null)}
-                className="admin-input"
-              />
-            </div>
+      {/* Course Editor Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Course Settings */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="admin-card">
+            <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6">Grundinställningar</h2>
             
-            <div>
-              <label className="admin-label">Längd</label>
-              <input
-                type="text"
-                value={course.duration}
-                onChange={(e) => setCourse(prev => prev ? { ...prev, duration: e.target.value } : null)}
-                className="admin-input"
-              />
-            </div>
-            
-            <div>
-              <label className="admin-label">Nivå</label>
-              <select
-                value={course.level}
-                onChange={(e) => setCourse(prev => prev ? { ...prev, level: e.target.value } : null)}
-                className="admin-select"
-              >
-                <option value="Nybörjare">Nybörjare</option>
-                <option value="Medel">Medel</option>
-                <option value="Avancerad">Avancerad</option>
-              </select>
-            </div>
-          </div>
+            <div className="space-y-6">
+              <div>
+                <label className="admin-label">Kursnamn</label>
+                <input
+                  type="text"
+                  value={course.name}
+                  onChange={(e) => setCourse(prev => prev ? { ...prev, name: e.target.value } : null)}
+                  className="admin-input"
+                />
+              </div>
+              
+              <div>
+                <label className="admin-label">Beskrivning</label>
+                <textarea
+                  value={course.description || ''}
+                  onChange={(e) => setCourse(prev => prev ? { ...prev, description: e.target.value } : null)}
+                  className="admin-textarea"
+                  rows={4}
+                />
+              </div>
 
-            <div className="pt-6 border-t border-[var(--border-light)]">
-              <div className="admin-alert admin-alert-success">
-                <h3 className="text-sm font-medium mb-2">Information</h3>
-                <p className="text-sm">
-                  Detta är en förenklad version av kursredigeringen. Mer avancerad funktionalitet kommer att läggas till senare.
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="admin-label">Pris (kr)</label>
+                  <input
+                    type="number"
+                    value={course.price}
+                    onChange={(e) => setCourse(prev => prev ? { ...prev, price: parseInt(e.target.value) } : null)}
+                    className="admin-input"
+                  />
+                </div>
+                
+                <div>
+                  <label className="admin-label">Längd</label>
+                  <input
+                    type="text"
+                    value={course.duration}
+                    onChange={(e) => setCourse(prev => prev ? { ...prev, duration: e.target.value } : null)}
+                    className="admin-input"
+                  />
+                </div>
+                
+                <div>
+                  <label className="admin-label">Nivå</label>
+                  <select
+                    value={course.level}
+                    onChange={(e) => setCourse(prev => prev ? { ...prev, level: e.target.value } : null)}
+                    className="admin-select"
+                  >
+                    <option value="Nybörjare">Nybörjare</option>
+                    <option value="Medel">Medel</option>
+                    <option value="Avancerad">Avancerad</option>
+                  </select>
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Course Content Management */}
+          <div className="admin-card">
+            <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6">Kursinnehåll</h2>
+            
+            <div className="space-y-4">
+              <Link
+                href={`/admin/courses/${params.courseId}/weeks`}
+                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+              >
+                <div>
+                  <h3 className="font-medium text-[var(--text-primary)]">Veckoplanering</h3>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">Redigera varje veckas innehåll, texter och videos</p>
+                </div>
+                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+              </Link>
+
+              <Link
+                href={`/admin/meal-plans?course=${params.courseId}`}
+                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+              >
+                <div>
+                  <h3 className="font-medium text-[var(--text-primary)]">Måltidsplaner</h3>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera veckans recept och måltider</p>
+                </div>
+                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+              </Link>
+
+              <Link
+                href={`/admin/shopping-lists?course=${params.courseId}`}
+                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+              >
+                <div>
+                  <h3 className="font-medium text-[var(--text-primary)]">Inköpslistor</h3>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">Redigera veckans inköpslistor</p>
+                </div>
+                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+              </Link>
+
+              <Link
+                href={`/admin/knowledge?course=${params.courseId}`}
+                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+              >
+                <div>
+                  <h3 className="font-medium text-[var(--text-primary)]">Kunskapsdokument</h3>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera kursmaterial och artiklar</p>
+                </div>
+                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Quick Stats */}
+          <div className="admin-card">
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Statistik</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-[var(--text-secondary)]">Aktiva deltagare</span>
+                <span className="font-medium text-[var(--text-primary)]">{course.enrollments}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[var(--text-secondary)]">Veckor</span>
+                <span className="font-medium text-[var(--text-primary)]">6</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[var(--text-secondary)]">Recept</span>
+                <span className="font-medium text-[var(--text-primary)]">84</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[var(--text-secondary)]">Kunskapsdokument</span>
+                <span className="font-medium text-[var(--text-primary)]">18</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="admin-card">
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Snabbåtgärder</h3>
+            <div className="space-y-2">
+              <Link
+                href={`/dashboard/courses/${params.courseId}/oversikt`}
+                className="admin-btn admin-btn-secondary w-full justify-center"
+              >
+                <Eye className="w-4 h-4" />
+                Visa kursöversikt
+              </Link>
+              
+              <Link
+                href={`/admin/courses/${params.courseId}/students`}
+                className="admin-btn admin-btn-secondary w-full justify-center"
+              >
+                Hantera deltagare
+              </Link>
+              
+              <Link
+                href={`/admin/reviews?course=${params.courseId}`}
+                className="admin-btn admin-btn-secondary w-full justify-center"
+              >
+                Visa recensioner
+              </Link>
+            </div>
+          </div>
+
+          {/* Course Status */}
+          <div className="admin-card">
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Kursstatus</h3>
+            <div className="space-y-3">
+              <label className="flex items-center justify-between cursor-pointer">
+                <span className="text-[var(--text-primary)]">Aktiv</span>
+                <input
+                  type="checkbox"
+                  checked={true}
+                  onChange={() => {}}
+                  className="sr-only"
+                />
+                <div className="relative">
+                  <div className="block w-10 h-6 bg-[var(--primary-green)] rounded-full"></div>
+                  <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform translate-x-4"></div>
+                </div>
+              </label>
+              
+              <label className="flex items-center justify-between cursor-pointer">
+                <span className="text-[var(--text-primary)]">Synlig i katalog</span>
+                <input
+                  type="checkbox"
+                  checked={true}
+                  onChange={() => {}}
+                  className="sr-only"
+                />
+                <div className="relative">
+                  <div className="block w-10 h-6 bg-[var(--primary-green)] rounded-full"></div>
+                  <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform translate-x-4"></div>
+                </div>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
