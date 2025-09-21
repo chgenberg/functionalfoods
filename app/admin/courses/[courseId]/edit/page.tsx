@@ -10,7 +10,6 @@ import {
   ChevronDown, ChevronUp, Eye, Calendar, BookOpen,
   Target, Sparkles, CheckCircle, AlertCircle
 } from 'lucide-react';
-import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 
 interface CourseWeek {
   weekNumber: number;
@@ -63,32 +62,17 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     try {
       setLoading(true);
       
-      // Get meal plan data based on courseId
-      const mealPlanData = params.courseId === 'functional-basics' ? mealPlans 
-        : params.courseId === 'functional-flow' ? flowMealPlans 
-        : params.courseId === 'functional-energy' ? energyMealPlans 
-        : null;
-
-      if (!mealPlanData) {
-        setCourse(null);
-        return;
-      }
-
-      // Extract weeks from meal plans - ensure we get all 6 weeks
-      const weekKeys = ['week1', 'week2', 'week3', 'week4', 'week5', 'week6'];
-      const weeks: CourseWeek[] = weekKeys.map((key, index) => {
-        const weekData = mealPlanData[key] || {};
-        return {
-          weekNumber: index + 1,
-          title: weekData.title || `Vecka ${index + 1}`,
-          subtitle: getWeekSubtitle(params.courseId, index + 1),
-          welcomeMessage: getWeekWelcomeMessage(params.courseId, index + 1),
-          heroImage: `/kurser/${params.courseId}-week${index + 1}.jpg`,
-          videoUrl: getWeekVideoUrl(params.courseId, index + 1),
-          goals: getWeekGoals(params.courseId, index + 1),
-          keyLearnings: getWeekKeyLearnings(params.courseId, index + 1)
-        };
-      });
+      // Create mock weeks for all 6 weeks
+      const weeks: CourseWeek[] = Array.from({ length: 6 }, (_, index) => ({
+        weekNumber: index + 1,
+        title: `Vecka ${index + 1}`,
+        subtitle: getWeekSubtitle(params.courseId, index + 1),
+        welcomeMessage: getWeekWelcomeMessage(params.courseId, index + 1),
+        heroImage: `/kurser/${params.courseId}-week${index + 1}.jpg`,
+        videoUrl: getWeekVideoUrl(params.courseId, index + 1),
+        goals: getWeekGoals(params.courseId, index + 1),
+        keyLearnings: getWeekKeyLearnings(params.courseId, index + 1)
+      }));
 
       const courseData: Course = {
         id: params.courseId,
@@ -113,106 +97,89 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     const courses = {
       'functional-basics': {
         name: 'Functional Basics',
-        description: 'Grundkurs i funktionell kost för en hälsosam livsstil',
+        description: 'Grundkursen för en hälsosam livsstil',
         level: 'Nybörjare',
-        enrollments: 234
+        enrollments: 1245
       },
       'functional-flow': {
-        name: 'Functional Gut Health/Flow',
-        description: 'Fördjupningskurs i mag- och tarmhälsa',
+        name: 'Functional Flow',
+        description: 'Fördjupningskurs för optimal matsmältning',
         level: 'Medel',
-        enrollments: 156
+        enrollments: 892
       },
       'functional-energy': {
-        name: 'Functional Insulin balance/Energy',
-        description: 'Specialkurs för blodsockerkontroll och energibalans',
+        name: 'Functional Energy',
+        description: 'Avancerad kurs för energioptimering',
         level: 'Avancerad',
-        enrollments: 89
+        enrollments: 634
       }
     };
-    return courses[courseId] || courses['functional-basics'];
+    return courses[courseId as keyof typeof courses] || courses['functional-basics'];
   };
 
   const getWeekSubtitle = (courseId: string, weekNumber: number) => {
     const subtitles = {
       'functional-basics': [
-        'Grunderna för en hälsosam livsstil',
-        'Planering och struktur för framgång',
-        'Näringsrik mat för kropp och själ',
-        'Balansera din kost för optimal hälsa',
-        'Hållbara vanor för livet',
-        'Sammanfattning och vägen framåt'
+        'Introduktion till Functional Foods',
+        'Planering och struktur',
+        'Grundläggande näringslära',
+        'Måltidsplanering',
+        'Hållbara vanor',
+        'Framtiden och underhåll'
       ],
       'functional-flow': [
-        'Förstå din mage och tarm',
-        'Mat för en frisk tarmflora',
-        'Inflammation och matens påverkan',
-        'Stresshantering och matsmältning',
-        'Fermenterad mat och probiotika',
-        'Långsiktig tarmhälsa'
+        'Matsmältningens grunder',
+        'Tarmbakteriernas roll',
+        'Inflammationsprocesser',
+        'Stresshantering',
+        'Sömnens betydelse',
+        'Livslång hälsa'
       ],
       'functional-energy': [
-        'Stabila energinivåer hela dagen',
-        'Blodsockerkontroll genom kosten',
-        'Insulin och metabolism',
-        'Träning och energibalans',
-        'Sömn och återhämtning',
-        'Optimera din energi långsiktigt'
+        'Energimetabolism',
+        'Hormonell balans',
+        'Näringsabsorption',
+        'Träning och återhämtning',
+        'Mental klarhet',
+        'Optimal prestanda'
       ]
     };
-    return subtitles[courseId]?.[weekNumber - 1] || '';
+    return subtitles[courseId as keyof typeof subtitles]?.[weekNumber - 1] || `Vecka ${weekNumber}`;
   };
 
   const getWeekWelcomeMessage = (courseId: string, weekNumber: number) => {
-    if (weekNumber === 1) {
-      return 'Välkommen till din resa mot bättre hälsa! Den här veckan lär du dig grunderna som kommer att förändra ditt liv.';
-    }
-    return `Välkommen till vecka ${weekNumber}! Den här veckan bygger vi vidare på dina kunskaper och tar nästa steg.`;
+    return `Välkommen till vecka ${weekNumber}! Den här veckan kommer vi att fokusera på viktiga koncept för din hälsoresa.`;
   };
 
   const getWeekVideoUrl = (courseId: string, weekNumber: number) => {
-    // Här kan vi hämta från databas senare
-    if (courseId === 'functional-basics' && weekNumber === 2) {
-      return 'https://player.vimeo.com/video/1119774775';
-    }
-    return '';
+    return `/videos/${courseId}-week${weekNumber}.mp4`;
   };
 
   const getWeekGoals = (courseId: string, weekNumber: number) => {
     return [
-      `Förstå veckans huvudkoncept`,
-      `Implementera minst 3 nya vanor`,
-      `Planera och genomföra veckans recept`,
-      `Reflektera över din utveckling`
+      `Mål 1 för vecka ${weekNumber}`,
+      `Mål 2 för vecka ${weekNumber}`,
+      `Mål 3 för vecka ${weekNumber}`
     ];
   };
 
   const getWeekKeyLearnings = (courseId: string, weekNumber: number) => {
     return [
-      `Viktiga näringsämnen och deras funktion`,
-      `Praktiska tips för vardagen`,
-      `Vanliga misstag att undvika`,
-      `Verktyg för långsiktig framgång`
+      `Nyckellärdomar 1 för vecka ${weekNumber}`,
+      `Nyckellärdomar 2 för vecka ${weekNumber}`,
+      `Nyckellärdomar 3 för vecka ${weekNumber}`
     ];
   };
 
   const saveCourse = async () => {
-    if (!course) return;
-
+    setSaving(true);
     try {
-      setSaving(true);
-      
-      // Här skulle vi spara till API/databas
-      console.log('Saving course:', course);
-      
-      // Simulera API-anrop
+      // Mock save functionality
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSuccessMessage('Kursen har sparats framgångsrikt!');
+      setSuccessMessage('Kursen har sparats!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error saving course:', error);
-      alert('Fel vid sparning av kurs');
     } finally {
       setSaving(false);
     }
@@ -220,31 +187,21 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
 
   const updateWeek = (weekNumber: number, field: keyof CourseWeek, value: any) => {
     if (!course) return;
-
-    setCourse(prev => ({
-      ...prev!,
-      weeks: prev!.weeks.map(week => 
-        week.weekNumber === weekNumber
-          ? { ...week, [field]: value }
-          : week
-      )
-    }));
+    
+    const updatedWeeks = course.weeks.map(week => 
+      week.weekNumber === weekNumber ? { ...week, [field]: value } : week
+    );
+    
+    setCourse({ ...course, weeks: updatedWeeks });
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="relative">
-            <div className="w-20 h-20 border-3 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-20 h-20 border-3 border-[#014421] rounded-full animate-spin border-t-transparent"></div>
-          </div>
-          <p className="text-gray-600 mt-4">Laddar kursinnehåll...</p>
-        </motion.div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421] mx-auto mb-4"></div>
+          <p className="text-gray-600">Laddar kursdata...</p>
+        </div>
       </div>
     );
   }
@@ -298,7 +255,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
               >
                 {saving ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                     Sparar...
                   </>
                 ) : (
@@ -311,27 +268,23 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             </div>
           </div>
 
-          {/* Course Stats */}
-          <div className="grid grid-cols-4 gap-6">
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <Users className="w-8 h-8 text-[#014421] mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{course.enrollments || 0}</div>
-              <div className="text-sm text-gray-600">Deltagare</div>
+          {/* Course Info */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <span className="text-gray-600 block">Pris</span>
+              <span className="font-semibold text-lg">{course.price} kr</span>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <Clock className="w-8 h-8 text-[#93C560] mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{course.duration}</div>
-              <div className="text-sm text-gray-600">Längd</div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <span className="text-gray-600 block">Längd</span>
+              <span className="font-semibold text-lg">{course.duration}</span>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <Target className="w-8 h-8 text-[#FFB5A7] mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{course.level}</div>
-              <div className="text-sm text-gray-600">Nivå</div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <span className="text-gray-600 block">Nivå</span>
+              <span className="font-semibold text-lg">{course.level}</span>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <BookOpen className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{course.weeks.length}</div>
-              <div className="text-sm text-gray-600">Veckor</div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <span className="text-gray-600 block">Deltagare</span>
+              <span className="font-semibold text-lg">{course.enrollments}</span>
             </div>
           </div>
         </div>
@@ -386,126 +339,42 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
               className="overflow-hidden"
             >
               <div className="p-6 bg-gray-50 space-y-6">
-                {/* Hero Section */}
-                <div>
-                  <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Hero Sektion</h4>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Huvudrubrik</label>
-                      <input
-                        type="text"
-                        value={overviewData.heroTitle}
-                        onChange={(e) => setOverviewData(prev => ({ ...prev, heroTitle: e.target.value }))}
-                        className="admin-input"
-                        placeholder="T.ex. Välkommen till Functional Basics"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Underrubrik</label>
-                      <input
-                        type="text"
-                        value={overviewData.heroSubtitle}
-                        onChange={(e) => setOverviewData(prev => ({ ...prev, heroSubtitle: e.target.value }))}
-                        className="admin-input"
-                        placeholder="T.ex. Din resa mot bättre hälsa börjar här"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Hero Bild URL</label>
-                      <input
-                        type="text"
-                        value={overviewData.heroImage}
-                        onChange={(e) => setOverviewData(prev => ({ ...prev, heroImage: e.target.value }))}
-                        className="admin-input"
-                        placeholder="/kurser/hero-image.jpg"
-                      />
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Huvudrubrik</label>
+                    <input
+                      type="text"
+                      value={overviewData.heroTitle}
+                      onChange={(e) => setOverviewData(prev => ({ ...prev, heroTitle: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      placeholder="T.ex. Välkommen till Functional Basics"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Underrubrik</label>
+                    <input
+                      type="text"
+                      value={overviewData.heroSubtitle}
+                      onChange={(e) => setOverviewData(prev => ({ ...prev, heroSubtitle: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      placeholder="T.ex. Din resa mot bättre hälsa börjar här"
+                    />
                   </div>
                 </div>
 
-                {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Kursbeskrivning</label>
                   <textarea
                     value={overviewData.description}
                     onChange={(e) => setOverviewData(prev => ({ ...prev, description: e.target.value }))}
-                    className="admin-textarea"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
                     rows={4}
                     placeholder="Beskriv kursen mer detaljerat..."
                   />
                 </div>
 
-                {/* Benefits */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Fördelar (en per rad)</label>
-                  <textarea
-                    value={overviewData.benefits.join('\n')}
-                    onChange={(e) => setOverviewData(prev => ({ ...prev, benefits: e.target.value.split('\n').filter(b => b.trim()) }))}
-                    className="admin-textarea"
-                    rows={5}
-                    placeholder="Lär dig grunderna i functional foods\nFörbättra din matsmältning\nÖka din energi"
-                  />
-                </div>
-
-                {/* Target Audience */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Målgrupp (en per rad)</label>
-                  <textarea
-                    value={overviewData.targetAudience.join('\n')}
-                    onChange={(e) => setOverviewData(prev => ({ ...prev, targetAudience: e.target.value.split('\n').filter(t => t.trim()) }))}
-                    className="admin-textarea"
-                    rows={4}
-                    placeholder="Nybörjare inom functional foods\nPersoner som vill förbättra sin hälsa"
-                  />
-                </div>
-
-                {/* Included Features */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Vad som ingår (en per rad)</label>
-                  <textarea
-                    value={overviewData.includesFeatures.join('\n')}
-                    onChange={(e) => setOverviewData(prev => ({ ...prev, includesFeatures: e.target.value.split('\n').filter(f => f.trim()) }))}
-                    className="admin-textarea"
-                    rows={5}
-                    placeholder="6 veckors strukturerat program\nRecept och måltidsplaner\nTillgång till community"
-                  />
-                </div>
-
-                {/* Community Settings */}
-                <div>
-                  <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Community Inställningar</h4>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Community Länk</label>
-                      <input
-                        type="text"
-                        value={overviewData.communityLink}
-                        onChange={(e) => setOverviewData(prev => ({ ...prev, communityLink: e.target.value }))}
-                        className="admin-input"
-                        placeholder="/dashboard/community"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Community Titel</label>
-                      <input
-                        type="text"
-                        value={overviewData.communityTitle}
-                        onChange={(e) => setOverviewData(prev => ({ ...prev, communityTitle: e.target.value }))}
-                        className="admin-input"
-                        placeholder="COMMUNITY"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Community Beskrivning</label>
-                      <textarea
-                        value={overviewData.communityDescription}
-                        onChange={(e) => setOverviewData(prev => ({ ...prev, communityDescription: e.target.value }))}
-                        className="admin-textarea"
-                        rows={2}
-                        placeholder="Gå med i vår community och dela dina erfarenheter"
-                      />
-                    </div>
-                  </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-500">Fler inställningar kommer snart...</p>
                 </div>
               </div>
             </motion.div>
@@ -537,7 +406,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Vecka {week.weekNumber}: {week.title || `Vecka ${week.weekNumber}`}
+                      Vecka {week.weekNumber}: {week.title}
                     </h3>
                     <p className="text-gray-600">{week.subtitle}</p>
                   </div>
@@ -555,147 +424,64 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             <AnimatePresence>
               {expandedWeek === week.weekNumber && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="border-t border-gray-100"
+                  initial={{ height: 0 }}
+                  animate={{ height: 'auto' }}
+                  exit={{ height: 0 }}
+                  className="overflow-hidden"
                 >
-                  <div className="p-6 space-y-6">
-                    {/* Title & Subtitle */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-6 bg-gray-50 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Veckotitel
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Vecko-titel</label>
                         <input
                           type="text"
                           value={week.title}
                           onChange={(e) => updateWeek(week.weekNumber, 'title', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                          placeholder="T.ex. Introduktion till Functional Foods"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Undertitel
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Underrubrik</label>
                         <input
                           type="text"
                           value={week.subtitle}
                           onChange={(e) => updateWeek(week.weekNumber, 'subtitle', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                          placeholder="Kort beskrivning av veckans fokus"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
                         />
                       </div>
                     </div>
 
-                    {/* Welcome Message */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Välkomstmeddelande
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Välkomstmeddelande</label>
                       <textarea
                         value={week.welcomeMessage}
                         onChange={(e) => updateWeek(week.weekNumber, 'welcomeMessage', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
                         rows={3}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent resize-none"
-                        placeholder="Välkommen till vecka X! Den här veckan kommer vi att..."
                       />
                     </div>
 
-                    {/* Media */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <ImageIcon className="w-4 h-4 inline mr-1" />
-                          Hero-bild URL
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Hero-bild URL</label>
                         <input
                           type="text"
                           value={week.heroImage}
                           onChange={(e) => updateWeek(week.weekNumber, 'heroImage', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                          placeholder="/kurser/week1-hero.jpg"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                          placeholder="/kurser/hero-image.jpg"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <Video className="w-4 h-4 inline mr-1" />
-                          Video URL (Vimeo)
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Video URL</label>
                         <input
                           type="text"
                           value={week.videoUrl}
                           onChange={(e) => updateWeek(week.weekNumber, 'videoUrl', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                          placeholder="https://player.vimeo.com/video/..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                          placeholder="/videos/video.mp4"
                         />
                       </div>
-                    </div>
-
-                    {/* Goals & Key Learnings */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <Target className="w-4 h-4 inline mr-1" />
-                          Veckans mål
-                        </label>
-                        <div className="space-y-2">
-                          {(week.goals || []).map((goal, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <span className="text-[#014421]">•</span>
-                              <input
-                                type="text"
-                                value={goal}
-                                onChange={(e) => {
-                                  const newGoals = [...(week.goals || [])];
-                                  newGoals[idx] = e.target.value;
-                                  updateWeek(week.weekNumber, 'goals', newGoals);
-                                }}
-                                className="flex-1 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <Sparkles className="w-4 h-4 inline mr-1" />
-                          Viktiga lärdomar
-                        </label>
-                        <div className="space-y-2">
-                          {(week.keyLearnings || []).map((learning, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <span className="text-[#93C560]">•</span>
-                              <input
-                                type="text"
-                                value={learning}
-                                onChange={(e) => {
-                                  const newLearnings = [...(week.keyLearnings || [])];
-                                  newLearnings[idx] = e.target.value;
-                                  updateWeek(week.weekNumber, 'keyLearnings', newLearnings);
-                                }}
-                                className="flex-1 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Quick Actions */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="text-sm text-gray-500">
-                        <Calendar className="w-4 h-4 inline mr-1" />
-                        Senast uppdaterad: {new Date().toLocaleDateString('sv-SE')}
-                      </div>
-                      <Link
-                        href={`/dashboard/courses/${params.courseId}/week${week.weekNumber}`}
-                        className="text-[#014421] hover:underline text-sm"
-                      >
-                        Visa vecka →
-                      </Link>
                     </div>
                   </div>
                 </motion.div>
