@@ -1,8 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Loader2, Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Loader2, Plus, Edit, Trash2, Search, X, Bold, Italic, List, Link2 } from 'lucide-react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+// Dynamisk import av rich text editor
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+// Import CSS for ReactQuill
+import './quill-editor.css';
 
 interface KnowledgeDocument {
   id: string;
@@ -27,6 +34,7 @@ export default function KnowledgeAdminPage() {
   const [editingDoc, setEditingDoc] = useState<Partial<KnowledgeDocument> | null>(null);
   const [courseFilter, setCourseFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [useRichEditor, setUseRichEditor] = useState(true);
 
   const fetchDocuments = async () => {
     setLoading(true);
@@ -303,12 +311,31 @@ export default function KnowledgeAdminPage() {
 
       {/* Edit Modal */}
       {isEditing && editingDoc && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+          onClick={() => {
+            setIsEditing(false);
+            setEditingDoc(null);
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b flex items-center justify-between">
               <h2 className="text-xl font-semibold">
                 {editingDoc.id ? 'Redigera dokument' : 'Skapa nytt dokument'}
               </h2>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditingDoc(null);
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Stäng"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
             </div>
             
             <div className="p-6 space-y-4">
@@ -417,15 +444,52 @@ export default function KnowledgeAdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Innehåll (HTML)
-                </label>
-                <textarea
-                  value={editingDoc.content || ''}
-                  onChange={(e) => setEditingDoc({ ...editingDoc, content: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg h-64 font-mono text-sm"
-                  placeholder="<p>Artikel innehåll här...</p>"
-                />
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Innehåll
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setUseRichEditor(!useRichEditor)}
+                      className="text-xs text-blue-600 hover:text-blue-800"
+                    >
+                      {useRichEditor ? 'Visa HTML' : 'Visa editor'}
+                    </button>
+                  </div>
+                </div>
+                
+                {useRichEditor ? (
+                  <div className="border rounded-lg overflow-hidden">
+                    <ReactQuill
+                      theme="snow"
+                      value={editingDoc.content || ''}
+                      onChange={(content) => setEditingDoc({ ...editingDoc, content })}
+                      modules={{
+                        toolbar: [
+                          [{ 'header': [1, 2, 3, false] }],
+                          ['bold', 'italic', 'underline', 'strike'],
+                          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                          ['link', 'image'],
+                          [{ 'color': [] }, { 'background': [] }],
+                          ['clean']
+                        ],
+                      }}
+                      formats={[
+                        'header', 'bold', 'italic', 'underline', 'strike',
+                        'list', 'bullet', 'link', 'image', 'color', 'background'
+                      ]}
+                      style={{ height: '300px', marginBottom: '50px' }}
+                      placeholder="Skriv artikel innehåll här..."
+                    />
+                  </div>
+                ) : (
+                  <textarea
+                    value={editingDoc.content || ''}
+                    onChange={(e) => setEditingDoc({ ...editingDoc, content: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg h-64 font-mono text-sm"
+                    placeholder="<p>Artikel innehåll här...</p>"
+                  />
+                )}
               </div>
 
               <div className="flex gap-4">
