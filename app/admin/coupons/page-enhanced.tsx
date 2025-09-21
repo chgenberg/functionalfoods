@@ -87,7 +87,11 @@ export default function AdminCouponsPage() {
   const openEdit = (c: Coupon) => { 
     setEditing(c); 
     setForm({ 
-      ...c, 
+      code: c.code,
+      type: c.type,
+      amount: c.amount,
+      active: c.active,
+      description: c.description || '',
       startsAt: c.startsAt?.slice(0,10) || '', 
       expiresAt: c.expiresAt?.slice(0,10) || '',
       usageLimit: c.usageLimit?.toString() || ''
