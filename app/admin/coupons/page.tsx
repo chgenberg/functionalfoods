@@ -166,18 +166,9 @@ export default function AdminCouponsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Rabattkoder</h1>
-          <p className="text-[var(--text-secondary)] font-light">Hantera rabattkoder för kampanjer och erbjudanden</p>
-        </div>
-        <button 
-          onClick={openNew} 
-          className="admin-btn admin-btn-primary"
-        >
-          <Plus className="w-4 h-4" />
-          Ny rabattkod
-        </button>
+      <div className="mb-8">
+        <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Rabattkoder</h1>
+        <p className="text-[var(--text-secondary)] font-light">Hantera rabattkoder för kampanjer och erbjudanden</p>
       </div>
 
       {/* Error message */}
@@ -352,19 +343,41 @@ export default function AdminCouponsPage() {
             
             <div>
               <label className="admin-label">Giltighetstid</label>
-              <div className="grid grid-cols-2 gap-2">
-                <input 
-                  type="date" 
-                  value={form.startsAt || ''} 
-                  onChange={e => setForm({ ...form, startsAt: e.target.value })} 
-                  className="admin-input" 
-                />
-                <input 
-                  type="date" 
-                  value={form.expiresAt || ''} 
-                  onChange={e => setForm({ ...form, expiresAt: e.target.value })} 
-                  className="admin-input" 
-                />
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm text-[var(--text-secondary)]">Startdatum och tid</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input 
+                      type="date" 
+                      value={form.startsAtDate || ''} 
+                      onChange={e => setForm({ ...form, startsAtDate: e.target.value })} 
+                      className="admin-input" 
+                    />
+                    <input 
+                      type="time" 
+                      value={form.startsAtTime || '00:00'} 
+                      onChange={e => setForm({ ...form, startsAtTime: e.target.value })} 
+                      className="admin-input" 
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm text-[var(--text-secondary)]">Slutdatum och tid</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input 
+                      type="date" 
+                      value={form.expiresAtDate || ''} 
+                      onChange={e => setForm({ ...form, expiresAtDate: e.target.value })} 
+                      className="admin-input" 
+                    />
+                    <input 
+                      type="time" 
+                      value={form.expiresAtTime || '23:59'} 
+                      onChange={e => setForm({ ...form, expiresAtTime: e.target.value })} 
+                      className="admin-input" 
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             

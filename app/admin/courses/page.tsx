@@ -134,7 +134,7 @@ export default function AdminCoursesPage() {
             key={course.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="admin-card hover:shadow-lg transition-all"
+            className="admin-card hover:shadow-lg transition-all h-full flex flex-col"
           >
             {/* Course Header */}
             <div className="flex items-start justify-between mb-4">
@@ -208,7 +208,7 @@ export default function AdminCoursesPage() {
             </div>
 
             {/* Quick Week Preview */}
-            <div className="mt-4 pt-4 border-t border-[var(--border-light)]">
+            <div className="mt-auto pt-4 border-t border-[var(--border-light)]">
               <h4 className="text-sm font-medium text-[var(--text-primary)] mb-2">Senaste veckor:</h4>
               <div className="space-y-1">
                 {course.weeks.slice(0, 3).map((week) => (
@@ -217,10 +217,10 @@ export default function AdminCoursesPage() {
                     href={`/admin/courses/${course.id}/weeks/${week.weekNumber}`}
                     className="flex items-center justify-between p-2 rounded hover:bg-[var(--primary-beige)] transition-colors"
                   >
-                    <span className="text-sm text-[var(--text-primary)]">
-                      Vecka {week.weekNumber}: {week.title.slice(0, 30)}...
+                    <span className="text-sm text-[var(--text-primary)] truncate">
+                      Vecka {week.weekNumber}: {week.title}
                     </span>
-                    <ChevronRight className="w-4 h-4 text-[var(--text-secondary)]" />
+                    <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] flex-shrink-0" />
                   </Link>
                 ))}
               </div>
