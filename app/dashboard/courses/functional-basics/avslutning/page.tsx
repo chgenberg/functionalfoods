@@ -7,15 +7,27 @@ import Link from 'next/link';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import WeekHeroWithVideo from '@/app/dashboard/courses/components/WeekHeroWithVideo';
 import VideoModal from '@/app/dashboard/courses/components/VideoModal';
-import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
+import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
 import HelpGuide from '@/app/components/HelpGuide';
 import { ArrowLeft, Check, Star, Target, BookOpen } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
+const getMealTypeSwedish = (mealType: string): string => {
+  const translations: Record<string, string> = {
+    'breakfast': 'Frukost',
+    'lunch': 'Lunch', 
+    'dinner': 'Middag',
+    'snack': 'Mellanmål'
+  };
+  return translations[mealType] || mealType;
+};
+
 export default function CompletionPage() {
   const [showVideo, setShowVideo] = useState(true);
+  const { getFavoritesByCoursetype } = useFavoriteRecipes();
+  const favorites = getFavoritesByCoursetype('basics');
   const [showHelpGuide, setShowHelpGuide] = useState(false);
 
   // Listen for help button clicks
@@ -135,7 +147,77 @@ export default function CompletionPage() {
           transition={{ delay: 0.8 }}
           className="mt-8"
         >
-          <FavoriteRecipesPDF courseType="basics" />
+          <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-200">
+            <div className="flex items-start gap-6 mb-6">
+              <div className="flex-shrink-0">
+                <div className="w-14 h-14 bg-[#014421] rounded-xl flex items-center justify-center">
+                  <Star className="w-7 h-7 text-white" />
+                </div>
+              </div>
+              <div className="flex-grow">
+                <h3 className="text-2xl font-bold text-[#014421] mb-2">
+                  Mina Favoritrecept
+                </h3>
+                <p className="text-gray-600">
+                  {favorites.length > 0 ? `${favorites.length} sparade recept från Functional Basics` : 'Inga favoritrecept ännu'}
+                </p>
+              </div>
+            </div>
+
+            {favorites.length === 0 ? (
+              <div className="text-center py-8">
+                <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">Inga favoritrecept ännu</h4>
+                <p className="text-gray-600 mb-4">
+                  Stjärnmarkera recept i dina måltidsplaner för att samla dem här!
+                </p>
+                <div className="text-sm text-gray-500">
+                  Klicka på <Star className="w-4 h-4 inline text-yellow-500" /> bredvid måltider för att lägga till dem som favoriter
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {Object.entries(favorites.reduce((acc, fav) => {
+                  const weekKey = `Vecka ${fav.weekNumber}`;
+                  if (!acc[weekKey]) {
+                    acc[weekKey] = [];
+                  }
+                  acc[weekKey].push(fav);
+                  return acc;
+                }, {} as Record<string, typeof favorites>))
+                  .sort(([a], [b]) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]))
+                  .map(([week, recipes]) => (
+                    <div key={week} className="bg-gray-50 rounded-xl p-4">
+                      <h4 className="font-semibold text-[#014421] mb-3 flex items-center gap-2">
+                        <BookOpen className="w-4 h-4" />
+                        {week}
+                      </h4>
+                      <div className="space-y-2">
+                        {recipes.map((recipe, idx) => (
+                          <div key={idx} className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                            <Star className="w-4 h-4 text-[#93C560] flex-shrink-0" />
+                            <div className="flex-grow">
+                              <div className="font-medium text-gray-900">{recipe.name}</div>
+                              <div className="text-sm text-gray-500">
+                                {recipe.dayName} • {getMealTypeSwedish(recipe.mealType)}
+                              </div>
+                              {recipe.recipeLink && (
+                                <Link 
+                                  href={recipe.recipeLink}
+                                  className="text-sm text-[#014421] hover:text-[#112A12] transition-colors"
+                                >
+                                  Visa recept →
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
         </motion.div>
 
         {/* Course Review Section */}
