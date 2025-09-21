@@ -123,7 +123,7 @@ export default function EnhancedAdminSalesPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/admin/payments', {
+      const response = await fetch('/api/admin/stripe-payments', {
         credentials: 'include'
       });
       
@@ -324,9 +324,16 @@ export default function EnhancedAdminSalesPage() {
     }
 
     try {
-      const response = await fetch(`/api/admin/payments/${paymentId}/refund`, {
+      const response = await fetch('/api/admin/stripe-payments', {
         method: 'POST',
-        credentials: 'include'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          paymentIntentId: paymentId,
+          reason: 'requested_by_customer'
+        })
       });
 
       if (!response.ok) {
