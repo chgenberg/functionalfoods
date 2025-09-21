@@ -393,7 +393,7 @@ export default function AdminCouponsPage() {
                   <label className="admin-label">Rabattyp *</label>
                   <select
                     value={form.type}
-                    onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value }))}
+                    onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as 'percent' | 'fixed' }))}
                     className="admin-select"
                   >
                     <option value="percent">Procent (%)</option>
