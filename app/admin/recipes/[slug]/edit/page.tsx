@@ -118,8 +118,38 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   useEffect(() => {
     if (recipe?.imageUrl) {
       setImagePreview(recipe.imageUrl);
+    } else if (recipe?.title) {
+      // Try to fetch optimized image for this recipe
+      fetchOptimizedImage();
     }
   }, [recipe]);
+
+  const fetchOptimizedImage = async () => {
+    if (!recipe?.title) return;
+    
+    try {
+      const response = await fetch('/api/recipes/batch-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          recipeNames: [recipe.title],
+          size: 'medium',
+          usage: 'detail'
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const optimizedUrl = data.images[recipe.title];
+        if (optimizedUrl && !optimizedUrl.includes('placeholder')) {
+          setImagePreview(optimizedUrl);
+          setFormData(prev => ({ ...prev, imageUrl: optimizedUrl }));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching optimized image:', error);
+    }
+  };
 
   const fetchRecipe = async () => {
     try {
@@ -746,24 +776,36 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             
             {imagePreview ? (
               <div className="space-y-4">
-                <div className="relative aspect-video rounded-lg overflow-hidden">
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
                   <Image
                     src={imagePreview}
                     alt={formData.title}
                     fill
                     className="object-cover"
+                    onError={() => {
+                      console.error('Image failed to load:', imagePreview);
+                      setImagePreview(null);
+                    }}
                   />
                 </div>
                 
-                <button
-                  onClick={() => {
-                    setImagePreview(null);
-                    setFormData(prev => ({ ...prev, imageUrl: '' }));
-                  }}
-                  className="admin-btn admin-btn-secondary w-full"
-                >
-                  Ta bort bild
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={fetchOptimizedImage}
+                    className="admin-btn admin-btn-secondary flex-1"
+                  >
+                    Ladda om bild
+                  </button>
+                  <button
+                    onClick={() => {
+                      setImagePreview(null);
+                      setFormData(prev => ({ ...prev, imageUrl: '' }));
+                    }}
+                    className="admin-btn admin-btn-secondary flex-1"
+                  >
+                    Ta bort bild
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="admin-upload-zone">
