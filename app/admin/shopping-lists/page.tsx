@@ -166,7 +166,7 @@ export default function AdminShoppingListsPage() {
             >
               <option value="basics">Functional Basics</option>
               <option value="flow">Functional Flow</option>
-              <option value="energy">Functional Energy</option>
+              <option value="energy">Functional Insulin balance/Energy</option>
             </select>
           </div>
           <div>

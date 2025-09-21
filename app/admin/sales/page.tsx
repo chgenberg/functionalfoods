@@ -131,9 +131,9 @@ export default function EnhancedAdminSalesPage() {
         throw new Error('Failed to fetch payments');
       }
 
-      const data = await response.json();
-      setPayments(data.payments);
-      setSummary(data.summary);
+        const data = await response.json();
+        setPayments(data.payments);
+        setSummary(data.summary);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -286,7 +286,7 @@ export default function EnhancedAdminSalesPage() {
     if (!description) return '-';
     if (description.includes('Functional Basics')) return 'Functional Basics';
     if (description.includes('Functional Flow')) return 'Functional Flow';
-    if (description.includes('Functional Energy')) return 'Functional Energy';
+    if (description.includes('Functional Insulin balance/Energy') || description.includes('Functional Energy')) return 'Functional Insulin balance/Energy';
     return '-';
   };
 
@@ -294,7 +294,7 @@ export default function EnhancedAdminSalesPage() {
     switch (status) {
       case 'succeeded':
         return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case 'processing':
+      case 'processing': 
         return <Clock className="w-5 h-5 text-yellow-600" />;
       case 'requires_payment_method':
       case 'requires_confirmation':
@@ -394,12 +394,12 @@ export default function EnhancedAdminSalesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+        {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
+          <div>
           <h1 className="text-2xl font-bold text-gray-900">Försäljning</h1>
           <p className="text-gray-600 mt-1">Hantera och analysera alla transaktioner</p>
-        </div>
+          </div>
         <div className="flex gap-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -426,7 +426,7 @@ export default function EnhancedAdminSalesPage() {
             Uppdatera
           </button>
         </div>
-      </div>
+        </div>
 
       {/* Advanced Filters */}
       <AnimatePresence>
@@ -490,7 +490,7 @@ export default function EnhancedAdminSalesPage() {
                     <option value="all">Alla kurser</option>
                     <option value="functional-basics">Functional Basics</option>
                     <option value="functional-flow">Functional Flow</option>
-                    <option value="functional-energy">Functional Energy</option>
+                    <option value="functional-energy">Functional Insulin balance/Energy</option>
                   </select>
                 </div>
 
@@ -603,61 +603,61 @@ export default function EnhancedAdminSalesPage() {
           <p className="text-xs text-gray-500 mt-1">
             {summary.total} transaktioner
           </p>
-        </motion.div>
+          </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
           className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Snitt ordervärde</span>
             <BarChart3 className="w-5 h-5 text-gray-400" />
-          </div>
+              </div>
           <p className="text-2xl font-bold text-gray-900">
             {(summary.avgOrderValue / 100).toFixed(0)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Per transaktion
           </p>
-        </motion.div>
+          </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Lyckade</span>
             <CheckCircle className="w-5 h-5 text-green-600" />
-          </div>
+              </div>
           <p className="text-2xl font-bold text-green-600">
             {summary.successful}
           </p>
           <p className="text-xs text-gray-500 mt-1">
             {summary.total > 0 ? Math.round((summary.successful / summary.total) * 100) : 0}% av totalt
           </p>
-        </motion.div>
+          </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
           className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Väntande</span>
             <Clock className="w-5 h-5 text-yellow-600" />
-          </div>
+              </div>
           <p className="text-2xl font-bold text-yellow-600">
             {summary.pending}
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Kräver åtgärd
           </p>
-        </motion.div>
+          </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -676,38 +676,38 @@ export default function EnhancedAdminSalesPage() {
             Totalt återbetalat
           </p>
         </motion.div>
-      </div>
+        </div>
 
-      {/* Payments Table */}
+        {/* Payments Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kund
-                </th>
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Kund
+                  </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Produkt
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Belopp
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Belopp
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Betalningsmetod
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Datum
-                </th>
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Datum
+                  </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Åtgärder
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+                    Åtgärder
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
               {filteredPayments.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
@@ -762,7 +762,7 @@ export default function EnhancedAdminSalesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {payment.paymentMethod ? (
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2">
                           <CreditCard className="w-4 h-4 text-gray-400" />
                           <span className="text-sm text-gray-900">
                             {payment.paymentMethod.card?.brand || payment.paymentMethod.type}
@@ -770,9 +770,9 @@ export default function EnhancedAdminSalesPage() {
                           {payment.paymentMethod.card?.last4 && (
                             <span className="text-xs text-gray-500">
                               ****{payment.paymentMethod.card.last4}
-                            </span>
-                          )}
-                        </div>
+                        </span>
+                        )}
+                      </div>
                       ) : (
                         <span className="text-sm text-gray-500">-</span>
                       )}
@@ -789,20 +789,20 @@ export default function EnhancedAdminSalesPage() {
                       </p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => setSelectedPayment(payment)}
+                        <button
+                          onClick={() => setSelectedPayment(payment)}
                         className="text-[#014421] hover:text-[#012A14]"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
                     </td>
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
       {/* Payment Details Modal */}
       <AnimatePresence>
@@ -831,14 +831,14 @@ export default function EnhancedAdminSalesPage() {
                     <XCircle className="w-6 h-6" />
                   </button>
                 </div>
-              </div>
+                </div>
 
               <div className="p-6 space-y-6">
                 {/* Status Section */}
-                <div>
+                  <div>
                   <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Status</h3>
-                  <div className="flex items-center gap-3">
-                    {getStatusIcon(selectedPayment.status)}
+                    <div className="flex items-center gap-3">
+                      {getStatusIcon(selectedPayment.status)}
                     <span className="text-lg font-medium text-gray-900">
                       {getStatusText(selectedPayment.status)}
                     </span>
@@ -853,10 +853,10 @@ export default function EnhancedAdminSalesPage() {
                       Fel: {selectedPayment.failureMessage}
                     </p>
                   )}
-                </div>
+                  </div>
 
                 {/* Customer Section */}
-                <div>
+                  <div>
                   <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Kundinformation</h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -867,7 +867,7 @@ export default function EnhancedAdminSalesPage() {
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-gray-400" />
                         <span className="text-sm text-gray-900">{selectedPayment.customer.name}</span>
-                      </div>
+                  </div>
                     )}
                     {selectedPayment.customer.metadata?.phone && (
                       <div className="flex items-center gap-2">
@@ -882,18 +882,18 @@ export default function EnhancedAdminSalesPage() {
                       </div>
                     )}
                   </div>
-                </div>
-
+                      </div>
+                      
                 {/* Payment Section */}
                 <div>
                   <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Betalningsdetaljer</h3>
                   <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                    <div className="flex justify-between">
+                        <div className="flex justify-between">
                       <span className="text-sm text-gray-600">Belopp</span>
                       <span className="text-sm font-medium text-gray-900">
                         {(selectedPayment.amount / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
-                      </span>
-                    </div>
+                          </span>
+                        </div>
                     {selectedPayment.refundAmount > 0 && (
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-600">Återbetalat</span>
@@ -909,9 +909,9 @@ export default function EnhancedAdminSalesPage() {
                           {((selectedPayment.amount - selectedPayment.refundAmount) / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
                         </span>
                       </div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
                  {/* Order Details */}
                  <div>
@@ -919,7 +919,7 @@ export default function EnhancedAdminSalesPage() {
                    <div className="space-y-3">
                      <div className="flex items-start gap-2">
                        <Package className="w-4 h-4 text-gray-400 mt-0.5" />
-                       <div>
+                    <div>
                          <p className="text-sm font-medium text-gray-900">{selectedPayment.description || 'Ingen beskrivning'}</p>
                          {selectedPayment.orderInfo && (
                            <div className="mt-2 space-y-1">
@@ -933,9 +933,9 @@ export default function EnhancedAdminSalesPage() {
                                </div>
                              ))}
                            </div>
-                         )}
-                       </div>
-                     </div>
+                        )}
+                      </div>
+                    </div>
                      <div className="flex items-center gap-2">
                        <Hash className="w-4 h-4 text-gray-400" />
                        <span className="text-sm text-gray-900 font-mono">{selectedPayment.id}</span>
@@ -949,28 +949,28 @@ export default function EnhancedAdminSalesPage() {
                    </div>
                  </div>
 
-                {/* Actions */}
+                  {/* Actions */}
                 <div className="flex gap-3 pt-4 border-t border-gray-200">
-                  {selectedPayment.receiptUrl && (
-                    <a
-                      href={selectedPayment.receiptUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    {selectedPayment.receiptUrl && (
+                      <a
+                        href={selectedPayment.receiptUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
+                      >
                       <Download className="w-4 h-4" />
                       Visa kvitto
-                    </a>
-                  )}
-                  {selectedPayment.status === 'succeeded' && !selectedPayment.refunded && (
-                    <button
+                      </a>
+                    )}
+                    {selectedPayment.status === 'succeeded' && !selectedPayment.refunded && (
+                      <button
                       onClick={() => handleRefund(selectedPayment.id)}
                       className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                     >
                       <RotateCcw className="w-4 h-4" />
                       Återbetala
-                    </button>
-                  )}
+                      </button>
+                    )}
                 </div>
               </div>
             </motion.div>
@@ -979,4 +979,4 @@ export default function EnhancedAdminSalesPage() {
       </AnimatePresence>
     </div>
   );
-}
+} 

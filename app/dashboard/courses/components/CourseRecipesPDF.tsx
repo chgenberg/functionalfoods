@@ -15,7 +15,7 @@ export default function CourseRecipesPDF({ courseType }: CourseRecipesPDFProps) 
     ? 'Functional Basics' 
     : courseType === 'flow' 
     ? 'Functional Flow' 
-    : 'Functional Energy';
+    : 'Functional Insulin balance/Energy';
 
   const generatePDF = async () => {
     setIsGenerating(true);
