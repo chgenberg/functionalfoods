@@ -546,9 +546,9 @@ export default function WeekTemplate({
 
           {/* Week Materials */}
           <div className="mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#014421] mb-4 sm:mb-6">Veckans material</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#014421] mb-4 sm:mb-6 text-center">Veckans material</h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg">
                 <div className="flex items-center mb-3 sm:mb-4">
                   <div className="bg-[#014421] rounded-full p-2.5 sm:p-3 mr-3 sm:mr-4">
