@@ -1,26 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { 
-  ArrowLeft, Save, Plus, Edit3, Trash2, Upload, 
-  Image as ImageIcon, Video, FileText, Clock, Users,
-  ChevronDown, ChevronUp, Eye, Calendar, BookOpen,
-  Target, Sparkles, CheckCircle, AlertCircle
-} from 'lucide-react';
-
-interface CourseWeek {
-  weekNumber: number;
-  title: string;
-  subtitle?: string;
-  welcomeMessage?: string;
-  heroImage?: string;
-  videoUrl?: string;
-  goals?: string[];
-  keyLearnings?: string[];
-}
+import { ArrowLeft, Save, Eye, AlertCircle } from 'lucide-react';
 
 interface Course {
   id: string;
@@ -30,28 +12,12 @@ interface Course {
   duration: string;
   level: string;
   enrollments?: number;
-  weeks: CourseWeek[];
 }
 
 export default function EditCoursePage({ params }: { params: { courseId: string } }) {
-  const router = useRouter();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [expandedWeek, setExpandedWeek] = useState<number | null>(1);
-  const [showOverviewEdit, setShowOverviewEdit] = useState(false);
-  const [overviewData, setOverviewData] = useState({
-    heroTitle: '',
-    heroSubtitle: '',
-    heroImage: '',
-    description: '',
-    benefits: [] as string[],
-    targetAudience: [] as string[],
-    includesFeatures: [] as string[],
-    communityLink: '',
-    communityTitle: '',
-    communityDescription: ''
-  });
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
@@ -62,18 +28,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     try {
       setLoading(true);
       
-      // Create mock weeks for all 6 weeks
-      const weeks: CourseWeek[] = Array.from({ length: 6 }, (_, index) => ({
-        weekNumber: index + 1,
-        title: `Vecka ${index + 1}`,
-        subtitle: getWeekSubtitle(params.courseId, index + 1),
-        welcomeMessage: getWeekWelcomeMessage(params.courseId, index + 1),
-        heroImage: `/kurser/${params.courseId}-week${index + 1}.jpg`,
-        videoUrl: getWeekVideoUrl(params.courseId, index + 1),
-        goals: getWeekGoals(params.courseId, index + 1),
-        keyLearnings: getWeekKeyLearnings(params.courseId, index + 1)
-      }));
-
+      // Mock course data
       const courseData: Course = {
         id: params.courseId,
         name: getCourseInfo(params.courseId).name,
@@ -82,7 +37,6 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         duration: '6 veckor',
         level: getCourseInfo(params.courseId).level,
         enrollments: getCourseInfo(params.courseId).enrollments,
-        weeks
       };
 
       setCourse(courseData);
@@ -117,64 +71,9 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     return courses[courseId as keyof typeof courses] || courses['functional-basics'];
   };
 
-  const getWeekSubtitle = (courseId: string, weekNumber: number) => {
-    const subtitles = {
-      'functional-basics': [
-        'Introduktion till Functional Foods',
-        'Planering och struktur',
-        'Grundläggande näringslära',
-        'Måltidsplanering',
-        'Hållbara vanor',
-        'Framtiden och underhåll'
-      ],
-      'functional-flow': [
-        'Matsmältningens grunder',
-        'Tarmbakteriernas roll',
-        'Inflammationsprocesser',
-        'Stresshantering',
-        'Sömnens betydelse',
-        'Livslång hälsa'
-      ],
-      'functional-energy': [
-        'Energimetabolism',
-        'Hormonell balans',
-        'Näringsabsorption',
-        'Träning och återhämtning',
-        'Mental klarhet',
-        'Optimal prestanda'
-      ]
-    };
-    return subtitles[courseId as keyof typeof subtitles]?.[weekNumber - 1] || `Vecka ${weekNumber}`;
-  };
-
-  const getWeekWelcomeMessage = (courseId: string, weekNumber: number) => {
-    return `Välkommen till vecka ${weekNumber}! Den här veckan kommer vi att fokusera på viktiga koncept för din hälsoresa.`;
-  };
-
-  const getWeekVideoUrl = (courseId: string, weekNumber: number) => {
-    return `/videos/${courseId}-week${weekNumber}.mp4`;
-  };
-
-  const getWeekGoals = (courseId: string, weekNumber: number) => {
-    return [
-      `Mål 1 för vecka ${weekNumber}`,
-      `Mål 2 för vecka ${weekNumber}`,
-      `Mål 3 för vecka ${weekNumber}`
-    ];
-  };
-
-  const getWeekKeyLearnings = (courseId: string, weekNumber: number) => {
-    return [
-      `Nyckellärdomar 1 för vecka ${weekNumber}`,
-      `Nyckellärdomar 2 för vecka ${weekNumber}`,
-      `Nyckellärdomar 3 för vecka ${weekNumber}`
-    ];
-  };
-
   const saveCourse = async () => {
     setSaving(true);
     try {
-      // Mock save functionality
       await new Promise(resolve => setTimeout(resolve, 1000));
       setSuccessMessage('Kursen har sparats!');
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -183,16 +82,6 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     } finally {
       setSaving(false);
     }
-  };
-
-  const updateWeek = (weekNumber: number, field: keyof CourseWeek, value: any) => {
-    if (!course) return;
-    
-    const updatedWeeks = course.weeks.map(week => 
-      week.weekNumber === weekNumber ? { ...week, [field]: value } : week
-    );
-    
-    setCourse({ ...course, weeks: updatedWeeks });
   };
 
   if (loading) {
@@ -221,11 +110,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <div className="mb-8">
         <Link 
           href="/admin/courses" 
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
@@ -268,6 +153,13 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             </div>
           </div>
 
+          {/* Success Message */}
+          {successMessage && (
+            <div className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+              {successMessage}
+            </div>
+          )}
+
           {/* Course Info */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
             <div className="bg-gray-50 rounded-lg p-4">
@@ -288,207 +180,77 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             </div>
           </div>
         </div>
-      </motion.div>
-
-      {/* Success Message */}
-      <AnimatePresence>
-        {successMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center gap-2"
-          >
-            <CheckCircle className="w-5 h-5" />
-            {successMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Overview Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
-        <div 
-          className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
-          onClick={() => setShowOverviewEdit(!showOverviewEdit)}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-purple-600 text-white rounded-xl flex items-center justify-center">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Kursöversikt</h3>
-                <p className="text-gray-600">Redigera översiktssidan för kursen</p>
-              </div>
-            </div>
-            <motion.div
-              animate={{ rotate: showOverviewEdit ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <ChevronDown className="w-5 h-5 text-gray-400" />
-            </motion.div>
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {showOverviewEdit && (
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
-              exit={{ height: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="p-6 bg-gray-50 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Huvudrubrik</label>
-                    <input
-                      type="text"
-                      value={overviewData.heroTitle}
-                      onChange={(e) => setOverviewData(prev => ({ ...prev, heroTitle: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                      placeholder="T.ex. Välkommen till Functional Basics"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Underrubrik</label>
-                    <input
-                      type="text"
-                      value={overviewData.heroSubtitle}
-                      onChange={(e) => setOverviewData(prev => ({ ...prev, heroSubtitle: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                      placeholder="T.ex. Din resa mot bättre hälsa börjar här"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Kursbeskrivning</label>
-                  <textarea
-                    value={overviewData.description}
-                    onChange={(e) => setOverviewData(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                    rows={4}
-                    placeholder="Beskriv kursen mer detaljerat..."
-                  />
-                </div>
-
-                <div className="text-center">
-                  <p className="text-sm text-gray-500">Fler inställningar kommer snart...</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
-      {/* Weeks */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Kursinnehåll per vecka</h2>
+      {/* Simple Course Editor */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Kursredigering</h2>
         
-        {course.weeks.map((week, index) => (
-          <motion.div
-            key={week.weekNumber}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
-          >
-            {/* Week Header */}
-            <div 
-              className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
-              onClick={() => setExpandedWeek(expandedWeek === week.weekNumber ? null : week.weekNumber)}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[#014421] text-white rounded-xl flex items-center justify-center font-bold text-lg">
-                    {week.weekNumber}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Vecka {week.weekNumber}: {week.title}
-                    </h3>
-                    <p className="text-gray-600">{week.subtitle}</p>
-                  </div>
-                </div>
-                <motion.div
-                  animate={{ rotate: expandedWeek === week.weekNumber ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
-                </motion.div>
-              </div>
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Kursnamn</label>
+            <input
+              type="text"
+              value={course.name}
+              onChange={(e) => setCourse(prev => prev ? { ...prev, name: e.target.value } : null)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Beskrivning</label>
+            <textarea
+              value={course.description || ''}
+              onChange={(e) => setCourse(prev => prev ? { ...prev, description: e.target.value } : null)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+              rows={4}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pris (kr)</label>
+              <input
+                type="number"
+                value={course.price}
+                onChange={(e) => setCourse(prev => prev ? { ...prev, price: parseInt(e.target.value) } : null)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+              />
             </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Längd</label>
+              <input
+                type="text"
+                value={course.duration}
+                onChange={(e) => setCourse(prev => prev ? { ...prev, duration: e.target.value } : null)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nivå</label>
+              <select
+                value={course.level}
+                onChange={(e) => setCourse(prev => prev ? { ...prev, level: e.target.value } : null)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+              >
+                <option value="Nybörjare">Nybörjare</option>
+                <option value="Medel">Medel</option>
+                <option value="Avancerad">Avancerad</option>
+              </select>
+            </div>
+          </div>
 
-            {/* Week Content */}
-            <AnimatePresence>
-              {expandedWeek === week.weekNumber && (
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-6 bg-gray-50 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Vecko-titel</label>
-                        <input
-                          type="text"
-                          value={week.title}
-                          onChange={(e) => updateWeek(week.weekNumber, 'title', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Underrubrik</label>
-                        <input
-                          type="text"
-                          value={week.subtitle}
-                          onChange={(e) => updateWeek(week.weekNumber, 'subtitle', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Välkomstmeddelande</label>
-                      <textarea
-                        value={week.welcomeMessage}
-                        onChange={(e) => updateWeek(week.weekNumber, 'welcomeMessage', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Hero-bild URL</label>
-                        <input
-                          type="text"
-                          value={week.heroImage}
-                          onChange={(e) => updateWeek(week.weekNumber, 'heroImage', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                          placeholder="/kurser/hero-image.jpg"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Video URL</label>
-                        <input
-                          type="text"
-                          value={week.videoUrl}
-                          onChange={(e) => updateWeek(week.weekNumber, 'videoUrl', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
-                          placeholder="/videos/video.mp4"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
+          <div className="pt-6 border-t border-gray-200">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-blue-900 mb-2">Information</h3>
+              <p className="text-sm text-blue-700">
+                Detta är en förenklad version av kursredigeringen. Mer avancerad funktionalitet kommer att läggas till senare.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
