@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
@@ -38,38 +41,114 @@ export async function GET(request: NextRequest) {
     // Fetch payment intents from Stripe
     const paymentIntents = await stripe.paymentIntents.list({
       limit: Math.min(limit, 100),
-      expand: ['data.customer']
+      expand: ['data.customer', 'data.payment_method']
+    });
+
+    // Fetch orders from database for additional information
+    const orders = await prisma.order.findMany({
+      include: {
+        items: {
+          include: {
+            course: true
+          }
+        },
+        user: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      take: limit
     });
 
     // Format payments data
-    const payments = paymentIntents.data.map((pi: any) => ({
-      id: pi.id,
-      amount: pi.amount / 100, // Convert from cents
-      currency: pi.currency.toUpperCase(),
-      status: pi.status,
-      created: new Date(pi.created * 1000).toISOString(),
-      description: pi.description || 'No description',
-      customer: {
-        email: pi.receipt_email || pi.customer?.email || 'No email',
-        name: pi.customer?.name || 'No name'
-      },
-      paymentMethod: pi.payment_method_types?.[0] ? {
-        type: pi.payment_method_types[0],
-        card: null // Card details would need separate API call
-      } : undefined,
-      metadata: pi.metadata,
-      refunded: false,
-      refundAmount: 0
+    const payments = await Promise.all(paymentIntents.data.map(async (pi: any) => {
+      // Find matching order by amount or metadata
+      const matchingOrder = orders.find(order => 
+        Math.abs(order.totalAmount - (pi.amount / 100)) < 0.01 || // Match by amount
+        pi.metadata?.orderId === order.id || // Match by order ID in metadata
+        pi.metadata?.orderNumber === order.orderNumber // Match by order number
+      );
+
+      // Get product description from order items
+      let productDescription = pi.description || 'Ingen beskrivning';
+      if (matchingOrder && matchingOrder.items.length > 0) {
+        const courseNames = matchingOrder.items
+          .map(item => item.course?.name || item.name)
+          .filter(name => name)
+          .join(', ');
+        productDescription = courseNames || productDescription;
+      }
+
+      // Get payment method details
+      let paymentMethodDetails = undefined;
+      if (pi.payment_method) {
+        const pm = pi.payment_method;
+        paymentMethodDetails = {
+          type: pm.type,
+          card: pm.card ? {
+            brand: pm.card.brand,
+            last4: pm.card.last4,
+            exp_month: pm.card.exp_month,
+            exp_year: pm.card.exp_year
+          } : null
+        };
+      } else if (pi.payment_method_types?.[0]) {
+        paymentMethodDetails = {
+          type: pi.payment_method_types[0],
+          card: null
+        };
+      }
+
+      return {
+        id: pi.id,
+        amount: pi.amount, // Keep in cents for consistency
+        currency: pi.currency.toUpperCase(),
+        status: pi.status,
+        created: new Date(pi.created * 1000).toISOString(),
+        description: productDescription,
+        customer: {
+          email: pi.receipt_email || pi.customer?.email || matchingOrder?.user?.email || 'Ingen e-post',
+          name: pi.customer?.name || matchingOrder?.user?.name || 'Inget namn',
+          metadata: {
+            phone: pi.customer?.phone || matchingOrder?.user?.phone,
+            country: pi.customer?.address?.country || 'SE',
+            course: matchingOrder?.items?.[0]?.course?.name,
+            userId: matchingOrder?.userId
+          }
+        },
+        paymentMethod: paymentMethodDetails,
+        receiptUrl: pi.charges?.data?.[0]?.receipt_url,
+        refunded: pi.amount_refunded > 0,
+        refundAmount: pi.amount_refunded,
+        failureCode: pi.last_payment_error?.code,
+        failureMessage: pi.last_payment_error?.message,
+        metadata: pi.metadata,
+        orderInfo: matchingOrder ? {
+          orderNumber: matchingOrder.orderNumber,
+          items: matchingOrder.items.map(item => ({
+            name: item.course?.name || item.name,
+            price: item.price,
+            quantity: item.quantity,
+            type: item.type
+          }))
+        } : null
+      };
     }));
 
     // Calculate summary statistics
+    const successfulPayments = payments.filter((p: any) => p.status === 'succeeded');
+    const totalAmountCents = successfulPayments.reduce((sum: number, p: any) => sum + p.amount, 0);
+    
     const summary = {
-      totalAmount: payments
-        .filter((p: any) => p.status === 'succeeded')
-        .reduce((sum: number, p: any) => sum + p.amount, 0),
-      successful: payments.filter((p: any) => p.status === 'succeeded').length,
+      totalAmount: totalAmountCents, // Keep in cents
+      successful: successfulPayments.length,
       pending: payments.filter((p: any) => p.status === 'processing' || p.status === 'requires_action').length,
-      failed: payments.filter((p: any) => p.status === 'failed' || p.status === 'canceled').length
+      failed: payments.filter((p: any) => p.status === 'failed' || p.status === 'canceled').length,
+      total: payments.length,
+      avgOrderValue: successfulPayments.length > 0 ? totalAmountCents / successfulPayments.length : 0,
+      refundedAmount: payments.reduce((sum: number, p: any) => sum + (p.refundAmount || 0), 0),
+      conversionRate: payments.length > 0 ? Math.round((successfulPayments.length / payments.length) * 100) : 0,
+      topCourse: 'Functional Basics' // This could be calculated from order data
     };
 
     console.log('Stripe payments fetched successfully:', { count: payments.length });

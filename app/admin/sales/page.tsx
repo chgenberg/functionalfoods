@@ -216,24 +216,27 @@ export default function EnhancedAdminSalesPage() {
     setFilteredPayments(filtered);
   };
 
-  const exportToExcel = () => {
-    const exportData = filteredPayments.map(payment => ({
-      'Order ID': payment.id,
-      'Datum': new Date(payment.created).toLocaleString('sv-SE'),
-      'Kund': payment.customer.name || payment.customer.email,
-      'E-post': payment.customer.email,
-      'Telefon': payment.customer.metadata?.phone || '-',
-      'Land': payment.customer.metadata?.country || '-',
-      'Kurs': payment.customer.metadata?.course || extractCourseFromDescription(payment.description),
-      'Belopp': `${(payment.amount / 100).toFixed(2)} ${payment.currency.toUpperCase()}`,
-      'Status': getStatusText(payment.status),
-      'Betalningsmetod': payment.paymentMethod?.type || '-',
-      'Kortmärke': payment.paymentMethod?.card?.brand || '-',
-      'Sista 4': payment.paymentMethod?.card?.last4 || '-',
-      'Återbetalad': payment.refunded ? 'Ja' : 'Nej',
-      'Återbetalat belopp': payment.refundAmount > 0 ? `${(payment.refundAmount / 100).toFixed(2)} ${payment.currency.toUpperCase()}` : '-',
-      'Kvitto URL': payment.receiptUrl || '-'
-    }));
+   const exportToExcel = () => {
+     const exportData = filteredPayments.map(payment => ({
+       'Order ID': payment.id,
+       'Order Number': payment.orderInfo?.orderNumber || '-',
+       'Datum': new Date(payment.created).toLocaleString('sv-SE'),
+       'Kund': payment.customer.name || payment.customer.email,
+       'E-post': payment.customer.email,
+       'Telefon': payment.customer.metadata?.phone || '-',
+       'Land': payment.customer.metadata?.country || '-',
+       'Produkt': payment.description,
+       'Produktdetaljer': payment.orderInfo?.items.map((item: any) => `${item.quantity}x ${item.name} (${item.price} kr)`).join('; ') || '-',
+       'Kurs': payment.customer.metadata?.course || extractCourseFromDescription(payment.description),
+       'Belopp': `${(payment.amount / 100).toFixed(2)} ${payment.currency.toUpperCase()}`,
+       'Status': getStatusText(payment.status),
+       'Betalningsmetod': payment.paymentMethod?.type || '-',
+       'Kortmärke': payment.paymentMethod?.card?.brand || '-',
+       'Sista 4': payment.paymentMethod?.card?.last4 || '-',
+       'Återbetalad': payment.refunded ? 'Ja' : 'Nej',
+       'Återbetalat belopp': payment.refundAmount > 0 ? `${(payment.refundAmount / 100).toFixed(2)} ${payment.currency.toUpperCase()}` : '-',
+       'Kvitto URL': payment.receiptUrl || '-'
+     }));
 
     const summaryData = [{
       'Sammanfattning': 'Total försäljning',
@@ -732,11 +735,21 @@ export default function EnhancedAdminSalesPage() {
                         </p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-gray-900 max-w-xs truncate">
-                        {payment.description || 'Ingen beskrivning'}
-                      </p>
-                    </td>
+                     <td className="px-6 py-4">
+                       <div>
+                         <p className="text-sm font-medium text-gray-900">
+                           {payment.description || 'Ingen beskrivning'}
+                         </p>
+                         {payment.orderInfo && (
+                           <div className="text-xs text-gray-500 mt-1">
+                             <p>Order: {payment.orderInfo.orderNumber}</p>
+                             {payment.orderInfo.items.map((item: any, idx: number) => (
+                               <p key={idx}>{item.quantity}x {item.name}</p>
+                             ))}
+                           </div>
+                         )}
+                       </div>
+                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <p className="text-sm font-medium text-gray-900">
                         {(payment.amount / 100).toFixed(2)} {payment.currency.toUpperCase()}
@@ -900,33 +913,41 @@ export default function EnhancedAdminSalesPage() {
                   </div>
                 </div>
 
-                {/* Order Details */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Orderdetaljer</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-start gap-2">
-                      <Package className="w-4 h-4 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-gray-900">{selectedPayment.description || 'Ingen beskrivning'}</p>
-                        {selectedPayment.customer.metadata?.course && (
-                          <p className="text-xs text-gray-500 mt-1">
-                            Kurs: {selectedPayment.customer.metadata.course}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Hash className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-900 font-mono">{selectedPayment.id}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-900">
-                        {new Date(selectedPayment.created).toLocaleString('sv-SE')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                 {/* Order Details */}
+                 <div>
+                   <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Orderdetaljer</h3>
+                   <div className="space-y-3">
+                     <div className="flex items-start gap-2">
+                       <Package className="w-4 h-4 text-gray-400 mt-0.5" />
+                       <div>
+                         <p className="text-sm font-medium text-gray-900">{selectedPayment.description || 'Ingen beskrivning'}</p>
+                         {selectedPayment.orderInfo && (
+                           <div className="mt-2 space-y-1">
+                             <p className="text-xs text-gray-600 font-medium">Order: {selectedPayment.orderInfo.orderNumber}</p>
+                             {selectedPayment.orderInfo.items.map((item: any, idx: number) => (
+                               <div key={idx} className="bg-gray-50 rounded p-2">
+                                 <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                                 <p className="text-xs text-gray-600">
+                                   Antal: {item.quantity} • Pris: {item.price} kr • Typ: {item.type}
+                                 </p>
+                               </div>
+                             ))}
+                           </div>
+                         )}
+                       </div>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <Hash className="w-4 h-4 text-gray-400" />
+                       <span className="text-sm text-gray-900 font-mono">{selectedPayment.id}</span>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <Calendar className="w-4 h-4 text-gray-400" />
+                       <span className="text-sm text-gray-900">
+                         {new Date(selectedPayment.created).toLocaleString('sv-SE')}
+                       </span>
+                     </div>
+                   </div>
+                 </div>
 
                 {/* Actions */}
                 <div className="flex gap-3 pt-4 border-t border-gray-200">
