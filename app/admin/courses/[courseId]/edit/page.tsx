@@ -40,6 +40,19 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(1);
+  const [showOverviewEdit, setShowOverviewEdit] = useState(false);
+  const [overviewData, setOverviewData] = useState({
+    heroTitle: '',
+    heroSubtitle: '',
+    heroImage: '',
+    description: '',
+    benefits: [] as string[],
+    targetAudience: [] as string[],
+    includesFeatures: [] as string[],
+    communityLink: '',
+    communityTitle: '',
+    communityDescription: ''
+  });
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
@@ -61,19 +74,21 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         return;
       }
 
-      // Extract weeks from meal plans
-      const weeks: CourseWeek[] = Object.keys(mealPlanData)
-        .filter(key => key.startsWith('week'))
-        .map((key, index) => ({
+      // Extract weeks from meal plans - ensure we get all 6 weeks
+      const weekKeys = ['week1', 'week2', 'week3', 'week4', 'week5', 'week6'];
+      const weeks: CourseWeek[] = weekKeys.map((key, index) => {
+        const weekData = mealPlanData[key] || {};
+        return {
           weekNumber: index + 1,
-          title: `Vecka ${index + 1}`,
+          title: weekData.title || `Vecka ${index + 1}`,
           subtitle: getWeekSubtitle(params.courseId, index + 1),
           welcomeMessage: getWeekWelcomeMessage(params.courseId, index + 1),
           heroImage: `/kurser/${params.courseId}-week${index + 1}.jpg`,
           videoUrl: getWeekVideoUrl(params.courseId, index + 1),
           goals: getWeekGoals(params.courseId, index + 1),
           keyLearnings: getWeekKeyLearnings(params.courseId, index + 1)
-        }));
+        };
+      });
 
       const courseData: Course = {
         id: params.courseId,
@@ -336,6 +351,167 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Overview Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
+        <div 
+          className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+          onClick={() => setShowOverviewEdit(!showOverviewEdit)}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-purple-600 text-white rounded-xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Kursöversikt</h3>
+                <p className="text-gray-600">Redigera översiktssidan för kursen</p>
+              </div>
+            </div>
+            <motion.div
+              animate={{ rotate: showOverviewEdit ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="w-5 h-5 text-gray-400" />
+            </motion.div>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {showOverviewEdit && (
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: 'auto' }}
+              exit={{ height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="p-6 bg-gray-50 space-y-6">
+                {/* Hero Section */}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Hero Sektion</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Huvudrubrik</label>
+                      <input
+                        type="text"
+                        value={overviewData.heroTitle}
+                        onChange={(e) => setOverviewData(prev => ({ ...prev, heroTitle: e.target.value }))}
+                        className="admin-input"
+                        placeholder="T.ex. Välkommen till Functional Basics"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Underrubrik</label>
+                      <input
+                        type="text"
+                        value={overviewData.heroSubtitle}
+                        onChange={(e) => setOverviewData(prev => ({ ...prev, heroSubtitle: e.target.value }))}
+                        className="admin-input"
+                        placeholder="T.ex. Din resa mot bättre hälsa börjar här"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Hero Bild URL</label>
+                      <input
+                        type="text"
+                        value={overviewData.heroImage}
+                        onChange={(e) => setOverviewData(prev => ({ ...prev, heroImage: e.target.value }))}
+                        className="admin-input"
+                        placeholder="/kurser/hero-image.jpg"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Kursbeskrivning</label>
+                  <textarea
+                    value={overviewData.description}
+                    onChange={(e) => setOverviewData(prev => ({ ...prev, description: e.target.value }))}
+                    className="admin-textarea"
+                    rows={4}
+                    placeholder="Beskriv kursen mer detaljerat..."
+                  />
+                </div>
+
+                {/* Benefits */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Fördelar (en per rad)</label>
+                  <textarea
+                    value={overviewData.benefits.join('\n')}
+                    onChange={(e) => setOverviewData(prev => ({ ...prev, benefits: e.target.value.split('\n').filter(b => b.trim()) }))}
+                    className="admin-textarea"
+                    rows={5}
+                    placeholder="Lär dig grunderna i functional foods\nFörbättra din matsmältning\nÖka din energi"
+                  />
+                </div>
+
+                {/* Target Audience */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Målgrupp (en per rad)</label>
+                  <textarea
+                    value={overviewData.targetAudience.join('\n')}
+                    onChange={(e) => setOverviewData(prev => ({ ...prev, targetAudience: e.target.value.split('\n').filter(t => t.trim()) }))}
+                    className="admin-textarea"
+                    rows={4}
+                    placeholder="Nybörjare inom functional foods\nPersoner som vill förbättra sin hälsa"
+                  />
+                </div>
+
+                {/* Included Features */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Vad som ingår (en per rad)</label>
+                  <textarea
+                    value={overviewData.includesFeatures.join('\n')}
+                    onChange={(e) => setOverviewData(prev => ({ ...prev, includesFeatures: e.target.value.split('\n').filter(f => f.trim()) }))}
+                    className="admin-textarea"
+                    rows={5}
+                    placeholder="6 veckors strukturerat program\nRecept och måltidsplaner\nTillgång till community"
+                  />
+                </div>
+
+                {/* Community Settings */}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Community Inställningar</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Community Länk</label>
+                      <input
+                        type="text"
+                        value={overviewData.communityLink}
+                        onChange={(e) => setOverviewData(prev => ({ ...prev, communityLink: e.target.value }))}
+                        className="admin-input"
+                        placeholder="/dashboard/community"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Community Titel</label>
+                      <input
+                        type="text"
+                        value={overviewData.communityTitle}
+                        onChange={(e) => setOverviewData(prev => ({ ...prev, communityTitle: e.target.value }))}
+                        className="admin-input"
+                        placeholder="COMMUNITY"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Community Beskrivning</label>
+                      <textarea
+                        value={overviewData.communityDescription}
+                        onChange={(e) => setOverviewData(prev => ({ ...prev, communityDescription: e.target.value }))}
+                        className="admin-textarea"
+                        rows={2}
+                        placeholder="Gå med i vår community och dela dina erfarenheter"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Weeks */}
       <div className="space-y-4">

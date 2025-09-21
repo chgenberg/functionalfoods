@@ -1,8 +1,15 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { AlertCircle, CheckCircle, Clock, CreditCard, DollarSign, Download, Eye, RefreshCw, RotateCcw, TrendingDown, TrendingUp, XCircle } from "lucide-react";;
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  AlertCircle, CheckCircle, Clock, CreditCard, DollarSign, Download, 
+  Eye, RefreshCw, RotateCcw, TrendingDown, TrendingUp, XCircle,
+  Search, Filter, Calendar, BarChart3, Users, Package,
+  ArrowUpDown, ChevronDown, ChevronUp, FileSpreadsheet,
+  Mail, Phone, Globe, Hash, Zap
+} from "lucide-react";
+import * as XLSX from 'xlsx';
 
 interface StripePayment {
   id: string;
@@ -14,6 +21,12 @@ interface StripePayment {
   customer: {
     email: string;
     name: string;
+    metadata?: {
+      phone?: string;
+      country?: string;
+      course?: string;
+      userId?: string;
+    };
   };
   paymentMethod?: {
     type: string;
@@ -38,367 +51,759 @@ interface PaymentSummary {
   failed: number;
   totalAmount: number;
   refundedAmount: number;
+  avgOrderValue: number;
+  topCourse: string;
+  conversionRate: number;
 }
 
-export default function AdminSalesPage() {
+interface FilterOptions {
+  status: string;
+  dateRange: string;
+  course: string;
+  paymentMethod: string;
+  minAmount: string;
+  maxAmount: string;
+  customer: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
+export default function EnhancedAdminSalesPage() {
   const [payments, setPayments] = useState<StripePayment[]>([]);
+  const [filteredPayments, setFilteredPayments] = useState<StripePayment[]>([]);
   const [summary, setSummary] = useState<PaymentSummary>({
     total: 0,
     successful: 0,
     pending: 0,
     failed: 0,
     totalAmount: 0,
-    refundedAmount: 0
+    refundedAmount: 0,
+    avgOrderValue: 0,
+    topCourse: '',
+    conversionRate: 0
   });
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [statusFilter, setStatusFilter] = useState('all');
   const [selectedPayment, setSelectedPayment] = useState<StripePayment | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    status: 'all',
+    dateRange: 'all',
+    course: 'all',
+    paymentMethod: 'all',
+    minAmount: '',
+    maxAmount: '',
+    customer: '',
+    sortBy: 'created',
+    sortOrder: 'desc'
+  });
+
+  // Date range presets
+  const dateRangePresets = {
+    today: { label: 'Idag', days: 0 },
+    yesterday: { label: 'Igår', days: 1 },
+    week: { label: 'Senaste 7 dagarna', days: 7 },
+    month: { label: 'Senaste 30 dagarna', days: 30 },
+    quarter: { label: 'Senaste 90 dagarna', days: 90 },
+    year: { label: 'Senaste året', days: 365 },
+    all: { label: 'Alla transaktioner', days: null }
+  };
 
   useEffect(() => {
-    loadPayments();
-  }, [statusFilter]);
+    fetchPayments();
+    const interval = setInterval(fetchPayments, 30000); // Auto-refresh every 30s
+    return () => clearInterval(interval);
+  }, []);
 
-  const loadPayments = async () => {
+  useEffect(() => {
+    applyFilters();
+  }, [payments, filters]);
+
+  const fetchPayments = async () => {
     try {
       setLoading(true);
+      setError(null);
+      const response = await fetch('/api/admin/payments', {
+        credentials: 'include'
+      });
       
-      const params = new URLSearchParams();
-      if (statusFilter !== 'all') {
-        params.append('status', statusFilter);
+      if (!response.ok) {
+        throw new Error('Failed to fetch payments');
       }
 
-      const response = await fetch(`/api/admin/stripe-payments?${params}`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        setPayments(data.payments);
-        setSummary(data.summary);
-      } else {
-        console.error('Failed to load payments:', response.status);
-      }
-    } catch (error) {
-      console.error('Error loading payments:', error);
+      const data = await response.json();
+      setPayments(data.payments);
+      setSummary(data.summary);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await loadPayments();
-    setRefreshing(false);
+  const applyFilters = () => {
+    let filtered = [...payments];
+
+    // Status filter
+    if (filters.status !== 'all') {
+      filtered = filtered.filter(p => p.status === filters.status);
+    }
+
+    // Date range filter
+    if (filters.dateRange !== 'all') {
+      const preset = dateRangePresets[filters.dateRange as keyof typeof dateRangePresets];
+      if (preset.days !== null) {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - preset.days);
+        filtered = filtered.filter(p => new Date(p.created) >= cutoffDate);
+      }
+    }
+
+    // Course filter
+    if (filters.course !== 'all') {
+      filtered = filtered.filter(p => 
+        p.description?.toLowerCase().includes(filters.course.toLowerCase()) ||
+        p.customer.metadata?.course === filters.course
+      );
+    }
+
+    // Payment method filter
+    if (filters.paymentMethod !== 'all') {
+      filtered = filtered.filter(p => p.paymentMethod?.type === filters.paymentMethod);
+    }
+
+    // Amount range filter
+    if (filters.minAmount) {
+      const min = parseFloat(filters.minAmount) * 100;
+      filtered = filtered.filter(p => p.amount >= min);
+    }
+    if (filters.maxAmount) {
+      const max = parseFloat(filters.maxAmount) * 100;
+      filtered = filtered.filter(p => p.amount <= max);
+    }
+
+    // Customer search
+    if (filters.customer) {
+      const search = filters.customer.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.customer.email.toLowerCase().includes(search) ||
+        p.customer.name?.toLowerCase().includes(search)
+      );
+    }
+
+    // Sorting
+    filtered.sort((a, b) => {
+      let compareValue = 0;
+      
+      switch (filters.sortBy) {
+        case 'amount':
+          compareValue = a.amount - b.amount;
+          break;
+        case 'customer':
+          compareValue = (a.customer.name || a.customer.email).localeCompare(b.customer.name || b.customer.email);
+          break;
+        case 'status':
+          compareValue = a.status.localeCompare(b.status);
+          break;
+        case 'created':
+        default:
+          compareValue = new Date(a.created).getTime() - new Date(b.created).getTime();
+      }
+
+      return filters.sortOrder === 'asc' ? compareValue : -compareValue;
+    });
+
+    setFilteredPayments(filtered);
+  };
+
+  const exportToExcel = () => {
+    const exportData = filteredPayments.map(payment => ({
+      'Order ID': payment.id,
+      'Datum': new Date(payment.created).toLocaleString('sv-SE'),
+      'Kund': payment.customer.name || payment.customer.email,
+      'E-post': payment.customer.email,
+      'Telefon': payment.customer.metadata?.phone || '-',
+      'Land': payment.customer.metadata?.country || '-',
+      'Kurs': payment.customer.metadata?.course || extractCourseFromDescription(payment.description),
+      'Belopp': `${(payment.amount / 100).toFixed(2)} ${payment.currency.toUpperCase()}`,
+      'Status': getStatusText(payment.status),
+      'Betalningsmetod': payment.paymentMethod?.type || '-',
+      'Kortmärke': payment.paymentMethod?.card?.brand || '-',
+      'Sista 4': payment.paymentMethod?.card?.last4 || '-',
+      'Återbetalad': payment.refunded ? 'Ja' : 'Nej',
+      'Återbetalat belopp': payment.refundAmount > 0 ? `${(payment.refundAmount / 100).toFixed(2)} ${payment.currency.toUpperCase()}` : '-',
+      'Kvitto URL': payment.receiptUrl || '-'
+    }));
+
+    const summaryData = [{
+      'Sammanfattning': 'Total försäljning',
+      'Värde': `${(summary.totalAmount / 100).toFixed(2)} SEK`
+    }, {
+      'Sammanfattning': 'Antal transaktioner',
+      'Värde': summary.total
+    }, {
+      'Sammanfattning': 'Genomsnittligt ordervärde',
+      'Värde': `${(summary.avgOrderValue / 100).toFixed(2)} SEK`
+    }, {
+      'Sammanfattning': 'Lyckade transaktioner',
+      'Värde': summary.successful
+    }, {
+      'Sammanfattning': 'Väntande transaktioner',
+      'Värde': summary.pending
+    }, {
+      'Sammanfattning': 'Misslyckade transaktioner',
+      'Värde': summary.failed
+    }, {
+      'Sammanfattning': 'Återbetalat totalt',
+      'Värde': `${(summary.refundedAmount / 100).toFixed(2)} SEK`
+    }, {
+      'Sammanfattning': 'Konverteringsgrad',
+      'Värde': `${summary.conversionRate}%`
+    }];
+
+    const wb = XLSX.utils.book_new();
+    
+    // Add transactions sheet
+    const wsTransactions = XLSX.utils.json_to_sheet(exportData);
+    XLSX.utils.book_append_sheet(wb, wsTransactions, 'Transaktioner');
+    
+    // Add summary sheet
+    const wsSummary = XLSX.utils.json_to_sheet(summaryData);
+    XLSX.utils.book_append_sheet(wb, wsSummary, 'Sammanfattning');
+
+    // Generate filename with date
+    const date = new Date().toISOString().split('T')[0];
+    const filename = `forsaljning_${date}.xlsx`;
+    
+    // Write file
+    XLSX.writeFile(wb, filename);
+  };
+
+  const extractCourseFromDescription = (description: string): string => {
+    if (!description) return '-';
+    if (description.includes('Functional Basics')) return 'Functional Basics';
+    if (description.includes('Functional Flow')) return 'Functional Flow';
+    if (description.includes('Functional Energy')) return 'Functional Energy';
+    return '-';
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'succeeded': return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'processing': 
-      case 'requires_action': return <Clock className="w-4 h-4 text-yellow-500" />;
+      case 'succeeded':
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case 'processing':
+        return <Clock className="w-5 h-5 text-yellow-600" />;
+      case 'requires_payment_method':
+      case 'requires_confirmation':
+      case 'requires_action':
+        return <AlertCircle className="w-5 h-5 text-orange-600" />;
+      case 'canceled':
       case 'failed':
-      case 'canceled': return <XCircle className="w-4 h-4 text-red-500" />;
-      default: return <AlertCircle className="w-4 h-4 text-gray-500" />;
+        return <XCircle className="w-5 h-5 text-red-600" />;
+      default:
+        return <Clock className="w-5 h-5 text-gray-600" />;
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'succeeded': return 'bg-green-100 text-green-800';
-      case 'processing': 
-      case 'requires_action': return 'bg-yellow-100 text-yellow-800';
-      case 'failed':
-      case 'canceled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+  const getStatusText = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      'succeeded': 'Lyckad',
+      'processing': 'Behandlas',
+      'requires_payment_method': 'Kräver betalningsmetod',
+      'requires_confirmation': 'Kräver bekräftelse',
+      'requires_action': 'Kräver åtgärd',
+      'canceled': 'Avbruten',
+      'failed': 'Misslyckad'
+    };
+    return statusMap[status] || status;
+  };
+
+  const handleRefund = async (paymentId: string) => {
+    if (!confirm('Är du säker på att du vill återbetala denna betalning?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/payments/${paymentId}/refund`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to refund payment');
+      }
+
+      await fetchPayments();
+      setSelectedPayment(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
-  const formatCurrency = (amount: number, currency: string = 'SEK') => {
-    return new Intl.NumberFormat('sv-SE', {
-      style: 'currency',
-      currency: currency
-    }).format(amount);
+  const resetFilters = () => {
+    setFilters({
+      status: 'all',
+      dateRange: 'all',
+      course: 'all',
+      paymentMethod: 'all',
+      minAmount: '',
+      maxAmount: '',
+      customer: '',
+      sortBy: 'created',
+      sortOrder: 'desc'
+    });
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Laddar Stripe-betalningar...</p>
+          <RefreshCw className="w-8 h-8 text-gray-400 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Laddar försäljningsdata...</p>
         </div>
       </div>
     );
   }
 
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Ett fel uppstod</h2>
+        <p className="text-gray-600 mb-4">{error}</p>
+        <button
+          onClick={fetchPayments}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#012A14] transition-colors"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Försök igen
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Försäljning & Betalningar</h1>
-            <p className="mt-2 text-gray-600">Live-data från Stripe betalningssystem</p>
-          </div>
-          
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Försäljning</h1>
+          <p className="text-gray-600 mt-1">Hantera och analysera alla transaktioner</p>
+        </div>
+        <div className="flex gap-3">
           <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="flex items-center gap-2 bg-[#014421] text-white px-4 py-2 rounded-lg hover:bg-[#116530] transition-colors"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`inline-flex items-center gap-2 px-4 py-2 ${
+              showFilters ? 'bg-[#014421] text-white' : 'bg-white text-gray-700'
+            } rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors`}
           >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Uppdaterar...' : 'Uppdatera'}
+            <Filter className="w-4 h-4" />
+            Filter
+            {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={exportToExcel}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Exportera Excel
+          </button>
+          <button
+            onClick={fetchPayments}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#012A14] transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Uppdatera
           </button>
         </div>
+      </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Advanced Filters */}
+      <AnimatePresence>
+        {showFilters && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl shadow-sm p-6"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
           >
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-600" />
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Avancerade filter</h3>
+                <button
+                  onClick={resetFilters}
+                  className="text-sm text-[#014421] hover:underline"
+                >
+                  Återställ filter
+                </button>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total försäljning</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {formatCurrency(summary.totalAmount)}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Status */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select
+                    value={filters.status}
+                    onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                  >
+                    <option value="all">Alla statusar</option>
+                    <option value="succeeded">Lyckad</option>
+                    <option value="processing">Behandlas</option>
+                    <option value="failed">Misslyckad</option>
+                    <option value="canceled">Avbruten</option>
+                  </select>
+                </div>
+
+                {/* Date Range */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tidsperiod</label>
+                  <select
+                    value={filters.dateRange}
+                    onChange={(e) => setFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                  >
+                    {Object.entries(dateRangePresets).map(([key, preset]) => (
+                      <option key={key} value={key}>{preset.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Course */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Kurs</label>
+                  <select
+                    value={filters.course}
+                    onChange={(e) => setFilters(prev => ({ ...prev, course: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                  >
+                    <option value="all">Alla kurser</option>
+                    <option value="functional-basics">Functional Basics</option>
+                    <option value="functional-flow">Functional Flow</option>
+                    <option value="functional-energy">Functional Energy</option>
+                  </select>
+                </div>
+
+                {/* Payment Method */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Betalningsmetod</label>
+                  <select
+                    value={filters.paymentMethod}
+                    onChange={(e) => setFilters(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                  >
+                    <option value="all">Alla metoder</option>
+                    <option value="card">Kort</option>
+                    <option value="klarna">Klarna</option>
+                    <option value="swish">Swish</option>
+                  </select>
+                </div>
+
+                {/* Amount Range */}
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Min belopp</label>
+                    <input
+                      type="number"
+                      value={filters.minAmount}
+                      onChange={(e) => setFilters(prev => ({ ...prev, minAmount: e.target.value }))}
+                      placeholder="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Max belopp</label>
+                    <input
+                      type="number"
+                      value={filters.maxAmount}
+                      onChange={(e) => setFilters(prev => ({ ...prev, maxAmount: e.target.value }))}
+                      placeholder="10000"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                {/* Customer Search */}
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Sök kund</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={filters.customer}
+                      onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
+                      placeholder="Namn eller e-postadress..."
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                {/* Sort Options */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Sortera efter</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={filters.sortBy}
+                      onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    >
+                      <option value="created">Datum</option>
+                      <option value="amount">Belopp</option>
+                      <option value="customer">Kund</option>
+                      <option value="status">Status</option>
+                    </select>
+                    <button
+                      onClick={() => setFilters(prev => ({ ...prev, sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc' }))}
+                      className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <ArrowUpDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Active Filters Summary */}
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-600">
+                  Visar {filteredPayments.length} av {payments.length} transaktioner
+                  {filters.dateRange !== 'all' && ` • ${dateRangePresets[filters.dateRange as keyof typeof dateRangePresets].label}`}
+                  {filters.status !== 'all' && ` • ${getStatusText(filters.status)}`}
+                  {filters.course !== 'all' && ` • ${filters.course}`}
                 </p>
               </div>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-xl shadow-sm p-6"
-          >
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Lyckade betalningar</p>
-                <p className="text-2xl font-bold text-gray-900">{summary.successful}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl shadow-sm p-6"
-          >
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-6 h-6 text-yellow-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Väntande</p>
-                <p className="text-2xl font-bold text-gray-900">{summary.pending}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-xl shadow-sm p-6"
-          >
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <RotateCcw className="w-6 h-6 text-red-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Återbetalat</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {formatCurrency(summary.refundedAmount)}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex flex-wrap gap-4 items-center">
-            <label className="text-sm font-medium text-gray-700">Betalningsstatus:</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-[#014421] focus:border-[#014421]"
-            >
-              <option value="all">Alla</option>
-              <option value="succeeded">Lyckade</option>
-              <option value="processing">Behandlas</option>
-              <option value="requires_action">Kräver åtgärd</option>
-              <option value="failed">Misslyckade</option>
-              <option value="canceled">Avbrutna</option>
-            </select>
-            
-            <div className="ml-auto text-sm text-gray-600">
-              {payments.length} betalningar visas
-            </div>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Total försäljning</span>
+            <DollarSign className="w-5 h-5 text-gray-400" />
           </div>
-        </div>
+          <p className="text-2xl font-bold text-gray-900">
+            {(summary.totalAmount / 100).toFixed(0)} kr
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {summary.total} transaktioner
+          </p>
+        </motion.div>
 
-        {/* Payments Table */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Snitt ordervärde</span>
+            <BarChart3 className="w-5 h-5 text-gray-400" />
+          </div>
+          <p className="text-2xl font-bold text-gray-900">
+            {(summary.avgOrderValue / 100).toFixed(0)} kr
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Per transaktion
+          </p>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Lyckade</span>
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          </div>
+          <p className="text-2xl font-bold text-green-600">
+            {summary.successful}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {summary.total > 0 ? Math.round((summary.successful / summary.total) * 100) : 0}% av totalt
+          </p>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Väntande</span>
+            <Clock className="w-5 h-5 text-yellow-600" />
+          </div>
+          <p className="text-2xl font-bold text-yellow-600">
+            {summary.pending}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Kräver åtgärd
+          </p>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Återbetalat</span>
+            <RotateCcw className="w-5 h-5 text-gray-400" />
+          </div>
+          <p className="text-2xl font-bold text-gray-900">
+            {(summary.refundedAmount / 100).toFixed(0)} kr
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Totalt återbetalat
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Payments Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Kund
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Produkt
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Belopp
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Betalningsmetod
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Datum
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Åtgärder
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredPayments.length === 0 ? (
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Betalning
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kund
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Belopp
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Betalmetod
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Datum
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Åtgärder
-                  </th>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    Inga transaktioner hittades med valda filter
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {payments.map((payment) => (
+              ) : (
+                filteredPayments.map((payment) => (
                   <tr key={payment.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <CreditCard className="w-5 h-5 text-gray-400 mr-3" />
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {payment.id.substring(0, 20)}...
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {payment.description || 'Kursköp'}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {payment.customer.name}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {payment.customer.email}
-                        </div>
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {formatCurrency(payment.amount, payment.currency)}
-                      </div>
-                      {payment.refunded && payment.refundAmount > 0 && (
-                        <div className="text-sm text-red-600">
-                          -{formatCurrency(payment.refundAmount, payment.currency)} återbetalt
-                        </div>
-                      )}
-                    </td>
-                    
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         {getStatusIcon(payment.status)}
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(payment.status)}`}>
-                          {payment.status}
+                        <span className="text-sm text-gray-900">
+                          {getStatusText(payment.status)}
                         </span>
                       </div>
                     </td>
-                    
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 capitalize">
-                        {payment.paymentMethod?.type || 'Okänd'}
-                        {payment.paymentMethod?.card && (
-                          <div className="text-xs text-gray-500">
-                            {payment.paymentMethod.card.brand?.toUpperCase() || ''} •••• {payment.paymentMethod.card.last4}
-                          </div>
-                        )}
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {payment.customer.name || 'Okänd'}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {payment.customer.email}
+                        </p>
                       </div>
                     </td>
-                    
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-gray-900 max-w-xs truncate">
+                        {payment.description || 'Ingen beskrivning'}
+                      </p>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <p className="text-sm font-medium text-gray-900">
+                        {(payment.amount / 100).toFixed(2)} {payment.currency.toUpperCase()}
+                      </p>
+                      {payment.refunded && (
+                        <p className="text-xs text-red-600">
+                          Återbetalad: {(payment.refundAmount / 100).toFixed(2)} {payment.currency.toUpperCase()}
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {payment.paymentMethod ? (
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="w-4 h-4 text-gray-400" />
+                          <span className="text-sm text-gray-900">
+                            {payment.paymentMethod.card?.brand || payment.paymentMethod.type}
+                          </span>
+                          {payment.paymentMethod.card?.last4 && (
+                            <span className="text-xs text-gray-500">
+                              ****{payment.paymentMethod.card.last4}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-500">-</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <p className="text-sm text-gray-900">
                         {new Date(payment.created).toLocaleDateString('sv-SE')}
-                      </div>
-                      <div className="text-xs text-gray-500">
+                      </p>
+                      <p className="text-xs text-gray-500">
                         {new Date(payment.created).toLocaleTimeString('sv-SE', { 
                           hour: '2-digit', 
                           minute: '2-digit' 
                         })}
-                      </div>
+                      </p>
                     </td>
-                    
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setSelectedPayment(payment)}
-                          className="text-[#014421] hover:text-[#116530] flex items-center gap-1"
-                        >
-                          <Eye className="w-4 h-4" />
-                          Visa
-                        </button>
-                        
-                        {payment.receiptUrl && (
-                          <a
-                            href={payment.receiptUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                          >
-                            <Download className="w-4 h-4" />
-                            Kvitto
-                          </a>
-                        )}
-                      </div>
+                      <button
+                        onClick={() => setSelectedPayment(payment)}
+                        className="text-[#014421] hover:text-[#012A14]"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        {payments.length === 0 && (
-          <div className="text-center py-12">
-            <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Inga betalningar</h3>
-            <p className="text-gray-500">
-              {statusFilter === 'all' 
-                ? 'Inga betalningar hittades.' 
-                : `Inga betalningar med status "${statusFilter}".`
-              }
-            </p>
-          </div>
-        )}
-
-        {/* Payment Detail Modal */}
+      {/* Payment Details Modal */}
+      <AnimatePresence>
         {selectedPayment && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">
-                    <CreditCard className="w-5 h-5 inline" /> Betalningsdetaljer
-                  </h2>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setSelectedPayment(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-gray-900">Betalningsdetaljer</h2>
                   <button
                     onClick={() => setSelectedPayment(null)}
                     className="text-gray-400 hover:text-gray-600"
@@ -406,109 +811,144 @@ export default function AdminSalesPage() {
                     <XCircle className="w-6 h-6" />
                   </button>
                 </div>
+              </div>
 
-                <div className="space-y-6">
-                  {/* Payment Status */}
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-700 mb-3">Status</h3>
-                    <div className="flex items-center gap-3">
-                      {getStatusIcon(selectedPayment.status)}
-                      <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusColor(selectedPayment.status)}`}>
-                        {selectedPayment.status}
+              <div className="p-6 space-y-6">
+                {/* Status Section */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Status</h3>
+                  <div className="flex items-center gap-3">
+                    {getStatusIcon(selectedPayment.status)}
+                    <span className="text-lg font-medium text-gray-900">
+                      {getStatusText(selectedPayment.status)}
+                    </span>
+                    {selectedPayment.refunded && (
+                      <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                        Återbetalad
                       </span>
-                    </div>
-                  </div>
-
-                  {/* Customer Info */}
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-700 mb-3">Kund</h3>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="font-medium">{selectedPayment.customer.name}</p>
-                      <p className="text-gray-600">{selectedPayment.customer.email}</p>
-                    </div>
-                  </div>
-
-                  {/* Payment Details */}
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-700 mb-3">Betalningsinfo</h3>
-                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Belopp:</span>
-                        <span className="font-semibold">{formatCurrency(selectedPayment.amount, selectedPayment.currency)}</span>
-                      </div>
-                      
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Betalmetod:</span>
-                        <span className="font-medium capitalize">{selectedPayment.paymentMethod?.type || 'Okänd'}</span>
-                      </div>
-                      
-                      {selectedPayment.paymentMethod?.card && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Kort:</span>
-                          <span className="font-mono">
-                            {selectedPayment.paymentMethod.card.brand?.toUpperCase() || ''} •••• {selectedPayment.paymentMethod.card.last4}
-                          </span>
-                        </div>
-                      )}
-                      
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Stripe ID:</span>
-                        <span className="font-mono text-sm">{selectedPayment.id}</span>
-                      </div>
-                      
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Datum:</span>
-                        <span>{new Date(selectedPayment.created).toLocaleString('sv-SE')}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Error Info */}
-                  {(selectedPayment.failureCode || selectedPayment.failureMessage) && (
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-700 mb-3">Fel-information</h3>
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                        {selectedPayment.failureCode && (
-                          <p className="text-red-800 font-medium">Kod: {selectedPayment.failureCode}</p>
-                        )}
-                        {selectedPayment.failureMessage && (
-                          <p className="text-red-700 text-sm mt-1">{selectedPayment.failureMessage}</p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Actions */}
-                  <div className="flex gap-3 pt-4 border-t">
-                    {selectedPayment.receiptUrl && (
-                      <a
-                        href={selectedPayment.receiptUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors text-center"
-                      >
-                        📄 Visa kvitto
-                      </a>
                     )}
-                    
-                    {selectedPayment.status === 'succeeded' && !selectedPayment.refunded && (
-                      <button
-                        onClick={() => {
-                          // TODO: Implement refund functionality
-                          alert('Återbetalning kommer snart! Kontakta Stripe direkt för nu.');
-                        }}
-                        className="flex-1 bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors"
-                      >
-                        💸 Återbetala
-                      </button>
+                  </div>
+                  {selectedPayment.failureMessage && (
+                    <p className="mt-2 text-sm text-red-600">
+                      Fel: {selectedPayment.failureMessage}
+                    </p>
+                  )}
+                </div>
+
+                {/* Customer Section */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Kundinformation</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900">{selectedPayment.customer.email}</span>
+                    </div>
+                    {selectedPayment.customer.name && (
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-900">{selectedPayment.customer.name}</span>
+                      </div>
+                    )}
+                    {selectedPayment.customer.metadata?.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-900">{selectedPayment.customer.metadata.phone}</span>
+                      </div>
+                    )}
+                    {selectedPayment.customer.metadata?.country && (
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-900">{selectedPayment.customer.metadata.country}</span>
+                      </div>
                     )}
                   </div>
                 </div>
+
+                {/* Payment Section */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Betalningsdetaljer</h3>
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Belopp</span>
+                      <span className="text-sm font-medium text-gray-900">
+                        {(selectedPayment.amount / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
+                      </span>
+                    </div>
+                    {selectedPayment.refundAmount > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Återbetalat</span>
+                        <span className="text-sm font-medium text-red-600">
+                          -{(selectedPayment.refundAmount / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div className="pt-3 border-t border-gray-200">
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-700">Netto</span>
+                        <span className="text-sm font-bold text-gray-900">
+                          {((selectedPayment.amount - selectedPayment.refundAmount) / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Order Details */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Orderdetaljer</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <Package className="w-4 h-4 text-gray-400 mt-0.5" />
+                      <div>
+                        <p className="text-sm text-gray-900">{selectedPayment.description || 'Ingen beskrivning'}</p>
+                        {selectedPayment.customer.metadata?.course && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Kurs: {selectedPayment.customer.metadata.course}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Hash className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900 font-mono">{selectedPayment.id}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900">
+                        {new Date(selectedPayment.created).toLocaleString('sv-SE')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3 pt-4 border-t border-gray-200">
+                  {selectedPayment.receiptUrl && (
+                    <a
+                      href={selectedPayment.receiptUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      Visa kvitto
+                    </a>
+                  )}
+                  {selectedPayment.status === 'succeeded' && !selectedPayment.refunded && (
+                    <button
+                      onClick={() => handleRefund(selectedPayment.id)}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      Återbetala
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
-} 
+}
