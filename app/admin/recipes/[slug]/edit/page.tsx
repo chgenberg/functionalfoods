@@ -42,6 +42,8 @@ interface Recipe {
 interface EditRecipeForm {
   title: string;
   excerpt: string;
+  content: string;
+  imageAlt: string;
   category: string;
   difficulty: string;
   prepTime: string;
@@ -80,6 +82,8 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   const [formData, setFormData] = useState<EditRecipeForm>({
     title: '',
     excerpt: '',
+    content: '',
+    imageAlt: '',
     category: 'Middag',
     difficulty: 'Medel',
     prepTime: '',
@@ -168,6 +172,8 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
       setFormData({
         title: foundRecipe.title,
         excerpt: foundRecipe.excerpt || '',
+        content: foundRecipe.content || '',
+        imageAlt: foundRecipe.imageAlt || '',
         category: foundRecipe.categories?.[0] || 'Middag',
         difficulty: foundRecipe.difficulty || 'Medel',
         prepTime: foundRecipe.prepTime || '',
@@ -218,6 +224,8 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
       const updateData = {
         title: formData.title,
         excerpt: formData.excerpt,
+        content: formData.content,
+        imageAlt: formData.imageAlt,
         categories: [formData.category],
         difficulty: formData.difficulty,
         prepTime: formData.prepTime,
@@ -424,13 +432,35 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
               </div>
 
               <div>
-                <label className="admin-label">Beskrivning</label>
+                <label className="admin-label">Kort beskrivning (excerpt)</label>
                 <textarea
                   value={formData.excerpt}
                   onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
                   className="admin-textarea"
                   rows={3}
-                  placeholder="En kort beskrivning av receptet"
+                  placeholder="En kort beskrivning som visas i receptlistor"
+                />
+              </div>
+
+              <div>
+                <label className="admin-label">Detaljerad beskrivning (content)</label>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                  className="admin-textarea"
+                  rows={4}
+                  placeholder="Längre beskrivning som visas på receptsidan (valfritt)"
+                />
+              </div>
+
+              <div>
+                <label className="admin-label">Bild Alt-text</label>
+                <input
+                  type="text"
+                  value={formData.imageAlt || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, imageAlt: e.target.value }))}
+                  className="admin-input"
+                  placeholder="Beskrivning av bilden för tillgänglighet"
                 />
               </div>
 
@@ -865,14 +895,17 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
 
           {/* Tips */}
           <div className="admin-card">
-            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Tips</h3>
+            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Tips och råd</h3>
+            <p className="text-sm text-gray-600 mb-3">
+              Tips visas som en grön informationsruta på receptsidan och hjälper användare med extra råd.
+            </p>
             
             <textarea
               value={formData.tips}
               onChange={(e) => setFormData(prev => ({ ...prev, tips: e.target.value }))}
               className="admin-textarea"
               rows={4}
-              placeholder="Lägg till tips för receptet..."
+              placeholder="T.ex. 'Låt smetana vara rumstempererad för bästa konsistens' eller 'Kan förvaras i kylskåp i 3 dagar'"
             />
           </div>
 
