@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, User, Mail, Shield, Check } from 'lucide-react';
+import { ArrowLeft, Save, User, Mail, Shield, Check, Users, AlertTriangle, Merge } from 'lucide-react';
 
 interface User {
   id: string;
@@ -11,6 +11,24 @@ interface User {
   isActive: boolean;
   createdAt: string;
   lastLogin: string | null;
+  courses?: Course[];
+  coursesCount?: number;
+}
+
+interface Course {
+  id: string;
+  name: string;
+  purchaseDate: string;
+  amount: number;
+}
+
+interface DuplicateUser {
+  id: string;
+  email: string;
+  name: string | null;
+  createdAt: string;
+  courses: string[];
+  coursesCount: number;
 }
 
 export default function EditUserPage({ params }: { params: { id: string } }) {
@@ -18,6 +36,10 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [duplicates, setDuplicates] = useState<DuplicateUser[]>([]);
+  const [loadingDuplicates, setLoadingDuplicates] = useState(false);
+  const [showMergeSection, setShowMergeSection] = useState(false);
+  const [merging, setMerging] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -53,6 +75,62 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
       router.push('/admin/users');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDuplicates = async () => {
+    if (!user) return;
+    
+    setLoadingDuplicates(true);
+    try {
+      const response = await fetch(`/api/admin/users/find-duplicates?userId=${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setDuplicates(data.sameEmailUsers || []);
+      } else {
+        console.error('Failed to fetch duplicates');
+      }
+    } catch (error) {
+      console.error('Error fetching duplicates:', error);
+    } finally {
+      setLoadingDuplicates(false);
+    }
+  };
+
+  const handleMergeCourses = async (sourceUserId: string) => {
+    if (!user || !confirm('Är du säker på att du vill slå ihop kurserna? Detta kan inte ångras.')) {
+      return;
+    }
+
+    setMerging(true);
+    try {
+      const response = await fetch('/api/admin/users/merge-courses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sourceUserId,
+          targetUserId: user.id
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Kurser har slagits ihop framgångsrikt!\n\n${result.message}\n\nDetaljer:\n- Överförda kurser: ${result.details.transferredPurchases}\n- Totala kurser efter sammanslagning: ${result.details.totalCoursesAfterMerge}\n- Kurser: ${result.details.courses.join(', ')}`);
+        
+        // Refresh user data and duplicates
+        await fetchUser();
+        await fetchDuplicates();
+      } else {
+        const error = await response.json();
+        alert(`Fel vid sammanslagning: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error merging courses:', error);
+      alert('Ett fel uppstod vid sammanslagning av kurser');
+    } finally {
+      setMerging(false);
     }
   };
 
@@ -226,6 +304,95 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
               <div className="flex justify-between">
                 <span>Senaste inloggning:</span>
                 <span>{new Date(user.lastLogin).toLocaleDateString('sv-SE')}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Course Merge Section */}
+          <div className="border-t pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                Slå ihop kurser
+              </h3>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMergeSection(!showMergeSection);
+                  if (!showMergeSection && duplicates.length === 0) {
+                    fetchDuplicates();
+                  }
+                }}
+                className="text-sm text-blue-600 hover:text-blue-800"
+              >
+                {showMergeSection ? 'Dölj' : 'Visa alternativ'}
+              </button>
+            </div>
+
+            {showMergeSection && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <div className="flex items-start gap-2 mb-3">
+                  <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-yellow-800">Slå ihop kurser från andra användare</h4>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      Hitta användare med samma e-postadress och slå ihop deras kurser till denna användare. 
+                      Detta är användbart när kunder har skapat flera konton.
+                    </p>
+                  </div>
+                </div>
+
+                {loadingDuplicates ? (
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    Söker efter dubbletter...
+                  </div>
+                ) : duplicates.length > 0 ? (
+                  <div className="space-y-3">
+                    <h5 className="font-medium text-gray-900">
+                      Hittade {duplicates.length} användare med samma e-post:
+                    </h5>
+                    {duplicates.map((duplicate) => (
+                      <div key={duplicate.id} className="bg-white border border-gray-200 rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-medium text-gray-900">
+                              {duplicate.name || 'Inget namn'} ({duplicate.email})
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              Registrerad: {new Date(duplicate.createdAt).toLocaleDateString('sv-SE')}
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              Kurser ({duplicate.coursesCount}): {duplicate.courses.join(', ') || 'Inga kurser'}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleMergeCourses(duplicate.id)}
+                            disabled={merging || duplicate.coursesCount === 0}
+                            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {merging ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                Slår ihop...
+                              </>
+                            ) : (
+                              <>
+                                <Merge className="w-4 h-4" />
+                                Slå ihop kurser
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-gray-600">
+                    Inga dubbletter hittades för denna e-postadress.
+                  </div>
+                )}
               </div>
             )}
           </div>
