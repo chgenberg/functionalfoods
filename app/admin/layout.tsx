@@ -67,7 +67,6 @@ export default function AdminLayout({
     { icon: BookOpen, label: 'Recept', href: '/admin/recipes' },
     { icon: BookOpen, label: 'Kurser', href: '/admin/courses' },
     { icon: Users, label: 'Användare', href: '/admin/users' },
-    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders' },
     { icon: ShoppingCart, label: 'Inköpslistor', href: '/admin/shopping-lists' },
     { icon: Star, label: 'Recensioner', href: '/admin/reviews' },
     { icon: MessageSquare, label: 'Community', href: '/admin/community' },
