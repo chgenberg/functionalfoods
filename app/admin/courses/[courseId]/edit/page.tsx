@@ -1,10 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Plus, Edit3, Trash2, Upload, Image as ImageIcon, Video, FileText } from 'lucide-react';
+import { 
+  ArrowLeft, Save, Plus, Edit3, Trash2, Upload, 
+  Image as ImageIcon, Video, FileText, Clock, Users,
+  ChevronDown, ChevronUp, Eye, Calendar, BookOpen,
+  Target, Sparkles, CheckCircle, AlertCircle
+} from 'lucide-react';
+import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 
 interface CourseWeek {
   weekNumber: number;
@@ -13,6 +19,8 @@ interface CourseWeek {
   welcomeMessage?: string;
   heroImage?: string;
   videoUrl?: string;
+  goals?: string[];
+  keyLearnings?: string[];
 }
 
 interface Course {
@@ -20,6 +28,9 @@ interface Course {
   name: string;
   description?: string;
   price: number;
+  duration: string;
+  level: string;
+  enrollments?: number;
   weeks: CourseWeek[];
 }
 
@@ -28,7 +39,8 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [editingWeek, setEditingWeek] = useState<number | null>(null);
+  const [expandedWeek, setExpandedWeek] = useState<number | null>(1);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchCourse();
@@ -38,77 +50,135 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     try {
       setLoading(true);
       
-      // Mock data baserat på courseId
-      const courseData: Record<string, Course> = {
-        'functional-basics': {
-          id: 'functional-basics',
-          name: 'Functional Basics',
-          description: 'Grundkurs i funktionell kost för en hälsosam livsstil',
-          price: 1497,
-          weeks: [
-            {
-              weekNumber: 1,
-              title: 'Vecka 1: Introduktion till Functional Foods',
-              subtitle: 'Grunderna för en hälsosam livsstil',
-              welcomeMessage: 'Välkommen till din resa mot bättre hälsa! Den här veckan lär du dig grunderna...',
-              heroImage: '/kurser/basic-week1.jpg',
-              videoUrl: ''
-            },
-            {
-              weekNumber: 2,
-              title: 'Vecka 2: Planering och struktur',
-              subtitle: '3 steg till ett friskare liv',
-              welcomeMessage: 'Nu när du förstår grunderna, låt oss skapa struktur...',
-              heroImage: '/kurser/basic-week2.jpg',
-              videoUrl: 'https://player.vimeo.com/video/1119774775'
-            },
-            // ... fortsätt för alla 6 veckor
-          ]
-        },
-        'functional-flow': {
-          id: 'functional-flow',
-          name: 'Functional Flow',
-          description: 'Fördjupningskurs i mag- och tarmhälsa',
-          price: 1497,
-          enrollments: 89,
-          weeks: [
-            {
-              weekNumber: 1,
-              title: 'Vecka 1: Mag- och tarmhälsa',
-              subtitle: 'Förstå din mage och tarm',
-              welcomeMessage: 'Välkommen till Flow-kursen där vi fokuserar på mag- och tarmhälsa...',
-              heroImage: '/kurser/flow-week1.jpg',
-              videoUrl: ''
-            },
-            // ... fler veckor
-          ]
-        },
-        'functional-energy': {
-          id: 'functional-energy',
-          name: 'Functional Energy',
-          description: 'Specialkurs för blodsockerkontroll och energibalans',
-          price: 1497,
-          enrollments: 34,
-          weeks: [
-            {
-              weekNumber: 1,
-              title: 'Vecka 1: Blodsockerkontroll',
-              subtitle: 'Stabila energinivåer hela dagen',
-              welcomeMessage: 'Välkommen till Energy-kursen! Här lär du dig att kontrollera ditt blodsocker...',
-              heroImage: '/kurser/energy-week1.jpg',
-              videoUrl: ''
-            },
-            // ... fler veckor
-          ]
-        }
+      // Get meal plan data based on courseId
+      const mealPlanData = params.courseId === 'functional-basics' ? mealPlans 
+        : params.courseId === 'functional-flow' ? flowMealPlans 
+        : params.courseId === 'functional-energy' ? energyMealPlans 
+        : null;
+
+      if (!mealPlanData) {
+        setCourse(null);
+        return;
+      }
+
+      // Extract weeks from meal plans
+      const weeks: CourseWeek[] = Object.keys(mealPlanData)
+        .filter(key => key.startsWith('week'))
+        .map((key, index) => ({
+          weekNumber: index + 1,
+          title: `Vecka ${index + 1}`,
+          subtitle: getWeekSubtitle(params.courseId, index + 1),
+          welcomeMessage: getWeekWelcomeMessage(params.courseId, index + 1),
+          heroImage: `/kurser/${params.courseId}-week${index + 1}.jpg`,
+          videoUrl: getWeekVideoUrl(params.courseId, index + 1),
+          goals: getWeekGoals(params.courseId, index + 1),
+          keyLearnings: getWeekKeyLearnings(params.courseId, index + 1)
+        }));
+
+      const courseData: Course = {
+        id: params.courseId,
+        name: getCourseInfo(params.courseId).name,
+        description: getCourseInfo(params.courseId).description,
+        price: 1497,
+        duration: '6 veckor',
+        level: getCourseInfo(params.courseId).level,
+        enrollments: getCourseInfo(params.courseId).enrollments,
+        weeks
       };
 
-      setCourse(courseData[params.courseId] || null);
+      setCourse(courseData);
     } catch (error) {
       console.error('Error fetching course:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getCourseInfo = (courseId: string) => {
+    const courses = {
+      'functional-basics': {
+        name: 'Functional Basics',
+        description: 'Grundkurs i funktionell kost för en hälsosam livsstil',
+        level: 'Nybörjare',
+        enrollments: 234
+      },
+      'functional-flow': {
+        name: 'Functional Gut Health/Flow',
+        description: 'Fördjupningskurs i mag- och tarmhälsa',
+        level: 'Medel',
+        enrollments: 156
+      },
+      'functional-energy': {
+        name: 'Functional Insulin balance/Energy',
+        description: 'Specialkurs för blodsockerkontroll och energibalans',
+        level: 'Avancerad',
+        enrollments: 89
+      }
+    };
+    return courses[courseId] || courses['functional-basics'];
+  };
+
+  const getWeekSubtitle = (courseId: string, weekNumber: number) => {
+    const subtitles = {
+      'functional-basics': [
+        'Grunderna för en hälsosam livsstil',
+        'Planering och struktur för framgång',
+        'Näringsrik mat för kropp och själ',
+        'Balansera din kost för optimal hälsa',
+        'Hållbara vanor för livet',
+        'Sammanfattning och vägen framåt'
+      ],
+      'functional-flow': [
+        'Förstå din mage och tarm',
+        'Mat för en frisk tarmflora',
+        'Inflammation och matens påverkan',
+        'Stresshantering och matsmältning',
+        'Fermenterad mat och probiotika',
+        'Långsiktig tarmhälsa'
+      ],
+      'functional-energy': [
+        'Stabila energinivåer hela dagen',
+        'Blodsockerkontroll genom kosten',
+        'Insulin och metabolism',
+        'Träning och energibalans',
+        'Sömn och återhämtning',
+        'Optimera din energi långsiktigt'
+      ]
+    };
+    return subtitles[courseId]?.[weekNumber - 1] || '';
+  };
+
+  const getWeekWelcomeMessage = (courseId: string, weekNumber: number) => {
+    if (weekNumber === 1) {
+      return 'Välkommen till din resa mot bättre hälsa! Den här veckan lär du dig grunderna som kommer att förändra ditt liv.';
+    }
+    return `Välkommen till vecka ${weekNumber}! Den här veckan bygger vi vidare på dina kunskaper och tar nästa steg.`;
+  };
+
+  const getWeekVideoUrl = (courseId: string, weekNumber: number) => {
+    // Här kan vi hämta från databas senare
+    if (courseId === 'functional-basics' && weekNumber === 2) {
+      return 'https://player.vimeo.com/video/1119774775';
+    }
+    return '';
+  };
+
+  const getWeekGoals = (courseId: string, weekNumber: number) => {
+    return [
+      `Förstå veckans huvudkoncept`,
+      `Implementera minst 3 nya vanor`,
+      `Planera och genomföra veckans recept`,
+      `Reflektera över din utveckling`
+    ];
+  };
+
+  const getWeekKeyLearnings = (courseId: string, weekNumber: number) => {
+    return [
+      `Viktiga näringsämnen och deras funktion`,
+      `Praktiska tips för vardagen`,
+      `Vanliga misstag att undvika`,
+      `Verktyg för långsiktig framgång`
+    ];
   };
 
   const saveCourse = async () => {
@@ -123,7 +193,8 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
       // Simulera API-anrop
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      alert('Kurs sparad framgångsrikt!');
+      setSuccessMessage('Kursen har sparats framgångsrikt!');
+      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error saving course:', error);
       alert('Fel vid sparning av kurs');
@@ -132,7 +203,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     }
   };
 
-  const updateWeek = (weekNumber: number, field: keyof CourseWeek, value: string) => {
+  const updateWeek = (weekNumber: number, field: keyof CourseWeek, value: any) => {
     if (!course) return;
 
     setCourse(prev => ({
@@ -145,42 +216,20 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     }));
   };
 
-  const addWeek = () => {
-    if (!course) return;
-
-    const newWeekNumber = Math.max(...course.weeks.map(w => w.weekNumber)) + 1;
-    setCourse(prev => ({
-      ...prev!,
-      weeks: [...prev!.weeks, {
-        weekNumber: newWeekNumber,
-        title: `Vecka ${newWeekNumber}: Ny vecka`,
-        subtitle: '',
-        welcomeMessage: '',
-        heroImage: '',
-        videoUrl: ''
-      }]
-    }));
-  };
-
-  const removeWeek = (weekNumber: number) => {
-    if (!course || !confirm('Är du säker på att du vill ta bort denna vecka?')) return;
-
-    setCourse(prev => ({
-      ...prev!,
-      weeks: prev!.weeks.filter(week => week.weekNumber !== weekNumber)
-    }));
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-        <div className="text-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
           <div className="relative">
-            <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+            <div className="w-20 h-20 border-3 border-gray-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-20 h-20 border-3 border-[#014421] rounded-full animate-spin border-t-transparent"></div>
           </div>
-          <p className="text-[var(--text-secondary)] mt-4 font-light">Laddar kurs...</p>
-        </div>
+          <p className="text-gray-600 mt-4">Laddar kursinnehåll...</p>
+        </motion.div>
       </div>
     );
   }
@@ -188,231 +237,296 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
   if (!course) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-medium text-[var(--text-primary)] mb-2">Kurs hittades inte</h2>
-        <Link href="/admin/courses" className="admin-btn admin-btn-primary">
-          Tillbaka till kurser
+        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Kurs hittades inte</h2>
+        <Link href="/admin/courses" className="text-[#014421] hover:underline">
+          ← Tillbaka till kurser
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <Link 
-            href="/admin/courses" 
-            className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--primary-green)] mb-4 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Tillbaka till kurser</span>
-          </Link>
-          
-          <h1 className="text-3xl font-light text-[var(--primary-green)]">
-            Redigera {course.name}
-          </h1>
-          <p className="text-[var(--text-secondary)] mt-1">{course.description}</p>
-        </div>
-
-        <button
-          onClick={saveCourse}
-          disabled={saving}
-          className="admin-btn admin-btn-primary"
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <Link 
+          href="/admin/courses" 
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
         >
-          <Save className="w-4 h-4" />
-          {saving ? 'Sparar...' : 'Spara ändringar'}
-        </button>
-      </div>
+          <ArrowLeft className="w-4 h-4" />
+          <span>Tillbaka till kurser</span>
+        </Link>
 
-      {/* Course Info */}
-      <div className="admin-card">
-        <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Kursinformation</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="admin-label">Kursnamn</label>
-            <input
-              type="text"
-              value={course.name}
-              onChange={(e) => setCourse(prev => ({ ...prev!, name: e.target.value }))}
-              className="admin-input"
-            />
+        <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{course.name}</h1>
+              <p className="text-gray-600 text-lg">{course.description}</p>
+            </div>
+            <div className="flex gap-3">
+              <Link 
+                href={`/dashboard/courses/${params.courseId}/oversikt`}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <Eye className="w-4 h-4" />
+                Förhandsgranska
+              </Link>
+              <button
+                onClick={saveCourse}
+                disabled={saving}
+                className="inline-flex items-center gap-2 px-6 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#012A14] transition-colors disabled:opacity-50"
+              >
+                {saving ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Sparar...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    Spara ändringar
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-          
-          <div>
-            <label className="admin-label">Pris (SEK)</label>
-            <input
-              type="number"
-              value={course.price}
-              onChange={(e) => setCourse(prev => ({ ...prev!, price: parseInt(e.target.value) || 0 }))}
-              className="admin-input"
-            />
-          </div>
-          
-          <div className="md:col-span-2">
-            <label className="admin-label">Beskrivning</label>
-            <textarea
-              value={course.description}
-              onChange={(e) => setCourse(prev => ({ ...prev!, description: e.target.value }))}
-              className="admin-textarea"
-              rows={3}
-            />
-          </div>
-        </div>
-      </div>
 
-      {/* Weeks Management */}
-      <div className="admin-card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-[var(--primary-green)]">Veckohantering</h2>
-          <button
-            onClick={addWeek}
-            className="admin-btn admin-btn-secondary"
-          >
-            <Plus className="w-4 h-4" />
-            Lägg till vecka
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {course.weeks.map((week) => (
-            <motion.div
-              key={week.weekNumber}
-              layout
-              className="border rounded-lg p-4 hover:bg-[var(--primary-beige)] transition-colors"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium text-[var(--text-primary)]">
-                  Vecka {week.weekNumber}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setEditingWeek(editingWeek === week.weekNumber ? null : week.weekNumber)}
-                    className="admin-btn admin-btn-secondary text-xs"
-                  >
-                    <Edit3 className="w-3 h-3" />
-                    {editingWeek === week.weekNumber ? 'Stäng' : 'Redigera'}
-                  </button>
-                  
-                  {course.weeks.length > 1 && (
-                    <button
-                      onClick={() => removeWeek(week.weekNumber)}
-                      className="admin-btn admin-btn-danger text-xs"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {editingWeek === week.weekNumber ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="admin-label">Veckorubrik</label>
-                    <input
-                      type="text"
-                      value={week.title}
-                      onChange={(e) => updateWeek(week.weekNumber, 'title', e.target.value)}
-                      className="admin-input"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="admin-label">Underrubrik</label>
-                    <input
-                      type="text"
-                      value={week.subtitle || ''}
-                      onChange={(e) => updateWeek(week.weekNumber, 'subtitle', e.target.value)}
-                      className="admin-input"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="admin-label">Välkomstmeddelande</label>
-                    <textarea
-                      value={week.welcomeMessage || ''}
-                      onChange={(e) => updateWeek(week.weekNumber, 'welcomeMessage', e.target.value)}
-                      className="admin-textarea"
-                      rows={4}
-                      placeholder="Skriv välkomstmeddelandet för denna vecka..."
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="admin-label">Hero-bild URL</label>
-                      <input
-                        type="text"
-                        value={week.heroImage || ''}
-                        onChange={(e) => updateWeek(week.weekNumber, 'heroImage', e.target.value)}
-                        className="admin-input"
-                        placeholder="/kurser/week1.jpg"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="admin-label">Video URL (Vimeo)</label>
-                      <input
-                        type="text"
-                        value={week.videoUrl || ''}
-                        onChange={(e) => updateWeek(week.weekNumber, 'videoUrl', e.target.value)}
-                        className="admin-input"
-                        placeholder="https://player.vimeo.com/video/..."
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-sm text-[var(--text-secondary)]">
-                  <p className="font-medium">{week.title}</p>
-                  {week.subtitle && <p>{week.subtitle}</p>}
-                  {week.welcomeMessage && (
-                    <p className="mt-2 line-clamp-2">{week.welcomeMessage}</p>
-                  )}
-                  <div className="flex items-center gap-4 mt-2">
-                    {week.heroImage && (
-                      <span className="flex items-center gap-1">
-                        <ImageIcon className="w-3 h-3" />
-                        Bild
-                      </span>
-                    )}
-                    {week.videoUrl && (
-                      <span className="flex items-center gap-1">
-                        <Video className="w-3 h-3" />
-                        Video
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Preview */}
-      <div className="admin-card">
-        <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Förhandsvisning</h2>
-        <div className="bg-[var(--primary-beige)] rounded-lg p-4">
-          <p className="text-sm text-[var(--text-secondary)] mb-2">
-            Så här ser kursen ut för användarna:
-          </p>
-          <div className="bg-white rounded-lg p-4 border">
-            <h3 className="text-lg font-semibold text-[var(--primary-green)] mb-2">
-              {course.name}
-            </h3>
-            <p className="text-[var(--text-secondary)] mb-4">{course.description}</p>
-            <div className="flex items-center gap-4">
-              <span className="text-2xl font-bold text-[var(--primary-green)]">
-                {course.price.toLocaleString('sv-SE')} kr
-              </span>
-              <span className="text-sm text-[var(--text-secondary)]">
-                {course.weeks.length} veckor
-              </span>
+          {/* Course Stats */}
+          <div className="grid grid-cols-4 gap-6">
+            <div className="text-center p-4 bg-gray-50 rounded-xl">
+              <Users className="w-8 h-8 text-[#014421] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{course.enrollments || 0}</div>
+              <div className="text-sm text-gray-600">Deltagare</div>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-xl">
+              <Clock className="w-8 h-8 text-[#93C560] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{course.duration}</div>
+              <div className="text-sm text-gray-600">Längd</div>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-xl">
+              <Target className="w-8 h-8 text-[#FFB5A7] mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{course.level}</div>
+              <div className="text-sm text-gray-600">Nivå</div>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-xl">
+              <BookOpen className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{course.weeks.length}</div>
+              <div className="text-sm text-gray-600">Veckor</div>
             </div>
           </div>
         </div>
+      </motion.div>
+
+      {/* Success Message */}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center gap-2"
+          >
+            <CheckCircle className="w-5 h-5" />
+            {successMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Weeks */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Kursinnehåll per vecka</h2>
+        
+        {course.weeks.map((week, index) => (
+          <motion.div
+            key={week.weekNumber}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+          >
+            {/* Week Header */}
+            <div 
+              className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+              onClick={() => setExpandedWeek(expandedWeek === week.weekNumber ? null : week.weekNumber)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#014421] text-white rounded-xl flex items-center justify-center font-bold text-lg">
+                    {week.weekNumber}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Vecka {week.weekNumber}: {week.title || `Vecka ${week.weekNumber}`}
+                    </h3>
+                    <p className="text-gray-600">{week.subtitle}</p>
+                  </div>
+                </div>
+                <motion.div
+                  animate={{ rotate: expandedWeek === week.weekNumber ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Week Content */}
+            <AnimatePresence>
+              {expandedWeek === week.weekNumber && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="border-t border-gray-100"
+                >
+                  <div className="p-6 space-y-6">
+                    {/* Title & Subtitle */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Veckotitel
+                        </label>
+                        <input
+                          type="text"
+                          value={week.title}
+                          onChange={(e) => updateWeek(week.weekNumber, 'title', e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                          placeholder="T.ex. Introduktion till Functional Foods"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Undertitel
+                        </label>
+                        <input
+                          type="text"
+                          value={week.subtitle}
+                          onChange={(e) => updateWeek(week.weekNumber, 'subtitle', e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                          placeholder="Kort beskrivning av veckans fokus"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Welcome Message */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Välkomstmeddelande
+                      </label>
+                      <textarea
+                        value={week.welcomeMessage}
+                        onChange={(e) => updateWeek(week.weekNumber, 'welcomeMessage', e.target.value)}
+                        rows={3}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent resize-none"
+                        placeholder="Välkommen till vecka X! Den här veckan kommer vi att..."
+                      />
+                    </div>
+
+                    {/* Media */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <ImageIcon className="w-4 h-4 inline mr-1" />
+                          Hero-bild URL
+                        </label>
+                        <input
+                          type="text"
+                          value={week.heroImage}
+                          onChange={(e) => updateWeek(week.weekNumber, 'heroImage', e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                          placeholder="/kurser/week1-hero.jpg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <Video className="w-4 h-4 inline mr-1" />
+                          Video URL (Vimeo)
+                        </label>
+                        <input
+                          type="text"
+                          value={week.videoUrl}
+                          onChange={(e) => updateWeek(week.weekNumber, 'videoUrl', e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                          placeholder="https://player.vimeo.com/video/..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* Goals & Key Learnings */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <Target className="w-4 h-4 inline mr-1" />
+                          Veckans mål
+                        </label>
+                        <div className="space-y-2">
+                          {(week.goals || []).map((goal, idx) => (
+                            <div key={idx} className="flex items-center gap-2">
+                              <span className="text-[#014421]">•</span>
+                              <input
+                                type="text"
+                                value={goal}
+                                onChange={(e) => {
+                                  const newGoals = [...(week.goals || [])];
+                                  newGoals[idx] = e.target.value;
+                                  updateWeek(week.weekNumber, 'goals', newGoals);
+                                }}
+                                className="flex-1 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <Sparkles className="w-4 h-4 inline mr-1" />
+                          Viktiga lärdomar
+                        </label>
+                        <div className="space-y-2">
+                          {(week.keyLearnings || []).map((learning, idx) => (
+                            <div key={idx} className="flex items-center gap-2">
+                              <span className="text-[#93C560]">•</span>
+                              <input
+                                type="text"
+                                value={learning}
+                                onChange={(e) => {
+                                  const newLearnings = [...(week.keyLearnings || [])];
+                                  newLearnings[idx] = e.target.value;
+                                  updateWeek(week.weekNumber, 'keyLearnings', newLearnings);
+                                }}
+                                className="flex-1 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Actions */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="text-sm text-gray-500">
+                        <Calendar className="w-4 h-4 inline mr-1" />
+                        Senast uppdaterad: {new Date().toLocaleDateString('sv-SE')}
+                      </div>
+                      <Link
+                        href={`/dashboard/courses/${params.courseId}/week${week.weekNumber}`}
+                        className="text-[#014421] hover:underline text-sm"
+                      >
+                        Visa vecka →
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
