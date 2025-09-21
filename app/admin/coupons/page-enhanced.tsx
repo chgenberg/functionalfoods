@@ -16,13 +16,24 @@ interface Coupon {
   description?: string;
 }
 
+interface CouponForm {
+  code: string;
+  type: 'percent' | 'fixed';
+  amount: number;
+  active: boolean;
+  description: string;
+  startsAt: string;
+  expiresAt: string;
+  usageLimit: string;
+}
+
 export default function AdminCouponsPage() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
   const [editing, setEditing] = useState<Coupon | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState<any>({ 
+  const [form, setForm] = useState<CouponForm>({ 
     code: '', 
     type: 'percent', 
     amount: 10, 
