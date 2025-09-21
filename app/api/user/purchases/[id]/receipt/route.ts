@@ -19,7 +19,7 @@ function generateReceiptHTML(purchase: any, user: any) {
   <style>
     @page {
       size: A4;
-      margin: 0;
+      margin: 15mm;
     }
     
     @media print {
@@ -28,7 +28,8 @@ function generateReceiptHTML(purchase: any, user: any) {
         padding: 0;
       }
       .page-container {
-        page-break-after: always;
+        page-break-inside: avoid;
+        height: auto;
       }
     }
     
@@ -38,17 +39,18 @@ function generateReceiptHTML(purchase: any, user: any) {
       padding: 0;
       color: #333;
       background: white;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.4;
     }
     
     .page-container {
       width: 210mm;
-      min-height: 297mm;
-      padding: 20mm 25mm;
+      max-width: 100%;
+      padding: 15mm 20mm;
       margin: 0 auto;
       background: white;
       box-sizing: border-box;
+      height: auto;
     }
     
     @media screen {
@@ -62,80 +64,81 @@ function generateReceiptHTML(purchase: any, user: any) {
       display: flex;
       justify-content: space-between;
       align-items: start;
-      margin-bottom: 30px;
-      padding-bottom: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
       border-bottom: 2px solid #014421;
     }
     .logo {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       color: #014421;
     }
     .logo-subtitle {
-      font-size: 12px;
+      font-size: 11px;
       color: #666;
-      margin-top: 4px;
+      margin-top: 2px;
     }
     .receipt-info {
       text-align: right;
     }
     .receipt-title {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
       color: #014421;
     }
     .receipt-number {
       color: #666;
-      font-size: 12px;
+      font-size: 11px;
     }
     .section {
-      margin-bottom: 25px;
+      margin-bottom: 18px;
     }
     .section-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: #014421;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 15px;
     }
     .info-item {
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .label {
       font-weight: 600;
       color: #666;
-      font-size: 12px;
+      font-size: 11px;
     }
     .value {
-      font-size: 14px;
-      margin-top: 2px;
+      font-size: 13px;
+      margin-top: 1px;
       color: #333;
     }
     .table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 8px;
     }
     .table th {
       background: #f8f9fa;
-      padding: 10px 12px;
+      padding: 8px 10px;
       text-align: left;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 12px;
       color: #495057;
       border-bottom: 2px solid #dee2e6;
     }
     .table td {
-      padding: 12px;
+      padding: 10px;
       border-bottom: 1px solid #e9ecef;
       vertical-align: top;
+      font-size: 13px;
     }
     .table .amount {
       text-align: right;
@@ -143,43 +146,43 @@ function generateReceiptHTML(purchase: any, user: any) {
     }
     .total-row {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px;
     }
     .total-row td {
-      padding-top: 15px;
-      padding-bottom: 15px;
+      padding-top: 12px;
+      padding-bottom: 12px;
       border-bottom: none;
       border-top: 2px solid #014421;
     }
     .footer {
       margin-top: auto;
-      padding-top: 30px;
+      padding-top: 20px;
       border-top: 1px solid #e9ecef;
       text-align: center;
       color: #666;
-      font-size: 12px;
-      line-height: 1.6;
+      font-size: 11px;
+      line-height: 1.5;
     }
     .company-info {
-      margin-top: 30px;
-      margin-bottom: 30px;
+      margin-top: 20px;
+      margin-bottom: 20px;
       background: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 15px;
+      border-radius: 6px;
     }
     .badge {
       display: inline-block;
       background: #014421;
       color: white;
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: 4px;
-      font-size: 11px;
-      margin-top: 8px;
+      font-size: 10px;
+      margin-top: 5px;
     }
     .description-text {
-      font-size: 13px;
+      font-size: 12px;
       color: #666;
-      line-height: 1.4;
+      line-height: 1.3;
     }
   </style>
 </head>
@@ -187,7 +190,7 @@ function generateReceiptHTML(purchase: any, user: any) {
   <div class="page-container">
     <div class="header">
       <div>
-        <div class="logo">🥗 Functional Foods</div>
+        <div class="logo">Functional Foods</div>
         <div class="logo-subtitle">Hälsosam mat för kropp och själ</div>
       </div>
       <div class="receipt-info">
@@ -262,12 +265,12 @@ function generateReceiptHTML(purchase: any, user: any) {
             <td class="amount">${purchase.amount.toFixed(2)} kr</td>
           </tr>
           <tr style="border-bottom: none;">
-            <td colspan="2" style="text-align: right; padding-top: 15px; padding-bottom: 5px;">Summa exkl. moms:</td>
-            <td class="amount" style="padding-top: 15px; padding-bottom: 5px;">${(purchase.amount / 1.25).toFixed(2)} kr</td>
+            <td colspan="2" style="text-align: right; padding-top: 8px; padding-bottom: 3px;">Summa exkl. moms:</td>
+            <td class="amount" style="padding-top: 8px; padding-bottom: 3px;">${(purchase.amount / 1.25).toFixed(2)} kr</td>
           </tr>
           <tr style="border-bottom: none;">
-            <td colspan="2" style="text-align: right; padding-top: 5px; padding-bottom: 5px; color: #666;">Moms (25%):</td>
-            <td class="amount" style="padding-top: 5px; padding-bottom: 5px; color: #666;">${(purchase.amount - (purchase.amount / 1.25)).toFixed(2)} kr</td>
+            <td colspan="2" style="text-align: right; padding-top: 3px; padding-bottom: 3px; color: #666;">Moms (25%):</td>
+            <td class="amount" style="padding-top: 3px; padding-bottom: 3px; color: #666;">${(purchase.amount - (purchase.amount / 1.25)).toFixed(2)} kr</td>
           </tr>
           <tr class="total-row">
             <td colspan="2">Totalt att betala</td>
@@ -279,7 +282,7 @@ function generateReceiptHTML(purchase: any, user: any) {
 
     <div class="company-info">
       <div class="section-title">Företagsinformation</div>
-      <div style="margin-top: 15px;">
+      <div style="margin-top: 10px;">
         <div class="info-item">
           <div class="label">Företag</div>
           <div class="value">Ulrikas Kickstart AB</div>
@@ -298,7 +301,7 @@ function generateReceiptHTML(purchase: any, user: any) {
     <div class="footer">
       <p><strong>Viktigt för friskvårdsbidrag:</strong></p>
       <p>Detta kvitto avser en hälsofrämjande utbildning och kan användas för friskvårdsbidrag enligt Skatteverkets regler.</p>
-      <p style="margin-top: 20px;">Tack för ditt köp! Vid frågor, kontakta oss på info@functionalfoods.se</p>
+      <p style="margin-top: 15px;">Tack för ditt köp! Vid frågor, kontakta oss på info@functionalfoods.se</p>
     </div>
   </div>
 </body>
