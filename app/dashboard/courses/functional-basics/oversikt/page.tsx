@@ -8,7 +8,6 @@ import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
 import InfoPopupGrid from '../../components/InfoPopupGrid';
 import CompleteCourseDownload from '../../components/CompleteCourseDownload';
-import CourseRecipesPDF from '../../components/CourseRecipesPDF';
 import { mealPlans } from '@/app/data/mealPlans';
 import { HelpCircle, Check, Clock, Lock, BookOpen, Award, Calendar, TrendingUp, Users, Instagram } from 'lucide-react';
 
@@ -245,9 +244,8 @@ export default function FunctionalBasicsOverview() {
         <InfoPopupGrid courseType="basics" courseId="functional-basics" />
 
         {/* Course Downloads */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <CompleteCourseDownload courseType="basics" />
-          <CourseRecipesPDF courseType="basics" />
         </div>
 
         {/* Next Steps Section */}

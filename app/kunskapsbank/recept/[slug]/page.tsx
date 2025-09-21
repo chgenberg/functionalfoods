@@ -832,12 +832,40 @@ export default function RecipePage() {
       `}</style>
 
       <div id="printable-recipe" className="bg-[#F3EFE3] min-h-screen">
-        {/* Back Button - No Print */}
+        {/* Header with Back Button and Action Buttons - No Print */}
         <div className="max-w-7xl mx-auto px-4 pb-4 md:pb-6 no-print header-safe">
-          <Link href={backButtonInfo.url} className="inline-flex items-center gap-2 text-[#014421] hover:text-[#93C560] transition-colors font-medium text-sm md:text-base">
-            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
-            <span>{backButtonInfo.text}</span>
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link href={backButtonInfo.url} className="inline-flex items-center gap-2 text-[#014421] hover:text-[#93C560] transition-colors font-medium text-sm md:text-base">
+              <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+              <span>{backButtonInfo.text}</span>
+            </Link>
+            
+            {/* Action Buttons - Top Right */}
+            <div className="flex gap-2 md:gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleToggleFavorite}
+                className={`flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 rounded-xl font-medium transition-all text-sm md:text-base ${
+                  isFavorited 
+                    ? 'bg-red-500 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-red-50 hover:text-red-600 shadow-md'
+                }`}
+              >
+                <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isFavorited ? 'fill-current' : ''}`} />
+                <span className="hidden sm:inline">{isFavorited ? 'Sparad' : 'Spara recept'}</span>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePrint}
+                className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 rounded-xl bg-white shadow-md text-gray-700 hover:bg-gray-50 transition-colors text-sm md:text-base"
+              >
+                <Printer className="w-4 h-4 md:w-5 md:h-5" />
+                <span className="hidden sm:inline">Skriv ut</span>
+              </motion.button>
+            </div>
+          </div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 pb-16">
@@ -922,30 +950,6 @@ export default function RecipePage() {
                   </div>
                 </div>
 
-                {/* Action Buttons - No Print */}
-                <div className="flex gap-2 md:gap-3 mt-4 md:mt-6 no-print">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleToggleFavorite}
-                    className={`flex-1 p-3 md:p-4 rounded-xl md:rounded-2xl font-medium transition-all flex items-center justify-center gap-2 text-sm md:text-base ${
-                      isFavorited 
-                        ? 'bg-red-500 text-white' 
-                        : 'bg-white text-gray-700 hover:bg-red-50 hover:text-red-600 shadow-md'
-                    }`}
-                  >
-                    <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isFavorited ? 'fill-current' : ''}`} />
-                    {isFavorited ? 'Sparad' : 'Spara recept'}
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handlePrint}
-                    className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-white shadow-md text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    <Printer className="w-4 h-4 md:w-5 md:h-5" />
-                  </motion.button>
-                </div>
               </div>
             </div>
 

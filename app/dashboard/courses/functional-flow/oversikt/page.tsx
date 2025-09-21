@@ -8,7 +8,6 @@ import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
 import InfoPopupGrid from '../../components/InfoPopupGrid';
 import CompleteCourseDownload from '../../components/CompleteCourseDownload';
-import CourseRecipesPDF from '../../components/CourseRecipesPDF';
 import { flowMealPlans } from '@/app/data/mealPlans';
 import { HelpCircle, Check, Clock, Lock, BookOpen, Award, Calendar, TrendingUp, Users, Instagram } from 'lucide-react';
 
@@ -225,9 +224,8 @@ export default function FunctionalFlowOverview() {
         </motion.div>
 
         {/* Course Downloads */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <CompleteCourseDownload courseType="flow" />
-          <CourseRecipesPDF courseType="flow" />
         </div>
 
         {/* Next Steps Section */}

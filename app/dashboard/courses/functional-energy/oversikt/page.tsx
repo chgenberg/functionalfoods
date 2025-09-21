@@ -8,7 +8,6 @@ import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
 import HelpGuide from '@/app/components/HelpGuide';
 import InfoPopupGrid from '../../components/InfoPopupGrid';
 import CompleteCourseDownload from '../../components/CompleteCourseDownload';
-import CourseRecipesPDF from '../../components/CourseRecipesPDF';
 import { energyMealPlans } from '@/app/data/mealPlans';
 import { HelpCircle, Check, Clock, Lock, BookOpen, Award, Calendar, TrendingUp, Users, Instagram } from 'lucide-react';
 
@@ -207,9 +206,8 @@ export default function FunctionalEnergyOverview() {
         <InfoPopupGrid courseType="energy" courseId="functional-energy" />
 
         {/* Course Downloads */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <CompleteCourseDownload courseType="energy" />
-          <CourseRecipesPDF courseType="energy" />
         </div>
 
         {/* Next Steps Section */}
