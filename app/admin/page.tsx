@@ -188,34 +188,42 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
             href="/admin/recipes/new"
-            className="flex items-center gap-3 p-4 rounded-lg border hover:bg-[var(--primary-beige)] transition-colors"
+            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
           >
-            <BookOpen className="w-5 h-5 text-[var(--primary-green)]" />
-            <span className="text-sm text-[var(--text-primary)]">Nytt recept</span>
+            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
+              <BookOpen className="w-6 h-6 text-[var(--primary-green)]" />
+            </div>
+            <span className="text-sm text-[var(--text-primary)] font-medium">Nytt recept</span>
           </Link>
           
           <Link 
             href="/admin/blog/new"
-            className="flex items-center gap-3 p-4 rounded-lg border hover:bg-[var(--primary-beige)] transition-colors"
+            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
           >
-            <Activity className="w-5 h-5 text-[var(--primary-green)]" />
-            <span className="text-sm text-[var(--text-primary)]">Nytt blogginlägg</span>
+            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
+              <Activity className="w-6 h-6 text-[var(--primary-green)]" />
+            </div>
+            <span className="text-sm text-[var(--text-primary)] font-medium">Nytt blogginlägg</span>
           </Link>
           
           <Link 
             href="/admin/coupons/new"
-            className="flex items-center gap-3 p-4 rounded-lg border hover:bg-[var(--primary-beige)] transition-colors"
+            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
           >
-            <Package className="w-5 h-5 text-[var(--primary-green)]" />
-            <span className="text-sm text-[var(--text-primary)]">Ny kupong</span>
+            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
+              <Package className="w-6 h-6 text-[var(--primary-green)]" />
+            </div>
+            <span className="text-sm text-[var(--text-primary)] font-medium">Ny kupong</span>
           </Link>
           
           <Link 
             href="/admin/sales"
-            className="flex items-center gap-3 p-4 rounded-lg border hover:bg-[var(--primary-beige)] transition-colors"
+            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
           >
-            <BarChart3 className="w-5 h-5 text-[var(--primary-green)]" />
-            <span className="text-sm text-[var(--text-primary)]">Visa statistik</span>
+            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
+              <BarChart3 className="w-6 h-6 text-[var(--primary-green)]" />
+            </div>
+            <span className="text-sm text-[var(--text-primary)] font-medium">Visa statistik</span>
           </Link>
         </div>
       </motion.div>

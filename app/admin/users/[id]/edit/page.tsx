@@ -172,10 +172,13 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar användare...</p>
+          <div className="relative">
+            <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+          </div>
+          <p className="text-[var(--text-secondary)] mt-4">Laddar användare...</p>
         </div>
       </div>
     );
@@ -183,66 +186,66 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">Användare hittades inte</p>
+          <p className="text-[var(--text-secondary)]">Användare hittades inte</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div>
       <div className="mb-8">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+          className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--primary-green)] transition-colors mb-4"
         >
-          <ArrowLeft />
-          Tillbaka
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm">Tillbaka</span>
         </button>
-        <h1 className="text-3xl font-bold text-gray-900">Redigera användare</h1>
+        <h1 className="text-3xl font-light text-[var(--primary-green)]">Redigera användare</h1>
       </div>
 
       <div className="max-w-2xl">
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="admin-card space-y-6">
           {/* User Info */}
-          <div className="flex items-center gap-4 pb-6 border-b">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-              <User className="w-8 h-8 text-orange-600" />
+          <div className="flex items-center gap-4 pb-6 border-b border-[var(--border-light)]">
+            <div className="w-16 h-16 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
+              <User className="w-8 h-8 text-[var(--primary-green)]" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold">{user.name || user.email}</h2>
-              <p className="text-gray-500">ID: {user.id}</p>
+              <h2 className="text-xl font-medium text-[var(--text-primary)]">{user.name || user.email}</h2>
+              <p className="text-[var(--text-secondary)]">ID: {user.id}</p>
             </div>
           </div>
 
           {/* Name Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="admin-label">
               Namn
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="admin-input"
               placeholder="Användarens namn"
             />
           </div>
 
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="admin-label">
               E-postadress
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)]" />
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="admin-input pl-10"
                 required
               />
             </div>
@@ -250,15 +253,15 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
           {/* Role Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="admin-label">
               Roll
             </label>
             <div className="relative">
-              <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)]" />
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 appearance-none"
+                className="admin-select pl-10"
               >
                 <option value="customer">Kund</option>
                 <option value="admin">Administratör</option>
@@ -268,14 +271,14 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
           {/* New Password Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="admin-label">
               Nytt lösenord (lämna tomt för att behålla nuvarande)
             </label>
             <input
               type="password"
               value={formData.newPassword}
               onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="admin-input"
               placeholder="••••••••"
             />
           </div>
@@ -287,15 +290,15 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
               id="isActive"
               checked={formData.isActive}
               onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-              className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
+              className="w-5 h-5 text-[var(--primary-green)] rounded focus:ring-[var(--primary-light-green)]"
             />
-            <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
+            <label htmlFor="isActive" className="text-sm font-medium text-[var(--text-primary)]">
               Aktiv användare
             </label>
           </div>
 
           {/* Meta Information */}
-          <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm text-gray-600">
+          <div className="bg-[var(--primary-beige)] rounded-lg p-4 space-y-2 text-sm text-[var(--text-secondary)]">
             <div className="flex justify-between">
               <span>Registrerad:</span>
               <span>{new Date(user.createdAt).toLocaleDateString('sv-SE')}</span>
@@ -311,7 +314,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           {/* Course Merge Section */}
           <div className="border-t pt-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <h3 className="text-lg font-medium text-[var(--text-primary)] flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Slå ihop kurser
               </h3>
@@ -323,19 +326,19 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                     fetchDuplicates();
                   }
                 }}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-sm text-[var(--primary-light-green)] hover:text-[var(--primary-green)] transition-colors"
               >
                 {showMergeSection ? 'Dölj' : 'Visa alternativ'}
               </button>
             </div>
 
             {showMergeSection && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+              <div className="admin-alert admin-alert-success mb-4">
                 <div className="flex items-start gap-2 mb-3">
-                  <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                  <AlertTriangle className="w-5 h-5 text-[var(--primary-green)] mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-yellow-800">Slå ihop kurser från andra användare</h4>
-                    <p className="text-sm text-yellow-700 mt-1">
+                    <h4 className="font-medium text-[var(--text-primary)]">Slå ihop kurser från andra användare</h4>
+                    <p className="text-sm text-[var(--text-secondary)] mt-1">
                       Hitta användare med samma e-postadress och slå ihop deras kurser till denna användare. 
                       Detta är användbart när kunder har skapat flera konton.
                     </p>
@@ -343,26 +346,26 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                 </div>
 
                 {loadingDuplicates ? (
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                    <div className="w-4 h-4 border-2 border-[var(--primary-light-green)] border-t-transparent rounded-full animate-spin" />
                     Söker efter dubbletter...
                   </div>
                 ) : duplicates.length > 0 ? (
                   <div className="space-y-3">
-                    <h5 className="font-medium text-gray-900">
+                    <h5 className="font-medium text-[var(--text-primary)]">
                       Hittade {duplicates.length} användare med samma e-post:
                     </h5>
                     {duplicates.map((duplicate) => (
-                      <div key={duplicate.id} className="bg-white border border-gray-200 rounded-lg p-3">
+                      <div key={duplicate.id} className="bg-white border border-[var(--border-light)] rounded-lg p-3">
                         <div className="flex items-center justify-between">
                           <div>
-                            <div className="font-medium text-gray-900">
+                            <div className="font-medium text-[var(--text-primary)]">
                               {duplicate.name || 'Inget namn'} ({duplicate.email})
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-[var(--text-secondary)]">
                               Registrerad: {new Date(duplicate.createdAt).toLocaleDateString('sv-SE')}
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-[var(--text-secondary)]">
                               Kurser ({duplicate.coursesCount}): {duplicate.courses.join(', ') || 'Inga kurser'}
                             </div>
                           </div>
@@ -370,7 +373,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                             type="button"
                             onClick={() => handleMergeCourses(duplicate.id)}
                             disabled={merging || duplicate.coursesCount === 0}
-                            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="admin-btn admin-btn-primary"
                           >
                             {merging ? (
                               <>
@@ -389,7 +392,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-4 text-gray-600">
+                  <div className="text-center py-4 text-[var(--text-secondary)]">
                     Inga dubbletter hittades för denna e-postadress.
                   </div>
                 )}
@@ -402,16 +405,16 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              className="flex-1 admin-btn admin-btn-primary justify-center"
             >
               {saving ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Sparar...
                 </>
               ) : (
                 <>
-                  <Save />
+                  <Save className="w-4 h-4" />
                   Spara ändringar
                 </>
               )}
@@ -419,7 +422,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
             <button
               type="button"
               onClick={() => router.push('/admin/users')}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="admin-btn admin-btn-secondary"
             >
               Avbryt
             </button>

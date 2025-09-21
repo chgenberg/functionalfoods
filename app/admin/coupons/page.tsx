@@ -164,25 +164,25 @@ export default function AdminCouponsPage() {
   };
 
   return (
-    <div className="p-6">
+    <div>
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Rabattkoder</h1>
-          <p className="text-gray-600 mt-1">Hantera rabattkoder för kampanjer och erbjudanden</p>
+          <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Rabattkoder</h1>
+          <p className="text-[var(--text-secondary)] font-light">Hantera rabattkoder för kampanjer och erbjudanden</p>
         </div>
         <button 
           onClick={openNew} 
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white hover:bg-[#014421] font-medium transition-colors"
+          className="admin-btn admin-btn-primary"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           Ny rabattkod
         </button>
       </div>
 
       {/* Error message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-800">
+        <div className="mb-6 admin-alert admin-alert-error flex items-center gap-2">
           <AlertCircle className="w-5 h-5" />
           {error}
         </div>
@@ -190,31 +190,34 @@ export default function AdminCouponsPage() {
 
       {/* Search */}
       <div className="mb-6 relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] w-5 h-5" />
         <input 
           value={q} 
           onChange={e => setQ(e.target.value)} 
           placeholder="Sök rabattkod..." 
-          className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" 
+          className="admin-input pl-10" 
         />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Coupons list */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="admin-table">
             {loading ? (
               <div className="p-12 text-center">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-                <p className="mt-2 text-gray-500">Laddar rabattkoder...</p>
+                <div className="relative mx-auto w-16 h-16">
+                  <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+                  <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+                </div>
+                <p className="mt-4 text-[var(--text-secondary)]">Laddar rabattkoder...</p>
               </div>
             ) : coupons.length === 0 ? (
               <div className="p-12 text-center">
-                <Tag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">Inga rabattkoder hittades</p>
+                <Tag className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" />
+                <p className="text-[var(--text-secondary)]">Inga rabattkoder hittades</p>
                 <button 
                   onClick={openNew}
-                  className="mt-4 text-primary hover:text-[#014421] font-medium"
+                  className="mt-4 text-[var(--primary-light-green)] hover:text-[var(--primary-green)] font-medium transition-colors"
                 >
                   Skapa din första rabattkod
                 </button>
@@ -223,74 +226,74 @@ export default function AdminCouponsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Typ</th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Värde</th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giltighet</th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Användning</th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-4"></th>
+                    <tr>
+                      <th className="text-left">Kod</th>
+                      <th className="text-left">Typ</th>
+                      <th className="text-left">Värde</th>
+                      <th className="text-left">Giltighet</th>
+                      <th className="text-left">Användning</th>
+                      <th className="text-left">Status</th>
+                      <th></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody>
                     {coupons.map(c => (
-                      <tr key={c.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4">
-                          <span className="font-mono font-semibold text-gray-900">{c.code}</span>
+                      <tr key={c.id}>
+                        <td>
+                          <span className="font-mono font-semibold text-[var(--text-primary)]">{c.code}</span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td>
                           <span className="inline-flex items-center gap-1.5">
                             {c.type === 'percent' ? (
                               <>
-                                <Percent className="w-4 h-4 text-gray-400" />
-                                <span className="text-gray-700">Procent</span>
+                                <Percent className="w-4 h-4 text-[var(--text-secondary)]" />
+                                <span className="text-[var(--text-secondary)]">Procent</span>
                               </>
                             ) : (
                               <>
-                                <DollarSign className="w-4 h-4 text-gray-400" />
-                                <span className="text-gray-700">Fast belopp</span>
+                                <DollarSign className="w-4 h-4 text-[var(--text-secondary)]" />
+                                <span className="text-[var(--text-secondary)]">Fast belopp</span>
                               </>
                             )}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="font-medium text-gray-900">
+                        <td>
+                          <span className="font-medium text-[var(--text-primary)]">
                             {c.type === 'percent' ? `${c.amount}%` : `${c.amount} kr`}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td>
                           <div className="text-sm">
-                            <div className="text-gray-900">{formatDate(c.startsAt)} – {formatDate(c.expiresAt)}</div>
+                            <div className="text-[var(--text-primary)]">{formatDate(c.startsAt)} – {formatDate(c.expiresAt)}</div>
                             {isExpired(c.expiresAt) && (
-                              <span className="text-red-600 text-xs">Utgången</span>
+                              <span className="text-[var(--coral-accent)] text-xs">Utgången</span>
                             )}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-700">
+                        <td>
+                          <div className="text-sm text-[var(--text-secondary)]">
                             {c.timesUsed} / {c.usageLimit || '∞'}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        <td>
+                          <span className={`admin-badge ${
                             c.active && !isExpired(c.expiresAt)
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-gray-100 text-gray-800'
+                              ? 'admin-badge-success' 
+                              : 'admin-badge-info'
                           }`}>
                             {c.active && !isExpired(c.expiresAt) ? 'Aktiv' : 'Inaktiv'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="text-right">
                           <button 
                             onClick={() => openEdit(c)} 
-                            className="p-2 text-gray-500 hover:text-primary transition-colors"
+                            className="p-2 text-[var(--primary-light-green)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg transition-all"
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button 
                             onClick={() => remove(c.id)} 
-                            className="p-2 text-gray-500 hover:text-red-600 transition-colors ml-1"
+                            className="p-2 text-[var(--coral-accent)] hover:text-red-700 hover:bg-red-50 rounded-lg transition-all ml-1"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -305,30 +308,30 @@ export default function AdminCouponsPage() {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-            <Tag className="w-5 h-5 text-primary" />
+        <div className="admin-card">
+          <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4 flex items-center gap-2">
+            <Tag className="w-5 h-5 text-[var(--primary-green)]" />
             {editing ? 'Redigera rabattkod' : 'Ny rabattkod'}
           </h3>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rabattkod</label>
+              <label className="admin-label">Rabattkod</label>
               <input 
                 value={form.code || ''} 
                 onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} 
                 placeholder="T.ex. SOMMAR20" 
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" 
+                className="admin-input" 
               />
             </div>
             
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Typ</label>
+                <label className="admin-label">Typ</label>
                 <select 
                   value={form.type} 
                   onChange={e => setForm({ ...form, type: e.target.value })} 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                  className="admin-select"
                 >
                   <option value="percent">Procent</option>
                   <option value="fixed">Fast belopp</option>
@@ -336,43 +339,43 @@ export default function AdminCouponsPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Värde</label>
+                <label className="admin-label">Värde</label>
                 <input 
                   type="number" 
                   value={form.amount} 
                   onChange={e => setForm({ ...form, amount: e.target.value })} 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" 
+                  className="admin-input" 
                   placeholder="Värde" 
                 />
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Giltighetstid</label>
+              <label className="admin-label">Giltighetstid</label>
               <div className="grid grid-cols-2 gap-2">
                 <input 
                   type="date" 
                   value={form.startsAt || ''} 
                   onChange={e => setForm({ ...form, startsAt: e.target.value })} 
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm" 
+                  className="admin-input" 
                 />
                 <input 
                   type="date" 
                   value={form.expiresAt || ''} 
                   onChange={e => setForm({ ...form, expiresAt: e.target.value })} 
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm" 
+                  className="admin-input" 
                 />
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Max användningar</label>
+              <label className="admin-label">Max användningar</label>
               <input 
                 type="number" 
                 min={0} 
                 value={form.usageLimit || ''} 
                 onChange={e => setForm({ ...form, usageLimit: e.target.value })} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" 
+                className="admin-input" 
                 placeholder="Lämna tomt för obegränsad" 
               />
             </div>
@@ -383,9 +386,9 @@ export default function AdminCouponsPage() {
                 id="active"
                 checked={!!form.active} 
                 onChange={e => setForm({ ...form, active: e.target.checked })} 
-                className="h-4 w-4 text-primary focus:ring-primary/20 border-gray-300 rounded" 
+                className="h-4 w-4 text-[var(--primary-green)] focus:ring-[var(--primary-light-green)] border-[var(--border-light)] rounded" 
               />
-              <label htmlFor="active" className="ml-2 text-sm text-gray-700">
+              <label htmlFor="active" className="ml-2 text-sm text-[var(--text-primary)]">
                 Aktiv (kan användas av kunder)
               </label>
             </div>
@@ -394,7 +397,7 @@ export default function AdminCouponsPage() {
               <button 
                 onClick={save} 
                 disabled={saving || !form.code || !form.amount}
-                className="w-full py-2.5 rounded-lg bg-primary text-white hover:bg-[#014421] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full admin-btn admin-btn-primary justify-center"
               >
                 {saving ? 'Sparar...' : 'Spara rabattkod'}
               </button>
@@ -402,7 +405,7 @@ export default function AdminCouponsPage() {
               {editing && (
                 <button 
                   onClick={openNew}
-                  className="w-full py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                  className="w-full admin-btn admin-btn-secondary justify-center"
                 >
                   Avbryt
                 </button>

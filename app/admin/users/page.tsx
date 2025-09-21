@@ -101,8 +101,11 @@ export default function AdminUsersPage() {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Laddar användare...</p>
+          <div className="relative">
+            <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+          </div>
+          <p className="text-[var(--text-secondary)] mt-4">Laddar användare...</p>
         </div>
       </div>
     );
@@ -112,25 +115,25 @@ export default function AdminUsersPage() {
     <>
       {showModal && <AddUserModal onClose={() => setShowModal(false)} onAdd={handleAddUser} />}
       
-      <div className="p-6">
+      <div>
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Användarhantering</h1>
-          <p className="text-gray-600">Hantera alla användare i systemet</p>
+          <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Användarhantering</h1>
+          <p className="text-[var(--text-secondary)] font-light">Hantera alla användare i systemet</p>
         </div>
 
         {/* Actions Bar */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="admin-card mb-6">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Sök användare..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                  className="admin-input pl-10"
                 />
               </div>
             </div>
@@ -139,7 +142,7 @@ export default function AdminUsersPage() {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="admin-select"
               >
                 <option value="all">Alla roller</option>
                 <option value="USER">Användare</option>
@@ -148,9 +151,9 @@ export default function AdminUsersPage() {
               
               <button 
                 onClick={() => setShowModal(true)} 
-                className="px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-[#014421] transition-colors flex items-center gap-2 font-medium"
+                className="admin-btn admin-btn-primary"
               >
-                <UserPlus className="w-5 h-5" />
+                <UserPlus className="w-4 h-4" />
                 <span className="hidden sm:inline">Lägg till användare</span>
               </button>
             </div>
@@ -159,95 +162,95 @@ export default function AdminUsersPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="admin-stat-card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Totalt antal</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                <div className="admin-stat-value">{users.length}</div>
+                <div className="admin-stat-label">Totalt antal</div>
               </div>
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-[var(--primary-green)]" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="admin-stat-card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Administratörer</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <div className="admin-stat-value">
                   {users.filter(u => u.role === 'ADMIN').length}
-                </p>
+                </div>
+                <div className="admin-stat-label">Administratörer</div>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <Shield className="w-6 h-6 text-[var(--coral-accent)]" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="admin-stat-card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Aktiva</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <div className="admin-stat-value">
                   {users.filter(u => u.isActive).length}
-                </p>
+                </div>
+                <div className="admin-stat-label">Aktiva</div>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <UserCheck className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <UserCheck className="w-6 h-6 text-[var(--primary-light-green)]" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="admin-stat-card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Nya (30d)</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <div className="admin-stat-value">
                   {users.filter(u => {
                     const created = new Date(u.createdAt);
                     const thirtyDaysAgo = new Date();
                     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
                     return created > thirtyDaysAgo;
                   }).length}
-                </p>
+                </div>
+                <div className="admin-stat-label">Nya (30d)</div>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[var(--primary-green)]" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Users Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="admin-table">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead>
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left">
                     Användare
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left">
                     Status
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                  <th className="text-left hidden md:table-cell">
                     Roll
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                  <th className="text-left hidden lg:table-cell">
                     Registrerad
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-right">
                     Åtgärder
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody>
                 {displayedUsers.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
-                      <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-500">
+                    <td colSpan={5} className="px-6 py-16 text-center">
+                      <Users className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" />
+                      <p className="text-[var(--text-secondary)]">
                         {searchTerm ? 'Inga användare hittades för din sökning.' : 'Inga användare hittades.'}
                       </p>
                     </td>
@@ -256,71 +259,70 @@ export default function AdminUsersPage() {
                   displayedUsers.map((user) => (
                     <tr
                       key={user.id}
-                      className="hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-6 py-4">
+                      <td>
                         <div className="flex items-center">
                           <div className={`w-10 h-10 rounded-full ${
-                            user.role === 'ADMIN' ? 'bg-purple-100' : 'bg-gray-100'
+                            user.role === 'ADMIN' ? 'bg-[var(--primary-beige)]' : 'bg-[var(--primary-beige)]'
                           } flex items-center justify-center font-medium`}>
-                            <span className={user.role === 'ADMIN' ? 'text-purple-600' : 'text-gray-600'}>
+                            <span className={user.role === 'ADMIN' ? 'text-[var(--coral-accent)]' : 'text-[var(--primary-green)]'}>
                               {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-[var(--text-primary)]">
                               {user.name || 'Ingen namn'}
                             </p>
-                            <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <div className="flex items-center gap-1 text-sm text-[var(--text-secondary)]">
                               <Mail className="w-3 h-3" />
                               <span>{user.email}</span>
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      <td>
+                        <span className={`admin-badge ${
                           user.isActive 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-gray-100 text-gray-800'
+                            ? 'admin-badge-success' 
+                            : 'admin-badge-info'
                         }`}>
                           {user.isActive ? 'Aktiv' : 'Inaktiv'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 hidden md:table-cell">
+                      <td className="hidden md:table-cell">
                         <div className="flex items-center gap-2">
                           {user.role === 'ADMIN' ? (
-                            <Shield className="w-4 h-4 text-purple-600" />
+                            <Shield className="w-4 h-4 text-[var(--coral-accent)]" />
                           ) : (
-                            <Users className="w-4 h-4 text-gray-400" />
+                            <Users className="w-4 h-4 text-[var(--text-secondary)]" />
                           )}
                           <span className={`text-sm font-medium ${
-                            user.role === 'ADMIN' ? 'text-purple-600' : 'text-gray-600'
+                            user.role === 'ADMIN' ? 'text-[var(--coral-accent)]' : 'text-[var(--text-secondary)]'
                           }`}>
                             {user.role === 'ADMIN' ? 'Administratör' : 'Användare'}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 hidden lg:table-cell">
-                        <div className="flex items-center gap-1 text-gray-500">
+                      <td className="hidden lg:table-cell">
+                        <div className="flex items-center gap-1 text-[var(--text-secondary)]">
                           <Calendar className="w-4 h-4" />
                           <span className="text-sm">
                             {new Date(user.createdAt).toLocaleDateString('sv-SE')}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="text-right">
                         <div className="flex gap-2 justify-end">
                           <Link 
                             href={`/admin/users/${user.id}/edit`}
-                            className="p-2 text-gray-500 hover:text-primary transition-colors"
+                            className="p-2 text-[var(--primary-light-green)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg transition-all"
                             title="Redigera"
                           >
                             <Edit3 className="w-4 h-4" />
                           </Link>
                           <button 
                             onClick={() => handleDeleteUser(user.id, user.name || user.email)}
-                            className="p-2 text-gray-500 hover:text-red-600 transition-colors"
+                            className="p-2 text-[var(--coral-accent)] hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
                             title="Ta bort"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -336,25 +338,25 @@ export default function AdminUsersPage() {
           
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex flex-col sm:flex-row justify-between items-center px-6 py-4 border-t border-gray-200 gap-4">
-              <p className="text-sm text-gray-600">
+            <div className="flex flex-col sm:flex-row justify-between items-center px-6 py-4 border-t border-[var(--border-light)] gap-4">
+              <p className="text-sm text-[var(--text-secondary)]">
                 Visar {startIndex + 1}-{Math.min(startIndex + usersPerPage, filteredUsers.length)} av {filteredUsers.length} användare
               </p>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="p-2 text-gray-600 hover:text-gray-900 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <span className="px-4 py-2 text-sm font-medium text-gray-700">
+                <span className="px-4 py-2 text-sm font-medium text-[var(--text-primary)]">
                   Sida {currentPage} av {totalPages}
                 </span>
                 <button 
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="p-2 text-gray-600 hover:text-gray-900 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>

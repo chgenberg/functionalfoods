@@ -353,8 +353,8 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   if (error) {
     return (
       <div className="p-8">
-        <div className="bg-red-50 p-4 rounded-lg">
-          <p className="text-red-600">{error}</p>
+        <div className="admin-alert admin-alert-error">
+          <p>{error}</p>
         </div>
       </div>
     );
@@ -380,7 +380,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
               <motion.div 
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-2 text-green-600"
+                className="flex items-center gap-2 text-[var(--primary-light-green)]"
               >
                 <Check className="w-4 h-4" />
                 <span className="text-sm">Sparat!</span>

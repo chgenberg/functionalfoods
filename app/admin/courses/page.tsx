@@ -113,7 +113,7 @@ export default function AdminCoursesPage() {
             <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
             <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
           </div>
-          <p className="text-[var(--text-secondary)] mt-4 font-light">Laddar kurser...</p>
+          <p className="text-[var(--text-secondary)] mt-4">Laddar kurser...</p>
         </motion.div>
       </div>
     );

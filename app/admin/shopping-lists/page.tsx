@@ -148,21 +148,21 @@ export default function AdminShoppingListsPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Hantera Inköpslistor</h1>
-        <p className="text-gray-600">Redigera ingrediensmängder och namn för varje veckas inköpslista</p>
+    <div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Hantera Inköpslistor</h1>
+        <p className="text-[var(--text-secondary)] font-light">Redigera ingrediensmängder och namn för varje veckas inköpslista</p>
       </div>
 
       {/* Course and Week Selector */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="admin-card mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Kurs</label>
+            <label className="admin-label">Kurs</label>
             <select
               value={courseType}
               onChange={(e) => setCourseType(e.target.value as 'basics' | 'flow' | 'energy')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+              className="admin-select"
             >
               <option value="basics">Functional Basics</option>
               <option value="flow">Functional Flow</option>
@@ -170,11 +170,11 @@ export default function AdminShoppingListsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Vecka</label>
+            <label className="admin-label">Vecka</label>
             <select
               value={weekNumber}
               onChange={(e) => setWeekNumber(parseInt(e.target.value))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+              className="admin-select"
             >
               {[1, 2, 3, 4, 5, 6].map(week => (
                 <option key={week} value={week}>Vecka {week}</option>
@@ -189,8 +189,8 @@ export default function AdminShoppingListsPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`mb-6 p-4 rounded-lg ${
-            message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+          className={`mb-6 admin-alert ${
+            message.type === 'success' ? 'admin-alert-success' : 'admin-alert-error'
           }`}
         >
           {message.text}
@@ -198,23 +198,23 @@ export default function AdminShoppingListsPage() {
       )}
 
       {/* Shopping List Editor */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
+      <div className="admin-card">
+        <div className="pb-6 border-b border-[var(--border-light)] mb-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-medium text-[var(--primary-green)]">
               Ingredienser ({shoppingList.length} st)
             </h2>
             <div className="flex gap-2">
               <button
                 onClick={exportList}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                className="admin-btn admin-btn-secondary"
               >
                 <Download className="w-4 h-4" />
                 Exportera
               </button>
               <button
                 onClick={addItem}
-                className="flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#112A12] transition-colors"
+                className="admin-btn admin-btn-secondary"
               >
                 <Plus className="w-4 h-4" />
                 Lägg till ingrediens
@@ -222,7 +222,7 @@ export default function AdminShoppingListsPage() {
               <button
                 onClick={saveShoppingList}
                 disabled={saving}
-                className="flex items-center gap-2 px-4 py-2 bg-[#93C560] text-white rounded-lg hover:bg-[#7FBA3D] transition-colors disabled:opacity-50"
+                className="admin-btn admin-btn-primary"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Sparar...' : 'Spara lista'}
@@ -233,40 +233,43 @@ export default function AdminShoppingListsPage() {
 
         {loading ? (
           <div className="p-12 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421] mx-auto"></div>
-            <p className="mt-4 text-gray-600">Laddar inköpslista...</p>
+            <div className="relative mx-auto w-16 h-16">
+              <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+              <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+            </div>
+            <p className="mt-4 text-[var(--text-secondary)]">Laddar inköpslista...</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-200">
+          <div className="space-y-2">
             {shoppingList.map((item, index) => (
-              <div key={index} className="p-4 hover:bg-gray-50">
+              <div key={index} className="p-4 hover:bg-[var(--primary-beige)] transition-colors rounded-lg">
                 {editingIndex === index && editItem ? (
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <input
                       type="text"
                       value={editItem.name}
                       onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      className="admin-input"
                       placeholder="Ingrediens"
                     />
                     <input
                       type="text"
                       value={editItem.amount}
                       onChange={(e) => setEditItem({ ...editItem, amount: e.target.value })}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      className="admin-input"
                       placeholder="Mängd"
                     />
                     <input
                       type="text"
                       value={editItem.unit}
                       onChange={(e) => setEditItem({ ...editItem, unit: e.target.value })}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      className="admin-input"
                       placeholder="Enhet"
                     />
                     <select
                       value={editItem.category}
                       onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      className="admin-select"
                     >
                       {categories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -275,14 +278,14 @@ export default function AdminShoppingListsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={saveEdit}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        className="flex-1 admin-btn admin-btn-success justify-center"
                       >
                         <Check className="w-4 h-4" />
                         Spara
                       </button>
                       <button
                         onClick={cancelEdit}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                        className="flex-1 admin-btn admin-btn-secondary justify-center"
                       >
                         <X className="w-4 h-4" />
                         Avbryt
@@ -292,21 +295,21 @@ export default function AdminShoppingListsPage() {
                 ) : (
                   <div className="flex items-center justify-between">
                     <div className="flex-grow grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="font-medium text-gray-900">{item.name}</div>
-                      <div className="text-gray-600">{item.amount} {item.unit}</div>
-                      <div className="text-gray-600">{item.category}</div>
+                      <div className="font-medium text-[var(--text-primary)]">{item.name}</div>
+                      <div className="text-[var(--text-secondary)]">{item.amount} {item.unit}</div>
+                      <div className="text-[var(--text-secondary)]">{item.category}</div>
                       <div></div>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => startEdit(index)}
-                        className="p-2 text-gray-600 hover:text-[#014421] transition-colors"
+                        className="p-2 text-[var(--primary-light-green)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg transition-all"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => deleteItem(index)}
-                        className="p-2 text-gray-600 hover:text-red-600 transition-colors"
+                        className="p-2 text-[var(--coral-accent)] hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

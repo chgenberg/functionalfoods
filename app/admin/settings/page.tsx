@@ -4,16 +4,16 @@ import { useState, useEffect } from 'react';
 import { Save, Info, Lock, CreditCard, User, Eye, EyeOff, Bell } from 'lucide-react';
 
 const SettingsCard = ({ title, subtitle, children }: { title: string, subtitle?: string, children: React.ReactNode }) => (
-    <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300">
-        <div className="p-6 border-b border-gray-100">
-            <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
-            {subtitle && <p className="text-gray-600 mt-1">{subtitle}</p>}
+    <div className="admin-card">
+        <div className="pb-6 border-b border-[var(--border-light)]">
+            <h3 className="text-xl font-medium text-[var(--primary-green)]">{title}</h3>
+            {subtitle && <p className="text-[var(--text-secondary)] mt-1">{subtitle}</p>}
         </div>
-        <div className="p-6 space-y-6">
+        <div className="pt-6 space-y-6">
             {children}
         </div>
-        <div className="p-6 bg-gray-50 rounded-b-xl border-t border-gray-100 flex justify-end">
-            <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors">
+        <div className="pt-6 mt-6 border-t border-[var(--border-light)] flex justify-end">
+            <button className="admin-btn admin-btn-primary">
                 <Save className="w-4 h-4"/>
                 <span>Spara ändringar</span>
             </button>
@@ -24,8 +24,8 @@ const SettingsCard = ({ title, subtitle, children }: { title: string, subtitle?:
 const FormRow = ({ label, description, children }: { label: string, description?: string, children: React.ReactNode }) => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 items-start">
         <div className="md:col-span-1">
-            <h4 className="font-medium text-gray-900">{label}</h4>
-            {description && <p className="text-sm text-gray-600 mt-1">{description}</p>}
+            <h4 className="font-medium text-[var(--text-primary)]">{label}</h4>
+            {description && <p className="text-sm text-[var(--text-secondary)] mt-1">{description}</p>}
         </div>
         <div className="md:col-span-2">
             {children}
@@ -76,13 +76,13 @@ export default function AdminSettingsPage() {
 
       if (response.ok) {
         const data = await response.json();
-        alert('✅ Inställningar sparade: ' + data.message);
+        alert('Inställningar sparade: ' + data.message);
       } else {
         const error = await response.json();
-        alert('❌ Fel: ' + error.error);
+        alert('Fel: ' + error.error);
       }
     } catch (error) {
-      alert('❌ Tekniskt fel vid sparande');
+      alert('Tekniskt fel vid sparande');
     } finally {
       setSaving(false);
     }
@@ -111,7 +111,7 @@ export default function AdminSettingsPage() {
                 type="text" 
                 value={settings['site.name']?.value || 'Functional Foods'} 
                 onChange={(e) => updateSetting('site.name', e.target.value, 'text', 'Webbplatsens namn')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-[#014421]" 
+                className="admin-input" 
               />
             </FormRow>
             <FormRow label="Primär e-post" description="Denna e-postadress används för viktig kommunikation.">
@@ -119,7 +119,7 @@ export default function AdminSettingsPage() {
                 type="email" 
                 value={settings['site.email']?.value || 'info@functionalfoods.se'} 
                 onChange={(e) => updateSetting('site.email', e.target.value, 'text', 'Primär kontakt-email')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-[#014421]" 
+                className="admin-input" 
               />
             </FormRow>
             <FormRow label="Primär färg" description="Huvudfärg för webbplatsen">
@@ -127,7 +127,7 @@ export default function AdminSettingsPage() {
                 type="color" 
                 value={settings['colors.primary']?.value || '#014421'} 
                 onChange={(e) => updateSetting('colors.primary', e.target.value, 'text', 'Primär färg')}
-                className="w-20 h-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421]" 
+                className="w-20 h-10 border border-[var(--border-light)] rounded-lg focus:ring-2 focus:ring-[var(--primary-light-green)] transition-all cursor-pointer" 
               />
             </FormRow>
             <FormRow label="Sekundär färg" description="Accentfärg för knappar och highlights">
@@ -135,13 +135,13 @@ export default function AdminSettingsPage() {
                 type="color" 
                 value={settings['colors.secondary']?.value || '#93C560'} 
                 onChange={(e) => updateSetting('colors.secondary', e.target.value, 'text', 'Sekundär färg')}
-                className="w-20 h-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421]" 
+                className="w-20 h-10 border border-[var(--border-light)] rounded-lg focus:ring-2 focus:ring-[var(--primary-light-green)] transition-all cursor-pointer" 
               />
             </FormRow>
             <FormRow label="Underhållsläge" description="Visar en underhållssida för alla icke-inloggade besökare.">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" />
-                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-orange-500/30 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                  <div className="w-11 h-6 bg-[var(--border-light)] rounded-full peer peer-focus:ring-2 peer-focus:ring-[var(--primary-light-green)]/30 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary-green)]"></div>
                 </label>
             </FormRow>
           </SettingsCard>
@@ -153,7 +153,7 @@ export default function AdminSettingsPage() {
                   {!showPasswordForm ? (
                     <button 
                       onClick={() => setShowPasswordForm(true)}
-                      className="font-semibold text-orange-600 hover:text-orange-700"
+                      className="font-semibold text-[var(--primary-light-green)] hover:text-[var(--primary-green)] transition-colors"
                     >
                       Ändra lösenord
                     </button>
@@ -180,14 +180,14 @@ export default function AdminSettingsPage() {
                         placeholder="Nytt lösenord"
                         value={passwordData.newPassword}
                         onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="admin-input"
                       />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Bekräfta nytt lösenord"
                         value={passwordData.confirmPassword}
                         onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="admin-input"
                       />
                       <div className="flex gap-2">
                         <button
@@ -197,7 +197,7 @@ export default function AdminSettingsPage() {
                             setShowPasswordForm(false);
                             setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
                           }}
-                          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                          className="admin-btn admin-btn-primary"
                         >
                           Spara lösenord
                         </button>
@@ -206,7 +206,7 @@ export default function AdminSettingsPage() {
                             setShowPasswordForm(false);
                             setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
                           }}
-                          className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                          className="admin-btn admin-btn-secondary"
                         >
                           Avbryt
                         </button>
@@ -217,7 +217,7 @@ export default function AdminSettingsPage() {
               <FormRow label="Tvåfaktorsautentisering (2FA)" description="Öka säkerheten genom att kräva en andra verifieringsmetod.">
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-orange-500/30 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                    <div className="w-11 h-6 bg-[var(--border-light)] rounded-full peer peer-focus:ring-2 peer-focus:ring-[var(--primary-light-green)]/30 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary-green)]"></div>
                   </label>
             </FormRow>
           </SettingsCard>
@@ -242,21 +242,21 @@ export default function AdminSettingsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div>
       <div className="max-w-5xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Inställningar</h1>
-          <p className="text-gray-600">Hantera inställningar för webbplats och adminpanel</p>
+          <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Inställningar</h1>
+          <p className="text-[var(--text-secondary)] font-light">Hantera inställningar för webbplats och adminpanel</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-2 mb-8">
+        <div className="admin-card p-2 mb-8">
             <nav className="flex flex-wrap items-center gap-2">
                 {tabs.map(tab => (
                     <button 
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)} 
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200
-                            ${activeTab === tab.id ? 'bg-orange-500 text-white shadow-md' : 'text-gray-700 hover:bg-gray-100'}
+                            ${activeTab === tab.id ? 'bg-[var(--primary-green)] text-white shadow-md' : 'text-[var(--text-secondary)] hover:bg-[var(--primary-beige)]'}
                         `}
                     >
                         <tab.icon className="w-4 h-4"/>
@@ -275,10 +275,10 @@ export default function AdminSettingsPage() {
           <button
             onClick={saveSettings}
             disabled={saving || loading}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+            className={`admin-btn ${
               saving || loading
-                ? 'bg-gray-400 cursor-not-allowed text-white'
-                : 'bg-[#014421] hover:bg-[#116530] text-white shadow-lg hover:shadow-xl'
+                ? 'opacity-50 cursor-not-allowed'
+                : 'admin-btn-primary'
             }`}
           >
             {saving ? (
@@ -289,7 +289,7 @@ export default function AdminSettingsPage() {
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                💾 Spara alla ändringar
+                Spara alla ändringar
               </>
             )}
           </button>

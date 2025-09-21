@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Filter } from 'lucide-react';
+import { CheckCircle, XCircle, Filter, Star, User, Calendar } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -33,38 +33,129 @@ export default function AdminReviewsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Recensioner</h1>
-      <div className="flex flex-wrap gap-2 items-center mb-4">
-        <Filter className="text-gray-500" />
-        <input value={courseId} onChange={e=>setCourseId(e.target.value)} placeholder="courseId (t.ex. functional-basics)" className="px-3 py-2 border rounded" />
-        <select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2 border rounded">
-          <option value="">Alla status</option>
-          <option value="PENDING">PENDING</option>
-          <option value="APPROVED">APPROVED</option>
-          <option value="REJECTED">REJECTED</option>
-        </select>
+      <div className="mb-8">
+        <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Recensioner</h1>
+        <p className="text-[var(--text-secondary)] font-light">Hantera kursrecensioner och feedback från användare</p>
+      </div>
+      
+      <div className="admin-card mb-6">
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+            <Filter className="w-5 h-5" />
+            <span className="text-sm font-medium">Filtrera</span>
+          </div>
+          <input 
+            value={courseId} 
+            onChange={e=>setCourseId(e.target.value)} 
+            placeholder="Kurs-ID (t.ex. functional-basics)" 
+            className="admin-input flex-1 max-w-sm" 
+          />
+          <select 
+            value={status} 
+            onChange={e=>setStatus(e.target.value)} 
+            className="admin-select"
+          >
+            <option value="">Alla status</option>
+            <option value="PENDING">Väntar på granskning</option>
+            <option value="APPROVED">Godkända</option>
+            <option value="REJECTED">Avvisade</option>
+          </select>
+        </div>
       </div>
       {loading ? (
-        <div className="p-8 text-gray-500">Laddar...</div>
+        <div className="flex items-center justify-center p-12">
+          <div className="text-center">
+            <div className="relative mx-auto w-16 h-16">
+              <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+              <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+            </div>
+            <p className="mt-4 text-[var(--text-secondary)]">Laddar recensioner...</p>
+          </div>
+        </div>
       ) : (
         <div className="space-y-4">
-          {items.map(r => (
-            <div key={r.id} className="bg-white border rounded-xl p-4">
-              <div className="flex justify-between items-center mb-2">
-                <div className="text-sm text-gray-600">{new Date(r.createdAt).toLocaleString()}</div>
+          {items.length === 0 ? (
+            <div className="text-center py-16">
+              <Star className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" />
+              <p className="text-[var(--text-secondary)]">
+                Inga recensioner hittades med valda filter.
+              </p>
+            </div>
+          ) : items.map(r => (
+            <div key={r.id} className="admin-card">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
+                    <User className="w-6 h-6 text-[var(--primary-green)]" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-[var(--text-primary)]">{r.courseId}</div>
+                    <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                      <Calendar className="w-4 h-4" />
+                      {new Date(r.createdAt).toLocaleDateString('sv-SE')}
+                    </div>
+                  </div>
+                </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2 py-1 rounded-full ${r.status==='APPROVED' ? 'bg-green-100 text-green-700' : r.status==='REJECTED'? 'bg-red-100 text-red-700':'bg-yellow-100 text-yellow-700'}`}>{r.status}</span>
+                  <span className={`admin-badge ${
+                    r.status==='APPROVED' ? 'admin-badge-success' : 
+                    r.status==='REJECTED'? 'admin-badge-warning':
+                    'admin-badge-info'
+                  }`}>
+                    {r.status === 'PENDING' ? 'Väntar' : 
+                     r.status === 'APPROVED' ? 'Godkänd' : 'Avvisad'}
+                  </span>
                 </div>
               </div>
-              <div className="font-medium">{r.courseId} • Betyg: {r.rating ?? '-'} • Samtycke: {r.consent ? 'Ja' : 'Nej'}</div>
-              <div className="mt-2 grid md:grid-cols-2 gap-3">
+              
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-[var(--primary-light-green)]" />
+                  <span className="font-medium text-[var(--text-primary)]">Betyg: {r.rating ?? '-'}/5</span>
+                </div>
+                <div className="text-sm text-[var(--text-secondary)]">
+                  Samtycke: {r.consent ? 'Ja' : 'Nej'}
+                </div>
+              </div>
+              
+              <div className="space-y-3 mb-4">
                 {(Array.isArray(r.answers)? r.answers: []).map((p: any, i: number)=> (
-                  <div key={i} className="text-sm"><span className="font-medium">{p.q}:</span> {p.a}</div>
+                  <div key={i} className="bg-[var(--primary-beige)] rounded-lg p-3">
+                    <span className="font-medium text-[var(--text-primary)] block mb-1">{p.q}</span>
+                    <span className="text-[var(--text-secondary)] text-sm">{p.a}</span>
+                  </div>
                 ))}
               </div>
-              <div className="mt-3 flex gap-2">
-                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'APPROVED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700"><CheckCircle/>Godkänn</button>
-                <button onClick={async ()=>{ await fetch(`/api/reviews/${r.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ status: 'REJECTED' }) }); fetchItems(); }} className="inline-flex items-center gap-2 px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700"><XCircle/>Avvisa</button>
+              
+              <div className="flex gap-2">
+                <button 
+                  onClick={async ()=>{ 
+                    await fetch(`/api/reviews/${r.id}`, { 
+                      method: 'PUT', 
+                      headers: { 'Content-Type':'application/json' }, 
+                      body: JSON.stringify({ status: 'APPROVED' }) 
+                    }); 
+                    fetchItems(); 
+                  }} 
+                  className="admin-btn admin-btn-success"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Godkänn
+                </button>
+                <button 
+                  onClick={async ()=>{ 
+                    await fetch(`/api/reviews/${r.id}`, { 
+                      method: 'PUT', 
+                      headers: { 'Content-Type':'application/json' }, 
+                      body: JSON.stringify({ status: 'REJECTED' }) 
+                    }); 
+                    fetchItems(); 
+                  }} 
+                  className="admin-btn admin-btn-danger"
+                >
+                  <XCircle className="w-4 h-4" />
+                  Avvisa
+                </button>
               </div>
             </div>
           ))}

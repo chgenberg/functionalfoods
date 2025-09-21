@@ -368,8 +368,11 @@ export default function EnhancedAdminSalesPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <RefreshCw className="w-8 h-8 text-gray-400 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Laddar försäljningsdata...</p>
+          <div className="relative mx-auto w-16 h-16">
+            <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+          </div>
+          <p className="mt-4 text-[var(--text-secondary)]">Laddar försäljningsdata...</p>
         </div>
       </div>
     );
@@ -378,12 +381,12 @@ export default function EnhancedAdminSalesPage() {
   if (error) {
     return (
       <div className="text-center py-12">
-        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Ett fel uppstod</h2>
-        <p className="text-gray-600 mb-4">{error}</p>
+        <AlertCircle className="w-16 h-16 text-[var(--coral-accent)] mx-auto mb-4" />
+        <h2 className="text-xl font-medium text-[var(--text-primary)] mb-2">Ett fel uppstod</h2>
+        <p className="text-[var(--text-secondary)] mb-4">{error}</p>
         <button
           onClick={fetchPayments}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#012A14] transition-colors"
+          className="admin-btn admin-btn-primary"
         >
           <RefreshCw className="w-4 h-4" />
           Försök igen
@@ -397,15 +400,15 @@ export default function EnhancedAdminSalesPage() {
         {/* Header */}
       <div className="flex items-center justify-between">
           <div>
-          <h1 className="text-2xl font-bold text-gray-900">Försäljning</h1>
-          <p className="text-gray-600 mt-1">Hantera och analysera alla transaktioner</p>
+          <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Försäljning</h1>
+          <p className="text-[var(--text-secondary)] font-light">Hantera och analysera alla transaktioner</p>
           </div>
         <div className="flex gap-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`inline-flex items-center gap-2 px-4 py-2 ${
-              showFilters ? 'bg-[#014421] text-white' : 'bg-white text-gray-700'
-            } rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors`}
+            className={`admin-btn ${
+              showFilters ? 'admin-btn-primary' : 'admin-btn-secondary'
+            }`}
           >
             <Filter className="w-4 h-4" />
             Filter
@@ -413,14 +416,14 @@ export default function EnhancedAdminSalesPage() {
           </button>
           <button
             onClick={exportToExcel}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+            className="admin-btn admin-btn-secondary"
           >
             <FileSpreadsheet className="w-4 h-4" />
             Exportera Excel
           </button>
           <button
             onClick={fetchPayments}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-lg hover:bg-[#012A14] transition-colors"
+            className="admin-btn admin-btn-primary"
           >
             <RefreshCw className="w-4 h-4" />
             Uppdatera
@@ -437,12 +440,12 @@ export default function EnhancedAdminSalesPage() {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div className="admin-card">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Avancerade filter</h3>
+                <h3 className="text-lg font-medium text-[var(--primary-green)]">Avancerade filter</h3>
                 <button
                   onClick={resetFilters}
-                  className="text-sm text-[#014421] hover:underline"
+                  className="text-sm text-[var(--primary-light-green)] hover:text-[var(--primary-green)] transition-colors"
                 >
                   Återställ filter
                 </button>
@@ -451,11 +454,11 @@ export default function EnhancedAdminSalesPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="admin-label">Status</label>
                   <select
                     value={filters.status}
                     onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    className="admin-select"
                   >
                     <option value="all">Alla statusar</option>
                     <option value="succeeded">Lyckad</option>
@@ -467,11 +470,11 @@ export default function EnhancedAdminSalesPage() {
 
                 {/* Date Range */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tidsperiod</label>
+                  <label className="admin-label">Tidsperiod</label>
                   <select
                     value={filters.dateRange}
                     onChange={(e) => setFilters(prev => ({ ...prev, dateRange: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    className="admin-select"
                   >
                     {Object.entries(dateRangePresets).map(([key, preset]) => (
                       <option key={key} value={key}>{preset.label}</option>
@@ -481,11 +484,11 @@ export default function EnhancedAdminSalesPage() {
 
                 {/* Course */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Kurs</label>
+                  <label className="admin-label">Kurs</label>
                   <select
                     value={filters.course}
                     onChange={(e) => setFilters(prev => ({ ...prev, course: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    className="admin-select"
                   >
                     <option value="all">Alla kurser</option>
                     <option value="functional-basics">Functional Basics</option>
@@ -496,11 +499,11 @@ export default function EnhancedAdminSalesPage() {
 
                 {/* Payment Method */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Betalningsmetod</label>
+                  <label className="admin-label">Betalningsmetod</label>
                   <select
                     value={filters.paymentMethod}
                     onChange={(e) => setFilters(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    className="admin-select"
                   >
                     <option value="all">Alla metoder</option>
                     <option value="card">Kort</option>
@@ -512,30 +515,30 @@ export default function EnhancedAdminSalesPage() {
                 {/* Amount Range */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Min belopp</label>
+                    <label className="admin-label">Min belopp</label>
                     <input
                       type="number"
                       value={filters.minAmount}
                       onChange={(e) => setFilters(prev => ({ ...prev, minAmount: e.target.value }))}
                       placeholder="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      className="admin-select"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Max belopp</label>
+                    <label className="admin-label">Max belopp</label>
                     <input
                       type="number"
                       value={filters.maxAmount}
                       onChange={(e) => setFilters(prev => ({ ...prev, maxAmount: e.target.value }))}
                       placeholder="10000"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      className="admin-select"
                     />
                   </div>
                 </div>
 
                 {/* Customer Search */}
                 <div className="lg:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sök kund</label>
+                  <label className="admin-label">Sök kund</label>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
@@ -543,14 +546,14 @@ export default function EnhancedAdminSalesPage() {
                       value={filters.customer}
                       onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
                       placeholder="Namn eller e-postadress..."
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      className="admin-input pl-10"
                     />
                   </div>
                 </div>
 
                 {/* Sort Options */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sortera efter</label>
+                  <label className="admin-label">Sortera efter</label>
                   <div className="flex gap-2">
                     <select
                       value={filters.sortBy}
@@ -591,7 +594,7 @@ export default function EnhancedAdminSalesPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="admin-stat-card"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Total försäljning</span>
@@ -609,7 +612,7 @@ export default function EnhancedAdminSalesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="admin-stat-card"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Snitt ordervärde</span>
@@ -627,7 +630,7 @@ export default function EnhancedAdminSalesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="admin-stat-card"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Lyckade</span>
@@ -645,7 +648,7 @@ export default function EnhancedAdminSalesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="admin-stat-card"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Väntande</span>
@@ -663,7 +666,7 @@ export default function EnhancedAdminSalesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="admin-stat-card"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm">Återbetalat</span>
@@ -679,45 +682,31 @@ export default function EnhancedAdminSalesPage() {
         </div>
 
         {/* Payments Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="admin-table">
           <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kund
-                  </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Produkt
-                </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Belopp
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Betalningsmetod
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Datum
-                  </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Åtgärder
-                  </th>
+                  <th className="text-left">Status</th>
+                  <th className="text-left">Kund</th>
+                  <th className="text-left">Produkt</th>
+                  <th className="text-left">Belopp</th>
+                  <th className="text-left">Betalningsmetod</th>
+                  <th className="text-left">Datum</th>
+                  <th className="text-right">Åtgärder</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody>
               {filteredPayments.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-secondary)]">
                     Inga transaktioner hittades med valda filter
                   </td>
                 </tr>
               ) : (
                 filteredPayments.map((payment) => (
-                  <tr key={payment.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={payment.id}>
+                    <td className="whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         {getStatusIcon(payment.status)}
                         <span className="text-sm text-gray-900">
@@ -725,7 +714,7 @@ export default function EnhancedAdminSalesPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="whitespace-nowrap">
                       <div>
                         <p className="text-sm font-medium text-gray-900">
                           {payment.customer.name || 'Okänd'}
@@ -735,7 +724,7 @@ export default function EnhancedAdminSalesPage() {
                         </p>
                       </div>
                     </td>
-                     <td className="px-6 py-4">
+                     <td >
                        <div>
                          <p className="text-sm font-medium text-gray-900">
                            {payment.description || 'Ingen beskrivning'}
@@ -750,7 +739,7 @@ export default function EnhancedAdminSalesPage() {
                          )}
                        </div>
                      </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="whitespace-nowrap">
                       <p className="text-sm font-medium text-gray-900">
                         {(payment.amount / 100).toFixed(2)} {payment.currency.toUpperCase()}
                       </p>
@@ -760,7 +749,7 @@ export default function EnhancedAdminSalesPage() {
                         </p>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="whitespace-nowrap">
                       {payment.paymentMethod ? (
                       <div className="flex items-center gap-2">
                           <CreditCard className="w-4 h-4 text-gray-400" />
@@ -777,7 +766,7 @@ export default function EnhancedAdminSalesPage() {
                         <span className="text-sm text-gray-500">-</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="whitespace-nowrap">
                       <p className="text-sm text-gray-900">
                         {new Date(payment.created).toLocaleDateString('sv-SE')}
                       </p>

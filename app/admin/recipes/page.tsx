@@ -205,10 +205,10 @@ export default function AdminRecipesPage() {
           className="text-center"
         >
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-[#93C560] rounded-full animate-spin border-t-transparent"></div>
+            <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
           </div>
-          <p className="text-gray-500 mt-4 font-light">Laddar recept...</p>
+          <p className="text-[var(--text-secondary)] mt-4 font-light">Laddar recept...</p>
         </motion.div>
       </div>
     );
@@ -220,14 +220,14 @@ export default function AdminRecipesPage() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-light text-[#014421] mb-2">Recepthantering</h1>
-            <p className="text-gray-500 font-light">Hantera alla recept på plattformen</p>
+            <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Recepthantering</h1>
+            <p className="text-[var(--text-secondary)] font-light">Hantera alla recept på plattformen</p>
           </div>
           <Link 
             href="/admin/recipes/new"
-            className="flex items-center gap-2 bg-gradient-to-r from-[#93C560] to-[#7BA94D] text-white px-6 py-3 rounded-2xl hover:shadow-lg transition-all transform hover:scale-105"
+            className="admin-btn admin-btn-primary"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             Skapa nytt recept
           </Link>
         </div>
@@ -238,15 +238,15 @@ export default function AdminRecipesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="admin-stat-card"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-light">Totalt antal</p>
-                <p className="text-3xl font-light text-[#014421]">{stats.total}</p>
+                <div className="admin-stat-value">{stats.total}</div>
+                <div className="admin-stat-label">Totalt antal</div>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-400/20 to-orange-500/30 rounded-xl flex items-center justify-center">
-                <Coffee className="w-6 h-6 text-orange-600" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <Coffee className="w-6 h-6 text-[var(--primary-green)]" />
               </div>
             </div>
           </motion.div>
@@ -255,15 +255,15 @@ export default function AdminRecipesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="admin-stat-card"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-light">Gratis recept</p>
-                <p className="text-3xl font-light text-[#93C560]">{stats.free}</p>
+                <div className="admin-stat-value">{stats.free}</div>
+                <div className="admin-stat-label">Gratis recept</div>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-[#93C560]/20 to-[#93C560]/30 rounded-xl flex items-center justify-center">
-                <Coffee className="w-6 h-6 text-[#93C560]" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <Coffee className="w-6 h-6 text-[var(--primary-light-green)]" />
               </div>
             </div>
           </motion.div>
@@ -272,15 +272,15 @@ export default function AdminRecipesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="admin-stat-card"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-light">Premium recept</p>
-                <p className="text-3xl font-light text-purple-600">{stats.premium}</p>
+                <div className="admin-stat-value">{stats.premium}</div>
+                <div className="admin-stat-label">Premium recept</div>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-purple-500/30 rounded-xl flex items-center justify-center">
-                <Coffee className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <Coffee className="w-6 h-6 text-[var(--coral-accent)]" />
               </div>
             </div>
           </motion.div>
@@ -289,15 +289,15 @@ export default function AdminRecipesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="admin-stat-card"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-light">Publicerade</p>
-                <p className="text-3xl font-light text-blue-600">{stats.visible}</p>
+                <div className="admin-stat-value">{stats.visible}</div>
+                <div className="admin-stat-label">Publicerade</div>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400/20 to-blue-500/30 rounded-xl flex items-center justify-center">
-                <Coffee className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
+                <Coffee className="w-6 h-6 text-[var(--primary-green)]" />
               </div>
             </div>
           </motion.div>
@@ -308,30 +308,30 @@ export default function AdminRecipesPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-xl transition-all font-light ${
+              className={`admin-btn ${
                 filter === 'all' 
-                  ? 'bg-gradient-to-r from-[#93C560] to-[#7BA94D] text-white shadow-md' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  ? 'admin-btn-primary' 
+                  : 'admin-btn-secondary'
               }`}
             >
               Alla
             </button>
             <button
               onClick={() => setFilter('free')}
-              className={`px-4 py-2 rounded-xl transition-all font-light ${
+              className={`admin-btn ${
                 filter === 'free' 
-                  ? 'bg-gradient-to-r from-[#93C560] to-[#7BA94D] text-white shadow-md' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  ? 'admin-btn-primary' 
+                  : 'admin-btn-secondary'
               }`}
             >
               Gratis
             </button>
             <button
               onClick={() => setFilter('premium')}
-              className={`px-4 py-2 rounded-xl transition-all font-light ${
+              className={`admin-btn ${
                 filter === 'premium' 
-                  ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  ? 'admin-btn-primary' 
+                  : 'admin-btn-secondary'
               }`}
             >
               Premium
@@ -339,13 +339,13 @@ export default function AdminRecipesPage() {
           </div>
 
           <div className="flex-1 max-w-md relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-5 h-5" />
             <input
               type="text"
               placeholder="Sök recept..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#93C560] focus:border-transparent font-light"
+              className="admin-input pl-10"
             />
           </div>
         </div>
@@ -369,7 +369,7 @@ export default function AdminRecipesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
+            className="admin-card rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300"
           >
             {/* Recipe Image */}
             <div className="h-48 bg-gray-200 relative overflow-hidden">
@@ -396,17 +396,17 @@ export default function AdminRecipesPage() {
               {/* Status badges */}
               <div className="absolute top-3 left-3 flex gap-2">
                 {recipe.isPremium && (
-                  <span className="bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                  <span className="admin-badge admin-badge-warning">
                     Premium
                   </span>
                 )}
                 {recipe.isFree && !recipe.isPremium && (
-                  <span className="bg-[#93C560] text-white text-xs px-3 py-1 rounded-full font-medium">
+                  <span className="admin-badge admin-badge-success">
                     Gratis
                   </span>
                 )}
                 {recipe.status === 'DRAFT' && (
-                  <span className="bg-gray-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                  <span className="admin-badge admin-badge-info">
                     Utkast
                   </span>
                 )}
@@ -415,27 +415,27 @@ export default function AdminRecipesPage() {
 
             {/* Recipe Info */}
             <div className="p-5">
-              <h3 className="font-medium text-lg mb-2 line-clamp-2 text-[#014421]">{recipe.title}</h3>
+              <h3 className="font-medium text-lg mb-2 line-clamp-2 text-[var(--text-primary)]">{recipe.title}</h3>
               
               {recipe.excerpt && (
-                <p className="text-gray-600 text-sm mb-3 line-clamp-2 font-light">{recipe.excerpt}</p>
+                <p className="text-[var(--text-secondary)] text-sm mb-3 line-clamp-2 font-light">{recipe.excerpt}</p>
               )}
 
               <div className="flex flex-wrap gap-2 mb-4">
                 {recipe.categories.slice(0, 2).map((category, index) => (
                   <span 
                     key={index}
-                    className="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full font-light"
+                    className="bg-[var(--primary-beige)] text-[var(--text-primary)] text-xs px-3 py-1 rounded-full font-light border border-[var(--border-light)]"
                   >
                     {category}
                   </span>
                 ))}
                 {recipe.categories.length > 2 && (
-                  <span className="text-gray-500 text-xs">+{recipe.categories.length - 2}</span>
+                  <span className="text-[var(--text-secondary)] text-xs">+{recipe.categories.length - 2}</span>
                 )}
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+              <div className="flex items-center gap-4 text-sm text-[var(--text-secondary)] mb-4">
                 {recipe.difficulty && (
                   <span className="flex items-center gap-1">
                     <Filter className="w-4 h-4" />
@@ -460,14 +460,14 @@ export default function AdminRecipesPage() {
               <div className="flex gap-2">
                 <Link
                   href={`/admin/recipes/${recipe.slug}/edit`}
-                  className="flex-1 flex items-center justify-center gap-2 bg-blue-50 text-blue-600 py-2 px-4 rounded-xl hover:bg-blue-100 transition-colors text-sm font-medium"
+                  className="flex-1 admin-btn admin-btn-secondary justify-center"
                 >
                   <Edit3 className="w-4 h-4" />
                   Redigera
                 </Link>
                 <button
                   onClick={() => handleDeleteRecipe(recipe.id, recipe.title)}
-                  className="flex items-center justify-center gap-2 bg-red-50 text-red-600 py-2 px-4 rounded-xl hover:bg-red-100 transition-colors text-sm font-medium"
+                  className="admin-btn admin-btn-danger justify-center"
                 >
                   <Trash2 className="w-4 h-4" />
                   Ta bort
@@ -480,13 +480,13 @@ export default function AdminRecipesPage() {
 
       {filteredRecipes.length === 0 && !loading && (
         <div className="text-center py-16">
-          <Coffee className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <div className="text-gray-500 text-lg font-light">
+          <Coffee className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" />
+          <div className="text-[var(--text-secondary)] text-lg font-light">
             {searchTerm ? 'Inga recept hittades för din sökning.' : 'Inga recept hittades.'}
           </div>
           <Link
             href="/admin/recipes/new"
-            className="inline-flex items-center gap-2 mt-4 text-[#93C560] hover:text-[#7BA94D] font-light"
+            className="inline-flex items-center gap-2 mt-4 text-[var(--primary-light-green)] hover:text-[var(--primary-green)] font-medium transition-colors"
           >
             <Plus className="w-5 h-5" />
             Skapa ditt första recept
