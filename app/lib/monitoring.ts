@@ -112,6 +112,19 @@ class MonitoringService {
 
 export const monitoring = MonitoringService.getInstance();
 
+// Export helper functions for convenience
+export const logError = (error: Error, context?: Partial<ErrorContext>) => {
+  monitoring.logError(error, context);
+};
+
+export const logInfo = (message: string, metadata?: Record<string, any>) => {
+  console.log(`ℹ️ ${message}`, metadata);
+};
+
+export const logWarn = (message: string, metadata?: Record<string, any>) => {
+  console.warn(`⚠️ ${message}`, metadata);
+};
+
 // Global error handler for unhandled promises
 if (typeof window === 'undefined') {
   process.on('unhandledRejection', (reason, promise) => {
