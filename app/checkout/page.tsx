@@ -60,25 +60,42 @@ export default function Checkout() {
     setError(null);
 
     try {
-      // Create Svea Checkout Session (with fixed Basic auth)
-      const res = await fetch('/api/checkout/svea', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items,
-          customer: guestMode ? { name: customerInfo.name, email: customerInfo.email } : (user ? { name: user.name, email: user.email, id: user.id } : undefined),
-          couponCode: appliedCoupon?.code || undefined
-        })
-      });
-
-      const data = await res.json();
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      } else {
-        throw new Error(data.error || 'Checkout failed');
+      // Validate form if guest mode
+      if (guestMode) {
+        if (!customerInfo.name.trim() || !customerInfo.email.trim()) {
+          setError('Vänligen fyll i alla obligatoriska fält');
+          setIsProcessing(false);
+          return;
+        }
       }
+
+      // Navigate to Svea checkout page
+      const checkoutData = {
+        items: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          type: item.type
+        })),
+        customer: guestMode ? { 
+          name: customerInfo.name, 
+          email: customerInfo.email 
+        } : (user ? { 
+          name: user.name, 
+          email: user.email, 
+          id: user.id 
+        } : undefined),
+        couponCode: appliedCoupon?.code || undefined
+      };
+
+      // Store checkout data temporarily
+      sessionStorage.setItem('checkout_data', JSON.stringify(checkoutData));
+      
+      // Navigate to Svea checkout page
+      window.location.href = '/checkout/svea';
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      setError(err.message || 'Något gick fel');
       setIsProcessing(false);
     }
   };
