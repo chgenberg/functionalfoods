@@ -33,13 +33,19 @@ export async function POST(req: NextRequest) {
           where: { 
             code,
             active: true,
-            OR: [
-              { startsAt: null },
-              { startsAt: { lte: new Date() } }
-            ],
-            OR: [
-              { expiresAt: null },
-              { expiresAt: { gte: new Date() } }
+            AND: [
+              {
+                OR: [
+                  { startsAt: null },
+                  { startsAt: { lte: new Date() } }
+                ]
+              },
+              {
+                OR: [
+                  { expiresAt: null },
+                  { expiresAt: { gte: new Date() } }
+                ]
+              }
             ]
           }
         });
@@ -140,10 +146,19 @@ export async function POST(req: NextRequest) {
 
     } catch (err: any) {
       console.error('Svea Checkout error:', err);
+      console.error('Error details:', {
+        message: err.message,
+        stack: err.stack,
+        sveaSecretConfigured: !!process.env.SVEA_SECRET_WORD,
+        merchantIdConfigured: !!process.env.SVEA_MERCHANT_ID
+      });
+      
       return NextResponse.json(
         { error: 'Betalning kunde inte initieras. Försök igen.' },
         { status: 500 }
       );
+    } finally {
+      await prisma.$disconnect();
     }
   });
 }
