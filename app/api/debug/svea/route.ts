@@ -10,10 +10,26 @@ export async function GET(request: NextRequest) {
       sveaMerchantConfigured: !!process.env.SVEA_MERCHANT_ID,
       nodeEnv: process.env.NODE_ENV,
       sveaSecretLength: process.env.SVEA_SECRET_WORD?.length || 0,
-      merchantId: process.env.SVEA_MERCHANT_ID || 'NOT_SET'
+      sveaSecretFirst10: process.env.SVEA_SECRET_WORD?.substring(0, 10) || 'NOT_SET',
+      merchantId: process.env.SVEA_MERCHANT_ID || 'NOT_SET',
+      timestamp: new Date().toISOString()
     };
 
     console.log('🔍 Svea Debug Info:', config);
+
+    // Return early if no credentials
+    if (!process.env.SVEA_SECRET_WORD || !process.env.SVEA_MERCHANT_ID) {
+      return NextResponse.json({
+        status: 'MISSING_CREDENTIALS',
+        config,
+        message: 'Svea credentials not configured. Add SVEA_SECRET_WORD and SVEA_MERCHANT_ID to Railway environment variables.',
+        nextSteps: [
+          'Add SVEA_SECRET_WORD=eaOXejEoVzL2ts5v7LMp6ay0SoPa54GftfGka8TUr9kpTjki4pHHO24dLYf0EEt03FInVUu921770igIdHfPx8AAkCJm22pXPtvoL6wj4IPW57nDRHW7yND4ehdtlig9',
+          'Add SVEA_MERCHANT_ID=207552',
+          'Redeploy and test again'
+        ]
+      });
+    }
 
     // Test basic API connectivity
     const testEndpoint = process.env.NODE_ENV === 'production' 
