@@ -10,6 +10,9 @@ const nextConfig = {
   swcMinify: true,
   compress: true,
   
+  // Source maps configuration
+  productionBrowserSourceMaps: false, // Disable source maps in production to avoid 404s
+  
   webpack: (config, { isServer, dev }) => {
     if (!dev && !isServer) {
       // Enable production optimizations
