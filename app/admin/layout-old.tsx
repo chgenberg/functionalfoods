@@ -70,18 +70,18 @@ export default function AdminLayout({
   };
 
   const menuItems = [
-    { icon: Home, label: 'Dashboard', href: '/admin' },
-    { icon: FileText, label: 'Blogg', href: '/admin/blog' },
-    { icon: BookOpen, label: 'Recept', href: '/admin/recipes' },
-    { icon: Users, label: 'Användare', href: '/admin/users' },
-    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders' },
-    { icon: Star, label: 'Recensioner', href: '/admin/reviews' },
-    { icon: MessageSquare, label: 'Community', href: '/admin/community' },
-    { icon: Tag, label: 'Kuponger', href: '/admin/coupons' },
-    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales' },
-    { icon: Image, label: 'Media', href: '/admin/media' },
-    { icon: FileText, label: 'Kunskapsdokument', href: '/admin/knowledge' },
-    { icon: Settings, label: 'Inställningar', href: '/admin/settings' }
+    { icon: Home, label: 'Dashboard', href: '/admin', gradient: 'from-blue-500 to-blue-600' },
+    { icon: FileText, label: 'Blogg', href: '/admin/blog', gradient: 'from-purple-500 to-purple-600' },
+    { icon: BookOpen, label: 'Recept', href: '/admin/recipes', gradient: 'from-green-500 to-green-600' },
+    { icon: Users, label: 'Användare', href: '/admin/users', gradient: 'from-indigo-500 to-indigo-600' },
+    { icon: ShoppingCart, label: 'Ordrar', href: '/admin/orders', gradient: 'from-orange-500 to-orange-600' },
+    { icon: Star, label: 'Recensioner', href: '/admin/reviews', gradient: 'from-yellow-500 to-yellow-600' },
+    { icon: MessageSquare, label: 'Community', href: '/admin/community', gradient: 'from-pink-500 to-pink-600' },
+    { icon: Tag, label: 'Kuponger', href: '/admin/coupons', gradient: 'from-red-500 to-red-600' },
+    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales', gradient: 'from-emerald-500 to-emerald-600' },
+    { icon: Image, label: 'Media', href: '/admin/media', gradient: 'from-cyan-500 to-cyan-600' },
+    { icon: FileText, label: 'Kunskapsdokument', href: '/admin/knowledge', gradient: 'from-violet-500 to-violet-600' },
+    { icon: Settings, label: 'Inställningar', href: '/admin/settings', gradient: 'from-gray-500 to-gray-600' }
   ];
 
   // Don't render layout on login page
