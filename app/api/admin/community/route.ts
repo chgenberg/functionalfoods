@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
       views: thread.views,
       replies: thread._count.replies,
       likes: thread._count.likes,
-      isPinned: thread.isPinned,
+      isPinned: thread.isSticky,
       isLocked: thread.isLocked,
       createdAt: thread.createdAt.toISOString(),
       updatedAt: thread.updatedAt.toISOString()
