@@ -22,7 +22,7 @@ export default function Checkout() {
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPayment, setSelectedPayment] = useState('stripe');
+  const [selectedPayment, setSelectedPayment] = useState('svea');
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
@@ -60,8 +60,8 @@ export default function Checkout() {
     setError(null);
 
     try {
-      // Create Checkout Session
-      const res = await fetch('/api/checkout', {
+      // Create Svea Checkout Session
+      const res = await fetch('/api/checkout/svea', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,8 +72,8 @@ export default function Checkout() {
       });
 
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
       } else {
         throw new Error(data.error || 'Checkout failed');
       }
@@ -201,9 +201,9 @@ export default function Checkout() {
               <div className="space-y-3">
                 {[
                   { 
-                    id: 'stripe', 
-                    name: 'Kort', 
-                    desc: 'Visa, Mastercard, Amex', 
+                    id: 'svea', 
+                    name: 'Svea Ekonomi', 
+                    desc: 'Kort, Swish, Faktura, Delbetalning', 
                     icon: CreditCard,
                     recommended: true 
                   }
