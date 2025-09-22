@@ -408,7 +408,7 @@ export default function AdminCouponsPage() {
                   <input
                     type="number"
                     value={form.amount}
-                    onChange={(e) => setForm(prev => ({ ...prev, amount: e.target.value }))}
+                    onChange={(e) => setForm(prev => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))}
                     className="admin-input"
                     min="0"
                     max={form.type === 'percent' ? '100' : undefined}
