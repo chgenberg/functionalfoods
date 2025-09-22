@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.SVEA_SECRET_WORD || 'test'}`
+          'Authorization': `Basic ${Buffer.from(`${process.env.SVEA_MERCHANT_ID}:${process.env.SVEA_SECRET_WORD}`).toString('base64')}`
         },
         body: JSON.stringify({
           merchantSettings: {

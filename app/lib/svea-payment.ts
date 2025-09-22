@@ -110,7 +110,7 @@ export class SveaPaymentService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.config.secretWord}`
+        'Authorization': `Basic ${Buffer.from(`${this.config.merchantId}:${this.config.secretWord}`).toString('base64')}`
       },
       body: JSON.stringify(payload)
     });
@@ -142,7 +142,7 @@ export class SveaPaymentService {
     const response = await fetch(endpoint, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${this.config.secretWord}`
+        'Authorization': `Basic ${Buffer.from(`${this.config.merchantId}:${this.config.secretWord}`).toString('base64')}`
       }
     });
 
