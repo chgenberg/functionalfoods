@@ -60,8 +60,8 @@ export default function Checkout() {
     setError(null);
 
     try {
-      // Create Svea Checkout Session (direct Svea API)
-      const res = await fetch('/api/checkout/svea', {
+      // Create Svea Checkout Session (fallback to working endpoint while debugging)
+      const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,8 +72,8 @@ export default function Checkout() {
       });
 
       const data = await res.json();
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+      if (data.url) {
+        window.location.href = data.url;
       } else {
         throw new Error(data.error || 'Checkout failed');
       }
