@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const auth = Buffer.from(`${merchantId}:${secretWord}`).toString('base64');
     const endpoint = 'https://checkoutapi.svea.com/api/orders';
     
-    console.log('🧪 Testing Svea API with Basic auth...');
+    console.log('🧪 Testing Svea API with Basic auth...', new Date().toISOString());
     
     const testPayload = {
       merchantSettings: {
