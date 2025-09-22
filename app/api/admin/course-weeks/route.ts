@@ -26,15 +26,50 @@ export async function PUT(req: NextRequest) {
   if ((admin as any)?.status === 401) return admin as any;
 
   const body = await req.json();
-  const { course, weekNumber, weekTitle, weekSubtitle, heroImage, videoUrl } = body;
+  const { 
+    course, 
+    weekNumber, 
+    weekTitle, 
+    weekSubtitle, 
+    heroImage, 
+    videoUrl,
+    welcomeMessage,
+    mainContent,
+    keyTakeaways,
+    weeklyChallenge,
+    reflectionQuestions
+  } = body;
+  
   if (!course || !weekNumber) {
     return NextResponse.json({ error: 'course och weekNumber krävs' }, { status: 400 });
   }
 
   const row = await (prisma as any).courseWeekMeta?.upsert({
     where: { course_weekNumber: { course, weekNumber } },
-    create: { course, weekNumber, weekTitle: weekTitle || null, weekSubtitle: weekSubtitle || null, heroImage: heroImage || null, videoUrl: videoUrl || null },
-    update: { weekTitle: weekTitle || null, weekSubtitle: weekSubtitle || null, heroImage: heroImage || null, videoUrl: videoUrl || null }
+    create: { 
+      course, 
+      weekNumber, 
+      weekTitle: weekTitle || null, 
+      weekSubtitle: weekSubtitle || null, 
+      heroImage: heroImage || null, 
+      videoUrl: videoUrl || null,
+      welcomeMessage: welcomeMessage || null,
+      mainContent: mainContent || null,
+      keyTakeaways: keyTakeaways || null,
+      weeklyChallenge: weeklyChallenge || null,
+      reflectionQuestions: reflectionQuestions || null
+    },
+    update: { 
+      weekTitle: weekTitle || null, 
+      weekSubtitle: weekSubtitle || null, 
+      heroImage: heroImage || null, 
+      videoUrl: videoUrl || null,
+      welcomeMessage: welcomeMessage || null,
+      mainContent: mainContent || null,
+      keyTakeaways: keyTakeaways || null,
+      weeklyChallenge: weeklyChallenge || null,
+      reflectionQuestions: reflectionQuestions || null
+    }
   });
 
   return NextResponse.json({ week: row });

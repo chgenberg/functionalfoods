@@ -28,20 +28,30 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     try {
       setLoading(true);
       
-      // Mock course data
-      const courseData: Course = {
-        id: params.courseId,
-        name: getCourseInfo(params.courseId).name,
-        description: getCourseInfo(params.courseId).description,
-        price: 1497,
-        duration: '6 veckor',
-        level: getCourseInfo(params.courseId).level,
-        enrollments: getCourseInfo(params.courseId).enrollments,
-      };
+      // Hämta verklig kursdata från API
+      const response = await fetch('/api/admin/functional-courses', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
 
-      setCourse(courseData);
+      if (!response.ok) {
+        throw new Error('Failed to fetch courses');
+      }
+
+      const courses = await response.json();
+      const courseData = courses.find((c: Course) => c.id === params.courseId);
+      
+      if (courseData) {
+        setCourse(courseData);
+      } else {
+        // Fallback om kursen inte hittas
+        setCourse(null);
+      }
     } catch (error) {
       console.error('Error fetching course:', error);
+      setCourse(null);
     } finally {
       setLoading(false);
     }
@@ -74,11 +84,29 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
   const saveCourse = async () => {
     setSaving(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Spara verklig data via API
+      const response = await fetch('/api/admin/functional-courses', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          courseId: params.courseId,
+          price: course?.price
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save course');
+      }
+
       setSuccessMessage('Kursen har sparats!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error saving course:', error);
+      setSuccessMessage('Ett fel uppstod vid sparning');
+      setTimeout(() => setSuccessMessage(''), 3000);
     } finally {
       setSaving(false);
     }
@@ -257,46 +285,54 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             <div className="space-y-4">
               <Link
                 href={`/admin/courses/${params.courseId}/weeks`}
-                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+                className="group relative flex items-center justify-between p-5 bg-gradient-to-br from-white to-[var(--primary-beige)]/30 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
               >
-                <div>
-                  <h3 className="font-medium text-[var(--text-primary)]">Veckoplanering</h3>
-                  <p className="text-sm text-[var(--text-secondary)] mt-1">Redigera varje veckas innehåll, texter och videos</p>
+                <div className="relative z-10">
+                  <h3 className="font-semibold text-[var(--primary-green)] text-lg mb-1">Veckoplanering</h3>
+                  <p className="text-sm text-[var(--text-secondary)]">Redigera varje veckas innehåll, texter och videos</p>
                 </div>
-                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center group-hover:bg-[var(--primary-light-green)] transition-colors">
+                  <Calendar className="w-6 h-6 text-[var(--primary-green)] group-hover:text-white transition-colors" />
+                </div>
               </Link>
 
               <Link
                 href={`/admin/meal-plans?course=${params.courseId}`}
-                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+                className="group relative flex items-center justify-between p-5 bg-gradient-to-br from-white to-[var(--primary-beige)]/30 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
               >
-                <div>
-                  <h3 className="font-medium text-[var(--text-primary)]">Måltidsplaner</h3>
-                  <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera veckans recept och måltider</p>
+                <div className="relative z-10">
+                  <h3 className="font-semibold text-[var(--primary-green)] text-lg mb-1">Måltidsplaner</h3>
+                  <p className="text-sm text-[var(--text-secondary)]">Hantera veckans recept och måltider</p>
                 </div>
-                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center group-hover:bg-[var(--primary-light-green)] transition-colors">
+                  <ShoppingCart className="w-6 h-6 text-[var(--primary-green)] group-hover:text-white transition-colors" />
+                </div>
               </Link>
 
               <Link
                 href={`/admin/shopping-lists?course=${params.courseId}`}
-                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+                className="group relative flex items-center justify-between p-5 bg-gradient-to-br from-white to-[var(--primary-beige)]/30 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
               >
-                <div>
-                  <h3 className="font-medium text-[var(--text-primary)]">Inköpslistor</h3>
-                  <p className="text-sm text-[var(--text-secondary)] mt-1">Redigera veckans inköpslistor</p>
+                <div className="relative z-10">
+                  <h3 className="font-semibold text-[var(--primary-green)] text-lg mb-1">Inköpslistor</h3>
+                  <p className="text-sm text-[var(--text-secondary)]">Redigera veckans inköpslistor</p>
                 </div>
-                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center group-hover:bg-[var(--primary-light-green)] transition-colors">
+                  <FileText className="w-6 h-6 text-[var(--primary-green)] group-hover:text-white transition-colors" />
+                </div>
               </Link>
 
               <Link
                 href={`/admin/knowledge?course=${params.courseId}`}
-                className="flex items-center justify-between p-4 bg-[var(--primary-beige)] rounded-lg hover:bg-[var(--primary-beige)]/80 transition-colors group"
+                className="group relative flex items-center justify-between p-5 bg-gradient-to-br from-white to-[var(--primary-beige)]/30 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
               >
-                <div>
-                  <h3 className="font-medium text-[var(--text-primary)]">Kunskapsdokument</h3>
-                  <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera kursmaterial och artiklar</p>
+                <div className="relative z-10">
+                  <h3 className="font-semibold text-[var(--primary-green)] text-lg mb-1">Kunskapsdokument</h3>
+                  <p className="text-sm text-[var(--text-secondary)]">Hantera kursmaterial och artiklar</p>
                 </div>
-                <ArrowLeft className="w-5 h-5 text-[var(--primary-green)] rotate-180 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center group-hover:bg-[var(--primary-light-green)] transition-colors">
+                  <BookOpen className="w-6 h-6 text-[var(--primary-green)] group-hover:text-white transition-colors" />
+                </div>
               </Link>
             </div>
           </div>

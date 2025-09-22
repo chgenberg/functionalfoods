@@ -79,14 +79,23 @@ export default function AdminDashboard() {
       className="space-y-8"
     >
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">
-          {greeting}! 👋
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12 py-8"
+      >
+        <div className="flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-[var(--primary-green)] to-[var(--primary-light-green)] rounded-full flex items-center justify-center">
+            <Activity className="w-8 h-8 text-white" />
+          </div>
+        </div>
+        <h1 className="text-4xl font-light text-[var(--primary-green)] mb-3">
+          {greeting}!
         </h1>
-        <p className="text-[var(--text-secondary)]">
+        <p className="text-lg text-[var(--text-secondary)]">
           Här är en översikt av din verksamhet
         </p>
-      </div>
+      </motion.div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

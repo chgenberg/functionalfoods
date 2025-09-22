@@ -599,15 +599,20 @@ model MealPlanWeek {
 }
 
 model CourseWeekMeta {
-  id          String   @id @default(uuid())
-  course      String   // 'basic' | 'flow' | 'energy'
-  weekNumber  Int
-  weekTitle   String?
-  weekSubtitle String?
-  heroImage   String?
-  videoUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                  String   @id @default(uuid())
+  course              String   // 'basic' | 'flow' | 'energy'
+  weekNumber          Int
+  weekTitle           String?
+  weekSubtitle        String?
+  heroImage           String?
+  videoUrl            String?
+  welcomeMessage      String?  @db.Text
+  mainContent         String?  @db.Text
+  keyTakeaways        Json?    // Array of strings
+  weeklyChallenge     String?  @db.Text
+  reflectionQuestions Json?    // Array of strings
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   @@unique([course, weekNumber])
   @@index([course])

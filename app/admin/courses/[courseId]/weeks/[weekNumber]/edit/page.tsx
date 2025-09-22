@@ -47,29 +47,44 @@ export default function EditWeekPage({
     try {
       setLoading(true);
       
-      // Mock data - replace with actual API call
-      const mockData: WeekContent = {
+      // Map courseId to course name for API
+      const courseMap: Record<string, string> = {
+        'functional-basics': 'basic',
+        'functional-flow': 'flow',
+        'functional-energy': 'energy'
+      };
+      
+      const courseName = courseMap[params.courseId];
+      
+      // Hämta verklig veckodata
+      const response = await fetch(`/api/course-weeks?course=${courseName}&week=${params.weekNumber}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch week data');
+      }
+
+      const data = await response.json();
+      
+      // Kombinera med data från databasen
+      const weekData: WeekContent = {
         weekNumber: parseInt(params.weekNumber),
-        title: `Vecka ${params.weekNumber}: Introduktion till Functional Foods`,
-        subtitle: 'Grunderna för en hälsosam livsstil',
-        welcomeMessage: 'Välkommen till vecka ' + params.weekNumber + '! Den här veckan kommer vi att utforska grunderna i functional foods och hur du kan börja din resa mot bättre hälsa.',
-        heroImage: '/images/week' + params.weekNumber + '-hero.jpg',
-        videoUrl: 'https://player.vimeo.com/video/123456789',
-        mainContent: 'Detta är huvudinnehållet för veckan. Här kan du lägga till detaljerad information om veckans tema, viktiga koncept och praktiska tips.',
-        keyTakeaways: [
-          'Förstå grunderna i functional foods',
-          'Lär dig identifiera näringsrika livsmedel',
-          'Börja planera din hälsosamma kost'
-        ],
-        weeklyChallenge: 'Denna vecka utmanar vi dig att prova minst tre nya functional foods-recept och dokumentera hur du känner dig efteråt.',
-        reflectionQuestions: [
-          'Vad har du lärt dig om functional foods denna vecka?',
-          'Vilka förändringar har du märkt i din energinivå?',
-          'Hur kan du integrera dessa lärdomar i din vardag?'
-        ]
+        title: data.weekTitle || `Vecka ${params.weekNumber}`,
+        subtitle: data.weekSubtitle || '',
+        welcomeMessage: data.welcomeMessage || '',
+        heroImage: data.heroImage || '',
+        videoUrl: data.videoUrl || '',
+        mainContent: data.mainContent || '',
+        keyTakeaways: data.keyTakeaways || [],
+        weeklyChallenge: data.weeklyChallenge || '',
+        reflectionQuestions: data.reflectionQuestions || []
       };
 
-      setWeekContent(mockData);
+      setWeekContent(weekData);
     } catch (error) {
       console.error('Error fetching week content:', error);
     } finally {
@@ -82,13 +97,47 @@ export default function EditWeekPage({
     setSuccessMessage('');
     
     try {
-      // Mock save - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Map courseId to course name for API
+      const courseMap: Record<string, string> = {
+        'functional-basics': 'basic',
+        'functional-flow': 'flow',
+        'functional-energy': 'energy'
+      };
+      
+      const courseName = courseMap[params.courseId];
+      
+      // Spara verklig data via API
+      const response = await fetch('/api/admin/course-weeks', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          course: courseName,
+          weekNumber: parseInt(params.weekNumber),
+          weekTitle: weekContent.title,
+          weekSubtitle: weekContent.subtitle,
+          heroImage: weekContent.heroImage,
+          videoUrl: weekContent.videoUrl,
+          welcomeMessage: weekContent.welcomeMessage,
+          mainContent: weekContent.mainContent,
+          keyTakeaways: weekContent.keyTakeaways,
+          weeklyChallenge: weekContent.weeklyChallenge,
+          reflectionQuestions: weekContent.reflectionQuestions
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save week content');
+      }
       
       setSuccessMessage('Veckoinnehåll sparat!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error saving week content:', error);
+      setSuccessMessage('Ett fel uppstod vid sparning');
+      setTimeout(() => setSuccessMessage(''), 3000);
     } finally {
       setSaving(false);
     }
@@ -182,41 +231,43 @@ export default function EditWeekPage({
       {/* Main Content Form */}
       <div className="space-y-6">
         {/* Basic Information */}
-        <div className="admin-card">
+        <div className="admin-card bg-gradient-to-br from-white to-[var(--cream-white)]">
           <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6 flex items-center gap-2">
-            <FileText className="w-5 h-5" />
+            <div className="w-10 h-10 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[var(--primary-green)]" />
+            </div>
             Grundinformation
           </h2>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="admin-label">Veckotitel</label>
+              <label className="admin-label text-[var(--primary-green)] font-semibold">Veckotitel</label>
               <input
                 type="text"
                 value={weekContent.title}
                 onChange={(e) => setWeekContent({ ...weekContent, title: e.target.value })}
-                className="admin-input"
+                className="admin-input mt-2"
                 placeholder="T.ex. Vecka 1: Introduktion till Functional Foods"
               />
             </div>
             
             <div>
-              <label className="admin-label">Underrubrik</label>
+              <label className="admin-label text-[var(--primary-green)] font-semibold">Underrubrik</label>
               <input
                 type="text"
                 value={weekContent.subtitle}
                 onChange={(e) => setWeekContent({ ...weekContent, subtitle: e.target.value })}
-                className="admin-input"
+                className="admin-input mt-2"
                 placeholder="T.ex. Grunderna för en hälsosam livsstil"
               />
             </div>
             
             <div>
-              <label className="admin-label">Välkomstmeddelande</label>
+              <label className="admin-label text-[var(--primary-green)] font-semibold">Välkomstmeddelande</label>
               <textarea
                 value={weekContent.welcomeMessage}
                 onChange={(e) => setWeekContent({ ...weekContent, welcomeMessage: e.target.value })}
-                className="admin-textarea"
+                className="admin-textarea mt-2"
                 rows={4}
                 placeholder="Skriv ett inspirerande välkomstmeddelande för veckan..."
               />
@@ -225,33 +276,41 @@ export default function EditWeekPage({
         </div>
 
         {/* Media */}
-        <div className="admin-card">
+        <div className="admin-card bg-gradient-to-br from-white to-[var(--cream-white)]">
           <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6 flex items-center gap-2">
-            <Image className="w-5 h-5" />
+            <div className="w-10 h-10 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
+              <Image className="w-5 h-5 text-[var(--primary-green)]" />
+            </div>
             Media
           </h2>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="admin-label">Hero-bild URL</label>
-              <input
-                type="text"
-                value={weekContent.heroImage}
-                onChange={(e) => setWeekContent({ ...weekContent, heroImage: e.target.value })}
-                className="admin-input"
-                placeholder="https://example.com/image.jpg"
-              />
+              <label className="admin-label text-[var(--primary-green)] font-semibold">Hero-bild URL</label>
+              <div className="relative mt-2">
+                <input
+                  type="text"
+                  value={weekContent.heroImage}
+                  onChange={(e) => setWeekContent({ ...weekContent, heroImage: e.target.value })}
+                  className="admin-input pl-10"
+                  placeholder="https://example.com/image.jpg"
+                />
+                <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
+              </div>
             </div>
             
             <div>
-              <label className="admin-label">Video URL (Vimeo)</label>
-              <input
-                type="text"
-                value={weekContent.videoUrl}
-                onChange={(e) => setWeekContent({ ...weekContent, videoUrl: e.target.value })}
-                className="admin-input"
-                placeholder="https://player.vimeo.com/video/123456789"
-              />
+              <label className="admin-label text-[var(--primary-green)] font-semibold">Video URL (Vimeo)</label>
+              <div className="relative mt-2">
+                <input
+                  type="text"
+                  value={weekContent.videoUrl}
+                  onChange={(e) => setWeekContent({ ...weekContent, videoUrl: e.target.value })}
+                  className="admin-input pl-10"
+                  placeholder="https://player.vimeo.com/video/123456789"
+                />
+                <Video className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
+              </div>
             </div>
           </div>
         </div>

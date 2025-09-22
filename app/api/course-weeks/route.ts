@@ -21,7 +21,12 @@ export async function GET(req: NextRequest) {
           weekTitle: row.weekTitle || null,
           weekSubtitle: row.weekSubtitle || null,
           heroImage: row.heroImage || null,
-          videoUrl: row.videoUrl || null
+          videoUrl: row.videoUrl || null,
+          welcomeMessage: row.welcomeMessage || null,
+          mainContent: row.mainContent || null,
+          keyTakeaways: row.keyTakeaways || null,
+          weeklyChallenge: row.weeklyChallenge || null,
+          reflectionQuestions: row.reflectionQuestions || null
         }, { headers: { 'Cache-Control': 'no-store' } });
       }
     } catch (e) {

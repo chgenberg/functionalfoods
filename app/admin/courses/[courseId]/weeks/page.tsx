@@ -32,65 +32,33 @@ export default function CourseWeeksPage({ params }: { params: { courseId: string
     try {
       setLoading(true);
       
-      // Mock data - replace with actual API call
-      const courseData: Course = {
-        id: params.courseId,
-        name: getCourseName(params.courseId),
-        weeks: [
-          {
-            weekNumber: 1,
-            title: 'Introduktion till Functional Foods',
-            subtitle: 'Grunderna för en hälsosam livsstil',
-            welcomeMessage: 'Välkommen till din resa mot bättre hälsa...',
-            videoUrl: 'https://player.vimeo.com/video/123456789',
-            heroImage: '/images/week1-hero.jpg'
-          },
-          {
-            weekNumber: 2,
-            title: 'Näringsrik kost',
-            subtitle: 'Lär dig välja rätt mat',
-            welcomeMessage: 'Den här veckan fokuserar vi på näringsrik mat...',
-            videoUrl: 'https://player.vimeo.com/video/123456790',
-            heroImage: '/images/week2-hero.jpg'
-          },
-          {
-            weekNumber: 3,
-            title: 'Matlagningstekniker',
-            subtitle: 'Bevara näringen i maten',
-            welcomeMessage: 'Nu ska vi lära oss de bästa matlagningsmetoderna...',
-            videoUrl: 'https://player.vimeo.com/video/123456791',
-            heroImage: '/images/week3-hero.jpg'
-          },
-          {
-            weekNumber: 4,
-            title: 'Planera din kost',
-            subtitle: 'Skapa hållbara matvanor',
-            welcomeMessage: 'Planering är nyckeln till framgång...',
-            videoUrl: 'https://player.vimeo.com/video/123456792',
-            heroImage: '/images/week4-hero.jpg'
-          },
-          {
-            weekNumber: 5,
-            title: 'Kropp och hälsa',
-            subtitle: 'Förstå din kropp',
-            welcomeMessage: 'Den här veckan fördjupar vi oss i kroppens funktioner...',
-            videoUrl: 'https://player.vimeo.com/video/123456793',
-            heroImage: '/images/week5-hero.jpg'
-          },
-          {
-            weekNumber: 6,
-            title: 'Livsstilsförändring',
-            subtitle: 'Gör det till en vana',
-            welcomeMessage: 'Sista veckan handlar om att befästa dina nya vanor...',
-            videoUrl: 'https://player.vimeo.com/video/123456794',
-            heroImage: '/images/week6-hero.jpg'
-          }
-        ]
-      };
+      // Hämta verklig kursdata
+      const response = await fetch('/api/admin/functional-courses', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
 
-      setCourse(courseData);
+      if (!response.ok) {
+        throw new Error('Failed to fetch courses');
+      }
+
+      const courses = await response.json();
+      const courseData = courses.find((c: any) => c.id === params.courseId);
+      
+      if (courseData) {
+        setCourse({
+          id: courseData.id,
+          name: courseData.name,
+          weeks: courseData.weeks || []
+        });
+      } else {
+        setCourse(null);
+      }
     } catch (error) {
       console.error('Error fetching course weeks:', error);
+      setCourse(null);
     } finally {
       setLoading(false);
     }
@@ -161,21 +129,24 @@ export default function CourseWeeksPage({ params }: { params: { courseId: string
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="admin-card hover:shadow-lg transition-shadow"
+            className="admin-card hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
           >
+            {/* Progress indicator */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--primary-green)] to-[var(--primary-light-green)] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+            
             {/* Week Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-lg flex items-center justify-center">
-                  <span className="text-lg font-bold text-[var(--primary-green)]">
+            <div className="flex items-start justify-between mb-5">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-[var(--primary-green)] to-[var(--primary-light-green)] rounded-2xl flex items-center justify-center shadow-md">
+                  <span className="text-xl font-bold text-white">
                     {week.weekNumber}
                   </span>
                 </div>
-                <div>
-                  <h3 className="font-medium text-[var(--text-primary)]">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-[var(--primary-green)] text-lg">
                     Vecka {week.weekNumber}
                   </h3>
-                  <p className="text-sm text-[var(--text-secondary)]">
+                  <p className="text-sm text-[var(--text-secondary)] line-clamp-1">
                     {week.title}
                   </p>
                 </div>
@@ -183,39 +154,56 @@ export default function CourseWeeksPage({ params }: { params: { courseId: string
             </div>
 
             {/* Week Content Preview */}
-            <div className="space-y-3 mb-4">
-              <div className="flex items-center gap-2 text-sm">
-                <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
-                <span className="text-[var(--text-secondary)]">Underrubrik:</span>
-                <span className="text-[var(--text-primary)] truncate flex-1">
-                  {week.subtitle || 'Ingen underrubrik'}
-                </span>
-              </div>
-              
-              <div className="flex items-center gap-2 text-sm">
-                <Video className="w-4 h-4 text-[var(--text-secondary)]" />
-                <span className="text-[var(--text-secondary)]">Video:</span>
-                <span className={week.videoUrl ? 'text-green-600' : 'text-gray-400'}>
-                  {week.videoUrl ? 'Uppladdad' : 'Saknas'}
-                </span>
-              </div>
-              
-              <div className="text-sm">
-                <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
-                  <span className="text-[var(--text-secondary)]">Välkomstmeddelande:</span>
+            <div className="space-y-3 mb-5">
+              {/* Subtitle */}
+              <div className="bg-[var(--primary-beige)]/50 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <FileText className="w-4 h-4 text-[var(--primary-green)] mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Underrubrik</span>
+                    <p className="text-sm text-[var(--text-primary)] mt-1">
+                      {week.subtitle || 'Ingen underrubrik angiven'}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[var(--text-primary)] line-clamp-2 text-xs bg-[var(--primary-beige)] p-2 rounded">
-                  {week.welcomeMessage || 'Inget välkomstmeddelande'}
-                </p>
+              </div>
+              
+              {/* Video Status */}
+              <div className="bg-[var(--primary-beige)]/50 rounded-lg p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Video className="w-4 h-4 text-[var(--primary-green)]" />
+                    <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Video</span>
+                  </div>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    week.videoUrl 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {week.videoUrl ? 'Uppladdad' : 'Saknas'}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Welcome Message */}
+              <div className="bg-[var(--primary-beige)]/50 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <FileText className="w-4 h-4 text-[var(--primary-green)] mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Välkomstmeddelande</span>
+                    <p className="text-sm text-[var(--text-primary)] line-clamp-2 mt-1">
+                      {week.welcomeMessage || 'Inget välkomstmeddelande angivet'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 mt-auto">
               <Link
                 href={`/admin/courses/${course.id}/weeks/${week.weekNumber}/edit`}
-                className="admin-btn admin-btn-primary justify-center text-sm"
+                className="admin-btn admin-btn-primary justify-center shadow-sm hover:shadow-md transition-shadow"
               >
                 <Edit3 className="w-4 h-4" />
                 Redigera
@@ -224,7 +212,7 @@ export default function CourseWeeksPage({ params }: { params: { courseId: string
               <Link
                 href={`/dashboard/courses/${course.id}/week/${week.weekNumber}`}
                 target="_blank"
-                className="admin-btn admin-btn-secondary justify-center text-sm"
+                className="admin-btn admin-btn-secondary justify-center"
               >
                 <Eye className="w-4 h-4" />
                 Förhandsgranska
