@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { sveaPayment, SveaOrderItem } from '@/app/lib/svea-payment';
-import { withRateLimit, checkoutRateLimit } from '@/app/lib/rate-limit';
+// import { withRateLimit, checkoutRateLimit } from '@/app/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
-  return withRateLimit(req, checkoutRateLimit, async () => {
-    try {
+  // Temporärt inaktiverad rate limiting för debugging
+  try {
       const body = await req.json();
       const { items, customer, couponCode } = body as {
         items: Array<{ id: string; name: string; price: number; quantity: number; type: 'course'|'book' }>
@@ -156,8 +156,7 @@ export async function POST(req: NextRequest) {
         { error: 'Betalning kunde inte initieras. Försök igen.' },
         { status: 500 }
       );
-    } finally {
-      await prisma.$disconnect();
-    }
-  });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
