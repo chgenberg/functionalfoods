@@ -1,2 +1,3 @@
-/* Build trigger: 1757112945 */
-// Force rebuild Sun Sep  7 22:15:45 CEST 2025
+// Build trigger - updated at 2025-09-22 13:45
+// This file is used to trigger new Railway deployments
+console.log('Build triggered at:', new Date().toISOString());
