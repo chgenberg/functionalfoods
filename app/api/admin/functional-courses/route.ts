@@ -40,17 +40,27 @@ export async function GET(req: NextRequest) {
   if ((admin as any)?.status === 401) return admin as any;
 
   try {
-    // Hämta enrollments för varje kurs
-    const enrollmentCounts = await Promise.all([
-      prisma.purchase.count({ where: { courseProduct: { name: 'Functional Basics' } } }),
-      prisma.purchase.count({ where: { courseProduct: { name: 'Functional Flow' } } }),
-      prisma.purchase.count({ where: { courseProduct: { name: 'Functional Energy' } } })
-    ]);
+    // Hämta enrollments för varje kurs (med fallback om tabeller inte existerar)
+    let enrollmentCounts = [0, 0, 0];
+    try {
+      enrollmentCounts = await Promise.all([
+        prisma.purchase.count({ where: { courseProduct: { name: 'Functional Basics' } } }),
+        prisma.purchase.count({ where: { courseProduct: { name: 'Functional Flow' } } }),
+        prisma.purchase.count({ where: { courseProduct: { name: 'Functional Energy' } } })
+      ]);
+    } catch (e) {
+      console.warn('Could not fetch enrollment counts, using defaults');
+    }
 
-    // Hämta veckodata för varje kurs
-    const weekData = await prisma.courseWeekMeta.findMany({
-      orderBy: [{ course: 'asc' }, { weekNumber: 'asc' }]
-    });
+    // Hämta veckodata för varje kurs (med fallback)
+    let weekData: any[] = [];
+    try {
+      weekData = await prisma.courseWeekMeta.findMany({
+        orderBy: [{ course: 'asc' }, { weekNumber: 'asc' }]
+      });
+    } catch (e) {
+      console.warn('Could not fetch week data, using defaults');
+    }
 
     // Organisera veckodata per kurs
     const weeksByCourse: Record<string, any[]> = {
