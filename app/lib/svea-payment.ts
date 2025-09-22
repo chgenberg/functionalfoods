@@ -68,9 +68,24 @@ export class SveaPaymentService {
   async createCheckoutOrder(orderData: SveaCheckoutOrder): Promise<{ checkoutOrderId: number; checkoutUrl: string }> {
     const endpoint = `${this.baseUrl}/api/orders`;
     
+    // Svea Checkout API payload structure
     const payload = {
-      merchantSettings: orderData.merchantSettings,
-      cart: orderData.cart,
+      merchantSettings: {
+        termsUri: orderData.merchantSettings.termsUri,
+        checkoutUri: orderData.merchantSettings.checkoutUri,
+        confirmationUri: orderData.merchantSettings.confirmationUri,
+        pushUri: orderData.merchantSettings.pushUri
+      },
+      cart: {
+        items: orderData.cart.items.map(item => ({
+          articleNumber: item.articleNumber,
+          name: item.description,
+          quantity: item.quantity,
+          unitPrice: item.pricePerUnit,
+          vatPercent: item.vatPercent,
+          unit: item.unit
+        }))
+      },
       presetValues: orderData.customer ? [
         {
           typeName: 'emailAddress',
@@ -80,8 +95,16 @@ export class SveaPaymentService {
       ] : [],
       currency: orderData.currency,
       countryCode: orderData.countryCode,
-      locale: orderData.locale
+      locale: orderData.locale,
+      merchantData: orderData.orderId
     };
+
+    console.log('🔄 Creating Svea checkout order:', {
+      endpoint,
+      merchantId: this.config.merchantId,
+      hasSecret: !!this.config.secretWord,
+      itemCount: payload.cart.items.length
+    });
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -92,15 +115,21 @@ export class SveaPaymentService {
       body: JSON.stringify(payload)
     });
 
+    const responseText = await response.text();
+    console.log('📡 Svea API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: responseText.substring(0, 500)
+    });
+
     if (!response.ok) {
-      const errorData = await response.text();
-      throw new Error(`Svea API Error: ${response.status} - ${errorData}`);
+      throw new Error(`Svea API Error: ${response.status} ${response.statusText} - ${responseText}`);
     }
 
-    const result = await response.json();
+    const result = JSON.parse(responseText);
     return {
       checkoutOrderId: result.orderId,
-      checkoutUrl: result.gui.snippet // URL to Svea checkout page
+      checkoutUrl: result.gui?.snippet || result.checkoutUrl || result.redirectUrl
     };
   }
 
