@@ -23,6 +23,13 @@ export async function POST(req: NextRequest) {
     const merchantId = process.env.SVEA_MERCHANT_ID;
     const secretWord = process.env.SVEA_SECRET_WORD;
     
+    console.log('🔑 Svea credentials check:', {
+      hasMerchantId: !!merchantId,
+      hasSecretWord: !!secretWord,
+      merchantIdLength: merchantId?.length,
+      secretWordLength: secretWord?.length
+    });
+    
     if (!merchantId || !secretWord) {
       console.error('❌ Missing Svea credentials');
       return NextResponse.json(
@@ -41,7 +48,7 @@ export async function POST(req: NextRequest) {
         const coupon = await prisma.coupon.findFirst({
           where: {
             code: couponCode.toUpperCase().trim(),
-            isActive: true,
+            active: true,
             OR: [
               { expiresAt: null },
               { expiresAt: { gt: new Date() } }
@@ -49,13 +56,13 @@ export async function POST(req: NextRequest) {
           }
         });
         
-        if (coupon && coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) {
+        if (coupon && coupon.usageLimit && coupon.timesUsed >= coupon.usageLimit) {
           // Coupon usage limit reached
         } else if (coupon) {
           if (coupon.type === 'PERCENTAGE') {
-            discountAmount = Math.round(subtotal * (coupon.value / 100));
+            discountAmount = Math.round(subtotal * (coupon.amount / 100));
           } else if (coupon.type === 'FIXED') {
-            discountAmount = Math.round(coupon.value * 100); // Convert to öre
+            discountAmount = Math.round(coupon.amount * 100); // Convert to öre
           }
         }
       } catch (couponError) {
@@ -115,11 +122,15 @@ export async function POST(req: NextRequest) {
       itemCount: sveaItems.length
     });
 
-    // Call Svea API
+    // Call Svea API - använd staging för testing
     const auth = Buffer.from(`${merchantId}:${secretWord}`).toString('base64');
-    const endpoint = process.env.NODE_ENV === 'production' 
-      ? 'https://checkoutapi.svea.com/api/orders'
-      : 'https://checkoutapistage.svea.com/api/orders';
+    const endpoint = 'https://checkoutapistage.svea.com/api/orders'; // Använd staging för nu
+    
+    console.log('🔐 Auth details:', {
+      merchantId: merchantId,
+      authLength: auth.length,
+      endpoint
+    });
 
     const response = await fetch(endpoint, {
       method: 'POST',
