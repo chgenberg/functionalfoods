@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { sveaPayment, SveaOrderItem } from '@/app/lib/svea-payment';
-import { withRateLimit } from '@/app/lib/rate-limit';
+import { withRateLimit, checkoutRateLimit } from '@/app/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
-const checkoutRateLimit = { max: 10, windowMs: 60000 }; // 10 requests per minute
 
 export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
