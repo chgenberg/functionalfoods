@@ -28,6 +28,14 @@ interface StripePayment {
       userId?: string;
     };
   };
+  orderInfo?: {
+    orderNumber: string;
+    items: Array<{
+      name: string;
+      price: number;
+      quantity: number;
+    }>;
+  };
   paymentMethod?: {
     type: string;
     card?: {
