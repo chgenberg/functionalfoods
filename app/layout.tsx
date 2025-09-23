@@ -84,7 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <header role="banner" aria-label="Huvud">
                     <Header />
                   </header>
-                  <main role="main" aria-label="Innehåll" className="flex-grow pt-16 md:pt-20">
+                  <main role="main" aria-label="Innehåll" className="flex-grow pt-24 md:pt-28">
                     {children}
                   </main>
                   <footer role="contentinfo" aria-label="Sidfot">

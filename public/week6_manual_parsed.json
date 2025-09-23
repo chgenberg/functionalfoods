@@ -1,0 +1,288 @@
+[
+  {
+    "title": "Havrefralla med morötter och torkade aprikoser",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 355,
+      "protein": 20,
+      "carbohydrates": 17,
+      "fat": 20,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Laxfilé med ratatouille",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 379,
+      "protein": 31,
+      "carbohydrates": 16,
+      "fat": 31,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Grönsakswok med kyckling",
+    "time": "10 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 344,
+      "protein": 42,
+      "carbohydrates": 25,
+      "fat": 42,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Kokt ägg med majonnäs",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 234,
+      "protein": 16,
+      "carbohydrates": 0,
+      "fat": 16,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Grönsakswok med kyckling",
+    "time": "10 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 344,
+      "protein": 42,
+      "carbohydrates": 25,
+      "fat": 42,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Köttfärspytt med italienska smaker",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 388,
+      "protein": 38,
+      "carbohydrates": 16,
+      "fat": 38,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Mango med keso och nötter",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 203,
+      "protein": 14,
+      "carbohydrates": 10,
+      "fat": 14,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Köttfärspytt med italienska smaker",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 388,
+      "protein": 38,
+      "carbohydrates": 16,
+      "fat": 38,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Indisk laxgryta med röda linser",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 389,
+      "protein": 28,
+      "carbohydrates": 25,
+      "fat": 28,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Äggröra med granatäpple och kiwi",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 238,
+      "protein": 17,
+      "carbohydrates": 6,
+      "fat": 17,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Indisk laxgryta med röda linser",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 389,
+      "protein": 28,
+      "carbohydrates": 25,
+      "fat": 28,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Quinoasallad med stekt halloumi",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 583,
+      "protein": 24,
+      "carbohydrates": 53,
+      "fat": 24,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Havregrynsgröt med apelsin och kokos",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 239,
+      "protein": 7,
+      "carbohydrates": 33,
+      "fat": 7,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Quinoasallad med stekt halloumi",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 583,
+      "protein": 24,
+      "carbohydrates": 53,
+      "fat": 24,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Torsk teriyaki med grönsaker",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 313,
+      "protein": 32,
+      "carbohydrates": 23,
+      "fat": 32,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Hallon- och blåbärssmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 215,
+      "protein": 5,
+      "carbohydrates": 31,
+      "fat": 5,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Torsk teriyaki med grönsaker",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 313,
+      "protein": 32,
+      "carbohydrates": 23,
+      "fat": 32,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Lammgryta med plommon och bulgur",
+    "time": "110 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 717,
+      "protein": 51,
+      "carbohydrates": 79,
+      "fat": 51,
+      "fiber": 9
+    }
+  },
+  {
+    "title": "Tropisk fruktsallad",
+    "time": "10 minuter",
+    "mealType": "Efterrätt",
+    "servings": 2,
+    "nutrition": {
+      "calories": 236,
+      "protein": 3,
+      "carbohydrates": 46,
+      "fat": 3,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Hallon- och blåbärssmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 215,
+      "protein": 5,
+      "carbohydrates": 31,
+      "fat": 5,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Lammgryta med plommon och bulgur",
+    "time": "110 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 717,
+      "protein": 51,
+      "carbohydrates": 79,
+      "fat": 51,
+      "fiber": 9
+    }
+  },
+  {
+    "title": "Kycklinggryta med bakad spetskål",
+    "time": "50 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 571,
+      "protein": 53,
+      "carbohydrates": 16,
+      "fat": 53,
+      "fiber": 7
+    }
+  }
+]

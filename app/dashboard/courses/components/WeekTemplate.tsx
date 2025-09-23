@@ -33,6 +33,47 @@ const formatMealName = (mealName: string) => {
   return mealName;
 };
 
+// Compact nutrition component
+const RecipeNutrition = ({ recipeLink }: { recipeLink?: string }) => {
+  const [nutrition, setNutrition] = useState<any>(null);
+  
+  useEffect(() => {
+    if (!recipeLink) return;
+    
+    const slug = recipeLink.split('/').pop();
+    if (!slug) return;
+    
+    fetch(`/api/recipes/${slug}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.nutrition) {
+          setNutrition(data.nutrition);
+        }
+      })
+      .catch(() => {});
+  }, [recipeLink]);
+  
+  if (!nutrition) return null;
+  
+  const values = [
+    { label: 'kcal', value: Math.round(nutrition.calories || nutrition.perServing?.energy || 0) },
+    { label: 'P', value: Math.round(nutrition.protein || nutrition.perServing?.protein || 0), unit: 'g' },
+    { label: 'K', value: Math.round(nutrition.carbohydrates || nutrition.perServing?.carbohydrates || 0), unit: 'g' },
+    { label: 'F', value: Math.round(nutrition.fat || nutrition.perServing?.fat || 0), unit: 'g' }
+  ];
+  
+  return (
+    <div className="flex gap-2 flex-wrap">
+      {values.map((item, i) => (
+        <div key={i} className="text-xs bg-gray-50 rounded px-1.5 py-0.5">
+          <span className="text-gray-500">{item.label}:</span>
+          <span className="font-medium text-gray-700 ml-0.5">{item.value}{item.unit || ''}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 interface WeekDay {
   day: number;
   name: string;
@@ -594,7 +635,8 @@ export default function WeekTemplate({
               const meals = [
                 { type: 'breakfast', label: 'Frukost', data: dayData.breakfast },
                 { type: 'lunch', label: 'Lunch', data: dayData.lunch },
-                { type: 'dinner', label: 'Middag', data: dayData.dinner }
+                { type: 'dinner', label: 'Middag', data: dayData.dinner },
+                ...(dayData.snack ? [{ type: 'snack', label: 'Mellanmål', data: dayData.snack }] : [])
               ];
 
               return (
@@ -603,7 +645,7 @@ export default function WeekTemplate({
                     <h3 className="text-xl font-bold text-[#014421]">{day.name}</h3>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {meals.map((meal) => {
                       if (!meal.data) return null;
                       
@@ -648,12 +690,10 @@ export default function WeekTemplate({
                               )}
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
-                            <div className="p-4 bg-white">
-                              <h4 className="font-semibold text-[#014421] mb-1">{meal.label}</h4>
-                              <p className="text-sm text-gray-700 line-clamp-2">{formatMealName(mealName)}</p>
-                              {calories && (
-                                <p className="text-xs text-gray-500 mt-1">{calories}</p>
-                              )}
+                            <div className="p-3 bg-white">
+                              <h4 className="font-medium text-[#014421] text-sm mb-0.5">{meal.label}</h4>
+                              <p className="text-xs text-gray-700 line-clamp-2 mb-2">{formatMealName(mealName)}</p>
+                              <RecipeNutrition recipeLink={meal.data.recipeLink} />
                             </div>
                           </div>
                         </motion.div>
