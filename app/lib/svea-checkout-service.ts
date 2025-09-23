@@ -167,8 +167,21 @@ export class SveaCheckoutService {
 
       const responseText = await response.text();
       
+      console.log('📥 SVEA createOrder Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: responseText.substring(0, 500) + (responseText.length > 500 ? '...' : '')
+      });
+      
       if (!response.ok) {
         const errorDetail = this.parseErrorResponse(responseText);
+        console.error('❌ SVEA createOrder Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          responseBody: responseText,
+          parsedError: errorDetail
+        });
         throw new Error(`Svea API Error (${response.status}): ${errorDetail}`);
       }
 
@@ -328,11 +341,15 @@ export class SveaCheckoutService {
       secretWordLength: this.config.secretWord.length,
       secretWordStart: this.config.secretWord.substring(0, 5) + '...',
       secretWordEnd: '...' + this.config.secretWord.slice(-5),
+      secretWordStartsWithEaOXe: this.config.secretWord.startsWith('eaOXe'),
+      secretWordEndsWithDtlig9: this.config.secretWord.endsWith('dtlig9'),
       timestamp,
       requestBodyLength: requestBody.length,
+      requestBodyStart: requestBody.substring(0, 100) + '...',
       hashInput: hashInput.substring(0, 50) + '...',
       hash: hash.substring(0, 20) + '...',
-      method
+      method,
+      authHeader: `Basic ${Buffer.from(credentials).toString('base64')}`.substring(0, 50) + '...'
     });
     
     return `Basic ${Buffer.from(credentials).toString('base64')}`;
@@ -342,16 +359,31 @@ export class SveaCheckoutService {
    * Parse error response from Svea
    */
   private parseErrorResponse(responseText: string): string {
+    if (!responseText || responseText.trim() === '') {
+      return 'Empty response from SVEA';
+    }
+    
     try {
       const errorObj = JSON.parse(responseText);
+      console.log('🔍 Parsed SVEA error object:', errorObj);
+      
       if (errorObj.message) {
         return errorObj.message;
+      }
+      if (errorObj.error) {
+        return errorObj.error;
       }
       if (errorObj.errors && Array.isArray(errorObj.errors)) {
         return errorObj.errors.map((e: any) => e.message || e.toString()).join(', ');
       }
-      return responseText;
-    } catch {
+      if (errorObj.title) {
+        return errorObj.title;
+      }
+      
+      // Return the whole object as string if no specific error field found
+      return JSON.stringify(errorObj);
+    } catch (parseError) {
+      console.log('🔍 Raw SVEA response (not JSON):', responseText);
       return responseText || 'Unknown error';
     }
   }
