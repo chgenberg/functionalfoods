@@ -385,7 +385,17 @@ export class SveaCheckoutService {
       }))
     });
     
-    return `Basic ${Buffer.from(credentials).toString('base64')}`;
+    // Try both Basic and Svea authentication methods
+    const basicAuth = `Basic ${Buffer.from(credentials).toString('base64')}`;
+    const sveaAuth = `Svea ${Buffer.from(credentials).toString('base64')}`;
+    
+    console.log('🔐 Auth headers to try:', {
+      basic: basicAuth.substring(0, 50) + '...',
+      svea: sveaAuth.substring(0, 50) + '...'
+    });
+    
+    // Try Svea format first based on www-authenticate header
+    return sveaAuth;
   }
 
   /**
