@@ -10,6 +10,7 @@ import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Video, User, ChevronRight } from 'lucide-react';
+import { formatPrice } from '@/app/lib/utils';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -222,10 +223,10 @@ export default function FunctionalFlowPage() {
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-primary/10 max-w-[260px] mx-auto flex flex-col items-center gap-3"
             >
               <div className="flex items-center gap-2">
-                <span className="text-lg text-gray-400 line-through">2,295 kr</span>
+                <span className="text-lg text-gray-400 line-through">{formatPrice(2295)} kr</span>
                 <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full">-20%</span>
               </div>
-              <div className="text-2xl font-bold text-primary">1,836 kr</div>
+              <div className="text-2xl font-bold text-primary">{formatPrice(1836)} kr</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
                 onClick={handleAddToCart}

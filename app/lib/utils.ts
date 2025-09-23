@@ -10,6 +10,14 @@ export function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+export function formatPrice(price: number): string {
+  // Format price with space as thousand separator
+  return price.toLocaleString('sv-SE', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).replace(/,/g, ' ');
+}
+
 export async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     ...options,

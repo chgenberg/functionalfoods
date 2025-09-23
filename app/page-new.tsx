@@ -228,7 +228,7 @@ export default function Home() {
                   HÄLSOQUIZ
                 </h2>
                 <p className="text-lg md:text-xl text-gray-600 mt-4">
-                  2 minuter till bättre hälsa
+                  Ta 2 minuter för att upptäcka din väg till bättre hälsa
                 </p>
               </div>
 

@@ -216,7 +216,7 @@ export default function AdminDashboard() {
           </Link>
           
           <Link 
-            href="/admin/coupons/new"
+            href="/admin/coupons"
             className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
           >
             <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">

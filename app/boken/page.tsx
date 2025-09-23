@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowLeft, CheckCircle, Clock } from 'lucide-react';
+import { formatPrice } from '@/app/lib/utils';
 
 export default function BookPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -46,7 +47,7 @@ export default function BookPage() {
             {/* Price and Buy Button */}
             <div className="bg-white rounded-2xl p-6 shadow-lg">
               <div className="flex flex-col items-center mb-4">
-                <p className="text-3xl font-light text-primary">239 kr</p>
+                <p className="text-3xl font-light text-primary">{formatPrice(239)} kr</p>
                 <p className="text-sm text-text-secondary mt-1">Moms ingår</p>
               </div>
               <Link

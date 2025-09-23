@@ -179,7 +179,7 @@ export default function BlogPostPage({ params }: Props) {
           
           paragraphs.forEach(para => {
             elements.push(
-              <p key={elements.length} className="mb-8 leading-loose text-gray-700 text-lg max-w-none">
+              <p key={elements.length} className="mb-4 leading-loose text-gray-700 text-lg max-w-none">
                 {formatInlineElements(para)}
               </p>
             );
@@ -194,7 +194,7 @@ export default function BlogPostPage({ params }: Props) {
         const ListTag = listType === 'ul' ? 'ul' : 'ol';
         const listClass = listType === 'ul' ? 'list-disc' : 'list-decimal';
         elements.push(
-          <ListTag key={elements.length} className={`${listClass} pl-8 mb-8 space-y-4`}>
+          <ListTag key={elements.length} className={`${listClass} pl-8 mb-4 space-y-2`}>
             {currentList.map((item, i) => (
               <li key={i} className="leading-loose text-gray-700 text-lg pl-2">
                 {formatInlineElements(item)}
@@ -221,7 +221,7 @@ export default function BlogPostPage({ params }: Props) {
         pushCurrentParagraph();
         pushCurrentList();
         elements.push(
-          <h1 key={elements.length} className="text-3xl md:text-4xl font-bold text-primary mt-10 mb-8 leading-tight">
+          <h1 key={elements.length} className="text-3xl md:text-4xl font-bold text-primary mt-8 mb-4 leading-tight">
             {formatInlineElements(line.replace('# ', ''))}
           </h1>
         );
@@ -233,7 +233,7 @@ export default function BlogPostPage({ params }: Props) {
         pushCurrentParagraph();
         pushCurrentList();
         elements.push(
-          <h2 key={elements.length} className="text-2xl md:text-3xl font-bold text-primary mt-12 mb-6 leading-tight border-b-2 border-orange-100 pb-3">
+          <h2 key={elements.length} className="text-2xl md:text-3xl font-bold text-primary mt-8 mb-4 leading-tight border-b-2 border-orange-100 pb-3">
             {formatInlineElements(line.replace('## ', ''))}
           </h2>
         );
@@ -245,7 +245,7 @@ export default function BlogPostPage({ params }: Props) {
         pushCurrentParagraph();
         pushCurrentList();
         elements.push(
-          <h3 key={elements.length} className="text-xl md:text-2xl font-bold text-primary mt-10 mb-5 leading-tight">
+          <h3 key={elements.length} className="text-xl md:text-2xl font-bold text-primary mt-6 mb-3 leading-tight">
             {formatInlineElements(line.replace('### ', ''))}
           </h3>
         );
@@ -257,7 +257,7 @@ export default function BlogPostPage({ params }: Props) {
         pushCurrentParagraph();
         pushCurrentList();
         elements.push(
-          <h4 key={elements.length} className="text-lg md:text-xl font-semibold text-primary mt-8 mb-4 leading-tight">
+          <h4 key={elements.length} className="text-lg md:text-xl font-semibold text-primary mt-6 mb-3 leading-tight">
             {formatInlineElements(line.replace('#### ', ''))}
           </h4>
         );
@@ -297,7 +297,7 @@ export default function BlogPostPage({ params }: Props) {
         pushCurrentParagraph();
         pushCurrentList();
         elements.push(
-          <blockquote key={elements.length} className="border-l-4 border-orange-300 pl-6 py-4 mb-8 bg-orange-50 italic text-gray-700 text-lg leading-loose">
+          <blockquote key={elements.length} className="border-l-4 border-orange-300 pl-6 py-4 mb-4 bg-orange-50 italic text-gray-700 text-lg leading-loose">
             {formatInlineElements(line.replace('> ', ''))}
           </blockquote>
         );

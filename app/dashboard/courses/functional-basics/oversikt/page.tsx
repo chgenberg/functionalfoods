@@ -80,7 +80,7 @@ export default function FunctionalBasicsOverview() {
       <CourseNavigation courseType="basics" currentWeek={currentWeek} />
 
       {/* Welcome Video Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8">
         <div className="bg-white rounded-3xl shadow-xl p-8">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             {/* Text Content */}

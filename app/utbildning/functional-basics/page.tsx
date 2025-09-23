@@ -10,6 +10,7 @@ import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight } from 'lucide-react';
+import { formatPrice } from '@/app/lib/utils';
 
 export default function FunctionalBasicsPage() {
   // Add CSS for gradient animation
@@ -275,7 +276,7 @@ export default function FunctionalBasicsPage() {
               transition={{ delay: 0.4 }}
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[260px] mx-auto flex flex-col items-center gap-3"
             >
-              <div className="text-2xl font-bold text-primary">2,295 kr</div>
+              <div className="text-2xl font-bold text-primary">{formatPrice(2295)} kr</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
                 onClick={handleAddToCart}
