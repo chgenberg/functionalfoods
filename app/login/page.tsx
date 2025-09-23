@@ -40,6 +40,11 @@ function LoginForm() {
         const data = await res.json();
 
         if (!res.ok) {
+          // Handle forced password change
+          if (res.status === 403 && data?.requirePasswordChange && data?.resetUrl) {
+            router.push(data.resetUrl);
+            return;
+          }
           throw new Error(data.error || 'Något gick fel');
         }
 

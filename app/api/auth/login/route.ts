@@ -35,7 +35,30 @@ export async function POST(request: Request) {
       );
     }
 
-    await prisma.user.update({ where: { id: user.id }, data: { lastLogin: new Date() } });
+    // If user must change password, create/reset token and inform client
+    if ((user as any).mustChangePassword) {
+      // Create reset token
+      const token = (await prisma.passwordReset.upsert({
+        where: { userId: (user as any).id },
+        create: {
+          userId: (user as any).id,
+          token: crypto.randomBytes(32).toString('hex'),
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000)
+        },
+        update: {
+          token: crypto.randomBytes(32).toString('hex'),
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+          used: false
+        }
+      })).token;
+
+      return NextResponse.json({
+        requirePasswordChange: true,
+        resetUrl: `/reset-password?token=${encodeURIComponent(token)}`
+      }, { status: 403 });
+    }
+
+    await prisma.user.update({ where: { id: (user as any).id }, data: { lastLogin: new Date() } });
 
     const token = jwt.sign(
       { 

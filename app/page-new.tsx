@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,6 +32,9 @@ export default function Home() {
   const [showGeoSuggest, setShowGeoSuggest] = useState(false);
   const [suggestedLocale, setSuggestedLocale] = useState<'sv'|'en'|'es'|null>(null);
   const searchParams = useSearchParams();
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [heroInView, setHeroInView] = useState(false);
 
   useEffect(() => {
     try {
@@ -54,7 +57,19 @@ export default function Home() {
     }
   }, [locale]);
 
-
+  // Lazy-load the hero video only when in view
+  useEffect(() => {
+    if (!heroRef.current) return;
+    const el = heroRef.current;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setHeroInView(true);
+        obs.unobserve(el);
+      }
+    }, { root: null, threshold: 0.2 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
     setQuizResults({ answers, context });
@@ -88,44 +103,29 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <iframe
-            src="https://player.vimeo.com/video/1107419263?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
-            className="absolute inset-0 w-full h-full"
-            style={{ 
-              zIndex: 10,
-              opacity: 1,
-            }}
-            frameBorder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowFullScreen
-            title="Functional Foods Hero Video"
-          />
-          {/* Add mobile-specific video styling */}
-          <style jsx>{`
-            @media (max-width: 768px) {
-              iframe {
-                width: 177.77vh !important;
-                height: 100vh !important;
-                left: 50% !important;
-                top: 0 !important;
-                transform: translateX(-50%) !important;
-                min-width: 100vw !important;
-              }
-            }
-            @media (min-width: 769px) {
-              iframe {
-                width: 100vw !important;
-                height: 100vh !important;
-                min-width: 120% !important;
-                min-height: 120% !important;
-                left: -10% !important;
-                top: -10% !important;
-                transform: scale(1.1) !important;
-              }
-            }
-          `}</style>
+          {/* Local hero video with poster + fade-in when ready */}
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ zIndex: 10, opacity: 0, transition: 'opacity .25s ease' }}
+            poster="/hero_poster.jpg"
+            playsInline
+            muted
+            loop
+            // Lazy load sources only when in view
+            autoPlay={heroInView}
+            preload={heroInView ? 'metadata' : 'none'}
+            onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
+          >
+            {heroInView && (
+              <>
+                <source src="/introvideo_compressed.webm" type="video/webm" />
+                <source src="/introvideo_compressed.mp4" type="video/mp4" />
+              </>
+            )}
+          </video>
           <div className="absolute inset-0 bg-black/40 pointer-events-none" style={{ zIndex: 15 }} />
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
