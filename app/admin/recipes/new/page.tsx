@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Save, X, Plus, Check, Clock, Users, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, X, Plus, Check, Clock, Users, Star, Eye } from 'lucide-react';
+import ImageUpload from '@/app/components/admin/ImageUpload';
+import CategorySelector from '@/app/components/admin/CategorySelector';
 
 interface RecipeData {
   title: string;
@@ -33,6 +35,7 @@ interface RecipeData {
   tips: string;
   tags: string[];
   functionalBenefits: string[];
+  courseTags: string[];
 }
 
 const steps = [
@@ -44,19 +47,9 @@ const steps = [
   { id: 6, title: 'Granska', description: 'Kontrollera och publicera' }
 ];
 
-const categories = [
-  'Frukost',
-  'Lunch', 
-  'Middag',
-  'Mellanmål',
-  'Efterrätt',
-  'Drycker',
-  'Smoothies',
-  'Sallader',
-  'Soppa'
-];
 
 const units = [
+  '',
   'st',
   'dl',
   'l',
@@ -94,7 +87,8 @@ export default function NewRecipePage() {
     },
     tips: '',
     tags: [],
-    functionalBenefits: []
+    functionalBenefits: [],
+    courseTags: []
   });
   const [saving, setSaving] = useState(false);
   const router = useRouter();
@@ -106,7 +100,7 @@ export default function NewRecipePage() {
   const addIngredient = () => {
     setRecipeData(prev => ({
       ...prev,
-      ingredients: [...prev.ingredients, { name: '', amount: '', unit: 'st' }]
+      ingredients: [...prev.ingredients, { name: '', amount: '', unit: '' }]
     }));
   };
 
@@ -193,9 +187,12 @@ export default function NewRecipePage() {
     setSaving(true);
     try {
       // Format ingredients for the database
-      const formattedIngredients = recipeData.ingredients.map(ing => 
-        `${ing.amount} ${ing.unit} ${ing.name}`
-      );
+      const formattedIngredients = recipeData.ingredients.map(ing => {
+        if (!ing.amount && !ing.unit) {
+          return ing.name;
+        }
+        return `${ing.amount} ${ing.unit} ${ing.name}`.trim();
+      });
 
       // Create the recipe object
       const recipePayload = {
@@ -212,7 +209,7 @@ export default function NewRecipePage() {
         instructions: recipeData.instructions,
         nutritionInfo: recipeData.nutritionInfo,
         tips: recipeData.tips,
-        tags: recipeData.tags.filter(tag => tag.trim() !== ''),
+        tags: [...recipeData.tags.filter(tag => tag.trim() !== ''), ...recipeData.courseTags],
         functionalBenefits: recipeData.functionalBenefits.filter(benefit => benefit.trim() !== ''),
         published: true
       };
@@ -285,40 +282,44 @@ export default function NewRecipePage() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kategori *
-              </label>
-              <div className="relative">
-                <select
-                  value={recipeData.category}
-                  onChange={(e) => updateRecipeData('category', e.target.value)}
-                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white hover:border-gray-400 transition-all duration-200 cursor-pointer"
-                >
-                  <option value="">Välj kategori</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+            <CategorySelector
+              value={recipeData.category}
+              onChange={(value) => updateRecipeData('category', value)}
+            />
+
+            <ImageUpload
+              value={recipeData.image}
+              onChange={(url) => updateRecipeData('image', url)}
+              label="Receptbild"
+            />
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Receptbild URL
+                Kurskoppling
               </label>
-              <input
-                type="url"
-                value={recipeData.image}
-                onChange={(e) => updateRecipeData('image', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                placeholder="https://example.com/recipe-image.jpg"
-              />
+              <div className="space-y-2">
+                {[
+                  { id: 'functional-basics', name: 'Functional Basics' },
+                  { id: 'functional-flow', name: 'Functional Flow' },
+                  { id: 'functional-energy', name: 'Functional Energy' }
+                ].map(course => (
+                  <label key={course.id} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={recipeData.courseTags.includes(course.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          updateRecipeData('courseTags', [...recipeData.courseTags, course.id]);
+                        } else {
+                          updateRecipeData('courseTags', recipeData.courseTags.filter(tag => tag !== course.id));
+                        }
+                      }}
+                      className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">{course.name}</span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         );
@@ -443,20 +444,20 @@ export default function NewRecipePage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Mängd
+                      Mängd <span className="text-gray-400 text-xs">(valfritt)</span>
                     </label>
                     <input
                       type="text"
                       value={ingredient.amount}
                       onChange={(e) => updateIngredient(index, 'amount', e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                      placeholder="400"
+                      placeholder="400 eller lämna tomt"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Enhet
+                      Enhet <span className="text-gray-400 text-xs">(valfritt)</span>
                     </label>
                     <div className="flex gap-2">
                       <div className="relative flex-1">
@@ -728,6 +729,58 @@ export default function NewRecipePage() {
               <p className="text-orange-700 text-sm mt-1">
                 Receptet kommer att vara synligt för användare direkt efter publicering.
               </p>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  // Format data for preview
+                  const previewData = {
+                    title: recipeData.title,
+                    excerpt: recipeData.excerpt,
+                    content: recipeData.description,
+                    imageUrl: recipeData.image,
+                    category: recipeData.category,
+                    ingredients: recipeData.ingredients.map(ing => {
+                      if (!ing.amount && !ing.unit) return ing.name;
+                      return `${ing.amount} ${ing.unit} ${ing.name}`.trim();
+                    }),
+                    instructions: recipeData.instructions.join('\n'),
+                    difficulty: recipeData.difficulty,
+                    prepTime: recipeData.prepTime,
+                    cookTime: recipeData.cookTime,
+                    servings: recipeData.servings,
+                    nutrition: {
+                      perServing: {
+                        energy: parseInt(recipeData.nutritionInfo.calories) || 0,
+                        protein: parseInt(recipeData.nutritionInfo.protein) || 0,
+                        carbohydrates: parseInt(recipeData.nutritionInfo.carbs) || 0,
+                        fat: parseInt(recipeData.nutritionInfo.fat) || 0,
+                        fiber: parseInt(recipeData.nutritionInfo.fiber) || 0
+                      }
+                    },
+                    tips: recipeData.tips,
+                    tags: [...recipeData.tags, ...recipeData.courseTags]
+                  };
+                  
+                  // Store in sessionStorage for preview
+                  sessionStorage.setItem('recipePreview', JSON.stringify(previewData));
+                  
+                  // Generate preview URL
+                  const previewSlug = recipeData.title.toLowerCase()
+                    .replace(/[åä]/g, 'a')
+                    .replace(/ö/g, 'o')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                  
+                  window.open(`/kunskapsbank/recept/${previewSlug}?preview=true`, '_blank');
+                }}
+                className="flex-1 py-3 px-6 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+              >
+                <Eye className="w-5 h-5" />
+                Förhandsgranska
+              </button>
             </div>
           </div>
         );

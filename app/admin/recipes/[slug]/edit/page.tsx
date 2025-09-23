@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { AlertCircle, ArrowLeft, Check, Eye, FileText, Image as ImageIcon, Lightbulb, Loader, Save, Trash2, Upload, X, BookOpen, Edit3 } from "lucide-react";
+import ImageUpload from '@/app/components/admin/ImageUpload';
 
 interface Recipe {
   id: string;
@@ -75,7 +76,6 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error' | null>(null);
-  const [uploadingImage, setUploadingImage] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showNutritionEdit, setShowNutritionEdit] = useState(false);
   
@@ -122,38 +122,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   useEffect(() => {
     if (recipe?.imageUrl) {
       setImagePreview(recipe.imageUrl);
-    } else if (recipe?.title) {
-      // Try to fetch optimized image for this recipe
-      fetchOptimizedImage();
     }
   }, [recipe]);
 
-  const fetchOptimizedImage = async () => {
-    if (!recipe?.title) return;
-    
-    try {
-      const response = await fetch('/api/recipes/batch-images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          recipeNames: [recipe.title],
-          size: 'medium',
-          usage: 'detail'
-        })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        const optimizedUrl = data.images[recipe.title];
-        if (optimizedUrl && !optimizedUrl.includes('placeholder')) {
-          setImagePreview(optimizedUrl);
-          setFormData(prev => ({ ...prev, imageUrl: optimizedUrl }));
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching optimized image:', error);
-    }
-  };
 
   const fetchRecipe = async () => {
     try {
@@ -302,36 +273,6 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingImage(true);
-    
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'recipe');
-
-      const response = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
-      }
-
-      const data = await response.json();
-      setFormData(prev => ({ ...prev, imageUrl: data.url }));
-      setImagePreview(data.url);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Fel vid uppladdning av bild');
-    } finally {
-      setUploadingImage(false);
-    }
-  };
 
   const toggleCourseTag = (courseId: string) => {
     setFormData(prev => ({
@@ -804,63 +745,14 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
           <div className="admin-card">
             <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Bild</h3>
             
-            {imagePreview ? (
-              <div className="space-y-4">
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
-                  <Image
-                    src={imagePreview}
-                    alt={formData.title}
-                    fill
-                    className="object-cover"
-                    onError={() => {
-                      console.error('Image failed to load:', imagePreview);
-                      setImagePreview(null);
-                    }}
-                  />
-                </div>
-                
-                <div className="flex gap-2">
-                  <button
-                    onClick={fetchOptimizedImage}
-                    className="admin-btn admin-btn-secondary flex-1"
-                  >
-                    Ladda om bild
-                  </button>
-                  <button
-                    onClick={() => {
-                      setImagePreview(null);
-                      setFormData(prev => ({ ...prev, imageUrl: '' }));
-                    }}
-                    className="admin-btn admin-btn-secondary flex-1"
-                  >
-                    Ta bort bild
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="admin-upload-zone">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  id="image-upload"
-                  disabled={uploadingImage}
-                />
-                <label htmlFor="image-upload" className="cursor-pointer text-center">
-                  {uploadingImage ? (
-                    <Loader className="w-8 h-8 animate-spin mx-auto text-[var(--primary-green)]" />
-                  ) : (
-                    <>
-                      <Upload className="w-8 h-8 mx-auto mb-2 text-[var(--primary-green)]" />
-                      <p className="text-sm text-[var(--text-secondary)]">
-                        Klicka för att ladda upp bild
-                      </p>
-                    </>
-                  )}
-                </label>
-              </div>
-            )}
+            <ImageUpload
+              value={formData.imageUrl}
+              onChange={(url) => {
+                setFormData(prev => ({ ...prev, imageUrl: url }));
+                setImagePreview(url);
+              }}
+              label=""
+            />
           </div>
 
           {/* Status */}

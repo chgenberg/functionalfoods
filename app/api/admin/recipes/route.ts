@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
           .replace(/^-+|-+$/g, ''),
         excerpt: body.excerpt,
         content: body.description,
-        imageUrl: body.imageUrl,
+        imageUrl: body.imageUrl || null,
         categories: body.categories || [body.category],
         ingredients: body.ingredients || [],
         instructions: Array.isArray(body.instructions) 

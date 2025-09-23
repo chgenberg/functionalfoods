@@ -340,6 +340,42 @@ export default function RecipePage() {
       setLoading(true);
       setError(null); // Clear any previous errors
       
+      // Check if this is a preview
+      const isPreview = searchParams.get('preview') === 'true';
+      
+      if (isPreview) {
+        // Load from sessionStorage for preview
+        const previewData = sessionStorage.getItem('recipePreview');
+        if (previewData) {
+          const data = JSON.parse(previewData);
+          // Format the data to match the recipe structure
+          const formattedRecipe = {
+            id: 'preview',
+            slug: slug,
+            title: data.title,
+            excerpt: data.excerpt,
+            content: data.content,
+            imageUrl: data.imageUrl,
+            categories: [data.category],
+            ingredients: data.ingredients || [],
+            instructions: data.instructions,
+            difficulty: data.difficulty,
+            prepTime: data.prepTime,
+            cookTime: data.cookTime,
+            servings: data.servings,
+            nutrition: data.nutrition,
+            tips: data.tips,
+            tags: data.tags || [],
+            isPremium: false,
+            isFree: true
+          };
+          setRecipe(formattedRecipe);
+          initializeNutrition(formattedRecipe);
+          setLoading(false);
+          return;
+        }
+      }
+      
       const token = getToken();
       const headers: HeadersInit = {};
       if (token) {
@@ -832,6 +868,18 @@ export default function RecipePage() {
       `}</style>
 
       <div id="printable-recipe" className="bg-[#F3EFE3] min-h-screen">
+        {/* Preview warning */}
+        {searchParams.get('preview') === 'true' && (
+          <div className="bg-yellow-100 border-b border-yellow-200 px-4 py-3 no-print">
+            <div className="max-w-7xl mx-auto flex items-center gap-2">
+              <Eye className="w-5 h-5 text-yellow-600" />
+              <p className="text-sm text-yellow-800">
+                <strong>Förhandsvisning:</strong> Detta är en förhandsvisning av receptet. Ändringarna har inte sparats ännu.
+              </p>
+            </div>
+          </div>
+        )}
+        
         {/* Header with Back Button and Action Buttons - No Print */}
         <div className="max-w-7xl mx-auto px-4 pb-4 md:pb-6 no-print header-safe">
           <div className="flex items-center justify-between">
