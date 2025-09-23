@@ -326,14 +326,41 @@ export class SveaCheckoutService {
    * Generate authorization header with timestamp and request body
    */
   private getAuthHeader(method: string = 'GET', requestBody: string = '', timestamp?: string): string {
+    // Try different timestamp formats to see what works
     if (!timestamp) {
       timestamp = new Date().toISOString();
     }
     
-    // According to Svea: Base64(MerchantId:Hash(SecretWord + requestBody + timestamp))
-    const hashInput = this.config.secretWord + requestBody + timestamp;
-    const hash = createHash('sha512').update(hashInput, 'utf8').digest('hex');
-    const credentials = `${this.config.merchantId}:${hash}`;
+    // Also try Unix timestamp format
+    const unixTimestamp = Math.floor(Date.now() / 1000).toString();
+    
+    // Try multiple hash approaches based on common payment gateway patterns
+    const approaches = [
+      {
+        name: 'ISO timestamp + SHA512',
+        hashInput: this.config.secretWord + requestBody + timestamp,
+        hash: createHash('sha512').update(this.config.secretWord + requestBody + timestamp, 'utf8').digest('hex')
+      },
+      {
+        name: 'Unix timestamp + SHA512', 
+        hashInput: this.config.secretWord + requestBody + unixTimestamp,
+        hash: createHash('sha512').update(this.config.secretWord + requestBody + unixTimestamp, 'utf8').digest('hex')
+      },
+      {
+        name: 'ISO timestamp + SHA256',
+        hashInput: this.config.secretWord + requestBody + timestamp,
+        hash: createHash('sha256').update(this.config.secretWord + requestBody + timestamp, 'utf8').digest('hex')
+      },
+      {
+        name: 'Simple Basic Auth (fallback)',
+        hashInput: 'merchantId:secretWord',
+        hash: this.config.secretWord
+      }
+    ];
+    
+    // Use the first approach (ISO + SHA512) as primary
+    const primaryApproach = approaches[0];
+    const credentials = `${this.config.merchantId}:${primaryApproach.hash}`;
     
     // Debug logging for SVEA troubleshooting
     console.log('🔐 SVEA Auth Debug:', {
@@ -343,13 +370,19 @@ export class SveaCheckoutService {
       secretWordEnd: '...' + this.config.secretWord.slice(-5),
       secretWordStartsWithEaOXe: this.config.secretWord.startsWith('eaOXe'),
       secretWordEndsWithDtlig9: this.config.secretWord.endsWith('dtlig9'),
-      timestamp,
+      isoTimestamp: timestamp,
+      unixTimestamp: unixTimestamp,
       requestBodyLength: requestBody.length,
       requestBodyStart: requestBody.substring(0, 100) + '...',
-      hashInput: hashInput.substring(0, 50) + '...',
-      hash: hash.substring(0, 20) + '...',
       method,
-      authHeader: `Basic ${Buffer.from(credentials).toString('base64')}`.substring(0, 50) + '...'
+      primaryApproach: primaryApproach.name,
+      hashInputStart: primaryApproach.hashInput.substring(0, 50) + '...',
+      hashStart: primaryApproach.hash.substring(0, 20) + '...',
+      authHeader: `Basic ${Buffer.from(credentials).toString('base64')}`.substring(0, 50) + '...',
+      allApproaches: approaches.map(a => ({
+        name: a.name,
+        hashStart: a.hash.substring(0, 10) + '...'
+      }))
     });
     
     return `Basic ${Buffer.from(credentials).toString('base64')}`;
