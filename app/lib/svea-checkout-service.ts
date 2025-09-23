@@ -327,7 +327,7 @@ export class SveaCheckoutService {
       merchantId: this.config.merchantId,
       secretWordLength: this.config.secretWord.length,
       secretWordStart: this.config.secretWord.substring(0, 5) + '...',
-      secretWordEnd: '...' + this.config.secretWord.substring(-5),
+      secretWordEnd: '...' + this.config.secretWord.slice(-5),
       timestamp,
       requestBodyLength: requestBody.length,
       hashInput: hashInput.substring(0, 50) + '...',

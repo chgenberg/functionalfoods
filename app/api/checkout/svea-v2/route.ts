@@ -158,6 +158,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Create order in Svea
+    console.log('📤 Sending request to Svea with items:', sveaItems);
     const sveaResponse = await sveaCheckout.createOrder(checkoutRequest);
 
     console.log('✅ Svea order created successfully:', {
@@ -212,17 +213,26 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error) {
-    console.error('💥 Checkout error:', error);
+    console.error('💥 Checkout error details:', {
+      error,
+      message: error instanceof Error ? error.message : 'Okänt fel',
+      stack: error instanceof Error ? error.stack : undefined,
+      type: typeof error
+    });
     
     const errorMessage = error instanceof Error ? error.message : 'Okänt fel';
     const isConfigError = errorMessage.includes('credentials not configured');
+    const isSveaError = errorMessage.includes('Svea API Error');
     
     return NextResponse.json(
       { 
         error: isConfigError 
           ? 'Betalningssystemet är inte konfigurerat. Kontakta support.'
-          : 'Ett fel uppstod vid skapande av beställning. Försök igen.',
-        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+          : isSveaError
+            ? `SVEA fel: ${errorMessage}`
+            : 'Ett fel uppstod vid skapande av beställning. Försök igen.',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+        fullError: process.env.NODE_ENV === 'development' ? error : undefined
       },
       { status: isConfigError ? 503 : 500 }
     );
