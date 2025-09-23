@@ -125,21 +125,18 @@ export default function Home() {
             poster="/hero_poster.jpg"
             playsInline
             muted
+            // Safari: ensure muted is set before autoplay
+            defaultMuted
             loop
-            // Lazy load sources only when in view
-            autoPlay={heroInView}
-            preload={heroInView ? 'metadata' : 'none'}
+            // Autoplay with lightweight initial fetch; use separate sources for mobile/desktop
+            autoPlay
+            preload="metadata"
             onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
           >
-            {/* Always include at least MP4 so some browsers start buffering poster->metadata */}
-            {heroInView ? (
-              <>
-                <source src="/introvideo_compressed.webm" type="video/webm" />
-                <source src="/introvideo_compressed.mp4" type="video/mp4" />
-              </>
-            ) : (
-              <source src="/introvideo_compressed.mp4" type="video/mp4" />
-            )}
+            {/* Mobile source */}
+            <source src="/introvideo_mobile.mp4" type="video/mp4" media="(max-width: 768px)" />
+            {/* Desktop source */}
+            <source src="/introvideo_compressed.mp4" type="video/mp4" media="(min-width: 769px)" />
           </video>
           <div className="absolute inset-0 bg-black/40 pointer-events-none" style={{ zIndex: 15 }} />
           <div 
