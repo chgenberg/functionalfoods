@@ -14,7 +14,11 @@ RUN npm install --include=dev --no-audit --no-fund
 
 # Copy prisma schema separately to allow prisma generate cache if only code changes
 COPY prisma ./prisma
-RUN npx prisma generate
+# Ensure Prisma uses correct binary target in Alpine (musl)
+ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary \
+    PRISMA_GENERATE_SKIP_AUTOINSTALL=true \
+    PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
+RUN npx prisma generate || (npm i -D prisma@latest @prisma/client@latest && npx prisma generate)
 
 # Copy the rest of the source
 COPY . .
