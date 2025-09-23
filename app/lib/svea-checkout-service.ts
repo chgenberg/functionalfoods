@@ -148,6 +148,8 @@ export class SveaCheckoutService {
   async createOrder(request: CreateCheckoutOrderRequest): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders`;
     const requestId = randomUUID();
+    const timestamp = new Date().toISOString();
+    const requestBody = JSON.stringify(request);
     
     try {
       const response = await fetch(endpoint, {
@@ -155,11 +157,12 @@ export class SveaCheckoutService {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': this.getAuthHeader(),
+          'Authorization': this.getAuthHeader('POST', requestBody, timestamp),
           'X-Request-Id': requestId,
+          'X-Timestamp': timestamp,
           'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
         },
-        body: JSON.stringify(request)
+        body: requestBody
       });
 
       const responseText = await response.text();
@@ -190,14 +193,16 @@ export class SveaCheckoutService {
   async getOrder(orderId: number): Promise<GetOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     const requestId = randomUUID();
+    const timestamp = new Date().toISOString();
     
     try {
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Authorization': this.getAuthHeader(),
+          'Authorization': this.getAuthHeader('GET', '', timestamp),
           'X-Request-Id': requestId,
+          'X-Timestamp': timestamp,
           'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
         }
       });
@@ -223,15 +228,20 @@ export class SveaCheckoutService {
    */
   async updateOrder(orderId: number, request: Partial<CreateCheckoutOrderRequest>): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
+    const timestamp = new Date().toISOString();
+    const requestBody = JSON.stringify(request);
     
     try {
       const response = await fetch(endpoint, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.getAuthHeader()
+          'Accept': 'application/json',
+          'Authorization': this.getAuthHeader('PUT', requestBody, timestamp),
+          'X-Timestamp': timestamp,
+          'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
         },
-        body: JSON.stringify(request)
+        body: requestBody
       });
 
       const responseText = await response.text();
@@ -300,10 +310,31 @@ export class SveaCheckoutService {
   }
 
   /**
-   * Get authorization header
+   * Generate authorization header with timestamp and request body
    */
-  private getAuthHeader(): string {
-    const credentials = `${this.config.merchantId}:${this.config.secretWord}`;
+  private getAuthHeader(method: string = 'GET', requestBody: string = '', timestamp?: string): string {
+    if (!timestamp) {
+      timestamp = new Date().toISOString();
+    }
+    
+    // According to Svea: Base64(MerchantId:Hash(SecretWord + requestBody + timestamp))
+    const hashInput = this.config.secretWord + requestBody + timestamp;
+    const hash = createHash('sha512').update(hashInput, 'utf8').digest('hex');
+    const credentials = `${this.config.merchantId}:${hash}`;
+    
+    // Debug logging for SVEA troubleshooting
+    console.log('🔐 SVEA Auth Debug:', {
+      merchantId: this.config.merchantId,
+      secretWordLength: this.config.secretWord.length,
+      secretWordStart: this.config.secretWord.substring(0, 5) + '...',
+      secretWordEnd: '...' + this.config.secretWord.substring(-5),
+      timestamp,
+      requestBodyLength: requestBody.length,
+      hashInput: hashInput.substring(0, 50) + '...',
+      hash: hash.substring(0, 20) + '...',
+      method
+    });
+    
     return `Basic ${Buffer.from(credentials).toString('base64')}`;
   }
 
