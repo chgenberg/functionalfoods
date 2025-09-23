@@ -3,7 +3,7 @@
  * Documentation: https://www.svea.com/se/foretag/betallosningar/e-handel/svea-checkout/
  */
 
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 
 // Types according to Svea API documentation
 export interface SveaConfig {
@@ -147,13 +147,17 @@ export class SveaCheckoutService {
    */
   async createOrder(request: CreateCheckoutOrderRequest): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders`;
+    const requestId = randomUUID();
     
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.getAuthHeader()
+          'Accept': 'application/json',
+          'Authorization': this.getAuthHeader(),
+          'X-Request-Id': requestId,
+          'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
         },
         body: JSON.stringify(request)
       });
@@ -185,12 +189,16 @@ export class SveaCheckoutService {
    */
   async getOrder(orderId: number): Promise<GetOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
+    const requestId = randomUUID();
     
     try {
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
-          'Authorization': this.getAuthHeader()
+          'Accept': 'application/json',
+          'Authorization': this.getAuthHeader(),
+          'X-Request-Id': requestId,
+          'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
         }
       });
 
