@@ -40,12 +40,18 @@ function LoginForm() {
         const data = await res.json();
 
         if (!res.ok) {
-          // Handle forced password change
-          if (res.status === 403 && data?.requirePasswordChange && data?.resetUrl) {
+          // Om servern ändå skulle svara 403 med requirePasswordChange, hantera det
+          if (data?.requirePasswordChange && data?.resetUrl) {
             router.push(data.resetUrl);
             return;
           }
           throw new Error(data.error || 'Något gick fel');
+        }
+
+        // Nytt beteende: API kan svara 200 med requirePasswordChange=true
+        if (data?.requirePasswordChange && data?.resetUrl) {
+          router.push(data.resetUrl);
+          return;
         }
 
         localStorage.setItem('token', data.token);

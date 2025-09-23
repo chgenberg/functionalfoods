@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         requirePasswordChange: true,
         resetUrl: `/reset-password?token=${encodeURIComponent(token)}`
-      }, { status: 403 });
+      });
     }
 
     await prisma.user.update({ where: { id: (user as any).id }, data: { lastLogin: new Date() } });
