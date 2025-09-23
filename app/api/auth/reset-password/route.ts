@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
 // Helper to create a reset token (for future use)
 export async function createResetToken(userId: string) {
   const token = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60);
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 dagar
   await prisma.passwordReset.upsert({
     where: { userId },
     create: { userId, token, expiresAt },

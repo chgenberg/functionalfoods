@@ -29,14 +29,8 @@ export async function POST(request: Request) {
 
     const validPassword = await bcrypt.compare(password, user.password);
 
-    if (!validPassword) {
-      return NextResponse.json(
-        { error: 'Felaktig email eller lösenord' },
-        { status: 401 }
-      );
-    }
-
-    // If user must change password, create/reset token and inform client
+    // If user must change password, always redirect to reset flow
+    // (even if password was entered wrong) to avoid dead-ends on first login.
     if ((user as any).mustChangePassword) {
       // Create reset token
       const token = (await prisma.passwordReset.upsert({
@@ -44,11 +38,11 @@ export async function POST(request: Request) {
         create: {
           userId: (user as any).id,
           token: crypto.randomBytes(32).toString('hex'),
-          expiresAt: new Date(Date.now() + 60 * 60 * 1000)
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 dagar
         },
         update: {
           token: crypto.randomBytes(32).toString('hex'),
-          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
           used: false
         }
       })).token;
@@ -57,6 +51,13 @@ export async function POST(request: Request) {
         requirePasswordChange: true,
         resetUrl: `/reset-password?token=${encodeURIComponent(token)}`
       });
+    }
+
+    if (!validPassword) {
+      return NextResponse.json(
+        { error: 'Felaktig email eller lösenord' },
+        { status: 401 }
+      );
     }
 
     await prisma.user.update({ where: { id: (user as any).id }, data: { lastLogin: new Date() } });

@@ -75,12 +75,21 @@ export default function Home() {
   useEffect(() => {
     if (!heroInView || !videoRef.current) return;
     const v = videoRef.current;
+    let attempts = 0;
     const tryPlay = async () => {
       try {
-        if (v.paused) await v.play();
+        if (v.paused) {
+          await v.play();
+        }
       } catch {}
     };
+    const id = setInterval(() => {
+      attempts += 1;
+      if (!v.paused || attempts > 10) clearInterval(id);
+      else tryPlay();
+    }, 300);
     tryPlay();
+    return () => clearInterval(id);
   }, [heroInView]);
 
   const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
@@ -131,7 +140,9 @@ export default function Home() {
             // Autoplay with lightweight initial fetch; use separate sources for mobile/desktop
             autoPlay
             preload="metadata"
+            onLoadedMetadata={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
             onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
+            onError={(e) => { console.warn('Hero video failed to load', e); }}
           >
             {/* Mobile source */}
             <source src="/introvideo_mobile.mp4" type="video/mp4" media="(max-width: 768px)" />
