@@ -43,9 +43,9 @@
       "category": "Frukt/Grönt"
     },
     {
-      "name": "ul lök",
+      "name": "gul lök",
       "amount": 0.5,
-      "unit": "g",
+      "unit": null,
       "category": "Frukt/Grönt"
     },
     {
@@ -349,9 +349,9 @@
       "category": "Kött/fisk/fågel/ägg/vego"
     },
     {
-      "name": "rillad kyckling",
+      "name": "grillad kyckling",
       "amount": 0.5,
-      "unit": "g",
+      "unit": null,
       "category": "Kött/fisk/fågel/ägg/vego"
     },
     {
@@ -457,5 +457,5 @@
       "category": "Övrigt"
     }
   ],
-  "generatedAt": "2025-09-23T21:26:30.716Z"
+  "generatedAt": "2025-09-23T23:35:22.013Z"
 }

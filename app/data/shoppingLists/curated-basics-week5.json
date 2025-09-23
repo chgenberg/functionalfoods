@@ -25,9 +25,9 @@
       "category": "Frukt/Grönt"
     },
     {
-      "name": "ime",
+      "name": "lime",
       "amount": 0.75,
-      "unit": "l",
+      "unit": null,
       "category": "Frukt/Grönt"
     },
     {
@@ -55,9 +55,9 @@
       "category": "Frukt/Grönt"
     },
     {
-      "name": "ul lök",
+      "name": "gul lök",
       "amount": 1,
-      "unit": "g",
+      "unit": null,
       "category": "Frukt/Grönt"
     },
     {
@@ -271,9 +271,9 @@
       "category": "Kryddor/smaksättare"
     },
     {
-      "name": "färsk basilika",
+      "name": "msk färsk basilika",
       "amount": 2,
-      "unit": "msk",
+      "unit": null,
       "category": "Kryddor/smaksättare"
     },
     {
@@ -469,5 +469,5 @@
       "category": "Övrigt"
     }
   ],
-  "generatedAt": "2025-09-23T22:20:13.732Z"
+  "generatedAt": "2025-09-23T23:35:22.335Z"
 }

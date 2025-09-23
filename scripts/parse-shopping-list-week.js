@@ -41,13 +41,35 @@ function parseLine(line) {
   if (!raw) return null;
   raw = raw.replace(/^ca\s+/i, '');
   raw = raw.replace(/,(\d)/g, '.$1');
-  const m1 = raw.match(/^(\d+(?:\.\d+)?)\s*(st|dl|gram|g|kg|msk|tsk|cm|l)?\s*(.*)$/i);
-  if (m1) {
-    const amount = parseFloat(m1[1]);
-    const unit = (m1[2] || '').toLowerCase() || null;
-    const name = m1[3].trim();
-    return { name, amount: isNaN(amount) ? null : amount, unit };
+  
+  // Special handling for common words that end with units or contain problematic letters
+  const specialWords = ['lime', 'chili', 'basilika', 'paprika', 'kiwi', 'grillad kyckling', 'gul lök', 'rödlök', 'salladslök'];
+  let isSpecialWord = false;
+  
+  for (const word of specialWords) {
+    if (raw.toLowerCase().includes(word.toLowerCase())) {
+      // For special words, don't extract units from the word itself
+      const m2 = raw.match(/^(\d+(?:[,.]?\d+)?)\s*(.*)$/i);
+      if (m2) {
+        const amountStr = m2[1].replace(',', '.');
+        const amount = parseFloat(amountStr);
+        const name = m2[2].trim();
+        isSpecialWord = true;
+        return { name, amount: isNaN(amount) ? null : amount, unit: null };
+      }
+    }
   }
+  
+  if (!isSpecialWord) {
+    const m1 = raw.match(/^(\d+(?:\.\d+)?)\s*(st|dl|gram|g|kg|msk|tsk|cm|l)?\s*(.*)$/i);
+    if (m1) {
+      const amount = parseFloat(m1[1]);
+      const unit = (m1[2] || '').toLowerCase() || null;
+      const name = m1[3].trim();
+      return { name, amount: isNaN(amount) ? null : amount, unit };
+    }
+  }
+  
   return { name: raw, amount: null, unit: null };
 }
 
