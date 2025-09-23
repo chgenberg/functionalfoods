@@ -71,6 +71,18 @@ export default function Home() {
     return () => obs.disconnect();
   }, []);
 
+  // Ensure playback starts when in view (Safari robustness)
+  useEffect(() => {
+    if (!heroInView || !videoRef.current) return;
+    const v = videoRef.current;
+    const tryPlay = async () => {
+      try {
+        if (v.paused) await v.play();
+      } catch {}
+    };
+    tryPlay();
+  }, [heroInView]);
+
   const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
     setQuizResults({ answers, context });
     setShowQuiz(false);
@@ -119,11 +131,14 @@ export default function Home() {
             preload={heroInView ? 'metadata' : 'none'}
             onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
           >
-            {heroInView && (
+            {/* Always include at least MP4 so some browsers start buffering poster->metadata */}
+            {heroInView ? (
               <>
                 <source src="/introvideo_compressed.webm" type="video/webm" />
                 <source src="/introvideo_compressed.mp4" type="video/mp4" />
               </>
+            ) : (
+              <source src="/introvideo_compressed.mp4" type="video/mp4" />
             )}
           </video>
           <div className="absolute inset-0 bg-black/40 pointer-events-none" style={{ zIndex: 15 }} />
