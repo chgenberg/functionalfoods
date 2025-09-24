@@ -439,7 +439,8 @@ export class EmailService {
   }
 
   async sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
-    const resetLink = `https://functionalfoods.se/reset-password?token=${resetToken}`;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+    const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
     
     const html = `
       <!DOCTYPE html>
