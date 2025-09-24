@@ -126,7 +126,7 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
       {document.headerImage && (
         <div className="relative h-64 md:h-96 w-full">
           <Image
-            src={`/api/images${document.headerImage}`}
+            src={document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage}`}
             alt={document.title}
             fill
             className="object-cover"
