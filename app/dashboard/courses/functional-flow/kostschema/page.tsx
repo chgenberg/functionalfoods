@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 import { GiFruitBowl, GiMeal, GiCookingPot, GiHealthNormal } from 'react-icons/gi';
 import { getMealForDay, getFlowWeekData } from '@/app/data/mealPlans';
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Calendar, Clock, Star, Heart, ShoppingCart, Download, Printer, Sun, Moon, Coffee, Check, Plus } from 'lucide-react';
 // no next/navigation hooks to avoid suspense in export
@@ -264,6 +265,43 @@ export default function KostschemaPage() {
   ];
   const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
 
+  // Build first-occurrence map across flow weeks to append (rester)
+  const firstOccurrence = useMemo(() => {
+    const map: Record<string, number> = {};
+    const types = ['breakfast','lunch','dinner','snack','dessert'];
+    const daysOrder = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+    for (let w = 1; w <= 6; w++) {
+      const wk = getFlowWeekData(w);
+      if (!wk || !wk.days) continue;
+      for (let d = 0; d < 7; d++) {
+        const dayKey: any = wk.days[daysOrder[d]] || (wk.days as any)[`day${d+1}`];
+        if (!dayKey) continue;
+        for (let t = 0; t < types.length; t++) {
+          const mt = types[t] as keyof typeof dayKey;
+          const m: any = dayKey[mt];
+          if (!m) continue;
+          const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
+          const position = w * 100 + (d+1) * 10 + t;
+          if (!(key in map)) map[key] = position;
+        }
+      }
+    }
+    return map;
+  }, []);
+
+  const withResterName = (wNum: number, dNum: number, typeIdx: number, m: any): string => {
+    if (!m || !m.name) return '';
+    const base = m.name.replace(/\s*\(\d+\s*kcal\)/, '');
+    if (/\brester\b/i.test(base)) return base;
+    const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
+    const currentPos = wNum * 100 + dNum * 10 + typeIdx;
+    const firstPos = firstOccurrence[key];
+    if (firstPos !== undefined && currentPos > firstPos) {
+      return `${base} (rester)`;
+    }
+    return base;
+  };
+
   // Get current day's meals from centralized data
   const currentDayMeals = getMealForDay(selectedDay);
   const currentWeekNumber = Math.ceil(selectedDay / 7);
@@ -416,11 +454,11 @@ export default function KostschemaPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {currentDayMeals ? (
                       <>
-                        {currentDayMeals.breakfast && <MealCard meal={currentDayMeals.breakfast} type="breakfast" icon={Sun} />}
-                        {currentDayMeals.lunch && <MealCard meal={currentDayMeals.lunch} type="lunch" icon={Coffee} />}
-                        {currentDayMeals.dinner && <MealCard meal={currentDayMeals.dinner} type="dinner" icon={Moon} />}
-                        {currentDayMeals.snack && <MealCard meal={currentDayMeals.snack} type="snack" icon={GiFruitBowl} />}
-                        {currentDayMeals.dessert && <MealCard meal={currentDayMeals.dessert} type="dessert" icon={Star} />}
+                        {currentDayMeals.breakfast && <MealCard meal={{...currentDayMeals.breakfast, name: withResterName(currentWeekNumber, (selectedDay-1)%7+1, 0, currentDayMeals.breakfast)}} type="breakfast" icon={Sun} />}
+                        {currentDayMeals.lunch && <MealCard meal={{...currentDayMeals.lunch, name: withResterName(currentWeekNumber, (selectedDay-1)%7+1, 1, currentDayMeals.lunch)}} type="lunch" icon={Coffee} />}
+                        {currentDayMeals.dinner && <MealCard meal={{...currentDayMeals.dinner, name: withResterName(currentWeekNumber, (selectedDay-1)%7+1, 2, currentDayMeals.dinner)}} type="dinner" icon={Moon} />}
+                        {currentDayMeals.snack && <MealCard meal={{...currentDayMeals.snack, name: withResterName(currentWeekNumber, (selectedDay-1)%7+1, 3, currentDayMeals.snack)}} type="snack" icon={GiFruitBowl} />}
+                        {currentDayMeals.dessert && <MealCard meal={{...currentDayMeals.dessert, name: withResterName(currentWeekNumber, (selectedDay-1)%7+1, 4, currentDayMeals.dessert)}} type="dessert" icon={Star} />}
                       </>
                     ) : (
                       <p>Ingen måltidsplan för denna dag.</p>
@@ -475,10 +513,10 @@ export default function KostschemaPage() {
                         </div>
                         {meals ? (
                           <div className="flex flex-col gap-2 text-sm text-gray-700">
-                            {meals.breakfast && <div className="truncate"><span className="text-gray-500">Frukost: </span>{meals.breakfast.name}</div>}
-                            {meals.lunch && <div className="truncate"><span className="text-gray-500">Lunch: </span>{meals.lunch.name}</div>}
-                            {meals.dinner && <div className="truncate"><span className="text-gray-500">Middag: </span>{meals.dinner.name}</div>}
-                            {meals.snack && <div className="truncate"><span className="text-gray-500">Mellanmål: </span>{meals.snack.name}</div>}
+                            {meals.breakfast && <div className="truncate"><span className="text-gray-500">Frukost: </span>{withResterName(selectedWeek, idx+1, 0, meals.breakfast)}</div>}
+                            {meals.lunch && <div className="truncate"><span className="text-gray-500">Lunch: </span>{withResterName(selectedWeek, idx+1, 1, meals.lunch)}</div>}
+                            {meals.dinner && <div className="truncate"><span className="text-gray-500">Middag: </span>{withResterName(selectedWeek, idx+1, 2, meals.dinner)}</div>}
+                            {meals.snack && <div className="truncate"><span className="text-gray-500">Mellanmål: </span>{withResterName(selectedWeek, idx+1, 3, meals.snack)}</div>}
                           </div>
                         ) : (
                           <div className="text-xs text-gray-400">Ingen plan för denna dag</div>

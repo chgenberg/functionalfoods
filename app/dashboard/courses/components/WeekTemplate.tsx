@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import Link from 'next/link';
@@ -366,6 +366,43 @@ export default function WeekTemplate({
 
   const weekDays = getDaysForWeek(weekNumber);
 
+  // Compute first occurrence map for all meals in this course (weeks 1-6)
+  const firstOccurrence = useMemo(() => {
+    const map: Record<string, number> = {};
+    const types = ['breakfast','lunch','dinner','snack','dessert'];
+    const daysOrder = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+    for (let w = 1; w <= 6; w++) {
+      const wk = mealPlans[`week${w}`];
+      if (!wk || !wk.days) continue;
+      for (let d = 0; d < 7; d++) {
+        const dayKey = wk.days[daysOrder[d]] || wk.days[`day${d+1}`];
+        if (!dayKey) continue;
+        for (let t = 0; t < types.length; t++) {
+          const mt = types[t] as keyof typeof dayKey;
+          const m: any = (dayKey as any)[mt];
+          if (!m) continue;
+          const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
+          const position = w * 100 + (d+1) * 10 + t; // deterministic order score
+          if (!(key in map)) map[key] = position;
+        }
+      }
+    }
+    return map;
+  }, [mealPlans]);
+
+  const withResterName = (wNum: number, dNum: number, typeIdx: number, m: any): string => {
+    if (!m || !m.name) return '';
+    const base = m.name.replace(/\s*\(\d+\s*kcal\)/, '');
+    if (/\brester\b/i.test(base)) return base; // already marked
+    const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
+    const currentPos = wNum * 100 + dNum * 10 + typeIdx;
+    const firstPos = firstOccurrence[key];
+    if (firstPos !== undefined && currentPos > firstPos) {
+      return `${base} (rester)`;
+    }
+    return base;
+  };
+
   // Load meal images for all meals in the week
   useEffect(() => {
     const loadMealImages = async () => {
@@ -636,7 +673,8 @@ export default function WeekTemplate({
                 { type: 'breakfast', label: 'Frukost', data: dayData.breakfast },
                 { type: 'lunch', label: 'Lunch', data: dayData.lunch },
                 { type: 'dinner', label: 'Middag', data: dayData.dinner },
-                ...(dayData.snack ? [{ type: 'snack', label: 'Mellanmål', data: dayData.snack }] : [])
+                ...(dayData.snack ? [{ type: 'snack', label: 'Mellanmål', data: dayData.snack }] : []),
+                ...(dayData.dessert ? [{ type: 'dessert', label: 'Efterrätt', data: dayData.dessert }] : [])
               ];
 
               return (
@@ -646,10 +684,10 @@ export default function WeekTemplate({
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {meals.map((meal) => {
+                    {meals.map((meal, idx) => {
                       if (!meal.data) return null;
                       
-                      const mealName = meal.data.name.replace(/\s*\(\d+\s*kcal\)/, '');
+                      const mealName = withResterName(weekNumber, day.day, idx, meal.data);
                       const calorieMatch = meal.data.name.match(/\((\d+\s*kcal)\)/);
                       const calories = calorieMatch ? calorieMatch[1] : '';
                       const imageUrl = mealImages[`${day.day}-${meal.type}`];

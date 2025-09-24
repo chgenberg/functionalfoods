@@ -76,6 +76,15 @@ export default function Home() {
     if (!heroInView || !videoRef.current) return;
     const v = videoRef.current;
     let attempts = 0;
+    // Choose correct source based on viewport (more reliable than <source media> on some browsers)
+    try {
+      const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+      const desiredSrc = isMobile ? '/introvideo_mobile.mp4' : '/introvideo_compressed.mp4';
+      if (!v.src || !v.src.endsWith(desiredSrc)) {
+        v.src = desiredSrc;
+        v.load();
+      }
+    } catch {}
     const tryPlay = async () => {
       try {
         if (v.paused) {
@@ -134,8 +143,7 @@ export default function Home() {
             poster="/hero_poster.jpg"
             playsInline
             muted
-            // Safari: ensure muted is set before autoplay
-            defaultMuted
+            // Safari: ensure muted is set before autoplay (muted already true)
             loop
             // Autoplay with lightweight initial fetch; use separate sources for mobile/desktop
             autoPlay
@@ -144,12 +152,8 @@ export default function Home() {
             onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
             onError={(e) => { console.warn('Hero video failed to load', e); }}
           >
-            {/* Mobile source */}
-            <source src="/introvideo_mobile.mp4" type="video/mp4" media="(max-width: 768px)" />
-            {/* Desktop source */}
-            <source src="/introvideo_compressed.mp4" type="video/mp4" media="(min-width: 769px)" />
           </video>
-          <div className="absolute inset-0 bg-black/40 pointer-events-none" style={{ zIndex: 15 }} />
+          <div className="absolute inset-0 bg-black/50 pointer-events-none" style={{ zIndex: 15 }} />
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
