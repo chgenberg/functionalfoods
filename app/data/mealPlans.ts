@@ -740,8 +740,8 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       },
       "Torsdag": {
         "breakfast": {
-          "name": "Chiapudding med apelsin och mynta",
-          "recipeLink": "/kunskapsbank/recept/chiapudding-med-apelsin-och-mynta"
+          "name": "Chiapudding med med apelsin och mynta",
+          "recipeLink": "/kunskapsbank/recept/chiapudding-med-med-apelsin-och-mynta"
         },
         "lunch": {
           "name": "Ramensoppa med tofu rester",
