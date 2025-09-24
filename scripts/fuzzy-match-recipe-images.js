@@ -72,19 +72,17 @@ async function main() {
     
     console.log(`📋 Hittade ${recipes.length} recept i databasen`);
     
-    // Get image files from recept_images_2025 directory
-    const imagesDir = path.join(process.cwd(), 'recept_images_2025');
-    
+    // Collect images from the provided 2025 folder (~350 images)
+    const srcDir = path.join(process.cwd(), 'recept_images_2025');
+    const webBase = '/recept_images_2025';
     let imageFiles = [];
-    
-    if (fs.existsSync(imagesDir)) {
-      const imageFilesRaw = fs.readdirSync(imagesDir)
+    if (fs.existsSync(srcDir)) {
+      imageFiles = fs.readdirSync(srcDir)
         .filter(f => /\.(webp|jpg|jpeg|png)$/i.test(f))
-        .map(f => ({ filename: f, path: `/recept_images_2025/${f}`, source: '2025' }));
-      imageFiles.push(...imageFilesRaw);
+        .map(f => ({ filename: f, path: `${webBase}/${f}`, source: '2025' }));
     }
-    
-    console.log(`🖼️  Hittade ${imageFiles.length} bildbilder`);
+
+    console.log(`🖼️  Hittade ${imageFiles.length} bilder i ${srcDir}`);
     
     const matches = [];
     const unmatched = [];

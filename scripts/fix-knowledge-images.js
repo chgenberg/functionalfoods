@@ -1,51 +1,83 @@
 const fs = require('fs');
 const path = require('path');
 
-function updateHeaderImages(filePath, fixes) {
-  const abs = path.resolve(filePath);
-  const basePublic = path.join(process.cwd(), 'public');
-  if (!fs.existsSync(abs)) {
-    console.error('❌ JSON saknas:', abs);
-    return { file: filePath, changed: 0, total: 0 };
-  }
-  const docs = JSON.parse(fs.readFileSync(abs, 'utf8'));
-  let changed = 0;
-  for (const doc of docs) {
-    const fix = fixes[doc.slug];
-    if (!fix) continue;
-    const target = path.join(basePublic, fix.replace(/^\//, ''));
-    if (fs.existsSync(target)) {
-      if (doc.headerImage !== fix) {
-        doc.headerImage = fix;
-        changed++;
-      }
-    } else {
-      console.warn('⚠️  Hittar inte filen på disk för', doc.slug, '→', fix);
-    }
-  }
-  if (changed > 0) {
-    fs.writeFileSync(abs, JSON.stringify(docs, null, 2));
-  }
-  return { file: filePath, changed, total: docs.length };
+function normalize(s) {
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
-(function run() {
-  const basicFixes = {
-    'vad-a-r-functional-foods': '/Kunskapsdokument/Functional Basics/Bilder/vad-a-r-functional-foods.webp',
-    'ma-ldokument-styrelsemo-te-2': '/Kunskapsdokument/Functional Basics/Bilder/ma-ldokument-styrelsemo-te-1.webp',
-    'fo-rdelarna-med-functional-foods': '/Kunskapsdokument/Functional Basics/Bilder/functional-foods-som-livsstil.webp',
-  };
+function levenshtein(a, b) {
+  const m = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) m[i][0] = i;
+  for (let j = 0; j <= b.length; j++) m[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      m[i][j] = Math.min(
+        m[i - 1][j] + 1,
+        m[i][j - 1] + 1,
+        m[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return m[a.length][b.length];
+}
 
-  const flowFixes = {
-    'vad-a-r-functional-foods': '/Kunskapsdokument/Functional Flow/Bilder/vad-a-r-functional-foods.webp',
-    'vanliga-mag-och-tarmproblem': '/Kunskapsdokument/Functional Flow/Bilder/vanliga-mag-ocj-tarmproblem-1.webp',
-  };
+function bestMatchSlugToImages(slug, images) {
+  const ns = normalize(slug);
+  let best = null;
+  let bestScore = Infinity;
+  for (const img of images) {
+    const base = img.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+    const score = levenshtein(ns, base);
+    if (score < bestScore) { bestScore = score; best = img; }
+  }
+  return { filename: best, score: bestScore };
+}
 
-  const results = [];
-  results.push(updateHeaderImages('public/data/knowledge-documents-basic.json', basicFixes));
-  results.push(updateHeaderImages('public/data/knowledge-documents-flow.json', flowFixes));
+function runForCourse(jsonRelPath, imagesDirRel) {
+  const jsonPath = path.join(process.cwd(), jsonRelPath);
+  const publicImagesDir = path.join(process.cwd(), 'public', imagesDirRel);
+  if (!fs.existsSync(jsonPath)) {
+    console.error('❌ JSON saknas:', jsonPath);
+    return { file: jsonRelPath, changed: 0, total: 0, missingImages: 0 };
+  }
+  if (!fs.existsSync(publicImagesDir)) {
+    console.error('❌ Bildmapp saknas:', publicImagesDir);
+    return { file: jsonRelPath, changed: 0, total: 0, missingImages: 0 };
+  }
 
-  console.log(JSON.stringify({ ok: true, results }, null, 2));
+  const images = fs.readdirSync(publicImagesDir).filter(f => /\.(webp|jpg|jpeg|png)$/i.test(f)).map(f => f.toLowerCase());
+  const docs = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  let changed = 0;
+  let missing = 0;
+
+  for (const doc of docs) {
+    const slug = doc.slug || normalize(doc.title || '');
+    const { filename } = bestMatchSlugToImages(slug, images);
+    if (!filename) { missing++; continue; }
+    const webPath = `/${imagesDirRel}/${filename}`;
+    if (doc.headerImage !== webPath) {
+      doc.headerImage = webPath;
+      changed++;
+    }
+  }
+
+  if (changed > 0) {
+    fs.writeFileSync(jsonPath, JSON.stringify(docs, null, 2), 'utf8');
+  }
+  return { file: jsonRelPath, changed, total: docs.length, missingImages: missing };
+}
+
+(function main(){
+  const res = [];
+  res.push(runForCourse('data/knowledge-documents-basic.json', 'Kunskapsdokument/Functional Basics/Bilder'));
+  res.push(runForCourse('data/knowledge-documents-flow.json', 'Kunskapsdokument/Functional Flow/Bilder'));
+  console.log(JSON.stringify({ ok: true, results: res }, null, 2));
 })();
 
 
