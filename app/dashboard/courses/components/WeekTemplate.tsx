@@ -17,14 +17,15 @@ import PrintableMealPlan from './PrintableMealPlan';
 // Helper function to format meal names with bold "rester"
 const formatMealName = (mealName: string) => {
   if (mealName.toLowerCase().includes('rester')) {
-    const parts = mealName.split(/(\s*rester\s*)/gi);
+    // Split on the word 'rester' only, so surrounding spaces remain in the other parts
+    const parts = mealName.split(/(rester)/gi);
     return (
       <span>
-        {parts.map((part, index) => 
-          part.toLowerCase().includes('rester') ? (
+        {parts.map((part, index) =>
+          part.toLowerCase() === 'rester' ? (
             <span key={index} className="font-bold text-[#014421]">rester</span>
           ) : (
-            part
+            <span key={index}>{part}</span>
           )
         )}
       </span>
