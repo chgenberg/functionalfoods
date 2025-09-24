@@ -94,6 +94,40 @@ img {
   image-orientation: from-image;
 }
 
+/* Reduce excessive paragraph spacing in knowledge documents */
+.prose p {
+  margin-top: 0.75em !important;
+  margin-bottom: 0.75em !important;
+}
+
+.prose p + p {
+  margin-top: 1em !important;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  margin-top: 1.5em !important;
+  margin-bottom: 0.75em !important;
+}
+
+.prose h1:first-child, .prose h2:first-child, .prose h3:first-child {
+  margin-top: 0 !important;
+}
+
+.prose ul, .prose ol {
+  margin-top: 0.75em !important;
+  margin-bottom: 0.75em !important;
+}
+
+.prose li {
+  margin-top: 0.25em !important;
+  margin-bottom: 0.25em !important;
+}
+
+.prose blockquote {
+  margin-top: 1em !important;
+  margin-bottom: 1em !important;
+}
+
 
 
 /* Ensure Next.js Image components respect EXIF orientation */
