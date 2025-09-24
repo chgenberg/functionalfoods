@@ -74,6 +74,17 @@ const courseMetadata: Record<string, {
     progress: 60,
     nextLesson: 'Vecka 4: Stresshantering'
   },
+  'Functional Flow': {
+    color: '#6B8DD6',
+    bgColor: 'bg-[#6B8DD6]/10',
+    icon: '🌊',
+    dashboardPath: '/dashboard/courses/functional-flow',
+    duration: '6 veckor',
+    level: 'Fortsättning',
+    image: '/Kurser_bilder/Functional_Gut Health.jpg',
+    progress: 60,
+    nextLesson: 'Vecka 4: Stresshantering'
+  },
   'Functional Insulin balance/Energy': {
     color: '#FF7E70',
     bgColor: 'bg-[#FF7E70]/10',
@@ -161,10 +172,20 @@ export default function MyCoursesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F7F5F0]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Laddar dina kurser...</p>
+      <div className="min-h-screen bg-[#F7F5F0]">
+        <div className="bg-white shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="text-center">
+              <p className="text-xl text-gray-600">Välkommen tillbaka</p>
+              <p className="text-3xl font-bold text-[#014421]">Laddar dina kurser...</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-center flex-1 py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#014421] mx-auto"></div>
+            <p className="mt-6 text-gray-600 text-lg">Hämtar kursinformation...</p>
+          </div>
         </div>
       </div>
     );
@@ -175,25 +196,21 @@ export default function MyCoursesPage() {
       {/* Minimalist Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="text-2xl font-bold text-[#014421]">
-              Functional Foods
-            </Link>
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3 text-gray-700">
-                <div className="w-10 h-10 bg-[#014421]/10 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-[#014421]" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Välkommen tillbaka</p>
-                  <p className="font-medium text-[#014421]">{user?.name || user?.email}</p>
-                </div>
+          <div className="flex justify-center items-center py-6">
+            <div className="flex items-center gap-4 text-gray-700">
+              <div className="w-12 h-12 bg-[#014421]/10 rounded-full flex items-center justify-center">
+                <User className="w-6 h-6 text-[#014421]" />
+              </div>
+              <div className="text-center">
+                <p className="text-lg text-gray-600">Välkommen tillbaka</p>
+                <p className="text-2xl font-bold text-[#014421]">{user?.name || user?.email}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="text-gray-500 hover:text-[#014421] transition-colors"
+                className="ml-8 text-gray-500 hover:text-[#014421] transition-colors p-2 rounded-lg hover:bg-gray-100"
+                title="Logga ut"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-6 h-6" />
               </button>
             </div>
           </div>
@@ -223,10 +240,89 @@ export default function MyCoursesPage() {
             </Link>
           </motion.div>
         ) : purchases.length === 1 ? (
-          // Single course - should auto-redirect, but show as fallback
-          <div className="text-center py-8">
-            <p className="text-gray-600">Dirigerar om till din kurs...</p>
-          </div>
+          // Single course - show course info and manual access
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-2xl mx-auto"
+          >
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-[#014421] mb-4">Din kurs</h1>
+              <p className="text-lg text-gray-600">Klicka för att fortsätta där du slutade</p>
+            </div>
+            
+            {purchases.map(purchase => {
+              const metadata = courseMetadata[purchase.course.name];
+              if (!metadata) {
+                return (
+                  <div key={purchase.id} className="bg-white rounded-2xl p-8 shadow-lg text-center">
+                    <h2 className="text-2xl font-bold text-[#014421] mb-4">{purchase.course.name}</h2>
+                    <p className="text-gray-600 mb-6">Kurs-metadata saknas. Kontakta support.</p>
+                    <Link
+                      href="/dashboard"
+                      className="inline-flex items-center gap-2 bg-[#014421] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#112A12] transition-colors"
+                    >
+                      Gå till dashboard
+                      <ArrowRight className="w-5 h-5" />
+                    </Link>
+                  </div>
+                );
+              }
+              
+              return (
+                <div key={purchase.id} className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                  <div className="relative h-64">
+                    <Image
+                      src={metadata.image}
+                      alt={purchase.course.name}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40" />
+                    <div className="absolute bottom-6 left-6 right-6 text-white">
+                      <h2 className="text-3xl font-bold mb-2">{purchase.course.name}</h2>
+                      <p className="text-lg opacity-90">{metadata.duration} • {metadata.level}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8">
+                    {metadata.progress && (
+                      <div className="mb-6">
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-lg font-semibold text-gray-700">Framsteg</span>
+                          <span className="text-lg font-bold text-[#014421]">{metadata.progress}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div
+                            className="h-3 rounded-full transition-all duration-1000"
+                            style={{ 
+                              backgroundColor: metadata.color,
+                              width: `${metadata.progress}%`
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {metadata.nextLesson && (
+                      <div className="mb-6 p-4 bg-gray-50 rounded-xl">
+                        <p className="text-sm text-gray-600 mb-1">Nästa lektion</p>
+                        <p className="font-semibold text-[#014421]">{metadata.nextLesson}</p>
+                      </div>
+                    )}
+                    
+                    <button
+                      onClick={() => handleCourseAccess(purchase.course.name)}
+                      className="w-full bg-[#014421] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#112A12] transition-colors flex items-center justify-center gap-3"
+                    >
+                      Fortsätt kursen
+                      <ArrowRight className="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
         ) : (
           // Multiple courses - beautiful selection interface
           <>
