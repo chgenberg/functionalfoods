@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Bookmark, Camera, Check, ChefHat, Clock, Flame, Heart, Lightbulb, Minus, Plus, Printer, Star, Users, Utensils, X } from "lucide-react";;
+import { ArrowLeft, Bookmark, Camera, Check, ChefHat, Clock, Flame, Heart, Lightbulb, Minus, Plus, Printer, Star, Users, Utensils, X, Eye } from "lucide-react";;
 
 import { useAuth } from '../../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
@@ -367,7 +367,9 @@ export default function RecipePage() {
             tips: data.tips,
             tags: data.tags || [],
             isPremium: false,
-            isFree: true
+            isFree: true,
+            status: 'draft',
+            createdAt: new Date().toISOString()
           };
           setRecipe(formattedRecipe);
           initializeNutrition(formattedRecipe);
@@ -1267,35 +1269,13 @@ export default function RecipePage() {
                       <div className="text-xs md:text-sm text-gray-600">Fett</div>
                     </div>
                     
-                    {(nutrition.perServing?.fiber || nutrition.perServing?.sugar || nutrition.perServing?.salt) && (
-                      <>
-                        {nutrition.perServing?.fiber > 0 && (
-                          <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
-                            <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                              {Math.round((nutrition.perServing.fiber || 0) * 10) / 10}g
-                            </div>
-                            <div className="text-xs md:text-sm text-gray-600">Fiber</div>
-                          </div>
-                        )}
-                        
-                        {nutrition.perServing?.sugar > 0 && (
-                          <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
-                            <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                              {Math.round((nutrition.perServing.sugar || 0) * 10) / 10}g
-                            </div>
-                            <div className="text-xs md:text-sm text-gray-600">Socker</div>
-                          </div>
-                        )}
-                        
-                        {nutrition.perServing?.salt > 0 && (
-                          <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
-                            <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
-                              {Math.round((nutrition.perServing.salt || 0) * 10) / 10}g
-                            </div>
-                            <div className="text-xs md:text-sm text-gray-600">Salt</div>
-                          </div>
-                        )}
-                      </>
+                    {nutrition.perServing?.fiber > 0 && (
+                      <div className="bg-[#F3EFE3] rounded-xl p-3 md:p-4 text-center">
+                        <div className="text-2xl md:text-3xl font-bold text-[#014421] mb-1">
+                          {Math.round((nutrition.perServing.fiber || 0) * 10) / 10}g
+                        </div>
+                        <div className="text-xs md:text-sm text-gray-600">Fiber</div>
+                      </div>
                     )}
                   </div>
                 ) : (
