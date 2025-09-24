@@ -237,13 +237,20 @@ const basicsWeekSlugs: Record<number, string[]> = {
 };
 
 // Map Flow knowledge documents explicitly by slug per week for accurate "Veckans läsning"
+// Expanded to include all Flow documents provided by the user
 const flowWeekSlugs: Record<number, string[]> = {
-  1: ['vad-a-r-functional-foods'],
+  // Vecka 1: introduktion och FAQ
+  1: ['vad-a-r-functional-foods', 'dags-att-komma-iga-ng', 'fra-gor-och-svar'],
+  // Vecka 2: mag/tarm och kostguide
   2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-ba-ttre-mage-och-tarm'],
+  // Vecka 3: tillskott och fermenterade livsmedel
   3: ['tillskott-som-kan-sto-dja-mag-och-tarmha-lsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
+  // Vecka 4: livsstilsfaktorer
   4: ['livsstilsfaktorer'],
-  5: ['att-va-lja-ra-tt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
-  6: ['topplista-med-functional-foods']
+  // Vecka 5: näringsval och fördjupning
+  5: ['att-va-lja-ra-tt-proteiner', 'att-va-lja-ra-tt-kolhydrater', 'drycker', 'superpulver', 'benbuljong'],
+  // Vecka 6: sammanfattning, topplista och praktiska guider
+  6: ['topplista-med-functional-foods', 'sammanfattning-och-ka-llor', 'att-a-ta-ute-med-functional-foods', 'ersa-ttningsguide-fo-r-kolhydrater', 'min-resa-till-en-lugnare-mage']
 };
 
 // Map Energy knowledge documents explicitly by slug per week for accurate "Veckans läsning"
@@ -312,16 +319,18 @@ export default function WeekTemplate({
     loadMeta();
   }, [courseType, weekNumber]);
 
-  // Load knowledge documents for this course
+  // Load knowledge documents for this course (via API to allow DB + JSON fallback)
   useEffect(() => {
     const loadKnowledgeDocuments = async () => {
       try {
         const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
-        const response = await fetch(`/data/knowledge-documents-${course}.json`);
-        const documents: KnowledgeDocument[] = await response.json();
+        const response = await fetch(`/api/knowledge?course=${course}`, { cache: 'no-store' });
+        const data = await response.json();
+        const documents: KnowledgeDocument[] = Array.isArray(data?.documents) ? data.documents : [];
         setKnowledgeDocuments(documents);
       } catch (error) {
         console.error('Error loading knowledge documents:', error);
+        setKnowledgeDocuments([]);
       }
     };
     loadKnowledgeDocuments();
