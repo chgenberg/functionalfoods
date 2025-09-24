@@ -147,7 +147,7 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
             {doc.headerImage && (
               <div className="relative h-48 w-full overflow-hidden">
                 <Image
-                  src={`/api/images${doc.headerImage}`}
+                  src={doc.headerImage.startsWith('/api/images') ? doc.headerImage : `/api/images${doc.headerImage}`}
                   alt={doc.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
