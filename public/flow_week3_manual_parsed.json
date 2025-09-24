@@ -1,0 +1,236 @@
+[
+  {
+    "title": "Grön juice",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 146,
+      "protein": 3,
+      "carbohydrates": 25,
+      "fat": 3,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Kycklinggryta från medelhavet",
+    "time": "70 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 447,
+      "protein": 43,
+      "carbohydrates": 18,
+      "fat": 43,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Färgstark fetaostsallad",
+    "time": "10 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 436,
+      "protein": 15,
+      "carbohydrates": 22,
+      "fat": 15,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Bananmuffins med mandel och kanel",
+    "time": "40 minuter",
+    "mealType": "Egenbakat",
+    "servings": 6,
+    "nutrition": {
+      "calories": 148,
+      "protein": 5,
+      "carbohydrates": 16,
+      "fat": 5,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Bananmuffin",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 148,
+      "protein": 5,
+      "carbohydrates": 16,
+      "fat": 5,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Färgstark fetaostsallad",
+    "time": "10 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 436,
+      "protein": 15,
+      "carbohydrates": 22,
+      "fat": 15,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Nötfärstimbaler med chèvreost och soltorkad tomat",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 502,
+      "protein": 44,
+      "carbohydrates": 11,
+      "fat": 44,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Kokta ägg med kaviar",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 232,
+      "protein": 18,
+      "carbohydrates": 2,
+      "fat": 18,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Nötfärstimbaler med chèvreost och soltorkad tomat",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 502,
+      "protein": 44,
+      "carbohydrates": 11,
+      "fat": 44,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Laxsallad med fetaost",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 484,
+      "protein": 30,
+      "carbohydrates": 14,
+      "fat": 30,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Keso med bovetegranola och frukt",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 401,
+      "protein": 18,
+      "carbohydrates": 33,
+      "fat": 18,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Laxsallad med fetaost",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 484,
+      "protein": 30,
+      "carbohydrates": 14,
+      "fat": 30,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Spenatsoppa med rostade pumpafrön",
+    "time": "15 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 253,
+      "protein": 8,
+      "carbohydrates": 25,
+      "fat": 8,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Kycklingpizza",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 424,
+      "protein": 52,
+      "carbohydrates": 11,
+      "fat": 52,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Torsk med guacamole och sötpotatis",
+    "time": "35 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 253,
+      "protein": 8,
+      "carbohydrates": 25,
+      "fat": 8,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Torsk med guacamole och sötpotatis",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 547,
+      "protein": 39,
+      "carbohydrates": 49,
+      "fat": 39,
+      "fiber": 11
+    }
+  },
+  {
+    "title": "Biff med nudelsallad och jordnötssås",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 784,
+      "protein": 69,
+      "carbohydrates": 51,
+      "fat": 69,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Morotssoppa med ingefära och rostade kikärtor",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 367,
+      "protein": 6,
+      "carbohydrates": 26,
+      "fat": 6,
+      "fiber": 5
+    }
+  }
+]

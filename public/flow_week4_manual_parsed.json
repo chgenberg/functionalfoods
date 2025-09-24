@@ -1,0 +1,288 @@
+[
+  {
+    "title": "Omelettrulle",
+    "time": "15 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 255,
+      "protein": 24,
+      "carbohydrates": 2,
+      "fat": 24,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Morotssoppa med ingefära och rostade kikärtor",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 367,
+      "protein": 6,
+      "carbohydrates": 26,
+      "fat": 6,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Grönsakswok med kycklingfärs",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 332,
+      "protein": 40,
+      "carbohydrates": 20,
+      "fat": 40,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Yoghurt med bovetegranola",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 352,
+      "protein": 9,
+      "carbohydrates": 20,
+      "fat": 9,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Grönsakswok med kycklingfärs",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 332,
+      "protein": 40,
+      "carbohydrates": 20,
+      "fat": 40,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Ugnsbakad blomkål med ratatouille",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 342,
+      "protein": 11,
+      "carbohydrates": 32,
+      "fat": 11,
+      "fiber": 11
+    }
+  },
+  {
+    "title": "Macka med ost",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 322,
+      "protein": 15,
+      "carbohydrates": 31,
+      "fat": 15,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Ugnsbakad blomkål med ratatouille",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 342,
+      "protein": 11,
+      "carbohydrates": 32,
+      "fat": 11,
+      "fiber": 11
+    }
+  },
+  {
+    "title": "Lövbiffsrullader med brie, pesto och rödbetor",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 636,
+      "protein": 45,
+      "carbohydrates": 27,
+      "fat": 45,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Äggröra med fetaost och spenat",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 319,
+      "protein": 21,
+      "carbohydrates": 4,
+      "fat": 21,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Lövbiffsrullader med brie, pesto och rödbetor",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 636,
+      "protein": 45,
+      "carbohydrates": 27,
+      "fat": 45,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Torsk med saffranssås",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 405,
+      "protein": 39,
+      "carbohydrates": 17,
+      "fat": 39,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Bananmuffin",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 148,
+      "protein": 5,
+      "carbohydrates": 16,
+      "fat": 5,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Torsk med saffranssås",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 405,
+      "protein": 39,
+      "carbohydrates": 17,
+      "fat": 39,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Kycklingrullader med gorgonzola",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 399,
+      "protein": 46,
+      "carbohydrates": 28,
+      "fat": 46,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Omelett med keso och bär",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 298,
+      "protein": 20,
+      "carbohydrates": 11,
+      "fat": 20,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Kycklingrullader med gorgonzola",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 399,
+      "protein": 46,
+      "carbohydrates": 28,
+      "fat": 46,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Valnötslax med fetaostcreme",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 659,
+      "protein": 39,
+      "carbohydrates": 27,
+      "fat": 39,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Stekta äpplen med vit chokladkräm",
+    "time": "10 minuter",
+    "mealType": "Efterrätt",
+    "servings": 2,
+    "nutrition": {
+      "calories": 337,
+      "protein": 3,
+      "carbohydrates": 37,
+      "fat": 3,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Blåbärssmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 181,
+      "protein": 5,
+      "carbohydrates": 23,
+      "fat": 5,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Valnötslax med fetaostcreme",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 659,
+      "protein": 39,
+      "carbohydrates": 27,
+      "fat": 39,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Zucchiniplättar med yoghurtsås",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 437,
+      "protein": 16,
+      "carbohydrates": 44,
+      "fat": 16,
+      "fiber": 2
+    }
+  }
+]

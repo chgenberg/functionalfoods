@@ -1,92 +1,78 @@
 {
   "updated": [
     {
-      "title": "Grönsakswok med kyckling",
-      "slug": "gronsakswok-med-kyckling"
+      "title": "Stek torsk med bearnaisesås och haricot verts",
+      "slug": "stek-torsk-med-bearnaisesas-och-haricot-verts"
     },
     {
-      "title": "Kokt ägg med majonnäs",
-      "slug": "kokt-agg-med-majonnas"
+      "title": "Yoghurt med bovetegranola och bär",
+      "slug": "yoghurt-med-bovetegranola-och-bar"
     },
     {
-      "title": "Grönsakswok med kyckling",
-      "slug": "gronsakswok-med-kyckling"
+      "title": "Stek torsk med bearnaisesås och haricot verts",
+      "slug": "stek-torsk-med-bearnaisesas-och-haricot-verts"
     },
     {
-      "title": "Köttfärspytt med italienska smaker",
-      "slug": "kottfarspytt-med-italienska-smaker"
+      "title": "Kycklingfärsbiffar med vitlöksost",
+      "slug": "kycklingfarsbiffar-med-vitloksost"
     },
     {
-      "title": "Mango med keso och nötter",
-      "slug": "mango-med-keso-och-notter"
+      "title": "Varm chiagröt med äpple",
+      "slug": "varm-chiagrot-apple"
     },
     {
-      "title": "Köttfärspytt med italienska smaker",
-      "slug": "kottfarspytt-med-italienska-smaker"
+      "title": "Kycklingfärsbiffar med vitlöksost",
+      "slug": "kycklingfarsbiffar-med-vitloksost"
     },
     {
-      "title": "Indisk laxgryta med röda linser",
-      "slug": "indisk-laxgryta-med-roda-linser"
+      "title": "Varma grönsaker med halloumi",
+      "slug": "varma-gronsaker-med-halloumi"
     },
     {
-      "title": "Äggröra med granatäpple och kiwi",
-      "slug": "aggrora-med-granatapple-och-kiwi"
+      "title": "Ägghack med kallrökt lax",
+      "slug": "agghack-med-kallrokt-lax"
     },
     {
-      "title": "Indisk laxgryta med röda linser",
-      "slug": "indisk-laxgryta-med-roda-linser"
+      "title": "Varma grönsaker med halloumi",
+      "slug": "varma-gronsaker-med-halloumi"
     },
     {
-      "title": "Quinoasallad med stekt halloumi",
-      "slug": "quinoasallad-med-stekt-halloumi"
+      "title": "Lax med quinoasallad och grapefrukt",
+      "slug": "lax-med-quinoasallad-och-grapefrukt"
     },
     {
-      "title": "Havregrynsgröt med apelsin och kokos",
-      "slug": "havregrynsgrot-med-apelsin-och-kokos"
+      "title": "Smoothiebowl med blåbär och granola",
+      "slug": "smoothiebowl-med-blabar-och-granola"
     },
     {
-      "title": "Quinoasallad med stekt halloumi",
-      "slug": "quinoasallad-med-stekt-halloumi"
+      "title": "Lax med quinoasallad och grapefrukt",
+      "slug": "lax-med-quinoasallad-och-grapefrukt"
     },
     {
-      "title": "Torsk teriyaki med grönsaker",
-      "slug": "torsk-teriyaki-med-gronsaker"
+      "title": "Hamburgare med grekisk sallad",
+      "slug": "hamburgare-med-grekisk-sallad"
     },
     {
-      "title": "Hallon- och blåbärssmoothie",
-      "slug": "smoothie-blabarssmoothie"
-    },
-    {
-      "title": "Torsk teriyaki med grönsaker",
-      "slug": "torsk-teriyaki-med-gronsaker"
-    },
-    {
-      "title": "Lammgryta med plommon och bulgur",
-      "slug": "lammgryta-med-plommon-och-bulgur"
-    },
-    {
-      "title": "Tropisk fruktsallad",
-      "slug": "tropisk-fruktsallad"
-    },
-    {
-      "title": "Hallon- och blåbärssmoothie",
-      "slug": "smoothie-blabarssmoothie"
-    },
-    {
-      "title": "Lammgryta med plommon och bulgur",
-      "slug": "lammgryta-med-plommon-och-bulgur"
+      "title": "Mandelkaka med med choklad",
+      "slug": "mandelkaka-med-med-choklad"
     }
   ],
   "created": [],
   "skipped": [
     {
-      "title": "Havrefralla med morötter och torkade aprikoser"
+      "title": "Bananpannkaka"
     },
     {
-      "title": "Laxfilé med ratatouille"
+      "title": "Grönkålspaj med champinjoner"
     },
     {
-      "title": "Kycklinggryta med bakad spetskål"
+      "title": "Köttfärslimpa med tomat"
+    },
+    {
+      "title": "Kokta ägg med kaviar"
+    },
+    {
+      "title": "Nötgryta med rotfrukter"
     }
   ]
 }

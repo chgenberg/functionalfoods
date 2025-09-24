@@ -1,0 +1,288 @@
+[
+  {
+    "title": "Blåbärssmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 181,
+      "protein": 5,
+      "carbohydrates": 23,
+      "fat": 5,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Zucchiniplättar med yoghurtsås",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 437,
+      "protein": 16,
+      "carbohydrates": 44,
+      "fat": 16,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Köttfärslimpa med tomat",
+    "time": "45 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 428,
+      "protein": 40,
+      "carbohydrates": 18,
+      "fat": 40,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Macka med ost",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 322,
+      "protein": 15,
+      "carbohydrates": 31,
+      "fat": 15,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Köttfärslimpa med tomat",
+    "time": "45 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 428,
+      "protein": 40,
+      "carbohydrates": 18,
+      "fat": 40,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Linssoppa från medelhavet",
+    "time": "30 minuter",
+    "mealType": "Lunch",
+    "servings": 2,
+    "nutrition": {
+      "calories": 251,
+      "protein": 12,
+      "carbohydrates": 27,
+      "fat": 12,
+      "fiber": 10
+    }
+  },
+  {
+    "title": "Yoghurt med mango och apelsin",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 293,
+      "protein": 9,
+      "carbohydrates": 30,
+      "fat": 9,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Ugnsbakad blomkål med ratatouille",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 342,
+      "protein": 11,
+      "carbohydrates": 32,
+      "fat": 11,
+      "fiber": 11
+    }
+  },
+  {
+    "title": "Pestotorsk med Capresesallad",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 651,
+      "protein": 51,
+      "carbohydrates": 20,
+      "fat": 51,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Stekt ägg med parmaskinka",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 303,
+      "protein": 24,
+      "carbohydrates": 7,
+      "fat": 24,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Pestotorsk med Capresesallad",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 651,
+      "protein": 51,
+      "carbohydrates": 20,
+      "fat": 51,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Kyckling med stekt blomkålsris och dillyoghurt",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 365,
+      "protein": 36,
+      "carbohydrates": 15,
+      "fat": 36,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Bananmuffin",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 148,
+      "protein": 5,
+      "carbohydrates": 16,
+      "fat": 5,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Kyckling med stekt blomkålsris och dillyoghurt",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 365,
+      "protein": 36,
+      "carbohydrates": 15,
+      "fat": 36,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Nötgryta med rotfrukter",
+    "time": "75 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 497,
+      "protein": 37,
+      "carbohydrates": 16,
+      "fat": 37,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Äggröra med champinjoner",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 328,
+      "protein": 22,
+      "carbohydrates": 7,
+      "fat": 22,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Nötgryta med rotfrukter",
+    "time": "75 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 497,
+      "protein": 37,
+      "carbohydrates": 16,
+      "fat": 37,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Quinoasallad med scampi och mango",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 592,
+      "protein": 32,
+      "carbohydrates": 37,
+      "fat": 32,
+      "fiber": 49
+    }
+  },
+  {
+    "title": "Gino",
+    "time": "15 minuter",
+    "mealType": "Efterrätt",
+    "servings": 2,
+    "nutrition": {
+      "calories": 303,
+      "protein": 3,
+      "carbohydrates": 42,
+      "fat": 3,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Bananpannkaka",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 198,
+      "protein": 9,
+      "carbohydrates": 17,
+      "fat": 9,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Quinoasallad med scampi och mango",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 592,
+      "protein": 32,
+      "carbohydrates": 37,
+      "fat": 32,
+      "fiber": 49
+    }
+  },
+  {
+    "title": "Grönkålspaj med champinjoner",
+    "time": "50 minuter",
+    "mealType": "Middag",
+    "servings": 6,
+    "nutrition": {
+      "calories": 436,
+      "protein": 20,
+      "carbohydrates": 8,
+      "fat": 20,
+      "fiber": 1
+    }
+  }
+]

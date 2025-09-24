@@ -198,7 +198,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Torsdag": {
         "breakfast": {
           "name": "Keso med melon och ananas",
-          "recipeLink": "/kunskapsbank/recept/keso-hallon-granatapple"
+          "recipeLink": "/kunskapsbank/recept/keso-med-melon-och-ananas"
         },
         "lunch": {
           "name": "Köttfärswrap med röd curry och äpple rester",

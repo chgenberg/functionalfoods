@@ -98,6 +98,15 @@ export default function Home() {
       else tryPlay();
     }, 300);
     tryPlay();
+    // As a fallback for stricter autoplay policies, start on first user gesture
+    const onUserInteract = () => {
+      try { v.play(); } catch {}
+    };
+    window.addEventListener('pointerdown', onUserInteract, { once: true });
+    // Force visible if playback stalls
+    const visibleTimeout = setTimeout(() => {
+      try { if (v && v.style) v.style.opacity = '1'; } catch {}
+    }, 1500);
     return () => clearInterval(id);
   }, [heroInView]);
 
