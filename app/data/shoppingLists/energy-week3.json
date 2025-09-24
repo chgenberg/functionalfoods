@@ -1,0 +1,605 @@
+{
+  "items": [
+    {
+      "name": "gröna linser",
+      "amount": 1.5,
+      "unit": "dl",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "olivolja",
+      "amount": 2.5,
+      "unit": "msk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "flytande honung",
+      "amount": 3,
+      "unit": "tsk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "pekannötter",
+      "amount": 8,
+      "unit": "st",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "krossade tomater",
+      "amount": 400,
+      "unit": "g",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "pumpakärnor",
+      "amount": 0.5,
+      "unit": "msk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "pinjenötter",
+      "amount": 1,
+      "unit": "msk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "soltorkade tomater",
+      "amount": 50,
+      "unit": "g",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "olivolja",
+      "amount": 5,
+      "unit": "tsk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "bönpasta",
+      "amount": 50,
+      "unit": "g",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "havregryn",
+      "amount": 2,
+      "unit": "dl",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "valnötter",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "sesamolja",
+      "amount": 0.5,
+      "unit": "msk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "sesamfrön",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Torrvaror"
+    },
+    {
+      "name": "st paprika",
+      "amount": 2,
+      "unit": null,
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "klyfta vitlök",
+      "amount": 3,
+      "unit": null,
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "cocktailtomater",
+      "amount": 8,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "morot",
+      "amount": 2,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "rucola",
+      "amount": 70,
+      "unit": "g",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "granatäpple",
+      "amount": 0.25,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "bladspenat",
+      "amount": 80,
+      "unit": "g",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "st gul lök",
+      "amount": 1,
+      "unit": null,
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "färska champinjoner",
+      "amount": 6,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "morötter",
+      "amount": 2,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "banan",
+      "amount": 0.5,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "färska blåbär",
+      "amount": 0.5,
+      "unit": "dl",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "färsk mango",
+      "amount": 35,
+      "unit": "g",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "rödbetor",
+      "amount": 3,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "aprikos",
+      "amount": 1,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "squash",
+      "amount": 0.25,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "g paprika",
+      "amount": 15,
+      "unit": null,
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "liten sötpotatis",
+      "amount": 1,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "st rödlök",
+      "amount": 0.75,
+      "unit": null,
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "tomat",
+      "amount": 0.5,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "päron",
+      "amount": 1.5,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "broccolistånd",
+      "amount": 0.5,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "gurka",
+      "amount": 0.25,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "purjolök",
+      "amount": 3,
+      "unit": "cm",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "färsk ingefära",
+      "amount": 1,
+      "unit": "tsk",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "st lime",
+      "amount": 2,
+      "unit": null,
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "blodapelsin",
+      "amount": 1,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "färska björnbär",
+      "amount": 0.25,
+      "unit": "dl",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "blomkålshuvud",
+      "amount": 0.5,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "avokado",
+      "amount": 1,
+      "unit": "st",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "majs",
+      "amount": 70,
+      "unit": "g",
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "st salladslök",
+      "amount": 1,
+      "unit": null,
+      "category": "Frukt/Grönt"
+    },
+    {
+      "name": "färsk persilja",
+      "amount": 1,
+      "unit": "dl",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "balsamvinäger",
+      "amount": 0.5,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "örtagårdskrydda",
+      "amount": 0.5,
+      "unit": "tsk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "salt och svartpeppar",
+      "amount": null,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "kvist färsk persilja",
+      "amount": 1,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "tomatpuré",
+      "amount": 3,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "torkad timjan",
+      "amount": 0.5,
+      "unit": "tsk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "torkad oregano",
+      "amount": 0.5,
+      "unit": "tsk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "tsk torkad basilika",
+      "amount": 1.5,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "köttbuljongtärning",
+      "amount": 1,
+      "unit": "st",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "msk färsk basilika",
+      "amount": 3,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "färsk timjan",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "krm vaniljpulver",
+      "amount": 1.5,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "krm örtagårdskrydda",
+      "amount": 1,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "st basilikablad",
+      "amount": 8,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "kvistar färsk basilika",
+      "amount": 4,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "kycklingbuljongtärning",
+      "amount": 1,
+      "unit": "st",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "färsk persilja",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "srirachasås",
+      "amount": 1,
+      "unit": "tsk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "kvistar färsk persilja",
+      "amount": 2,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "grön pesto",
+      "amount": 1,
+      "unit": "tsk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "krm salt",
+      "amount": 1,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "ketjap manis",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "soja",
+      "amount": 1,
+      "unit": "tsk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "färsk koriander",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "furikake fröblandning",
+      "amount": 1,
+      "unit": "tsk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "påse tacokrydda",
+      "amount": 1,
+      "unit": null,
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "färsk gräslök",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "mango chutney",
+      "amount": 2,
+      "unit": "msk",
+      "category": "Kryddor/smaksättare"
+    },
+    {
+      "name": "fetaost",
+      "amount": 150,
+      "unit": "g",
+      "category": "Mejeri"
+    },
+    {
+      "name": "grädde",
+      "amount": 2.5,
+      "unit": "msk",
+      "category": "Mejeri"
+    },
+    {
+      "name": "smör",
+      "amount": 2.5,
+      "unit": "tsk",
+      "category": "Mejeri"
+    },
+    {
+      "name": "riven parmesanost",
+      "amount": 1,
+      "unit": "msk",
+      "category": "Mejeri"
+    },
+    {
+      "name": "keso",
+      "amount": 0.5,
+      "unit": "dl",
+      "category": "Mejeri"
+    },
+    {
+      "name": "getost",
+      "amount": 60,
+      "unit": "g",
+      "category": "Mejeri"
+    },
+    {
+      "name": "grekisk yoghurt",
+      "amount": 2.5,
+      "unit": "dl",
+      "category": "Mejeri"
+    },
+    {
+      "name": "smör",
+      "amount": 5,
+      "unit": "g",
+      "category": "Mejeri"
+    },
+    {
+      "name": "skiva ost",
+      "amount": 2,
+      "unit": null,
+      "category": "Mejeri"
+    },
+    {
+      "name": "philadelphiaost",
+      "amount": 25,
+      "unit": "g",
+      "category": "Mejeri"
+    },
+    {
+      "name": "ägg",
+      "amount": 4,
+      "unit": "st",
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "skivor rökt kalkon",
+      "amount": 3,
+      "unit": null,
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "bacon",
+      "amount": 30,
+      "unit": "g",
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "kalkonfärs",
+      "amount": 300,
+      "unit": "g",
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "lövbiff",
+      "amount": 300,
+      "unit": "g",
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "högrevsburgare",
+      "amount": 300,
+      "unit": "g",
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "tonfiskfile",
+      "amount": 300,
+      "unit": "g",
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "kycklingklubbor",
+      "amount": 600,
+      "unit": "g",
+      "category": "Kött/fisk/fågel/ägg/vego"
+    },
+    {
+      "name": "vatten",
+      "amount": 10,
+      "unit": "dl",
+      "category": "Övrigt"
+    },
+    {
+      "name": "tomatmarmelad",
+      "amount": 1,
+      "unit": "msk",
+      "category": "Övrigt"
+    },
+    {
+      "name": "bovetegranola med apelsin och kardemumma",
+      "amount": 0.75,
+      "unit": "dl",
+      "category": "Övrigt"
+    },
+    {
+      "name": "kesofralla med äpple och pumpafrön",
+      "amount": 1,
+      "unit": "st",
+      "category": "Övrigt"
+    },
+    {
+      "name": "havremjölk",
+      "amount": 2.5,
+      "unit": "dl",
+      "category": "Övrigt"
+    },
+    {
+      "name": "vit choklad",
+      "amount": 25,
+      "unit": "g",
+      "category": "Övrigt"
+    },
+    {
+      "name": "majonäs",
+      "amount": 1,
+      "unit": "msk",
+      "category": "Övrigt"
+    }
+  ],
+  "generatedAt": "2025-09-24T10:07:55.079Z"
+}
