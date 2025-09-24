@@ -363,7 +363,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Lax- och broccolipaj",
-          "recipeLink": "/kunskapsbank/recept/lax-broccolipaj"
+          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj"
         }
       }
     }
@@ -378,7 +378,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         },
         "lunch": {
           "name": "Lax- och broccolipaj rester",
-          "recipeLink": "/kunskapsbank/recept/lax-broccolipaj"
+          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj"
         },
         "dinner": {
           "name": "Linssallad med fetaost och pekannötter",
@@ -527,7 +527,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Torsdag": {
         "breakfast": {
           "name": "Blåbärssmoothie",
-          "recipeLink": "/kunskapsbank/recept/blåbärssmoothie"
+          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
         },
         "lunch": {
           "name": "Kycklingfärstimbaler med färskost och sweet chili rester",
@@ -541,7 +541,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Fredag": {
         "breakfast": {
           "name": "Blåbärssmoothie rester",
-          "recipeLink": "/kunskapsbank/recept/blåbärssmoothie"
+          "recipeLink": "/kunskapsbank/recept/blabarssmoothie"
         },
         "lunch": {
           "name": "Lövbiff med stekta grönsaker och pestoyoghurt rester",
@@ -596,7 +596,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         },
         "lunch": {
           "name": "Lax- och broccolipaj rester",
-          "recipeLink": "/kunskapsbank/recept/lax-broccolipaj"
+          "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj"
         },
         "dinner": {
           "name": "Mexikansk nötfärsfräs",
