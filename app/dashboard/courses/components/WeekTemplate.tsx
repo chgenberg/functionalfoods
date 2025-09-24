@@ -692,7 +692,13 @@ export default function WeekTemplate({
                       const mealName = withResterName(weekNumber, day.day, idx, meal.data);
                       const calorieMatch = meal.data.name.match(/\((\d+\s*kcal)\)/);
                       const calories = calorieMatch ? calorieMatch[1] : '';
-                      const imageUrl = mealImages[`${day.day}-${meal.type}`];
+                      const imageKey = `${day.day}-${meal.type}`;
+                      const imageUrl = mealImages[imageKey];
+                      
+                      // Debug logging for missing images
+                      if (!imageUrl && process.env.NODE_ENV === 'development') {
+                        console.log(`🖼️ Missing image for ${meal.data.name}: key="${imageKey}", available keys:`, Object.keys(mealImages));
+                      }
 
                       return (
                         <motion.div
@@ -712,9 +718,9 @@ export default function WeekTemplate({
                         >
                           <div className="relative overflow-hidden rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300">
                             <div className="aspect-[4/3] relative bg-gray-100">
-                              {imageUrl ? (
+                              {imageUrl || mealImages[meal.data.name] ? (
                                 <Image
-                                  src={imageUrl}
+                                  src={imageUrl || mealImages[meal.data.name]}
                                   alt={mealName}
                                   fill
                                   className="object-cover"
