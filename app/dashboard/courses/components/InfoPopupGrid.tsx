@@ -36,10 +36,10 @@ const basicsWeekSlugs: Record<number, string[]> = {
 // Slug mapping for Flow course weeks
 const flowWeekSlugs: Record<number, string[]> = {
   1: ['vad-a-r-functional-foods'],
-  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-battre-mage-och-tarm'],
-  3: ['tillskott-som-kan-stodja-mag-och-tarmhalsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
+  2: ['vanliga-mag-och-tarmproblem', 'kosten-en-guide-till-en-ba-ttre-mage-och-tarm'],
+  3: ['tillskott-som-kan-sto-dja-mag-och-tarmha-lsa', 'fermenterade-livsmedel-probiotika-och-prebiotika'],
   4: ['livsstilsfaktorer'],
-  5: ['att-valja-ratt-proteiner', 'att-valja-ratt-kolhydrater'],
+  5: ['att-va-lja-ra-tt-proteiner', 'att-va-lja-ra-tt-kolhydrater'],
   6: ['topplista-med-functional-foods']
 };
 
