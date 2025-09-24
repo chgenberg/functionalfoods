@@ -745,14 +745,6 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
                   <span className="hidden sm:inline">Skriv ut</span>
                 </button>
                 <button
-                  onClick={handleShare}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-sm font-medium"
-                  title="Dela"
-                >
-                  <Share className="w-4 h-4" />
-                  <span className="hidden sm:inline">Dela</span>
-                </button>
-                <button
                   onClick={handleExport}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors text-sm font-medium"
                   title="Ladda ner"
@@ -815,18 +807,23 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
                   />
                 </div>
                 
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">Kategori</label>
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:bg-white cursor-pointer transition-colors text-sm"
-                  >
-                    <option value="all">Alla kategorier</option>
-                    {Object.keys(CATEGORIES).map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
+                <div className="relative">
+                  <label className="text-sm font-medium text-gray-700 mb-3 block">Kategori</label>
+                  <div className="relative">
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] cursor-pointer transition-all text-sm font-medium appearance-none hover:border-[#014421] hover:shadow-md"
+                    >
+                      <option value="all">🛒 Alla kategorier</option>
+                      {Object.keys(CATEGORIES).map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <ChevronDown className="w-5 h-5 text-[#014421]" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -857,26 +854,26 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
                   {/* Category Header */}
                   <button
                     onClick={() => toggleCategory(category)}
-                    className="w-full bg-[#F3EFE3] hover:bg-[#E8E0D4] transition-colors px-6 py-4 flex items-center justify-between group"
+                    className="w-full bg-gradient-to-r from-[#F3EFE3] to-[#F7F1E8] hover:from-[#E8E0D4] hover:to-[#EDE4D8] transition-all duration-300 px-6 py-5 flex items-center justify-between group border-l-4 border-[#014421] hover:border-l-6 hover:shadow-lg"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>
-                        <ChevronDown className="w-5 h-5 text-[#014421]" />
+                    <div className="flex items-center gap-4">
+                      <div className={`transition-all duration-300 transform ${isCollapsed ? 'rotate-0' : 'rotate-90'} bg-[#014421] rounded-full p-2 group-hover:scale-110`}>
+                        <ChevronDown className="w-4 h-4 text-white" />
                       </div>
-                      <h3 className="font-semibold text-[#014421] text-lg">{category}</h3>
+                      <h3 className="font-bold text-[#014421] text-xl group-hover:text-[#112A12] transition-colors">{category}</h3>
                       {allChecked && items.length > 0 && (
-                        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
-                          Klart!
+                        <span className="bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-3 py-1.5 rounded-full font-semibold shadow-md animate-pulse">
+                          ✓ Klart!
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm font-semibold text-[#014421] bg-white px-3 py-1 rounded-full shadow-sm">
                         {categoryCheckedCount}/{items.length}
                       </div>
-                      <div className="w-20 bg-gray-200 rounded-full h-2 overflow-hidden">
+                      <div className="w-24 bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
                         <div
-                          className="bg-[#014421] h-full rounded-full transition-all duration-300"
+                          className="bg-gradient-to-r from-[#014421] to-[#93C560] h-full rounded-full transition-all duration-500 ease-out shadow-sm"
                           style={{ width: `${items.length > 0 ? (categoryCheckedCount / items.length) * 100 : 0}%` }}
                         />
                       </div>
