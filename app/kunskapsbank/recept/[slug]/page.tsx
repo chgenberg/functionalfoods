@@ -250,10 +250,12 @@ export default function RecipePage() {
       const fromWeek = searchParams.get('week');
       
       if (fromCourse && fromWeek && checkIfRecipeAppearsAsRester(slug, fromCourse, fromWeek)) {
-        // Set servings to 2 for recipes that will have leftovers
-        setServings(2);
+        // Set servings to 2 for recipes that ska ge rester
+        setServings(Math.max(2, recipe.servings || 2));
       } else if (recipe.servings) {
-        // Otherwise use recipe default or 1 portion
+        // Använd receptets definierade standardportioner
+        setServings(recipe.servings);
+      } else {
         setServings(1);
       }
       
