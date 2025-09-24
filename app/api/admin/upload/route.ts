@@ -2,9 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { verifyAdminAuth } from '@/app/lib/admin-auth';
 
 export async function POST(req: NextRequest) {
   try {
+    // Verify admin access
+    const adminUser = await verifyAdminAuth(req);
+    if (!adminUser) {
+      return NextResponse.json({ error: 'Unauthorized - Admin access required' }, { status: 401 });
+    }
+
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const type = formData.get('type') as string || 'general';
@@ -12,6 +19,15 @@ export async function POST(req: NextRequest) {
     if (!file) {
       return NextResponse.json(
         { error: 'No file provided' },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size (max 5MB)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: `File too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB. Your file is ${(file.size / (1024 * 1024)).toFixed(1)}MB.` },
         { status: 400 }
       );
     }
@@ -63,13 +79,16 @@ export async function POST(req: NextRequest) {
       filename: filename,
       originalName: file.name,
       size: file.size,
-      type: file.type
+      type: file.type,
+      uploadDir,
+      message: 'File uploaded successfully',
+      security: 'Admin-only upload with 5MB limit'
     });
 
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { error: 'Failed to upload file. Please check file size (max 5MB) and format (JPEG, PNG, WebP, GIF).' },
       { status: 500 }
     );
   }
