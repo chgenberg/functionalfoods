@@ -58,7 +58,7 @@ export default function RecipePage() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [servings, setServings] = useState(1); // Changed from 4 to 1
+  const [servings, setServings] = useState(1); // Will be updated when recipe loads
   const [checkedIngredients, setCheckedIngredients] = useState<number[]>([]);
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
   const [nutrition, setNutrition] = useState<any>(null);
@@ -417,6 +417,10 @@ export default function RecipePage() {
         console.log('❌ Admin only recipe, user is not admin');
         setError('adminOnly');
         setRecipe(data);
+        // Set servings from recipe data
+        if (data.servings) {
+          setServings(data.servings);
+        }
         initializeNutrition(data);
         return;
       }
@@ -466,6 +470,10 @@ export default function RecipePage() {
         console.log('✅ Course recipe, user has access');
         setError(null);
         setRecipe(data);
+        // Set servings from recipe data
+        if (data.servings) {
+          setServings(data.servings);
+        }
         initializeNutrition(data);
         return;
       }
@@ -475,6 +483,10 @@ export default function RecipePage() {
         console.log('❌ Premium recipe, user has no premium access');
         setError('premium');
         setRecipe(data);
+        // Set servings from recipe data
+        if (data.servings) {
+          setServings(data.servings);
+        }
         initializeNutrition(data);
         return;
       }
