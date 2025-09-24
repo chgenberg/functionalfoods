@@ -8,17 +8,22 @@ const prisma = new PrismaClient();
 
 // Funktion för att hämta användarens kursåtkomst
 async function getUserCourseAccess(userId: string): Promise<string[]> {
-  const purchases = await prisma.purchase.findMany({
-    where: {
-      userId,
-      status: 'completed'
-    },
-    include: {
-      course: true
-    }
-  });
-  
-  return purchases.map(purchase => purchase.course.id);
+  try {
+    const purchases = await prisma.purchase.findMany({
+      where: {
+        userId,
+        status: 'completed'
+      },
+      include: {
+        course: true
+      }
+    });
+    
+    return purchases.map(purchase => purchase.course.id);
+  } catch (error) {
+    console.error('Error fetching user course access:', error);
+    return []; // Return empty array on error to allow guest access
+  }
 }
 
 interface Recipe {
