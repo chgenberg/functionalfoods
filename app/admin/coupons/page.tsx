@@ -164,32 +164,32 @@ export default function AdminCouponsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F8F5F0] to-[#F3EFE3]">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-100 mb-8">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="bg-white border-b border-gray-200 mb-12">
+        <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-[#014421] mb-3 flex items-center gap-3">
-                <div className="bg-gradient-to-r from-[#014421] to-[#93C560] p-3 rounded-xl">
-                  <Tag className="w-8 h-8 text-white" />
+              <h1 className="text-5xl font-bold text-[#014421] mb-4 flex items-center gap-4">
+                <div className="bg-[#014421] p-4 rounded-2xl">
+                  <Tag className="w-10 h-10 text-white" />
                 </div>
                 Rabattkoder
               </h1>
-              <p className="text-gray-600 text-lg">Hantera rabattkoder för kampanjer och erbjudanden</p>
+              <p className="text-gray-600 text-xl max-w-2xl leading-relaxed">Hantera rabattkoder för kampanjer och erbjudanden. Skapa, redigera och övervaka användningen av dina rabattkoder.</p>
             </div>
             <button 
               onClick={openNew}
-              className="bg-gradient-to-r from-[#014421] to-[#93C560] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2 hover:scale-105"
+              className="bg-[#014421] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#112A12] transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-6 h-6" />
               Ny rabattkod
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-8">
 
       {/* Error message */}
       {error && (
@@ -200,134 +200,134 @@ export default function AdminCouponsPage() {
       )}
 
       {/* Search */}
-      <div className="mb-8">
-        <div className="relative max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+      <div className="mb-12">
+        <div className="relative max-w-xl">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
           <input 
             value={q} 
             onChange={e => setQ(e.target.value)} 
-            placeholder="Sök rabattkod..." 
-            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 text-lg font-medium placeholder-gray-400 shadow-sm hover:shadow-md" 
+            placeholder="Sök rabattkod efter kod eller typ..." 
+            className="w-full pl-16 pr-6 py-5 bg-white border border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-medium placeholder-gray-500 shadow-sm hover:shadow-lg" 
           />
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-12">
         {/* Coupons list */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
             {loading ? (
-              <div className="p-16 text-center">
-                <div className="relative mx-auto w-20 h-20">
-                  <div className="w-20 h-20 border-4 border-gray-200 rounded-full"></div>
-                  <div className="absolute top-0 left-0 w-20 h-20 border-4 border-[#014421] rounded-full animate-spin border-t-transparent"></div>
+              <div className="p-20 text-center">
+                <div className="relative mx-auto w-24 h-24">
+                  <div className="w-24 h-24 border-4 border-gray-200 rounded-full"></div>
+                  <div className="absolute top-0 left-0 w-24 h-24 border-4 border-[#014421] rounded-full animate-spin border-t-transparent"></div>
                 </div>
-                <p className="mt-6 text-gray-600 text-lg font-medium">Laddar rabattkoder...</p>
+                <p className="mt-8 text-gray-700 text-xl font-semibold">Laddar rabattkoder...</p>
               </div>
             ) : coupons.length === 0 ? (
-              <div className="p-16 text-center">
-                <div className="bg-gradient-to-r from-[#014421] to-[#93C560] p-6 rounded-full w-24 h-24 mx-auto mb-6">
-                  <Tag className="w-12 h-12 text-white" />
+              <div className="p-20 text-center">
+                <div className="bg-[#014421] p-8 rounded-full w-32 h-32 mx-auto mb-8">
+                  <Tag className="w-16 h-16 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Inga rabattkoder hittades</h3>
-                <p className="text-gray-600 mb-6 text-lg">Skapa din första rabattkod för att komma igång</p>
+                <h3 className="text-3xl font-bold text-gray-900 mb-4">Inga rabattkoder hittades</h3>
+                <p className="text-gray-600 mb-8 text-xl max-w-md mx-auto leading-relaxed">Skapa din första rabattkod för att komma igång med kampanjer och erbjudanden</p>
                 <button 
                   onClick={openNew}
-                  className="bg-gradient-to-r from-[#014421] to-[#93C560] text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center gap-2 mx-auto"
+                  className="bg-[#014421] text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-[#112A12] transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center gap-3 mx-auto"
                 >
-                  <Plus className="w-5 h-5" />
+                  <Plus className="w-6 h-6" />
                   Skapa rabattkod
                 </button>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gradient-to-r from-[#F3EFE3] to-[#F7F1E8] border-b border-gray-200">
+                  <thead className="bg-gray-100 border-b-2 border-gray-200">
                     <tr>
-                      <th className="text-left px-6 py-4 font-bold text-[#014421] text-sm uppercase tracking-wider">Kod</th>
-                      <th className="text-left px-6 py-4 font-bold text-[#014421] text-sm uppercase tracking-wider">Typ</th>
-                      <th className="text-left px-6 py-4 font-bold text-[#014421] text-sm uppercase tracking-wider">Värde</th>
-                      <th className="text-left px-6 py-4 font-bold text-[#014421] text-sm uppercase tracking-wider">Giltighet</th>
-                      <th className="text-left px-6 py-4 font-bold text-[#014421] text-sm uppercase tracking-wider">Användning</th>
-                      <th className="text-left px-6 py-4 font-bold text-[#014421] text-sm uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-4"></th>
+                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Kod</th>
+                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Typ</th>
+                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Värde</th>
+                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Giltighet</th>
+                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Användning</th>
+                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Status</th>
+                      <th className="px-8 py-6"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {coupons.map((c, index) => (
-                      <tr key={c.id} className={`border-b border-gray-100 hover:bg-gradient-to-r hover:from-[#F8F5F0] hover:to-[#F3EFE3] transition-all duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
-                        <td className="px-6 py-5">
-                          <span className="font-mono font-bold text-[#014421] bg-gray-100 px-3 py-1 rounded-lg text-sm">{c.code}</span>
+                      <tr key={c.id} className={`border-b border-gray-100 hover:bg-gray-50 transition-all duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}>
+                        <td className="px-8 py-6">
+                          <span className="font-mono font-bold text-[#014421] bg-gray-100 px-4 py-2 rounded-xl text-lg">{c.code}</span>
                         </td>
-                        <td className="px-6 py-5">
-                          <span className="inline-flex items-center gap-2">
+                        <td className="px-8 py-6">
+                          <span className="inline-flex items-center gap-3">
                             {c.type === 'percent' ? (
                               <>
-                                <div className="bg-blue-100 p-2 rounded-lg">
-                                  <Percent className="w-4 h-4 text-blue-600" />
+                                <div className="bg-blue-50 p-3 rounded-xl border border-blue-200">
+                                  <Percent className="w-5 h-5 text-blue-600" />
                                 </div>
-                                <span className="text-gray-700 font-medium">Procent</span>
+                                <span className="text-gray-800 font-semibold text-lg">Procent</span>
                               </>
                             ) : (
                               <>
-                                <div className="bg-green-100 p-2 rounded-lg">
-                                  <DollarSign className="w-4 h-4 text-green-600" />
+                                <div className="bg-green-50 p-3 rounded-xl border border-green-200">
+                                  <DollarSign className="w-5 h-5 text-green-600" />
                                 </div>
-                                <span className="text-gray-700 font-medium">Fast belopp</span>
+                                <span className="text-gray-800 font-semibold text-lg">Fast belopp</span>
                               </>
                             )}
                           </span>
                         </td>
-                        <td className="px-6 py-5">
-                          <span className="font-bold text-2xl text-[#014421]">
+                        <td className="px-8 py-6">
+                          <span className="font-bold text-3xl text-[#014421]">
                             {c.type === 'percent' ? `${c.amount}%` : `${c.amount} kr`}
                           </span>
                         </td>
-                        <td className="px-6 py-5">
-                          <div className="text-sm space-y-1">
-                            <div className="text-gray-900 font-medium">{formatDate(c.startsAt)} – {formatDate(c.expiresAt)}</div>
+                        <td className="px-8 py-6">
+                          <div className="space-y-2">
+                            <div className="text-gray-900 font-semibold text-base">{formatDate(c.startsAt)} – {formatDate(c.expiresAt)}</div>
                             {isExpired(c.expiresAt) && (
-                              <span className="inline-flex items-center gap-1 text-red-600 text-xs font-semibold bg-red-50 px-2 py-1 rounded-full">
-                                <AlertCircle className="w-3 h-3" />
+                              <span className="inline-flex items-center gap-2 text-red-700 text-sm font-bold bg-red-100 px-3 py-1 rounded-full border border-red-200">
+                                <AlertCircle className="w-4 h-4" />
                                 Utgången
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="px-6 py-5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-[#014421]">{c.timesUsed}</span>
-                            <span className="text-gray-400">/</span>
-                            <span className="text-gray-600 font-medium">{c.usageLimit || '∞'}</span>
+                        <td className="px-8 py-6">
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl font-bold text-[#014421]">{c.timesUsed}</span>
+                            <span className="text-gray-400 text-xl">/</span>
+                            <span className="text-gray-700 font-semibold text-lg">{c.usageLimit || '∞'}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-5">
-                          <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm ${
+                        <td className="px-8 py-6">
+                          <span className={`inline-flex items-center gap-3 px-5 py-3 rounded-2xl font-bold text-base ${
                             c.active && !isExpired(c.expiresAt)
-                              ? 'bg-green-100 text-green-800 border border-green-200' 
-                              : 'bg-gray-100 text-gray-600 border border-gray-200'
+                              ? 'bg-green-100 text-green-800 border-2 border-green-300' 
+                              : 'bg-gray-100 text-gray-600 border-2 border-gray-300'
                           }`}>
-                            <div className={`w-2 h-2 rounded-full ${
-                              c.active && !isExpired(c.expiresAt) ? 'bg-green-500' : 'bg-gray-400'
+                            <div className={`w-3 h-3 rounded-full ${
+                              c.active && !isExpired(c.expiresAt) ? 'bg-green-600' : 'bg-gray-500'
                             }`}></div>
                             {c.active && !isExpired(c.expiresAt) ? 'Aktiv' : 'Inaktiv'}
                           </span>
                         </td>
-                        <td className="px-6 py-5 text-right">
-                          <div className="flex items-center justify-end gap-2">
+                        <td className="px-8 py-6 text-right">
+                          <div className="flex items-center justify-end gap-4">
                             <button 
                               onClick={() => openEdit(c)} 
-                              className="p-3 text-[#014421] hover:text-white hover:bg-[#014421] rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                              className="p-4 text-[#014421] hover:text-white hover:bg-[#014421] rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg"
                               title="Redigera"
                             >
-                              <Edit3 className="w-5 h-5" />
+                              <Edit3 className="w-6 h-6" />
                             </button>
                             <button 
                               onClick={() => remove(c.id)} 
-                              className="p-3 text-red-500 hover:text-white hover:bg-red-500 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                              className="p-4 text-red-500 hover:text-white hover:bg-red-500 rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg"
                               title="Ta bort"
                             >
-                              <Trash2 className="w-5 h-5" />
+                              <Trash2 className="w-6 h-6" />
                             </button>
                           </div>
                         </td>
@@ -341,92 +341,92 @@ export default function AdminCouponsPage() {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 sticky top-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-gradient-to-r from-[#014421] to-[#93C560] p-3 rounded-xl">
-              <Tag className="w-6 h-6 text-white" />
+        <div className="bg-white rounded-3xl shadow-xl p-10 border border-gray-200 sticky top-8">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="bg-[#014421] p-4 rounded-2xl">
+              <Tag className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-[#014421]">
+            <h3 className="text-3xl font-bold text-[#014421]">
               {editing ? 'Redigera rabattkod' : 'Ny rabattkod'}
             </h3>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <label className="block text-sm font-bold text-[#014421] mb-3">Rabattkod</label>
+              <label className="block text-base font-bold text-[#014421] mb-4">Rabattkod</label>
               <input 
                 value={form.code || ''} 
                 onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} 
                 placeholder="T.ex. SOMMAR20" 
-                className="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 text-lg font-mono font-bold placeholder-gray-400 hover:bg-white" 
+                className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-mono font-bold placeholder-gray-500 hover:bg-white hover:shadow-md" 
               />
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-bold text-[#014421] mb-3">Typ</label>
+                <label className="block text-base font-bold text-[#014421] mb-4">Typ</label>
                 <div className="relative">
                   <select 
                     value={form.type} 
                     onChange={e => setForm({ ...form, type: e.target.value })} 
-                    className="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 text-lg font-medium appearance-none cursor-pointer hover:bg-white"
+                    className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-semibold appearance-none cursor-pointer hover:bg-white hover:shadow-md"
                   >
                     <option value="percent">📊 Procent</option>
                     <option value="fixed">💰 Fast belopp</option>
                   </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#014421] pointer-events-none" />
+                  <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#014421] pointer-events-none" />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-bold text-[#014421] mb-3">Värde</label>
+                <label className="block text-base font-bold text-[#014421] mb-4">Värde</label>
                 <input 
                   type="number" 
                   value={form.amount} 
                   onChange={e => setForm({ ...form, amount: e.target.value })} 
-                  className="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 text-lg font-bold placeholder-gray-400 hover:bg-white" 
+                  className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-bold placeholder-gray-500 hover:bg-white hover:shadow-md" 
                   placeholder="Värde" 
                 />
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-[#014421] mb-3 flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
+              <label className="block text-base font-bold text-[#014421] mb-4 flex items-center gap-3">
+                <Calendar className="w-5 h-5" />
                 Giltighetstid
               </label>
-              <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
+              <div className="space-y-6 bg-gray-50 p-8 rounded-2xl border-2 border-gray-200">
                 <div>
-                  <label className="text-sm font-semibold text-gray-700 mb-2 block">🚀 Startdatum och tid</label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <label className="text-base font-bold text-gray-800 mb-3 block">🚀 Startdatum och tid</label>
+                  <div className="grid grid-cols-2 gap-4">
                     <input 
                       type="date" 
                       value={form.startsAtDate || ''} 
                       onChange={e => setForm({ ...form, startsAtDate: e.target.value })} 
-                      className="px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 font-medium" 
+                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
                     />
                     <input 
                       type="time" 
                       value={form.startsAtTime || '00:00'} 
                       onChange={e => setForm({ ...form, startsAtTime: e.target.value })} 
-                      className="px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 font-medium" 
+                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-700 mb-2 block">⏰ Slutdatum och tid</label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <label className="text-base font-bold text-gray-800 mb-3 block">⏰ Slutdatum och tid</label>
+                  <div className="grid grid-cols-2 gap-4">
                     <input 
                       type="date" 
                       value={form.expiresAtDate || ''} 
                       onChange={e => setForm({ ...form, expiresAtDate: e.target.value })} 
-                      className="px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 font-medium" 
+                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
                     />
                     <input 
                       type="time" 
                       value={form.expiresAtTime || '23:59'} 
                       onChange={e => setForm({ ...form, expiresAtTime: e.target.value })} 
-                      className="px-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 font-medium" 
+                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
                     />
                   </div>
                 </div>
@@ -434,44 +434,44 @@ export default function AdminCouponsPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-[#014421] mb-3">Max användningar</label>
+              <label className="block text-base font-bold text-[#014421] mb-4">Max användningar</label>
               <input 
                 type="number" 
                 min={0} 
                 value={form.usageLimit || ''} 
                 onChange={e => setForm({ ...form, usageLimit: e.target.value })} 
-                className="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421] focus:border-[#014421] transition-all duration-300 text-lg font-medium placeholder-gray-400 hover:bg-white" 
+                className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-semibold placeholder-gray-500 hover:bg-white hover:shadow-md" 
                 placeholder="Lämna tomt för obegränsad" 
               />
             </div>
             
-            <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+            <div className="flex items-center gap-5 bg-gray-50 p-6 rounded-2xl border-2 border-gray-200">
               <input 
                 type="checkbox" 
                 id="active"
                 checked={!!form.active} 
                 onChange={e => setForm({ ...form, active: e.target.checked })} 
-                className="h-6 w-6 text-[#014421] focus:ring-[#014421] border-gray-300 rounded-lg transition-all duration-300" 
+                className="h-7 w-7 text-[#014421] focus:ring-[#014421] border-gray-400 rounded-xl transition-all duration-300" 
               />
-              <label htmlFor="active" className="text-lg font-semibold text-gray-900 cursor-pointer">
+              <label htmlFor="active" className="text-xl font-bold text-gray-900 cursor-pointer">
                 ✨ Aktiv (kan användas av kunder)
               </label>
             </div>
             
-            <div className="pt-6 space-y-3">
+            <div className="pt-8 space-y-4">
               <button 
                 onClick={save} 
                 disabled={saving || !form.code || !form.amount}
-                className="w-full bg-gradient-to-r from-[#014421] to-[#93C560] text-white px-6 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 flex items-center justify-center gap-2"
+                className="w-full bg-[#014421] text-white px-8 py-5 rounded-2xl font-bold text-xl hover:bg-[#112A12] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
               >
                 {saving ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
                     Sparar...
                   </>
                 ) : (
                   <>
-                    <Tag className="w-5 h-5" />
+                    <Tag className="w-6 h-6" />
                     Spara rabattkod
                   </>
                 )}
@@ -480,9 +480,9 @@ export default function AdminCouponsPage() {
               {editing && (
                 <button 
                   onClick={openNew}
-                  className="w-full bg-gray-100 text-gray-700 px-6 py-4 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 hover:scale-105"
+                  className="w-full bg-gray-200 text-gray-800 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-gray-300 transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  Avbryt
+                  Avbryt redigering
                 </button>
               )}
             </div>
