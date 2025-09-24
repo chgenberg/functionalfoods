@@ -44,27 +44,23 @@ export default function AdminShoppingListsPage() {
   const loadShoppingList = async () => {
     setLoading(true);
     try {
-      // First try to load curated list
-      const curatedResponse = await fetch(`/api/admin/shopping-lists/${courseType}/${weekNumber}`);
-      if (curatedResponse.ok) {
-        const data = await curatedResponse.json();
+      // Load from database via admin API
+      const response = await fetch(`/api/admin/shopping-lists/${courseType}/${weekNumber}`);
+      if (response.ok) {
+        const data = await response.json();
         setShoppingList(data.items || []);
-        setMessage({ type: 'success', text: 'Manuellt redigerad lista laddad' });
+        setMessage({ 
+          type: 'success', 
+          text: `Inköpslista från databas laddad (${data.items?.length || 0} rader)` 
+        });
       } else {
-        // Fall back to generated list
-        const response = await fetch(`/api/shopping-list/${courseType}/${weekNumber}?servings=4`);
-        if (response.ok) {
-          const data = await response.json();
-          setShoppingList(data.ingredients || []);
-          setMessage({ type: 'success', text: 'Genererad lista laddad' });
-        } else {
-          setShoppingList([]);
-          setMessage({ type: 'error', text: 'Kunde inte ladda inköpslista' });
-        }
+        setShoppingList([]);
+        setMessage({ type: 'error', text: 'Inköpslista saknas i databasen för denna vecka' });
       }
     } catch (error) {
       console.error('Error loading shopping list:', error);
-      setMessage({ type: 'error', text: 'Ett fel uppstod vid laddning' });
+      setMessage({ type: 'error', text: 'Ett fel uppstod vid laddning från databas' });
+      setShoppingList([]);
     } finally {
       setLoading(false);
     }
@@ -83,9 +79,14 @@ export default function AdminShoppingListsPage() {
       });
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Inköpslista sparad!' });
+        const data = await response.json();
+        setMessage({ 
+          type: 'success', 
+          text: `Inköpslista sparad till databas! (${data.itemCount || 0} rader)` 
+        });
       } else {
-        setMessage({ type: 'error', text: 'Kunde inte spara inköpslista' });
+        const errorData = await response.json();
+        setMessage({ type: 'error', text: errorData.error || 'Kunde inte spara inköpslista' });
       }
     } catch (error) {
       console.error('Error saving shopping list:', error);
