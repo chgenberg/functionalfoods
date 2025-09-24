@@ -9,7 +9,7 @@ import HelpGuide from '@/app/components/HelpGuide';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
-import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
+import { mealPlans as basicMealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun, FileText, ExternalLink, X } from 'lucide-react';
 import InfoPopupGrid from '@/app/dashboard/courses/components/InfoPopupGrid';
 import PrintableMealPlan from './PrintableMealPlan';
@@ -327,9 +327,10 @@ export default function WeekTemplate({
     loadKnowledgeDocuments();
   }, [courseType]);
 
-  // Get current week's meal plan
+  // Get current week's meal plan (prefer provided prop -> fallback to static by course)
   const weekKey = `week${weekNumber}`;
-  const mealPlan = mealPlans[weekKey];
+  const staticByCourse = courseType === 'basics' ? basicMealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
+  const mealPlan = (mealPlans as any)?.[weekKey] || (staticByCourse as any)?.[weekKey];
   
   // Validate meal plan data
   if (!mealPlan && process.env.NODE_ENV === 'development') {
@@ -371,8 +372,9 @@ export default function WeekTemplate({
     const map: Record<string, number> = {};
     const types = ['breakfast','lunch','dinner','snack','dessert'];
     const daysOrder = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+    const source = courseType === 'basics' ? basicMealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
     for (let w = 1; w <= 6; w++) {
-      const wk = mealPlans[`week${w}`];
+      const wk = (source as any)[`week${w}`];
       if (!wk || !wk.days) continue;
       for (let d = 0; d < 7; d++) {
         const dayKey = wk.days[daysOrder[d]] || wk.days[`day${d+1}`];
@@ -388,7 +390,7 @@ export default function WeekTemplate({
       }
     }
     return map;
-  }, [mealPlans]);
+  }, [courseType]);
 
   const withResterName = (wNum: number, dNum: number, typeIdx: number, m: any): string => {
     if (!m || !m.name) return '';
