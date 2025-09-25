@@ -59,4 +59,46 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function GET(req: NextRequest) {
+  const auth = await requireAdminAuth(req);
+  if ((auth as any)?.status === 401) {
+    return auth as unknown as NextResponse;
+  }
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const to = String(searchParams.get('to') || '').trim();
+    const customerName = String(searchParams.get('name') || 'Kund');
+    const includeCredentials = searchParams.get('creds') !== 'false';
+
+    if (!to) {
+      return NextResponse.json({ error: 'Använd query param to=email@exempel.se' }, { status: 400 });
+    }
+
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+    const orderNumber = `TEST-${Date.now()}`;
+    const totalAmount = 2295;
+    const courses = [{ name: 'Functional Insulin balance/Energy', price: 2295 }];
+
+    const loginCredentials = includeCredentials
+      ? { email: to, password: Math.random().toString(36).slice(-8).toUpperCase(), loginUrl: `${origin}/login` }
+      : undefined;
+
+    const sent = await emailService.sendOrderConfirmation({
+      customerEmail: to,
+      customerName,
+      orderNumber,
+      totalAmount,
+      courses,
+      loginCredentials
+    });
+
+    if (!sent) return NextResponse.json({ ok: false, message: 'Kunde inte skicka e‑post' }, { status: 500 });
+    return NextResponse.json({ ok: true, orderNumber, to });
+  } catch (error) {
+    console.error('send-test-order-email GET error:', error);
+    return NextResponse.json({ error: 'Internt fel' }, { status: 500 });
+  }
+}
+
 

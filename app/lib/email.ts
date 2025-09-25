@@ -272,6 +272,44 @@ export class EmailService {
     });
   }
 
+  // Send temporary password to a user (bulk reset helper)
+  async sendTemporaryPasswordEmail(params: { email: string; name?: string | null; password: string }): Promise<boolean> {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+      <body style="margin:0;padding:0;font-family:Arial, sans-serif;background:#f7faf9;color:#1a4324;">
+        <div style="max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e5efe2;border-radius:12px;overflow:hidden;">
+          <div style="background:#1a4324;color:#fff;padding:22px 24px;">
+            <h1 style="margin:0;font-size:20px;">Dina inloggningsuppgifter</h1>
+          </div>
+          <div style="padding:22px 24px;">
+            <p style="margin:0 0 12px 0;">Hej ${params.name || params.email},</p>
+            <p style="margin:0 0 12px 0;">Vi har skapat ett tillfälligt lösenord åt dig. Du kan logga in nedan och byta lösenord under Inställningar.</p>
+            <div style="background:#f8fbf7;border:1px solid #e5efe2;border-radius:8px;padding:16px;margin:16px 0;">
+              <p style="margin:6px 0;"><strong>E‑post:</strong> ${params.email}</p>
+              <p style="margin:6px 0;"><strong>Tillfälligt lösenord:</strong> <span style="font-family:monospace;background:#f3f4f6;padding:3px 6px;border-radius:4px;">${params.password}</span></p>
+            </div>
+            <p style="margin:0 0 16px 0;">Logga in här:</p>
+            <p style="margin:0 0 24px 0;"><a href="${baseUrl}/login" style="display:inline-block;background:#1a4324;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;">Logga in</a></p>
+            <p style="margin:0 0 6px 0;font-size:12px;color:#6b7280;">Av säkerhetsskäl ber vi dig att byta lösenord efter första inloggningen.</p>
+          </div>
+          <div style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:16px;text-align:center;font-size:12px;color:#64748b;">© ${new Date().getFullYear()} Functional Foods</div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return this.sendEmail({
+      to: params.email,
+      toName: params.name || params.email,
+      subject: 'Dina inloggningsuppgifter – Functional Foods',
+      html,
+      tags: ['temporary-password','account']
+    });
+  }
+
   // Send welcome email for new course access
   async sendCourseWelcomeEmail(data: WelcomeEmailData): Promise<boolean> {
     const html = `
