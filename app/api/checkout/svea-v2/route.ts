@@ -38,6 +38,142 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // If payments are simulated/disabled, short-circuit and create a completed order locally
+    if (process.env.PAYMENTS_SIMULATE === 'true') {
+      // Calculate order totals (öre)
+      let subtotal = 0;
+      for (const item of items) {
+        subtotal += SveaCheckoutService.formatPriceToMinorUnits(item.price) * item.quantity;
+      }
+
+      // Handle coupon (optional)
+      let discountAmount = 0;
+      let appliedCoupon = null as any;
+      if (couponCode) {
+        try {
+          const coupon = await prisma.coupon.findFirst({
+            where: {
+              code: couponCode.toUpperCase().trim(),
+              active: true,
+              OR: [ { expiresAt: null }, { expiresAt: { gt: new Date() } } ]
+            }
+          });
+          if (coupon) {
+            if (!coupon.usageLimit || coupon.timesUsed < coupon.usageLimit) {
+              if (coupon.type === 'PERCENTAGE') {
+                discountAmount = Math.round(subtotal * (coupon.amount / 100));
+              } else if (coupon.type === 'FIXED') {
+                discountAmount = SveaCheckoutService.formatPriceToMinorUnits(coupon.amount);
+              }
+              appliedCoupon = coupon;
+            }
+          }
+        } catch {}
+      }
+
+      const totalAmountKr = SveaCheckoutService.formatPriceFromMinorUnits(subtotal - discountAmount);
+
+      // Generate order ID
+      const timestamp = Date.now();
+      const randomPart = Math.random().toString(36).substring(2, 9);
+      const orderId = `FF-${timestamp}-${randomPart}`;
+
+      // Map cart item ids to CourseProduct ids when possible
+      async function resolveCourseIdFromItemId(itemId: string): Promise<string | null> {
+        const id = itemId.toLowerCase();
+        let keyword = '';
+        if (id.includes('energy') || id.includes('insulin')) keyword = 'Energy';
+        else if (id.includes('basic')) keyword = 'Basics';
+        else if (id.includes('flow') || id.includes('gut')) keyword = 'Flow';
+        if (!keyword) return null;
+        const cp = await prisma.courseProduct.findFirst({ where: { name: { contains: keyword, mode: 'insensitive' } }, select: { id: true } });
+        return cp?.id || null;
+      }
+
+      // Create order + payment + purchases in one transaction
+      await prisma.$transaction(async (tx) => {
+        const order = await tx.order.create({
+          data: {
+            id: orderId,
+            orderNumber: orderId,
+            status: 'COMPLETED',
+            totalAmount: totalAmountKr,
+            currency: 'SEK',
+            userId: customer?.id || null,
+            customerEmail: customer?.email || null,
+            customerName: customer?.name || null,
+            items: {
+              create: await Promise.all(items.map(async (item) => ({
+                productId: item.id,
+                productName: item.name,
+                productType: item.type,
+                quantity: item.quantity,
+                price: item.price,
+                courseId: await resolveCourseIdFromItemId(item.id)
+              })))
+            },
+            metadata: {
+              simulated: true,
+              couponCode: appliedCoupon?.code || null,
+              discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
+            }
+          }
+        });
+
+        await tx.payment.create({
+          data: {
+            orderId: order.id,
+            paymentMethod: 'SIMULATED',
+            status: 'COMPLETED',
+            amount: order.totalAmount,
+            currency: 'SEK',
+            externalId: `SIM-${orderId}`,
+            processedAt: new Date(),
+          }
+        });
+
+        if (customer?.id) {
+          const orderWithItems = await tx.order.findUnique({ where: { id: order.id }, include: { items: true } });
+          for (const it of orderWithItems?.items || []) {
+            if (it.productType === 'course' && it.courseId) {
+              const exists = await tx.purchase.findUnique({
+                where: { userId_courseId: { userId: customer.id!, courseId: it.courseId } }
+              });
+              if (!exists) {
+                await tx.purchase.create({
+                  data: {
+                    userId: customer.id!,
+                    courseId: it.courseId,
+                    amount: it.price * it.quantity,
+                    status: 'completed',
+                    orderId: order.id,
+                    accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+                  }
+                });
+              }
+            }
+          }
+        }
+      });
+
+      // Simple embedded GUI snippet with a continue button
+      const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+      const snippet = `
+        <div style="padding:24px;text-align:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+          <h2 style="margin:0 0 8px 0;color:#014421">Simulerad betalning är PÅ</h2>
+          <p style="margin:0 0 16px 0;color:#334155">Inga pengar dras. Klicka för att slutföra köpet.</p>
+          <a href="${origin}/checkout/success/svea-v2?checkoutOrderId=SIMULATED&orderId=${orderId}"
+             style="display:inline-block;background:#014421;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none">Slutför köp</a>
+        </div>`;
+
+      return NextResponse.json({
+        success: true,
+        checkoutOrderId: 'SIMULATED',
+        orderId,
+        gui: { snippet }
+      });
+    }
+
     // Initialize Svea service
     let sveaCheckout: SveaCheckoutService;
     try {

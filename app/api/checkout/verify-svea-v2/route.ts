@@ -23,6 +23,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // If simulation is enabled, treat as completed without contacting Svea
+    if (process.env.PAYMENTS_SIMULATE === 'true' || checkoutOrderId === 'SIMULATED') {
+      const order = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: { items: true, user: true }
+      });
+      if (!order) {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+      }
+      return NextResponse.json({
+        success: true,
+        paymentCompleted: true,
+        orderStatus: 'COMPLETED',
+        order: {
+          id: order.id,
+          status: order.status,
+          totalAmount: order.totalAmount,
+          customerEmail: order.customerEmail,
+          customerName: order.customerName,
+          items: order.items.map(i => ({ productId: i.productId, productName: i.productName, productType: i.productType, quantity: i.quantity, price: i.price }))
+        }
+      });
+    }
+
     // Initialize Svea service
     const sveaCheckout = getSveaCheckout();
 
