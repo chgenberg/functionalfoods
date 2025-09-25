@@ -179,17 +179,19 @@ export async function POST(req: NextRequest) {
         }
       });
 
-      // Send order confirmation email
+      // Send order confirmation email - ALWAYS send for both new and existing users
       try {
         const order = await prisma.order.findUnique({ where: { id: createdOrderId }, include: { items: true } });
         if (order && customer?.email) {
-          const purchasedCourses = order.items.filter(it => it.productType === 'course');
+          const purchasedCourses = order.items.filter(it => it.type === 'course');
+          console.log('📧 Sending order confirmation email to:', customer.email, 'needsLoginCredentials:', needsLoginCredentials);
+          
           await emailService.sendOrderConfirmation({
             customerEmail: customer.email,
             customerName: customer.name || customer.email,
             orderNumber: order.orderNumber,
             totalAmount: order.totalAmount,
-            courses: purchasedCourses.map(it => ({ name: it.productName, price: it.price })),
+            courses: purchasedCourses.map(it => ({ name: it.name, price: it.price })),
             ...(needsLoginCredentials && {
               loginCredentials: {
                 email: customer.email,
@@ -198,9 +200,13 @@ export async function POST(req: NextRequest) {
               }
             })
           });
+          
+          console.log('✅ Order confirmation email sent successfully');
+        } else {
+          console.warn('⚠️ No order or customer email found for confirmation');
         }
       } catch (e) {
-        console.warn('Failed to send simulated order email:', e);
+        console.error('❌ Failed to send simulated order email:', e);
       }
 
       // Simple embedded GUI snippet with a continue button
