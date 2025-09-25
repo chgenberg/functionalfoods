@@ -513,6 +513,16 @@ export default function RecipePage() {
     }
   };
 
+  // Helper: decide if an ingredient line should be rendered (filters empty and heading-only like "Dekoration:")
+  const shouldDisplayIngredient = (text: string): boolean => {
+    if (!text) return false;
+    const normalized = text.replace(/\u00A0/g, ' ').trim();
+    if (!normalized) return false;
+    // Hide heading-only rows that end with ':' and contain no amounts
+    if (/^[A-Za-zÅÄÖåäö0-9\s]+:$/.test(normalized)) return false;
+    return true;
+  };
+
   const calculateNutrition = async () => {
     if (!recipe || !recipe.ingredients || recipe.ingredients.length === 0) return;
     
@@ -1066,7 +1076,9 @@ export default function RecipePage() {
                 {/* Ingredients Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                   {smartIngredients.length > 0 ? (
-                    smartIngredients.map((ingredient, index) => (
+                    smartIngredients
+                      .filter(shouldDisplayIngredient)
+                      .map((ingredient, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, x: -20 }}
@@ -1162,7 +1174,9 @@ export default function RecipePage() {
                       );
                     })
                   ) : (
-                    scaledIngredients.map((ingredient, index) => (
+                    scaledIngredients
+                      .filter(shouldDisplayIngredient)
+                      .map((ingredient, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, x: -20 }}
