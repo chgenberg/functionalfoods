@@ -23,10 +23,7 @@
   display: inline-block;
 }
 
-/* Förbättrad emoji-rendering för alla element */
-* {
-  font-variant-emoji: emoji;
-}
+/* (Removed) global emoji variant to avoid layout quirks for digits in Chrome */
 
 /* Header spacing utility to prevent content from being hidden behind fixed header */
 .header-safe {
@@ -220,8 +217,8 @@ img[src*="/_optimized/"] {
     font-weight: 400;
     font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     /* Normalize numeric rendering across browsers (Chrome vs Safari) */
-    font-variant-numeric: lining-nums;
-    font-feature-settings: 'lnum' 1;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: 'lnum' 1, 'tnum' 1;
   }
   
   h1, h2, h3, h4, h5, h6 {
