@@ -202,43 +202,29 @@ function SveaSuccessContent() {
           </motion.div>
         )}
 
-        {/* Next Steps */}
+        {/* Next Steps - Email Instructions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-2xl shadow-lg p-8"
+          className="bg-white rounded-2xl shadow-lg p-8 text-center"
         >
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Nästa steg</h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-4 p-6 bg-gradient-to-r from-[#014421] to-[#1a5530] text-white rounded-xl hover:from-[#1a5530] hover:to-[#014421] transition-all group"
-            >
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                <Book className="w-6 h-6" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold mb-1">Starta dina kurser</h3>
-                <p className="text-white/90 text-sm">Gå till din dashboard och börja lära</p>
-              </div>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            
-            <Link
-              href="/dashboard/downloads"
-              className="flex items-center gap-4 p-6 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group"
-            >
-              <div className="w-12 h-12 bg-[#014421] rounded-lg flex items-center justify-center">
-                <Download className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">Ladda ner material</h3>
-                <p className="text-gray-600 text-sm">PDF:er och kursmaterial</p>
-              </div>
-              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform" />
-            </Link>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Nästa steg</h2>
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p className="text-lg text-gray-700 mb-2">
+            <strong>Kontrollera din e-post!</strong>
+          </p>
+          <p className="text-gray-600 mb-6">
+            Vi har skickat dina inloggningsuppgifter till din e-postadress. Använd dessa för att logga in och komma åt din kurs.
+          </p>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-sm text-yellow-700">
+              💡 <strong>Tips:</strong> Glöm inte att kolla din skräppost-mapp om du inte ser e-posten inom några minuter.
+            </p>
           </div>
         </motion.div>
 
