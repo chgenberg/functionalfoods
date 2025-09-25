@@ -168,7 +168,7 @@ export default function AdminCoursesPage() {
           <div className="flex gap-3">
             {courses.map(course => (
               <button
-                key={course.id}
+            key={course.id}
                 onClick={() => setSelectedCourse(course.id)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                   selectedCourse === course.id
@@ -176,12 +176,12 @@ export default function AdminCoursesPage() {
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                {course.name}
+                    {course.name}
               </button>
             ))}
-          </div>
-        </div>
-        
+                </div>
+              </div>
+              
         {/* Tab Navigation */}
         {selectedCourse && (
           <div className="mt-8 border-b border-gray-200">
@@ -228,8 +228,8 @@ export default function AdminCoursesPage() {
                       <div><span className="font-semibold">Deltagare:</span> {selectedCourseData?.enrollments}</div>
                       <div><span className="font-semibold">Veckor:</span> {selectedCourseData?.weeks.length}</div>
                     </div>
-                  </div>
-                  
+            </div>
+
                   <div className="bg-gray-50 p-6 rounded-xl">
                     <h3 className="font-bold text-lg text-[#014421] mb-3">Beskrivning</h3>
                     <p className="text-gray-700">{selectedCourseData?.description}</p>
@@ -259,7 +259,7 @@ export default function AdminCoursesPage() {
                       <div>
                         <div className="font-semibold text-green-800">Hantera kunskapsdokument</div>
                         <div className="text-sm text-green-600">Redigera artiklar och material</div>
-                      </div>
+              </div>
                     </button>
                     
                     <Link
@@ -270,9 +270,9 @@ export default function AdminCoursesPage() {
                       <div>
                         <div className="font-semibold text-purple-800">Hantera inköpslistor</div>
                         <div className="text-sm text-purple-600">Redigera veckolistor</div>
-                      </div>
+                </div>
                     </Link>
-                  </div>
+              </div>
                 </div>
               </div>
             </div>
@@ -346,9 +346,9 @@ export default function AdminCoursesPage() {
                         <div className="text-sm text-gray-600">
                           {doc.weekNumber ? `Vecka ${doc.weekNumber}` : 'Allmän'} • Ordning: {doc.order}
                         </div>
-                      </div>
-                    </div>
-                    
+              </div>
+            </div>
+
                     <div className="flex gap-2 mt-4">
                       <Link
                         href={`/admin/knowledge/edit?course=${doc.course}&slug=${doc.slug}`}
@@ -356,7 +356,7 @@ export default function AdminCoursesPage() {
                       >
                         Redigera
                       </Link>
-                      <Link
+                  <Link
                         href={`/kunskapsbank/${doc.slug}`}
                         target="_blank"
                         className="bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-gray-300 transition-colors"
@@ -376,7 +376,7 @@ export default function AdminCoursesPage() {
               </div>
             </div>
           )}
-        </div>
+      </div>
       )}
 
       {/* Global Quick Actions */}
