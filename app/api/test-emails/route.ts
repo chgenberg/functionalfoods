@@ -4,9 +4,9 @@ import { emailService } from '../../lib/email';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  // Hide in production unless explicitly allowed
+  // Always allow in development, or when explicitly enabled
   if (process.env.NODE_ENV === 'production' && process.env.ALLOW_TEST_EMAILS !== 'true') {
-    return new Response('Not Found', { status: 404 });
+    return new Response('Test emails disabled in production', { status: 404 });
   }
   try {
     console.log('🧪 Testar email-systemet...');
