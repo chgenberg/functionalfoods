@@ -292,6 +292,37 @@ export default function EditKnowledgeDocumentPage() {
                       className="admin-input"
                       placeholder="/kurser/hero-image.jpg"
                     />
+                    <div className="mt-2 flex items-center gap-2">
+                      <label className="admin-btn admin-btn-secondary cursor-pointer inline-flex items-center gap-2">
+                        <Upload className="w-4 h-4" /> Ladda upp bild
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const fd = new FormData();
+                            fd.append('file', file);
+                            fd.append('type', 'course');
+                            try {
+                              const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+                              const data = await res.json();
+                              if (res.ok && data.url) {
+                                updateDocument('headerImage', data.url);
+                              } else {
+                                alert(data.error || 'Uppladdning misslyckades');
+                              }
+                            } catch (err) {
+                              alert('Uppladdning misslyckades');
+                            }
+                          }}
+                        />
+                      </label>
+                      {selectedDoc.headerImage && (
+                        <span className="text-xs text-[var(--text-secondary)]">{selectedDoc.headerImage}</span>
+                      )}
+                    </div>
                   </div>
 
                   <div>

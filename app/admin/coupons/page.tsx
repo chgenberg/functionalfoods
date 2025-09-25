@@ -12,6 +12,12 @@ interface Coupon {
   expiresAt?: string | null;
   usageLimit?: number | null;
   timesUsed: number;
+  applicableCourseIds?: string[] | null;
+}
+
+interface CourseOption {
+  id: string; // e.g., 'functional-basics'
+  name: string; // e.g., 'Functional Basics'
 }
 
 export default function AdminCouponsPage() {
@@ -28,10 +34,22 @@ export default function AdminCouponsPage() {
     startsAtDate: '',
     startsAtTime: '00:00',
     expiresAtDate: '',
-    expiresAtTime: '23:59'
+    expiresAtTime: '23:59',
+    applicableCourseIds: [] as string[]
   });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [courseOptions, setCourseOptions] = useState<CourseOption[]>([]);
+
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch('/api/admin/functional-courses');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setCourseOptions(data.map((c: any) => ({ id: c.id, name: c.name })));
+      }
+    } catch {}
+  };
 
   const fetchCoupons = async () => {
     setLoading(true);
@@ -49,8 +67,15 @@ export default function AdminCouponsPage() {
     setLoading(false);
   };
 
-  useEffect(()=>{ fetchCoupons(); },[]);
+  useEffect(()=>{ fetchCoupons(); fetchCourses(); },[]);
   useEffect(()=>{ const t = setTimeout(fetchCoupons, 300); return ()=>clearTimeout(t); }, [q]);
+
+  const toggleCourse = (courseId: string) => {
+    const list: string[] = Array.isArray(form.applicableCourseIds) ? [...form.applicableCourseIds] : [];
+    const idx = list.indexOf(courseId);
+    if (idx >= 0) list.splice(idx, 1); else list.push(courseId);
+    setForm({ ...form, applicableCourseIds: list });
+  };
 
   const openNew = () => { 
     setEditing(null); 
@@ -63,7 +88,8 @@ export default function AdminCouponsPage() {
       startsAtDate: '',
       startsAtTime: '00:00',
       expiresAtDate: '',
-      expiresAtTime: '23:59'
+      expiresAtTime: '23:59',
+      applicableCourseIds: [] as string[]
     }); 
     setError('');
   };
@@ -81,7 +107,8 @@ export default function AdminCouponsPage() {
       startsAtDate: startsAtDate ? startsAtDate.toISOString().slice(0,10) : '',
       startsAtTime: startsAtDate ? startsAtDate.toTimeString().slice(0,5) : '00:00',
       expiresAtDate: expiresAtDate ? expiresAtDate.toISOString().slice(0,10) : '',
-      expiresAtTime: expiresAtDate ? expiresAtDate.toTimeString().slice(0,5) : '23:59'
+      expiresAtTime: expiresAtDate ? expiresAtDate.toTimeString().slice(0,5) : '23:59',
+      applicableCourseIds: Array.isArray(c.applicableCourseIds) ? c.applicableCourseIds : []
     }); 
     setError('');
   };
@@ -116,7 +143,8 @@ export default function AdminCouponsPage() {
         active: form.active,
         startsAt,
         expiresAt,
-        usageLimit: form.usageLimit ? Number(form.usageLimit) : null 
+        usageLimit: form.usageLimit ? Number(form.usageLimit) : null,
+        applicableCourseIds: Array.isArray(form.applicableCourseIds) ? form.applicableCourseIds : []
       };
       
       const url = editing ? `/api/admin/coupons/${editing.id}` : '/api/admin/coupons';
@@ -169,6 +197,13 @@ export default function AdminCouponsPage() {
   const isExpired = (expiresAt: string | null | undefined) => {
     if (!expiresAt) return false;
     return new Date(expiresAt) < new Date();
+  };
+
+  const renderAppliesTo = (c: Coupon) => {
+    const ids = Array.isArray(c.applicableCourseIds) ? c.applicableCourseIds : [];
+    if (ids.length === 0) return 'Alla kurser';
+    const labels = ids.map(id => (courseOptions.find(co => co.id === id)?.name || id));
+    return labels.join(', ');
   };
 
   return (
@@ -322,7 +357,12 @@ export default function AdminCouponsPage() {
                           </p>
                         </div>
                         
-                        <div className="sm:col-span-2">
+                        <div>
+                          <p className="text-gray-500 mb-1">Gäller</p>
+                          <p className="font-medium text-gray-900 text-xs">{renderAppliesTo(coupon)}</p>
+                        </div>
+                        
+                        <div className="sm:col-span-1">
                           <p className="text-gray-500 mb-1 flex items-center gap-1">
                             <Clock className="w-4 h-4" />
                             Giltighetstid
@@ -464,6 +504,31 @@ export default function AdminCouponsPage() {
                       />
                       <span className="text-sm font-medium text-gray-700">Aktiv rabattkod</span>
                     </label>
+                  </div>
+                </div>
+
+                {/* Course scope */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Gäller för kurser</label>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                    <div className="text-xs text-gray-500 mb-2">
+                      Lämna tomt för att gälla alla kurser.
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {courseOptions.map((c) => {
+                        const selected = Array.isArray(form.applicableCourseIds) && form.applicableCourseIds.includes(c.id);
+                        return (
+                          <button
+                            key={c.id}
+                            type="button"
+                            onClick={() => toggleCourse(c.id)}
+                            className={`px-3 py-1.5 rounded-full text-sm border transition-all ${selected ? 'bg-[#014421] text-white border-[#014421]' : 'bg-white text-gray-700 border-gray-300 hover:border-[#014421]'}`}
+                          >
+                            {c.name}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
