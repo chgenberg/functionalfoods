@@ -1003,13 +1003,6 @@ export default function RecipePage() {
 
                 {/* Quick Info Cards */}
                 <div className="grid grid-cols-3 gap-2 md:gap-3 mt-4 md:mt-6">
-                  {recipe.prepTime && (
-                    <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 text-center shadow-md">
-                      <Clock className="w-5 h-5 md:w-6 md:h-6 text-[#93C560] mx-auto mb-1 md:mb-2" />
-                      <p className="text-[10px] md:text-xs text-gray-500 mb-0.5 md:mb-1">Förberedelse</p>
-                      <p className="font-bold text-[#014421] text-sm md:text-base">{recipe.prepTime}</p>
-                    </div>
-                  )}
                   {recipe.cookTime && (
                     <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-4 text-center shadow-md">
                       <Flame className="w-5 h-5 md:w-6 md:h-6 text-[#FF7E70] mx-auto mb-1 md:mb-2" />
@@ -1262,9 +1255,7 @@ export default function RecipePage() {
                     </span>
                     Näringsvärden per portion
                   </h2>
-                  <p className="text-sm text-gray-500 mt-2">
-                    {servings === 1 ? 'Per person' : `För ${servings} personer`}
-                  </p>
+                  <p className="text-sm text-gray-500 mt-2">För 1 person</p>
                 </div>
 
                 {nutrition ? (
