@@ -141,7 +141,7 @@ export default function CookieConsentBanner() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="fixed bottom-4 left-4 right-4 z-50 max-w-lg mx-auto"
+            className="fixed bottom-4 left-4 right-4 z-50 max-w-2xl mx-auto"
           >
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
               {!showSettings ? (
@@ -153,7 +153,7 @@ export default function CookieConsentBanner() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-[#014421] mb-2">
-                        🍪 Vi använder cookies
+                        Vi använder cookies
                       </h3>
                       <p className="text-gray-600 text-sm leading-relaxed">
                         Vi använder cookies för att förbättra din upplevelse och analysera hur webbplatsen används. 
