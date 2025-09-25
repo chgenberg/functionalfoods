@@ -180,6 +180,11 @@ model CourseProduct {
   name          String               @unique
   description   String
   price         Float
+  // Pricing controls
+  basePrice     Float?               // Ordinarie pris
+  salePrice     Float?               // Kampanjpris
+  saleStartsAt  DateTime?
+  saleEndsAt    DateTime?
   content       Json
   features      Json
   createdAt     DateTime             @default(now())

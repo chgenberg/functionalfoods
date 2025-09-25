@@ -168,10 +168,15 @@ const RecipesPage = () => {
         });
         if (mapRes.ok) {
           const { images } = await mapRes.json();
-          fetchedRecipes = fetchedRecipes.map(r => ({
-            ...r,
-            imageUrl: images && images[r.title] ? images[r.title] : r.imageUrl
-          }));
+          fetchedRecipes = fetchedRecipes.map(r => {
+            const mapped = images && images[r.title];
+            // Only override if recipe has no image or a known placeholder
+            const hasValidImage = !!r.imageUrl && !r.imageUrl.includes('placeholder');
+            return {
+              ...r,
+              imageUrl: hasValidImage ? r.imageUrl : (mapped || r.imageUrl)
+            };
+          });
         }
       } catch (e) {
         console.warn('batch-images mapping failed, using original imageUrl', e);
@@ -585,8 +590,11 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
           const { images } = await mapRes.json();
           const mapped = images && images[recipe.title];
           if (mapped) {
-            console.log(`✅ Recipe card: Vision-optimized image found: "${recipe.title}" -> ${mapped}`);
-            setOptimizedImageUrl(mapped);
+            // Prefer existing valid image if present; otherwise use mapped
+            const hasValid = !!recipe.imageUrl && !recipe.imageUrl.includes('placeholder');
+            setOptimizedImageUrl(hasValid ? recipe.imageUrl! : mapped);
+          } else if (recipe.imageUrl) {
+            setOptimizedImageUrl(recipe.imageUrl);
           }
         }
       } catch (e) {
