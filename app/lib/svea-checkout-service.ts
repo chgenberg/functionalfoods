@@ -157,10 +157,23 @@ export class SveaCheckoutService {
   /**
    * Build Authorization & Timestamp together using the exact Postman-style timestamp
    */
-  private buildAuth(method: string, body: string = ''): { auth: string; timestamp: string } {
-    // Local Y-M-D with UTC HH:mm, no zero-padding (matches Postman snippet we received)
+  private buildAuth(
+    method: string,
+    body: string = '',
+    mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' = 'localDate_utcTime'
+  ): { auth: string; timestamp: string } {
     const d = new Date();
-    const ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getUTCHours()}:${d.getMinutes()}`;
+    let ts = '';
+    if (mode === 'localDate_utcTime') {
+      // Local Y-M-D with UTC HH:mm (no zero padding)
+      ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getUTCHours()}:${d.getUTCMinutes()}`;
+    } else if (mode === 'utcDate_utcTime') {
+      // Pure UTC Y-M-D HH:mm (no zero padding)
+      ts = `${d.getUTCFullYear()}-${(d.getUTCMonth() + 1)}-${d.getUTCDate()} ${d.getUTCHours()}:${d.getUTCMinutes()}`;
+    } else {
+      // Fully local Y-M-D HH:mm (no zero padding)
+      ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+    }
     const auth = this.getAuthHeader(method, body, ts);
     return { auth, timestamp: ts };
   }
@@ -171,54 +184,64 @@ export class SveaCheckoutService {
   async createOrder(request: CreateCheckoutOrderRequest): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders`;
     const requestBody = JSON.stringify(request);
-    
-    // Generate auth + timestamp ONCE and reuse for both header and signature
-    const { auth, timestamp } = this.buildAuth('POST', requestBody);
-    
-    try {
+
+    // Helper to try a request with a specific timestamp mode
+    const tryRequest = async (mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime') => {
+      const { auth, timestamp } = this.buildAuth('POST', requestBody, mode);
+      console.log('📤 SVEA createOrder attempt', { endpoint, mode, timestamp, baseUrl: this.baseUrl });
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': auth,
           'Timestamp': timestamp
         },
         body: requestBody
       });
-
       const responseText = await response.text();
-      
       console.log('📥 SVEA createOrder Response:', {
         status: response.status,
         statusText: response.statusText,
         headers: Object.fromEntries(response.headers.entries()),
         body: responseText.substring(0, 500) + (responseText.length > 500 ? '...' : '')
       });
-      
-      if (!response.ok) {
+      return { response, responseText };
+    };
+
+    // Try in order: localDate_utcTime (preferred), utcDate_utcTime, localDate_localTime
+    const attempts: Array<'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime'> = [
+      'localDate_utcTime',
+      'utcDate_utcTime',
+      'localDate_localTime'
+    ];
+
+    for (let i = 0; i < attempts.length; i++) {
+      const mode = attempts[i];
+      const { response, responseText } = await tryRequest(mode);
+      if (response.ok) {
+        const result = JSON.parse(responseText) as CheckoutOrderResponse;
+        if (!result.orderId || !result.gui?.snippet) {
+          throw new Error('Invalid response from Svea: missing orderId or GUI snippet');
+        }
+        return result;
+      }
+      // If 401, try next mode; otherwise, stop early with the parsed error
+      if (response.status !== 401 || i === attempts.length - 1) {
         const errorDetail = this.parseErrorResponse(responseText);
-        console.error('❌ SVEA createOrder Error:', {
+        console.error('❌ SVEA createOrder Error (final):', {
           status: response.status,
           statusText: response.statusText,
           responseBody: responseText,
           parsedError: errorDetail
         });
         throw new Error(`Svea API Error (${response.status}): ${errorDetail}`);
+      } else {
+        console.warn('⚠️ SVEA 401 with mode, retrying with next mode...', { mode, status: response.status });
       }
-
-      const result = JSON.parse(responseText) as CheckoutOrderResponse;
-      
-      if (!result.orderId || !result.gui?.snippet) {
-        throw new Error('Invalid response from Svea: missing orderId or GUI snippet');
-      }
-
-      return result;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error('Unknown error creating Svea order');
     }
+
+    throw new Error('Svea API Error: All timestamp modes failed');
   }
 
   /**
@@ -350,7 +373,7 @@ export class SveaCheckoutService {
     let formattedDate = providedTimestamp;
     if (!formattedDate) {
       const date = new Date();
-      formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
+      formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getUTCMinutes()}`;
     }
     
     // For GET requests, requestBody should be empty string (from Svea's script)
