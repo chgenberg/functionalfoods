@@ -76,8 +76,12 @@ const RecipesPage = () => {
   };
 
   useEffect(() => {
-    fetchRecipes();
-  }, [user, selectedCategory, selectedStatus]);
+    const timeoutId = setTimeout(() => {
+      fetchRecipes();
+    }, 300); // Debounce search by 300ms
+    
+    return () => clearTimeout(timeoutId);
+  }, [user, selectedCategory, selectedStatus, searchQuery]);
 
   useEffect(() => {
     // Generate search suggestions based on search query
@@ -132,6 +136,10 @@ const RecipesPage = () => {
       
       if (selectedStatus !== 'all') {
         params.append('status', selectedStatus);
+      }
+      
+      if (searchQuery.trim()) {
+        params.append('search', searchQuery.trim());
       }
 
       const response = await fetch(`/api/recipes?${params}`, { headers, cache: 'no-store' });
