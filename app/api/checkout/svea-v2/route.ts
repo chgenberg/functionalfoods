@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
+import { emailService } from '@/app/lib/email';
+import bcrypt from 'bcryptjs';
 import type { SveaCartItem, CreateCheckoutOrderRequest } from '@/app/lib/svea-checkout-service';
 
 export const dynamic = 'force-dynamic';
@@ -40,6 +42,33 @@ export async function POST(req: NextRequest) {
 
     // If payments are simulated/disabled, short-circuit and create a completed order locally
     if (process.env.PAYMENTS_SIMULATE === 'true') {
+      // Resolve or create user if email provided
+      let customerId: string | null = customer?.id || null;
+      let needsLoginCredentials = false;
+      let temporaryPassword = '';
+
+      if (!customerId && customer?.email) {
+        const normalizedEmail = customer.email.toLowerCase().trim();
+        const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+        if (existing) {
+          customerId = existing.id;
+        } else {
+          temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-4).toUpperCase();
+          const hashed = await bcrypt.hash(temporaryPassword, 12);
+          const created = await prisma.user.create({
+            data: {
+              email: normalizedEmail,
+              name: customer.name || null,
+              password: hashed,
+              role: 'customer',
+              isActive: true,
+              mustChangePassword: true
+            }
+          });
+          customerId = created.id;
+          needsLoginCredentials = true;
+        }
+      }
       // Calculate order totals (öre)
       let subtotal = 0;
       for (const item of items) {
@@ -91,6 +120,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Create order + payment + purchases in one transaction
+      let createdOrderId = '';
       await prisma.$transaction(async (tx) => {
         const order = await tx.order.create({
           data: {
@@ -99,7 +129,7 @@ export async function POST(req: NextRequest) {
             status: 'COMPLETED',
             totalAmount: totalAmountKr,
             currency: 'SEK',
-            userId: customer?.id || null,
+            userId: customerId,
             customerEmail: customer?.email || null,
             customerName: customer?.name || null,
             items: {
@@ -119,6 +149,7 @@ export async function POST(req: NextRequest) {
             }
           }
         });
+        createdOrderId = order.id;
 
         await tx.payment.create({
           data: {
@@ -132,17 +163,17 @@ export async function POST(req: NextRequest) {
           }
         });
 
-        if (customer?.id) {
+        if (customerId) {
           const orderWithItems = await tx.order.findUnique({ where: { id: order.id }, include: { items: true } });
           for (const it of orderWithItems?.items || []) {
             if (it.productType === 'course' && it.courseId) {
               const exists = await tx.purchase.findUnique({
-                where: { userId_courseId: { userId: customer.id!, courseId: it.courseId } }
+                where: { userId_courseId: { userId: customerId!, courseId: it.courseId } }
               });
               if (!exists) {
                 await tx.purchase.create({
                   data: {
-                    userId: customer.id!,
+                    userId: customerId!,
                     courseId: it.courseId,
                     amount: it.price * it.quantity,
                     status: 'completed',
@@ -155,6 +186,30 @@ export async function POST(req: NextRequest) {
           }
         }
       });
+
+      // Send order confirmation email
+      try {
+        const order = await prisma.order.findUnique({ where: { id: createdOrderId }, include: { items: true } });
+        if (order && customer?.email) {
+          const purchasedCourses = order.items.filter(it => it.productType === 'course');
+          await emailService.sendOrderConfirmation({
+            customerEmail: customer.email,
+            customerName: customer.name || customer.email,
+            orderNumber: order.orderNumber,
+            totalAmount: order.totalAmount,
+            courses: purchasedCourses.map(it => ({ name: it.productName, price: it.price })),
+            ...(needsLoginCredentials && {
+              loginCredentials: {
+                email: customer.email,
+                password: temporaryPassword,
+                loginUrl: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app'}/login`
+              }
+            })
+          });
+        }
+      } catch (e) {
+        console.warn('Failed to send simulated order email:', e);
+      }
 
       // Simple embedded GUI snippet with a continue button
       const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
