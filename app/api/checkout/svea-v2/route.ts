@@ -138,11 +138,6 @@ export async function POST(req: NextRequest) {
                 price: item.price,
                 courseId: await resolveCourseIdFromItemId(item.id)
               })))
-            },
-            metadata: {
-              simulated: true,
-              couponCode: appliedCoupon?.code || null,
-              discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
             }
           }
         });
