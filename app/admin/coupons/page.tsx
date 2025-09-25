@@ -170,21 +170,21 @@ export default function AdminCouponsPage() {
         <div className="max-w-7xl mx-auto px-8 py-12">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-5xl font-bold text-[#014421] mb-4 flex items-center gap-4">
-                <div className="bg-[#014421] p-4 rounded-2xl">
-                  <Tag className="w-10 h-10 text-white" />
+              <h1 className="text-3xl font-light text-[#014421] mb-4 flex items-center gap-3">
+                <div className="bg-[#014421] p-3 rounded-xl">
+                  <Tag className="w-6 h-6 text-white" />
                 </div>
                 Rabattkoder
               </h1>
-              <p className="text-gray-600 text-xl max-w-2xl leading-relaxed">Hantera rabattkoder för kampanjer och erbjudanden. Skapa, redigera och övervaka användningen av dina rabattkoder.</p>
+              <p className="text-gray-600 text-base max-w-2xl leading-relaxed">Hantera rabattkoder för kampanjer och erbjudanden. Skapa, redigera och övervaka användningen av dina rabattkoder.</p>
             </div>
-            <button 
-              onClick={openNew}
-              className="bg-[#014421] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#112A12] transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl"
-            >
-              <Plus className="w-6 h-6" />
-              Ny rabattkod
-            </button>
+              <button 
+                onClick={openNew}
+                className="bg-[#014421] text-white px-6 py-3 rounded-xl font-medium text-base hover:bg-[#112A12] transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
+              >
+                <Plus className="w-5 h-5" />
+                Ny rabattkod
+              </button>
           </div>
         </div>
       </div>
@@ -244,42 +244,42 @@ export default function AdminCouponsPage() {
                 <table className="w-full">
                   <thead className="bg-gray-100 border-b-2 border-gray-200">
                     <tr>
-                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Kod</th>
-                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Typ</th>
-                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Värde</th>
-                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Giltighet</th>
-                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Användning</th>
-                      <th className="text-left px-8 py-6 font-bold text-[#014421] text-base uppercase tracking-wide">Status</th>
+                      <th className="text-left px-6 py-4 font-medium text-[#014421] text-sm uppercase tracking-wide">Kod</th>
+                      <th className="text-left px-6 py-4 font-medium text-[#014421] text-sm uppercase tracking-wide">Typ</th>
+                      <th className="text-left px-6 py-4 font-medium text-[#014421] text-sm uppercase tracking-wide">Värde</th>
+                      <th className="text-left px-6 py-4 font-medium text-[#014421] text-sm uppercase tracking-wide">Giltighet</th>
+                      <th className="text-left px-6 py-4 font-medium text-[#014421] text-sm uppercase tracking-wide">Användning</th>
+                      <th className="text-left px-6 py-4 font-medium text-[#014421] text-sm uppercase tracking-wide">Status</th>
                       <th className="px-8 py-6"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {coupons.map((c, index) => (
                       <tr key={c.id} className={`border-b border-gray-100 hover:bg-gray-50 transition-all duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}>
-                        <td className="px-8 py-6">
-                          <span className="font-mono font-bold text-[#014421] bg-gray-100 px-4 py-2 rounded-xl text-lg">{c.code}</span>
+                        <td className="px-6 py-4">
+                          <span className="font-mono font-medium text-[#014421] bg-gray-100 px-3 py-1 rounded-lg text-sm">{c.code}</span>
                         </td>
-                        <td className="px-8 py-6">
-                          <span className="inline-flex items-center gap-3">
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center gap-2">
                             {c.type === 'percent' ? (
                               <>
-                                <div className="bg-blue-50 p-3 rounded-xl border border-blue-200">
-                                  <Percent className="w-5 h-5 text-blue-600" />
+                                <div className="bg-blue-50 p-2 rounded-lg border border-blue-200">
+                                  <Percent className="w-4 h-4 text-blue-600" />
                                 </div>
-                                <span className="text-gray-800 font-semibold text-lg">Procent</span>
+                                <span className="text-gray-800 font-medium text-sm">Procent</span>
                               </>
                             ) : (
                               <>
-                                <div className="bg-green-50 p-3 rounded-xl border border-green-200">
-                                  <DollarSign className="w-5 h-5 text-green-600" />
+                                <div className="bg-green-50 p-2 rounded-lg border border-green-200">
+                                  <DollarSign className="w-4 h-4 text-green-600" />
                                 </div>
-                                <span className="text-gray-800 font-semibold text-lg">Fast belopp</span>
+                                <span className="text-gray-800 font-medium text-sm">Fast belopp</span>
                               </>
                             )}
                           </span>
                         </td>
-                        <td className="px-8 py-6">
-                          <span className="font-bold text-3xl text-[#014421]">
+                        <td className="px-6 py-4">
+                          <span className="font-semibold text-lg text-[#014421]">
                             {c.type === 'percent' ? `${c.amount}%` : `${c.amount} kr`}
                           </span>
                         </td>

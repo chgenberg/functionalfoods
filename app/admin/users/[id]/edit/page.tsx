@@ -240,7 +240,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
               E-postadress
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)]" />
+              <Mail className="absolute left-3 top-3 text-[var(--text-secondary)] w-5 h-5" />
               <input
                 type="email"
                 value={formData.email}
@@ -257,7 +257,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
               Roll
             </label>
             <div className="relative">
-              <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)]" />
+              <Shield className="absolute left-3 top-3 text-[var(--text-secondary)] w-5 h-5" />
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
