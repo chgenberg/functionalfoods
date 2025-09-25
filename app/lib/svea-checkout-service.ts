@@ -149,9 +149,9 @@ export class SveaCheckoutService {
     const endpoint = `${this.baseUrl}/api/orders`;
     const requestBody = JSON.stringify(request);
     
-    // Format timestamp the same way as in auth header: YYYY-MM-DD HH:mm (UTC)
+    // Format timestamp exactly like Svea's Postman script
     const date = new Date();
-    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
     
     try {
       const response = await fetch(endpoint, {
@@ -205,9 +205,9 @@ export class SveaCheckoutService {
   async getOrder(orderId: number): Promise<GetOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     
-    // Format timestamp the same way as in auth header: YYYY-MM-DD HH:mm (UTC)
+    // Format timestamp exactly like Svea's Postman script
     const date = new Date();
-    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
     
     try {
       const response = await fetch(endpoint, {
@@ -242,9 +242,9 @@ export class SveaCheckoutService {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     const requestBody = JSON.stringify(request);
     
-    // Format timestamp the same way as in auth header: YYYY-MM-DD HH:mm (UTC)
+    // Format timestamp exactly like Svea's Postman script
     const date = new Date();
-    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
     
     try {
       const response = await fetch(endpoint, {
@@ -323,36 +323,46 @@ export class SveaCheckoutService {
   }
 
   /**
-   * Generate authorization header according to Svea's example
+   * Generate authorization header exactly like Svea's Postman pre-request script
    */
-  private getAuthHeader(method: string = 'GET', requestBody: string = '', timestamp?: string): string {
-    // Format timestamp according to Svea's example: YYYY-MM-DD HH:mm (UTC)
+  private getAuthHeader(method: string = 'GET', requestBody: string = '', providedTimestamp?: string): string {
+    // Format timestamp exactly like Svea's Postman script
     const date = new Date();
-    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
     
-    // For GET requests, requestBody should be empty string
+    // For GET requests, requestBody should be empty string (from Svea's script)
     if (method === 'GET' || !requestBody) {
       requestBody = '';
     }
     
-    // Create signature according to Svea's example: SHA512(requestBody + secret + timestamp)
-    const signatureRawData = requestBody + this.config.secretWord + formattedDate;
+    // Replicate Svea's createHash function exactly:
+    // var signatureRawData = [requestBody, secret, timestamp].join("");
+    const signatureRawData = [requestBody, this.config.secretWord, formattedDate].join('');
+    
+    // Create SHA512 hash exactly like CryptoJS.SHA512 in Postman
     const hash = createHash('sha512').update(signatureRawData, 'utf8').digest('hex');
     
-    // Create the token: merchantId:hash
-    const token = `${this.config.merchantId}:${hash}`;
+    // Replicate: var j = [checkoutMerchantId, ':', hash.toString()].join("");
+    const j = [this.config.merchantId, ':', hash].join('');
     
-    // Convert to base64
-    const authHeader = `Svea ${Buffer.from(token, 'utf8').toString('base64')}`;
+    // Replicate: var hashInBase64 = CryptoJS.enc.Base64.stringify(words);
+    // where words = CryptoJS.enc.Utf8.parse(j);
+    const hashInBase64 = Buffer.from(j, 'utf8').toString('base64');
+    
+    // Final auth header with "Svea " prefix
+    const authHeader = `Svea ${hashInBase64}`;
     
     // Debug logging
-    console.log('🔐 SVEA Auth Debug:', {
+    console.log('🔐 SVEA Auth (Postman replica):', {
       merchantId: this.config.merchantId,
       timestamp: formattedDate,
       method,
       requestBodyLength: requestBody.length,
+      signatureRawData: signatureRawData.substring(0, 50) + '...',
       signatureRawDataLength: signatureRawData.length,
-      hashFirst10: hash.substring(0, 10),
+      hashFirst20: hash.substring(0, 20),
+      j: j.substring(0, 50) + '...',
+      hashInBase64First50: hashInBase64.substring(0, 50) + '...',
       authHeaderFirst50: authHeader.substring(0, 50) + '...'
     });
     
