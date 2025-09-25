@@ -132,9 +132,8 @@ export async function POST(req: NextRequest) {
             userId: customerId,
             items: {
               create: await Promise.all(items.map(async (item) => ({
-                productId: item.id,
-                productName: item.name,
-                productType: item.type,
+                name: item.name,
+                type: item.type,
                 quantity: item.quantity,
                 price: item.price,
                 courseId: await resolveCourseIdFromItemId(item.id)
