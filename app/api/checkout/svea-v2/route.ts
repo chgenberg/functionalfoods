@@ -130,8 +130,6 @@ export async function POST(req: NextRequest) {
             totalAmount: totalAmountKr,
             currency: 'SEK',
             userId: customerId,
-            customerEmail: customer?.email || null,
-            customerName: customer?.name || null,
             items: {
               create: await Promise.all(items.map(async (item) => ({
                 productId: item.id,
