@@ -143,15 +143,26 @@ export class SveaCheckoutService {
   }
 
   /**
+   * Format timestamp exactly as Svea's Postman pre-request script (UTC, YYYY-MM-DD HH:mm)
+   */
+  private formatSveaTimestamp(date: Date = new Date()): string {
+    const y = date.getUTCFullYear();
+    const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(date.getUTCDate()).padStart(2, '0');
+    const hh = String(date.getUTCHours()).padStart(2, '0');
+    const mm = String(date.getUTCMinutes()).padStart(2, '0');
+    return `${y}-${m}-${d} ${hh}:${mm}`;
+  }
+
+  /**
    * Create a new checkout order
    */
   async createOrder(request: CreateCheckoutOrderRequest): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders`;
     const requestBody = JSON.stringify(request);
     
-    // Format timestamp exactly like Svea's Postman script
-    const date = new Date();
-    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
+    // Format timestamp exactly like Svea's Postman script (UTC)
+    const timestamp = this.formatSveaTimestamp();
     
     try {
       const response = await fetch(endpoint, {
@@ -205,9 +216,8 @@ export class SveaCheckoutService {
   async getOrder(orderId: number): Promise<GetOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     
-    // Format timestamp exactly like Svea's Postman script
-    const date = new Date();
-    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
+    // Format timestamp exactly like Svea's Postman script (UTC)
+    const timestamp = this.formatSveaTimestamp();
     
     try {
       const response = await fetch(endpoint, {
@@ -242,9 +252,8 @@ export class SveaCheckoutService {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     const requestBody = JSON.stringify(request);
     
-    // Format timestamp exactly like Svea's Postman script
-    const date = new Date();
-    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
+    // Format timestamp exactly like Svea's Postman script (UTC)
+    const timestamp = this.formatSveaTimestamp();
     
     try {
       const response = await fetch(endpoint, {
@@ -326,18 +335,17 @@ export class SveaCheckoutService {
    * Generate authorization header exactly like Svea's Postman pre-request script
    */
   private getAuthHeader(method: string = 'GET', requestBody: string = '', providedTimestamp?: string): string {
-    // Format timestamp exactly like Svea's Postman script
-    const date = new Date();
-    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
+    // Use provided timestamp (generated once per request) to avoid drift
+    const formattedDate = providedTimestamp || this.formatSveaTimestamp();
     
     // For GET requests, requestBody should be empty string (from Svea's script)
-    if (method === 'GET' || !requestBody) {
+    if (method === 'GET') {
       requestBody = '';
     }
     
     // Replicate Svea's createHash function exactly:
     // var signatureRawData = [requestBody, secret, timestamp].join("");
-    const signatureRawData = [requestBody, this.config.secretWord, formattedDate].join('');
+    const signatureRawData = [requestBody || '', this.config.secretWord, formattedDate].join('');
     
     // Create SHA512 hash exactly like CryptoJS.SHA512 in Postman
     const hash = createHash('sha512').update(signatureRawData, 'utf8').digest('hex');
@@ -357,7 +365,7 @@ export class SveaCheckoutService {
       merchantId: this.config.merchantId,
       timestamp: formattedDate,
       method,
-      requestBodyLength: requestBody.length,
+      requestBodyLength: (requestBody || '').length,
       signatureRawData: signatureRawData.substring(0, 50) + '...',
       signatureRawDataLength: signatureRawData.length,
       hashFirst20: hash.substring(0, 20),
