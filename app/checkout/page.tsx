@@ -22,7 +22,7 @@ export default function Checkout() {
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPayment, setSelectedPayment] = useState('svea');
+  const [selectedPayment, setSelectedPayment] = useState('stripe');
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
@@ -69,7 +69,7 @@ export default function Checkout() {
         }
       }
 
-      // Navigate to Svea checkout page
+      // Build checkout payload (compatible with Stripe /api/checkout endpoint)
       const checkoutData = {
         items: items.map(item => ({
           id: item.id,
@@ -91,8 +91,23 @@ export default function Checkout() {
 
       // Store checkout data temporarily
       sessionStorage.setItem('checkout_data', JSON.stringify(checkoutData));
-      
-      // Navigate to Svea checkout page
+
+      // If Stripe is selected (current default), create Stripe Checkout Session
+      if (selectedPayment === 'stripe') {
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(checkoutData)
+        });
+        const data = await res.json();
+        if (!res.ok || !data?.url) {
+          throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
+        }
+        window.location.href = data.url;
+        return;
+      }
+
+      // Fallback: keep Svea path if explicitly chosen
       window.location.href = '/checkout/svea';
     } catch (err: any) {
       setError(err.message || 'Något gick fel');
@@ -217,12 +232,19 @@ export default function Checkout() {
 
               <div className="space-y-3">
                 {[
-                  { 
-                    id: 'svea', 
-                    name: 'Svea Ekonomi', 
-                    desc: 'Kort, Swish, Faktura, Delbetalning', 
+                  {
+                    id: 'stripe',
+                    name: 'Kort (Stripe)',
+                    desc: 'Betala med Visa, Mastercard, Apple Pay, Google Pay',
                     icon: CreditCard,
-                    recommended: true 
+                    recommended: true
+                  },
+                  {
+                    id: 'svea',
+                    name: 'Svea Ekonomi',
+                    desc: 'Kort, Swish, Faktura, Delbetalning',
+                    icon: CreditCard,
+                    recommended: false
                   }
                 ].map((method) => (
                   <label 
