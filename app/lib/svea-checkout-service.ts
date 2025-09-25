@@ -336,7 +336,12 @@ export class SveaCheckoutService {
    */
   private getAuthHeader(method: string = 'GET', requestBody: string = '', providedTimestamp?: string): string {
     // Use provided timestamp (generated once per request) to avoid drift
-    const formattedDate = providedTimestamp || this.formatSveaTimestamp();
+    // Match Postman script exactly: local Y-M-D + UTC hours and minutes, no zero-padding
+    let formattedDate = providedTimestamp;
+    if (!formattedDate) {
+      const date = new Date();
+      formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()} ${date.getUTCHours()}:${date.getMinutes()}`;
+    }
     
     // For GET requests, requestBody should be empty string (from Svea's script)
     if (method === 'GET') {
@@ -431,16 +436,21 @@ let sveaCheckoutInstance: SveaCheckoutService | null = null;
 export function getSveaCheckout(): SveaCheckoutService {
   if (!sveaCheckoutInstance) {
     const merchantId = process.env.SVEA_MERCHANT_ID;
-    const secretWord = process.env.SVEA_SECRET_WORD;
+    const testMode = process.env.SVEA_TEST_MODE === 'true' || process.env.NODE_ENV !== 'production';
+
+    // Allow separate secrets for test/prod; fallback to SVEA_SECRET_WORD if only one is provided
+    const secretWord = testMode
+      ? (process.env.SVEA_SECRET_WORD_TEST || process.env.SVEA_SECRET_WORD)
+      : (process.env.SVEA_SECRET_WORD_PROD || process.env.SVEA_SECRET_WORD);
     
     if (!merchantId || !secretWord) {
-      throw new Error('Svea credentials not configured. Please set SVEA_MERCHANT_ID and SVEA_SECRET_WORD environment variables.');
+      throw new Error('Svea credentials not configured. Please set SVEA_MERCHANT_ID and SVEA_SECRET_WORD_TEST/PROD (or SVEA_SECRET_WORD).');
     }
     
     sveaCheckoutInstance = new SveaCheckoutService({
       merchantId,
       secretWord,
-      testMode: process.env.SVEA_TEST_MODE === 'true' || process.env.NODE_ENV !== 'production'
+      testMode
     });
   }
   
