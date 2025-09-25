@@ -212,10 +212,131 @@ export default function AdminCouponsPage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-12">
-        {/* Coupons list */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+      {/* Form - moved above table */}
+      {(editing || !coupons.length) && (
+        <div className="mb-8">
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-[#014421] p-3 rounded-xl">
+                <Tag className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-medium text-[#014421]">
+                {editing ? 'Redigera rabattkod' : 'Ny rabattkod'}
+              </h3>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-[#014421] mb-2">Rabattkod</label>
+                <input 
+                  value={form.code || ''} 
+                  onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} 
+                  placeholder="T.ex. SOMMAR20" 
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421]/20 focus:border-[#014421] transition-all font-mono font-medium" 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-[#014421] mb-2">Typ & Värde</label>
+                <div className="flex gap-2">
+                  <select 
+                    value={form.type} 
+                    onChange={e => setForm({ ...form, type: e.target.value })} 
+                    className="px-3 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421]/20 focus:border-[#014421] transition-all font-medium"
+                  >
+                    <option value="percent">%</option>
+                    <option value="fixed">kr</option>
+                  </select>
+                  <input 
+                    type="number" 
+                    value={form.amount} 
+                    onChange={e => setForm({ ...form, amount: e.target.value })} 
+                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421]/20 focus:border-[#014421] transition-all font-medium" 
+                    placeholder="Värde" 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#014421] mb-2">Giltighet (valfritt)</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="date" 
+                    value={form.startsAtDate || ''} 
+                    onChange={e => setForm({ ...form, startsAtDate: e.target.value })} 
+                    className="flex-1 px-3 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421]/20 focus:border-[#014421] transition-all text-sm" 
+                  />
+                  <input 
+                    type="date" 
+                    value={form.expiresAtDate || ''} 
+                    onChange={e => setForm({ ...form, expiresAtDate: e.target.value })} 
+                    className="flex-1 px-3 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421]/20 focus:border-[#014421] transition-all text-sm" 
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-[#014421] mb-2">Max användningar</label>
+                <input 
+                  type="number" 
+                  min={0} 
+                  value={form.usageLimit || ''} 
+                  onChange={e => setForm({ ...form, usageLimit: e.target.value })} 
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#014421]/20 focus:border-[#014421] transition-all font-medium" 
+                  placeholder="Obegränsat" 
+                />
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between mt-6">
+              <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  id="active"
+                  checked={!!form.active} 
+                  onChange={e => setForm({ ...form, active: e.target.checked })} 
+                  className="h-5 w-5 text-[#014421] focus:ring-[#014421] border-gray-400 rounded" 
+                />
+                <label htmlFor="active" className="text-sm font-medium text-gray-900">
+                  Aktiv rabattkod
+                </label>
+              </div>
+              
+              <div className="flex gap-3">
+                {editing && (
+                  <button 
+                    onClick={openNew}
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-xl font-medium hover:bg-gray-300 transition-all"
+                  >
+                    Avbryt
+                  </button>
+                )}
+                <button 
+                  onClick={save} 
+                  disabled={saving || !form.code || !form.amount}
+                  className="bg-[#014421] text-white px-6 py-2 rounded-xl font-medium hover:bg-[#112A12] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {saving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Sparar...
+                    </>
+                  ) : (
+                    <>
+                      <Tag className="w-4 h-4" />
+                      Spara
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Coupons list */}
+      <div>
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
             {loading ? (
               <div className="p-20 text-center">
                 <div className="relative mx-auto w-24 h-24">
@@ -339,156 +460,6 @@ export default function AdminCouponsPage() {
             )}
           </div>
         </div>
-
-        {/* Form */}
-        <div className="bg-white rounded-3xl shadow-xl p-10 border border-gray-200 sticky top-8">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="bg-[#014421] p-4 rounded-2xl">
-              <Tag className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-3xl font-bold text-[#014421]">
-              {editing ? 'Redigera rabattkod' : 'Ny rabattkod'}
-            </h3>
-          </div>
-          
-          <div className="space-y-8">
-            <div>
-              <label className="block text-base font-bold text-[#014421] mb-4">Rabattkod</label>
-              <input 
-                value={form.code || ''} 
-                onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} 
-                placeholder="T.ex. SOMMAR20" 
-                className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-mono font-bold placeholder-gray-500 hover:bg-white hover:shadow-md" 
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-base font-bold text-[#014421] mb-4">Typ</label>
-                <div className="relative">
-                  <select 
-                    value={form.type} 
-                    onChange={e => setForm({ ...form, type: e.target.value })} 
-                    className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-semibold appearance-none cursor-pointer hover:bg-white hover:shadow-md"
-                  >
-                    <option value="percent">📊 Procent</option>
-                    <option value="fixed">💰 Fast belopp</option>
-                  </select>
-                  <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#014421] pointer-events-none" />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-base font-bold text-[#014421] mb-4">Värde</label>
-                <input 
-                  type="number" 
-                  value={form.amount} 
-                  onChange={e => setForm({ ...form, amount: e.target.value })} 
-                  className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-bold placeholder-gray-500 hover:bg-white hover:shadow-md" 
-                  placeholder="Värde" 
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-base font-bold text-[#014421] mb-4 flex items-center gap-3">
-                <Calendar className="w-5 h-5" />
-                Giltighetstid
-              </label>
-              <div className="space-y-6 bg-gray-50 p-8 rounded-2xl border-2 border-gray-200">
-                <div>
-                  <label className="text-base font-bold text-gray-800 mb-3 block">🚀 Startdatum och tid</label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <input 
-                      type="date" 
-                      value={form.startsAtDate || ''} 
-                      onChange={e => setForm({ ...form, startsAtDate: e.target.value })} 
-                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
-                    />
-                    <input 
-                      type="time" 
-                      value={form.startsAtTime || '00:00'} 
-                      onChange={e => setForm({ ...form, startsAtTime: e.target.value })} 
-                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-base font-bold text-gray-800 mb-3 block">⏰ Slutdatum och tid</label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <input 
-                      type="date" 
-                      value={form.expiresAtDate || ''} 
-                      onChange={e => setForm({ ...form, expiresAtDate: e.target.value })} 
-                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
-                    />
-                    <input 
-                      type="time" 
-                      value={form.expiresAtTime || '23:59'} 
-                      onChange={e => setForm({ ...form, expiresAtTime: e.target.value })} 
-                      className="px-5 py-4 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 font-semibold text-lg hover:shadow-md" 
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-base font-bold text-[#014421] mb-4">Max användningar</label>
-              <input 
-                type="number" 
-                min={0} 
-                value={form.usageLimit || ''} 
-                onChange={e => setForm({ ...form, usageLimit: e.target.value })} 
-                className="w-full px-6 py-5 bg-gray-50 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#014421]/20 focus:border-[#014421] transition-all duration-300 text-xl font-semibold placeholder-gray-500 hover:bg-white hover:shadow-md" 
-                placeholder="Lämna tomt för obegränsad" 
-              />
-            </div>
-            
-            <div className="flex items-center gap-5 bg-gray-50 p-6 rounded-2xl border-2 border-gray-200">
-              <input 
-                type="checkbox" 
-                id="active"
-                checked={!!form.active} 
-                onChange={e => setForm({ ...form, active: e.target.checked })} 
-                className="h-7 w-7 text-[#014421] focus:ring-[#014421] border-gray-400 rounded-xl transition-all duration-300" 
-              />
-              <label htmlFor="active" className="text-xl font-bold text-gray-900 cursor-pointer">
-                ✨ Aktiv (kan användas av kunder)
-              </label>
-            </div>
-            
-            <div className="pt-8 space-y-4">
-              <button 
-                onClick={save} 
-                disabled={saving || !form.code || !form.amount}
-                className="w-full bg-[#014421] text-white px-8 py-5 rounded-2xl font-bold text-xl hover:bg-[#112A12] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
-              >
-                {saving ? (
-                  <>
-                    <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Sparar...
-                  </>
-                ) : (
-                  <>
-                    <Tag className="w-6 h-6" />
-                    Spara rabattkod
-                  </>
-                )}
-              </button>
-              
-              {editing && (
-                <button 
-                  onClick={openNew}
-                  className="w-full bg-gray-200 text-gray-800 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-gray-300 transition-all duration-300 shadow-md hover:shadow-lg"
-                >
-                  Avbryt redigering
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
       </div>
     </div>
   );
