@@ -9,7 +9,7 @@ import { useCart } from '../../context/CartContext';
 import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
-import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight } from 'lucide-react';
+import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User } from 'lucide-react';
 import { formatPrice } from '@/app/lib/utils';
 
 export default function FunctionalBasicsPage() {
@@ -553,7 +553,7 @@ export default function FunctionalBasicsPage() {
             <p className="text-lg mb-6 text-white/90">
               Få tillgång till hela kursen och börja din transformation redan idag
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex justify-center">
               <AddToCart 
                 id="functional-basics"
                 name="Functional Basics"
@@ -561,13 +561,6 @@ export default function FunctionalBasicsPage() {
                 type="course"
                 image={course.image}
               />
-              <Link
-                href="#kostschema"
-                className="px-8 py-3 bg-white/20 backdrop-blur-sm text-white rounded-full font-medium hover:bg-white/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
-              >
-                Se kostschema
-                <ChevronRight />
-              </Link>
             </div>
           </div>
       </div>
