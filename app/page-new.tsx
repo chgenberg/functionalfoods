@@ -78,6 +78,15 @@ export default function Home() {
     let attempts = 0;
     // Choose correct source based on viewport (more reliable than <source media> on some browsers)
     try {
+      // Force crucial properties before setting src (Safari/iOS requirement)
+      v.muted = true;
+      // @ts-ignore - not in TS types but exists on HTMLVideoElement
+      v.defaultMuted = true;
+      // @ts-ignore - iOS Safari specific attribute
+      v.setAttribute('playsinline', '');
+      v.setAttribute('muted', '');
+      v.autoplay = true;
+
       const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
       const desiredSrc = isMobile ? '/introvideo_mobile.mp4' : '/introvideo_compressed.mp4';
       if (!v.src || !v.src.endsWith(desiredSrc)) {
@@ -156,8 +165,9 @@ export default function Home() {
             loop
             // Autoplay with lightweight initial fetch; use separate sources for mobile/desktop
             autoPlay
-            preload="metadata"
+            preload="auto"
             onLoadedMetadata={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
+            onLoadedData={() => { try { if (videoRef.current) { videoRef.current.style.opacity = '1'; videoRef.current.play(); } } catch {} }}
             onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
             onError={(e) => { console.warn('Hero video failed to load', e); }}
           >
