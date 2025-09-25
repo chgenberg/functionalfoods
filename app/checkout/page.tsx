@@ -92,23 +92,17 @@ export default function Checkout() {
       // Store checkout data temporarily
       sessionStorage.setItem('checkout_data', JSON.stringify(checkoutData));
 
-      // If Stripe is selected (current default), create Stripe Checkout Session
-      if (selectedPayment === 'stripe') {
-        const res = await fetch('/api/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(checkoutData)
-        });
-        const data = await res.json();
-        if (!res.ok || !data?.url) {
-          throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
-        }
-        window.location.href = data.url;
-        return;
+      // Create Stripe Checkout Session
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(checkoutData)
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.url) {
+        throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
       }
-
-      // Fallback: keep Svea path if explicitly chosen
-      window.location.href = '/checkout/svea';
+      window.location.href = data.url;
     } catch (err: any) {
       setError(err.message || 'Något gick fel');
       setIsProcessing(false);
@@ -238,13 +232,6 @@ export default function Checkout() {
                     desc: 'Betala med Visa, Mastercard, Apple Pay, Google Pay',
                     icon: CreditCard,
                     recommended: true
-                  },
-                  {
-                    id: 'svea',
-                    name: 'Svea Ekonomi',
-                    desc: 'Kort, Swish, Faktura, Delbetalning',
-                    icon: CreditCard,
-                    recommended: false
                   }
                 ].map((method) => (
                   <label 
