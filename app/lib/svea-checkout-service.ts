@@ -155,12 +155,37 @@ export class SveaCheckoutService {
   }
 
   /**
+   * Format using Europe/Stockholm local time. When padded=false, no zero padding per original snippet style.
+   */
+  private formatStockholmTimestamp(date: Date = new Date(), padded: boolean = false): string {
+    // Extract parts using Intl for Europe/Stockholm
+    const fmt = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Stockholm',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    const parts = fmt.formatToParts(date).reduce<Record<string, string>>((acc, p) => {
+      if (p.type !== 'literal') acc[p.type] = p.value;
+      return acc;
+    }, {});
+    const y = parts.year;
+    const m = padded ? parts.month : String(Number(parts.month));
+    const d = padded ? parts.day : String(Number(parts.day));
+    const hh = padded ? parts.hour : String(Number(parts.hour));
+    const mm = padded ? parts.minute : String(Number(parts.minute));
+    return `${y}-${m}-${d} ${hh}:${mm}`;
+  }
+
+  /**
    * Build Authorization & Timestamp together using the exact Postman-style timestamp
    */
   private buildAuth(
     method: string,
     body: string = '',
-    mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' = 'localDate_utcTime'
+    mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded' = 'localDate_utcTime'
   ): { auth: string; timestamp: string } {
     const d = new Date();
     let ts = '';
@@ -182,6 +207,10 @@ export class SveaCheckoutService {
         const hh = String(d.getUTCHours()).padStart(2, '0');
         const mm = String(d.getUTCMinutes()).padStart(2, '0');
         ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${hh}:${mm}`;
+      } else if (mode === 'stockholm_local') {
+        ts = this.formatStockholmTimestamp(d, false);
+      } else if (mode === 'stockholm_local_padded') {
+        ts = this.formatStockholmTimestamp(d, true);
       }
     }
     const auth = this.getAuthHeader(method, body, ts);
@@ -196,7 +225,9 @@ export class SveaCheckoutService {
     const requestBody = JSON.stringify(request);
 
     // Helper to try a request with a specific timestamp mode
-    const tryRequest = async (mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime') => {
+    const tryRequest = async (
+      mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded'
+    ) => {
       const { auth, timestamp } = this.buildAuth('POST', requestBody, mode);
       console.log('📤 SVEA createOrder attempt', { endpoint, mode, timestamp, baseUrl: this.baseUrl });
       const response = await fetch(endpoint, {
@@ -219,13 +250,15 @@ export class SveaCheckoutService {
       return { response, responseText };
     };
 
-    // Try in order: localDate_utcTime (preferred), utcDate_utcTime, localDate_localTime, utc_padded, localDate_utcTime_padded
-    const attempts: Array<'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded'> = [
+    // Try multiple formats, including Europe/Stockholm local time
+    const attempts: Array<'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded'> = [
       'localDate_utcTime',
       'utcDate_utcTime',
       'localDate_localTime',
       'utc_padded',
-      'localDate_utcTime_padded'
+      'localDate_utcTime_padded',
+      'stockholm_local',
+      'stockholm_local_padded'
     ];
 
     for (let i = 0; i < attempts.length; i++) {
