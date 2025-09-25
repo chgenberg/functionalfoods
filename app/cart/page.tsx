@@ -12,9 +12,11 @@ const courseImages: Record<string, string> = {
   'functional-energy': '/Kurser_bilder/Functional_insulin balance.jpg'
 };
 
-const getCourseImage = (courseName: string): string => {
-  const courseKey = courseName.toLowerCase().replace(/\s+/g, '-');
-  return courseImages[courseKey] || '/images/blog-placeholder.jpg';
+// Prefer the image stored on the cart item; fall back to id-based mapping
+const getItemImage = (item: { id: string; name: string; image?: string }): string => {
+  if (item.image) return item.image;
+  if (courseImages[item.id]) return courseImages[item.id];
+  return '/images/blog-placeholder.jpg';
 };
 
 export default function CartPage() {
@@ -123,7 +125,7 @@ export default function CartPage() {
                   {/* Product Image */}
                   <div className="flex-shrink-0 w-32 h-32 rounded-xl overflow-hidden bg-gray-100">
                     <Image
-                      src={getCourseImage(item.name)}
+                      src={getItemImage(item)}
                       alt={item.name}
                       width={128}
                       height={128}
