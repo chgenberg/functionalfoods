@@ -239,6 +239,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Helper: map our course ids/names to Svea article numbers
+    const getArticleNumber = (item: CheckoutItem): string => {
+      const key = `${item.id} ${item.name}`.toLowerCase();
+      if (key.includes('functional basics') || key.includes('functional-basics') || key.includes('basics')) return '21122';
+      if (key.includes('functional flow') || key.includes('functional-flow') || key.includes('gut')) return '21127';
+      if (key.includes('functional energy') || key.includes('insulin') || key.includes('functional-energy')) return '21128';
+      return item.id; // fallback
+    };
+
     // Calculate order totals
     let subtotal = 0;
     const sveaItems: SveaCartItem[] = [];
@@ -248,11 +257,11 @@ export async function POST(req: NextRequest) {
       subtotal += priceInOre * item.quantity;
 
       sveaItems.push({
-        articleNumber: item.id,
+        articleNumber: getArticleNumber(item),
         name: item.name,
         quantity: item.quantity,
         unitPrice: priceInOre,
-        vatPercent: 2500, // 25% VAT (in basis points)
+        vatPercent: 2500, // adjust if courses should be 0%
         unit: 'st',
         discountPercent: 0
       });
