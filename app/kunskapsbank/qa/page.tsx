@@ -51,20 +51,12 @@ const sections: Section[] = [
       },
       {
         question: 'På vilket sätt är upplägget vetenskapligt?',
-        answer: 'Kursmaterialet är vetenskapligt baserat och lutar sig på aktuell forskning om bioaktiva ämnen.',
+        answer: 'Kursmaterialet lutar sig på aktuell forskning om bioaktiva ämnen.',
       },
       {
         question: 'Hur funkar hälsoquizet?',
         answer: 'Du svarar på livsstilsfrågor → AI analyserar svaren → du får en personlig plan.',
-      },
-      {
-        question: 'Vad innebär "personlig plan"?',
-        answer: 'Kost- och receptrekommendationer skräddarsys efter dina mål, baserade på quizanalysen.',
-      },
-      {
-        question: 'Hur anmäler jag mig till nyhetsbrevet?',
-        answer: 'Fyll i e-post i fältet "Få de senaste tipsen…" på startsidan och godkänn integritetspolicyn.',
-      },
+      }
     ],
   },
   {
@@ -74,84 +66,48 @@ const sections: Section[] = [
     faqs: [
       {
         question: 'Vilka kurser erbjuder ni?',
-        answer: 'Functional Basics (grund) och Functional Gut Health/Flow (avancerad).',
+        answer: 'Functional Basics (grund), Functional Gut Health/Flow (maghälsa) och Functional Energy (insulinbalans).',
       },
       {
         question: 'Hur långa är kurserna?',
-        answer: 'Båda löper över sex veckor.',
+        answer: 'Varje kurs löper över sex veckor.',
       },
       {
         question: 'Vad ingår i Functional Basics?',
-        answer: '75 recept, veckovisa videolektioner, 1-på-1-coaching, 1 års åtkomst.',
+        answer: 'Recept, kostscheman, inköpslistor och videolektioner.',
       },
       {
         question: 'Vad ingår i Functional Gut Health/Flow?',
-        answer: '85 recept, videolektioner, premiumsupport, 1 års åtkomst och fokus på maghälsa & antiinflammation.',
+        answer: 'Recept, kostscheman, inköpslistor, videolektioner och fokus på maghälsa.',
       },
       {
-        question: 'Ingår gemenskap?',
-        answer: 'Ja, Functional Basics har "Community & support" och Flow erbjuder "Premium support".',
-      },
-      {
-        question: 'Ingår personlig coachning?',
-        answer: 'Ja, båda kurserna inkluderar 1-på-1 coaching.',
-      },
-      {
-        question: 'Behöver jag förkunskaper?',
-        answer: 'Nej. Basics beskrivs som en familjevänlig grundkurs som passar nybörjare.',
-      },
-      {
-        question: 'Passar kurserna barnfamiljer?',
-        answer: 'Ja, Basics markeras som "familjevänlig".',
+        question: 'Vad ingår i Functional Energy?',
+        answer: 'Recept, kostscheman, inköpslistor och videolektioner med fokus på blodsocker/insulinbalans.',
       },
       {
         question: 'Är kurserna helt online?',
-        answer: 'Ja, allt material (videor, recept, planer) levereras digitalt; ingen fysisk träff krävs.',
-      },
-      {
-        question: 'Hur köper jag en kurs?',
-        answer: 'Klicka på kurssidan → "Lägg i varukorg" → betala med Swish eller kort/Stripe.',
+        answer: 'Ja, allt material finns digitalt så att du kan gå i egen takt.',
       },
       {
         question: 'Hur länge har jag tillgång till materialet?',
-        answer: '1 års åtkomst utlovas för båda kurserna.',
+        answer: 'Minst 12 månader från köp (om inget annat anges i kampanj).',
       },
       {
-        question: 'Kan jag gå kursen flera gånger?',
-        answer: 'Ja – 1 års åtkomst betyder att du kan repetera när du vill under det året.',
+        question: 'Behöver jag förkunskaper?',
+        answer: 'Nej. Basics passar nybörjare; de andra kurserna kan följas oavsett nivå.',
+      },
+      {
+        question: 'Ingår gemenskap eller forum?',
+        answer: 'Se respektive kurssida för aktuella funktioner. Om inget nämns där, ingår det inte.',
       },
       {
         question: 'Får jag intyg efter avslutad kurs?',
-        answer: 'Kontakta supporten för information om kursintyg.',
+        answer: 'Om intyg erbjuds framgår det tydligt på kurssidan. I annat fall ingår det inte.',
       },
       {
-        question: 'Kan jag använda mitt friskvårdsbidrag?',
-        answer: 'Ja, spara kvittot och lämna in till arbetsgivaren; personnummer kan anges vid köp om det krävs.',
-      },
-      {
-        question: 'Är recepten vegetarisk/vegan-vänliga?',
-        answer: 'Ja, Basics innehåller t.ex. "Vegetarisk currygryta" och flera växtbaserade rätter.',
-      },
-      {
-        question: 'Kan gravida/ammande gå kurserna?',
-        answer: 'Rådet är att rådfråga vår kundsupport för individuell bedömning.',
-      },
-      {
-        question: 'Hur mycket tid krävs per vecka?',
-        answer: 'Räkna med ca 2–3 timmar (video + matlagning).',
-      },
-      {
-        question: 'Kan jag kombinera kursen med periodisk fasta?',
-        answer: 'Ja – anpassa planen eller fråga coachen vid behov.',
-      },
-      {
-        question: 'Finns rabattkoder?',
-        answer: 'Functional Gut Health/Flow visar just nu −20% lanseringsrabatt. Håll utkik på kampanjsidan för fler erbjudanden.',
-      },
-      {
-        question: 'Är priset engångsbetalning eller abonnemang?',
-        answer: 'Båda kurserna säljs som engångsbetalning (ej prenumeration).',
-      },
+        question: 'Hur köper jag en kurs?',
+        answer: 'Gå till kurssidan, klicka "Lägg i varukorg" och följ kassan.',
+      }
     ],
   },
   {
@@ -165,47 +121,12 @@ const sections: Section[] = [
       },
       {
         question: 'Kan jag filtrera recept efter allergier?',
-        answer: 'Använd sökfunktionen i kunskapsbanken för att filtrera på "glutenfritt", "laktosfritt" osv.',
+        answer: 'Använd sökfältet för att filtrera på exempelvis "glutenfritt" eller "laktosfritt".',
       },
       {
         question: 'Vad är en "funktionell råvara"?',
         answer: 'En näringsrik ingrediens med specifika hälsoeffekter, listade i vår råvarudatabas.',
-      },
-      {
-        question: 'Kan jag söka efter råvaror direkt?',
-        answer: 'Ja, via Råvaror-fliken eller sökfältet i kunskapsbanken.',
-      },
-      {
-        question: 'Exempel på en functional food-stjärna?',
-        answer: 'Blåbär – rik på antocyaniner som skyddar kärl & hjärna.',
-      },
-    ],
-  },
-  {
-    id: 'book',
-    title: 'Boken "Functional Foods: Mat för ett friskare liv"',
-    icon: Book,
-    faqs: [
-      {
-        question: 'Vad handlar boken om?',
-        answer: 'En guide till smart kost som höjer energi, immunförsvar och maghälsa med 60+ recept.',
-      },
-      {
-        question: 'Vad kostar boken?',
-        answer: '239 kr (inkl. moms).',
-      },
-      {
-        question: 'Hur många sidor är det?',
-        answer: '240 sidor.',
-      },
-      {
-        question: 'Var kan jag köpa den?',
-        answer: 'Klicka "Köp nu" – länken leder till thebookaffair.se.',
-      },
-      {
-        question: 'Vilket ISBN har boken?',
-        answer: '978-91-89740-64-8.',
-      },
+      }
     ],
   },
   {
@@ -215,24 +136,24 @@ const sections: Section[] = [
     faqs: [
       {
         question: 'Vilka betalningsmetoder accepterar ni?',
-        answer: 'Swish eller kort via Stripe.',
+        answer: 'Swish eller kort (Stripe).',
       },
       {
         question: 'Hur fungerar ångerrätten?',
-        answer: 'Du har 14 dagar från köp eller leverans att ångra dig; kontakta supporten.',
+        answer: '14 dagar från köp/leverans. Kontakta supporten.',
       },
       {
         question: 'Var hittar jag mina kvitton?',
-        answer: 'Logga in på "Mitt konto" → Kontodetaljer → Mina köp.',
+        answer: 'Logga in → Mitt konto → Mina köp.',
       },
       {
         question: 'Hur byter jag lösenord?',
-        answer: 'Logga in → Mina Sidor → Kontouppgifter och ange nytt lösenord.',
+        answer: 'Logga in → Mina Sidor → Kontouppgifter.',
       },
       {
         question: 'Är betalningen säker?',
-        answer: 'Ja, all kortdata hanteras krypterat av Stripe och hela sajten använder SSL-kryptering.',
-      },
+        answer: 'Ja, kortdata hanteras krypterat av Stripe och sajten använder SSL.',
+      }
     ],
   },
   {
@@ -249,17 +170,13 @@ const sections: Section[] = [
         answer: 'Rätt till information, rättelse, radering, portabilitet, invändning och begränsning.',
       },
       {
-        question: 'Hur länge sparas mina data?',
-        answer: 'Kontouppgifter: kontotiden + 24 mån; köphistorik: 7 år; statistik: 26 mån etc.',
-      },
-      {
         question: 'Hur hanterar ni cookies?',
         answer: 'Grundläggande och tredjepartscookies används efter samtycke; inställningar kan ändras när som helst.',
       },
       {
         question: 'Vem kontaktar jag vid integritetsfrågor?',
-        answer: 'Skicka e-post till info@functionalfoods.se (kundsupport).',
-      },
+        answer: 'info@functionalfoods.se',
+      }
     ],
   },
 ];
