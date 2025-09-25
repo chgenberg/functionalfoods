@@ -147,20 +147,19 @@ export class SveaCheckoutService {
    */
   async createOrder(request: CreateCheckoutOrderRequest): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders`;
-    const requestId = randomUUID();
-    const timestamp = new Date().toISOString();
     const requestBody = JSON.stringify(request);
+    
+    // Format timestamp the same way as in auth header: YYYY-MM-DD HH:mm (UTC)
+    const date = new Date();
+    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
           'Authorization': this.getAuthHeader('POST', requestBody, timestamp),
-          'X-Request-Id': requestId,
-          'X-Timestamp': timestamp,
-          'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
+          'Timestamp': timestamp
         },
         body: requestBody
       });
@@ -205,8 +204,10 @@ export class SveaCheckoutService {
    */
   async getOrder(orderId: number): Promise<GetOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
-    const requestId = randomUUID();
-    const timestamp = new Date().toISOString();
+    
+    // Format timestamp the same way as in auth header: YYYY-MM-DD HH:mm (UTC)
+    const date = new Date();
+    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     
     try {
       const response = await fetch(endpoint, {
@@ -214,9 +215,7 @@ export class SveaCheckoutService {
         headers: {
           'Accept': 'application/json',
           'Authorization': this.getAuthHeader('GET', '', timestamp),
-          'X-Request-Id': requestId,
-          'X-Timestamp': timestamp,
-          'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
+          'Timestamp': timestamp
         }
       });
 
@@ -241,18 +240,19 @@ export class SveaCheckoutService {
    */
   async updateOrder(orderId: number, request: Partial<CreateCheckoutOrderRequest>): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
-    const timestamp = new Date().toISOString();
     const requestBody = JSON.stringify(request);
+    
+    // Format timestamp the same way as in auth header: YYYY-MM-DD HH:mm (UTC)
+    const date = new Date();
+    const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     
     try {
       const response = await fetch(endpoint, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
           'Authorization': this.getAuthHeader('PUT', requestBody, timestamp),
-          'X-Timestamp': timestamp,
-          'User-Agent': 'FunctionalFoods/1.0 (+ulrikafunctionalfoods.com)'
+          'Timestamp': timestamp
         },
         body: requestBody
       });
@@ -323,79 +323,40 @@ export class SveaCheckoutService {
   }
 
   /**
-   * Generate authorization header with timestamp and request body
+   * Generate authorization header according to Svea's example
    */
   private getAuthHeader(method: string = 'GET', requestBody: string = '', timestamp?: string): string {
-    // Try different timestamp formats to see what works
-    if (!timestamp) {
-      timestamp = new Date().toISOString();
+    // Format timestamp according to Svea's example: YYYY-MM-DD HH:mm (UTC)
+    const date = new Date();
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    
+    // For GET requests, requestBody should be empty string
+    if (method === 'GET' || !requestBody) {
+      requestBody = '';
     }
     
-    // Also try Unix timestamp format
-    const unixTimestamp = Math.floor(Date.now() / 1000).toString();
+    // Create signature according to Svea's example: SHA512(requestBody + secret + timestamp)
+    const signatureRawData = requestBody + this.config.secretWord + formattedDate;
+    const hash = createHash('sha512').update(signatureRawData, 'utf8').digest('hex');
     
-    // Try multiple hash approaches based on common payment gateway patterns
-    const approaches = [
-      {
-        name: 'ISO timestamp + SHA512',
-        hashInput: this.config.secretWord + requestBody + timestamp,
-        hash: createHash('sha512').update(this.config.secretWord + requestBody + timestamp, 'utf8').digest('hex')
-      },
-      {
-        name: 'Unix timestamp + SHA512', 
-        hashInput: this.config.secretWord + requestBody + unixTimestamp,
-        hash: createHash('sha512').update(this.config.secretWord + requestBody + unixTimestamp, 'utf8').digest('hex')
-      },
-      {
-        name: 'ISO timestamp + SHA256',
-        hashInput: this.config.secretWord + requestBody + timestamp,
-        hash: createHash('sha256').update(this.config.secretWord + requestBody + timestamp, 'utf8').digest('hex')
-      },
-      {
-        name: 'Simple Basic Auth (fallback)',
-        hashInput: 'merchantId:secretWord',
-        hash: this.config.secretWord
-      }
-    ];
+    // Create the token: merchantId:hash
+    const token = `${this.config.merchantId}:${hash}`;
     
-    // Use the first approach (ISO + SHA512) as primary
-    const primaryApproach = approaches[0];
-    const credentials = `${this.config.merchantId}:${primaryApproach.hash}`;
+    // Convert to base64
+    const authHeader = `Svea ${Buffer.from(token, 'utf8').toString('base64')}`;
     
-    // Debug logging for SVEA troubleshooting
+    // Debug logging
     console.log('🔐 SVEA Auth Debug:', {
       merchantId: this.config.merchantId,
-      secretWordLength: this.config.secretWord.length,
-      secretWordStart: this.config.secretWord.substring(0, 5) + '...',
-      secretWordEnd: '...' + this.config.secretWord.slice(-5),
-      secretWordStartsWithEaOXe: this.config.secretWord.startsWith('eaOXe'),
-      secretWordEndsWithDtlig9: this.config.secretWord.endsWith('dtlig9'),
-      isoTimestamp: timestamp,
-      unixTimestamp: unixTimestamp,
-      requestBodyLength: requestBody.length,
-      requestBodyStart: requestBody.substring(0, 100) + '...',
+      timestamp: formattedDate,
       method,
-      primaryApproach: primaryApproach.name,
-      hashInputStart: primaryApproach.hashInput.substring(0, 50) + '...',
-      hashStart: primaryApproach.hash.substring(0, 20) + '...',
-      authHeader: `Basic ${Buffer.from(credentials).toString('base64')}`.substring(0, 50) + '...',
-      allApproaches: approaches.map(a => ({
-        name: a.name,
-        hashStart: a.hash.substring(0, 10) + '...'
-      }))
+      requestBodyLength: requestBody.length,
+      signatureRawDataLength: signatureRawData.length,
+      hashFirst10: hash.substring(0, 10),
+      authHeaderFirst50: authHeader.substring(0, 50) + '...'
     });
     
-    // Try both Basic and Svea authentication methods
-    const basicAuth = `Basic ${Buffer.from(credentials).toString('base64')}`;
-    const sveaAuth = `Svea ${Buffer.from(credentials).toString('base64')}`;
-    
-    console.log('🔐 Auth headers to try:', {
-      basic: basicAuth.substring(0, 50) + '...',
-      svea: sveaAuth.substring(0, 50) + '...'
-    });
-    
-    // Try Svea format first based on www-authenticate header
-    return sveaAuth;
+    return authHeader;
   }
 
   /**
