@@ -155,21 +155,32 @@ export class SveaCheckoutService {
   }
 
   /**
+   * Build Authorization & Timestamp together using the exact Postman-style timestamp
+   */
+  private buildAuth(method: string, body: string = ''): { auth: string; timestamp: string } {
+    // Local Y-M-D with UTC HH:mm, no zero-padding (matches Postman snippet we received)
+    const d = new Date();
+    const ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getUTCHours()}:${d.getMinutes()}`;
+    const auth = this.getAuthHeader(method, body, ts);
+    return { auth, timestamp: ts };
+  }
+
+  /**
    * Create a new checkout order
    */
   async createOrder(request: CreateCheckoutOrderRequest): Promise<CheckoutOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders`;
     const requestBody = JSON.stringify(request);
     
-    // Format timestamp exactly like Svea's Postman script (UTC)
-    const timestamp = this.formatSveaTimestamp();
+    // Generate auth + timestamp ONCE and reuse for both header and signature
+    const { auth, timestamp } = this.buildAuth('POST', requestBody);
     
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.getAuthHeader('POST', requestBody, timestamp),
+          'Authorization': auth,
           'Timestamp': timestamp
         },
         body: requestBody
@@ -216,15 +227,15 @@ export class SveaCheckoutService {
   async getOrder(orderId: number): Promise<GetOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     
-    // Format timestamp exactly like Svea's Postman script (UTC)
-    const timestamp = this.formatSveaTimestamp();
+    // Generate auth + timestamp ONCE and reuse
+    const { auth, timestamp } = this.buildAuth('GET', '');
     
     try {
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Authorization': this.getAuthHeader('GET', '', timestamp),
+          'Authorization': auth,
           'Timestamp': timestamp
         }
       });
@@ -252,15 +263,14 @@ export class SveaCheckoutService {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     const requestBody = JSON.stringify(request);
     
-    // Format timestamp exactly like Svea's Postman script (UTC)
-    const timestamp = this.formatSveaTimestamp();
+    const { auth, timestamp } = this.buildAuth('PUT', requestBody);
     
     try {
       const response = await fetch(endpoint, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.getAuthHeader('PUT', requestBody, timestamp),
+          'Authorization': auth,
           'Timestamp': timestamp
         },
         body: requestBody
