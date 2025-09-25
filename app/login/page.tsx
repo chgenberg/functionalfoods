@@ -77,28 +77,22 @@ function LoginForm() {
                 // Find which courses the user owns
                 const ownedCourses = purchases.map((p: any) => p.course.name);
                 
-                if (ownedCourses.includes('Functional Gut Health/Flow') && !ownedCourses.includes('Functional Basics')) {
+                const hasFlow = ownedCourses.includes('Functional Gut Health/Flow') || ownedCourses.includes('Functional Flow');
+                const hasBasics = ownedCourses.includes('Functional Basics');
+                const hasEnergy = ownedCourses.includes('Functional Insulin balance/Energy') || ownedCourses.includes('Functional Energy');
+                
+                if (hasFlow && !hasBasics && !hasEnergy) {
                   // Only Flow course
                   router.push('/dashboard/courses/functional-flow');
-                } else if (ownedCourses.includes('Functional Basics') && !ownedCourses.includes('Functional Gut Health/Flow')) {
+                } else if (hasBasics && !hasFlow && !hasEnergy) {
                   // Only Basic course
                   router.push('/dashboard/courses/functional-basics');
-                } else if (ownedCourses.includes('Functional Gut Health/Flow') && ownedCourses.includes('Functional Basics')) {
-                  // Has both courses - show course selection
+                } else if (hasEnergy && !hasFlow && !hasBasics) {
+                  // Only Energy course
+                  router.push('/dashboard/courses/functional-energy');
+                } else if (ownedCourses.length > 1) {
+                  // Multiple courses - show selection
                   router.push('/mina-kurser');
-                } else if (ownedCourses.includes('Functional Insulin balance/Energy') || ownedCourses.includes('Functional Energy')) {
-                  // Has Energy course (alone or with others)
-                  if (ownedCourses.length === 1) {
-                    router.push('/dashboard/courses/functional-energy');
-                  } else {
-                    router.push('/mina-kurser');
-                  }
-                } else if (ownedCourses.includes('Functional Gut Health/Flow')) {
-                  // Only Flow
-                  router.push('/dashboard/courses/functional-flow');
-                } else if (ownedCourses.includes('Functional Basics')) {
-                  // Only Basic
-                  router.push('/dashboard/courses/functional-basics');
                 } else {
                   // Has purchases but not these specific courses
                   router.push('/mina-kurser');
