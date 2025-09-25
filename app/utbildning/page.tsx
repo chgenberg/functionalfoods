@@ -99,15 +99,6 @@ export default function UtbildningPage() {
           ))}
         </div>
 
-        <div className="mt-10 md:mt-14 text-center">
-          <Link
-            href="/utbildning/kurskatalog"
-            className="inline-flex items-center gap-2 text-gray-700 hover:text-primary font-medium"
-          >
-            Visa hela kurskatalogen
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
       </section>
     </main>
   );

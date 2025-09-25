@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Filter, Grid, List, Search, Star, X } from "lucide-react";;
+import { Check, Filter, Grid, List, Search, X } from "lucide-react";
 import { useAuth } from '../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 import { optimizeImageUrl, getResponsiveSizes } from '../../lib/imageOptimization';
@@ -662,11 +662,6 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
             {recipe.servings && (
               <span className="flex items-center gap-1">
                 <span>👥</span> {recipe.servings} {t('recipes.card.meta.servings','port')}
-              </span>
-            )}
-            {recipe.difficulty && (
-              <span className="flex items-center gap-1">
-                <span><Star className="w-5 h-5 inline" /></span> {recipe.difficulty}
               </span>
             )}
           </div>
