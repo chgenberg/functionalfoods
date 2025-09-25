@@ -160,7 +160,7 @@ export class SveaCheckoutService {
   private buildAuth(
     method: string,
     body: string = '',
-    mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' = 'localDate_utcTime'
+    mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' = 'localDate_utcTime'
   ): { auth: string; timestamp: string } {
     const d = new Date();
     let ts = '';
@@ -171,8 +171,18 @@ export class SveaCheckoutService {
       // Pure UTC Y-M-D HH:mm (no zero padding)
       ts = `${d.getUTCFullYear()}-${(d.getUTCMonth() + 1)}-${d.getUTCDate()} ${d.getUTCHours()}:${d.getUTCMinutes()}`;
     } else {
-      // Fully local Y-M-D HH:mm (no zero padding)
-      ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+      if (mode === 'localDate_localTime') {
+        // Fully local Y-M-D HH:mm (no zero padding)
+        ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+      } else if (mode === 'utc_padded') {
+        // UTC padded YYYY-MM-DD HH:mm
+        ts = this.formatSveaTimestamp(d);
+      } else if (mode === 'localDate_utcTime_padded') {
+        // Local Y-M-D with zero-padded UTC HH:mm
+        const hh = String(d.getUTCHours()).padStart(2, '0');
+        const mm = String(d.getUTCMinutes()).padStart(2, '0');
+        ts = `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${hh}:${mm}`;
+      }
     }
     const auth = this.getAuthHeader(method, body, ts);
     return { auth, timestamp: ts };
@@ -209,11 +219,13 @@ export class SveaCheckoutService {
       return { response, responseText };
     };
 
-    // Try in order: localDate_utcTime (preferred), utcDate_utcTime, localDate_localTime
-    const attempts: Array<'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime'> = [
+    // Try in order: localDate_utcTime (preferred), utcDate_utcTime, localDate_localTime, utc_padded, localDate_utcTime_padded
+    const attempts: Array<'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded'> = [
       'localDate_utcTime',
       'utcDate_utcTime',
-      'localDate_localTime'
+      'localDate_localTime',
+      'utc_padded',
+      'localDate_utcTime_padded'
     ];
 
     for (let i = 0; i < attempts.length; i++) {
