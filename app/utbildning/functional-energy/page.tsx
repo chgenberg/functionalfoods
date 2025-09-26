@@ -324,10 +324,10 @@ export default function FunctionalEnergyPage() {
                 >
                   <iframe
                     className="absolute inset-0 w-full h-full"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    src="https://player.vimeo.com/video/1099287748"
                     title="Functional Insulin balance/Energy - Kursöversikt"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    frameBorder={0}
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
                     allowFullScreen
                   ></iframe>
                 </motion.div>
