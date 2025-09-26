@@ -536,7 +536,7 @@ export default function FunctionalEnergyPage() {
               </div>
 
               <p className="text-white/70 text-sm mt-8">
-                Tillgång till kursen i 1 år • 30 dagars öppet köp • Personlig support
+                Tillgång till kursen i 1 år • Personlig support
               </p>
             </motion.div>
           </div>

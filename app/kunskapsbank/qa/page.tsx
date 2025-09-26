@@ -22,163 +22,47 @@ interface Section {
 const sections: Section[] = [
   {
     id: 'general',
-    title: 'Allmänt om Functional Foods',
+    title: 'Vanliga frågor',
     icon: GiFruitBowl,
     faqs: [
       {
-        question: 'Vad är functional foods?',
-        answer: 'Livsmedel eller ingredienser som ger en mätbar hälsoeffekt utöver grundläggande näring, tack vare bioaktiva ämnen som antocyaniner, probiotika eller omega-3.',
-      },
-      {
-        question: 'Är det samma sak som kosttillskott?',
-        answer: 'Nej. Functional foods äts som vanlig mat, medan tillskott är koncentrerade doser i piller/pulver.',
-      },
-      {
-        question: 'Vad skiljer functional foods från "superfoods"?',
-        answer: 'Superfood är ett marknadsbegrepp; functional foods kräver att den extra hälsoeffekten kan förklaras och, helst, beläggas av forskning.',
-      },
-      {
-        question: 'Vilka fördelar lyfter ni fram?',
-        answer: 'Ökad energi, starkare immunförsvar, bättre fokus, humör och sömn.',
-      },
-      {
-        question: 'Hur snabbt märker jag effekt?',
-        answer: 'Många upplever skillnad redan efter några veckor.',
-      },
-      {
         question: 'Vem står bakom sajten?',
-        answer: 'Ulrika Davidsson, kostrådgivare & kokboksförfattare med 25+ års erfarenhet.',
+        answer: 'Functional Foods drivs av kostrådgivaren och kokboksförfattaren Ulrika Davidsson och hennes team på Ulrikas Kickstart AB.'
       },
       {
-        question: 'På vilket sätt är upplägget vetenskapligt?',
-        answer: 'Kursmaterialet lutar sig på aktuell forskning om bioaktiva ämnen.',
+        question: 'Hur skiljer sig era program från vanliga kost- och receptsajter?',
+        answer: 'Ulrika har kreerat och lagat upp alla functional foods‑recept som ingår i kurserna, gjort måltidsplaner och inköpslistor – allt är planerat och förberett för dig. Coachningen sker av Ulrika och hennes team.'
       },
-      {
-        question: 'Hur funkar hälsoquizet?',
-        answer: 'Du svarar på livsstilsfrågor → AI analyserar svaren → du får en personlig plan.',
-      }
-    ],
-  },
-  {
-    id: 'courses',
-    title: 'Kurser',
-    icon: Book,
-    faqs: [
       {
         question: 'Vilka kurser erbjuder ni?',
-        answer: 'Functional Basics (grund), Functional Gut Health/Flow (maghälsa) och Functional Energy (insulinbalans).',
+        answer: 'Functional Basics – grunderna i functional foods och hållbara matvanor. Functional Gut Health/Flow – fokus på tarmflora, antiinflammatorisk kost och bättre matsmältning. Functional insulin balance/Energy – stabilisera blodsockret och få jämn energi.'
       },
       {
-        question: 'Hur långa är kurserna?',
-        answer: 'Varje kurs löper över sex veckor.',
+        question: 'Ingår personlig coaching?',
+        answer: 'Ja, Ulrika och hennes team coachar i kurserna söndag–fredag. Live‑ och Q&A‑träffar sker regelbundet.'
       },
       {
-        question: 'Vad ingår i Functional Basics?',
-        answer: 'Recept, kostscheman, inköpslistor och videolektioner.',
+        question: 'Vilka betalningssätt accepterar ni?',
+        answer: 'Vi använder Stripe samt SVEA som betalningslösning. Du kan betala med kort, Swish, faktura samt delbetalning.'
       },
       {
-        question: 'Vad ingår i Functional Gut Health/Flow?',
-        answer: 'Recept, kostscheman, inköpslistor, videolektioner och fokus på maghälsa.',
+        question: 'Har ni öppet köp?',
+        answer: 'Vi följer distanshandelslagen. Som privatkund har du 14 dagars ångerrätt från att du fått bokningsbekräftelse/leverans. Ångerrätten upphör efter 14 dagar eller när du tagit del av kursen om det sker tidigare. Kontakta oss på info@functionalfoods.se inom 14 dagar eller innan du påbörjar kursen.'
       },
       {
-        question: 'Vad ingår i Functional Energy?',
-        answer: 'Recept, kostscheman, inköpslistor och videolektioner med fokus på blodsocker/insulinbalans.',
+        question: 'Kan jag köpa kursen som present?',
+        answer: 'Ja. Välj “Ge bort som gåva” i kassan så får du ett presentkort via e‑post.'
       },
       {
-        question: 'Är kurserna helt online?',
-        answer: 'Ja, allt material finns digitalt så att du kan gå i egen takt.',
+        question: 'Hur kontaktar jag er?',
+        answer: 'info@ulrikadavidsson.se'
       },
       {
-        question: 'Hur länge har jag tillgång till materialet?',
-        answer: 'Minst 12 månader från köp (om inget annat anges i kampanj).',
-      },
-      {
-        question: 'Behöver jag förkunskaper?',
-        answer: 'Nej. Basics passar nybörjare; de andra kurserna kan följas oavsett nivå.',
-      },
-      {
-        question: 'Ingår gemenskap eller forum?',
-        answer: 'Se respektive kurssida för aktuella funktioner. Om inget nämns där, ingår det inte.',
-      },
-      {
-        question: 'Får jag intyg efter avslutad kurs?',
-        answer: 'Om intyg erbjuds framgår det tydligt på kurssidan. I annat fall ingår det inte.',
-      },
-      {
-        question: 'Hur köper jag en kurs?',
-        answer: 'Gå till kurssidan, klicka "Lägg i varukorg" och följ kassan.',
+        question: 'Kan jag använda mitt friskvårdsbidrag?',
+        answer: 'Ja. Spara kvittot från “Mitt konto” och lämna till din arbetsgivare, eller köp via din friskvårdsleverantör (Epassi, Benefix, Wellnet, Benefits).'
       }
-    ],
-  },
-  {
-    id: 'recipes',
-    title: 'Recept & Kunskapsbank',
-    icon: Book,
-    faqs: [
-      {
-        question: 'Var hittar jag gratis recept?',
-        answer: 'Under menyn Kunskapsbank → Recept.',
-      },
-      {
-        question: 'Kan jag filtrera recept efter allergier?',
-        answer: 'Använd sökfältet för att filtrera på exempelvis "glutenfritt" eller "laktosfritt".',
-      },
-      {
-        question: 'Vad är en "funktionell råvara"?',
-        answer: 'En näringsrik ingrediens med specifika hälsoeffekter, listade i vår råvarudatabas.',
-      }
-    ],
-  },
-  {
-    id: 'payment',
-    title: 'Betalning & Villkor',
-    icon: CreditCard,
-    faqs: [
-      {
-        question: 'Vilka betalningsmetoder accepterar ni?',
-        answer: 'Swish eller kort (Stripe).',
-      },
-      {
-        question: 'Hur fungerar ångerrätten?',
-        answer: '14 dagar från köp/leverans. Kontakta supporten.',
-      },
-      {
-        question: 'Var hittar jag mina kvitton?',
-        answer: 'Logga in → Mitt konto → Mina köp.',
-      },
-      {
-        question: 'Hur byter jag lösenord?',
-        answer: 'Logga in → Mina Sidor → Kontouppgifter.',
-      },
-      {
-        question: 'Är betalningen säker?',
-        answer: 'Ja, kortdata hanteras krypterat av Stripe och sajten använder SSL.',
-      }
-    ],
-  },
-  {
-    id: 'privacy',
-    title: 'Integritet & Cookies',
-    icon: Shield,
-    faqs: [
-      {
-        question: 'Hur skyddar ni mina personuppgifter?',
-        answer: 'SSL-kryptering, säkra servrar, begränsad åtkomst och regelbundna uppdateringar.',
-      },
-      {
-        question: 'Vilka rättigheter har jag enligt GDPR?',
-        answer: 'Rätt till information, rättelse, radering, portabilitet, invändning och begränsning.',
-      },
-      {
-        question: 'Hur hanterar ni cookies?',
-        answer: 'Grundläggande och tredjepartscookies används efter samtycke; inställningar kan ändras när som helst.',
-      },
-      {
-        question: 'Vem kontaktar jag vid integritetsfrågor?',
-        answer: 'info@functionalfoods.se',
-      }
-    ],
-  },
+    ]
+  }
 ];
 
 export default function QAPage() {

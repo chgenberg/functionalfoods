@@ -205,10 +205,7 @@ export default function CartPage() {
                   <Sparkles className="w-6 h-6 inline text-accent" />
                   <span>1 års åtkomst till material</span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <Shield className="w-6 h-6 inline text-accent" />
-                  <span>30 dagars pengarna-tillbaka-garanti</span>
-                </div>
+                {/* Removed money-back guarantee row per request */}
               </div>
 
               {/* Coupon */}
