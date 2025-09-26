@@ -958,7 +958,7 @@ export default function RecipePage() {
                           <p className="text-sm text-[#014421]/60">Laddar bild...</p>
                         </div>
                       </div>
-                    ) : recipe.imageUrl && !imageError && !recipe.imageUrl.includes('Recept_complete2.0') ? (
+                    ) : recipe.imageUrl && !imageError ? (
                       <Image
                         src={optimizeImageUrl(recipe.imageUrl || recipe.imageMobileUrl, 'large', 'portrait')}
                         alt={recipe.imageAlt || recipe.title}

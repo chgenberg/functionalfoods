@@ -19,7 +19,7 @@ export default function Footer() {
       { label: t('footer.links.allCourses','Alla kurser'), href: '/utbildning/alla-kurser' },
       { label: t('footer.links.functionalBasics','Functional Basics'), href: '/utbildning/functional-basics' },
       { label: t('footer.links.functionalFlow','Functional Gut Health/Flow'), href: '/utbildning/functional-flow' },
-      { label: t('footer.links.catalog','Kurskatalog'), href: '/utbildning/kurskatalog' },
+      { label: 'Functional Insulin balance/Energy', href: '/utbildning/functional-energy' },
     ],
     kunskapsbank: [
       { label: t('kb.sections.blog.title','Artiklar'), href: '/kunskapsbank/blogg' },
