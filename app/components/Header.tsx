@@ -15,7 +15,6 @@ export default function Header() {
   const pathname = usePathname();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [q, setQ] = useState('');
   const [results, setResults] = useState<any[]>([]);
@@ -40,12 +39,6 @@ export default function Header() {
     if (email.includes('functional-flow') || email.includes('flow')) return '/dashboard/courses/functional-flow';
     return '/dashboard/courses/functional-basics';
   };
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const fetchResults = async () => {
     if (!q.trim()) { setResults([]); return; }
@@ -140,7 +133,7 @@ export default function Header() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'}`}>
+    <header className="fixed top-0 left-0 right-0 w-full z-50 bg-white border-b border-gray-100 shadow-sm">
       
         <div className="container-custom">
           <div className="relative flex items-center h-24 md:h-28">

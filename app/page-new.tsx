@@ -73,50 +73,26 @@ export default function Home() {
 
   // Ensure playback starts when in view (Safari robustness)
   useEffect(() => {
-    if (!heroInView || !videoRef.current) return;
-    const v = videoRef.current;
-    let attempts = 0;
-    // Choose correct source based on viewport (more reliable than <source media> on some browsers)
-    try {
-      // Force crucial properties before setting src (Safari/iOS requirement)
-      v.muted = true;
-      // @ts-ignore - not in TS types but exists on HTMLVideoElement
-      v.defaultMuted = true;
-      // @ts-ignore - iOS Safari specific attribute
-      v.setAttribute('playsinline', '');
-      v.setAttribute('muted', '');
-      v.autoplay = true;
+    if (heroInView && videoRef.current) {
+      const video = videoRef.current;
+      video.muted = true;
+      video.setAttribute('playsinline', '');
+      
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      const newSrc = isMobile ? '/introvideo_mobile.mp4' : '/introvideo_compressed.mp4';
 
-      const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-      const desiredSrc = isMobile ? '/introvideo_mobile.mp4' : '/introvideo_compressed.mp4';
-      if (!v.src || !v.src.endsWith(desiredSrc)) {
-        v.src = desiredSrc;
-        v.load();
+      if (video.src !== newSrc) {
+          video.src = newSrc;
+          video.load();
       }
-    } catch {}
-    const tryPlay = async () => {
-      try {
-        if (v.paused) {
-          await v.play();
-        }
-      } catch {}
-    };
-    const id = setInterval(() => {
-      attempts += 1;
-      if (!v.paused || attempts > 10) clearInterval(id);
-      else tryPlay();
-    }, 300);
-    tryPlay();
-    // As a fallback for stricter autoplay policies, start on first user gesture
-    const onUserInteract = () => {
-      try { v.play(); } catch {}
-    };
-    window.addEventListener('pointerdown', onUserInteract, { once: true });
-    // Force visible if playback stalls
-    const visibleTimeout = setTimeout(() => {
-      try { if (v && v.style) v.style.opacity = '1'; } catch {}
-    }, 1500);
-    return () => clearInterval(id);
+
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Autoplay was prevented: ", error);
+        });
+      }
+    }
   }, [heroInView]);
 
   const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
@@ -161,14 +137,10 @@ export default function Home() {
             poster="/hero_poster.jpg"
             playsInline
             muted
-            // Safari: ensure muted is set before autoplay (muted already true)
             loop
-            // Autoplay with lightweight initial fetch; use separate sources for mobile/desktop
             autoPlay
             preload="auto"
-            onLoadedMetadata={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
-            onLoadedData={() => { try { if (videoRef.current) { videoRef.current.style.opacity = '1'; videoRef.current.play(); } } catch {} }}
-            onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1'; }}
+            onCanPlay={(e) => e.currentTarget.style.opacity = '1'}
             onError={(e) => { console.warn('Hero video failed to load', e); }}
           >
           </video>
@@ -198,10 +170,10 @@ export default function Home() {
                 Mat som medicin för kropp och själ
               </p>
               
-              <div className="flex flex-col lg:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
                 <button
                   onClick={() => setShowQuiz(true)}
-                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
+                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-sm sm:text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
                   style={{ position: 'relative', zIndex: 50, pointerEvents: 'auto' }}
                   aria-label="Starta hälsoquiz"
                 >
@@ -210,7 +182,7 @@ export default function Home() {
                 </button>
                 <Link
                   href="/utbildning"
-                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-sm sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
                   <Book className="w-5 h-5" />
@@ -218,7 +190,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="/kunskapsbank/blogg"
-                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-sm sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
                   <TrendingUp className="w-5 h-5" />
