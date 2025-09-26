@@ -36,8 +36,22 @@ const TEST_ACCOUNTS: CourseSpec[] = [
 ];
 
 export async function POST(req: NextRequest) {
-  const auth = await requireAdminAuth(req);
-  if ((auth as any)?.status === 401) return auth as unknown as NextResponse;
+  // Allow either admin cookie OR a one-time setup token via header/query
+  const url = new URL(req.url);
+  const tokenInQuery = url.searchParams.get('token');
+  const tokenInHeader = req.headers.get('x-setup-token');
+  const setupToken = process.env.ADMIN_SETUP_TOKEN;
+
+  let isAuthorized = false;
+  if (setupToken && (tokenInQuery === setupToken || tokenInHeader === setupToken)) {
+    isAuthorized = true;
+  } else {
+    const auth = await requireAdminAuth(req);
+    if (!((auth as any)?.userId)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    isAuthorized = true;
+  }
 
   try {
     const results: any[] = [];
