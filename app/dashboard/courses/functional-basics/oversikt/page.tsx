@@ -356,7 +356,7 @@ export default function FunctionalBasicsOverview() {
                 </a>
                 
                 <a
-                  href="https://www.instagram.com/functionalfoods.se/?hl=sv"
+                  href="https://www.instagram.com/functionalfoods.se/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-4 bg-[#F4B4C3] text-[#014421] rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"

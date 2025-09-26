@@ -52,7 +52,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 availableLanguage: ['Swedish', 'English', 'Spanish', 'German', 'French']
               },
               sameAs: [
-                'https://instagram.com/functionalfoods_se'
+                'https://www.instagram.com/functionalfoods.se/',
+                'https://www.tiktok.com/@functionalfoods.se'
               ]
             })
           }}

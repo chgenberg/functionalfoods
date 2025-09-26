@@ -161,7 +161,8 @@ export function generateStructuredData(config: SEOConfig & {
       availableLanguage: ['Swedish', 'English', 'Spanish', 'German', 'French']
     },
     sameAs: [
-      'https://instagram.com/functionalfoods_se',
+      'https://www.instagram.com/functionalfoods.se/',
+      'https://www.tiktok.com/@functionalfoods.se',
       'https://facebook.com/functionalfoods.se'
     ]
   });

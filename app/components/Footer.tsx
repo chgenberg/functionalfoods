@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaLinkedin, FaTiktok } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useT } from '../lib/i18n/LanguageProvider';
@@ -60,8 +60,11 @@ export default function Footer() {
               {t('footer.description','Din personliga guide till hälsosam mat och välmående genom vetenskapligt grundade functional foods.')}
             </p>
             <div className="flex space-x-4">
-              <a href="https://instagram.com/functionalfoods" className="text-white/60 hover:text-white transition-colors">
+              <a href="https://www.instagram.com/functionalfoods.se/" className="text-white/60 hover:text-white transition-colors">
                 <FaInstagram className="w-6 h-6" />
+              </a>
+              <a href="https://www.tiktok.com/@functionalfoods.se" className="text-white/60 hover:text-white transition-colors">
+                <FaTiktok className="w-6 h-6" />
               </a>
               <a href="https://facebook.com/functionalfoods" className="text-white/60 hover:text-white transition-colors">
                 <FaFacebook className="w-6 h-6" />
