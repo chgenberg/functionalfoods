@@ -54,9 +54,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const body = await req.json().catch(() => ({} as any));
+    const overrideAccounts: CourseSpec[] | undefined = Array.isArray(body?.accounts) ? body.accounts : undefined;
+    const accountsToCreate = overrideAccounts && overrideAccounts.length > 0 ? overrideAccounts : TEST_ACCOUNTS;
+
     const results: any[] = [];
 
-    for (const spec of TEST_ACCOUNTS) {
+    for (const spec of accountsToCreate) {
       // Ensure course exists
       const course = await prisma.courseProduct.findUnique({ where: { name: spec.courseName } });
       if (!course) {
