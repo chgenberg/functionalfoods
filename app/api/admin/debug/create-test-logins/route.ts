@@ -16,24 +16,43 @@ type CourseSpec = {
 
 const TEST_ACCOUNTS: CourseSpec[] = [
   {
-    email: 'test.basics@functionalfoods.se',
-    name: 'Test Basics',
-    password: 'BasicsTest2025!',
+    email: 'basics.demo@functionalfoods.se',
+    name: 'Basics Demo',
+    password: 'BasicsDemo2025!',
     courseName: 'Functional Basics'
   },
   {
-    email: 'test.flow@functionalfoods.se',
-    name: 'Test Flow',
-    password: 'FlowTest2025!',
+    email: 'flow.demo@functionalfoods.se',
+    name: 'Flow Demo',
+    password: 'FlowDemo2025!',
     courseName: 'Functional Flow'
   },
   {
-    email: 'test.energy@functionalfoods.se',
-    name: 'Test Energy',
-    password: 'EnergyTest2025!',
+    email: 'energy.demo@functionalfoods.se',
+    name: 'Energy Demo',
+    password: 'EnergyDemo2025!',
     courseName: 'Functional Energy'
   }
 ];
+
+export async function GET(req: NextRequest) {
+  // Mirror POST authorization to allow simple browser trigger
+  const url = new URL(req.url);
+  const tokenInQuery = url.searchParams.get('token');
+  const tokenInHeader = req.headers.get('x-setup-token');
+  const setupToken = process.env.ADMIN_SETUP_TOKEN;
+
+  if (!(setupToken && (tokenInQuery === setupToken || tokenInHeader === setupToken))) {
+    const admin = await requireAdminAuth(req);
+    if (!((admin as any)?.userId)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+  }
+
+  // Reuse POST logic with default accounts
+  const fakeReq = new Request(req.url, { method: 'POST', headers: req.headers, body: JSON.stringify({ accounts: TEST_ACCOUNTS }) });
+  return POST(fakeReq as unknown as NextRequest);
+}
 
 export async function POST(req: NextRequest) {
   // Allow either admin cookie OR a one-time setup token via header/query
