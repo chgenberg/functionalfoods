@@ -41,7 +41,15 @@ export function optimizeImageUrl(
 
   // For local images, serve via API route so filenames with spaces/ÅÄÖ work
   if (imageUrl.startsWith('/')) {
-    return toApiImagePath(imageUrl);
+    const base = toApiImagePath(imageUrl);
+    const cfg = imageSizes[size] || imageSizes.medium;
+    const params = new URLSearchParams();
+    if (cfg.width) params.set('w', String(cfg.width));
+    if (cfg.height) params.set('h', String(cfg.height));
+    if (cfg.quality) params.set('q', String(cfg.quality));
+    // Prefer WebP in pipeline
+    params.set('format', 'webp');
+    return `${base}?${params.toString()}`;
   }
 
   // For external images, return as-is (could be enhanced with proxy service)

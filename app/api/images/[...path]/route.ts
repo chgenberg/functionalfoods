@@ -5,6 +5,7 @@ export const revalidate = 0;
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import sharp from 'sharp';
 
 function slugifyFilename(name: string): string {
   // Don't decode if already decoded - just normalize
@@ -72,30 +73,27 @@ export async function GET(
 
     console.log('✅ Serving:', targetPath);
 
-    // Read file
-    const fileBuffer = fs.readFileSync(targetPath);
-    
-    // Determine content type
+    // Transform on the fly if size/quality requested
+    const url = new URL(request.url);
+    const w = parseInt(url.searchParams.get('w') || '0', 10) || undefined;
+    const h = parseInt(url.searchParams.get('h') || '0', 10) || undefined;
+    const q = parseInt(url.searchParams.get('q') || '0', 10) || 80;
+    const fmt = (url.searchParams.get('format') || '').toLowerCase();
+
+    let fileBuffer: Buffer = fs.readFileSync(targetPath);
     const ext = path.extname(targetPath).toLowerCase();
-    let contentType = 'application/octet-stream';
-    
-    switch (ext) {
-      case '.webp':
-        contentType = 'image/webp';
-        break;
-      case '.jpg':
-      case '.jpeg':
-        contentType = 'image/jpeg';
-        break;
-      case '.png':
-        contentType = 'image/png';
-        break;
-      case '.gif':
-        contentType = 'image/gif';
-        break;
-      case '.svg':
-        contentType = 'image/svg+xml';
-        break;
+    let contentType = 'image/webp';
+
+    if (fmt === 'webp' || ext === '.webp') {
+      const pipeline = sharp(fileBuffer).rotate();
+      if (w || h) pipeline.resize(w, h, { fit: 'cover' });
+      fileBuffer = await pipeline.webp({ quality: q }).toBuffer() as Buffer;
+      contentType = 'image/webp';
+    } else {
+      const pipeline = sharp(fileBuffer).rotate();
+      if (w || h) pipeline.resize(w, h, { fit: 'cover' });
+      fileBuffer = await pipeline.jpeg({ quality: q, mozjpeg: true }).toBuffer() as Buffer;
+      contentType = 'image/jpeg';
     }
 
     return new NextResponse(fileBuffer, {
