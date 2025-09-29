@@ -107,7 +107,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = { "week1": { "days": 
       }, "Onsdag": { "breakfast": { "name": "Yoghurt med mango och apelsin", "recipeLink": "/kunskapsbank/recept/yoghurt-med-apelsin-och-bovetegranola" }, "lunch": { "name": "Ugnsbakad blomkål med ratatouille rester från frysen", "recipeLink": "/kunskapsbank/recept/ugnsbakad-blomkal-med-ratatouille" }, "dinner": { "name": "Pestotorsk med capresesallad", "recipeLink": "/kunskapsbank/recept/pestotorsk-med-capresesallad" }
       }, "Torsdag": { "breakfast": { "name": "Stekt ägg med parmaskinka", "recipeLink": "/kunskapsbank/recept/stekt-agg-med-tomat" }, "lunch": { "name": "Pestotorsk med capresesallad rester", "recipeLink": "/kunskapsbank/recept/pestotorsk-med-capresesallad" }, "dinner": { "name": "Kyckling med blomkålsris och dillyoghurt", "recipeLink": "/kunskapsbank/recept/kyckling-med-stekt-blomkalsris-och-dillyoghurt" }
               }, "Fredag": { "breakfast": { "name": "Bananmuffinfrån frysen", "recipeLink": "/kunskapsbank/recept/lax-fetaost-rostade" }, "lunch": { "name": "Kyckling med blomkålsris och dillyoghurt rester", "recipeLink": "/kunskapsbank/recept/kyckling-med-stekt-blomkalsris-och-dillyoghurt" }, "dinner": { "name": "Nötgryta med rotfrukter", "recipeLink": "/kunskapsbank/recept/notgryta-med-rotfrukter" }
-      }, "Lördag": { "breakfast": { "name": "Äggröra med champinjoner", "recipeLink": "/kunskapsbank/recept/aggrora-lax" }, "lunch": { "name": "Nötgryta med rotfrukter rester", "recipeLink": "/kunskapsbank/recept/notgryta-med-rotfrukter" }, "dinner": { "name": "Quinoasallad med scampi och mango", "recipeLink": "/kunskapsbank/recept/quinoasallad-med-scampi-och-mango" }, "dessert": { "name": "Gino", "recipeLink": "/kunskapsbank/recept/flow-recept-gino" }
+      }, "Lördag": { "breakfast": { "name": "Äggröra med champinjoner", "recipeLink": "/kunskapsbank/recept/aggrora-lax" }, "lunch": { "name": "Nötgryta med rotfrukter rester", "recipeLink": "/kunskapsbank/recept/notgryta-med-rotfrukter" }, "dinner": { "name": "Quinoasallad med scampi och mango", "recipeLink": "/kunskapsbank/recept/quinoasallad-med-scampi-och-mango" }, "dessert": { "name": "Gino", "recipeLink": "/kunskapsbank/recept/gino" }
               }, "Söndag": { "breakfast": { "name": "Bananpannkaka", "recipeLink": "/kunskapsbank/recept/stekt-agg-champinjoner-2" }, "lunch": { "name": "Quinoasallad med scampi och mango rester", "recipeLink": "/kunskapsbank/recept/quinoasallad-med-scampi-och-mango" }, "dinner": { "name": "Grönkålspaj med champinjoner", "recipeLink": "/kunskapsbank/recept/gronkalspaj-med-champinjoner" }
       }
     }, "title": "Vecka 5: Synkroniserad från DOCX" }, "week6": { "days": { "Måndag": { "breakfast": { "name": "Bananpannkaka rester", "recipeLink": "/kunskapsbank/recept/stekt-agg-champinjoner-2" }, "lunch": { "name": "Grönkålspaj med champinjoner rester", "recipeLink": "/kunskapsbank/recept/gronkalspaj-med-champinjoner" }, "dinner": { "name": "Köttfärslimpa med tomat rester från frysen", "recipeLink": "/kunskapsbank/recept/kottfarslimpa-med-tomat" }
@@ -242,7 +242,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         },
         "dessert": {
           "name": "Mandelkaka med choklad",
-          "recipeLink": "/kunskapsbank/recept/mandelkaka-med-choklad"
+          "recipeLink": "/kunskapsbank/recept/mandelkaka-med-med-choklad"
         }
       },
       "Söndag": {
@@ -495,7 +495,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
       "Tisdag": {
         "breakfast": {
           "name": "Stekt ägg med kalkon och senapsmajonäs",
-          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-kalkon-och-senapsmajnas"
+          "recipeLink": "/kunskapsbank/recept/stekt-agg-med-kalkon-och-senapsmajonnas"
         },
         "lunch": {
           "name": "Vegetarisk paprikapasta med citron rester",
@@ -600,7 +600,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         },
         "dinner": {
           "name": "Mexikansk nötfärsfräs",
-          "recipeLink": "/kunskapsbank/recept/mexikansk-notfarsfras"
+          "recipeLink": "/kunskapsbank/recept/mexikanskt-notfarsfras"
         }
       },
       "Tisdag": {
@@ -610,7 +610,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         },
         "lunch": {
           "name": "Mexikansk nötfärsfräs rester",
-          "recipeLink": "/kunskapsbank/recept/mexikansk-notfarsfras"
+          "recipeLink": "/kunskapsbank/recept/mexikanskt-notfarsfras"
         },
         "dinner": {
           "name": "Oneplate ugnsbakad kyckling och rödbetor",
