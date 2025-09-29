@@ -120,7 +120,8 @@ export async function POST(request: Request) {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
       try {
-        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not configured');
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
         user = await prisma.user.findUnique({
           where: { id: decoded.userId }
         });
@@ -351,7 +352,7 @@ export async function POST(request: Request) {
       if (isNewUser) {
         token = jwt.sign(
           { userId: user.id, email: user.email },
-          process.env.JWT_SECRET || 'your-secret-key',
+          process.env.JWT_SECRET!,
           { expiresIn: '7d' }
         );
       }

@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
     }
 
     const token = authorization.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { userId: string };
+    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not configured');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as { userId: string };
     const { searchParams } = new URL(req.url);
     const courseType = searchParams.get('courseType');
     const weekNumber = searchParams.get('weekNumber');
@@ -50,7 +51,8 @@ export async function POST(req: NextRequest) {
     }
 
     const token = authorization.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { userId: string };
+    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not configured');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as { userId: string };
     const { courseType, weekNumber, dayNumber, mealIndex } = await req.json();
 
     if (!courseType || weekNumber === undefined || dayNumber === undefined || mealIndex === undefined) {

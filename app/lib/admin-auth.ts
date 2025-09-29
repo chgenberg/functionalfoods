@@ -24,7 +24,7 @@ export async function verifyAdminAuth(request?: NextRequest): Promise<AdminUser 
     // Verify JWT token
     const decoded = jwt.verify(
       token.value, 
-      process.env.JWT_SECRET || 'functional-foods-secret-2025'
+      process.env.JWT_SECRET!
     ) as AdminUser;
 
     // Check if it's a valid admin
