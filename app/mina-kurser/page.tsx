@@ -352,7 +352,11 @@ export default function MyCoursesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {purchases.map((purchase, index) => {
                 const metadata = courseMetadata[purchase.course.name];
-                if (!metadata) return null;
+                console.log(`Course: "${purchase.course.name}", Metadata found:`, !!metadata);
+                if (!metadata) {
+                  console.log('Available metadata keys:', Object.keys(courseMetadata));
+                  return null;
+                }
                 
                 return (
                   <motion.div
