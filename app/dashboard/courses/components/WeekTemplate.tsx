@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { optimizeImageUrl } from '@/app/lib/imageOptimization';
 import HelpGuide from '@/app/components/HelpGuide';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import DayModal from '@/app/dashboard/courses/components/DayModal';
@@ -703,7 +704,8 @@ export default function WeekTemplate({
                       const calorieMatch = meal.data.name.match(/\((\d+\s*kcal)\)/);
                       const calories = calorieMatch ? calorieMatch[1] : '';
                       const imageKey = `${day.day}-${meal.type}`;
-                      const imageUrl = mealImages[imageKey];
+                      const rawUrl = mealImages[imageKey];
+                      const imageUrl = rawUrl ? optimizeImageUrl(rawUrl, 'small', 'landscape') : undefined;
                       
                       // Debug logging for missing images
                       if (!imageUrl && process.env.NODE_ENV === 'development') {
@@ -728,9 +730,9 @@ export default function WeekTemplate({
                         >
                           <div className="relative overflow-hidden rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300">
                             <div className="aspect-[4/3] relative bg-gray-100">
-                              {imageUrl || mealImages[meal.data.name] ? (
+                              {imageUrl || (mealImages[meal.data.name] && optimizeImageUrl(mealImages[meal.data.name], 'small', 'landscape')) ? (
                                 <Image
-                                  src={imageUrl || mealImages[meal.data.name]}
+                                  src={imageUrl || optimizeImageUrl(mealImages[meal.data.name], 'small', 'landscape')}
                                   alt={mealName}
                                   fill
                                   className="object-cover"
