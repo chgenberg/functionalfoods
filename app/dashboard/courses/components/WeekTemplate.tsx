@@ -76,6 +76,33 @@ const RecipeNutrition = ({ recipeLink }: { recipeLink?: string }) => {
   );
 };
 
+// Map meal type + name to display label (e.g., classify baked items as "Egenbakat")
+const getMealLabel = (type: string, name?: string): string => {
+  const lower = (name || '').toLowerCase();
+  // Common baked items that should render under "Egenbakat"
+  const egenbakatMatchers = [
+    'ketomüsli',
+    'ketomusli',
+    'bovetegranola',
+    'havrefrallor',
+    'bananmuffin',
+    'muffin',
+    'gino',
+    'mandelkaka',
+    'kaka',
+    'bröd',
+    'limpa'
+  ];
+  if (lower && egenbakatMatchers.some(k => lower.includes(k))) return 'Egenbakat';
+
+  if (type === 'breakfast') return 'Frukost';
+  if (type === 'lunch') return 'Lunch';
+  if (type === 'dinner') return 'Middag';
+  if (type === 'snack') return 'Mellanmål';
+  if (type === 'dessert') return 'Efterrätt';
+  return type;
+};
+
 interface WeekDay {
   day: number;
   name: string;
@@ -518,8 +545,11 @@ export default function WeekTemplate({
           if (resp.ok) {
             const data = await resp.json();
             const images: Record<string, string> = data.images || {};
+            // Prefer exact slug match first, fall back to name key
             stillMissing.forEach(meal => {
-              const url = images[meal.name];
+              const bySlug = meal.slug ? images[meal.slug] : undefined;
+              const byName = images[meal.name];
+              const url = bySlug || byName;
               if (url) {
                 imageMap[meal.key] = optimizeImageUrl(url, 'large', 'landscape');
               }
@@ -725,11 +755,11 @@ export default function WeekTemplate({
               if (!dayData) return null;
 
               const meals = [
-                { type: 'breakfast', label: 'Frukost', data: dayData.breakfast },
-                { type: 'lunch', label: 'Lunch', data: dayData.lunch },
-                { type: 'dinner', label: 'Middag', data: dayData.dinner },
-                ...(dayData.snack ? [{ type: 'snack', label: 'Mellanmål', data: dayData.snack }] : []),
-                ...(dayData.dessert ? [{ type: 'dessert', label: 'Efterrätt', data: dayData.dessert }] : [])
+                { type: 'breakfast', data: dayData.breakfast },
+                { type: 'lunch', data: dayData.lunch },
+                { type: 'dinner', data: dayData.dinner },
+                ...(dayData.snack ? [{ type: 'snack', data: dayData.snack }] as any[] : []),
+                ...(dayData.dessert ? [{ type: 'dessert', data: dayData.dessert }] as any[] : [])
               ];
 
               return (
@@ -743,6 +773,7 @@ export default function WeekTemplate({
                       if (!meal.data) return null;
                       
                       const mealName = withResterName(weekNumber, day.day, idx, meal.data);
+                      const label = getMealLabel(meal.type, meal.data?.name);
                       const calorieMatch = meal.data.name.match(/\((\d+\s*kcal)\)/);
                       const calories = calorieMatch ? calorieMatch[1] : '';
                       const imageKey = `${day.day}-${meal.type}`;
@@ -791,7 +822,7 @@ export default function WeekTemplate({
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
                             <div className="p-3 bg-white">
-                              <h4 className="font-medium text-[#014421] text-sm mb-0.5">{meal.label}</h4>
+                              <h4 className="font-medium text-[#014421] text-sm mb-0.5">{label}</h4>
                               <p className="text-xs text-gray-700 line-clamp-2 mb-2">{formatMealName(mealName)}</p>
                               <RecipeNutrition recipeLink={meal.data.recipeLink} />
                             </div>
@@ -851,7 +882,7 @@ export default function WeekTemplate({
               const mealName = dayData.breakfast.name.replace(/\s*\(\d+\s*kcal\)/, '');
               
               meals.push({
-                mealType: 'Frukost',
+                mealType: getMealLabel('breakfast', mealName),
                 time: '07:00',
                 meal: mealName,
                 calories: calories,
@@ -865,7 +896,7 @@ export default function WeekTemplate({
               const mealName = dayData.lunch.name.replace(/\s*\(\d+\s*kcal\)/, '');
               
               meals.push({
-                mealType: 'Lunch',
+                mealType: getMealLabel('lunch', mealName),
                 time: '12:00',
                 meal: mealName,
                 calories: calories,
@@ -879,7 +910,7 @@ export default function WeekTemplate({
               const mealName = dayData.dinner.name.replace(/\s*\(\d+\s*kcal\)/, '');
               
               meals.push({
-                mealType: 'Middag',
+                mealType: getMealLabel('dinner', mealName),
                 time: '18:00',
                 meal: mealName,
                 calories: calories,
@@ -893,7 +924,7 @@ export default function WeekTemplate({
               const mealName = dayData.snack.name.replace(/\s*\(\d+\s*kcal\)/, '');
               
               meals.push({
-                mealType: 'Mellanmål',
+                mealType: getMealLabel('snack', mealName),
                 time: '15:00',
                 meal: mealName,
                 calories: calories,
@@ -907,7 +938,7 @@ export default function WeekTemplate({
               const mealName = dayData.dessert.name.replace(/\s*\(\d+\s*kcal\)/, '');
               
               meals.push({
-                mealType: 'Efterrätt',
+                mealType: getMealLabel('dessert', mealName),
                 time: '20:00',
                 meal: mealName,
                 calories: calories,

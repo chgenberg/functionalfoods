@@ -1,0 +1,314 @@
+[
+  {
+    "title": "Yoghurt med ketomüsli",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 321,
+      "protein": 10,
+      "carbohydrates": 7,
+      "fat": 10,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Tonfisksallad med äpple",
+    "time": "10 minuter",
+    "mealType": "Lunch",
+    "servings": 1,
+    "nutrition": {
+      "calories": 418,
+      "protein": 49,
+      "carbohydrates": 18,
+      "fat": 49,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Squashspagetti med köttfärssås",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 345,
+      "protein": 34,
+      "carbohydrates": 18,
+      "fat": 34,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Ketomüsli",
+    "time": "10 minuter",
+    "mealType": "Egenbakat",
+    "servings": 15,
+    "nutrition": {
+      "calories": 309,
+      "protein": 6,
+      "carbohydrates": 4,
+      "fat": 6,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Stekt ägg med lax",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 317,
+      "protein": 26,
+      "carbohydrates": 2,
+      "fat": 26,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Squashspagetti med köttfärssås",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 345,
+      "protein": 34,
+      "carbohydrates": 18,
+      "fat": 34,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Het ratatouille",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 162,
+      "protein": 4,
+      "carbohydrates": 23,
+      "fat": 4,
+      "fiber": 9
+    }
+  },
+  {
+    "title": "Grön smoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 186,
+      "protein": 5,
+      "carbohydrates": 34,
+      "fat": 5,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Pokebowl med kyckling",
+    "time": "20 minuter",
+    "mealType": "Lunch",
+    "servings": 1,
+    "nutrition": {
+      "calories": 722,
+      "protein": 75,
+      "carbohydrates": 51,
+      "fat": 75,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Köttfärsbiffar med stekt blomkål",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 355,
+      "protein": 29,
+      "carbohydrates": 11,
+      "fat": 29,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Omelett med tomat",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 242,
+      "protein": 15,
+      "carbohydrates": 4,
+      "fat": 15,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Het ratatouille",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 162,
+      "protein": 4,
+      "carbohydrates": 23,
+      "fat": 4,
+      "fiber": 9
+    }
+  },
+  {
+    "title": "Pokebowl med kyckling",
+    "time": "20 minuter",
+    "mealType": "Lunch",
+    "servings": 1,
+    "nutrition": {
+      "calories": 722,
+      "protein": 75,
+      "carbohydrates": 51,
+      "fat": 75,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Havrefrallor med morötter och aprikoser",
+    "time": "30 minuter",
+    "mealType": "Egenbakat",
+    "servings": 8,
+    "nutrition": {
+      "calories": 355,
+      "protein": 20,
+      "carbohydrates": 17,
+      "fat": 20,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Havrefralla med morötter och torkade aprikoser",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 355,
+      "protein": 20,
+      "carbohydrates": 17,
+      "fat": 20,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Köttfärsbiffar med stekt blomkål",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 355,
+      "protein": 29,
+      "carbohydrates": 11,
+      "fat": 29,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Kycklinggryta med bakad spetskål",
+    "time": "50 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 571,
+      "protein": 53,
+      "carbohydrates": 16,
+      "fat": 53,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Tropisk Smoothiebowl",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 242,
+      "protein": 4,
+      "carbohydrates": 35,
+      "fat": 4,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Kycklinggryta med bakad spetskål",
+    "time": "50 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 571,
+      "protein": 53,
+      "carbohydrates": 16,
+      "fat": 53,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Laxburgare med krämig grönsaksröra",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 851,
+      "protein": 49,
+      "carbohydrates": 34,
+      "fat": 49,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Mangoglass",
+    "time": "5 minuter",
+    "mealType": "Efterrätt",
+    "servings": 2,
+    "nutrition": {
+      "calories": 147,
+      "protein": 3,
+      "carbohydrates": 23,
+      "fat": 3,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Tropisk Smoothiebowl",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 242,
+      "protein": 4,
+      "carbohydrates": 35,
+      "fat": 4,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Laxburgare med krämig grönsaksröra",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 851,
+      "protein": 49,
+      "carbohydrates": 34,
+      "fat": 49,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Ugnsbakad tomat med köttfärs",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 514,
+      "protein": 29,
+      "carbohydrates": 14,
+      "fat": 29,
+      "fiber": 6
+    }
+  }
+]

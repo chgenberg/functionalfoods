@@ -1,0 +1,249 @@
+[
+  {
+    "title": "Yoghurt med ketomüsli",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 321,
+      "protein": 10,
+      "carbohydrates": 7,
+      "fat": 10,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Torsk från mellanöstern",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 601,
+      "protein": 52,
+      "carbohydrates": 45,
+      "fat": 52,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Japansk kycklingfärswok med groddar",
+    "time": "10 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 297,
+      "protein": 30,
+      "carbohydrates": 26,
+      "fat": 30,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Äggröra med paprika",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 254,
+      "protein": 15,
+      "carbohydrates": 4,
+      "fat": 15,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Japansk kycklingfärswok med groddar",
+    "time": "10 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 297,
+      "protein": 30,
+      "carbohydrates": 26,
+      "fat": 30,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Grekisk sallad",
+    "time": "10 minuter",
+    "mealType": "Middag",
+    "servings": 1,
+    "nutrition": {
+      "calories": 756,
+      "protein": 17,
+      "carbohydrates": 26,
+      "fat": 17,
+      "fiber": 9
+    }
+  },
+  {
+    "title": "Chiafrögröt",
+    "time": "35 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 352,
+      "protein": 10,
+      "carbohydrates": 47,
+      "fat": 10,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Lax med fetaost och rostade rotfrukter",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 549,
+      "protein": 37,
+      "carbohydrates": 28,
+      "fat": 37,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Köttfärslimpa med ajvar och rostad sötpotatis",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 697,
+      "protein": 43,
+      "carbohydrates": 63,
+      "fat": 43,
+      "fiber": 9
+    }
+  },
+  {
+    "title": "Bananplättar med jordgubbar och kokos",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 341,
+      "protein": 12,
+      "carbohydrates": 22,
+      "fat": 12,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Köttfärslimpa med ajvar och rostad sötpotatis",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 697,
+      "protein": 43,
+      "carbohydrates": 63,
+      "fat": 43,
+      "fiber": 9
+    }
+  },
+  {
+    "title": "Vegetarisk currygryta med panéer",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 280,
+      "protein": 17,
+      "carbohydrates": 17,
+      "fat": 17,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Mangosmoothie med spenat",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 106,
+      "protein": 1,
+      "carbohydrates": 24,
+      "fat": 1,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Skaldjursgryta med torsk i gul curry",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 618,
+      "protein": 73,
+      "carbohydrates": 22,
+      "fat": 73,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Kycklingjärpar med linssallad",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 374,
+      "protein": 42,
+      "carbohydrates": 11,
+      "fat": 42,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Mandelkaka med frukt",
+    "time": "35 minuter",
+    "mealType": "Efterrätt",
+    "servings": 10,
+    "nutrition": {
+      "calories": 389,
+      "protein": 9,
+      "carbohydrates": 16,
+      "fat": 9,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Mangosmoothie med spenat",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 106,
+      "protein": 1,
+      "carbohydrates": 24,
+      "fat": 1,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Kycklingjärpar med linssallad",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 374,
+      "protein": 42,
+      "carbohydrates": 11,
+      "fat": 42,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Laxfilé med ratatouille",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 379,
+      "protein": 31,
+      "carbohydrates": 16,
+      "fat": 31,
+      "fiber": 6
+    }
+  }
+]

@@ -28,10 +28,18 @@ function levenshtein(a, b) {
 
 function mergeNutrition(db, incoming) {
   const base = (typeof db === 'string') ? (()=>{ try{return JSON.parse(db);}catch{return {};}})() : (db || {});
-  const out = { ...base };
-  const keys = ['calories','protein','carbohydrates','fat','fiber'];
-  for (const k of keys) if (incoming[k] != null) out[k] = incoming[k];
-  return out;
+  const currentPer = base.perServing || {};
+  const mapped = incoming || {};
+  // Support both "calories" and "energy"
+  const nextPerServing = {
+    ...currentPer,
+    energy: mapped.energy != null ? mapped.energy : (mapped.calories != null ? mapped.calories : currentPer.energy),
+    protein: mapped.protein != null ? mapped.protein : currentPer.protein,
+    carbohydrates: mapped.carbohydrates != null ? mapped.carbohydrates : currentPer.carbohydrates,
+    fat: mapped.fat != null ? mapped.fat : currentPer.fat,
+    fiber: mapped.fiber != null ? mapped.fiber : currentPer.fiber
+  };
+  return { ...base, perServing: nextPerServing };
 }
 
 async function ensureUniqueSlug(prisma, desired) {

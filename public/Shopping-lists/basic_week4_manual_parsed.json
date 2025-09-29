@@ -1,0 +1,301 @@
+[
+  {
+    "title": "Omelett med bär",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 224,
+      "protein": 17,
+      "carbohydrates": 2,
+      "fat": 17,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Lax med waldorfsallad",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 555,
+      "protein": 29,
+      "carbohydrates": 18,
+      "fat": 29,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Grekiska köttbullar i tomatsås",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 462,
+      "protein": 38,
+      "carbohydrates": 33,
+      "fat": 38,
+      "fiber": 8
+    }
+  },
+  {
+    "title": "Ägghack med kalkon",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 301,
+      "protein": 24,
+      "carbohydrates": 8,
+      "fat": 24,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Grekiska köttbullar i tomatsås",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 462,
+      "protein": 38,
+      "carbohydrates": 33,
+      "fat": 38,
+      "fiber": 8
+    }
+  },
+  {
+    "title": "Kycklinggryta med röda linser",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 268,
+      "protein": 24,
+      "carbohydrates": 31,
+      "fat": 24,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Fruktsmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 209,
+      "protein": 6,
+      "carbohydrates": 37,
+      "fat": 6,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Kycklinggryta med röda linser",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 268,
+      "protein": 24,
+      "carbohydrates": 31,
+      "fat": 24,
+      "fiber": 7
+    }
+  },
+  {
+    "title": "Laxsallad med vindruvor",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 558,
+      "protein": 22,
+      "carbohydrates": 48,
+      "fat": 22,
+      "fiber": 8
+    }
+  },
+  {
+    "title": "Fruktsmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 209,
+      "protein": 6,
+      "carbohydrates": 37,
+      "fat": 6,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Laxsallad med vindruvor",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 558,
+      "protein": 22,
+      "carbohydrates": 48,
+      "fat": 22,
+      "fiber": 8
+    }
+  },
+  {
+    "title": "Asiatiska köttbullar med nudelsallad",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 398,
+      "protein": 48,
+      "carbohydrates": 13,
+      "fat": 48,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Bananplättar med mango och granatäpple",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 241,
+      "protein": 10,
+      "carbohydrates": 20,
+      "fat": 10,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Vegetarisk currygryta med panéer",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 280,
+      "protein": 17,
+      "carbohydrates": 17,
+      "fat": 17,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Grillspett med grekisk sallad och morotstzatziki",
+    "time": "45 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 501,
+      "protein": 42,
+      "carbohydrates": 20,
+      "fat": 42,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Keso med hallon och granatäpple",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 120,
+      "protein": 12,
+      "carbohydrates": 5,
+      "fat": 12,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Grillspett med grekisk sallad och morotstzatziki",
+    "time": "45 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 501,
+      "protein": 42,
+      "carbohydrates": 20,
+      "fat": 42,
+      "fiber": 6
+    }
+  },
+  {
+    "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 795,
+      "protein": 48,
+      "carbohydrates": 72,
+      "fat": 48,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 795,
+      "protein": 48,
+      "carbohydrates": 72,
+      "fat": 48,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Hallon och kiwi med vit chokladcréme",
+    "time": "10 minuter",
+    "mealType": "Efterrätt",
+    "servings": 2,
+    "nutrition": {
+      "calories": 242,
+      "protein": 5,
+      "carbohydrates": 19,
+      "fat": 5,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Havregrynsgröt med torkad frukt och äpple",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 280,
+      "protein": 9,
+      "carbohydrates": 30,
+      "fat": 9,
+      "fiber": 4
+    }
+  },
+  {
+    "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 795,
+      "protein": 48,
+      "carbohydrates": 72,
+      "fat": 48,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Torsk från mellanöstern",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 601,
+      "protein": 52,
+      "carbohydrates": 45,
+      "fat": 52,
+      "fiber": 1
+    }
+  }
+]

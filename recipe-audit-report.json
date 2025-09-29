@@ -1,12 +1,138 @@
 {
   "summary": {
-    "ok": 106,
-    "mismatched": 0,
-    "missingInDb": 16,
-    "missingSlugs": 0
+    "ok": 125,
+    "mismatched": 5,
+    "missingInDb": 14,
+    "missingSlugs": 3
   },
-  "missingSlugs": [],
+  "missingSlugs": [
+    "smoothiebowl",
+    "smoothiebowl-med-mango-och-jordgubbar",
+    "stekt-torsk-med-bearnaisesas-och-haricots-verts"
+  ],
   "mismatches": [
+    {
+      "type": "nutrition_mismatch",
+      "title": "Tonfisksallad med äpple",
+      "db": {
+        "fat": 9.3,
+        "salt": 0.2,
+        "fiber": 0.6,
+        "sugar": 2.2,
+        "energy": 152,
+        "protein": 13.8,
+        "carbohydrates": 2.8
+      },
+      "doc": {
+        "calories": 418,
+        "protein": 49,
+        "carbohydrates": 18,
+        "fat": 49,
+        "fiber": 4
+      }
+    },
+    {
+      "type": "nutrition_mismatch",
+      "title": "Squashspagetti med köttfärssås",
+      "db": {
+        "fat": 15.1,
+        "salt": 25.1,
+        "fiber": 1.6,
+        "sugar": 2.5,
+        "energy": 309,
+        "protein": 17.5,
+        "carbohydrates": 24.5
+      },
+      "doc": {
+        "calories": 345,
+        "protein": 34,
+        "carbohydrates": 18,
+        "fat": 34,
+        "fiber": 7
+      }
+    },
+    {
+      "type": "nutrition_mismatch",
+      "title": "Omelett med tomat",
+      "db": {
+        "fat": 13.6,
+        "salt": 50.4,
+        "fiber": 0.6,
+        "sugar": 2,
+        "energy": 186,
+        "protein": 13.5,
+        "carbohydrates": 2.7
+      },
+      "doc": {
+        "calories": 242,
+        "protein": 15,
+        "carbohydrates": 4,
+        "fat": 15,
+        "fiber": 2
+      }
+    },
+    {
+      "type": "nutrition_mismatch",
+      "title": "Omelett med champinjoner",
+      "db": {
+        "fat": 13,
+        "salt": 50.4,
+        "fiber": 0,
+        "sugar": 0.7,
+        "energy": 173,
+        "protein": 13,
+        "carbohydrates": 0.7
+      },
+      "doc": {
+        "calories": 271,
+        "protein": 20,
+        "carbohydrates": 4,
+        "fat": 20,
+        "fiber": 0
+      }
+    },
+    {
+      "type": "nutrition_mismatch",
+      "title": "Morotsjuice",
+      "db": {
+        "fat": 1,
+        "fiber": 16,
+        "energy": 314,
+        "protein": 4,
+        "carbohydrates": 63
+      },
+      "doc": {
+        "calories": 314,
+        "protein": 4,
+        "carbohydrates": 63,
+        "fat": 4,
+        "fiber": 16
+      }
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Äggröra med lax"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Rökt lax med blomkålsallad och citronyoghurt"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Grillspett med grekisk sallad och morotstzatziki"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Japansk kycklingfärswok med groddar"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Köttfärslimpa med ajvar och rostad sötpotatis"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Lammgryta med plommon och bulgur"
+    },
     {
       "type": "missing_in_db",
       "title": "Köttfärsbiffar med mozzarella och tomatsallad"
@@ -38,38 +164,6 @@
     {
       "type": "missing_in_db",
       "title": "Hamburgare med grekisk sallad"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Äggröra med lax"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Rökt lax med blomkålsallad och citronyoghurt"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Lax med fetaost och rostade rotfrukter"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Grekiska köttbullar i tomatsås"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Grillspett med grekisk sallad och morotstzatziki"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Japansk kycklingfärswok med groddar"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Köttfärslimpa med ajvar och rostad sötpotatis"
-    },
-    {
-      "type": "missing_in_db",
-      "title": "Lammgryta med plommon och bulgur"
     }
   ]
 }

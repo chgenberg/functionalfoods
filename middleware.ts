@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { addSecurityHeaders, isAllowedOrigin, logSecurityEvent } from './app/lib/security';
+import { jwtVerify } from 'jose';
 // Rate limiting temporarily disabled for launch
 // TODO: Configure Upstash Redis and re-enable
 async function allowRequest(key: string, limit: number = 60): Promise<boolean> {
   return true; // Allow all requests for now
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   
   // Bypass all middleware logic for healthcheck endpoints
@@ -132,6 +133,44 @@ export function middleware(request: NextRequest) {
     // Note: Rate limiting is now async, but middleware must be sync
     // For production, consider moving rate limiting to individual API routes
     // For now, we'll rely on the rate limiting in individual API endpoints
+  }
+
+  // 3) Admin route protection (feature-flagged + report-only support)
+  const adminEnabled = (process.env.ADMIN_MIDDLEWARE || 'on').toLowerCase() === 'on';
+  const adminReportOnly = (process.env.ADMIN_MIDDLEWARE_REPORT_ONLY || 'on').toLowerCase() === 'on';
+  const isAdminPath = path.startsWith('/admin');
+  if (adminEnabled && isAdminPath) {
+    // Allowlist: login and auth endpoints and static assets under admin
+    const allow = (
+      path === '/admin' ||
+      path.startsWith('/admin/login') ||
+      path.startsWith('/api/admin/auth') ||
+      path.startsWith('/admin/_next') ||
+      path.match(/\.(css|js|png|svg|ico|jpg|jpeg|webp)$/i) !== null
+    );
+    if (!allow) {
+      const cookie = request.cookies.get('adminToken');
+      const secret = process.env.JWT_SECRET;
+      let ok = false;
+      if (cookie?.value && secret) {
+        try {
+          const token = cookie.value;
+          const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
+          if ((payload as any)?.role === 'admin') ok = true;
+        } catch (_) {
+          ok = false;
+        }
+      }
+      if (!ok) {
+        logSecurityEvent(adminReportOnly ? 'admin_auth_report_only' : 'admin_auth_block', { path, ip: request.ip || '', ua: userAgent.substring(0,200) }, request);
+        if (adminReportOnly) {
+          return response; // allow but logged
+        }
+        const login = new URL('/admin/login', request.url);
+        login.searchParams.set('next', path + (url.search || ''));
+        return NextResponse.redirect(login);
+      }
+    }
   }
   
   return response;
