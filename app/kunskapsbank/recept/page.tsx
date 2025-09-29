@@ -53,6 +53,7 @@ interface RecipeData {
 }
 
 const RecipesPage = () => {
+  // All state declarations first
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -66,11 +67,14 @@ const RecipesPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  
+  // All refs after state
+  const searchRef = useRef<HTMLDivElement>(null);
   const observer = useRef<IntersectionObserver>();
 
+  // All hooks after refs
   const { user } = useAuth();
   const t = useT();
 
