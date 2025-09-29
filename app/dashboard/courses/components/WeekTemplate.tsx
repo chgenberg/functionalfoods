@@ -456,37 +456,79 @@ export default function WeekTemplate({
 
         console.log('🖼️ WeekTemplate fetching images for all meals:', allMeals.length);
 
-        const resp = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-          cache: 'no-store',
-          body: JSON.stringify({ 
-            recipeNames: allMeals.map(m => m.name), 
-            recipeSlugs: allMeals.map(m => m.slug), 
-            size: 'small',
-            usage: 'card'
-          })
-        });
-        
-        if (!resp.ok) {
-          console.error('❌ WeekTemplate batch-images failed:', resp.status);
-          return;
-        }
-        
-        const data = await resp.json();
-        const images: Record<string, string> = data.images || {};
-        
-        // Map images by meal key
+        // 1) Try enriched static mapping for speed (if available)
+        let enrichedLoaded = false;
         const imageMap: Record<string, string> = {};
-        allMeals.forEach((meal, idx) => {
-          const url = images[meal.name];
-          if (url) {
-            imageMap[meal.key] = url;
+        try {
+          let enrichedPath: string | null = null;
+          if (courseType === 'flow') {
+            enrichedPath = `/Shopping-lists/flow_week${weekNumber}_manual_enriched.json`;
+          } else if (courseType === 'basics') {
+            enrichedPath = `/Shopping-lists/basic_week${weekNumber}_manual_enriched.json`;
+          } else if (courseType === 'energy') {
+            enrichedPath = `/Shopping-lists/energy_week${weekNumber}_manual_enriched.json`;
           }
-        });
-        
+          if (enrichedPath) {
+            const enr = await fetch(enrichedPath, { cache: 'force-cache' });
+            if (enr.ok) {
+              const list = await enr.json();
+              const byTitle: Record<string, string> = {};
+              list.forEach((it: any) => {
+                if (it && it.title && it.imageUrl) {
+                  byTitle[it.title] = it.imageUrl;
+                }
+              });
+              // Helper to clean meal names (remove (kcal) and rester)
+              const clean = (name: string) => name
+                .replace(/\s*\([^)]*\)\s*/g, '')
+                .replace(/\s+rester.*$/i, '')
+                .trim();
+              allMeals.forEach(meal => {
+                const t = clean(meal.name);
+                const matched = byTitle[t];
+                if (matched) {
+                  imageMap[meal.key] = optimizeImageUrl(matched, 'small', 'landscape');
+                }
+              });
+              const count = Object.keys(imageMap).length;
+              if (count > 0) {
+                enrichedLoaded = true;
+                console.log(`⚡ Loaded ${count} meal images from enriched JSON (${enrichedPath})`);
+              }
+            }
+          }
+        } catch (e) {
+          // ignore enriched failures
+        }
+
+        // 2) Fallback to API batch mapping for any missing
+        const stillMissing = allMeals.filter(m => !imageMap[m.key]);
+        if (stillMissing.length > 0) {
+          const resp = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+            cache: 'no-store',
+            body: JSON.stringify({ 
+              recipeNames: stillMissing.map(m => m.name), 
+              recipeSlugs: stillMissing.map(m => m.slug), 
+              size: 'small',
+              usage: 'card'
+            })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            const images: Record<string, string> = data.images || {};
+            stillMissing.forEach(meal => {
+              const url = images[meal.name];
+              if (url) {
+                imageMap[meal.key] = optimizeImageUrl(url, 'small', 'landscape');
+              }
+            });
+          }
+        }
+
         setMealImages(imageMap);
-        console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images');
+        console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images', enrichedLoaded ? '(from enriched/optimized sources)' : '(from API)');
       } catch (e) {
         console.error('❌ WeekTemplate image loading error:', e);
       }
