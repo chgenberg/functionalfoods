@@ -1105,9 +1105,10 @@ export default function RecipePage() {
                     ))
                   ) : (recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
                     (recipe as any).ingredientsStructured.map((item: any, index: number) => {
-                      // Note: The ingredients in the database are already per serving (1 portion)
-                      // So we scale directly by the number of servings
-                      const scale = servings;
+                      // Scale amounts from recipe base servings -> current servings
+                      // DB amounts are totals for the full recipe (not per serving)
+                      const baseServings = typeof recipe.servings === 'number' && recipe.servings > 0 ? recipe.servings : 1;
+                      const scale = servings / baseServings;
                       
                       // Calculate scaled amount using the correct field names
                       const amount = typeof item.amount === 'number' ? item.amount * scale : null;
