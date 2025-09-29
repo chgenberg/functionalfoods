@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { FaInstagram, FaFacebook, FaLinkedin, FaTiktok } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaTiktok } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useT } from '../lib/i18n/LanguageProvider';
@@ -69,9 +69,7 @@ export default function Footer() {
               <a href="https://facebook.com/functionalfoods" className="text-white/60 hover:text-white transition-colors">
                 <FaFacebook className="w-6 h-6" />
               </a>
-              <a href="https://linkedin.com/company/functionalfoods" className="text-white/60 hover:text-white transition-colors">
-                <FaLinkedin className="w-6 h-6" />
-              </a>
+              {/* LinkedIn removed by request */}
             </div>
           </div>
 
