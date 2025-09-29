@@ -1,0 +1,324 @@
+[
+  {
+    "title": "Omelett med bär",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 224,
+      "protein": 17,
+      "carbohydrates": 2,
+      "fat": 17,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/omelett-med-bar-card.webp"
+  },
+  {
+    "title": "Lax med waldorfsallad",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 555,
+      "protein": 29,
+      "carbohydrates": 18,
+      "fat": 29,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/lax-med-waldorfsallad-card.webp"
+  },
+  {
+    "title": "Grekiska köttbullar i tomatsås",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 462,
+      "protein": 38,
+      "carbohydrates": 33,
+      "fat": 38,
+      "fiber": 8
+    },
+    "imageUrl": "/recept_images_vision_optimized/grekiska-kottbullar-i-tomatsas-card.webp"
+  },
+  {
+    "title": "Ägghack med kalkon",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 301,
+      "protein": 24,
+      "carbohydrates": 8,
+      "fat": 24,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/agghack-med-kalkon-card.webp"
+  },
+  {
+    "title": "Grekiska köttbullar i tomatsås",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 462,
+      "protein": 38,
+      "carbohydrates": 33,
+      "fat": 38,
+      "fiber": 8
+    },
+    "imageUrl": "/recept_images_vision_optimized/grekiska-kottbullar-i-tomatsas-card.webp"
+  },
+  {
+    "title": "Kycklinggryta med röda linser",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 268,
+      "protein": 24,
+      "carbohydrates": 31,
+      "fat": 24,
+      "fiber": 7
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklinggryta-med-roda-linser-card.webp"
+  },
+  {
+    "title": "Fruktsmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 209,
+      "protein": 6,
+      "carbohydrates": 37,
+      "fat": 6,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/fruktsmoothie-card.webp"
+  },
+  {
+    "title": "Kycklinggryta med röda linser",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 268,
+      "protein": 24,
+      "carbohydrates": 31,
+      "fat": 24,
+      "fiber": 7
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklinggryta-med-roda-linser-card.webp"
+  },
+  {
+    "title": "Laxsallad med vindruvor",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 558,
+      "protein": 22,
+      "carbohydrates": 48,
+      "fat": 22,
+      "fiber": 8
+    },
+    "imageUrl": "/recept_images_vision_optimized/laxsallad-med-vindruvor-card.webp"
+  },
+  {
+    "title": "Fruktsmoothie",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 209,
+      "protein": 6,
+      "carbohydrates": 37,
+      "fat": 6,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/fruktsmoothie-card.webp"
+  },
+  {
+    "title": "Laxsallad med vindruvor",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 558,
+      "protein": 22,
+      "carbohydrates": 48,
+      "fat": 22,
+      "fiber": 8
+    },
+    "imageUrl": "/recept_images_vision_optimized/laxsallad-med-vindruvor-card.webp"
+  },
+  {
+    "title": "Asiatiska köttbullar med nudelsallad",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 398,
+      "protein": 48,
+      "carbohydrates": 13,
+      "fat": 48,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/asiatiska-kottbullar-med-nudelsallad-card.webp"
+  },
+  {
+    "title": "Bananplättar med mango och granatäpple",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 241,
+      "protein": 10,
+      "carbohydrates": 20,
+      "fat": 10,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/bananplattar-med-mango-och-granatapple-card.webp"
+  },
+  {
+    "title": "Vegetarisk currygryta med panéer",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 280,
+      "protein": 17,
+      "carbohydrates": 17,
+      "fat": 17,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_optimized/vegetarisk-currygryta-med-paneer-card-large.webp"
+  },
+  {
+    "title": "Grillspett med grekisk sallad och morotstzatziki",
+    "time": "45 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 501,
+      "protein": 42,
+      "carbohydrates": 20,
+      "fat": 42,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/grillspett-med-grekisk-sallad-och-morotstzatziki-card.webp"
+  },
+  {
+    "title": "Keso med hallon och granatäpple",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 120,
+      "protein": 12,
+      "carbohydrates": 5,
+      "fat": 12,
+      "fiber": 0
+    },
+    "imageUrl": "/recept_images_vision_optimized/bananplattar-med-keso-och-hallon-card.webp"
+  },
+  {
+    "title": "Grillspett med grekisk sallad och morotstzatziki",
+    "time": "45 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 501,
+      "protein": 42,
+      "carbohydrates": 20,
+      "fat": 42,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/grillspett-med-grekisk-sallad-och-morotstzatziki-card.webp"
+  },
+  {
+    "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 795,
+      "protein": 48,
+      "carbohydrates": 72,
+      "fat": 48,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas-card.webp"
+  },
+  {
+    "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 795,
+      "protein": 48,
+      "carbohydrates": 72,
+      "fat": 48,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas-card.webp"
+  },
+  {
+    "title": "Hallon och kiwi med vit chokladcréme",
+    "time": "10 minuter",
+    "mealType": "Efterrätt",
+    "servings": 2,
+    "nutrition": {
+      "calories": 242,
+      "protein": 5,
+      "carbohydrates": 19,
+      "fat": 5,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_optimized/hallon-och-kiwi-med-vit-chokladcreme-card-large.webp"
+  },
+  {
+    "title": "Havregrynsgröt med torkad frukt och äpple",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 280,
+      "protein": 9,
+      "carbohydrates": 30,
+      "fat": 9,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/havregrynsgrot-med-torkad-frukt-och-apple-card.webp"
+  },
+  {
+    "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+    "time": "40 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 795,
+      "protein": 48,
+      "carbohydrates": 72,
+      "fat": 48,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas-card.webp"
+  },
+  {
+    "title": "Torsk från mellanöstern",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 601,
+      "protein": 52,
+      "carbohydrates": 45,
+      "fat": 52,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/torsk-fran-mellanostern-card.webp"
+  }
+]

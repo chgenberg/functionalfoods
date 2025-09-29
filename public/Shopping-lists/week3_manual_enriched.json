@@ -1,0 +1,310 @@
+[
+  {
+    "title": "Yoghurt med ketomüsli",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 321,
+      "protein": 10,
+      "carbohydrates": 7,
+      "fat": 10,
+      "fiber": 0
+    },
+    "imageUrl": "/recept_images_vision_optimized/yoghurt-med-ketomusli-card.webp"
+  },
+  {
+    "title": "Päronsallad med chevréost",
+    "time": "5 minuter",
+    "mealType": "Middag",
+    "servings": 1,
+    "nutrition": {
+      "calories": 470,
+      "protein": 19,
+      "carbohydrates": 34,
+      "fat": 19,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_optimized/paronsallad-med-chevreost-card-large.webp"
+  },
+  {
+    "title": "Kycklingfylld aubergine",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 614,
+      "protein": 44,
+      "carbohydrates": 42,
+      "fat": 44,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklingfylld-aubergine-card.webp"
+  },
+  {
+    "title": "Äggröra med lax",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 339,
+      "protein": 23,
+      "carbohydrates": 6,
+      "fat": 23,
+      "fiber": 0
+    },
+    "imageUrl": "/recept_images_vision_optimized/aggrora-med-lax-card.webp"
+  },
+  {
+    "title": "Kycklingfylld aubergine",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 614,
+      "protein": 44,
+      "carbohydrates": 42,
+      "fat": 44,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklingfylld-aubergine-card.webp"
+  },
+  {
+    "title": "Rökt lax med blomkålsallad och citronyoghurt",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 323,
+      "protein": 14,
+      "carbohydrates": 12,
+      "fat": 14,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/rokt-lax-med-blomkalsallad-och-citronyoghurt-card.webp"
+  },
+  {
+    "title": "Rödbetsjuice",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 256,
+      "protein": 7,
+      "carbohydrates": 48,
+      "fat": 7,
+      "fiber": 11
+    },
+    "imageUrl": "/recept_images_vision_optimized/rodbetsjuice-card.webp"
+  },
+  {
+    "title": "Rökt lax med blomkålsallad och citronyoghurt",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 323,
+      "protein": 14,
+      "carbohydrates": 12,
+      "fat": 14,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/rokt-lax-med-blomkalsallad-och-citronyoghurt-card.webp"
+  },
+  {
+    "title": "Vegetarisk currygryta med panéer",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 280,
+      "protein": 17,
+      "carbohydrates": 17,
+      "fat": 17,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_optimized/vegetarisk-currygryta-med-paneer-card-large.webp"
+  },
+  {
+    "title": "Rödbetsjuice",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 256,
+      "protein": 7,
+      "carbohydrates": 48,
+      "fat": 7,
+      "fiber": 11
+    },
+    "imageUrl": "/recept_images_vision_optimized/rodbetsjuice-card.webp"
+  },
+  {
+    "title": "Vegetarisk currygryta med panéer",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 280,
+      "protein": 17,
+      "carbohydrates": 17,
+      "fat": 17,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_optimized/vegetarisk-currygryta-med-paneer-card-large.webp"
+  },
+  {
+    "title": "Kycklinggryta med bakad spetskål",
+    "time": "50 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 571,
+      "protein": 53,
+      "carbohydrates": 16,
+      "fat": 53,
+      "fiber": 7
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklinggryta-med-bakad-spetskal-card.webp"
+  },
+  {
+    "title": "Havrefralla med morötter och torkade aprikoser",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 355,
+      "protein": 20,
+      "carbohydrates": 17,
+      "fat": 20,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/havrefralla-med-morotter-och-torkade-aprikoser-card.webp"
+  },
+  {
+    "title": "Lax med fetaost och rostade rotfrukter",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 549,
+      "protein": 37,
+      "carbohydrates": 28,
+      "fat": 37,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/lax-med-fetaost-och-rostade-rotfrukter-card.webp"
+  },
+  {
+    "title": "Hamburgare med hummus",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 735,
+      "protein": 35,
+      "carbohydrates": 35,
+      "fat": 35,
+      "fiber": 11
+    },
+    "imageUrl": "/recept_images_vision_optimized/hamburgare-med-hummus-card.webp"
+  },
+  {
+    "title": "Keso med granola och fruktsallad",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 358,
+      "protein": 18,
+      "carbohydrates": 32,
+      "fat": 18,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/keso-med-granola-och-fruktsallad-card.webp"
+  },
+  {
+    "title": "Hamburgare med hummus",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 735,
+      "protein": 35,
+      "carbohydrates": 35,
+      "fat": 35,
+      "fiber": 11
+    },
+    "imageUrl": "/recept_images_vision_optimized/hamburgare-med-hummus-card.webp"
+  },
+  {
+    "title": "Ugnsbakad kyckling med tzatziki och sallad",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 346,
+      "protein": 30,
+      "carbohydrates": 17,
+      "fat": 30,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/ugnsbakad-kyckling-med-tzatziki-och-sallad-card.webp"
+  },
+  {
+    "title": "Mandel och citronpaj",
+    "time": "25 minuter",
+    "mealType": "Efterrätt",
+    "servings": 8,
+    "nutrition": {
+      "calories": 318,
+      "protein": 7,
+      "carbohydrates": 4,
+      "fat": 7,
+      "fiber": 0
+    },
+    "imageUrl": "/recept_images_vision_optimized/mandel-och-citronpaj-card.webp"
+  },
+  {
+    "title": "Omelett med hallon",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 258,
+      "protein": 19,
+      "carbohydrates": 5,
+      "fat": 19,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/omelett-med-hallon-card.webp"
+  },
+  {
+    "title": "Ugnsbakad kyckling med tzatziki och sallad",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 346,
+      "protein": 30,
+      "carbohydrates": 17,
+      "fat": 30,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/ugnsbakad-kyckling-med-tzatziki-och-sallad-card.webp"
+  },
+  {
+    "title": "Lax med waldorfsallad",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 555,
+      "protein": 29,
+      "carbohydrates": 18,
+      "fat": 29,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/lax-med-waldorfsallad-card.webp"
+  }
+]

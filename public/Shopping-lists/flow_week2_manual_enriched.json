@@ -1,0 +1,296 @@
+[
+  {
+    "title": "Macka med ost",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 322,
+      "protein": 15,
+      "carbohydrates": 31,
+      "fat": 15,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/macka-med-ost-card.webp"
+  },
+  {
+    "title": "Grönsakswok med tonfisk och ägg",
+    "time": "20 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 319,
+      "protein": 39,
+      "carbohydrates": 12,
+      "fat": 39,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/gronsakswok-med-tonfisk-och-agg-card.webp"
+  },
+  {
+    "title": "Lövbiffsgryta med champinjoner och grönsaksspagetti",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 430,
+      "protein": 43,
+      "carbohydrates": 23,
+      "fat": 43,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/lovbiffsgryta-med-champinjoner-och-gronsaksspagetti-card.webp"
+  },
+  {
+    "title": "Ägghack i salladsblad",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 325,
+      "protein": 18,
+      "carbohydrates": 5,
+      "fat": 18,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/agghack-i-salladsblad-card.webp"
+  },
+  {
+    "title": "Lövbiffsgryta med champinjoner och grönsaksspagetti",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 430,
+      "protein": 43,
+      "carbohydrates": 23,
+      "fat": 43,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/lovbiffsgryta-med-champinjoner-och-gronsaksspagetti-card.webp"
+  },
+  {
+    "title": "Lax med rödbetssallad",
+    "time": "30 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 417,
+      "protein": 14,
+      "carbohydrates": 41,
+      "fat": 14,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/lax-med-rodbetssallad-card.webp"
+  },
+  {
+    "title": "Lax med rödbetssallad",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 475,
+      "protein": 37,
+      "carbohydrates": 14,
+      "fat": 37,
+      "fiber": 0
+    },
+    "imageUrl": "/recept_images_vision_optimized/lax-med-rodbetssallad-card.webp"
+  },
+  {
+    "title": "Kycklingpizza",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 424,
+      "protein": 52,
+      "carbohydrates": 11,
+      "fat": 52,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklingpizza-card.webp"
+  },
+  {
+    "title": "Yoghurt med bovetegranola och frukt",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 414,
+      "protein": 10,
+      "carbohydrates": 33,
+      "fat": 10,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/yoghurt-med-bovetegranola-och-frukt-card.webp"
+  },
+  {
+    "title": "Kycklingpizza",
+    "time": "35 minuter",
+    "mealType": "Middag",
+    "servings": 3,
+    "nutrition": {
+      "calories": 424,
+      "protein": 52,
+      "carbohydrates": 11,
+      "fat": 52,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklingpizza-card.webp"
+  },
+  {
+    "title": "Spenatsoppa med rostade pumpafrön",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 283,
+      "protein": 7,
+      "carbohydrates": 11,
+      "fat": 7,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/spenatsoppa-med-rostade-pumpafron-card.webp"
+  },
+  {
+    "title": "Stekt ägg med champinjoner",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 260,
+      "protein": 22,
+      "carbohydrates": 7,
+      "fat": 22,
+      "fiber": 0
+    },
+    "imageUrl": "/recept_images_vision_optimized/stekt-agg-med-champinjoner-card.webp"
+  },
+  {
+    "title": "Spenatsoppa med rostade pumpafrön",
+    "time": "15 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 283,
+      "protein": 7,
+      "carbohydrates": 11,
+      "fat": 7,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/spenatsoppa-med-rostade-pumpafron-card.webp"
+  },
+  {
+    "title": "Fisktaco med mangosalsa och sesamsås",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 612,
+      "protein": 32,
+      "carbohydrates": 23,
+      "fat": 32,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/fisktaco-med-mangosalsa-och-sesamsas-card.webp"
+  },
+  {
+    "title": "Smoothiebowl med mango och pistagenötter",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 537,
+      "protein": 12,
+      "carbohydrates": 76,
+      "fat": 12,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/smoothiebowl-med-mango-och-pistagenotter-card.webp"
+  },
+  {
+    "title": "Fisktaco med mangosalsa och sesamsås",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 612,
+      "protein": 32,
+      "carbohydrates": 23,
+      "fat": 32,
+      "fiber": 5
+    },
+    "imageUrl": "/recept_images_vision_optimized/fisktaco-med-mangosalsa-och-sesamsas-card.webp"
+  },
+  {
+    "title": "Ajvarspett med grekisk sallad och tzatziki",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 551,
+      "protein": 41,
+      "carbohydrates": 21,
+      "fat": 41,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/ajvarspett-med-grekisk-sallad-och-tzatziki-card.webp"
+  },
+  {
+    "title": "Zucchinikaka med kardemumma",
+    "time": "50 minuter",
+    "mealType": "Efterrätt",
+    "servings": 12,
+    "nutrition": {
+      "calories": 263,
+      "protein": 6,
+      "carbohydrates": 19,
+      "fat": 6,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/zucchinikaka-med-kardemumma-card.webp"
+  },
+  {
+    "title": "Grön juice",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 146,
+      "protein": 3,
+      "carbohydrates": 25,
+      "fat": 3,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/gron-juice-card.webp"
+  },
+  {
+    "title": "Ajvarspett med grekisk sallad och tzatziki",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 551,
+      "protein": 41,
+      "carbohydrates": 21,
+      "fat": 41,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/ajvarspett-med-grekisk-sallad-och-tzatziki-card.webp"
+  },
+  {
+    "title": "Kycklinggryta från medelhavet",
+    "time": "70 minuter",
+    "mealType": "Middag",
+    "servings": 4,
+    "nutrition": {
+      "calories": 447,
+      "protein": 43,
+      "carbohydrates": 18,
+      "fat": 43,
+      "fiber": 7
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklinggryta-fran-medelhavet-card.webp"
+  }
+]

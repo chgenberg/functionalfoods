@@ -1,0 +1,66 @@
+{
+  "total": 203,
+  "matched": 203,
+  "files": [
+    {
+      "file": "flow_week1_manual_parsed.json",
+      "items": 12,
+      "matched": 12,
+      "out": "flow_week1_manual_enriched.json"
+    },
+    {
+      "file": "flow_week2_manual_parsed.json",
+      "items": 21,
+      "matched": 21,
+      "out": "flow_week2_manual_enriched.json"
+    },
+    {
+      "file": "flow_week3_manual_parsed.json",
+      "items": 18,
+      "matched": 18,
+      "out": "flow_week3_manual_enriched.json"
+    },
+    {
+      "file": "flow_week4_manual_parsed.json",
+      "items": 22,
+      "matched": 22,
+      "out": "flow_week4_manual_enriched.json"
+    },
+    {
+      "file": "flow_week5_manual_parsed.json",
+      "items": 22,
+      "matched": 22,
+      "out": "flow_week5_manual_enriched.json"
+    },
+    {
+      "file": "flow_week6_manual_parsed.json",
+      "items": 19,
+      "matched": 19,
+      "out": "flow_week6_manual_enriched.json"
+    },
+    {
+      "file": "week3_manual_parsed.json",
+      "items": 22,
+      "matched": 22,
+      "out": "week3_manual_enriched.json"
+    },
+    {
+      "file": "week4_manual_parsed.json",
+      "items": 23,
+      "matched": 23,
+      "out": "week4_manual_enriched.json"
+    },
+    {
+      "file": "week5_manual_parsed.json",
+      "items": 22,
+      "matched": 22,
+      "out": "week5_manual_enriched.json"
+    },
+    {
+      "file": "week6_manual_parsed.json",
+      "items": 22,
+      "matched": 22,
+      "out": "week6_manual_enriched.json"
+    }
+  ]
+}
