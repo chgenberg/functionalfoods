@@ -553,7 +553,6 @@ export default function WeekTemplate({
             }
           });
         }
-        }
 
         setMealImages(imageMap);
         console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images', enrichedLoaded ? '(from enriched/optimized sources)' : '(from API)');
