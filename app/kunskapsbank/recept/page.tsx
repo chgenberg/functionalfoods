@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -201,7 +202,7 @@ const RecipesPage = () => {
   }, []);
 
 
-  const lastRecipeElementRef = useCallback(node => {
+  const lastRecipeElementRef = useCallback((node: Element | null) => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
@@ -253,7 +254,7 @@ const RecipesPage = () => {
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">{t('recipes.list.errorTitle','Kunde inte ladda recept')}</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={fetchRecipes}
+            onClick={() => fetchRecipes(true)}
             className="bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors"
           >
             {t('recipes.list.retry','Försök igen')}
@@ -578,8 +579,8 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const isComingSoon = recipe.isComingSoon === true;
   const [imageError, setImageError] = useState(false);
   const [imageSrc, setImageSrc] = useState(() => {
-    const primary = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'medium', 'card') : '';
-    return primary || optimizeImageUrl(`/recept_images_optimized/${recipe.slug}.webp`, 'medium', 'card');
+    const primary = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape') : '';
+    return primary || optimizeImageUrl(`/recept_images_optimized/${recipe.slug}.webp`, 'medium', 'landscape');
   });
   const [fallbackStep, setFallbackStep] = useState(0);
   const t = useT();
@@ -587,8 +588,8 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const handleImageError = () => {
     // Try alternative sources based on known storage folders, then fallback to placeholder
     const candidates = [
-      optimizeImageUrl(`/recept_images_vision_optimized/${recipe.slug}.webp`, 'medium', 'card'),
-      optimizeImageUrl(`/recept_images_2025/${recipe.slug}.webp`, 'medium', 'card'),
+      optimizeImageUrl(`/recept_images_vision_optimized/${recipe.slug}.webp`, 'medium', 'landscape'),
+      optimizeImageUrl(`/recept_images_2025/${recipe.slug}.webp`, 'medium', 'landscape'),
       '/images/recipe-placeholder.svg'
     ];
     if (fallbackStep < candidates.length) {
@@ -800,4 +801,4 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
   );
 };
 
-export default RecipesPage; 
+export default dynamic(() => Promise.resolve(RecipesPage), { ssr: false });
