@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
 
-const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';
 
 // POST /api/auth/reset-password — reset password with a valid token
@@ -34,8 +32,6 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Reset POST error:', error);
     return NextResponse.json({ error: 'Serverfel' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -55,19 +51,5 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Reset GET error:', error);
     return NextResponse.json({ valid: false, error: 'Serverfel' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
-}
-
-// Helper to create a reset token (for future use)
-export async function createResetToken(userId: string) {
-  const token = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 dagar
-  await prisma.passwordReset.upsert({
-    where: { userId },
-    create: { userId, token, expiresAt },
-    update: { token, expiresAt, used: false }
-  });
-  return token;
 }

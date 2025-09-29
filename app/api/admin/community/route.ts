@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
 
-const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const admin = await requireAdminAuth(req);
@@ -79,7 +79,5 @@ export async function GET(req: NextRequest) {
       { error: 'Failed to fetch community data' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

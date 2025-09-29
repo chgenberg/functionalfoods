@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/database';
 
 export async function GET(req: NextRequest) {
   try {
@@ -88,8 +86,6 @@ export async function GET(req: NextRequest) {
       { error: 'Failed to fetch recipes' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -135,7 +131,5 @@ export async function POST(req: NextRequest) {
       { error: 'Failed to create recipe' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const cookieStore = cookies();
@@ -13,7 +15,10 @@ export async function GET() {
 
     // Verify the token
     try {
-      const decoded = jwt.verify(token.value, process.env.JWT_SECRET || 'functional-foods-secret-2025');
+      if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined');
+      }
+      const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
       return NextResponse.json({ authenticated: true, user: decoded });
     } catch (error) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });

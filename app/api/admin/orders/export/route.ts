@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import * as XLSX from 'xlsx';
+import { OrderStatus } from '@prisma/client';
 
-const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (paymentMethod && paymentMethod !== 'all') {
-      where.paymentMethod = paymentMethod;
+      where.payment = { paymentMethod };
     }
 
     if (dateFrom || dateTo) {
@@ -64,37 +65,49 @@ export async function GET(req: NextRequest) {
         },
         items: {
           include: {
-            product: {
+            course: {
               select: { name: true, id: true }
             }
           }
-        }
+        },
+        payment: { select: { paymentMethod: true } }
       },
       orderBy: { createdAt: 'desc' }
     });
 
     // Förbered data för Excel
-    const excelData = orders.map(order => ({
-      'Ordernummer': order.id.slice(0, 8),
-      'Datum': order.createdAt.toLocaleDateString('sv-SE'),
-      'Tid': order.createdAt.toLocaleTimeString('sv-SE'),
-      'Kundnamn': order.user.name || 'Gäst',
-      'E-post': order.user.email,
-      'Kund sedan': order.user.createdAt.toLocaleDateString('sv-SE'),
-      'Produkter': order.items.map(item => 
-        `${item.product.name} (${item.quantity}x)`
-      ).join(', '),
-      'Antal produkter': order.items.reduce((sum, item) => sum + item.quantity, 0),
-      'Totalt belopp (SEK)': order.totalAmount,
-      'Status': order.status === 'completed' ? 'Slutförd' :
-                order.status === 'pending' ? 'Väntande' :
-                order.status === 'failed' ? 'Misslyckad' :
-                order.status === 'refunded' ? 'Återbetald' : order.status,
-      'Betalmetod': order.paymentMethod === 'stripe' ? 'Kort (Stripe)' :
-                   order.paymentMethod === 'swish' ? 'Swish' :
-                   order.paymentMethod === 'invoice' ? 'Faktura' : order.paymentMethod,
-      'Uppdaterad': order.updatedAt.toLocaleDateString('sv-SE')
-    }));
+    const excelData = orders.map(order => {
+      const statusLabel = (() => {
+        switch (order.status) {
+          case OrderStatus.COMPLETED: return 'Slutförd';
+          case OrderStatus.PENDING: return 'Väntande';
+          case OrderStatus.REFUNDED: return 'Återbetald';
+          case OrderStatus.CONFIRMED: return 'Bekräftad';
+          case OrderStatus.PROCESSING: return 'Behandlas';
+          case OrderStatus.CANCELLED: return 'Avbruten';
+          default: return String(order.status);
+        }
+      })();
+
+      return {
+        'Ordernummer': order.id.slice(0, 8),
+        'Datum': order.createdAt.toLocaleDateString('sv-SE'),
+        'Tid': order.createdAt.toLocaleTimeString('sv-SE'),
+        'Kundnamn': order.user.name || 'Gäst',
+        'E-post': order.user.email,
+        'Kund sedan': order.user.createdAt.toLocaleDateString('sv-SE'),
+        'Produkter': order.items.map(item => 
+          `${item.course?.name || item.name} (${item.quantity}x)`
+        ).join(', '),
+        'Antal produkter': order.items.reduce((sum, item) => sum + item.quantity, 0),
+        'Totalt belopp (SEK)': order.totalAmount,
+        'Status': statusLabel,
+        'Betalmetod': order.payment?.paymentMethod === 'stripe' ? 'Kort (Stripe)' :
+                     order.payment?.paymentMethod === 'swish' ? 'Swish' :
+                     order.payment?.paymentMethod === 'invoice' ? 'Faktura' : (order.payment?.paymentMethod || 'Okänd'),
+        'Uppdaterad': order.updatedAt.toLocaleDateString('sv-SE')
+      };
+    });
 
     // Skapa Excel-arbetsboken
     const workbook = XLSX.utils.book_new();
@@ -120,9 +133,10 @@ export async function GET(req: NextRequest) {
     // Lägg till sammanfattning på andra arket
     const summaryData = [
       { 'Statistik': 'Totalt antal beställningar', 'Värde': orders.length },
-      { 'Statistik': 'Slutförda beställningar', 'Värde': orders.filter(o => o.status === 'completed').length },
-      { 'Statistik': 'Väntande beställningar', 'Värde': orders.filter(o => o.status === 'pending').length },
-      { 'Statistik': 'Misslyckade beställningar', 'Värde': orders.filter(o => o.status === 'failed').length },
+      { 'Statistik': 'Slutförda beställningar', 'Värde': orders.filter(o => o.status === OrderStatus.COMPLETED).length },
+      { 'Statistik': 'Väntande beställningar', 'Värde': orders.filter(o => o.status === OrderStatus.PENDING).length },
+      { 'Statistik': 'Avbrutna beställningar', 'Värde': orders.filter(o => o.status === OrderStatus.CANCELLED).length },
+      { 'Statistik': 'Återbetalda beställningar', 'Värde': orders.filter(o => o.status === OrderStatus.REFUNDED).length },
       { 'Statistik': 'Total omsättning (SEK)', 'Värde': orders.reduce((sum, o) => sum + o.totalAmount, 0) },
       { 'Statistik': 'Genomsnittlig ordervalue (SEK)', 'Värde': orders.length > 0 ? Math.round(orders.reduce((sum, o) => sum + o.totalAmount, 0) / orders.length) : 0 },
       { 'Statistik': 'Exportdatum', 'Värde': new Date().toLocaleDateString('sv-SE') },
@@ -156,7 +170,5 @@ export async function GET(req: NextRequest) {
       { error: 'Failed to export orders' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

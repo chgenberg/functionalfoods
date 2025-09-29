@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
+import { emailService } from '@/app/lib/email';
+import bcrypt from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
-
-const prisma = new PrismaClient();
 
 interface VerifyRequest {
   checkoutOrderId: string;
   orderId: string;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json() as VerifyRequest;
-    const { checkoutOrderId, orderId } = body;
+    const body = await req.json();
+    const { checkoutOrderId, orderId: clientOrderId } = body;
 
-    if (!checkoutOrderId || !orderId) {
+    if (!checkoutOrderId || !clientOrderId) {
       return NextResponse.json(
         { error: 'Missing required parameters' },
         { status: 400 }
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     // If simulation is enabled, treat as completed without contacting Svea
     if (process.env.PAYMENTS_SIMULATE === 'true' || checkoutOrderId === 'SIMULATED') {
       const order = await prisma.order.findUnique({
-        where: { id: orderId },
+        where: { id: clientOrderId },
         include: { items: true, user: true }
       });
       if (!order) {
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     
     console.log('🔍 Verifying Svea order:', {
       checkoutOrderId,
-      orderId,
+      orderId: clientOrderId,
       sveaStatus: sveaOrder.status
     });
 
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     // Get our order from database
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id: clientOrderId },
       include: {
         items: true,
         user: true
@@ -164,7 +164,5 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

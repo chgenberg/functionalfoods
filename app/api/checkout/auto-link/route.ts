@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/database';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,9 +10,7 @@ export async function POST(req: NextRequest) {
     // Hitta befintlig användare med samma e-post
     const existingUser = await prisma.user.findUnique({
       where: { email },
-      include: {
-        purchases: true
-      }
+      include: { purchases: true }
     });
 
     if (!existingUser) {
@@ -57,12 +53,14 @@ export async function POST(req: NextRequest) {
     const order = await prisma.order.create({
       data: {
         userId: existingUser.id,
+        orderNumber: `AUTO-${Date.now()}`,
         totalAmount: orderData.amount || 1497,
-        status: 'completed',
-        paymentMethod: orderData.paymentMethod || 'stripe',
+        status: 'COMPLETED',
         items: {
           create: [{
-            productId: courseId,
+            courseId: courseId,
+            name: 'Course access',
+            type: 'course',
             quantity: 1,
             price: orderData.amount || 1497
           }]
@@ -85,7 +83,5 @@ export async function POST(req: NextRequest) {
       { error: 'Fel vid automatisk kontokoppling' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

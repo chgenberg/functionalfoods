@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const authResult = await requireAdminAuth(req);
@@ -27,8 +26,6 @@ export async function GET(req: NextRequest) {
   } catch (e) {
     console.error('Coupons GET error', e);
     return NextResponse.json({ error: 'Failed to fetch coupons' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -73,7 +70,5 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error('Coupons POST error', e);
     return NextResponse.json({ error: 'Failed to create coupon' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 } 

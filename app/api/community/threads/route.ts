@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   try {
@@ -109,8 +107,6 @@ export async function GET(req: NextRequest) {
       { error: 'Failed to fetch threads' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -126,7 +122,10 @@ export async function POST(req: NextRequest) {
     // Verify token
     let userId: string;
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+      if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined');
+      }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
       userId = decoded.userId;
     } catch (error) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
@@ -190,7 +189,5 @@ export async function POST(req: NextRequest) {
       { error: 'Failed to create thread' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

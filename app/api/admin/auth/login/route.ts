@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import { prisma } from '@/app/lib/database';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +14,7 @@ export async function POST(req: NextRequest) {
 
     // Demo account (disabled by default). Enable only if ALLOW_DEMO_LOGIN=true
     if (process.env.ALLOW_DEMO_LOGIN === 'true' && email === 'admin@functionalfoods.se' && password === 'admin123') {
+      if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not configured');
       const token = jwt.sign(
         { 
           userId: 'demo-admin', 
@@ -23,7 +22,7 @@ export async function POST(req: NextRequest) {
           role: 'admin',
           isDemo: true 
         },
-        process.env.JWT_SECRET || 'functional-foods-secret-2025',
+        process.env.JWT_SECRET,
         { expiresIn: '24h' }
       );
 
@@ -49,40 +48,18 @@ export async function POST(req: NextRequest) {
     }
 
     // Find user in database
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        password: true,
-        role: true
-      }
-    });
+    const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Ogiltiga inloggningsuppgifter' }, { status: 401 });
+    if (!user || user.role !== 'admin' || !(await bcrypt.compare(password, user.password))) {
+      await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500)); // Delay to prevent timing attacks
+      return NextResponse.json({ success: false, error: 'Ogiltiga inloggningsuppgifter' }, { status: 401 });
     }
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return NextResponse.json({ error: 'Ogiltiga inloggningsuppgifter' }, { status: 401 });
-    }
-
-    // Check if user has admin role (case insensitive)
-    if (user.role.toLowerCase() !== 'admin') {
-      return NextResponse.json({ error: 'Ingen behörighet' }, { status: 403 });
-    }
-
-    // Create JWT token
+    // If successful, create JWT
+    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not configured');
     const token = jwt.sign(
-      { 
-        userId: user.id, 
-        email: user.email, 
-        role: user.role 
-      },
-      process.env.JWT_SECRET || 'functional-foods-secret-2025',
+      { userId: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
@@ -106,8 +83,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error('Admin login error:', error);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json({ success: false, error: 'Ett serverfel uppstod' }, { status: 500 });
   }
 } 

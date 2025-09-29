@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
 
 // Verify admin access
 async function verifyAdmin(request: NextRequest) {
@@ -13,7 +11,10 @@ async function verifyAdmin(request: NextRequest) {
 
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as any;
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined');
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
     return decoded.userId && (decoded.role === 'ADMIN' || decoded.role === 'admin');
   } catch {
     return false;
@@ -82,8 +83,6 @@ export async function GET(
   } catch (error) {
     console.error('Error reading shopping list from DB:', error);
     return NextResponse.json({ error: 'Failed to read shopping list' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -170,8 +169,6 @@ export async function POST(
   } catch (error) {
     console.error('Error saving shopping list to DB:', error);
     return NextResponse.json({ error: 'Failed to save shopping list' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -225,7 +222,5 @@ export async function DELETE(
   } catch (error) {
     console.error('Error deleting shopping list from DB:', error);
     return NextResponse.json({ error: 'Failed to delete shopping list' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }

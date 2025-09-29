@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
 
-const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
 
 // GET /api/admin/blog - Get all blog posts with admin view
 export async function GET(request: NextRequest) {
@@ -67,8 +67,6 @@ export async function GET(request: NextRequest) {
       { error: 'Failed to fetch blog posts' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -131,7 +129,5 @@ export async function POST(request: NextRequest) {
       { error: 'Failed to create blog post' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 } 

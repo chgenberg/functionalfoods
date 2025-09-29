@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
 
 // HTML template for the receipt
 function generateReceiptHTML(purchase: any, user: any) {
@@ -326,7 +324,10 @@ export async function GET(
     const token = authHeader.split(' ')[1];
     let decoded: any;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+      if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined');
+      }
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
       return NextResponse.json(
         { error: 'Ogiltig token' },
@@ -378,7 +379,5 @@ export async function GET(
       { error: 'Ett fel uppstod vid generering av kvitto' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 } 

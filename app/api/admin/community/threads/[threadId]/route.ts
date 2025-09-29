@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
-
-const prisma = new PrismaClient();
 
 export async function PATCH(
   req: NextRequest,
@@ -16,7 +14,7 @@ export async function PATCH(
     const { isPinned, isLocked } = data;
 
     const updateData: any = {};
-    if (isPinned !== undefined) updateData.isPinned = isPinned;
+    if (isPinned !== undefined) updateData.isSticky = isPinned;
     if (isLocked !== undefined) updateData.isLocked = isLocked;
 
     const thread = await prisma.forumThread.update({
@@ -49,7 +47,7 @@ export async function PATCH(
       views: thread.views,
       replies: thread._count.replies,
       likes: thread._count.likes,
-      isPinned: thread.isPinned,
+      isPinned: thread.isSticky,
       isLocked: thread.isLocked,
       createdAt: thread.createdAt.toISOString(),
       updatedAt: thread.updatedAt.toISOString()
@@ -60,8 +58,6 @@ export async function PATCH(
       { error: 'Failed to update thread' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -95,7 +91,5 @@ export async function DELETE(
       { error: 'Failed to delete thread' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

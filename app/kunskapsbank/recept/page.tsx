@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Filter, Grid, List, Search, X } from "lucide-react";
+import { Check, Filter, Grid, List, Search } from "lucide-react";
 import { useAuth } from '../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
 import { optimizeImageUrl, getResponsiveSizes } from '../../lib/imageOptimization';
@@ -85,6 +85,13 @@ const RecipesPage = () => {
     
     return () => clearTimeout(timeoutId);
   }, [user, selectedCategory, selectedStatus, searchQuery]);
+
+  // Trigger fetching when page increments (infinite scroll)
+  useEffect(() => {
+    if (page > 1) {
+      fetchRecipes();
+    }
+  }, [page, fetchRecipes]);
 
   useEffect(() => {
     // Reset recipes and page when filters change
@@ -448,7 +455,7 @@ const RecipesPage = () => {
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
                             {t('recipes.list.filters.searchLabel','Sökning:')} "{searchQuery}"
                             <button onClick={() => setSearchQuery('')} className="hover:text-orange-900">
-                              <X className="w-3 h-3" />
+                              <Search className="w-3 h-3" />
                             </button>
                           </span>
                         )}
@@ -456,7 +463,7 @@ const RecipesPage = () => {
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
                             {selectedCategory}
                             <button onClick={() => setSelectedCategory('all')} className="hover:text-orange-900">
-                              <X className="w-3 h-3" />
+                              <Search className="w-3 h-3" />
                             </button>
                           </span>
                         )}
@@ -466,7 +473,7 @@ const RecipesPage = () => {
                              selectedStatus === 'premium' ? t('recipes.list.filters.typePremium','Premium') : 
                              selectedStatus === 'coming-soon' ? 'Kommer snart' : ''}
                             <button onClick={() => setSelectedStatus('all')} className="hover:text-orange-900">
-                              <X className="w-3 h-3" />
+                              <Search className="w-3 h-3" />
                             </button>
                           </span>
                         )}
@@ -564,8 +571,27 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const canAccess = recipe.isAccessible !== false && (recipe.isFree || !recipe.isPremium || userAccess.hasAccess);
   const isComingSoon = recipe.isComingSoon === true;
   const [imageError, setImageError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(() => {
+    const primary = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'medium', 'card') : '';
+    return primary || optimizeImageUrl(`/recept_images_optimized/${recipe.slug}.webp`, 'medium', 'card');
+  });
+  const [fallbackStep, setFallbackStep] = useState(0);
   const t = useT();
-  const optimizedImageUrl = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'medium', 'card') : '';
+
+  const handleImageError = () => {
+    // Try alternative sources based on known storage folders, then fallback to placeholder
+    const candidates = [
+      optimizeImageUrl(`/recept_images_vision_optimized/${recipe.slug}.webp`, 'medium', 'card'),
+      optimizeImageUrl(`/recept_images_2025/${recipe.slug}.webp`, 'medium', 'card'),
+      '/images/recipe-placeholder.svg'
+    ];
+    if (fallbackStep < candidates.length) {
+      setImageSrc(candidates[fallbackStep]);
+      setFallbackStep(prev => prev + 1);
+    } else {
+      setImageError(true);
+    }
+  };
 
   return (
     <Link href={canAccess && !isComingSoon ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -575,9 +601,9 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-          {optimizedImageUrl && !imageError ? (
+          {imageSrc && !imageError ? (
             <Image
-              src={optimizedImageUrl}
+              src={imageSrc}
               alt={recipe.imageAlt || recipe.title}
               fill
               sizes={getResponsiveSizes('medium')}
@@ -587,7 +613,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
                 objectPosition: 'center',
                 imageOrientation: 'from-image'
               }}
-              onError={() => setImageError(true)}
+              onError={handleImageError}
               priority={false}
               loading="lazy"
             />
@@ -668,8 +694,26 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
 const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
   const [imageError, setImageError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(() => {
+    const primary = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'small', 'square') : '';
+    return primary || optimizeImageUrl(`/recept_images_optimized/${recipe.slug}.webp`, 'small', 'square');
+  });
+  const [fallbackStep, setFallbackStep] = useState(0);
   const t = useT();
-  const optimizedImageUrl = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'small', 'square') : '';
+
+  const handleImageError = () => {
+    const candidates = [
+      optimizeImageUrl(`/recept_images_vision_optimized/${recipe.slug}.webp`, 'small', 'square'),
+      optimizeImageUrl(`/recept_images_2025/${recipe.slug}.webp`, 'small', 'square'),
+      '/images/recipe-placeholder.svg'
+    ];
+    if (fallbackStep < candidates.length) {
+      setImageSrc(candidates[fallbackStep]);
+      setFallbackStep(prev => prev + 1);
+    } else {
+      setImageError(true);
+    }
+  };
 
   return (
     <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -680,9 +724,9 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
         <div className="flex gap-4">
           {/* Image */}
           <div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-            {optimizedImageUrl && !imageError ? (
+            {imageSrc && !imageError ? (
               <Image
-                src={optimizedImageUrl}
+                src={imageSrc}
                 alt={recipe.imageAlt || recipe.title}
                 fill
                 sizes={getResponsiveSizes('small')}
@@ -692,7 +736,7 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
                   objectPosition: 'center',
                   imageOrientation: 'from-image'
                 }}
-                onError={() => setImageError(true)}
+                onError={handleImageError}
                 priority={false}
                 loading="lazy"
               />

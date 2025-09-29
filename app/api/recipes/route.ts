@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { verify } from 'jsonwebtoken';
 
 export const dynamic = 'force-dynamic';
-
-const prisma = new PrismaClient();
 
 // Funktion för att hämta användarens kursåtkomst
 async function getUserCourseAccess(userId: string): Promise<string[]> {
@@ -300,8 +298,6 @@ export async function GET(request: NextRequest) {
       { error: 'Failed to fetch recipes' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 } 
 

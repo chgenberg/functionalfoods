@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,27 +34,15 @@ export async function POST(request: NextRequest) {
       const sourceUser = await tx.user.findUnique({
         where: { id: sourceUserId },
         include: {
-          purchases: {
-            include: {
-              course: true
-            }
-          },
-          orders: {
-            include: {
-              items: true
-            }
-          }
+          purchases: { include: { course: true } },
+          orders: { include: { items: true } }
         }
       });
 
       const targetUser = await tx.user.findUnique({
         where: { id: targetUserId },
         include: {
-          purchases: {
-            include: {
-              course: true
-            }
-          }
+          purchases: { include: { course: true } }
         }
       });
 
@@ -72,75 +58,34 @@ export async function POST(request: NextRequest) {
         purchase => !targetCourseIds.includes(purchase.courseId)
       );
 
-      console.log(`Transferring ${purchasesToTransfer.length} purchases from ${sourceUser.email} to ${targetUser.email}`);
-
       // Update purchases to point to target user
       for (const purchase of purchasesToTransfer) {
-        await tx.purchase.update({
-          where: { id: purchase.id },
-          data: { userId: targetUserId }
-        });
+        await tx.purchase.update({ where: { id: purchase.id }, data: { userId: targetUserId } });
       }
 
       // Transfer orders
-      await tx.order.updateMany({
-        where: { userId: sourceUserId },
-        data: { userId: targetUserId }
-      });
+      await tx.order.updateMany({ where: { userId: sourceUserId }, data: { userId: targetUserId } });
 
       // Transfer other related data
-      await tx.goal.updateMany({
-        where: { userId: sourceUserId },
-        data: { userId: targetUserId }
-      });
-
-      await tx.quizResult.updateMany({
-        where: { userId: sourceUserId },
-        data: { userId: targetUserId }
-      });
-
-      await tx.notification.updateMany({
-        where: { userId: sourceUserId },
-        data: { userId: targetUserId }
-      });
-
-      await tx.weeklyShoppingList.updateMany({
-        where: { userId: sourceUserId },
-        data: { userId: targetUserId }
-      });
+      await tx.goal.updateMany({ where: { userId: sourceUserId }, data: { userId: targetUserId } });
+      await tx.quizResult.updateMany({ where: { userId: sourceUserId }, data: { userId: targetUserId } });
+      await tx.notification.updateMany({ where: { userId: sourceUserId }, data: { userId: targetUserId } });
 
       // Update any forum-related data
-      await tx.forumThread.updateMany({
-        where: { authorId: sourceUserId },
-        data: { authorId: targetUserId }
-      });
-
-      await tx.forumReply.updateMany({
-        where: { authorId: sourceUserId },
-        data: { authorId: targetUserId }
-      });
-
-      await tx.forumLike.updateMany({
-        where: { userId: sourceUserId },
-        data: { userId: targetUserId }
-      });
+      await tx.forumThread.updateMany({ where: { authorId: sourceUserId }, data: { authorId: targetUserId } });
+      await tx.forumReply.updateMany({ where: { authorId: sourceUserId }, data: { authorId: targetUserId } });
+      await tx.forumLike.updateMany({ where: { userId: sourceUserId }, data: { userId: targetUserId } });
 
       // Delete duplicate purchases if any were created
       const duplicatePurchases = await tx.purchase.findMany({
-        where: {
-          userId: targetUserId
-        },
-        orderBy: {
-          createdAt: 'asc'
-        }
+        where: { userId: targetUserId },
+        orderBy: { createdAt: 'asc' }
       });
 
       // Group by courseId and keep only the earliest purchase for each course
       const courseGroups: { [courseId: string]: any[] } = {};
       duplicatePurchases.forEach(purchase => {
-        if (!courseGroups[purchase.courseId]) {
-          courseGroups[purchase.courseId] = [];
-        }
+        if (!courseGroups[purchase.courseId]) courseGroups[purchase.courseId] = [];
         courseGroups[purchase.courseId].push(purchase);
       });
 
@@ -150,9 +95,7 @@ export async function POST(request: NextRequest) {
         if (purchases.length > 1) {
           const toDelete = purchases.slice(1); // Keep first, delete rest
           for (const purchase of toDelete) {
-            await tx.purchase.delete({
-              where: { id: purchase.id }
-            });
+            await tx.purchase.delete({ where: { id: purchase.id } });
           }
         }
       }
@@ -160,9 +103,7 @@ export async function POST(request: NextRequest) {
       // Get final purchase count for target user
       const finalPurchases = await tx.purchase.findMany({
         where: { userId: targetUserId },
-        include: {
-          course: true
-        }
+        include: { course: true }
       });
 
       return {

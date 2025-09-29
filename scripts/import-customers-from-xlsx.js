@@ -5,11 +5,15 @@
  * - Stores name and address fields if present
  */
 
-const path = require('path');
-const xlsx = require('xlsx');
-const bcrypt = require('bcryptjs');
-const { PrismaClient } = require('@prisma/client');
-const crypto = require('crypto');
+import path from 'path';
+import xlsx from 'xlsx';
+import bcrypt from 'bcryptjs';
+import { PrismaClient } from '@prisma/client';
+import { fileURLToPath } from 'url';
+import { createResetToken } from '../app/lib/auth.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const prisma = new PrismaClient();
 
@@ -23,17 +27,6 @@ function generateTempPassword() {
   let pwd = '';
   for (let i = 0; i < 12; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
   return pwd;
-}
-
-async function createResetToken(userId) {
-  const token = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1h
-  await prisma.passwordReset.upsert({
-    where: { userId },
-    create: { userId, token, expiresAt },
-    update: { token, expiresAt, used: false }
-  });
-  return token;
 }
 
 async function upsertUser(row) {

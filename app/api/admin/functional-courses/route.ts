@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const prisma = new PrismaClient();
 
 // Hårdkodade kurser som matchar systemet
 const COURSES = {
@@ -45,9 +43,9 @@ export async function GET(req: NextRequest) {
     let enrollmentCounts = [0, 0, 0];
     try {
       enrollmentCounts = await Promise.all([
-        prisma.purchase.count({ where: { courseProduct: { name: 'Functional Basics' } } }),
-        prisma.purchase.count({ where: { courseProduct: { name: 'Functional Flow' } } }),
-        prisma.purchase.count({ where: { courseProduct: { name: 'Functional Energy' } } })
+        prisma.purchase.count({ where: { course: { name: 'Functional Basics' } } }),
+        prisma.purchase.count({ where: { course: { name: 'Functional Flow' } } }),
+        prisma.purchase.count({ where: { course: { name: 'Functional Energy' } } })
       ]);
     } catch (e) {
       console.warn('Could not fetch enrollment counts, using defaults');
@@ -127,8 +125,6 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error fetching courses:', error);
     return NextResponse.json({ error: 'Failed to fetch courses' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -163,7 +159,5 @@ export async function PUT(req: NextRequest) {
   } catch (error) {
     console.error('Error updating course:', error);
     return NextResponse.json({ error: 'Failed to update course' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth, ensureAdminUserExists } from '@/app/lib/admin-auth';
 
-const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   const authResult = await requireAdminAuth(request);
@@ -88,7 +88,5 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Dashboard stats error:', error);
     return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 } 

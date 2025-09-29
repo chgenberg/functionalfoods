@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { sveaPayment, SveaOrderItem } from '@/app/lib/svea-payment';
 // import { withRateLimit, checkoutRateLimit } from '@/app/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
-
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   // Temporärt inaktiverad rate limiting för debugging
@@ -85,19 +83,18 @@ export async function POST(req: NextRequest) {
       }
 
       const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+      const orderId = `FF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       // Create Svea checkout order
       const sveaOrder = {
-        orderId: `FF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        orderId,
         merchantSettings: {
           termsUri: `${origin}/anvandarvillkor`,
           checkoutUri: `${origin}/checkout`,
-          confirmationUri: `${origin}/checkout/success/svea?checkoutOrderId={checkout.order.id}&orderId=${sveaOrder.orderId}`,
+          confirmationUri: `${origin}/checkout/success/svea?checkoutOrderId={checkout.order.id}&orderId=${orderId}`,
           pushUri: `${origin}/api/webhooks/svea`
         },
-        cart: {
-          items: sveaItems
-        },
+        cart: { items: sveaItems },
         customer: customer ? {
           email: customer.email || '',
           firstName: customer.name?.split(' ')[0] || '',
@@ -110,36 +107,10 @@ export async function POST(req: NextRequest) {
 
       const result = await sveaPayment.createCheckoutOrder(sveaOrder);
 
-      // Store order in database for tracking
-      await prisma.order.create({
-        data: {
-          id: sveaOrder.orderId,
-          status: 'PENDING',
-          totalAmount: totalAmount / 100, // Convert back to kr
-          currency: 'SEK',
-          customerEmail: customer?.email || '',
-          customerName: customer?.name || '',
-          items: {
-            create: items.map(item => ({
-              productId: item.id,
-              productName: item.name,
-              quantity: item.quantity,
-              price: item.price
-            }))
-          },
-          metadata: {
-            paymentProvider: 'svea',
-            sveaCheckoutOrderId: result.checkoutOrderId,
-            couponCode: couponCode || null,
-            originalSubtotal: subtotal / 100,
-            discountAmount: discountAmount / 100
-          }
-        }
-      });
-
+      // Respond without DB write (experimental route)
       return NextResponse.json({ 
         checkoutUrl: result.checkoutUrl,
-        orderId: sveaOrder.orderId,
+        orderId,
         checkoutOrderId: result.checkoutOrderId
       });
 
@@ -156,7 +127,5 @@ export async function POST(req: NextRequest) {
         { error: 'Betalning kunde inte initieras. Försök igen.' },
         { status: 500 }
       );
-  } finally {
-    await prisma.$disconnect();
   }
 }

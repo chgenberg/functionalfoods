@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
 
-const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const authResult = await requireAdminAuth(req);
@@ -15,8 +15,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   } catch (e) {
     console.error('Coupon GET error', e);
     return NextResponse.json({ error: 'Failed to fetch coupon' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -60,8 +58,6 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   } catch (e) {
     console.error('Coupon PUT error', e);
     return NextResponse.json({ error: 'Failed to update coupon' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -75,7 +71,5 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   } catch (e) {
     console.error('Coupon DELETE error', e);
     return NextResponse.json({ error: 'Failed to delete coupon' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 } 

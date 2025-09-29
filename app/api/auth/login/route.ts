@@ -1,14 +1,12 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/app/lib/database';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
-const prisma = new PrismaClient();
-
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const { email, password } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -62,6 +60,10 @@ export async function POST(request: Request) {
 
     await prisma.user.update({ where: { id: (user as any).id }, data: { lastLogin: new Date() } });
 
+    // Create token
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined');
+    }
     const token = jwt.sign(
       { 
         userId: user.id,
@@ -71,8 +73,8 @@ export async function POST(request: Request) {
         preferredLanguage: user.preferredLanguage || null,
         nationality: user.nationality || null
       },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
     );
 
     const { password: _, ...userWithoutPassword } = user as any;

@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
 import { emailService } from '@/app/lib/email';
 import bcrypt from 'bcryptjs';
 import type { SveaCartItem, CreateCheckoutOrderRequest } from '@/app/lib/svea-checkout-service';
 
 export const dynamic = 'force-dynamic';
-
-const prisma = new PrismaClient();
 
 interface CheckoutItem {
   id: string;
@@ -40,6 +38,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // --- SECURITY FIX: Fetch product data from database ---
+    const courseProducts = await prisma.courseProduct.findMany();
+    const productMap = new Map(courseProducts.map(p => {
+      const key = p.name.toLowerCase().replace(/\s+/g, '-');
+      return [key, p];
+    }));
+
+    // Validate and enrich items with server-side data
+    const validatedItems = items.map(item => {
+      const product = productMap.get(item.id);
+      if (!product) {
+        throw new Error(`Produkten med id "${item.id}" hittades inte.`);
+      }
+      return {
+        ...item,
+        price: product.price, // Use price from database
+        name: product.name,   // Use name from database
+      };
+    });
+    // --- END SECURITY FIX ---
+
     // If payments are simulated/disabled, short-circuit and create a completed order locally
     if (process.env.PAYMENTS_SIMULATE === 'true') {
       // Resolve or create user if email provided
@@ -69,9 +88,27 @@ export async function POST(req: NextRequest) {
           needsLoginCredentials = true;
         }
       }
-      // Calculate order totals (öre)
+
+      // If still no user (no email provided), create a temporary guest user
+      if (!customerId) {
+        const tempEmail = `guest-${Date.now()}-${Math.random().toString(36).slice(2,8)}@example.com`;
+        const hashed = await bcrypt.hash(Math.random().toString(36), 10);
+        const created = await prisma.user.create({
+          data: {
+            email: tempEmail,
+            name: customer?.name || null,
+            password: hashed,
+            role: 'customer',
+            isActive: true,
+            mustChangePassword: false
+          }
+        });
+        customerId = created.id;
+      }
+
+      // Calculate order totals (öre) from validated items
       let subtotal = 0;
-      for (const item of items) {
+      for (const item of validatedItems) {
         subtotal += SveaCheckoutService.formatPriceToMinorUnits(item.price) * item.quantity;
       }
 
@@ -129,9 +166,9 @@ export async function POST(req: NextRequest) {
             status: 'COMPLETED',
             totalAmount: totalAmountKr,
             currency: 'SEK',
-            userId: customerId,
+            user: { connect: { id: customerId as string } },
             items: {
-              create: await Promise.all(items.map(async (item) => ({
+              create: await Promise.all(validatedItems.map(async (item) => ({
                 name: item.name,
                 type: item.type,
                 quantity: item.quantity,
@@ -158,7 +195,7 @@ export async function POST(req: NextRequest) {
         if (customerId) {
           const orderWithItems = await tx.order.findUnique({ where: { id: order.id }, include: { items: true } });
           for (const it of orderWithItems?.items || []) {
-            if (it.productType === 'course' && it.courseId) {
+            if (it.type === 'course' && it.courseId) {
               const exists = await tx.purchase.findUnique({
                 where: { userId_courseId: { userId: customerId!, courseId: it.courseId } }
               });
@@ -248,11 +285,11 @@ export async function POST(req: NextRequest) {
       return item.id; // fallback
     };
 
-    // Calculate order totals
+    // Calculate order totals from validated items
     let subtotal = 0;
     const sveaItems: SveaCartItem[] = [];
 
-    for (const item of items) {
+    for (const item of validatedItems) {
       const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(item.price);
       subtotal += priceInOre * item.quantity;
 
@@ -379,12 +416,12 @@ export async function POST(req: NextRequest) {
         customerEmail: customer?.email || null,
         customerName: customer?.name || null,
         metadata: {
-          items: items,
+          items: validatedItems, // Use validated items
           couponCode: appliedCoupon?.code || null,
           discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
         },
         items: {
-          create: items.map(item => ({
+          create: validatedItems.map(item => ({
             productId: item.id,
             productName: item.name,
             productType: item.type,

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,16 +45,10 @@ export async function GET(request: NextRequest) {
     // Fetch orders from database for additional information
     const orders = await prisma.order.findMany({
       include: {
-        items: {
-          include: {
-            course: true
-          }
-        },
+        items: { include: { course: true } },
         user: true
       },
-      orderBy: {
-        createdAt: 'desc'
-      },
+      orderBy: { createdAt: 'desc' },
       take: limit
     });
 
@@ -79,8 +71,8 @@ export async function GET(request: NextRequest) {
       // Fallback to database order items (for older orders)
       else if (matchingOrder && matchingOrder.items.length > 0) {
         const courseNames = matchingOrder.items
-          .map(item => item.course?.name || item.name)
-          .filter(name => name)
+          .map((item: any) => item.course?.name || item.name)
+          .filter((name: string) => name)
           .join(', ');
         productDescription = courseNames || productDescription;
       }
@@ -116,7 +108,6 @@ export async function GET(request: NextRequest) {
           email: pi.receipt_email || pi.customer?.email || pi.metadata?.customerEmail || matchingOrder?.user?.email || 'Ingen e-post',
           name: pi.customer?.name || pi.metadata?.customerName || matchingOrder?.user?.name || 'Inget namn',
           metadata: {
-            phone: pi.customer?.phone || matchingOrder?.user?.phone,
             country: pi.customer?.address?.country || 'SE',
             course: pi.metadata?.courseNames || matchingOrder?.items?.[0]?.course?.name,
             userId: matchingOrder?.userId,

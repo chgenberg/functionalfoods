@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withRateLimit, checkoutRateLimit } from '@/app/lib/rate-limit';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 
 export const dynamic = 'force-dynamic';
-
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
@@ -20,6 +18,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Inga varor i varukorgen' }, { status: 400 });
     }
 
+    // --- SECURITY FIX: Fetch product data from database ---
+    const courseProducts = await prisma.courseProduct.findMany();
+    const productMap = new Map(courseProducts.map(p => {
+      // Normalize name for robust matching (e.g., 'Functional Basics' -> 'functional-basics')
+      const key = p.name.toLowerCase().replace(/\s+/g, '-');
+      return [key, p];
+    }));
+
+    // Validate and enrich items with server-side data
+    const validatedItems = items.map(item => {
+      const product = productMap.get(item.id);
+      if (!product) {
+        throw new Error(`Produkten med id "${item.id}" hittades inte.`);
+      }
+      return {
+        ...item,
+        price: product.price, // Use price from database
+        name: product.name,   // Use name from database
+      };
+    });
+    // --- END SECURITY FIX ---
+
     const secretKey = process.env.STRIPE_SECRET_KEY;
     if (!secretKey) {
       return NextResponse.json({ error: 'Stripe är inte konfigurerat' }, { status: 500 });
@@ -27,8 +47,8 @@ export async function POST(req: NextRequest) {
 
     const stripe = require('stripe')(secretKey);
 
-    // Calculate subtotal
-    const subtotal = items.reduce((sum: number, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
+    // Calculate subtotal from validated items
+    const subtotal = validatedItems.reduce((sum: number, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
 
     // Optional: validate coupon and compute discount amount in öre
     let discountAmount = 0;
@@ -39,7 +59,7 @@ export async function POST(req: NextRequest) {
       const now = new Date();
       if (coupon && coupon.active && (!coupon.startsAt || now >= coupon.startsAt) && (!coupon.expiresAt || now <= coupon.expiresAt) && (coupon.usageLimit == null || coupon.timesUsed < coupon.usageLimit)) {
         const applicableIds = coupon.applicableCourseIds && Array.isArray(coupon.applicableCourseIds) ? (coupon.applicableCourseIds as string[]) : null;
-        const applicableItems = applicableIds && applicableIds.length > 0 ? items.filter(i => applicableIds.includes(i.id)) : items;
+        const applicableItems = applicableIds && applicableIds.length > 0 ? validatedItems.filter(i => applicableIds.includes(i.id)) : validatedItems;
         const applicableSubtotal = applicableItems.reduce((sum, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
         if (applicableSubtotal > 0) {
           if (coupon.type === 'percent') {
@@ -63,7 +83,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const line_items = items.map((item) => ({
+    const line_items = validatedItems.map((item) => ({
       price_data: {
         currency: 'sek',
         product_data: { name: item.name },
@@ -87,12 +107,12 @@ export async function POST(req: NextRequest) {
       cancel_url: `${origin}/checkout`,
       customer_email: customer?.email,
       metadata: {
-        items: JSON.stringify(items),
+        items: JSON.stringify(validatedItems), // Use validated items in metadata
         website: 'ulrika-functional-foods',
         orderType: 'course_purchase',
         couponCode: couponCode || '',
-        courseNames: items.map(item => item.name).join(', '),
-        totalItems: items.length.toString(),
+        courseNames: validatedItems.map(item => item.name).join(', '),
+        totalItems: validatedItems.length.toString(),
         customerEmail: customer?.email || '',
         customerName: customer?.name || ''
       }
@@ -125,8 +145,6 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     console.error('Create Checkout Session error:', err);
     return NextResponse.json({ error: err?.message || 'Kunde inte skapa betalning' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
   });
 } 

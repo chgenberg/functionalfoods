@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { withRateLimit, authRateLimit } from '@/app/lib/rate-limit';
 import { isValidEmail, generateSecureToken } from '@/app/lib/security';
 import { emailService } from '@/app/lib/email';
 import { logInfo, logWarn, logError } from '@/app/lib/monitoring';
-
-const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
@@ -75,10 +73,14 @@ export async function POST(request: NextRequest) {
           email: normalizedEmail 
         });
       } catch (emailError) {
-        logError('Failed to send password reset email', { 
-          userId: user.id, 
-          email: normalizedEmail, 
-          error: emailError 
+        logError(emailError instanceof Error ? emailError : new Error('Failed to send password reset email'), { 
+          userId: user.id,
+          severity: 'high',
+          timestamp: new Date().toISOString()
+        });
+        logWarn('Password reset email send failure metadata', {
+          email: normalizedEmail,
+          error: emailError as any
         });
         
         // Don't expose email sending errors to user
@@ -90,13 +92,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(successResponse);
       
     } catch (error) {
-      logError('Password reset request failed', { error });
+      logError(error instanceof Error ? error : new Error('Password reset request failed'), { 
+        severity: 'critical',
+        timestamp: new Date().toISOString()
+      });
       
       return NextResponse.json({
         error: 'Ett tekniskt fel uppstod. Försök igen senare.'
       }, { status: 500 });
-    } finally {
-      await prisma.$disconnect();
     }
   });
 } 
