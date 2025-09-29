@@ -258,6 +258,7 @@ export async function POST(request: Request) {
     }
 
     // Create a map of recipe names to images. Prefer slug -> DB image; fallback to filesystem fuzzy matching
+    // Also include slug keys in the response so clients can read by slug first
     const imageMap: Record<string, string> = {};
     for (let i = 0; i < recipeNames.length; i++) {
       const originalName = recipeNames[i];
@@ -265,7 +266,9 @@ export async function POST(request: Request) {
 
       // 1) Prefer DB by slug
       if (slug && slugToImage[slug]) {
-        imageMap[originalName] = slugToImage[slug] as string;
+        const url = slugToImage[slug] as string;
+        imageMap[originalName] = url;
+        imageMap[slug] = url; // expose by slug too
         continue;
       }
 
@@ -274,6 +277,7 @@ export async function POST(request: Request) {
         const bySlug = slugToOptimizedUrl(slug, size, usage);
         if (bySlug) {
           imageMap[originalName] = bySlug;
+          imageMap[slug] = bySlug; // expose by slug too
           continue;
         }
       }
@@ -283,9 +287,11 @@ export async function POST(request: Request) {
       const fsMatch = findBestImageMatch(cleanName, availableImages, size, usage);
       if (fsMatch) {
         imageMap[originalName] = fsMatch;
+        if (slug) imageMap[slug] = fsMatch;
       } else {
         const fallback = getFallbackImage(size as 'small' | 'medium' | 'large');
         imageMap[originalName] = fallback;
+        if (slug) imageMap[slug] = fallback;
       }
     }
 
