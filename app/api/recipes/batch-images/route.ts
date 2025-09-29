@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+import path from 'path';
+import fs from 'fs';
+import { prisma } from '@/app/lib/database';
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
@@ -97,7 +100,7 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium', usage: 
   }
   
   // Final fallback to original image
-  const originalDir = path.join(process.cwd(), 'recept_images_2025');
+  const originalDir = path.join(process.cwd(), 'public', 'recept_images_2025');
   const possibleExtensions = ['jpg', 'jpeg', 'png'];
   
   for (const ext of possibleExtensions) {
@@ -109,6 +112,28 @@ function imageToOptimizedUrl(imageName: string, size: string = 'medium', usage: 
   
   // Ultimate fallback
   return `/api/images/recept_images_vision_optimized/het-ratatouille-${usage}.webp`;
+}
+
+// Helper to build optimized URL by slug (prefer on-disk assets)
+function slugToOptimizedUrl(slug: string, size: string = 'medium', usage: 'card' | 'detail' | 'thumb' = 'card'): string | null {
+  const vision = path.join(process.cwd(), 'public', 'recept_images_vision_optimized', `${slug}-${usage}.webp`);
+  if (fs.existsSync(vision)) {
+    return `/api/images/recept_images_vision_optimized/${slug}-${usage}.webp`;
+  }
+
+  let format;
+  if (usage === 'detail') {
+    format = `detail-${size}`;
+  } else if (usage === 'thumb') {
+    format = `thumb-${size === 'small' || size === 'medium' ? size : 'medium'}`;
+  } else {
+    format = `card-${size}`;
+  }
+  const optimized = path.join(process.cwd(), 'public', 'recept_images_optimized', `${slug}-${format}.webp`);
+  if (fs.existsSync(optimized)) {
+    return `/api/images/recept_images_optimized/${slug}-${format}.webp`;
+  }
+  return null;
 }
 
 // Get available image files from filesystem
@@ -219,22 +244,52 @@ export async function POST(request: Request) {
     console.log('🧹 Cleaned names:', cleanedNames);
     console.log('🔤 Normalized names:', normalizedNames);
 
-    // Create a map of recipe names to images using only filesystem fuzzy matching
-    const imageMap: Record<string, string> = {};
+    // Build DB map by slugs (authoritative)
+    const validSlugs: string[] = Array.isArray(recipeSlugs) ? recipeSlugs.filter(Boolean) : [];
+    const dbRecipes = validSlugs.length > 0 ? await prisma.recipe.findMany({
+      where: { slug: { in: validSlugs } },
+      select: { slug: true, imageUrl: true }
+    }) : [];
+    const slugToImage: Record<string, string | null> = {};
+    for (const r of dbRecipes) {
+      if (r.imageUrl) {
+        // Normalize local asset path
+        const url = r.imageUrl.startsWith('/') ? r.imageUrl : `/${r.imageUrl}`;
+        slugToImage[r.slug] = url;
+      } else {
+        slugToImage[r.slug] = slugToOptimizedUrl(r.slug, size, usage);
+      }
+    }
 
+    // Create a map of recipe names to images. Prefer slug -> DB image; fallback to filesystem fuzzy matching
+    const imageMap: Record<string, string> = {};
     for (let i = 0; i < recipeNames.length; i++) {
       const originalName = recipeNames[i];
-      const cleanName = cleanedNames[i];
+      const slug = validSlugs[i];
 
-      // Try filesystem fuzzy matching
+      // 1) Prefer DB by slug
+      if (slug && slugToImage[slug]) {
+        imageMap[originalName] = slugToImage[slug] as string;
+        continue;
+      }
+
+      // 2) Try optimized assets by slug if provided
+      if (slug) {
+        const bySlug = slugToOptimizedUrl(slug, size, usage);
+        if (bySlug) {
+          imageMap[originalName] = bySlug;
+          continue;
+        }
+      }
+
+      // 3) Fallback to filesystem fuzzy matching by cleaned title
+      const cleanName = cleanedNames[i];
       const fsMatch = findBestImageMatch(cleanName, availableImages, size, usage);
       if (fsMatch) {
         imageMap[originalName] = fsMatch;
-        console.log(`✅ Filesystem match: "${originalName}" -> ${fsMatch}`);
       } else {
         const fallback = getFallbackImage(size as 'small' | 'medium' | 'large');
         imageMap[originalName] = fallback;
-        console.log(`⚠️ No match for "${originalName}", using fallback: ${fallback}`);
       }
     }
 

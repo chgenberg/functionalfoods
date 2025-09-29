@@ -82,58 +82,7 @@ const RecipesPage = () => {
     return localStorage.getItem('token');
   };
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      fetchRecipes();
-    }, 300); // Debounce search by 300ms
-    
-    return () => clearTimeout(timeoutId);
-  }, [user, selectedCategory, selectedStatus, searchQuery]);
-
-  // Trigger fetching when page increments (infinite scroll)
-  useEffect(() => {
-    if (page > 1) {
-      fetchRecipes();
-    }
-  }, [page, fetchRecipes]);
-
-  useEffect(() => {
-    // Reset recipes and page when filters change
-    setRecipes([]);
-    setPage(1);
-    setHasMore(true);
-  }, [selectedCategory, selectedStatus, searchQuery]);
-
-  useEffect(() => {
-    // Generate search suggestions based on search query
-    if (searchQuery.length > 1) {
-      const suggestions = recipes
-        .filter(recipe => 
-          recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          recipe.ingredients?.some(ing => ing.toLowerCase().includes(searchQuery.toLowerCase()))
-        )
-        .map(recipe => recipe.title)
-        .slice(0, 5);
-      setSearchSuggestions(suggestions);
-      setShowSuggestions(suggestions.length > 0);
-    } else {
-      setSearchSuggestions([]);
-      setShowSuggestions(false);
-    }
-  }, [searchQuery, recipes]);
-
-  useEffect(() => {
-    // Close suggestions when clicking outside
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
+  // Define fetchRecipes before any effects that reference it to avoid TDZ errors
   const fetchRecipes = useCallback(async (reset = false) => {
     try {
       if (reset) {
@@ -198,6 +147,59 @@ const RecipesPage = () => {
       setLoading(false);
     }
   }, [page, selectedCategory, selectedStatus, searchQuery, user]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchRecipes();
+    }, 300); // Debounce search by 300ms
+    
+    return () => clearTimeout(timeoutId);
+  }, [user, selectedCategory, selectedStatus, searchQuery]);
+
+  // Trigger fetching when page increments (infinite scroll)
+  useEffect(() => {
+    if (page > 1) {
+      fetchRecipes();
+    }
+  }, [page, fetchRecipes]);
+
+  useEffect(() => {
+    // Reset recipes and page when filters change
+    setRecipes([]);
+    setPage(1);
+    setHasMore(true);
+  }, [selectedCategory, selectedStatus, searchQuery]);
+
+  useEffect(() => {
+    // Generate search suggestions based on search query
+    if (searchQuery.length > 1) {
+      const suggestions = recipes
+        .filter(recipe => 
+          recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          recipe.ingredients?.some(ing => ing.toLowerCase().includes(searchQuery.toLowerCase()))
+        )
+        .map(recipe => recipe.title)
+        .slice(0, 5);
+      setSearchSuggestions(suggestions);
+      setShowSuggestions(suggestions.length > 0);
+    } else {
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, [searchQuery, recipes]);
+
+  useEffect(() => {
+    // Close suggestions when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
 
   const lastRecipeElementRef = useCallback(node => {
     if (loading) return;
