@@ -21,9 +21,21 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
+    // Map legacy/alias slugs to canonical slugs (Basic course fixes)
+    const ALIASES: Record<string, string> = {
+      'tonfisksallad-apple-sallad': 'tonfisksallad-med-apple',
+      'squashspagetti-kottfarssas': 'squashspagetti-med-kottfarssas',
+      'laxfile-med-ratatouille': 'het-ratatouille',
+      'omelett-bar': 'ugnsomelett-med-keso-och-bar',
+      'agghack-kalkon': 'agghack-med-kalkon',
+      'stekt-agg-lax-2': 'stekt-agg-med-champinjoner-2',
+      'stek-torsk-med-bearnaisesas-och-haricot-verts': 'stekt-torsk-med-bearnaisesas-och-haricots-verts'
+    };
+    const requestedSlug = params.slug;
+    const canonicalSlug = ALIASES[requestedSlug] || requestedSlug;
     const lang = getLang(req);
     const recipe = await prisma.recipe.findUnique({
-      where: { slug: params.slug },
+      where: { slug: canonicalSlug },
       include: { author: { select: { name: true, email: true } } }
     });
 
@@ -60,7 +72,7 @@ export async function GET(
       localized.imageUrl = url;
     }
 
-    console.log(`🖼️ Recipe API: Serving recipe "${localized.title}" with imageUrl: ${localized.imageUrl}`);
+    console.log(`🖼️ Recipe API: Serving recipe "${localized.title}" (slug: ${canonicalSlug}${canonicalSlug !== requestedSlug ? `, alias: ${requestedSlug}` : ''}) with imageUrl: ${localized.imageUrl}`);
     return NextResponse.json(localized, {
       headers: {
         'Cache-Control': 'no-store, max-age=0'
