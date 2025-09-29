@@ -21,6 +21,11 @@ export async function GET(req: NextRequest) {
     const course = (searchParams.get('course') || 'basic') as 'basic' | 'flow' | 'energy';
     const weekNumber = parseInt(searchParams.get('week') || '1', 10);
 
+    // Hard override: Empty Basics week 1 so user can re-enter content manually
+    if (course === 'basic' && weekNumber === 1) {
+      return NextResponse.json({ title: 'Vecka 1', days: {} }, { headers: { 'Cache-Control': 'no-store' } });
+    }
+
     // Try DB first
     try {
       const row = await (prisma as any).mealPlanWeek?.findUnique({
