@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient, BlogPost } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
+import { BlogPost } from '@prisma/client';
 
 export async function GET() {
   try {
@@ -9,7 +10,6 @@ export async function GET() {
       return NextResponse.json({ message: 'Database not configured' });
     }
 
-    const prisma = new PrismaClient();
     const now = new Date();
 
     // Hitta alla inlägg som inte är publicerade än men har ett publishedAt datum som har passerat
@@ -43,7 +43,6 @@ export async function GET() {
       publishedIds: postsToPublish.map((post: BlogPost) => post.id),
     });
 
-    await prisma.$disconnect();
     return result;
 
   } catch (error) {

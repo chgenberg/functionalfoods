@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import OpenAI from 'openai';
 import { resolveModel } from '@/app/lib/ai';
-
-const prisma = new PrismaClient();
 
 const getOpenAIClient = () => {
   if (!process.env.OPENAI_API_KEY) {

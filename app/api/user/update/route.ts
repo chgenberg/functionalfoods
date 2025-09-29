@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { headers } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not configured');
+}
 
 function getUserIdFromToken(token: string) {
     try {

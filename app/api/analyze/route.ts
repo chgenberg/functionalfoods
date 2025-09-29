@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from 'openai';
 import { AnalysisResult } from '@/app/types';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not configured');
+}
 
 // Använd miljövariabeln för API-nyckeln
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({

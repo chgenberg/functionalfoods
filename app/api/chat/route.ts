@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { resolveModel, chatWithFallback } from '@/app/lib/ai';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 }) : null;
-
-const prisma = new PrismaClient();
 
 // Basic per-IP rate limiter (best effort). Replace with Upstash for production scale.
 const RL_WINDOW_MS = 60_000;

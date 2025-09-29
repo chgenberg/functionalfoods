@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sign } from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import bcrypt from 'bcryptjs';
-
-const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   // Disable legacy endpoint in production unless explicitly allowed
@@ -12,6 +10,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not configured');
+    }
     const { email, password } = await request.json();
 
     // Validera input
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
           role: 'admin',
           isDemo: true
         },
-        process.env.JWT_SECRET || 'your-secret-key',
+        process.env.JWT_SECRET,
         { expiresIn: '24h' }
       );
 
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         role: user.role
       },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 

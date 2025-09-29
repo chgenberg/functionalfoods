@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resolveModel, chatWithFallback } from '@/app/lib/ai';
 import OpenAI from 'openai';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not configured');
+}
 
 // Create OpenAI client only if API key is available
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({

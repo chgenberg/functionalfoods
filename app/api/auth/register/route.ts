@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import bcrypt from 'bcryptjs';
-
-const prisma = new PrismaClient();
 
 type LangCode = 'SV' | 'EN' | 'ES' | 'DE' | 'FR';
 
