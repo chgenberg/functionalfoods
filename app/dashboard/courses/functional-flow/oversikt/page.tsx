@@ -130,8 +130,8 @@ export default function FunctionalFlowOverview() {
             </div>
           </div>
           
-          {/* Course Help Section */}
-          <div className="mt-8 text-center">
+          {/* Course Help Section + Facebook Group */}
+          <div className="mt-8 flex items-center justify-center gap-3 flex-wrap">
             <motion.button
               onClick={() => setShowHelpModal(true)}
               className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#014421] to-[#116530] text-white rounded-full font-medium shadow-lg hover:shadow-xl transform transition-all duration-300"
@@ -139,37 +139,34 @@ export default function FunctionalFlowOverview() {
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.2 }}
             >
-              {/* Animated background glow */}
               <motion.div
                 className="absolute inset-0 rounded-full bg-[#93C560] opacity-0 group-hover:opacity-20 blur-xl"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              
-              {/* Icon with rotation on hover */}
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-              >
+              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
                 <HelpCircle className="w-6 h-6" />
               </motion.div>
-              
               <span className="relative z-10 text-lg">Så använder du kursen</span>
-              
-              {/* Arrow animation */}
-              <motion.svg 
-                className="w-5 h-5 ml-1"
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
+              <motion.svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </motion.svg>
             </motion.button>
+
+            <a
+              href="https://www.facebook.com/groups/1168295381877412/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-6 py-4 rounded-full bg-[#1877F2] text-white font-medium shadow-lg hover:shadow-xl transition-all hover:bg-[#166FE1]"
+              aria-label="Gå med i Facebook-gruppen"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.19 8.44 9.94v-7.03H7.9v-2.91h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.75 8.44-4.92 8.44-9.94Z" />
+              </svg>
+              Facebook‑grupp
+            </a>
           </div>
         </div>
       </div>

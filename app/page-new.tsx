@@ -113,7 +113,15 @@ export default function Home() {
       
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Local hero video with poster + fade-in when ready */}
+          {/* Vimeo background video with Safari-friendly autoplay; keep local <video> fallback hidden behind */}
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            style={{ zIndex: 12, opacity: 1 }}
+            src="https://player.vimeo.com/video/1120885431?background=1&autoplay=1&muted=1&loop=1&byline=0&title=0&controls=0&autopause=0&playsinline=1&transparent=0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            loading="eager"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
@@ -126,9 +134,8 @@ export default function Home() {
             autoPlay
             preload="auto"
             onCanPlay={(e) => e.currentTarget.style.opacity = '1'}
-            onError={(e) => { console.warn('Hero video failed to load', e); }}
-          >
-          </video>
+            onError={() => { /* ignore: Vimeo will be visible */ }}
+          />
           <div className="absolute inset-0 bg-black/50 pointer-events-none" style={{ zIndex: 15 }} />
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
