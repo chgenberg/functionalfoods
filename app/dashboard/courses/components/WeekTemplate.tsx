@@ -487,7 +487,7 @@ export default function WeekTemplate({
                 const t = clean(meal.name);
                 const matched = byTitle[t];
                 if (matched) {
-                  imageMap[meal.key] = optimizeImageUrl(matched, 'small', 'landscape');
+                  imageMap[meal.key] = optimizeImageUrl(matched, 'large', 'landscape');
                 }
               });
               const count = Object.keys(imageMap).length;
@@ -521,7 +521,7 @@ export default function WeekTemplate({
             stillMissing.forEach(meal => {
               const url = images[meal.name];
               if (url) {
-                imageMap[meal.key] = optimizeImageUrl(url, 'small', 'landscape');
+                imageMap[meal.key] = optimizeImageUrl(url, 'large', 'landscape');
               }
             });
           }
@@ -747,7 +747,7 @@ export default function WeekTemplate({
                       const calories = calorieMatch ? calorieMatch[1] : '';
                       const imageKey = `${day.day}-${meal.type}`;
                       const rawUrl = mealImages[imageKey];
-                      const imageUrl = rawUrl ? optimizeImageUrl(rawUrl, 'medium', 'landscape') : undefined;
+                      const imageUrl = rawUrl ? optimizeImageUrl(rawUrl, 'large', 'landscape') : undefined;
                       
                       // Debug logging for missing images
                       if (!imageUrl && process.env.NODE_ENV === 'development') {
@@ -772,9 +772,9 @@ export default function WeekTemplate({
                         >
                           <div className="relative overflow-hidden rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300">
                             <div className="aspect-[4/3] relative bg-gray-100">
-                              {imageUrl || (mealImages[meal.data.name] && optimizeImageUrl(mealImages[meal.data.name], 'medium', 'landscape')) ? (
+                              {imageUrl || (mealImages[meal.data.name] && optimizeImageUrl(mealImages[meal.data.name], 'large', 'landscape')) ? (
                                 <Image
-                                  src={imageUrl || optimizeImageUrl(mealImages[meal.data.name], 'medium', 'landscape')}
+                                  src={imageUrl || optimizeImageUrl(mealImages[meal.data.name], 'large', 'landscape')}
                                   alt={mealName}
                                   fill
                                   className="object-cover"
