@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs';
 import { prisma } from '@/app/lib/database';
-import { PrismaClient } from '@prisma/client';
-import fs from 'fs';
-import path from 'path';
-
-const prisma = new PrismaClient();
+ 
 
 // Helper function to normalize Swedish text for better matching
 function normalizeSwedish(text: string): string {
@@ -299,7 +295,5 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('❌ Error fetching recipe images:', error);
     return NextResponse.json({ error: 'Failed to fetch recipe images' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 } 

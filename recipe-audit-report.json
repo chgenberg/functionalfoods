@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "ok": 106,
+    "mismatched": 0,
+    "missingInDb": 16,
+    "missingSlugs": 0
+  },
+  "missingSlugs": [],
+  "mismatches": [
+    {
+      "type": "missing_in_db",
+      "title": "Köttfärsbiffar med mozzarella och tomatsallad"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Laxgratäng med broccoli och scampi"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Spenatsoppa med rostade pumpafrön"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Valnötslax med fetaostcreme"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Pestotorsk med Capresesallad"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Kyckling med stekt blomkålsris och dillyoghurt"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Stek torsk med bearnaisesås och haricot verts"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Hamburgare med grekisk sallad"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Äggröra med lax"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Rökt lax med blomkålsallad och citronyoghurt"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Lax med fetaost och rostade rotfrukter"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Grekiska köttbullar i tomatsås"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Grillspett med grekisk sallad och morotstzatziki"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Japansk kycklingfärswok med groddar"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Köttfärslimpa med ajvar och rostad sötpotatis"
+    },
+    {
+      "type": "missing_in_db",
+      "title": "Lammgryta med plommon och bulgur"
+    }
+  ]
+}

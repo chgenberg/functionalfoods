@@ -1,0 +1,1720 @@
+{
+  "total": 190,
+  "updated": 160,
+  "missing": [
+    {
+      "title": "Egenbakat",
+      "file": "flow_week1_manual_input.txt"
+    },
+    {
+      "title": "Köttfärsbiffar med mozzarella och tomatsallad",
+      "file": "flow_week1_manual_input.txt"
+    },
+    {
+      "title": "Köttfärsbiffar med mozzarella och tomatsallad",
+      "file": "flow_week1_manual_input.txt"
+    },
+    {
+      "title": "Laxgratäng med broccoli och scampi",
+      "file": "flow_week1_manual_input.txt"
+    },
+    {
+      "title": "Egenbakat",
+      "file": "flow_week1_manual_input.txt"
+    },
+    {
+      "title": "Spenatsoppa med rostade pumpafrön",
+      "file": "flow_week2_manual_input.txt"
+    },
+    {
+      "title": "Spenatsoppa med rostade pumpafrön",
+      "file": "flow_week2_manual_input.txt"
+    },
+    {
+      "title": "Egenbakat",
+      "file": "flow_week3_manual_input.txt"
+    },
+    {
+      "title": "Spenatsoppa med rostade pumpafrön",
+      "file": "flow_week3_manual_input.txt"
+    },
+    {
+      "title": "Kyckling med stekt blomkålsris och dillyoghurt",
+      "file": "flow_week5_manual_input.txt"
+    },
+    {
+      "title": "Kyckling med stekt blomkålsris och dillyoghurt",
+      "file": "flow_week5_manual_input.txt"
+    },
+    {
+      "title": "Stek torsk med bearnaisesås och haricot verts",
+      "file": "flow_week6_manual_input.txt"
+    },
+    {
+      "title": "Stek torsk med bearnaisesås och haricot verts",
+      "file": "flow_week6_manual_input.txt"
+    },
+    {
+      "title": "Hamburgare med grekisk sallad",
+      "file": "flow_week6_manual_input.txt"
+    },
+    {
+      "title": "Äggröra med lax",
+      "file": "week3_manual_input.txt"
+    },
+    {
+      "title": "Rökt lax med blomkålsallad och citronyoghurt",
+      "file": "week3_manual_input.txt"
+    },
+    {
+      "title": "Rökt lax med blomkålsallad och citronyoghurt",
+      "file": "week3_manual_input.txt"
+    },
+    {
+      "title": "Lax med fetaost och rostade rotfrukter",
+      "file": "week3_manual_input.txt"
+    },
+    {
+      "title": "Grekiska köttbullar i tomatsås",
+      "file": "week4_manual_input.txt"
+    },
+    {
+      "title": "Grekiska köttbullar i tomatsås",
+      "file": "week4_manual_input.txt"
+    },
+    {
+      "title": "Grillspett med grekisk sallad och morotstzatziki",
+      "file": "week4_manual_input.txt"
+    },
+    {
+      "title": "Grillspett med grekisk sallad och morotstzatziki",
+      "file": "week4_manual_input.txt"
+    },
+    {
+      "title": "Japansk kycklingfärswok med groddar",
+      "file": "week5_manual_input.txt"
+    },
+    {
+      "title": "Japansk kycklingfärswok med groddar",
+      "file": "week5_manual_input.txt"
+    },
+    {
+      "title": "Onsdag Chiafrögröt",
+      "file": "week5_manual_input.txt"
+    },
+    {
+      "title": "Lax med fetaost och rostade rotfrukter",
+      "file": "week5_manual_input.txt"
+    },
+    {
+      "title": "Köttfärslimpa med ajvar och rostad sötpotatis",
+      "file": "week5_manual_input.txt"
+    },
+    {
+      "title": "Köttfärslimpa med ajvar och rostad sötpotatis",
+      "file": "week5_manual_input.txt"
+    },
+    {
+      "title": "Lammgryta med plommon och bulgur",
+      "file": "week6_manual_input.txt"
+    },
+    {
+      "title": "Lammgryta med plommon och bulgur",
+      "file": "week6_manual_input.txt"
+    }
+  ],
+  "changed": [
+    {
+      "title": "Färskostmacka med tomat",
+      "slug": "farskostmacka-med-tomat",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Linssoppa från medelhavet",
+      "slug": "linssoppa-fran-medelhavet",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kycklingburgare med papayasallad",
+      "slug": "kycklingburgare-papayasallad-sallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Äggröra med asiatisk avokadosallad",
+      "slug": "aggrora-asiatisk-avokadosallad",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Kycklingburgare med papayasallad",
+      "slug": "kycklingburgare-papayasallad-sallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Choklad- och kokoschiapudding",
+      "slug": "choklad-kokoschiapudding",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Keso med bovetegranola",
+      "slug": "keso-med-bovetegranola",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Macka med ost",
+      "slug": "macka-med-ost",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Grönsakswok med tonfisk och ägg",
+      "slug": "gronsakswok-med-tonfisk-och-agg",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Lövbiffsgryta med champinjoner och grönsaksspagetti",
+      "slug": "lovbiffsgryta-med-champinjoner-och-gronsaksspagetti",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ägghack i salladsblad",
+      "slug": "agghack-salladsblad-sallad",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Lövbiffsgryta med champinjoner och grönsaksspagetti",
+      "slug": "lovbiffsgryta-med-champinjoner-och-gronsaksspagetti",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Lax med rödbetssallad",
+      "slug": "lax-med-rodbetssallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Overnightoats med morot",
+      "slug": "overnightoats-morot",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Lax med rödbetssallad",
+      "slug": "lax-med-rodbetssallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Yoghurt med bovetegranola och frukt",
+      "slug": "yoghurt-bovetegranola-frukt",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Stekt ägg med champinjoner",
+      "slug": "stekt-agg-med-champinjoner",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Fisktaco med mangosalsa och sesamsås",
+      "slug": "fisktaco-med-mangosalsa-och-sesamsas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Smoothiebowl med mango och pistagenötter",
+      "slug": "smoothiebowl-med-mango-och-pistagenotter",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Fisktaco med mangosalsa och sesamsås",
+      "slug": "fisktaco-med-mangosalsa-och-sesamsas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ajvarspett med grekisk sallad och tzatziki",
+      "slug": "ajvarspett-med-grekisk-sallad-och-tzatziki",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Zucchinikaka med kardemumma",
+      "slug": "zucchinikaka-med-kardemumma",
+      "from": {
+        "servings": 12
+      },
+      "to": {
+        "servings": 12
+      }
+    },
+    {
+      "title": "Grön juice",
+      "slug": "gron-juice",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ajvarspett med grekisk sallad och tzatziki",
+      "slug": "ajvarspett-med-grekisk-sallad-och-tzatziki",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kycklinggryta från medelhavet",
+      "slug": "kycklinggryta-fran-medelhavet",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Grön juice",
+      "slug": "gron-juice",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kycklinggryta från medelhavet",
+      "slug": "kycklinggryta-fran-medelhavet",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Färgstark fetaostsallad",
+      "slug": "fargstark-fetaostsallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Bananmuffin",
+      "slug": "bananmuffin",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Färgstark fetaostsallad",
+      "slug": "fargstark-fetaostsallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kokta ägg med kaviar",
+      "slug": "kokt-agg-kaviar",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Laxsallad med fetaost",
+      "slug": "laxsallad-med-fetaost",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Keso med bovetegranola och frukt",
+      "slug": "keso-med-bovetegranola-och-frukt",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Laxsallad med fetaost",
+      "slug": "laxsallad-med-fetaost",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Chiapudding med jordgubbar och hallon",
+      "slug": "chiapudding-med-jordgubbar-och-hallon",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Torsk med guacamole och sötpotatis",
+      "slug": "torsk-med-guacamole-och-sotpotatis",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Chiapudding med jordgubbar och hallon",
+      "slug": "chiapudding-med-jordgubbar-och-hallon",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Torsk med guacamole och sötpotatis",
+      "slug": "torsk-med-guacamole-och-sotpotatis",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Biff med nudelsallad och jordnötssås",
+      "slug": "biff-med-nudelsallad-och-jordnotssas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Morotssoppa med ingefära och rostade kikärtor",
+      "slug": "morotssoppa-med-ingefara-och-rostade-kikartor",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Omelettrulle",
+      "slug": "omelettrulle",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Morotssoppa med ingefära och rostade kikärtor",
+      "slug": "morotssoppa-med-ingefara-och-rostade-kikartor",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Grönsakswok med kycklingfärs",
+      "slug": "gronsakswok-med-kycklingfars",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Yoghurt med bovetegranola",
+      "slug": "yoghurt-med-bovetegranola",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Grönsakswok med kycklingfärs",
+      "slug": "gronsakswok-med-kycklingfars",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ugnsbakad blomkål med ratatouille",
+      "slug": "ugnsbakad-blomkal-med-ratatouille",
+      "from": {
+        "servings": 3
+      },
+      "to": {
+        "servings": 3
+      }
+    },
+    {
+      "title": "Macka med ost",
+      "slug": "macka-med-ost",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Ugnsbakad blomkål med ratatouille",
+      "slug": "ugnsbakad-blomkal-med-ratatouille",
+      "from": {
+        "servings": 3
+      },
+      "to": {
+        "servings": 3
+      }
+    },
+    {
+      "title": "Lövbiffsrullader med brie, pesto och rödbetor",
+      "slug": "lovbiffsrullader-med-brie-pesto-och-rodbetor",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Äggröra med fetaost och spenat",
+      "slug": "aggrora-med-fetaost-och-spenat",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Lövbiffsrullader med brie, pesto och rödbetor",
+      "slug": "lovbiffsrullader-med-brie-pesto-och-rodbetor",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Torsk med saffranssås",
+      "slug": "torsk-med-saffranssas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Bananmuffin",
+      "slug": "bananmuffin",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Torsk med saffranssås",
+      "slug": "torsk-med-saffranssas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kycklingrullader med gorgonzola",
+      "slug": "kycklingrullader-med-gorgonzola",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Omelett med keso och bär",
+      "slug": "omelett-med-keso-och-bar",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Kycklingrullader med gorgonzola",
+      "slug": "kycklingrullader-med-gorgonzola",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Valnötslax med fetaostcrème",
+      "slug": "valnotslax-med-fetaostcreme",
+      "from": {},
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Stekta äpplen med vit chokladkräm",
+      "slug": "stekta-applen-med-vit-chokladkram",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Blåbärssmoothie",
+      "slug": "blabarssmoothie",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Valnötslax med fetaostcrème",
+      "slug": "valnotslax-med-fetaostcreme",
+      "from": {},
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Zucchiniplättar med yoghurtsås",
+      "slug": "zucchiniplattar-med-yoghurtsas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Blåbärssmoothie",
+      "slug": "blabarssmoothie",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Zucchiniplättar med yoghurtsås",
+      "slug": "zucchiniplattar-med-yoghurtsas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Köttfärslimpa med tomat",
+      "slug": "kottfarslimpa-med-tomat",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Macka med ost",
+      "slug": "macka-med-ost",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Köttfärslimpa med tomat",
+      "slug": "kottfarslimpa-med-tomat",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Linssoppa från medelhavet",
+      "slug": "linssoppa-fran-medelhavet",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Yoghurt med mango och apelsin",
+      "slug": "yoghurt-med-mango-och-apelsin",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Ugnsbakad blomkål med ratatouille",
+      "slug": "ugnsbakad-blomkal-med-ratatouille",
+      "from": {
+        "servings": 3
+      },
+      "to": {
+        "servings": 3
+      }
+    },
+    {
+      "title": "Pestotorsk med capresesallad",
+      "slug": "pestotorsk-med-capresesallad",
+      "from": {},
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Stekt ägg med parmaskinka",
+      "slug": "stekt-agg-med-parmaskinka",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Pestotorsk med capresesallad",
+      "slug": "pestotorsk-med-capresesallad",
+      "from": {},
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Bananmuffin",
+      "slug": "bananmuffin",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Nötgryta med rotfrukter",
+      "slug": "notgryta-med-rotfrukter",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Äggröra med champinjoner",
+      "slug": "aggrora-lax",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Nötgryta med rotfrukter",
+      "slug": "notgryta-med-rotfrukter",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Quinoasallad med scampi och mango",
+      "slug": "quinoasallad-med-scampi-och-mango",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Gino",
+      "slug": "gino",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Bananpannkaka",
+      "slug": "stekt-agg-champinjoner-2",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Quinoasallad med scampi och mango",
+      "slug": "quinoasallad-med-scampi-och-mango",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Grönkålspaj med champinjoner",
+      "slug": "gronkalspaj-med-champinjoner",
+      "from": {
+        "servings": 6
+      },
+      "to": {
+        "servings": 6
+      }
+    },
+    {
+      "title": "Bananpannkaka",
+      "slug": "stekt-agg-champinjoner-2",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Grönkålspaj med champinjoner",
+      "slug": "gronkalspaj-med-champinjoner",
+      "from": {
+        "servings": 6
+      },
+      "to": {
+        "servings": 6
+      }
+    },
+    {
+      "title": "Köttfärslimpa med tomat",
+      "slug": "kottfarslimpa-med-tomat",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Kokta ägg med kaviar",
+      "slug": "kokt-agg-kaviar",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Nötgryta med rotfrukter",
+      "slug": "notgryta-med-rotfrukter",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Yoghurt med bovetegranola och bär",
+      "slug": "yoghurt-med-bovetegranola-och-bar",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Kycklingfärsbiffar med vitlöksost",
+      "slug": "kycklingfarsbiffar-med-vitloksost",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Varm chiagröt med äpple",
+      "slug": "varm-chiagrot-apple",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Kycklingfärsbiffar med vitlöksost",
+      "slug": "kycklingfarsbiffar-med-vitloksost",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Varma grönsaker med halloumi",
+      "slug": "varma-gronsaker-med-halloumi",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ägghack med kallrökt lax",
+      "slug": "agghack-med-kallrokt-lax",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Varma grönsaker med halloumi",
+      "slug": "varma-gronsaker-med-halloumi",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Lax med quinoasallad och grapefrukt",
+      "slug": "lax-med-quinoasallad-och-grapefrukt",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Smoothiebowl med blåbär och granola",
+      "slug": "smoothiebowl-med-blabar-och-granola",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Lax med quinoasallad och grapefrukt",
+      "slug": "lax-med-quinoasallad-och-grapefrukt",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Mandelkaka med med choklad",
+      "slug": "mandelkaka-med-med-choklad",
+      "from": {
+        "servings": 10
+      },
+      "to": {
+        "servings": 10
+      }
+    },
+    {
+      "title": "Yoghurt med ketomüsli",
+      "slug": "yoghurt-med-ketomusli",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Päronsallad med chevréost",
+      "slug": "paronsallad-med-chevreost",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Kycklingfylld aubergine",
+      "slug": "kycklingfylld-aubergine",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kycklingfylld aubergine",
+      "slug": "kycklingfylld-aubergine",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Rödbetsjuice",
+      "slug": "rodbetsjuice",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Vegetarisk currygryta med panéer",
+      "slug": "vegetarisk-currygryta-med-pan-er",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Rödbetsjuice",
+      "slug": "rodbetsjuice",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Vegetarisk currygryta med panéer",
+      "slug": "vegetarisk-currygryta-med-pan-er",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Kycklinggryta med bakad spetskål",
+      "slug": "kycklinggryta-med-bakad-spetskal",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Havrefralla med morötter och torkade aprikoser",
+      "slug": "havrefralla-med-morotter-och-torkade-aprikoser",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Hamburgare med hummus",
+      "slug": "hamburgare-med-hummus",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Keso med granola och fruktsallad",
+      "slug": "keso-med-granola-och-fruktsallad",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Hamburgare med hummus",
+      "slug": "hamburgare-med-hummus",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ugnsbakad kyckling med tzatziki och sallad",
+      "slug": "ugnsbakad-kyckling-med-tzatziki-och-sallad-2",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Mandel och citronpaj",
+      "slug": "mandel-och-citronpaj",
+      "from": {
+        "servings": 8
+      },
+      "to": {
+        "servings": 8
+      }
+    },
+    {
+      "title": "Omelett med hallon",
+      "slug": "omelett-med-hallon",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Ugnsbakad kyckling med tzatziki och sallad",
+      "slug": "ugnsbakad-kyckling-med-tzatziki-och-sallad-2",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Lax med waldorfsallad",
+      "slug": "lax-med-waldorfsallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Omelett med bär",
+      "slug": "omelett-bar",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Lax med waldorfsallad",
+      "slug": "lax-med-waldorfsallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ägghack med kalkon",
+      "slug": "agghack-med-kalkon",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Kycklinggryta med röda linser",
+      "slug": "kycklinggryta-med-roda-linser",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Fruktsmoothie",
+      "slug": "fruktsmoothie",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kycklinggryta med röda linser",
+      "slug": "kycklinggryta-med-roda-linser",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Laxsallad med vindruvor",
+      "slug": "laxsallad-med-vindruvor",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Fruktsmoothie",
+      "slug": "fruktsmoothie",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Laxsallad med vindruvor",
+      "slug": "laxsallad-med-vindruvor",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Asiatiska köttbullar med nudelsallad",
+      "slug": "asiatiska-kottbullar-med-nudelsallad",
+      "from": {
+        "servings": 3
+      },
+      "to": {
+        "servings": 3
+      }
+    },
+    {
+      "title": "Bananplättar med mango och granatäpple",
+      "slug": "bananplattar-med-mango-och-granatapple",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Vegetarisk currygryta med panéer",
+      "slug": "vegetarisk-currygryta-med-pan-er",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Keso med hallon och granatäpple",
+      "slug": "keso-med-hallon-och-granatapple",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+      "slug": "ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+      "slug": "ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Hallon och kiwi med vit chokladcréme",
+      "slug": "hallon-och-kiwi-med-vit-chokladcreme",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Havregrynsgröt med torkad frukt och äpple",
+      "slug": "havregrynsgrot-torkad-frukt",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Ugnsbakad kyckling med quinoasallad och chilimajonäs",
+      "slug": "ugnsbakad-kyckling-med-quinoasallad-och-chilimajonas",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Torsk från mellanöstern",
+      "slug": "torsk-fran-mellanostern",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Yoghurt med ketomüsli",
+      "slug": "yoghurt-med-ketomusli",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Torsk från mellanöstern",
+      "slug": "torsk-fran-mellanostern",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Äggröra med paprika",
+      "slug": "aggrora-med-paprika",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Grekisk sallad",
+      "slug": "grekisk-sallad",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Bananplättar med jordgubbar och kokos",
+      "slug": "bananplattar-med-jordgubbar-och-kokos",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Havrefralla med morötter och torkade aprikoser",
+      "slug": "havrefralla-med-morotter-och-torkade-aprikoser",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Laxfilé med ratatouille",
+      "slug": "laxfile-med-ratatouille",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Grönsakswok med kyckling",
+      "slug": "gronsakswok-med-kyckling",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kokt ägg med majonnäs",
+      "slug": "kokt-agg-med-majonnas",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Grönsakswok med kyckling",
+      "slug": "gronsakswok-med-kyckling",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Köttfärspytt med italienska smaker",
+      "slug": "kottfarspytt-med-italienska-smaker",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Mango med keso och nötter",
+      "slug": "mango-med-keso-och-notter",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Köttfärspytt med italienska smaker",
+      "slug": "kottfarspytt-med-italienska-smaker",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Indisk laxgryta med röda linser",
+      "slug": "indisk-laxgryta-med-roda-linser",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Äggröra med granatäpple och kiwi",
+      "slug": "aggrora-med-granatapple-och-kiwi",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Indisk laxgryta med röda linser",
+      "slug": "indisk-laxgryta-med-roda-linser",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    },
+    {
+      "title": "Quinoasallad med stekt halloumi",
+      "slug": "quinoasallad-med-stekt-halloumi",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Havregrynsgröt med apelsin och kokos",
+      "slug": "havregrynsgrot-med-apelsin-och-kokos",
+      "from": {
+        "servings": 1
+      },
+      "to": {
+        "servings": 1
+      }
+    },
+    {
+      "title": "Quinoasallad med stekt halloumi",
+      "slug": "quinoasallad-med-stekt-halloumi",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Torsk teriyaki med grönsaker",
+      "slug": "torsk-teriyaki-med-gronsaker",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Hallon- och blåbärssmoothie",
+      "slug": "smoothie-blabarssmoothie",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Torsk teriyaki med grönsaker",
+      "slug": "torsk-teriyaki-med-gronsaker",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Tropisk fruktsallad",
+      "slug": "tropisk-fruktsallad",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Hallon- och blåbärssmoothie",
+      "slug": "smoothie-blabarssmoothie",
+      "from": {
+        "servings": 2
+      },
+      "to": {
+        "servings": 2
+      }
+    },
+    {
+      "title": "Kycklinggryta med bakad spetskål",
+      "slug": "kycklinggryta-med-bakad-spetskal",
+      "from": {
+        "servings": 4
+      },
+      "to": {
+        "servings": 4
+      }
+    }
+  ]
+}

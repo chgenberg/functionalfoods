@@ -1,0 +1,128 @@
+{
+  "basics": [
+    {
+      "slug": "omelett-hallon",
+      "url": "/kunskapsbank/recept/omelett-hallon"
+    },
+    {
+      "slug": "havrefrallor-morotter-aprikoser",
+      "url": "/kunskapsbank/recept/havrefrallor-morotter-aprikoser"
+    },
+    {
+      "slug": "aggrora-lax-2",
+      "url": "/kunskapsbank/recept/aggrora-lax-2"
+    },
+    {
+      "slug": "havregrynsgrot-torkad-frukt",
+      "url": "/kunskapsbank/recept/havregrynsgrot-torkad-frukt"
+    },
+    {
+      "slug": "bananplattar-jordgubbar-kokos",
+      "url": "/kunskapsbank/recept/bananplattar-jordgubbar-kokos"
+    },
+    {
+      "slug": "smoothie-2",
+      "url": "/kunskapsbank/recept/smoothie-2"
+    },
+    {
+      "slug": "rodbetsjuice-juice",
+      "url": "/kunskapsbank/recept/rodbetsjuice-juice"
+    },
+    {
+      "slug": "tropisk-chiafrogrot",
+      "url": "/kunskapsbank/recept/tropisk-chiafrogrot"
+    },
+    {
+      "slug": "keso-granola-fruktsallad",
+      "url": "/kunskapsbank/recept/keso-granola-fruktsallad"
+    },
+    {
+      "slug": "aggrora-granatapple-kiwi",
+      "url": "/kunskapsbank/recept/aggrora-granatapple-kiwi"
+    }
+  ],
+  "flow": [
+    {
+      "slug": "aggrora-lax",
+      "url": "/kunskapsbank/recept/aggrora-lax"
+    },
+    {
+      "slug": "omelettrulle",
+      "url": "/kunskapsbank/recept/omelettrulle"
+    },
+    {
+      "slug": "aggrora-fetaost-spenat",
+      "url": "/kunskapsbank/recept/aggrora-fetaost-spenat"
+    },
+    {
+      "slug": "omelett-ost-spenat",
+      "url": "/kunskapsbank/recept/omelett-ost-spenat"
+    },
+    {
+      "slug": "aggrora-asiatisk-avokadosallad",
+      "url": "/kunskapsbank/recept/aggrora-asiatisk-avokadosallad"
+    },
+    {
+      "slug": "omelett-bar",
+      "url": "/kunskapsbank/recept/omelett-bar"
+    },
+    {
+      "slug": "omelett-keso-bar",
+      "url": "/kunskapsbank/recept/omelett-keso-bar"
+    },
+    {
+      "slug": "macka-ost",
+      "url": "/kunskapsbank/recept/macka-ost"
+    },
+    {
+      "slug": "keso-bovetegranola-granola",
+      "url": "/kunskapsbank/recept/keso-bovetegranola-granola"
+    },
+    {
+      "slug": "kokt-agg-kaviar",
+      "url": "/kunskapsbank/recept/kokt-agg-kaviar"
+    }
+  ],
+  "energy": [
+    {
+      "slug": "kokta-agg-med-kaviar",
+      "url": "/kunskapsbank/recept/kokta-agg-med-kaviar"
+    },
+    {
+      "slug": "kycklingburgare-med-mangosalsa-och-wasabi",
+      "url": "/kunskapsbank/recept/kycklingburgare-med-mangosalsa-och-wasabi"
+    },
+    {
+      "slug": "chiapudding-med-med-apelsin-och-mynta",
+      "url": "/kunskapsbank/recept/chiapudding-med-med-apelsin-och-mynta"
+    },
+    {
+      "slug": "paprikastekt-torsk-med-linssallad-och-citronyoghurt",
+      "url": "/kunskapsbank/recept/paprikastekt-torsk-med-linssallad-och-citronyoghurt"
+    },
+    {
+      "slug": "vallmogrot-med-apelsinfileer",
+      "url": "/kunskapsbank/recept/vallmogrot-med-apelsinfileer"
+    },
+    {
+      "slug": "stekt-agg-med-tomat",
+      "url": "/kunskapsbank/recept/stekt-agg-med-tomat"
+    },
+    {
+      "slug": "ugnsomelett-med-keso-och-bar",
+      "url": "/kunskapsbank/recept/ugnsomelett-med-keso-och-bar"
+    },
+    {
+      "slug": "blabarssmoothie",
+      "url": "/kunskapsbank/recept/blabarssmoothie"
+    },
+    {
+      "slug": "laxbiffar-med-mango-och-wasabi",
+      "url": "/kunskapsbank/recept/laxbiffar-med-mango-och-wasabi"
+    },
+    {
+      "slug": "fisk-och-skaldjursgryta-fran-medelhavet",
+      "url": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet"
+    }
+  ]
+}
