@@ -257,23 +257,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // Known replacement overrides for missing prod DB images (ensure immediate correctness)
-    const replacementOverrides: Record<string, string> = {
-      'het-ratatouille': '/Ersattning-bilder/het-ratatouille-card.avif',
-      'havrefrallor-med-morotter-och-aprikoser': '/Ersattning-bilder/Havrefrallor.jpg',
-      'havrefralla-med-morotter-och-torkade-aprikoser': '/Ersattning-bilder/Havrefralla2.jpg',
-      'kycklinggryta-med-bakad-spetskal': '/Ersattning-bilder/Kycklinggryta-med-spetskal.jpg',
-      'laxburgare-med-kramig-gronsaksrora': '/Ersattning-bilder/Asiatisk-lax-med-kramig.jpg',
-      'ugnsbakad-tomat-med-kottfars': '/Ersattning-bilder/ugnsbakad-tomat.jpg'
-    };
-    for (const slug of validSlugs) {
-      if (!slugToImage[slug] && replacementOverrides[slug]) {
-        const p = path.join(process.cwd(), 'public', replacementOverrides[slug].replace(/^\//, ''));
-        if (fs.existsSync(p)) {
-          slugToImage[slug] = replacementOverrides[slug];
-        }
-      }
-    }
+    // Note: We rely on DB imageUrl or filesystem by slug; no hardcoded overrides
 
     // Create a map of recipe names to images. Prefer slug -> DB image; fallback to filesystem fuzzy matching
     // Also include slug keys in the response so clients can read by slug first
