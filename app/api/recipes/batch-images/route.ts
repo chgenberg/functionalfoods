@@ -137,7 +137,7 @@ function getAvailableImages(): string[] {
   try {
     const visionDir = path.join(process.cwd(), 'public', 'recept_images_vision_optimized');
     const optimizedDir = path.join(process.cwd(), 'public', 'recept_images_optimized');
-    const originalDir = path.join(process.cwd(), 'recept_images_2025');
+  const originalDir = path.join(process.cwd(), 'public', 'recept_images_2025');
     
     let files = [];
     
