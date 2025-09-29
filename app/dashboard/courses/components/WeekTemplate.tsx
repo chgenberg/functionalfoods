@@ -405,37 +405,34 @@ export default function WeekTemplate({
 
   const weekDays = getDaysForWeek(weekNumber);
 
-  // Compute first occurrence map for all meals in this course (weeks 1-6)
+  // Compute first occurrence map for meals within the CURRENT WEEK only
   const firstOccurrence = useMemo(() => {
     const map: Record<string, number> = {};
     const types = ['breakfast','lunch','dinner','snack','dessert'];
     const daysOrder = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
-    const source = courseType === 'basics' ? basicMealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
-    for (let w = 1; w <= 6; w++) {
-      const wk = (source as any)[`week${w}`];
-      if (!wk || !wk.days) continue;
-      for (let d = 0; d < 7; d++) {
-        const dayKey = wk.days[daysOrder[d]] || wk.days[`day${d+1}`];
-        if (!dayKey) continue;
-        for (let t = 0; t < types.length; t++) {
-          const mt = types[t] as keyof typeof dayKey;
-          const m: any = (dayKey as any)[mt];
-          if (!m) continue;
-          const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
-          const position = w * 100 + (d+1) * 10 + t; // deterministic order score
-          if (!(key in map)) map[key] = position;
-        }
+    const wk = (mealPlans as any)?.[`week${weekNumber}`] || {};
+    const days: any = wk.days || {};
+    for (let d = 0; d < 7; d++) {
+      const dayKey = days[daysOrder[d]] || days[`day${d+1}`];
+      if (!dayKey) continue;
+      for (let t = 0; t < types.length; t++) {
+        const mt = types[t] as keyof typeof dayKey;
+        const m: any = (dayKey as any)[mt];
+        if (!m) continue;
+        const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
+        const position = (d+1) * 10 + t; // order within current week
+        if (!(key in map)) map[key] = position;
       }
     }
     return map;
-  }, [courseType]);
+  }, [mealPlans, weekNumber]);
 
   const withResterName = (wNum: number, dNum: number, typeIdx: number, m: any): string => {
     if (!m || !m.name) return '';
     const base = m.name.replace(/\s*\(\d+\s*kcal\)/, '');
     if (/\brester\b/i.test(base)) return base; // already marked
     const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
-    const currentPos = wNum * 100 + dNum * 10 + typeIdx;
+    const currentPos = dNum * 10 + typeIdx; // position within current week
     const firstPos = firstOccurrence[key];
     if (firstPos !== undefined && currentPos > firstPos) {
       return `${base} (rester)`;
