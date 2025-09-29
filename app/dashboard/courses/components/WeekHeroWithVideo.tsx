@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { X, Play } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/app/hooks/useAuth';
 
 interface WeekHeroWithVideoProps {
@@ -25,10 +26,64 @@ export default function WeekHeroWithVideo({
 }: WeekHeroWithVideoProps) {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const { user } = useAuth();
-  const hasMultipleCourses = typeof window !== 'undefined' && localStorage.getItem('hasMultipleCourses') === 'true';
+  const pathname = usePathname();
+  const [ownedCourses, setOwnedCourses] = useState<Array<{ key: string; label: string; path: string }>>([]);
+
+  // Map course name from DB to dashboard overview path and label
+  function mapCourseToLink(courseName: string): { key: string; label: string; path: string } | null {
+    const mappings: Array<{ names: string[]; key: string; label: string; path: string }> = [
+      {
+        names: ['Functional Basics'],
+        key: 'basics',
+        label: 'Basics',
+        path: '/dashboard/courses/functional-basics/oversikt'
+      },
+      {
+        names: ['Functional Flow', 'Functional Gut Health/Flow'],
+        key: 'flow',
+        label: 'Flow',
+        path: '/dashboard/courses/functional-flow/oversikt'
+      },
+      {
+        names: ['Functional Energy', 'Functional Insulin balance/Energy'],
+        key: 'energy',
+        label: 'Energy',
+        path: '/dashboard/courses/functional-energy/oversikt'
+      }
+    ];
+    for (const m of mappings) {
+      if (m.names.includes(courseName)) return { key: m.key, label: m.label, path: m.path };
+    }
+    return null;
+  }
+
   useEffect(() => {
-    // Simple flag based on purchases fetched elsewhere; fallback to token presence
-    // This keeps component decoupled. If we want exact detection, we can wire an API later.
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (!token) return;
+    (async () => {
+      try {
+        const res = await fetch('/api/user/purchases', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const purchases = Array.isArray(data) ? data : data.purchases || [];
+        const links = purchases
+          .map((p: any) => mapCourseToLink(p.course?.name))
+          .filter(Boolean) as Array<{ key: string; label: string; path: string }>;
+        // Deduplicate by key
+        const dedup: Record<string, { key: string; label: string; path: string }> = {};
+        links.forEach(l => { dedup[l.key] = l; });
+        const finalLinks = Object.values(dedup);
+        if (finalLinks.length > 1) {
+          setOwnedCourses(finalLinks);
+        } else {
+          setOwnedCourses([]);
+        }
+      } catch (_) {
+        // ignore
+      }
+    })();
   }, []);
 
   return (
@@ -76,14 +131,27 @@ export default function WeekHeroWithVideo({
             </p>
           </motion.div>
 
-          {/* Course Switcher if multiple courses purchased */}
-          <div className="mt-4">
-            <div className="inline-flex gap-2 bg-white/80 backdrop-blur-sm rounded-full p-1 shadow-md">
-              <Link href="/dashboard/courses/functional-basics/oversikt" className="px-3 py-1.5 rounded-full text-sm bg-white hover:bg-gray-100 text-[#014421]">Basics</Link>
-              <Link href="/dashboard/courses/functional-flow/oversikt" className="px-3 py-1.5 rounded-full text-sm bg-white hover:bg-gray-100 text-[#014421]">Flow</Link>
-              <Link href="/dashboard/courses/functional-energy/oversikt" className="px-3 py-1.5 rounded-full text-sm bg-white hover:bg-gray-100 text-[#014421]">Energy</Link>
+          {/* Course Switcher if user owns multiple courses */}
+          {ownedCourses.length > 1 && (
+            <div className="mt-4">
+              <div className="inline-flex gap-2 bg-white/80 backdrop-blur-sm rounded-full p-1 shadow-md">
+                {ownedCourses.map((c) => {
+                  const isActive = pathname.startsWith(c.path.replace('/oversikt', ''));
+                  return (
+                    <Link
+                      key={c.key}
+                      href={c.path}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                        isActive ? 'bg-[#014421] text-white' : 'bg-white hover:bg-gray-100 text-[#014421]'
+                      }`}
+                    >
+                      {c.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

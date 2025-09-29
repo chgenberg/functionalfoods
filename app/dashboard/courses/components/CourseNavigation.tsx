@@ -123,8 +123,10 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
               </span>
             </Link>
             
-            <Link
-              href="/dashboard/community"
+            <a
+              href="https://www.facebook.com/groups/1168295381877412/"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`px-3 py-2 text-sm md:px-4 md:py-2.5 lg:px-5 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                 isOnCommunity 
                   ? 'bg-[#014421] text-white shadow-lg' 
@@ -135,7 +137,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                 <Users className="w-4 h-4" />
                 <span>Community</span>
               </span>
-            </Link>
+            </a>
             
             <Link
               href="/dashboard/settings"
@@ -251,8 +253,10 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             </Link>
             
             {/* Community */}
-            <Link
-              href="/dashboard/community"
+            <a
+              href="https://www.facebook.com/groups/1168295381877412/"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`
                 flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all flex-shrink-0 min-w-[70px]
                 ${isOnCommunity 
@@ -268,7 +272,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
                 <Users className="w-3 h-3" />
               </div>
               <span className="text-xs font-medium">Community</span>
-            </Link>
+            </a>
             
             {/* Settings */}
             <Link
