@@ -95,6 +95,17 @@ const courseMetadata: Record<string, {
     image: '/Kurser_bilder/Functional_insulin balance.jpg',
     progress: 20,
     nextLesson: 'Vecka 1: Energimetabolism'
+  },
+  'Functional Energy': {
+    color: '#FF7E70',
+    bgColor: 'bg-[#FF7E70]/10',
+    icon: '⚡',
+    dashboardPath: '/dashboard/courses/functional-energy',
+    duration: '6 veckor',
+    level: 'Avancerad',
+    image: '/Kurser_bilder/Functional_insulin balance.jpg',
+    progress: 20,
+    nextLesson: 'Vecka 1: Energimetabolism'
   }
 };
 

@@ -173,22 +173,24 @@ function findBestImageMatch(recipeName: string, availableImages: string[], size:
   let match = availableImages.find(img => normalizeSwedish(img) === normalized);
   if (match) return imageToOptimizedUrl(match, size, usage);
   
-  // 2. Contains match (both directions)
+  // 2. Contains match (recipe name is contained in image name)
+  // Only check if the image name contains the recipe name, not vice versa
   match = availableImages.find(img => {
     const normalizedImg = normalizeSwedish(img);
-    return normalizedImg.includes(normalized) || normalized.includes(normalizedImg);
+    return normalizedImg.includes(normalized);
   });
   if (match) return imageToOptimizedUrl(match, size, usage);
   
-  // 3. Word-based matching
-  const recipeWords = normalized.split(/\s+/).filter(w => w.length > 2);
+  // 3. Word-based matching (require more matches for accuracy)
+  const recipeWords = normalized.split(/\s+/).filter(w => w.length > 3); // Increased min length
   if (recipeWords.length > 0) {
     match = availableImages.find(img => {
       const imgWords = normalizeSwedish(img).split(/\s+/);
       const matchedWords = recipeWords.filter(rw => 
-        imgWords.some(iw => iw.includes(rw) || rw.includes(iw))
+        imgWords.some(iw => iw === rw) // Exact word match only
       );
-      return matchedWords.length >= Math.min(2, recipeWords.length);
+      // Require at least 2 words or 75% of words to match
+      return matchedWords.length >= Math.max(2, Math.ceil(recipeWords.length * 0.75));
     });
     if (match) return imageToOptimizedUrl(match, size, usage);
   }
