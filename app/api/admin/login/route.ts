@@ -10,10 +10,11 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const { email, password } = await request.json();
+    
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not configured');
     }
-    const { email, password } = await request.json();
 
     // Validera input
     if (!email || !password) {

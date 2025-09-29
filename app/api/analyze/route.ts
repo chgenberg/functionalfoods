@@ -3,10 +3,6 @@ import OpenAI from 'openai';
 import { AnalysisResult } from '@/app/types';
 import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET is not configured');
-}
 
 // Använd miljövariabeln för API-nyckeln
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
@@ -14,6 +10,11 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
 }) : null;
 
 function getUserIdFromToken(token: string) {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+  
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     if (typeof decoded === 'object' && decoded !== null && 'userId' in decoded) {

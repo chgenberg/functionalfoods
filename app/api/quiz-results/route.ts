@@ -3,17 +3,17 @@ import { resolveModel, chatWithFallback } from '@/app/lib/ai';
 import OpenAI from 'openai';
 import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET is not configured');
-}
-
 // Create OpenAI client only if API key is available
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 }) : null;
 
 function getUserIdFromToken(token: string) {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+  
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     if (typeof decoded === 'object' && decoded !== null && 'userId' in decoded) {
