@@ -1,25 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { addSecurityHeaders, isAllowedOrigin, logSecurityEvent } from './app/lib/security';
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
-
-// Use Upstash Redis for serverless-compatible rate limiting
-const redis = Redis.fromEnv();
-const ratelimit = new Ratelimit({
-  redis: redis,
-  limiter: Ratelimit.slidingWindow(60, '1 m'), // 60 requests per minute
-  analytics: true,
-});
-
+// Rate limiting temporarily disabled for launch
+// TODO: Configure Upstash Redis and re-enable
 async function allowRequest(key: string, limit: number = 60): Promise<boolean> {
-  try {
-    const { success } = await ratelimit.limit(key);
-    return success;
-  } catch (error) {
-    console.warn('Rate limit check failed, allowing request:', error);
-    return true; // Fail open for availability
-  }
+  return true; // Allow all requests for now
 }
 
 export function middleware(request: NextRequest) {
