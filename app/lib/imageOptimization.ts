@@ -44,8 +44,10 @@ export function optimizeImageUrl(
     const base = toApiImagePath(imageUrl);
     const cfg = imageSizes[size] || imageSizes.medium;
     const params = new URLSearchParams();
+    // Prefer constraining width only to keep natural aspect ratio on resize
     if (cfg.width) params.set('w', String(cfg.width));
-    if (cfg.height) params.set('h', String(cfg.height));
+    // Only force height for explicit square crops
+    if (aspectRatio === 'square' && cfg.height) params.set('h', String(cfg.height));
     if (cfg.quality) params.set('q', String(cfg.quality));
     // Prefer WebP in pipeline
     params.set('format', 'webp');

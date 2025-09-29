@@ -76,7 +76,8 @@ export async function GET(
     // Transform on the fly if size/quality requested
     const url = new URL(request.url);
     const w = parseInt(url.searchParams.get('w') || '0', 10) || undefined;
-    const h = parseInt(url.searchParams.get('h') || '0', 10) || undefined;
+    const hRaw = parseInt(url.searchParams.get('h') || '0', 10);
+    const h = hRaw > 0 ? hRaw : undefined;
     const q = parseInt(url.searchParams.get('q') || '0', 10) || 80;
     const fmt = (url.searchParams.get('format') || '').toLowerCase();
 
@@ -84,19 +85,25 @@ export async function GET(
     const ext = path.extname(targetPath).toLowerCase();
     let contentType = 'image/webp';
 
+    // Use 'inside' fit to preserve aspect ratio when only width is provided; fall back to cover when both provided
+    const fitMode = w && h ? 'cover' : 'inside';
+
     if (fmt === 'webp' || ext === '.webp') {
       const pipeline = sharp(fileBuffer).rotate();
-      if (w || h) pipeline.resize(w, h, { fit: 'cover' });
+      if (w || h) pipeline.resize(w, h, { fit: fitMode as any, withoutEnlargement: true });
       fileBuffer = await pipeline.webp({ quality: q }).toBuffer() as Buffer;
       contentType = 'image/webp';
     } else {
       const pipeline = sharp(fileBuffer).rotate();
-      if (w || h) pipeline.resize(w, h, { fit: 'cover' });
+      if (w || h) pipeline.resize(w, h, { fit: fitMode as any, withoutEnlargement: true });
       fileBuffer = await pipeline.jpeg({ quality: q, mozjpeg: true }).toBuffer() as Buffer;
       contentType = 'image/jpeg';
     }
 
-    return new NextResponse(fileBuffer, {
+    // Convert Node Buffer to ArrayBuffer slice to satisfy Web Response typing
+    const arrayBuffer = fileBuffer.buffer.slice(fileBuffer.byteOffset, fileBuffer.byteOffset + fileBuffer.byteLength);
+
+    return new NextResponse(arrayBuffer as ArrayBuffer, {
       headers: {
         'Content-Type': contentType,
         // Allow long caching in clients/CDN while letting us bust via file name changes
