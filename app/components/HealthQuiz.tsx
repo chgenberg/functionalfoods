@@ -553,8 +553,11 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
   const [locationContext, setLocationContext] = useState<any>(null);
   const [loadingContext, setLoadingContext] = useState(false);
+  
+  // Move these declarations after all useState hooks
   const quizQuestions: QuizQuestion[] = locale === 'en' ? QUIZ_EN : locale === 'es' ? QUIZ_ES : locale === 'de' ? QUIZ_DE : locale === 'fr' ? QUIZ_FR : QUIZ_SV;
   const STORAGE_KEY = `health_test_state_v3_${locale}`;
+  
   // Restore autosaved state
   useEffect(() => {
     // Clean up old versions
