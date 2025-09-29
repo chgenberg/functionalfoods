@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { X, Play } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect } from 'react';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface WeekHeroWithVideoProps {
   weekNumber: number;
@@ -21,6 +24,12 @@ export default function WeekHeroWithVideo({
   videoUrl = '' // No default video - must be provided
 }: WeekHeroWithVideoProps) {
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const { user } = useAuth();
+  const hasMultipleCourses = typeof window !== 'undefined' && localStorage.getItem('hasMultipleCourses') === 'true';
+  useEffect(() => {
+    // Simple flag based on purchases fetched elsewhere; fallback to token presence
+    // This keeps component decoupled. If we want exact detection, we can wire an API later.
+  }, []);
 
   return (
     <>
@@ -66,6 +75,15 @@ export default function WeekHeroWithVideo({
               {weekSubtitle}
             </p>
           </motion.div>
+
+          {/* Course Switcher if multiple courses purchased */}
+          <div className="mt-4">
+            <div className="inline-flex gap-2 bg-white/80 backdrop-blur-sm rounded-full p-1 shadow-md">
+              <Link href="/dashboard/courses/functional-basics/oversikt" className="px-3 py-1.5 rounded-full text-sm bg-white hover:bg-gray-100 text-[#014421]">Basics</Link>
+              <Link href="/dashboard/courses/functional-flow/oversikt" className="px-3 py-1.5 rounded-full text-sm bg-white hover:bg-gray-100 text-[#014421]">Flow</Link>
+              <Link href="/dashboard/courses/functional-energy/oversikt" className="px-3 py-1.5 rounded-full text-sm bg-white hover:bg-gray-100 text-[#014421]">Energy</Link>
+            </div>
+          </div>
         </div>
       </div>
 

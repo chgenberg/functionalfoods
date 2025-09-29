@@ -705,11 +705,11 @@ export default function WeekTemplate({
                   <h3 className="font-bold text-base sm:text-lg text-[#014421]">Community</h3>
                 </div>
                 <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Diskutera och dela erfarenheter</p>
-                <Link href="/dashboard/community">
+                <a href="https://www.facebook.com/groups/1168295381877412/" target="_blank" rel="noopener noreferrer">
                   <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
-                    Gå till community
+                    Öppna Facebook‑grupp
                   </button>
-                </Link>
+                </a>
               </div>
             </div>
           </div>

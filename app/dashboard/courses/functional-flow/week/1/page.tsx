@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import WeekTemplate from '@/app/dashboard/courses/components/WeekTemplate';
+import { flowMealPlans } from '@/app/data/mealPlans';
 
 export default function Week1Page() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
@@ -24,16 +25,8 @@ export default function Week1Page() {
   }, []);
 
   useEffect(() => {
-    const loadMealPlan = async () => {
-      try {
-        const res = await fetch('/api/meal-plans?course=flow&week=1');
-        const data = await res.json();
-        setMealPlan({ week1: data });
-      } catch (e) {
-        setMealPlan(null);
-      }
-    };
-    loadMealPlan();
+    // Use static, source-of-truth meal plan to avoid stale DB overrides
+    setMealPlan(flowMealPlans);
   }, []);
 
   if (!mealPlan) return null;
