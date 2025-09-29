@@ -1,0 +1,170 @@
+[
+  {
+    "title": "Färskostmacka med tomat",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 191,
+      "protein": 9,
+      "carbohydrates": 14,
+      "fat": 9,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/farskostmacka-med-tomat-card.webp"
+  },
+  {
+    "title": "Linssoppa från medelhavet",
+    "time": "30 minuter",
+    "mealType": "Lunch",
+    "servings": 2,
+    "nutrition": {
+      "calories": 251,
+      "protein": 12,
+      "carbohydrates": 27,
+      "fat": 12,
+      "fiber": 10
+    },
+    "imageUrl": "/recept_images_vision_optimized/linssoppa-fran-medelhavet-card.webp"
+  },
+  {
+    "title": "Kycklingburgare med papayasallad",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 407,
+      "protein": 46,
+      "carbohydrates": 20,
+      "fat": 46,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklingburgare-med-papayasallad-card.webp"
+  },
+  {
+    "title": "Morot- och kesolimpa",
+    "time": "50 minuter",
+    "mealType": "Egenbakat",
+    "servings": 10,
+    "nutrition": {
+      "calories": 143,
+      "protein": 8,
+      "carbohydrates": 13,
+      "fat": 8,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/morot-och-kesolimpa-card.webp"
+  },
+  {
+    "title": "Äggröra med asiatisk avokadosallad",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 467,
+      "protein": 18,
+      "carbohydrates": 12,
+      "fat": 18,
+      "fiber": 4
+    },
+    "imageUrl": "/recept_images_vision_optimized/aggrora-med-asiatisk-avokadosallad-card.webp"
+  },
+  {
+    "title": "Kycklingburgare med papayasallad",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 407,
+      "protein": 46,
+      "carbohydrates": 20,
+      "fat": 46,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/kycklingburgare-med-papayasallad-card.webp"
+  },
+  {
+    "title": "Köttfärsbiffar med mozzarella och tomatsallad",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 583,
+      "protein": 53,
+      "carbohydrates": 14,
+      "fat": 53,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/kottfarsbiffar-med-mozzarella-och-tomatsallad-card.webp"
+  },
+  {
+    "title": "Choklad- och kokoschiapudding",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 256,
+      "protein": 9,
+      "carbohydrates": 15,
+      "fat": 9,
+      "fiber": 1
+    },
+    "imageUrl": "/recept_images_vision_optimized/choklad-och-kokoschiapudding-card.webp"
+  },
+  {
+    "title": "Köttfärsbiffar med mozzarella och tomatsallad",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 583,
+      "protein": 53,
+      "carbohydrates": 14,
+      "fat": 53,
+      "fiber": 6
+    },
+    "imageUrl": "/recept_images_vision_optimized/kottfarsbiffar-med-mozzarella-och-tomatsallad-card.webp"
+  },
+  {
+    "title": "Laxgratäng med broccoli och scampi",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 654,
+      "protein": 46,
+      "carbohydrates": 17,
+      "fat": 46,
+      "fiber": 3
+    },
+    "imageUrl": "/recept_images_vision_optimized/laxgratang-med-broccoli-och-scampi-card.webp"
+  },
+  {
+    "title": "Bovetegranola",
+    "time": "35 minuter",
+    "mealType": "Egenbakat",
+    "servings": 18,
+    "nutrition": {
+      "calories": 214,
+      "protein": 4,
+      "carbohydrates": 17,
+      "fat": 4,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/bovetegranola-card.webp"
+  },
+  {
+    "title": "Keso med bovetegranola",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 325,
+      "protein": 17,
+      "carbohydrates": 18,
+      "fat": 17,
+      "fiber": 2
+    },
+    "imageUrl": "/recept_images_vision_optimized/keso-med-bovetegranola-card.webp"
+  }
+]
