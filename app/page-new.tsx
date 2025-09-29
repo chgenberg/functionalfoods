@@ -71,27 +71,11 @@ export default function Home() {
     return () => obs.disconnect();
   }, []);
 
-  // Ensure playback starts when in view (Safari robustness)
   useEffect(() => {
-    if (heroInView && videoRef.current) {
-      const video = videoRef.current;
-      video.muted = true;
-      video.setAttribute('playsinline', '');
-      
-      const isMobile = window.matchMedia('(max-width: 768px)').matches;
-      const newSrc = isMobile ? '/introvideo_mobile.mp4' : '/introvideo_compressed.mp4';
-
-      if (video.src !== newSrc) {
-          video.src = newSrc;
-          video.load();
-      }
-
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.log("Autoplay was prevented: ", error);
-        });
-      }
+    if (heroInView && videoRef.current && videoRef.current.paused) {
+      videoRef.current.play().catch(error => {
+        console.error("Hero video autoplay failed:", error);
+      });
     }
   }, [heroInView]);
 
@@ -135,6 +119,7 @@ export default function Home() {
             className="absolute inset-0 w-full h-full object-cover"
             style={{ zIndex: 10, opacity: 0, transition: 'opacity .25s ease' }}
             poster="/hero_poster.jpg"
+            src="/introvideo_compressed.mp4"
             playsInline
             muted
             loop

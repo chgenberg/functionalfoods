@@ -387,7 +387,8 @@ export default function RecipePage() {
       }
 
       const response = await fetch(`/api/recipes/${slug}`, {
-        headers
+        headers,
+        next: { revalidate: 3600 } // Revalidate every hour
       });
 
       if (!response.ok) {
@@ -705,7 +706,8 @@ export default function RecipePage() {
             recipeSlugs: [recipe.slug], 
             size: 'large',
             usage: 'detail'
-          })
+          }),
+          cache: 'force-cache' // Cache the image mapping result
         });
         
         console.log(`📡 Batch-images response status: ${mapRes.status}`);
@@ -974,6 +976,7 @@ export default function RecipePage() {
                         onLoad={() => {
                           console.log(`✅ Image loaded successfully: ${recipe.imageUrl}`);
                         }}
+                        loading="eager"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">

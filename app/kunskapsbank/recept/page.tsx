@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -67,6 +67,9 @@ const RecipesPage = () => {
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const observer = useRef<IntersectionObserver>();
 
   const { user } = useAuth();
   const t = useT();
@@ -82,6 +85,13 @@ const RecipesPage = () => {
     
     return () => clearTimeout(timeoutId);
   }, [user, selectedCategory, selectedStatus, searchQuery]);
+
+  useEffect(() => {
+    // Reset recipes and page when filters change
+    setRecipes([]);
+    setPage(1);
+    setHasMore(true);
+  }, [selectedCategory, selectedStatus, searchQuery]);
 
   useEffect(() => {
     // Generate search suggestions based on search query
@@ -113,8 +123,13 @@ const RecipesPage = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const fetchRecipes = async () => {
+  const fetchRecipes = useCallback(async (reset = false) => {
     try {
+      if (reset) {
+        setPage(1);
+        setRecipes([]);
+      }
+      
       setLoading(true);
       setError(null);
 
@@ -128,7 +143,8 @@ const RecipesPage = () => {
       }
 
       const params = new URLSearchParams();
-      params.append('limit', '100');
+      params.append('limit', '12');
+      params.append('page', page.toString());
       
       if (selectedCategory !== 'all') {
         params.append('category', selectedCategory);
@@ -149,42 +165,12 @@ const RecipesPage = () => {
       }
 
       const data: RecipeData = await response.json();
-      let fetchedRecipes = data.recipes || [];
+      const fetchedRecipes = data.recipes || [];
 
-      // Batch-map images using filesystem fuzzy matching
-      try {
-        const names = fetchedRecipes.map(r => r.title);
-        const slugs = fetchedRecipes.map(r => r.slug);
-        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-          cache: 'no-store',
-          body: JSON.stringify({ 
-            recipeNames: names, 
-            recipeSlugs: slugs, 
-            size: 'medium',
-            usage: 'card'
-          })
-        });
-        if (mapRes.ok) {
-          const { images } = await mapRes.json();
-          fetchedRecipes = fetchedRecipes.map(r => {
-            const mapped = images && images[r.title];
-            // Only override if recipe has no image or a known placeholder
-            const hasValidImage = !!r.imageUrl && !r.imageUrl.includes('placeholder');
-            return {
-              ...r,
-              imageUrl: hasValidImage ? r.imageUrl : (mapped || r.imageUrl)
-            };
-          });
-        }
-      } catch (e) {
-        console.warn('batch-images mapping failed, using original imageUrl', e);
-      }
-      
-      setRecipes(fetchedRecipes);
+      setRecipes(prev => reset ? fetchedRecipes : [...prev, ...fetchedRecipes]);
       setCategories(data.categories || []);
       setStatistics(data.statistics || { total: 0, free: 0, premium: 0, visible: 0 });
+      setHasMore(data.pagination.hasMore);
       
       setUserAccess({ 
         hasAccess: !!user && !!token, 
@@ -200,7 +186,18 @@ const RecipesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, selectedCategory, selectedStatus, searchQuery, user]);
+
+  const lastRecipeElementRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore]);
 
   const filteredRecipes = recipes.filter(recipe => {
     const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
@@ -490,6 +487,7 @@ const RecipesPage = () => {
             {filteredRecipes.map((recipe, index) => (
               <motion.div
                 key={recipe.id}
+                ref={index === filteredRecipes.length - 1 ? lastRecipeElementRef : null}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
@@ -503,6 +501,7 @@ const RecipesPage = () => {
             {filteredRecipes.map((recipe, index) => (
               <motion.div
                 key={recipe.id}
+                ref={index === filteredRecipes.length - 1 ? lastRecipeElementRef : null}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
@@ -565,43 +564,8 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const canAccess = recipe.isAccessible !== false && (recipe.isFree || !recipe.isPremium || userAccess.hasAccess);
   const isComingSoon = recipe.isComingSoon === true;
   const [imageError, setImageError] = useState(false);
-  const [optimizedImageUrl, setOptimizedImageUrl] = useState<string>(recipe.imageUrl || '');
   const t = useT();
-  
-  // Load Vision-optimized image for this recipe
-  useEffect(() => {
-    if (!recipe.title) return;
-    
-    (async () => {
-      try {
-        const mapRes = await fetch(`/api/recipes/batch-images?v=${Date.now()}&vision=true`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-          cache: 'no-store',
-          body: JSON.stringify({ 
-            recipeNames: [recipe.title], 
-            recipeSlugs: [recipe.slug], 
-            size: 'medium',
-            usage: 'card'
-          })
-        });
-        
-        if (mapRes.ok) {
-          const { images } = await mapRes.json();
-          const mapped = images && images[recipe.title];
-          if (mapped) {
-            // Prefer existing valid image if present; otherwise use mapped
-            const hasValid = !!recipe.imageUrl && !recipe.imageUrl.includes('placeholder');
-            setOptimizedImageUrl(hasValid ? recipe.imageUrl! : mapped);
-          } else if (recipe.imageUrl) {
-            setOptimizedImageUrl(recipe.imageUrl);
-          }
-        }
-      } catch (e) {
-        console.error('❌ Recipe card: Failed to load Vision-optimized image', e);
-      }
-    })();
-  }, [recipe.title, recipe.slug]);
+  const optimizedImageUrl = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'medium', 'card') : '';
 
   return (
     <Link href={canAccess && !isComingSoon ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -625,6 +589,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
               }}
               onError={() => setImageError(true)}
               priority={false}
+              loading="lazy"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">
@@ -704,6 +669,7 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
   const [imageError, setImageError] = useState(false);
   const t = useT();
+  const optimizedImageUrl = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'small', 'square') : '';
 
   return (
     <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -714,9 +680,9 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
         <div className="flex gap-4">
           {/* Image */}
           <div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-            {recipe.imageUrl && !imageError ? (
+            {optimizedImageUrl && !imageError ? (
               <Image
-                src={optimizeImageUrl(recipe.imageUrl, 'small', 'square')}
+                src={optimizedImageUrl}
                 alt={recipe.imageAlt || recipe.title}
                 fill
                 sizes={getResponsiveSizes('small')}
@@ -728,6 +694,7 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
                 }}
                 onError={() => setImageError(true)}
                 priority={false}
+                loading="lazy"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-yellow-100">
