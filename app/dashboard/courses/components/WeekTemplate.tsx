@@ -528,33 +528,31 @@ export default function WeekTemplate({
           // ignore enriched failures
         }
 
-        // 2) Fallback to API batch mapping for any missing
-        const stillMissing = allMeals.filter(m => !imageMap[m.key]);
-        if (stillMissing.length > 0) {
-          const resp = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+        // 2) Call API batch mapping for ALL meals (will override enriched to enforce slug/DB imageUrl)
+        const resp = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
             cache: 'no-store',
             body: JSON.stringify({ 
-              recipeNames: stillMissing.map(m => m.name), 
-              recipeSlugs: stillMissing.map(m => m.slug), 
+              recipeNames: allMeals.map(m => m.name), 
+              recipeSlugs: allMeals.map(m => m.slug), 
               size: 'small',
               usage: 'card'
             })
           });
-          if (resp.ok) {
-            const data = await resp.json();
-            const images: Record<string, string> = data.images || {};
-            // Prefer exact slug match first, fall back to name key
-            stillMissing.forEach(meal => {
-              const bySlug = meal.slug ? images[meal.slug] : undefined;
-              const byName = images[meal.name];
-              const url = bySlug || byName;
-              if (url) {
-                imageMap[meal.key] = optimizeImageUrl(url, 'large', 'landscape');
-              }
-            });
-          }
+        if (resp.ok) {
+          const data = await resp.json();
+          const images: Record<string, string> = data.images || {};
+          // Overwrite any existing mapping using slug first (DB imageUrl), then name
+          allMeals.forEach(meal => {
+            const bySlug = meal.slug ? images[meal.slug] : undefined;
+            const byName = images[meal.name];
+            const url = bySlug || byName;
+            if (url) {
+              imageMap[meal.key] = optimizeImageUrl(url, 'large', 'landscape');
+            }
+          });
+        }
         }
 
         setMealImages(imageMap);
