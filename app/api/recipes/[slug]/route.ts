@@ -61,7 +61,11 @@ export async function GET(
     }
 
     console.log(`🖼️ Recipe API: Serving recipe "${localized.title}" with imageUrl: ${localized.imageUrl}`);
-    return NextResponse.json(localized);
+    return NextResponse.json(localized, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0'
+      }
+    });
   } catch (error) {
     console.error('Error fetching recipe:', error);
     return NextResponse.json(
