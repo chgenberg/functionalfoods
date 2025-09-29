@@ -479,7 +479,7 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
       {/* Main Content */}
       <div className="w-full px-4 py-4 md:py-8 overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="flex gap-6">
+          <div className="flex flex-col-reverse lg:flex-row gap-6">
             {/* Main Content Area */}
             <div className="flex-1">
               {/* Content based on active tab */}
@@ -904,36 +904,31 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
             </div>
 
             {/* Right Sidebar - Icon Navigation */}
-            <div className="hidden lg:block w-20">
+            <aside className="lg:w-28">
               <div className="sticky top-8">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3">
-                  <div className="space-y-3">
+                  <nav aria-label="Resultatsektioner" className="space-y-2">
                     {tabs.map((tab) => (
                       <motion.button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className={`group relative w-14 h-14 rounded-xl text-2xl transition-all flex items-center justify-center ${
+                        className={`group relative w-full h-20 rounded-xl text-2xl transition-all flex flex-col items-center justify-center text-center ${
                           activeTab === tab.id
-                            ? 'bg-primary text-black shadow-lg'
-                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                            ? 'bg-primary text-white shadow-lg'
+                            : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-primary'
                         }`}
-                        title={tab.label}
+                        aria-current={activeTab === tab.id ? 'page' : undefined}
                       >
-                        <tab.icon className="w-6 h-6" />
-                        
-                        {/* Tooltip on hover */}
-                        <div className="absolute right-full mr-3 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-                          {tab.label}
-                          <div className="absolute top-1/2 right-0 transform translate-x-1 -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-l-4 border-transparent border-l-gray-900"></div>
-                        </div>
+                        <tab.icon className="w-6 h-6 mb-1" />
+                        <span className="text-xs font-medium">{tab.label}</span>
                       </motion.button>
                     ))}
-                  </div>
+                  </nav>
                 </div>
               </div>
-            </div>
+            </aside>
           </div>
 
           {/* Mobile Bottom Navigation */}
