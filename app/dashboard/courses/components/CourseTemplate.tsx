@@ -12,6 +12,7 @@ import VideoModal from '@/app/dashboard/courses/components/VideoModal';
 import DayModal from '@/app/dashboard/courses/components/DayModal';
 import { dayImages } from '@/app/data/dayImages';
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun } from 'lucide-react';
+import { FaFacebook } from 'react-icons/fa';
 
 // Helper function to format meal names with bold "rester"
 const formatMealName = (mealName: string) => {
