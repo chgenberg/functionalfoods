@@ -147,16 +147,12 @@ export function getFlowWeekData(weekNumber: number): WeekMealPlan | null {
 // Functional Insulin balance/Energy meal plans
 export const energyMealPlans: Record<string, WeekMealPlan> = {
   "week1": {
-    "title": "Vecka 1: Typ 2-diabetes kostschema",
+    "title": "Vecka 1",
     "days": {
       "Måndag": {
         "breakfast": {
           "name": "Yoghurt med apelsin- och bovetegranola",
-          "recipeLink": "/kunskapsbank/recept/yoghurt-bovetegranola-granola"
-        },
-        "snack": {
-          "name": "Egenbakat: Bovetegranola med apelsin och kardemumma",
-          "recipeLink": "/kunskapsbank/recept/bovetegranola-med-apelsin-och-kardemumma"
+          "recipeLink": "/kunskapsbank/recept/yoghurt-med-apelsin-och-bovetegranola"
         },
         "lunch": {
           "name": "Omelett med paprika och champinjoner",
@@ -165,6 +161,10 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         "dinner": {
           "name": "Kycklingburgare med mangosalsa och wasabi",
           "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-mangosalsa-och-wasabi"
+        },
+        "snack": {
+          "name": "Bovetegranola med apelsin och kardemumma",
+          "recipeLink": "/kunskapsbank/recept/bovetegranola-med-apelsin-och-kardemumma"
         }
       },
       "Tisdag": {
@@ -173,7 +173,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/stekt-agg-med-tomat"
         },
         "lunch": {
-          "name": "Kycklingburgare med mangosalsa och wasabi rester",
+          "name": "Kycklingburgare med mangosalsa och wasabi",
           "recipeLink": "/kunskapsbank/recept/kycklingburgare-med-mangosalsa-och-wasabi"
         },
         "dinner": {
@@ -187,7 +187,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/slat-havregrynsgrot-med-vaniljprotein"
         },
         "lunch": {
-          "name": "Tonfiskröra med rödbetor rester",
+          "name": "Tonfiskröra med rödbetor",
           "recipeLink": "/kunskapsbank/recept/tonfiskrora-med-rodbetor"
         },
         "dinner": {
@@ -201,7 +201,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/keso-med-melon-och-ananas"
         },
         "lunch": {
-          "name": "Köttfärswrap med röd curry och äpple rester",
+          "name": "Köttfärswrap med röd curry och äpple",
           "recipeLink": "/kunskapsbank/recept/kottfarswrap-med-rod-curry-och-apple"
         },
         "dinner": {
@@ -215,7 +215,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/bananpannkakor-med-pistagenotter-och-bar"
         },
         "lunch": {
-          "name": "Apelsinkyckling med blomkålsris rester",
+          "name": "Apelsinkyckling med blomkålsris",
           "recipeLink": "/kunskapsbank/recept/apelsinkyckling-med-blomkalsris"
         },
         "dinner": {
@@ -223,7 +223,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet"
         },
         "snack": {
-          "name": "Egenbakat: Kesofrallor med äpple och pumpafrön",
+          "name": "Kesofrallor med äpple och pumpafrön",
           "recipeLink": "/kunskapsbank/recept/kesofrallor-med-apple-och-pumpafron"
         }
       },
@@ -233,7 +233,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/kesofralla-med-skinka-och-tomat"
         },
         "lunch": {
-          "name": "Fisk och skaldjursgryta från medelhavet rester",
+          "name": "Fisk och skaldjursgryta från medelhavet",
           "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet"
         },
         "dinner": {
@@ -251,7 +251,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/omelett-champinjoner"
         },
         "lunch": {
-          "name": "Biff med sötpotatis rester",
+          "name": "Biff med sötpotatis",
           "recipeLink": "/kunskapsbank/recept/biff-med-sotpotatis"
         },
         "dinner": {
