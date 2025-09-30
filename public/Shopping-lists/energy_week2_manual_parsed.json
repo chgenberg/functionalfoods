@@ -1,0 +1,288 @@
+[
+  {
+    "title": "Yoghurt med bär och bovetegranola",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 391,
+      "protein": 11,
+      "carbohydrates": 31,
+      "fat": 11,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Quinoasallad med halloumi",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 572,
+      "protein": 19,
+      "carbohydrates": 26,
+      "fat": 19,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Kycklingwok med teriyakisås och cashewnötter",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 405,
+      "protein": 34,
+      "carbohydrates": 30,
+      "fat": 34,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Rökt lax med ägghack",
+    "time": "10 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 297,
+      "protein": 21,
+      "carbohydrates": 2,
+      "fat": 21,
+      "fiber": 0
+    }
+  },
+  {
+    "title": "Kycklingwok med teriyakisås och cashewnötter",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 405,
+      "protein": 34,
+      "carbohydrates": 30,
+      "fat": 34,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Panerad torsk med blomkålsris",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 598,
+      "protein": 39,
+      "carbohydrates": 65,
+      "fat": 39,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Smoothiebowl med spirulina och havre",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 361,
+      "protein": 51,
+      "carbohydrates": 49,
+      "fat": 51,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Panerad torsk med blomkålsris",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 598,
+      "protein": 39,
+      "carbohydrates": 65,
+      "fat": 39,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Varm tacosallad",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 385,
+      "protein": 33,
+      "carbohydrates": 21,
+      "fat": 33,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Kesotortilla med tomat, pesto och kalkon",
+    "time": "35 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 289,
+      "protein": 29,
+      "carbohydrates": 5,
+      "fat": 29,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Varm tacosallad",
+    "time": "25 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 385,
+      "protein": 33,
+      "carbohydrates": 21,
+      "fat": 33,
+      "fiber": 3
+    }
+  },
+  {
+    "title": "Tofugryta med blomkålsris",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 632,
+      "protein": 21,
+      "carbohydrates": 32,
+      "fat": 21,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Kesotortilla med tomat, pesto och kalkon",
+    "time": "35 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 289,
+      "protein": 29,
+      "carbohydrates": 5,
+      "fat": 29,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Tofugryta med blomkålsris",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 632,
+      "protein": 21,
+      "carbohydrates": 32,
+      "fat": 21,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Lövbiffsrullader med cheddar och coleslaw",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 645,
+      "protein": 48,
+      "carbohydrates": 14,
+      "fat": 48,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Kesofralla med färskost och gurka",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 1,
+    "nutrition": {
+      "calories": 370,
+      "protein": 18,
+      "carbohydrates": 30,
+      "fat": 18,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Lövbiffsrullader med cheddar och coleslaw",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 645,
+      "protein": 48,
+      "carbohydrates": 14,
+      "fat": 48,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Italiensk kycklinggratäng med mozzarella",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 455,
+      "protein": 45,
+      "carbohydrates": 17,
+      "fat": 45,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Pistagekakor",
+    "time": "20 minuter",
+    "mealType": "Efterrätt",
+    "servings": 12,
+    "nutrition": {
+      "calories": 236,
+      "protein": 7,
+      "carbohydrates": 18,
+      "fat": 7,
+      "fiber": 1
+    }
+  },
+  {
+    "title": "Tropisk smoothie med kokosmjölk",
+    "time": "5 minuter",
+    "mealType": "Frukost",
+    "servings": 2,
+    "nutrition": {
+      "calories": 196,
+      "protein": 2,
+      "carbohydrates": 26,
+      "fat": 2,
+      "fiber": 2
+    }
+  },
+  {
+    "title": "Italiensk kycklinggratäng med mozzarella",
+    "time": "30 minuter",
+    "mealType": "Middag",
+    "servings": 2,
+    "nutrition": {
+      "calories": 455,
+      "protein": 45,
+      "carbohydrates": 17,
+      "fat": 45,
+      "fiber": 5
+    }
+  },
+  {
+    "title": "Lax- och broccolipaj",
+    "time": "45 minuter",
+    "mealType": "Middag",
+    "servings": 6,
+    "nutrition": {
+      "calories": 574,
+      "protein": 26,
+      "carbohydrates": 5,
+      "fat": 26,
+      "fiber": 1
+    }
+  }
+]
