@@ -580,8 +580,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const [imageError, setImageError] = useState(false);
   const [imageSrc, setImageSrc] = useState(() => {
     const primary = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape') : '';
-    // Prefer card-sized vision image for grid cards to reduce payload
-    return primary || optimizeImageUrl(`/recept_images_vision_optimized/${recipe.slug}-card.webp`, 'medium', 'landscape');
+    return primary || '';
   });
   const [fallbackStep, setFallbackStep] = useState(0);
   const t = useT();
@@ -589,9 +588,6 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const handleImageError = () => {
     // Try alternative sources based on known storage folders, then fallback to placeholder
     const candidates = [
-      optimizeImageUrl(`/recept_images_vision_optimized/${recipe.slug}-card.webp`, 'medium', 'landscape'),
-      optimizeImageUrl(`/recept_images_optimized/${recipe.slug}-card-medium.webp`, 'medium', 'landscape'),
-      optimizeImageUrl(`/recept_images_2025/${recipe.slug}.webp`, 'medium', 'landscape'),
       '/images/recipe-placeholder.svg'
     ];
     if (fallbackStep < candidates.length) {

@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { mealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
-
-function fallbackMealPlan(course: string, weekNumber: number) {
-  const key = `week${weekNumber}` as const;
-  if (course === 'basic') return (mealPlans as any)[key] || null;
-  if (course === 'flow') return (flowMealPlans as any)[key] || null;
-  if (course === 'energy') return (energyMealPlans as any)[key] || null;
-  return null;
-}
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,30 +12,20 @@ export async function GET(req: NextRequest) {
     const course = (searchParams.get('course') || 'basic') as 'basic' | 'flow' | 'energy';
     const weekNumber = parseInt(searchParams.get('week') || '1', 10);
 
-    // Remove temporary override for Basic week 1 – now read from DB or fallback
+    // DB is the single source of truth. Do not fall back to TS.
+    const row = await (prisma as any).mealPlanWeek?.findUnique({
+      where: { course_weekNumber: { course, weekNumber } }
+    });
 
-    // Try DB first
-    try {
-      const row = await (prisma as any).mealPlanWeek?.findUnique({
-        where: { course_weekNumber: { course, weekNumber } }
-      });
-      if (row) {
-        return NextResponse.json({
-          title: row.title || `Vecka ${weekNumber}`,
-          days: row.days
-        }, { headers: { 'Cache-Control': 'no-store' } });
-      }
-    } catch (e) {
-      console.warn('MealPlanWeek not available, using fallback');
+    if (row) {
+      return NextResponse.json({
+        title: row.title || `Vecka ${weekNumber}`,
+        days: row.days
+      }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    // Fallback to static TS
-    const fallback = fallbackMealPlan(course, weekNumber);
-    if (!fallback) {
-      return NextResponse.json({ title: `Vecka ${weekNumber}`, days: {} }, { headers: { 'Cache-Control': 'no-store' } });
-    }
-
-    return NextResponse.json(fallback, { headers: { 'Cache-Control': 'no-store' } });
+    // If not found, return an empty structure so UI doesn't show stale content
+    return NextResponse.json({ title: `Vecka ${weekNumber}`, days: {} }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('Meal Plans API error:', e);
     return NextResponse.json({ title: '', days: {} }, { status: 500, headers: { 'Cache-Control': 'no-store' } });
