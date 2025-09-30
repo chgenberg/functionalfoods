@@ -84,6 +84,8 @@ const getMealLabel = (type: string, name?: string): string => {
     'ketomüsli',
     'ketomusli',
     'bovetegranola',
+    'kesofrallor',
+    'kesofralla',
     'bananmuffin',
     'muffin',
     'gino',
