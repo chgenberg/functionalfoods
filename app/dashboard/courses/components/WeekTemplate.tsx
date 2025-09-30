@@ -79,10 +79,15 @@ const RecipeNutrition = ({ recipeLink }: { recipeLink?: string }) => {
 // Map meal type + name to display label (e.g., classify baked items as "Egenbakat")
 const getMealLabel = (type: string, name?: string): string => {
   const lower = (name || '').toLowerCase();
-  // Common baked items that should render under "Egenbakat" (only standalone baked goods)
+  // Common baked items that should render under "Egenbakat" (standalone baked goods)
   const egenbakatMatchers = [
     'ketomüsli',
-    'ketomusli'
+    'ketomusli',
+    'morot- och kesolimpa',
+    'kesolimpa',
+    'bovetegranola',
+    'bananmuffins',
+    'jordgubbssylt'
   ];
   if (lower && egenbakatMatchers.some(k => lower.includes(k))) return 'Egenbakat';
 
