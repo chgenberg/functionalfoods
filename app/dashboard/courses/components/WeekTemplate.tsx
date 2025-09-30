@@ -82,9 +82,7 @@ const getMealLabel = (type: string, name?: string): string => {
   // Common baked items that should render under "Egenbakat" (only standalone baked goods)
   const egenbakatMatchers = [
     'ketomüsli',
-    'ketomusli',
-    'jordgubbssylt',
-    'sylt'
+    'ketomusli'
   ];
   if (lower && egenbakatMatchers.some(k => lower.includes(k))) return 'Egenbakat';
 
