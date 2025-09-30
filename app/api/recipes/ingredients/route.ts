@@ -47,8 +47,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
     }
     
-    // Check if we need to make extra portions for "rester"
-    const resterMultiplier = checkForResterLogic(recipeSlug, courseType, weekNumber);
+    // Check if we need to make extra portions for "rester" (simplified - always return 1)
+    const resterMultiplier = 1;
     const originalServings = recipe.servings || 4;
     
     console.log(`🥘 Recipe: ${recipe.title}`);
