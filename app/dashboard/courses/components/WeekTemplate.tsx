@@ -526,7 +526,9 @@ export default function WeekTemplate({
         }
 
         // 2) Call API batch mapping for ALL meals (will override enriched to enforce slug/DB imageUrl)
-        const resp = await fetch(`/api/recipes/batch-images?v=${Date.now()}`, {
+        // Force fresh lookup by adding unique cache-bust param
+        const cacheBust = `${weekNumber}-${courseType}-${Date.now()}`;
+        const resp = await fetch(`/api/recipes/batch-images?v=${cacheBust}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
             cache: 'no-store',
