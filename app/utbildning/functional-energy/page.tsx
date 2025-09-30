@@ -10,6 +10,7 @@ import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight, Battery, Coffee, Moon } from 'lucide-react';
+import { formatPrice } from '@/app/lib/utils';
 
 export default function FunctionalEnergyPage() {
   // Add CSS for gradient animation
@@ -247,7 +248,7 @@ export default function FunctionalEnergyPage() {
               transition={{ delay: 0.4 }}
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-[#93C560]/20 max-w-[260px] mx-auto flex flex-col items-center gap-3"
             >
-              <div className="text-2xl font-bold text-primary">2,295 kr</div>
+              <div className="text-2xl font-bold text-primary">{formatPrice(2295)} kr</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
                 onClick={handleAddToCart}
@@ -278,269 +279,273 @@ export default function FunctionalEnergyPage() {
           </motion.div>
         </div>
 
-        {/* Video Section */}
-        <section className="py-16 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Course Video Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mb-16 max-w-4xl mx-auto"
+        >
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#93C560]/10">
+            <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
+              Upptäck <span className="text-[#93C560] font-bold">Functional Insulin balance/Energy</span>
+            </h2>
+            <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+              <iframe
+                src="https://player.vimeo.com/video/1099287748"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <p className="text-center text-text-secondary mt-4 text-sm">
+              Se hur kursen hjälper dig få stabilt blodsocker och jämn energi
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Tab Navigation */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="flex flex-wrap justify-center gap-2 mb-12"
+        >
+          {[
+            { id: 'overview', label: 'Översikt' },
+            { id: 'benefits', label: 'Resultat' },
+            { id: 'content', label: 'Innehåll' },
+            { id: 'functional-foods', label: 'Functional Foods' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                activeTab === tab.id 
+                  ? 'bg-[#93C560] text-white shadow-lg' 
+                  : 'bg-white/80 backdrop-blur-sm text-text-secondary hover:bg-white hover:text-[#93C560]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          {activeTab === 'overview' && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-8"
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="max-w-4xl mx-auto mb-16"
             >
-              <h2 className="text-3xl font-bold text-[#014421] mb-4">Upptäck Functional Insulin balance/Energy</h2>
-              <p className="text-lg text-gray-600">Se hur kursen hjälper dig få stabilt blodsocker och jämn energi</p>
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#93C560]/10">
+                <h2 className="text-3xl font-light text-center mb-8 text-[#93C560]">
+                  För vem är kursen?
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {forWho.map((item, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-start gap-3 p-4 bg-background rounded-lg"
+                    >
+                      <CheckCircle className="w-6 h-6 text-[#93C560] flex-shrink-0 mt-1" />
+                      <span className="text-text-secondary">{item}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
             </motion.div>
+              )}
 
-            {/* Tabs */}
-            <div className="flex justify-center mb-8">
-              <div className="bg-gray-100 p-1 rounded-full inline-flex">
-                {['overview', 'results', 'content', 'functional'].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                      activeTab === tab 
-                        ? 'bg-white text-primary shadow-md' 
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
+          {activeTab === 'benefits' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="mb-16"
+            >
+              <h2 className="text-3xl font-light text-center mb-12 text-[#93C560]">
+                Konkreta resultat du kan <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">se och känna</span>
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                {benefits.map((benefit, index) => (
+                  <motion.div 
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#93C560]/10 group"
                   >
-                    {tab === 'overview' && 'Översikt'}
-                    {tab === 'results' && 'Resultat'}
-                    {tab === 'content' && 'Innehåll'}
-                    {tab === 'functional' && 'Functional Foods'}
-                  </button>
+                    <div className="flex items-center mb-4">
+                      {benefit.icon && <benefit.icon className="w-12 h-12 text-[#93C560] mb-2 group-hover:scale-110 transition-transform" />}
+                      <h3 className="text-xl font-bold text-[#93C560] ml-3">{benefit.title}</h3>
+                    </div>
+                    <p className="text-text-secondary leading-relaxed">{benefit.description}</p>
+                  </motion.div>
                 ))}
               </div>
-            </div>
-
-            <AnimatePresence mode="wait">
-              {activeTab === 'overview' && (
-                <motion.div
-                  key="overview"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video bg-gray-100"
-                >
-                  <iframe
-                    className="absolute inset-0 w-full h-full"
-                    src="https://player.vimeo.com/video/1099287748"
-                    title="Functional Insulin balance/Energy - Kursöversikt"
-                    frameBorder={0}
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-                    allowFullScreen
-                  ></iframe>
-                </motion.div>
+            </motion.div>
               )}
 
-              {activeTab === 'results' && (
-                <motion.div
-                  key="results"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg"
-                >
-                  <h3 className="text-2xl font-bold text-[#014421] mb-6">Vad du kommer uppnå</h3>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {benefits.map((benefit, index) => (
-                      <div key={index} className="flex items-start gap-4">
-                        <div className="w-12 h-12 bg-[#93C560]/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <benefit.icon className="w-6 h-6 text-[#93C560]" />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-[#014421] mb-1">{benefit.title}</h4>
-                          <p className="text-gray-600">{benefit.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
+          {activeTab === 'content' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="mb-16"
+            >
+              <h2 className="text-3xl font-light text-center mb-12 text-[#93C560]">
+                Vad får du i <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">programmet?</span>
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {includes.map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#93C560]/10 group"
+                  >
+                    <item.icon className="w-12 h-12 text-[#93C560] mb-4 group-hover:scale-110 transition-transform" />
+                    <h3 className="text-lg font-bold text-[#93C560] mb-3">{item.title}</h3>
+                    <p className="text-text-secondary text-sm leading-relaxed">{item.description}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
-              {activeTab === 'content' && (
-                <motion.div
-                  key="content"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg"
-                >
-                  <h3 className="text-2xl font-bold text-[#014421] mb-6">Vad ingår i kursen?</h3>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {includes.map((item, index) => (
-                      <div key={index} className="flex items-start gap-4">
-                        <div className="w-10 h-10 bg-[#93C560]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <item.icon className="w-5 h-5 text-[#93C560]" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-[#014421] mb-1">{item.title}</h4>
-                          <p className="text-sm text-gray-600">{item.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {activeTab === 'functional' && (
-                <motion.div
-                  key="functional"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg"
-                >
-                  <h3 className="text-2xl font-bold text-[#014421] mb-6">Varför Functional Foods?</h3>
-                  <p className="text-gray-700 mb-6">
+          {activeTab === 'functional-foods' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="mb-16"
+            >
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#93C560]/10 mb-8">
+                  <h2 className="text-3xl font-light text-center mb-6 text-[#93C560]">
+                    Varför <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">Functional Foods?</span>
+                  </h2>
+                  <p className="text-lg text-text-secondary leading-relaxed text-center mb-8">
                     Functional Foods är naturliga livsmedel med specifika hälsofrämjande egenskaper. 
                     I denna kurs lär du dig hur dessa livsmedel kan stabilisera ditt blodsocker och ge dig jämn energi hela dagen.
                   </p>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {functionalFoodsBenefits.map((benefit, index) => (
-                      <div key={index} className="flex items-center gap-3 bg-[#F3EFE3] rounded-lg p-4">
-                        <benefit.icon className="w-6 h-6 text-[#93C560] flex-shrink-0" />
-                        <span className="text-gray-700">{benefit.text}</span>
-                      </div>
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-center gap-3 p-4 bg-[#93C560]/5 rounded-lg"
+                      >
+                        <benefit.icon className="w-8 h-8 text-[#93C560] flex-shrink-0" />
+                        <span className="text-text-secondary font-medium">{benefit.text}</span>
+                      </motion.div>
                     ))}
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </section>
+                </div>
 
-        {/* For Who Section - Compact Version */}
-        <section className="py-16 bg-[#F3EFE3]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#014421] mb-4">För vem är kursen?</h2>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="grid md:grid-cols-2 gap-6"
-            >
-              {forWho.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex items-start gap-3 bg-white rounded-lg p-4"
-                >
-                  <CheckCircle className="w-5 h-5 text-[#93C560] flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">{item}</span>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 bg-[#F3EFE3]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#014421] mb-4">Vanliga frågor</h2>
-            </motion.div>
-
-            <div className="space-y-4 max-w-3xl mx-auto">
-              {[
-                {
-                  q: "Passar kursen för mig som har diabetes?",
-                  a: "Kursen är utformad för att hjälpa till med blodsockerkontroll, men ersätter inte medicinsk behandling. Konsultera alltid din läkare."
-                },
-                {
-                  q: "Vilken typ av mat lagar vi?",
-                  a: "Mat som ger långvarigt bränsle med fokus på långsamma kolhydrater, fibrer, kvalitetsfetter och proteinrika råvaror."
-                },
-                {
-                  q: "Hur mycket tid behöver jag lägga per vecka?",
-                  a: "Räkna med 3-4 timmar för matlagning och planering, plus tid för videolektioner."
-                },
-                {
-                  q: "Får jag tillgång till allt material direkt?",
-                  a: "Ja, du får direkt tillgång till hela kursen och kan gå i din egen takt."
-                }
-              ].map((faq, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl p-6 shadow-sm"
-                >
-                  <h3 className="font-bold text-[#014421] mb-2">{faq.q}</h3>
-                  <p className="text-gray-600">{faq.a}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Health Disclaimer */}
-        <section className="py-8">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <HealthDisclaimer variant="banner" />
-          </div>
-        </section>
-
-        {/* Reviews Section */}
-        <section id="reviews" className="py-16">
-          <CourseReviews courseId="functional-energy" limit={6} />
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-r from-[#014421] to-[#116530]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Redo att ta kontroll över din energi?
-              </h2>
-              <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-                Börja din resa mot stabilt blodsocker och jämn energi idag. Din kropp kommer att tacka dig!
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <AddToCart 
-                  id={course.id}
-                  name={course.name}
-                  price={course.price}
-                  type={course.type}
-                  image={course.image}
-                />
-                <Link 
-                  href="/utbildning" 
-                  className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-full font-medium hover:bg-white/20 transition-colors border border-white/30"
-                >
-                  Se alla kurser
-                </Link>
+                <div className="bg-gradient-to-r from-[#93C560]/10 to-[#7FB547]/10 rounded-2xl p-8 border border-[#93C560]/20">
+                  <h3 className="text-2xl font-bold text-[#93C560] mb-4 text-center">Vilken typ av mat ingår?</h3>
+                  <p className="text-text-secondary leading-relaxed mb-6">
+                    I Functional Energy fokuserar vi på blodsockerbalanserade måltider med långsamma kolhydrater, 
+                    högkvalitativa proteiner och nyttiga fetter som ger dig stabil energi utan toppar och dalar.
+                  </p>
+                  <div className="bg-white/80 rounded-lg p-4">
+                    <p className="text-sm text-text-secondary font-medium">
+                      <strong>Exempel på rätter:</strong> Havregrynsgrön med apelsin och kokos, chia-pudding med bär, 
+                      laxburgare med avokadokräm, kikärtsgryta med sötpotatis, och mycket mycket mer!
+                    </p>
+                  </div>
+                </div>
               </div>
-
-              <p className="text-white/70 text-sm mt-8">
-                Tillgång till kursen i 1 år • Personlig support
-              </p>
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* CTA Section - Updated with Energy branding */}
+        <div className="rounded-2xl p-8 text-white text-center" style={{ backgroundColor: '#014421' }}>
+          <h3 className="text-2xl font-bold mb-4">Redo för stabil energi?</h3>
+          <p className="text-lg mb-6 text-white/90">
+            Ta kontroll över ditt blodsocker och få jämn energi hela dagen
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <AddToCart 
+              id="functional-energy"
+              name="Functional Insulin balance/Energy"
+              price={2295}
+              type="course"
+              image={course.image}
+            />
+            <Link
+              href="#kostschema"
+              className="px-8 py-3 bg-white/20 backdrop-blur-sm text-white rounded-full font-medium hover:bg-white/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+            >
+              Se kostschema
+              <ChevronRight />
+            </Link>
           </div>
-        </section>
+        </div>
+      </div>
+
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Vanliga frågor</h2>
+          <div className="space-y-4 max-w-3xl mx-auto">
+            {[
+              {
+                q: "Passar kursen för mig som har diabetes?",
+                a: "Kursen är utformad för att hjälpa till med blodsockerkontroll, men ersätter inte medicinsk behandling. Konsultera alltid din läkare."
+              },
+              {
+                q: "Vilken typ av mat lagar vi?",
+                a: "Mat som ger långvarigt bränsle med fokus på långsamma kolhydrater, fibrer, kvalitetsfetter och proteinrika råvaror."
+              },
+              {
+                q: "Hur mycket tid behöver jag lägga per vecka?",
+                a: "Räkna med 3-4 timmar för matlagning och planering, plus tid för videolektioner."
+              },
+              {
+                q: "Får jag tillgång till allt material direkt?",
+                a: "Ja, du får direkt tillgång till hela kursen och kan gå i din egen takt."
+              }
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-xl p-6 shadow-sm"
+              >
+                <h3 className="font-bold text-[#014421] mb-2">{faq.q}</h3>
+                <p className="text-gray-600">{faq.a}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Health Disclaimer */}
+        <HealthDisclaimer variant="banner" />
+        
+        <CourseReviews courseId="functional-energy" />
       </div>
     </main>
   );
