@@ -15,16 +15,16 @@ import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, Chev
 import InfoPopupGrid from '@/app/dashboard/courses/components/InfoPopupGrid';
 import PrintableMealPlan from './PrintableMealPlan';
 
-// Helper function to format meal names with bold "rester"
+// Helper function to format meal names with bold "rester" and "rester från frysen"
 const formatMealName = (mealName: string) => {
   if (mealName.toLowerCase().includes('rester')) {
-    // Split on the word 'rester' only, so surrounding spaces remain in the other parts
-    const parts = mealName.split(/(rester)/gi);
+    // Split on "rester från frysen" or just "rester"
+    const parts = mealName.split(/(rester\s+från\s+frysen|rester)/gi);
     return (
       <span>
         {parts.map((part, index) =>
-          part.toLowerCase() === 'rester' ? (
-            <span key={index} className="font-bold text-[#014421]">rester</span>
+          part.toLowerCase().match(/^rester(\s+från\s+frysen)?$/i) ? (
+            <span key={index} className="font-bold text-[#014421]">{part}</span>
           ) : (
             <span key={index}>{part}</span>
           )

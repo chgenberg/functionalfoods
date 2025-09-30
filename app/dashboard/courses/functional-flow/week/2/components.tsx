@@ -10,14 +10,14 @@ import {
   GiWheat, GiWaterBottle, GiHerbsBundle
 } from 'react-icons/gi';
 
-// Helper function to format meal names with bold "rester"
+// Helper function to format meal names with bold "rester" and "rester från frysen"
 const formatMealName = (mealName: string) => {
   if (mealName.toLowerCase().includes('rester')) {
-    const parts = mealName.split(/(\s*rester\s*)/gi);
+    const parts = mealName.split(/(rester\s+från\s+frysen|rester)/gi);
     return (
       <span>
         {parts.map((part, index) => 
-          part.toLowerCase().includes('rester') ? (
+          part.toLowerCase().match(/^rester(\s+från\s+frysen)?$/i) ? (
             <span key={index} className="font-bold text-[#014421]">rester</span>
           ) : (
             part

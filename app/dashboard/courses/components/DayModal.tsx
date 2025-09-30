@@ -464,8 +464,13 @@ export default function DayModal({
                           `}>
                             {meal.meal.toLowerCase().includes('rester') ? (
                               <span>
-                                {meal.meal.replace(/\s*rester\s*/gi, ' ')}
-                                <span className="font-bold text-[#014421]">rester</span>
+                                {meal.meal.split(/(rester\s+från\s+frysen|rester)/gi).map((part, i) =>
+                                  part.toLowerCase().match(/^rester(\s+från\s+frysen)?$/i) ? (
+                                    <span key={i} className="font-bold text-[#014421]">{part}</span>
+                                  ) : (
+                                    <span key={i}>{part}</span>
+                                  )
+                                )}
                               </span>
                             ) : (
                               meal.meal
