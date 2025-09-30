@@ -37,22 +37,22 @@ export default function DashboardPage() {
             const ownedCourses = purchases.map((p: any) => p.course.name);
             
             // Redirect based on course ownership
-            if (ownedCourses.includes('Functional Gut Health/Flow') && !ownedCourses.includes('Functional Basics')) {
+            const hasFlow = ownedCourses.includes('Functional Gut Health/Flow') || ownedCourses.includes('Functional Flow');
+            const hasBasics = ownedCourses.includes('Functional Basics');
+            const hasEnergy = ownedCourses.includes('Functional Insulin balance/Energy') || ownedCourses.includes('Functional Energy');
+            
+            if (hasEnergy && !hasFlow && !hasBasics) {
+              // Only Energy course
+              router.push('/dashboard/courses/functional-energy');
+            } else if (hasFlow && !hasBasics && !hasEnergy) {
               // Only Flow course
               router.push('/dashboard/courses/functional-flow');
-            } else if (ownedCourses.includes('Functional Basics') && !ownedCourses.includes('Functional Gut Health/Flow')) {
+            } else if (hasBasics && !hasFlow && !hasEnergy) {
               // Only Basic course
               router.push('/dashboard/courses/functional-basics');
-            } else if (ownedCourses.includes('Functional Gut Health/Flow') && ownedCourses.includes('Functional Basics')) {
-              // Has both courses - show course selection
+            } else if (ownedCourses.length > 1) {
+              // Multiple courses - show selection
               router.push('/mina-kurser');
-            } else if (ownedCourses.includes('Functional Insulin balance/Energy')) {
-              // Has Energy course (alone or with others)
-              if (ownedCourses.length === 1) {
-                router.push('/dashboard/courses/functional-energy');
-              } else {
-                router.push('/mina-kurser');
-              }
             } else {
               // Has other courses or no specific handling
               router.push('/mina-kurser');
