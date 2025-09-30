@@ -266,7 +266,7 @@ export async function POST(request: Request) {
       const originalName = recipeNames[i];
       const slug = validSlugs[i];
 
-      // 1) Prefer DB by slug
+      // 1) ALWAYS prefer DB imageUrl by slug (no filesystem fallback if DB has imageUrl)
       if (slug && slugToImage[slug]) {
         const url = slugToImage[slug] as string;
         imageMap[originalName] = url;
@@ -274,17 +274,17 @@ export async function POST(request: Request) {
         continue;
       }
 
-      // 2) Try optimized assets by slug if provided
+      // 2) Only if DB imageUrl is missing, try filesystem by slug
       if (slug) {
         const bySlug = slugToOptimizedUrl(slug, size, usage);
         if (bySlug) {
           imageMap[originalName] = bySlug;
-          imageMap[slug] = bySlug; // expose by slug too
+          imageMap[slug] = bySlug;
           continue;
         }
       }
 
-      // 3) Fallback to filesystem fuzzy matching by cleaned title
+      // 3) Last resort: fuzzy matching or placeholder
       const cleanName = cleanedNames[i];
       const fsMatch = findBestImageMatch(cleanName, availableImages, size, usage);
       if (fsMatch) {
