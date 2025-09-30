@@ -83,7 +83,6 @@ const getMealLabel = (type: string, name?: string): string => {
   const egenbakatMatchers = [
     'ketomüsli',
     'ketomusli',
-    'bovetegranola',
     'kesofrallor',
     'kesofralla',
     'bananmuffin',
