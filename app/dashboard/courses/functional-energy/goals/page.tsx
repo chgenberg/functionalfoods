@@ -14,50 +14,50 @@ interface Goal {
 
 const weeklyGoals: Goal[] = [
   {
-    id: 'flow-w1',
+    id: 'energy-w1',
     week: 1,
-    title: 'Antiinflammatorisk start',
-    description: 'Påbörja din resa med fokus på antiinflammatoriska livsmedel. Introducera gurkmeja, ingefära och omega-3-rika fetter i din dagliga kost.',
+    title: 'Stabilt blodsocker - Grunderna',
+    description: 'Påbörja din resa mot stabilt blodsocker. Lär dig identifiera långsamma kolhydrater och balansera dina måltider.',
     completed: false,
   },
   {
-    id: 'flow-w2',
+    id: 'energy-w2',
     week: 2,
-    title: 'Tarmhälsa i fokus',
-    description: 'Optimera din tarmflora med fermenterade livsmedel och prebiotika. Inkludera kimchi, kombucha och fibrer från grönsaker.',
+    title: 'Kolhydrater som ger långvarig energi',
+    description: 'Fördjupa din kunskap om glykemiskt index och välj rätt kolhydrater för jämn energi hela dagen.',
     completed: false,
   },
   {
-    id: 'flow-w3',
+    id: 'energy-w3',
     week: 3,
-    title: 'Avancerad näringsdensitet',
-    description: 'Maximera näringsintaget genom superfoods och adaptogener. Integrera spirulina, ashwagandha och andra kraftfulla råvaror.',
+    title: 'Proteiner och fetter för energibalans',
+    description: 'Optimera din makrobalans. Lär dig hur proteiner och fetter stabiliserar blodsockret och ger långvarig mättnad.',
     completed: false,
   },
   {
-    id: 'flow-w4',
+    id: 'energy-w4',
     week: 4,
-    title: 'Energioptimering',
-    description: 'Stabilisera blodsockernivåer och öka uthålligheten. Fokusera på komplexa kolhydrater och balanserade måltider.',
+    title: 'Måltidstiming och portionsstorlek',
+    description: 'Upptäck hur när och hur mycket du äter påverkar ditt blodsocker. Skapa hållbara rutiner för optimal energi.',
     completed: false,
   },
   {
-    id: 'flow-w5',
+    id: 'energy-w5',
     week: 5,
-    title: 'Mental klarhet',
-    description: 'Förbättra kognitiv funktion med hjärnmat. Inkludera omega-3, antioxidanter och B-vitaminer för optimal hjärnhälsa.',
+    title: 'Stress, sömn och livsstil',
+    description: 'Förstå hur stress och sömnbrist påverkar blodsockret. Integrera stresshantering och god sömnhygien.',
     completed: false,
   },
   {
-    id: 'flow-w6',
+    id: 'energy-w6',
     week: 6,
-    title: 'Livslång transformation',
-    description: 'Konsolidera dina nya vanor och planera för framtiden. Skapa en hållbar livsstil baserad på functional foods-principerna.',
+    title: 'Hållbar energibalans för livet',
+    description: 'Konsolidera dina nya vanor. Skapa en långsiktig plan för stabilt blodsocker och jämn energi resten av livet.',
     completed: false,
   },
 ];
 
-export default function FlowGoalsPage() {
+export default function EnergyGoalsPage() {
   const [goals, setGoals] = useState<Goal[]>(weeklyGoals);
 
   const toggleGoal = (goalId: string) => {
@@ -74,9 +74,9 @@ export default function FlowGoalsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dina mål - Functional Flow</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dina mål - Functional Energy</h1>
         <p className="text-gray-600">
-          Följ din utveckling genom de avancerade veckorna av Functional Flow
+          Följ din utveckling mot stabilt blodsocker och jämn energi
         </p>
       </div>
 
@@ -84,7 +84,7 @@ export default function FlowGoalsPage() {
       <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900">Din framgång</h2>
-          <span className="text-2xl font-bold text-[#1a4d78]">
+          <span className="text-2xl font-bold text-[#93C560]">
             {Math.round(completionPercentage)}%
           </span>
         </div>
@@ -120,7 +120,7 @@ export default function FlowGoalsPage() {
               <button
                 className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                   goal.completed
-                    ? 'bg-[#1a4d78] border-[#1a4d78]'
+                    ? 'bg-[#93C560] border-[#1a4d78]'
                     : 'border-gray-300 hover:border-[#1a4d78]'
                 }`}
               >
@@ -131,7 +131,7 @@ export default function FlowGoalsPage() {
               
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-medium text-[#1a4d78] bg-[#1a4d78]/10 px-3 py-1 rounded-full">
+                  <span className="text-sm font-medium text-[#93C560] bg-[#93C560]/10 px-3 py-1 rounded-full">
                     Vecka {goal.week}
                   </span>
                   <h3 className={`text-lg font-semibold ${
