@@ -1,7 +1,7 @@
 {
   "summary": {
-    "ok": 125,
-    "mismatched": 5,
+    "ok": 122,
+    "mismatched": 8,
     "missingInDb": 14,
     "missingSlugs": 3
   },
@@ -53,22 +53,38 @@
     },
     {
       "type": "nutrition_mismatch",
-      "title": "Omelett med tomat",
+      "title": "Het ratatouille",
       "db": {
-        "fat": 13.6,
-        "salt": 50.4,
-        "fiber": 0.6,
-        "sugar": 2,
-        "energy": 186,
-        "protein": 13.5,
-        "carbohydrates": 2.7
+        "fat": 31,
+        "fiber": 6,
+        "energy": 379,
+        "protein": 31,
+        "carbohydrates": 16
       },
       "doc": {
-        "calories": 242,
-        "protein": 15,
-        "carbohydrates": 4,
-        "fat": 15,
-        "fiber": 2
+        "calories": 162,
+        "protein": 4,
+        "carbohydrates": 23,
+        "fat": 4,
+        "fiber": 9
+      }
+    },
+    {
+      "type": "nutrition_mismatch",
+      "title": "Pokebowl med kyckling",
+      "db": {
+        "fat": 42,
+        "fiber": 0,
+        "energy": 344,
+        "protein": 42,
+        "carbohydrates": 25
+      },
+      "doc": {
+        "calories": 722,
+        "protein": 75,
+        "carbohydrates": 51,
+        "fat": 75,
+        "fiber": 6
       }
     },
     {
@@ -146,6 +162,24 @@
       "title": "Spenatsoppa med rostade pumpafrön"
     },
     {
+      "type": "nutrition_mismatch",
+      "title": "Kycklinggryta från medelhavet",
+      "db": {
+        "fat": 24,
+        "fiber": 7,
+        "energy": 268,
+        "protein": 24,
+        "carbohydrates": 31
+      },
+      "doc": {
+        "calories": 447,
+        "protein": 43,
+        "carbohydrates": 18,
+        "fat": 43,
+        "fiber": 7
+      }
+    },
+    {
       "type": "missing_in_db",
       "title": "Valnötslax med fetaostcreme"
     },
@@ -164,6 +198,24 @@
     {
       "type": "missing_in_db",
       "title": "Hamburgare med grekisk sallad"
+    },
+    {
+      "type": "nutrition_mismatch",
+      "title": "Mandelkaka med med choklad",
+      "db": {
+        "fat": 9,
+        "fiber": 1,
+        "energy": 389,
+        "protein": 9,
+        "carbohydrates": 16
+      },
+      "doc": {
+        "calories": 381,
+        "protein": 8,
+        "carbohydrates": 11,
+        "fat": 8,
+        "fiber": 1
+      }
     }
   ]
 }

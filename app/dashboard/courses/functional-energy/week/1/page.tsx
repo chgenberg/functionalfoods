@@ -2,17 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import WeekTemplate from '@/app/dashboard/courses/components/WeekTemplate';
-import { WeekInfoSection, DocumentsSection, TipsSection } from './components';
+import { energyMealPlans } from '@/app/data/mealPlans';
 
 export default function Week1Page() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
   const [mealPlan, setMealPlan] = useState<any>(null);
 
   useEffect(() => {
-    const savedStartDate = localStorage.getItem('energyStartDate');
+    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem('energyStartDate') : null;
     if (savedStartDate) {
-      setCourseStartDate(new Date(savedStartDate));
-    } else {
+      setCourseStartDate(new Date(savedStartDate as string));
+    } else if (typeof window !== 'undefined') {
       const today = new Date();
       const day = today.getDay();
       const daysUntilMonday = (1 - day + 7) % 7 || 7;
@@ -25,41 +25,22 @@ export default function Week1Page() {
   }, []);
 
   useEffect(() => {
-    const loadMealPlan = async () => {
-      try {
-        const res = await fetch('/api/meal-plans?course=energy&week=1');
-        const data = await res.json();
-        setMealPlan({ week1: data });
-      } catch (e) {
-        setMealPlan(null);
-      }
-    };
-    loadMealPlan();
+    // Use static, source-of-truth meal plan to avoid stale DB overrides
+    setMealPlan(energyMealPlans);
   }, []);
 
   if (!mealPlan) return null;
-
-  const customContent = (
-    <>
-      <WeekInfoSection />
-      <div className="mb-8" />
-      <DocumentsSection />
-      <div className="mb-8" />
-      <TipsSection />
-    </>
-  );
 
   return (
     <WeekTemplate
       courseType="energy"
       weekNumber={1}
-      weekTitle="Introduktion till stabilt blodsocker"
-      weekSubtitle="Vecka 1 - Lär dig grunderna om blodsocker och börja din energiresa"
-      heroImage="/lax-med-sellerisallad-och-valnotter.JPG"
-      videoUrl="https://player.vimeo.com/video/1054236789?h=0c219534c4"
+      weekTitle="Välkommen till stabilt blodsocker"
+      weekSubtitle="Vecka 1 - Introduktion till blodsockerbalans och energistabila mat"
+      heroImage="/Functional_Energy/energy-week1.jpg"
+      videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
-      customContent={customContent}
     />
   );
-} 
+}
