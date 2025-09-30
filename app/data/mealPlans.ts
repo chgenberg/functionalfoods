@@ -506,7 +506,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/tonfisksallad-med-rodbetsrora"
         },
         "snack": {
-          "name": "Frukost: Jordgubbssylt",
+          "name": "Egenbakat: Jordgubbssylt",
           "recipeLink": "/kunskapsbank/recept/jordgubbssylt"
         }
       },

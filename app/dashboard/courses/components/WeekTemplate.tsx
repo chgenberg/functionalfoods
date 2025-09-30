@@ -76,11 +76,11 @@ const RecipeNutrition = ({ recipeLink }: { recipeLink?: string }) => {
   );
 };
 
-// Map meal type + name to display label (e.g., classify baked items as "Frukost")
+// Map meal type + name to display label (e.g., classify baked items as "Egenbakat")
 const getMealLabel = (type: string, name?: string): string => {
   const lower = (name || '').toLowerCase();
-  // Common baked items that should render under "Frukost"
-  const frukostMatchers = [
+  // Common baked items that should render under "Egenbakat"
+  const egenbakatMatchers = [
     'ketomüsli',
     'ketomusli',
     'bovetegranola',
@@ -91,9 +91,11 @@ const getMealLabel = (type: string, name?: string): string => {
     'mandelkaka',
     'kaka',
     'bröd',
-    'limpa'
+    'limpa',
+    'jordgubbssylt',
+    'sylt'
   ];
-  if (lower && frukostMatchers.some(k => lower.includes(k))) return 'Frukost';
+  if (lower && egenbakatMatchers.some(k => lower.includes(k))) return 'Egenbakat';
 
   if (type === 'breakfast') return 'Frukost';
   if (type === 'lunch') return 'Lunch';
