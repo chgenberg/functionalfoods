@@ -481,52 +481,10 @@ export default function WeekTemplate({
 
         console.log('🖼️ WeekTemplate fetching images for all meals:', allMeals.length);
 
-        // 1) Try enriched static mapping for speed (if available)
-        let enrichedLoaded = false;
+        // Use DB imageUrl only (via batch-images API with slug support)
         const imageMap: Record<string, string> = {};
-        try {
-          let enrichedPath: string | null = null;
-          if (courseType === 'flow') {
-            enrichedPath = `/Shopping-lists/flow_week${weekNumber}_manual_enriched.json`;
-          } else if (courseType === 'basics') {
-            enrichedPath = `/Shopping-lists/basic_week${weekNumber}_manual_enriched.json`;
-          } else if (courseType === 'energy') {
-            enrichedPath = `/Shopping-lists/energy_week${weekNumber}_manual_enriched.json`;
-          }
-          if (enrichedPath) {
-            const enr = await fetch(enrichedPath, { cache: 'force-cache' });
-            if (enr.ok) {
-              const list = await enr.json();
-              const byTitle: Record<string, string> = {};
-              list.forEach((it: any) => {
-                if (it && it.title && it.imageUrl) {
-                  byTitle[it.title] = it.imageUrl;
-                }
-              });
-              // Helper to clean meal names (remove (kcal) and rester)
-              const clean = (name: string) => name
-                .replace(/\s*\([^)]*\)\s*/g, '')
-                .replace(/\s+rester.*$/i, '')
-                .trim();
-              allMeals.forEach(meal => {
-                const t = clean(meal.name);
-                const matched = byTitle[t];
-                if (matched) {
-                  imageMap[meal.key] = optimizeImageUrl(matched, 'large', 'landscape');
-                }
-              });
-              const count = Object.keys(imageMap).length;
-              if (count > 0) {
-                enrichedLoaded = true;
-                console.log(`⚡ Loaded ${count} meal images from enriched JSON (${enrichedPath})`);
-              }
-            }
-          }
-        } catch (e) {
-          // ignore enriched failures
-        }
 
-        // 2) Call API batch mapping for ALL meals (will override enriched to enforce slug/DB imageUrl)
+        // Call API batch mapping for ALL meals using slug to get DB imageUrl
         // Force fresh lookup by adding unique cache-bust param
         const cacheBust = `${weekNumber}-${courseType}-${Date.now()}`;
         const resp = await fetch(`/api/recipes/batch-images?v=${cacheBust}`, {
@@ -555,7 +513,7 @@ export default function WeekTemplate({
         }
 
         setMealImages(imageMap);
-        console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images', enrichedLoaded ? '(from enriched/optimized sources)' : '(from API)');
+        console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images from DB (via batch-images API)');
       } catch (e) {
         console.error('❌ WeekTemplate image loading error:', e);
       }
