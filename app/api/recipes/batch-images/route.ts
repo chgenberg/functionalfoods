@@ -252,8 +252,10 @@ export async function POST(request: Request) {
         // Normalize local asset path
         const url = r.imageUrl.startsWith('/') ? r.imageUrl : `/${r.imageUrl}`;
         slugToImage[r.slug] = url;
+        console.log(`🎯 DB imageUrl for ${r.slug}: ${url}`);
       } else {
         slugToImage[r.slug] = slugToOptimizedUrl(r.slug, size, usage);
+        console.log(`⚠️  No DB imageUrl for ${r.slug}, using filesystem fallback`);
       }
     }
 
