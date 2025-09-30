@@ -1,23 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader } from 'lucide-react';
 import { useAuth } from '@/app/hooks/useAuth';
-import { useT } from '@/app/lib/i18n/LanguageProvider';
 
 export default function DashboardPage() {
-  const t = useT();
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
+    // Immediate redirect - no loading screen flash
     const checkUserAccess = async () => {
       const token = localStorage.getItem('token');
       
       if (!token || !user) {
-        router.push('/login');
+        router.replace('/login');
         return;
       }
 
@@ -42,44 +39,31 @@ export default function DashboardPage() {
             const hasEnergy = ownedCourses.includes('Functional Insulin balance/Energy') || ownedCourses.includes('Functional Energy');
             
             if (hasEnergy && !hasFlow && !hasBasics) {
-              // Only Energy course
-              router.push('/dashboard/courses/functional-energy');
+              router.replace('/dashboard/courses/functional-energy');
             } else if (hasFlow && !hasBasics && !hasEnergy) {
-              // Only Flow course
-              router.push('/dashboard/courses/functional-flow');
+              router.replace('/dashboard/courses/functional-flow');
             } else if (hasBasics && !hasFlow && !hasEnergy) {
-              // Only Basic course
-              router.push('/dashboard/courses/functional-basics');
+              router.replace('/dashboard/courses/functional-basics');
             } else if (ownedCourses.length > 1) {
-              // Multiple courses - show selection
-              router.push('/mina-kurser');
+              router.replace('/mina-kurser');
             } else {
-              // Has other courses or no specific handling
-              router.push('/mina-kurser');
+              router.replace('/mina-kurser');
             }
           } else {
-            // No courses purchased
-            router.push('/utbildning');
+            router.replace('/utbildning');
           }
         } else {
-          // Error fetching purchases
-          router.push('/mina-kurser');
+          router.replace('/mina-kurser');
         }
       } catch (error) {
         console.error('Error checking user access:', error);
-        router.push('/mina-kurser');
+        router.replace('/mina-kurser');
       }
     };
 
     checkUserAccess();
   }, [router, user]);
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <Loader className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-        <p className="text-gray-600">{t('dashboard.loading','Laddar din dashboard...')}</p>
-      </div>
-    </div>
-  );
+  // Return null to avoid any flash of content
+  return null;
 } 

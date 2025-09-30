@@ -50,7 +50,7 @@ function LoginForm() {
 
         // Nytt beteende: API kan svara 200 med requirePasswordChange=true
         if (data?.requirePasswordChange && data?.resetUrl) {
-          router.push(data.resetUrl);
+          router.replace(data.resetUrl);
           return;
         }
 
@@ -59,7 +59,7 @@ function LoginForm() {
         
         // Handle redirect logic
         if (redirect) {
-          router.push(redirect);
+          router.replace(redirect);
         } else {
           // Check user's actual course purchases for smart redirect
           try {
@@ -83,31 +83,31 @@ function LoginForm() {
                 
                 if (hasFlow && !hasBasics && !hasEnergy) {
                   // Only Flow course
-                  router.push('/dashboard/courses/functional-flow');
+                  router.replace('/dashboard/courses/functional-flow');
                 } else if (hasBasics && !hasFlow && !hasEnergy) {
                   // Only Basic course
-                  router.push('/dashboard/courses/functional-basics');
+                  router.replace('/dashboard/courses/functional-basics');
                 } else if (hasEnergy && !hasFlow && !hasBasics) {
                   // Only Energy course
-                  router.push('/dashboard/courses/functional-energy');
+                  router.replace('/dashboard/courses/functional-energy');
                 } else if (ownedCourses.length > 1) {
                   // Multiple courses - show selection
-                  router.push('/mina-kurser');
+                  router.replace('/mina-kurser');
                 } else {
                   // Has purchases but not these specific courses
-                  router.push('/mina-kurser');
+                  router.replace('/mina-kurser');
                 }
               } else {
                 // No courses purchased
-                router.push('/mina-kurser');
+                router.replace('/mina-kurser');
               }
             } else {
               // Fallback if API call fails
-              router.push('/mina-kurser');
+              router.replace('/mina-kurser');
             }
           } catch (error) {
             console.error('Error checking purchases for redirect:', error);
-            router.push('/mina-kurser');
+            router.replace('/mina-kurser');
           }
         }
       } else {
@@ -133,9 +133,9 @@ function LoginForm() {
         
         // Handle redirect logic for registration
         if (redirect) {
-          router.push(redirect);
+          router.replace(redirect);
         } else {
-          router.push('/mina-kurser');
+          router.replace('/mina-kurser');
         }
       }
     } catch (err) {
