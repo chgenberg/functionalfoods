@@ -60,76 +60,92 @@ function calculateHealthScores(answers: Record<number, string>) {
   return { ...scores, healthScore };
 }
 
-// Generate personalized Functional Gut Health/Flow recommendation based on user's answers
-function generatePersonalizedFlowRecommendation(answers: Record<number, string | string[]>, lang: string): string {
-  const healthGoals = Array.isArray(answers[10]) ? (answers[10] as string[]) : [answers[10]].filter(Boolean);
-  const energyLevel = answers[1];
-  const sleepQuality = answers[2];
-  const stressLevel = answers[3];
+// Generate smart course recommendation based on user's quiz answers
+function generateSmartCourseRecommendation(answers: Record<number, string | string[]>, lang: string): string {
+  // Determine which course to recommend based on specific answers
+  let recommendedCourse: 'Basic' | 'Flow' | 'Energy' = 'Flow'; // Default to Flow
+  let courseReason = '';
   
-  let recommendation = lang === 'en' ? 
-    "Based on your answers, we strongly recommend our **Functional Gut Health/Flow** course. " :
-    "Baserat på dina svar rekommenderar vi starkt vår **Functional Gut Health/Flow** kurs. ";
-  
-  // Personalize based on specific answers
-  if (energyLevel === 'low_energy' || energyLevel === 'afternoon_dip') {
-    recommendation += lang === 'en' ?
-      "Your energy situation shows you would greatly benefit from learning about energizing functional foods and how to optimize your diet for stable energy throughout the day. " :
-      "Din energisituation visar att du skulle ha stor nytta av att lära dig om energigivande functional foods och hur du kan optimera din kost för stabil energi genom dagen. ";
+  // Question 4 (index 3): Exercise frequency - "5+ times per week" → Functional Basics
+  if (answers[3] === '5+ gånger i veckan' || answers[3] === '5+ times per week' || answers[3] === 'very_active') {
+    recommendedCourse = 'Basic';
+    courseReason = lang === 'en' ? 
+      'Your high activity level shows you have a solid foundation. Functional Basics will help you optimize your nutrition fundamentals.' :
+      'Din höga aktivitetsnivå visar att du har en solid grund. Functional Basics hjälper dig optimera dina näringsgrunder.';
   }
   
-  if (sleepQuality === 'poor_sleep' || sleepQuality === 'disrupted_sleep') {
-    recommendation += lang === 'en' ?
-      "With your sleep challenges, the course will teach you which functional foods can naturally improve sleep quality. " :
-      "Med dina sömnutmaningar kommer kursen att lära dig vilka functional foods som kan förbättra sömnkvaliteten naturligt. ";
+  // Question 6 (index 5): Digestive issues - "Regular problems" or "Constant issues" → Flow
+  const digestiveAnswer = Array.isArray(answers[5]) ? answers[5].join(',') : (answers[5] || '');
+  if (digestiveAnswer.includes('regelbundna') || digestiveAnswer.includes('konstanta') || 
+      digestiveAnswer.includes('regular') || digestiveAnswer.includes('constant') ||
+      digestiveAnswer.includes('magproblem') || digestiveAnswer.includes('digestive')) {
+    recommendedCourse = 'Flow';
+    courseReason = lang === 'en' ?
+      'Your digestive challenges indicate that Functional Gut Health/Flow is perfect for you. This course focuses on gut health, probiotics, and healing your digestive system.' :
+      'Dina matsmältningsutmaningar visar att Functional Gut Health/Flow är perfekt för dig. Denna kurs fokuserar på tarmhälsa, probiotika och att läka ditt matsmältningssystem.';
   }
   
-  if (stressLevel === 'high_stress' || stressLevel === 'moderate_stress') {
-    recommendation += lang === 'en' ?
-      "To manage stress, you'll learn about adaptogens and other stress-reducing functional foods. " :
-      "För att hantera stress kommer du att lära dig om adaptogener och andra stressreducerande functional foods. ";
+  // Question 11 (index 10): Health goals related to blood sugar/energy
+  const healthGoals = Array.isArray(answers[10]) ? answers[10] : [answers[10]].filter(Boolean);
+  if (healthGoals.some((goal: string) => 
+      goal?.includes('blood_sugar') || goal?.includes('blodsocker') || 
+      goal?.includes('energy') || goal?.includes('energi') ||
+      goal?.includes('insulin') || goal?.includes('diabetes'))) {
+    recommendedCourse = 'Energy';
+    courseReason = lang === 'en' ?
+      'Your focus on blood sugar and energy optimization makes Functional Insulin Balance/Energy ideal for you. Learn to stabilize blood sugar and boost energy naturally.' :
+      'Ditt fokus på blodsocker och energioptimering gör Functional Insulin Balance/Energy idealisk för dig. Lär dig stabilisera blodsockret och öka energin naturligt.';
   }
   
-  // Add specific benefits based on health goals
-  if (healthGoals.includes('energy')) {
-    recommendation += lang === 'en' ?
-      "The course includes specific modules on energy optimization through diet. " :
-      "Kursen innehåller specifika moduler om energioptimering genom kost. ";
+  // Last question (index 11): Medications - "Diabetes" → Energy, "Stomach/gut medication" → Flow
+  const medications = Array.isArray(answers[11]) ? answers[11] : [answers[11]].filter(Boolean);
+  if (medications.some((med: string) => med?.includes('diabetes') || med?.includes('Diabetes'))) {
+    recommendedCourse = 'Energy';
+    courseReason = lang === 'en' ?
+      'Since you have diabetes, Functional Insulin Balance/Energy is specifically designed for you. This course teaches blood sugar management through functional foods.' :
+      'Eftersom du har diabetes är Functional Insulin Balance/Energy speciellt utformad för dig. Denna kurs lär ut blodsockerhantering genom functional foods.';
+  } else if (medications.some((med: string) => 
+      med?.includes('mage') || med?.includes('tarm') || 
+      med?.includes('stomach') || med?.includes('gut') ||
+      med?.includes('digestive'))) {
+    recommendedCourse = 'Flow';
+    courseReason = lang === 'en' ?
+      'Your digestive medication indicates that Functional Gut Health/Flow will provide the most benefit. Focus on healing your gut naturally.' :
+      'Din matsmältningsmedicin indikerar att Functional Gut Health/Flow ger mest nytta. Fokusera på att läka din tarm naturligt.';
   }
   
-  if (healthGoals.includes('gut_health')) {
-    recommendation += lang === 'en' ?
-      "You'll gain deep knowledge about probiotics, prebiotics, and gut health. " :
-      "Du kommer att få djup kunskap om probiotika, prebiotika och tarmhälsa. ";
+  // Build recommendation text based on selected course
+  const courseNames = {
+    'Basic': lang === 'en' ? 'Functional Basics' : 'Functional Basics',
+    'Flow': lang === 'en' ? 'Functional Gut Health/Flow' : 'Functional Gut Health/Flow',
+    'Energy': lang === 'en' ? 'Functional Insulin Balance/Energy' : 'Functional Insulin Balance/Energy'
+  };
+  
+  const courseDescriptions = {
+    'Basic': lang === 'en' ?
+      'This foundational course covers the essentials of functional foods, helping you build a solid nutritional base. Perfect for those who are already active and want to optimize their diet.' :
+      'Denna grundkurs täcker det väsentliga inom functional foods och hjälper dig bygga en solid näringsgrund. Perfekt för dig som redan är aktiv och vill optimera din kost.',
+    'Flow': lang === 'en' ?
+      'This comprehensive course focuses on gut health, probiotics, prebiotics, and digestive wellness. You will learn to heal your gut and improve overall health through targeted functional foods.' :
+      'Denna omfattande kurs fokuserar på tarmhälsa, probiotika, prebiotika och matsmältningshälsa. Du lär dig läka din tarm och förbättra din allmänna hälsa genom riktade functional foods.',
+    'Energy': lang === 'en' ?
+      'This specialized course teaches you to manage blood sugar, optimize insulin sensitivity, and boost energy levels through functional foods. Ideal for those with diabetes or energy challenges.' :
+      'Denna specialiserade kurs lär dig hantera blodsocker, optimera insulinkänslighet och öka energinivåer genom functional foods. Idealisk för dig med diabetes eller energiutmaningar.'
+  };
+  
+  let recommendation = lang === 'en' ?
+    `Based on your answers, we strongly recommend **${courseNames[recommendedCourse]}**. ` :
+    `Baserat på dina svar rekommenderar vi starkt **${courseNames[recommendedCourse]}**. `;
+  
+  if (courseReason) {
+    recommendation += courseReason + ' ';
   }
   
-  if (healthGoals.includes('immune')) {
-    recommendation += lang === 'en' ?
-      "The course covers immune-boosting functional foods and how to build your natural defenses. " :
-      "Kursen täcker immunstärkande functional foods och hur du bygger upp ditt naturliga försvar. ";
-  }
-  
-  if (healthGoals.includes('hormonal_balance')) {
-    recommendation += lang === 'en' ?
-      "We cover functional foods that support hormonal balance and endocrine health. " :
-      "Vi går igenom functional foods som stödjer hormonell balans och endokrin hälsa. ";
-  }
-  
-  if (healthGoals.includes('blood_sugar')) {
-    recommendation += lang === 'en' ?
-      "You'll learn about blood sugar-stabilizing functional foods and meal timing. " :
-      "Du kommer att lära dig om blodsocker-stabiliserande functional foods och måltidstiming. ";
-  }
-  
-  if (healthGoals.includes('anti_aging')) {
-    recommendation += lang === 'en' ?
-      "The course includes comprehensive information about anti-aging functional foods and longevity. " :
-      "Kursen inkluderar omfattande information om anti-aging functional foods och longevity. ";
-  }
+  recommendation += '\n\n' + courseDescriptions[recommendedCourse];
   
   recommendation += lang === 'en' ?
-    "\n\n**Functional Gut Health/Flow** is our most comprehensive course that gives you tools to transform your health through science-based nutrition and functional foods. You get access to personal meal plans, weekly shopping lists, community support, and direct contact with our experts." :
-    "\n\n**Functional Gut Health/Flow** är vår mest omfattande kurs som ger dig verktyg för att transformera din hälsa genom vetenskap-baserad nutrition och functional foods. Du får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter.";
+    '\n\nYou get access to personalized meal plans, weekly shopping lists, community support, and direct contact with our experts. All our courses are science-based and designed to create lasting health changes.' :
+    '\n\nDu får tillgång till personliga måltidsplaner, veckovisa inköpslistor, community-support och direktkontakt med våra experter. Alla våra kurser är vetenskapsbaserade och utformade för att skapa varaktiga hälsoförändringar.';
   
   return recommendation;
 }
@@ -304,7 +320,7 @@ function buildLocalFallback(answers: Record<number, string>, lang: string) {
         lang === 'en' ? 'Weekly check-in on digestive health' : 'Veckovis kontroll av matsmältningshälsa',
         lang === 'en' ? 'Monthly progress photos and measurements' : 'Månatliga framstegsfoton och mätningar'
       ],
-      courseRecommendation: generatePersonalizedFlowRecommendation(answers, lang),
+      courseRecommendation: generateSmartCourseRecommendation(answers, lang),
       scores
     }
   };
@@ -381,7 +397,7 @@ Skapa en djupgående analys som inkluderar:
 
 7. **VARNINGAR** (2-3 stycken): Viktiga säkerhetsaspekter
 
-8. **KURSREKOMMENDATION**: Rekommendera alltid Functional Gut Health/Flow kursen och personalisera motivering baserat på quiz-svaren.
+8. **KURSREKOMMENDATION**: Analysera quiz-svaren och rekommendera den MEST LÄMPADE kursen (Functional Basics, Functional Gut Health/Flow, eller Functional Insulin Balance/Energy). Motivera varför just denna kurs passar bäst.
 
 VIKTIGT: Använd INTE markdown-formatering som ### eller **. Returnera ren text.
 
@@ -488,9 +504,9 @@ Returera ditt svar som en JSON med följande struktur:
         courseRecommendation: parsedResult.courseRecommendation || ''
       };
 
-      // Always recommend Functional Gut Health/Flow with personalized message
+      // Always provide a course recommendation with personalized message
       if (!parsedResult.courseRecommendation) {
-        parsedResult.courseRecommendation = generatePersonalizedFlowRecommendation(answers, lang);
+        parsedResult.courseRecommendation = generateSmartCourseRecommendation(answers, lang);
       }
 
       // Spara quiz-resultat i databasen om användaren är inloggad
