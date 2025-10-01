@@ -103,7 +103,7 @@ const RecipesPage = () => {
       }
 
       const params = new URLSearchParams();
-      params.append('limit', '12');
+      params.append('limit', '18');
       params.append('page', page.toString());
       
       if (selectedCategory !== 'all') {
