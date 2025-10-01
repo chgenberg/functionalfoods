@@ -37,6 +37,8 @@ export default function Header() {
 
   const getDirectDashboardLink = (email: string) => {
     if (email.includes('functional-flow') || email.includes('flow')) return '/dashboard/courses/functional-flow';
+    if (email.includes('functional-energy') || email.includes('energy')) return '/dashboard/courses/functional-energy';
+    if (email.includes('functional-basics') || email.includes('basics')) return '/dashboard/courses/functional-basics';
     return '/dashboard/courses/functional-basics';
   };
 
