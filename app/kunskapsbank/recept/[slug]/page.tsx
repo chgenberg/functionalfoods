@@ -950,9 +950,24 @@ export default function RecipePage() {
             {/* Left Side - Image and Basic Info */}
             <div className="lg:col-span-5">
               <div className="lg:sticky lg:top-8">
-                {/* Image Container - Optimized for Portrait Images */}
-                <div className="relative w-full bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden">
-                  <div className="relative aspect-[3/4] md:aspect-[3/4] lg:aspect-[4/5]">
+                {/* Image Container - Square format for both portrait and landscape */}
+                <motion.div 
+                  className="relative w-full bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <motion.div 
+                    className="relative aspect-square"
+                    animate={{ 
+                      scale: [1, 1.02, 1],
+                    }}
+                    transition={{ 
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
                     {imageLoading ? (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#93C560]/20 to-[#014421]/10">
                         <div className="text-center">
@@ -962,10 +977,10 @@ export default function RecipePage() {
                       </div>
                     ) : recipe.imageUrl && !imageError ? (
                       <Image
-                        src={optimizeImageUrl(recipe.imageUrl || recipe.imageMobileUrl, 'large', 'portrait')}
+                        src={optimizeImageUrl(recipe.imageUrl || recipe.imageMobileUrl, 'large', 'square')}
                         alt={recipe.imageAlt || recipe.title}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-300 hover:scale-105"
                         style={{ objectFit: 'cover', objectPosition: 'center' }}
                         priority
                         sizes={getResponsiveSizes('large')}
@@ -986,7 +1001,7 @@ export default function RecipePage() {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                   
                   {/* Recipe Title Overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 md:p-6">
@@ -1002,7 +1017,7 @@ export default function RecipePage() {
                       <p className="text-white/90 text-sm md:text-base lg:text-lg line-clamp-2">{recipe.excerpt}</p>
                     )}
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Quick Info Cards */}
                 <div className="grid grid-cols-3 gap-2 md:gap-3 mt-4 md:mt-6">
