@@ -480,7 +480,7 @@ export default function WeekTemplate({
         const imageMap: Record<string, string> = {};
 
         // Call API batch mapping for ALL meals using slug to get DB imageUrl
-        // Use smaller size (thumb) and cache for faster loading
+        // Use extra small thumbnails for fastest loading on week overview
         const resp = await fetch(`/api/recipes/batch-images`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -751,7 +751,8 @@ export default function WeekTemplate({
                                   alt={mealName}
                                   fill
                                   className="object-cover"
-                                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                                  quality={75}
                                   loading="eager"
                                   priority={day.day <= 2}
                                 />
