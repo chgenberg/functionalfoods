@@ -132,11 +132,19 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
         >
           <div className="relative aspect-square rounded-2xl overflow-hidden shadow-xl">
             <Image
-              src={document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage}`}
+              src={document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage.startsWith('/') ? '' : '/'}${document.headerImage}`}
               alt={document.title}
               fill
               className="object-cover"
               priority
+              unoptimized
+              onError={(e) => {
+                console.error(`Failed to load header image for ${document.title}:`, document.headerImage);
+                try {
+                  // @ts-ignore
+                  e.currentTarget.src = '/images/recipe-placeholder.svg';
+                } catch {}
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
@@ -220,10 +228,18 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
               {document.relatedImages.map((image, index) => (
                 <div key={index} className="relative h-64 rounded-lg overflow-hidden shadow-md">
                   <Image
-                    src={`/api/images${image.src}`}
+                    src={image.src.startsWith('/api/images') ? image.src : `/api/images${image.src.startsWith('/') ? '' : '/'}${image.src}`}
                     alt={image.alt || 'Relaterad bild'}
                     fill
                     className="object-cover"
+                    unoptimized
+                    onError={(e) => {
+                      console.error('Failed to load related image:', image.src);
+                      try {
+                        // @ts-ignore
+                        e.currentTarget.src = '/images/recipe-placeholder.svg';
+                      } catch {}
+                    }}
                   />
                 </div>
               ))}
