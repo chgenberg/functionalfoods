@@ -46,7 +46,7 @@ const FunctionalFoodsOverview: React.FC<FunctionalFoodsOverviewProps> = ({ onCon
             </p>
             
             <p className="text-lg leading-relaxed">
-              Att förändra sin livsstil kan kännas som en stor utmaning, men med rätt inställning och god planering kan det vara både inspirerande och givande. I den här boken är det främst fokus på hur du kan använda kosten inom Functional Foods kombinerat med 800-kalorierdieten, men här får du en snabb introduktion till alla de tre viktiga stegen:
+              Att förändra sin livsstil kan kännas som en stor utmaning, men med rätt inställning och god planering kan det vara både inspirerande och givande. Här får du en snabb introduktion till alla de tre viktiga stegen:
             </p>
           </div>
 
@@ -73,9 +73,6 @@ const FunctionalFoodsOverview: React.FC<FunctionalFoodsOverviewProps> = ({ onCon
               </p>
               <p>
                 Recepten i den här boken bygger på Functional Foods och du kommer upptäcka såväl nya smaker som nya råvaror och hur de kan tillagas. Ge dig själv tid i köket så hoppas jag att du ska känna lust och inspiration när du väl lagar maten.
-              </p>
-              <p>
-                För att du enkelt ska komma igång med Functional Foods och 800-kalorierdieten har jag skapat kostscheman för sex veckor. Kombinationen kommer ge dig en bra start på din hälsoresa.
               </p>
             </div>
           </motion.div>
@@ -210,10 +207,6 @@ const FunctionalFoodsOverview: React.FC<FunctionalFoodsOverviewProps> = ({ onCon
               
               <p className="mt-6">
                 Följer du dessa tre steg skapar du en hållbar och inspirerande väg mot bättre hälsa. Kom ihåg att varje litet steg räknas och att din resa är unik.
-              </p>
-              
-              <p className="font-semibold text-orange-600 text-lg mt-4">
-                Men nu ska vi fokusera på maten!
               </p>
             </div>
           </motion.div>
