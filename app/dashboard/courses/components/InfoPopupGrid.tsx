@@ -145,12 +145,18 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
             className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden h-full"
           >
             {doc.headerImage && (
-              <div className="relative h-48 w-full overflow-hidden">
+              <div className="relative h-48 w-full overflow-hidden bg-gray-100">
                 <Image
-                  src={doc.headerImage.startsWith('/api/images') ? doc.headerImage : `/api/images${doc.headerImage}`}
+                  src={doc.headerImage.startsWith('/api/images') ? doc.headerImage : `/api/images${doc.headerImage.startsWith('/') ? '' : '/'}${doc.headerImage}`}
                   alt={doc.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    console.error(`Failed to load image for ${doc.title}:`, doc.headerImage);
+                    // @ts-ignore
+                    e.currentTarget.src = '/images/recipe-placeholder.svg';
+                  }}
+                  unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               </div>
