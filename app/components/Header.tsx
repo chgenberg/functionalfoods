@@ -35,13 +35,6 @@ export default function Header() {
   // Check if we're on a course page
   const isCoursePage = pathname?.startsWith('/dashboard/courses/') || false;
 
-  const getDirectDashboardLink = (email: string) => {
-    if (email.includes('functional-flow') || email.includes('flow')) return '/dashboard/courses/functional-flow';
-    if (email.includes('functional-energy') || email.includes('energy')) return '/dashboard/courses/functional-energy';
-    if (email.includes('functional-basics') || email.includes('basics')) return '/dashboard/courses/functional-basics';
-    return '/dashboard/courses/functional-basics';
-  };
-
   const fetchResults = async () => {
     if (!q.trim()) { setResults([]); return; }
     try {
@@ -98,7 +91,45 @@ export default function Header() {
       if (res.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = getDirectDashboardLink(loginEmail);
+        
+        // Smart redirect based on actual purchases
+        try {
+          const purchasesRes = await fetch('/api/user/purchases', {
+            headers: { 'Authorization': `Bearer ${data.token}` }
+          });
+          
+          if (purchasesRes.ok) {
+            const purchasesData = await purchasesRes.json();
+            const purchases = purchasesData.purchases || purchasesData;
+            
+            if (purchases.length > 0) {
+              const ownedCourses = purchases.map((p: any) => p.course?.name || '');
+              
+              const hasFlow = ownedCourses.some((name: string) => name.includes('Flow') || name.includes('Gut Health'));
+              const hasBasics = ownedCourses.some((name: string) => name.includes('Basics'));
+              const hasEnergy = ownedCourses.some((name: string) => name.includes('Energy') || name.includes('Insulin'));
+              
+              if (hasEnergy && !hasFlow && !hasBasics) {
+                window.location.href = '/dashboard/courses/functional-energy';
+              } else if (hasFlow && !hasBasics && !hasEnergy) {
+                window.location.href = '/dashboard/courses/functional-flow';
+              } else if (hasBasics && !hasFlow && !hasEnergy) {
+                window.location.href = '/dashboard/courses/functional-basics';
+              } else if (purchases.length > 1) {
+                window.location.href = '/mina-kurser';
+              } else {
+                window.location.href = '/dashboard/courses/functional-basics';
+              }
+            } else {
+              window.location.href = '/mina-kurser';
+            }
+          } else {
+            // Fallback if purchases API fails
+            window.location.href = '/mina-kurser';
+          }
+        } catch {
+          window.location.href = '/mina-kurser';
+        }
       } else {
         setLoginError(data.error || 'Inloggning misslyckades');
       }
@@ -225,7 +256,6 @@ export default function Header() {
           onLogin={() => setShowLogin(true)}
           onLogout={logout}
           onSearch={() => setShowSearch(true)}
-          getDirectDashboardLink={getDirectDashboardLink}
         />
 
         {showLogin && (

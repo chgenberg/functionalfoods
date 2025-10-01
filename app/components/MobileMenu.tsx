@@ -21,7 +21,6 @@ interface MobileMenuProps {
   onLogin: () => void;
   onLogout: () => void;
   onSearch: () => void;
-  getDirectDashboardLink: (email: string) => string;
 }
 
 export default function MobileMenu({ 
@@ -31,8 +30,7 @@ export default function MobileMenu({
   user, 
   onLogin, 
   onLogout,
-  onSearch,
-  getDirectDashboardLink 
+  onSearch
 }: MobileMenuProps) {
   const t = useT();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -239,7 +237,7 @@ export default function MobileMenu({
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                   <Link
-                    href={getDirectDashboardLink(user.email)}
+                    href="/mina-kurser"
                     className="flex items-center justify-between px-4 py-3 text-base font-medium text-[#014421] bg-[#014421]/10 hover:bg-[#014421]/20 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
                     onClick={handleLinkClick}
                   >
