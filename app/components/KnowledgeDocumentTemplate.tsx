@@ -120,17 +120,17 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="bg-white rounded-lg shadow-lg overflow-hidden"
+      className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto"
     >
       {/* Header Image - Square format for both portrait and landscape */}
       {document.headerImage && (
         <motion.div 
-          className="relative w-full max-w-2xl mx-auto my-8"
+          className="relative w-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="relative aspect-square rounded-2xl overflow-hidden shadow-xl">
+          <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden">
             <Image
               src={document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage.startsWith('/') ? '' : '/'}${document.headerImage}`}
               alt={document.title}
@@ -146,18 +146,20 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
                 } catch {}
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">{document.title}</h1>
-              <div className="flex items-center gap-4 text-sm md:text-base">
-                <span className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                  <Clock className="w-4 h-4" />
-                  {document.readTime} min läsning
-                </span>
-                <span className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                  <BookOpen className="w-4 h-4" />
-                  Functional {courseType === 'basics' ? 'Basics' : courseType === 'flow' ? 'Flow' : 'Energy'}
-                </span>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+              <div className="max-w-3xl mx-auto text-white">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 leading-tight">{document.title}</h1>
+                <div className="flex items-center gap-4 text-sm md:text-base">
+                  <span className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    <Clock className="w-4 h-4" />
+                    {document.readTime} min läsning
+                  </span>
+                  <span className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    <BookOpen className="w-4 h-4" />
+                    Functional {courseType === 'basics' ? 'Basics' : courseType === 'flow' ? 'Flow' : 'Energy'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -182,108 +184,110 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
         </button>
       </div>
 
-      <div className="p-6 md:p-8">
-        {/* Key Takeaways */}
-        {document.keyTakeaways && document.keyTakeaways.length > 0 && (
+      <div className="p-6 md:p-10">
+        <div className="max-w-3xl mx-auto">
+          {/* Key Takeaways */}
+          {document.keyTakeaways && document.keyTakeaways.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-10 p-6 md:p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border border-green-200 shadow-sm"
+            >
+              <h2 className="text-xl md:text-2xl font-bold text-green-800 mb-4 flex items-center gap-2">
+                <BookOpen className="w-6 h-6" />
+                Huvudpunkter
+              </h2>
+              <ul className="space-y-3">
+                {document.keyTakeaways.map((takeaway, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="text-green-600 mt-1 text-xl">•</span>
+                    <span className="text-gray-700 leading-relaxed">{takeaway}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+
+          {/* Main Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8 p-6 bg-green-50 rounded-lg border border-green-200"
-          >
-            <h2 className="text-xl font-bold text-green-800 mb-3 flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
-              Huvudpunkter
-            </h2>
-            <ul className="space-y-2">
-              {document.keyTakeaways.map((takeaway, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="text-green-600 mt-0.5">•</span>
-                  <span className="text-gray-700">{takeaway}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
+            transition={{ delay: 0.3 }}
+            className="prose prose-lg max-w-none prose-headings:text-[#014421] prose-h1:text-3xl prose-h1:mb-6 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:mb-5 prose-ul:my-6 prose-li:my-2 prose-a:text-green-600 prose-a:no-underline hover:prose-a:underline"
+            dangerouslySetInnerHTML={{ __html: document.content }}
+          />
 
-        {/* Main Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="prose prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ __html: document.content }}
-        />
+          {/* Related Images */}
+          {document.relatedImages && document.relatedImages.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mt-12"
+            >
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Relaterade bilder</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {document.relatedImages.map((image, index) => (
+                  <div key={index} className="relative h-64 rounded-lg overflow-hidden shadow-md">
+                    <Image
+                      src={image.src.startsWith('/api/images') ? image.src : `/api/images${image.src.startsWith('/') ? '' : '/'}${image.src}`}
+                      alt={image.alt || 'Relaterad bild'}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                      onError={(e) => {
+                        console.error('Failed to load related image:', image.src);
+                        try {
+                          // @ts-ignore
+                          e.currentTarget.src = '/images/recipe-placeholder.svg';
+                        } catch {}
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
-        {/* Related Images */}
-        {document.relatedImages && document.relatedImages.length > 0 && (
+          {/* Navigation */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-12 pt-8 border-t flex justify-between items-center"
           >
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Relaterade bilder</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {document.relatedImages.map((image, index) => (
-                <div key={index} className="relative h-64 rounded-lg overflow-hidden shadow-md">
-                  <Image
-                    src={image.src.startsWith('/api/images') ? image.src : `/api/images${image.src.startsWith('/') ? '' : '/'}${image.src}`}
-                    alt={image.alt || 'Relaterad bild'}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                    onError={(e) => {
-                      console.error('Failed to load related image:', image.src);
-                      try {
-                        // @ts-ignore
-                        e.currentTarget.src = '/images/recipe-placeholder.svg';
-                      } catch {}
-                    }}
-                  />
+            {previousDocument ? (
+              <Link
+                href={`/dashboard/courses/${courseId}/knowledge/${previousDocument.slug}`}
+                className="group flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-gray-500">Föregående</p>
+                  <p className="font-medium">{previousDocument.title}</p>
                 </div>
-              ))}
-            </div>
+              </Link>
+            ) : (
+              <div />
+            )}
+            
+            {nextDocument ? (
+              <Link
+                href={`/dashboard/courses/${courseId}/knowledge/${nextDocument.slug}`}
+                className="group flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors text-right"
+              >
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-gray-500">Nästa</p>
+                  <p className="font-medium">{nextDocument.title}</p>
+                </div>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <div />
+            )}
           </motion.div>
-        )}
-
-        {/* Navigation */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 pt-8 border-t flex justify-between items-center"
-        >
-          {previousDocument ? (
-            <Link
-              href={`/dashboard/courses/${courseId}/knowledge/${previousDocument.slug}`}
-              className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors"
-            >
-              <ChevronLeft className="w-5 h-5" />
-              <div>
-                <p className="text-sm">Föregående</p>
-                <p className="font-medium">{previousDocument.title}</p>
-              </div>
-            </Link>
-          ) : (
-            <div />
-          )}
-          
-          {nextDocument ? (
-            <Link
-              href={`/dashboard/courses/${courseId}/knowledge/${nextDocument.slug}`}
-              className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors text-right"
-            >
-              <div>
-                <p className="text-sm">Nästa</p>
-                <p className="font-medium">{nextDocument.title}</p>
-              </div>
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-          ) : (
-            <div />
-          )}
-        </motion.div>
+        </div>
       </div>
     </motion.article>
   );
