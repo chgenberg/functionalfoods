@@ -511,38 +511,6 @@ export default function WeekTemplate({
         console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images from DB (via batch-images API)');
       } catch (e) {
         console.error('❌ WeekTemplate image loading error:', e);
-        // Retry once after a short delay if failed
-        setTimeout(() => {
-          fetch(`/api/recipes/batch-images?v=${Date.now()}-retry`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              recipeNames: allMeals.map(m => m.name), 
-              recipeSlugs: allMeals.map(m => m.slug), 
-              size: 'small',
-              usage: 'card'
-            })
-          })
-          .then(resp => resp.json())
-          .then(data => {
-            if (data.images) {
-              const retryMap: Record<string, string> = {};
-              allMeals.forEach(meal => {
-                const bySlug = meal.slug ? data.images[meal.slug] : undefined;
-                const byName = data.images[meal.name];
-                const url = bySlug || byName;
-                if (url) {
-                  retryMap[meal.key] = optimizeImageUrl(url, 'large', 'landscape');
-                }
-              });
-              setMealImages(retryMap);
-              console.log('✅ WeekTemplate retry successful, loaded', Object.keys(retryMap).length, 'images');
-            }
-          })
-          .catch(retryError => {
-            console.error('❌ WeekTemplate retry also failed:', retryError);
-          });
-        }, 1000);
       }
     };
     loadMealImages();
