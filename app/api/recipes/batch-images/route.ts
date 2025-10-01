@@ -301,7 +301,14 @@ export async function POST(request: Request) {
 
     console.log('📸 Final image map:', imageMap);
 
-    return NextResponse.json({ images: imageMap });
+    return NextResponse.json(
+      { images: imageMap },
+      { 
+        headers: {
+          'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+        }
+      }
+    );
   } catch (error) {
     console.error('❌ Error fetching recipe images:', error);
     return NextResponse.json({ error: 'Failed to fetch recipe images' }, { status: 500 });

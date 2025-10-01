@@ -98,10 +98,11 @@ export default function DayModal({
           setRecipeImages(images);
         } catch (error) {
           console.error('❌ DayModal image fetch error:', error);
+          
           // Set fallback for all on error
           const placeholders: Record<string, string> = {};
           meals.forEach(meal => {
-            placeholders[meal.meal] = '/api/images/Recept_complete2.0/images/_optimized/Agg%20i%20paprika.webp';
+            placeholders[meal.meal] = '/api/images/recept_images_optimized/het-ratatouille-medium.webp';
           });
           setRecipeImages(placeholders);
         }
