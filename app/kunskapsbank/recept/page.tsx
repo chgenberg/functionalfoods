@@ -203,7 +203,9 @@ const RecipesPage = () => {
 
   // Removed automatic infinite scroll - using manual "Load More" button instead
 
-  const filteredRecipes = recipes.filter(recipe => {
+	const visibleRecipes = userAccess.hasAccess ? recipes : recipes.filter(r => !r.isPremium);
+
+	const filteredRecipes = visibleRecipes.filter(recipe => {
     const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
     const matchesStatus = selectedStatus === 'all' || 
                          (selectedStatus === 'free' && recipe.isFree && !recipe.isPremium) ||
