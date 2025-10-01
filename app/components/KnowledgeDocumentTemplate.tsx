@@ -122,31 +122,38 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
       transition={{ duration: 0.5 }}
       className="bg-white rounded-lg shadow-lg overflow-hidden"
     >
-      {/* Header Image */}
+      {/* Header Image - Square format for both portrait and landscape */}
       {document.headerImage && (
-        <div className="relative h-64 md:h-96 w-full">
-          <Image
-            src={document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage}`}
-            alt={document.title}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">{document.title}</h1>
-            <div className="flex items-center gap-4 text-sm">
-              <span className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                {document.readTime} min läsning
-              </span>
-              <span className="flex items-center gap-1">
-                <BookOpen className="w-4 h-4" />
-                Functional {courseType === 'basics' ? 'Basics' : 'Flow'}
-              </span>
+        <motion.div 
+          className="relative w-full max-w-2xl mx-auto my-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="relative aspect-square rounded-2xl overflow-hidden shadow-xl">
+            <Image
+              src={document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage}`}
+              alt={document.title}
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">{document.title}</h1>
+              <div className="flex items-center gap-4 text-sm md:text-base">
+                <span className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                  <Clock className="w-4 h-4" />
+                  {document.readTime} min läsning
+                </span>
+                <span className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                  <BookOpen className="w-4 h-4" />
+                  Functional {courseType === 'basics' ? 'Basics' : courseType === 'flow' ? 'Flow' : 'Energy'}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Action Buttons */}
