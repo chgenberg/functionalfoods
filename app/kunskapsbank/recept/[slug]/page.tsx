@@ -481,18 +481,8 @@ export default function RecipePage() {
         return;
       }
       
-      // 3. Premium recipes (non-course)
-      if (data.requiresPremium && !userHasAccess) {
-        console.log('❌ Premium recipe, user has no premium access');
-        setError('premium');
-        setRecipe(data);
-        // Set servings from recipe data
-        if (data.servings) {
-          setServings(data.servings);
-        }
-        initializeNutrition(data);
-        return;
-      }
+      // 3. Premium recipes (old logic) — not used in new model; keep permissive
+      // In two-category model, premium == course; fallback allows access here
       
       // 4. Free recipes or user has access
       console.log('✅ Free recipe or user has access - ALLOWING ACCESS');

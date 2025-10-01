@@ -57,12 +57,12 @@ export async function GET(
     const instr = pick(recipe as any, 'instructions', lang) as string | null;
     if (instr) localized.instructions = instr;
 
-    // Add access requirements info
-    // A recipe requires premium if it's marked as premium AND not free
-    // Course recipes should NOT be marked as requiresPremium - they require course access
-    const isCourseRecipe = recipe.tags?.some((tag: string) => ['Basic', 'Flow', 'Energy'].includes(tag));
-    localized.requiresPremium = recipe.isPremium && !recipe.isFree && !isCourseRecipe;
+    // Add access requirements info (two-category model)
+    // Premium == course recipes; free == for everyone
+    const taggedCourse = recipe.tags?.some((tag: string) => ['Basic', 'Flow', 'Energy'].includes(tag));
+    const isCourseRecipe = (recipe.isPremium && !recipe.isFree) || taggedCourse;
     localized.requiresCourse = isCourseRecipe;
+    localized.requiresPremium = false;
     localized.courseTags = recipe.tags?.filter((tag: string) => ['Basic', 'Flow', 'Energy'].includes(tag)) || [];
     localized.isAdminOnly = recipe.tags?.includes('ADMIN_ONLY') || recipe.tags?.includes('UD');
 
