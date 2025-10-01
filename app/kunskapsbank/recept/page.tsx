@@ -103,7 +103,7 @@ const RecipesPage = () => {
       }
 
       const params = new URLSearchParams();
-      params.append('limit', '18');
+      params.append('limit', '21');
       params.append('page', page.toString());
       
       if (selectedCategory !== 'all') {
@@ -168,6 +168,8 @@ const RecipesPage = () => {
     setRecipes([]);
     setPage(1);
     setHasMore(true);
+    // Scroll to top when filters change for better UX
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [selectedCategory, selectedStatus, searchQuery]);
 
   useEffect(() => {
@@ -522,9 +524,17 @@ const RecipesPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center mt-12"
+            id="load-more-section"
           >
             <button
-              onClick={() => setPage(prev => prev + 1)}
+              onClick={() => {
+                const currentScroll = window.scrollY;
+                setPage(prev => prev + 1);
+                // Preserve scroll position after state update
+                requestAnimationFrame(() => {
+                  window.scrollTo({ top: currentScroll, behavior: 'instant' });
+                });
+              }}
               className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-8 py-4 rounded-full hover:shadow-xl transition-all transform hover:scale-105 font-medium text-lg"
             >
               Ladda fler recept
