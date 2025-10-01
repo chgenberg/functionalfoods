@@ -73,7 +73,6 @@ const RecipesPage = () => {
   
   // All refs after state
   const searchRef = useRef<HTMLDivElement>(null);
-  const observer = useRef<IntersectionObserver>();
 
   // All hooks after refs
   const { user } = useAuth();
@@ -202,20 +201,7 @@ const RecipesPage = () => {
   }, []);
 
 
-  const lastRecipeElementRef = useCallback((node: Element | null) => {
-    if (loading) return;
-    if (observer.current) observer.current.disconnect();
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore && !loading) {
-        console.log('📜 Loading more recipes...');
-        setPage(prevPage => prevPage + 1);
-      }
-    }, {
-      rootMargin: '200px', // Start loading when 200px away from bottom
-      threshold: 0.1
-    });
-    if (node) observer.current.observe(node);
-  }, [loading, hasMore]);
+  // Removed automatic infinite scroll - using manual "Load More" button instead
 
   const filteredRecipes = recipes.filter(recipe => {
     const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
@@ -505,7 +491,6 @@ const RecipesPage = () => {
             {filteredRecipes.map((recipe, index) => (
               <motion.div
                 key={recipe.id}
-                ref={index === filteredRecipes.length - 1 ? lastRecipeElementRef : null}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
@@ -519,7 +504,6 @@ const RecipesPage = () => {
             {filteredRecipes.map((recipe, index) => (
               <motion.div
                 key={recipe.id}
-                ref={index === filteredRecipes.length - 1 ? lastRecipeElementRef : null}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
@@ -530,8 +514,35 @@ const RecipesPage = () => {
           </div>
         )}
 
+        {/* Load More Button */}
+        {hasMore && !loading && filteredRecipes.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center mt-12"
+          >
+            <button
+              onClick={() => setPage(prev => prev + 1)}
+              className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-8 py-4 rounded-full hover:shadow-xl transition-all transform hover:scale-105 font-medium text-lg"
+            >
+              Ladda fler recept
+            </button>
+            <p className="text-gray-500 text-sm mt-3">
+              Visar {filteredRecipes.length} av {statistics.visible} recept
+            </p>
+          </motion.div>
+        )}
+
+        {/* Loading More Indicator */}
+        {loading && recipes.length > 0 && (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-orange-500 mx-auto mb-3"></div>
+            <p className="text-gray-600">Laddar fler recept...</p>
+          </div>
+        )}
+
         {/* No Results */}
-        {filteredRecipes.length === 0 && (
+        {filteredRecipes.length === 0 && !loading && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
