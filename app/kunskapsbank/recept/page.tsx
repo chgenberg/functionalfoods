@@ -160,9 +160,9 @@ const RecipesPage = () => {
   // Trigger fetching when page increments (infinite scroll)
   useEffect(() => {
     if (page > 1) {
-      fetchRecipes();
+      fetchRecipes(false); // false = don't reset, append to existing recipes
     }
-  }, [page, fetchRecipes]);
+  }, [page]);
 
   useEffect(() => {
     // Reset recipes and page when filters change
@@ -206,9 +206,13 @@ const RecipesPage = () => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore) {
+      if (entries[0].isIntersecting && hasMore && !loading) {
+        console.log('📜 Loading more recipes...');
         setPage(prevPage => prevPage + 1);
       }
+    }, {
+      rootMargin: '200px', // Start loading when 200px away from bottom
+      threshold: 0.1
     });
     if (node) observer.current.observe(node);
   }, [loading, hasMore]);
@@ -578,25 +582,52 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
   const canAccess = recipe.isAccessible !== false && (recipe.isFree || !recipe.isPremium || userAccess.hasAccess);
   const isComingSoon = recipe.isComingSoon === true;
   const [imageError, setImageError] = useState(false);
-  const [imageSrc, setImageSrc] = useState(() => {
-    const primary = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'medium', 'landscape') : '';
-    return primary || '';
-  });
-  const [fallbackStep, setFallbackStep] = useState(0);
+  const [imageSrc, setImageSrc] = useState<string>('');
+  const [imageLoading, setImageLoading] = useState(true);
   const t = useT();
 
-  const handleImageError = () => {
-    // Try alternative sources based on known storage folders, then fallback to placeholder
-    const candidates = [
-      '/images/recipe-placeholder.svg'
-    ];
-    if (fallbackStep < candidates.length) {
-      setImageSrc(candidates[fallbackStep]);
-      setFallbackStep(prev => prev + 1);
-    } else {
-      setImageError(true);
-    }
-  };
+  // Load image using batch-images API for consistency with recipe detail page
+  useEffect(() => {
+    if (!recipe.title || !recipe.slug) return;
+    
+    const loadImage = async () => {
+      try {
+        setImageLoading(true);
+        
+        // Use batch-images API to get the same image as on detail page
+        const response = await fetch('/api/recipes/batch-images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipeNames: [recipe.title],
+            recipeSlugs: [recipe.slug],
+            size: 'medium',
+            usage: 'card'
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const image = data.images?.[recipe.title] || data.images?.[recipe.slug];
+          if (image) {
+            setImageSrc(image);
+            setImageError(false);
+          } else {
+            setImageError(true);
+          }
+        } else {
+          setImageError(true);
+        }
+      } catch (err) {
+        console.error('Image load error:', err);
+        setImageError(true);
+      } finally {
+        setImageLoading(false);
+      }
+    };
+
+    loadImage();
+  }, [recipe.title, recipe.slug]);
 
   return (
     <Link href={canAccess && !isComingSoon ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -606,7 +637,13 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
       >
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-          {imageSrc && !imageError ? (
+          {imageLoading ? (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+              <div className="animate-pulse">
+                <span className="text-4xl opacity-30">🍽️</span>
+              </div>
+            </div>
+          ) : imageSrc && !imageError ? (
             <Image
               src={imageSrc}
               alt={recipe.imageAlt || recipe.title}
@@ -618,7 +655,7 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
                 objectPosition: 'center',
                 imageOrientation: 'from-image'
               }}
-              onError={handleImageError}
+              onError={() => setImageError(true)}
               priority={false}
               loading="lazy"
             />
@@ -699,26 +736,50 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
 const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
   const [imageError, setImageError] = useState(false);
-  const [imageSrc, setImageSrc] = useState(() => {
-    const primary = recipe.imageUrl ? optimizeImageUrl(recipe.imageUrl, 'small', 'square') : '';
-    return primary || optimizeImageUrl(`/recept_images_optimized/${recipe.slug}.webp`, 'small', 'square');
-  });
-  const [fallbackStep, setFallbackStep] = useState(0);
+  const [imageSrc, setImageSrc] = useState<string>('');
+  const [imageLoading, setImageLoading] = useState(true);
   const t = useT();
 
-  const handleImageError = () => {
-    const candidates = [
-      optimizeImageUrl(`/recept_images_vision_optimized/${recipe.slug}.webp`, 'small', 'square'),
-      optimizeImageUrl(`/recept_images_2025/${recipe.slug}.webp`, 'small', 'square'),
-      '/images/recipe-placeholder.svg'
-    ];
-    if (fallbackStep < candidates.length) {
-      setImageSrc(candidates[fallbackStep]);
-      setFallbackStep(prev => prev + 1);
-    } else {
-      setImageError(true);
-    }
-  };
+  // Load image using batch-images API for consistency
+  useEffect(() => {
+    if (!recipe.title || !recipe.slug) return;
+    
+    const loadImage = async () => {
+      try {
+        setImageLoading(true);
+        
+        const response = await fetch('/api/recipes/batch-images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipeNames: [recipe.title],
+            recipeSlugs: [recipe.slug],
+            size: 'small',
+            usage: 'thumb'
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const image = data.images?.[recipe.title] || data.images?.[recipe.slug];
+          if (image) {
+            setImageSrc(image);
+            setImageError(false);
+          } else {
+            setImageError(true);
+          }
+        } else {
+          setImageError(true);
+        }
+      } catch (err) {
+        setImageError(true);
+      } finally {
+        setImageLoading(false);
+      }
+    };
+
+    loadImage();
+  }, [recipe.title, recipe.slug]);
 
   return (
     <Link href={canAccess ? `/kunskapsbank/recept/${recipe.slug}` : '#'}>
@@ -729,7 +790,13 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
         <div className="flex gap-4">
           {/* Image */}
           <div className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-            {imageSrc && !imageError ? (
+            {imageLoading ? (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                <div className="animate-pulse">
+                  <span className="text-2xl opacity-30">🍽️</span>
+                </div>
+              </div>
+            ) : imageSrc && !imageError ? (
               <Image
                 src={imageSrc}
                 alt={recipe.imageAlt || recipe.title}
@@ -741,7 +808,7 @@ const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe,
                   objectPosition: 'center',
                   imageOrientation: 'from-image'
                 }}
-                onError={handleImageError}
+                onError={() => setImageError(true)}
                 priority={false}
                 loading="lazy"
               />
