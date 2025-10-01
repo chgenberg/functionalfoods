@@ -245,35 +245,7 @@ export default function FunctionalBasicsOverview() {
           <CompleteCourseDownload courseType="basics" />
         </div>
 
-        {/* Next Steps Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white rounded-3xl shadow-xl p-8"
-        >
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Nästa steg</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
-              <BookOpen className="w-12 h-12 text-green-600 mx-auto mb-4" />
-              <h4 className="text-lg font-bold text-gray-900 mb-2">Fortsätt kursen</h4>
-              <p className="text-gray-600 mb-4">Du är på vecka {currentWeek}, dag {currentDay}</p>
-              <button
-                onClick={() => window.location.href = `/dashboard/courses/functional-basics/week/${currentWeek}`}
-                className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition-colors"
-              >
-                Gå till vecka {currentWeek}
-              </button>
-            </div>
-            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
-              <Award className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h4 className="text-lg font-bold text-gray-900 mb-2">Dina framsteg</h4>
-              <p className="text-gray-600 mb-4">{Math.round(progressPercentage)}% av kursen genomförd</p>
-              <div className="text-2xl font-bold text-blue-600">{completedDays}/{totalDays} dagar</div>
-            </div>
-          </div>
-
-        </motion.div>
+        
       </div>
 
       {/* Help Modal */}
