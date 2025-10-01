@@ -55,7 +55,9 @@ export default function UtbildningPage() {
                   src={course.image}
                   alt={course.title}
                   fill
-                  priority
+                  priority={true}
+                  loading="eager"
+                  quality={85}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                 />
