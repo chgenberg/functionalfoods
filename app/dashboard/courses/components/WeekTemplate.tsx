@@ -480,17 +480,15 @@ export default function WeekTemplate({
         const imageMap: Record<string, string> = {};
 
         // Call API batch mapping for ALL meals using slug to get DB imageUrl
-        // Force fresh lookup by adding unique cache-bust param
-        const cacheBust = `${weekNumber}-${courseType}-${Date.now()}`;
-        const resp = await fetch(`/api/recipes/batch-images?v=${cacheBust}`, {
+        // Use smaller size (thumb) and cache for faster loading
+        const resp = await fetch(`/api/recipes/batch-images`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
               recipeNames: allMeals.map(m => m.name), 
               recipeSlugs: allMeals.map(m => m.slug), 
               size: 'small',
-              usage: 'card'
+              usage: 'thumb'
             })
           });
         if (resp.ok) {
@@ -502,13 +500,13 @@ export default function WeekTemplate({
             const byName = images[meal.name];
             const url = bySlug || byName;
             if (url) {
-              imageMap[meal.key] = optimizeImageUrl(url, 'large', 'landscape');
+              imageMap[meal.key] = url; // Use raw URL from API (already optimized)
             }
           });
         }
 
         setMealImages(imageMap);
-        console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images from DB (via batch-images API)');
+        console.log('✅ WeekTemplate loaded', Object.keys(imageMap).length, 'meal images (optimized thumbs)');
       } catch (e) {
         console.error('❌ WeekTemplate image loading error:', e);
       }
@@ -727,13 +725,7 @@ export default function WeekTemplate({
                       const calorieMatch = meal.data.name.match(/\((\d+\s*kcal)\)/);
                       const calories = calorieMatch ? calorieMatch[1] : '';
                       const imageKey = `${day.day}-${meal.type}`;
-                      const rawUrl = mealImages[imageKey];
-                      const imageUrl = rawUrl ? optimizeImageUrl(rawUrl, 'large', 'landscape') : undefined;
-                      
-                      // Debug logging for missing images
-                      if (!imageUrl && process.env.NODE_ENV === 'development') {
-                        console.log(`🖼️ Missing image for ${meal.data.name}: key="${imageKey}", available keys:`, Object.keys(mealImages));
-                      }
+                      const imageUrl = mealImages[imageKey]; // Already optimized from API
 
                       return (
                         <motion.div
@@ -753,12 +745,15 @@ export default function WeekTemplate({
                         >
                           <div className="relative overflow-hidden rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300">
                             <div className="aspect-[4/3] relative bg-gray-100">
-                              {imageUrl || (mealImages[meal.data.name] && optimizeImageUrl(mealImages[meal.data.name], 'large', 'landscape')) ? (
+                              {imageUrl ? (
                                 <Image
-                                  src={imageUrl || optimizeImageUrl(mealImages[meal.data.name], 'large', 'landscape')}
+                                  src={imageUrl}
                                   alt={mealName}
                                   fill
                                   className="object-cover"
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                  loading="eager"
+                                  priority={day.day <= 2}
                                 />
                               ) : (
                                 <div className="absolute inset-0 flex items-center justify-center">
