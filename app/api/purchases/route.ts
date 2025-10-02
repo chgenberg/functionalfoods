@@ -181,7 +181,16 @@ export async function POST(request: Request) {
       .map(item => item.name);
 
     const courses = await prisma.courseProduct.findMany({
-      where: { name: { in: courseIds } }
+      where: { name: { in: courseIds } },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        basePrice: true,
+        salePrice: true,
+        saleStartsAt: true,
+        saleEndsAt: true
+      }
     });
 
     if (courses.length !== courseIds.length) {
@@ -211,10 +220,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Calculate total amount
+    // Helper to get effective price (salePrice when active)
+    const now = new Date();
+    const getEffectivePrice = (c: any): number => {
+      let price = typeof c.basePrice === 'number' ? c.basePrice : (c.price || 0);
+      const hasSale = typeof c.salePrice === 'number';
+      const saleActive = hasSale && (!c.saleStartsAt || now >= c.saleStartsAt) && (!c.saleEndsAt || now <= c.saleEndsAt);
+      if (saleActive) price = c.salePrice as number;
+      return price;
+    };
+
+    // Calculate total amount using effective price
     const totalAmount = items.reduce((sum, item) => {
       const course = courses.find(c => c.name === item.name);
-      return sum + (course ? course.price * item.quantity : 0);
+      return sum + (course ? getEffectivePrice(course) * item.quantity : 0);
     }, 0);
 
     // Generate unique order number
@@ -231,10 +250,11 @@ export async function POST(request: Request) {
         items: {
           create: items.map(item => {
             const course = courses.find(c => c.name === item.name);
-            return {
+                const unitPrice = course ? getEffectivePrice(course) : 0;
+                return {
               courseId: course?.id,
               name: item.name,
-              price: course?.price || 0,
+                  price: unitPrice,
               quantity: item.quantity,
               type: item.type
             };
@@ -300,11 +320,12 @@ export async function POST(request: Request) {
         if (item.type === 'course') {
           const course = courses.find(c => c.name === item.name);
           if (course) {
+            const unitPrice = getEffectivePrice(course);
             const purchase = await prisma.purchase.create({
               data: {
                 userId: user.id,
                 courseId: course.id,
-                amount: course.price * item.quantity,
+                amount: unitPrice * item.quantity,
                 status: 'completed',
                 orderId: order.id,
                 accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
@@ -327,7 +348,7 @@ export async function POST(request: Request) {
           totalAmount,
           courses: courses.map(c => ({
             name: c.name,
-            price: c.price
+            price: getEffectivePrice(c)
           }))
         };
 
