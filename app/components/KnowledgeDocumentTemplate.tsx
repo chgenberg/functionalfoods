@@ -132,7 +132,7 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
         >
           <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden">
             <Image
-              src={document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage.startsWith('/') ? '' : '/'}${document.headerImage}`}
+              src={(document.headerImage.startsWith('/api/images') ? document.headerImage : `/api/images${document.headerImage.startsWith('/') ? '' : '/'}${document.headerImage}`) + `?cb=${Date.now()}`}
               alt={document.title}
               fill
               className="object-cover"
@@ -231,7 +231,7 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
                 {document.relatedImages.map((image, index) => (
                   <div key={index} className="relative h-64 rounded-lg overflow-hidden shadow-md">
                     <Image
-                      src={image.src.startsWith('/api/images') ? image.src : `/api/images${image.src.startsWith('/') ? '' : '/'}${image.src}`}
+                      src={(image.src.startsWith('/api/images') ? image.src : `/api/images${image.src.startsWith('/') ? '' : '/'}${image.src}`) + `?cb=${Date.now()}`}
                       alt={image.alt || 'Relaterad bild'}
                       fill
                       className="object-cover"
