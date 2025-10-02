@@ -108,7 +108,17 @@ export async function GET(req: NextRequest) {
 
     // Override header images by slug when we have curated replacements
     const headerImageOverrides: Record<string, string> = {
-      'att-a-ta-ute-med-functional-foods': '/Ersattning-bilder/kunskapsdokument-basic/ata-ute-functionalfoods.jpg'
+      'att-a-ta-ute-med-functional-foods': '/Ersattning-bilder/kunskapsdokument-basic/ata-ute-functionalfoods.jpg',
+      'att-va-lja-ra-tt-kolhydrater': '/Ersattning-bilder/kunskapsdokument-basic/ratt-kolhydrater.jpg',
+      'att-va-lja-ra-tt-proteiner': '/Ersattning-bilder/kunskapsdokument-basic/proteiner.jpg',
+      'a-t-mer-functional-foods-pa-ett-enkelt-sa-tt': '/Ersattning-bilder/kunskapsdokument-basic/mer-functional-ratt-satt.jpg',
+      'dags-att-komma-iga-ng': '/Ersattning-bilder/kunskapsdokument-basic/komma-igang.jpg',
+      'ersa-ttningsguide-fo-r-kolhydrater': '/Ersattning-bilder/kunskapsdokument-basic/MISC.png',
+      'fo-rdelarna-med-functional-foods': '/Ersattning-bilder/kunskapsdokument-basic/MISC.png',
+      'fra-gor-och-svar': '/Ersattning-bilder/kunskapsdokument-basic/fragor-svar.jpg',
+      'ma-ldokument-styrelsemo-te-1': '/Ersattning-bilder/kunskapsdokument-basic/styrelsemote-1.jpg',
+      'ma-ldokument-styrelsemo-te-2': '/Ersattning-bilder/kunskapsdokument-basic/MISC.png',
+      'vad-a-r-functional-foods': '/Ersattning-bilder/kunskapsdokument-basic/vad-ar-functionalfoods.png'
     };
 
     const finalDocs = (merged as any[]).map((doc: any) => {
