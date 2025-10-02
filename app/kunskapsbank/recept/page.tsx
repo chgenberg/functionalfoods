@@ -151,9 +151,17 @@ const RecipesPage = () => {
   }, [page, selectedCategory, selectedStatus, searchQuery, user]);
 
   useEffect(() => {
+    // Only fetch from API when search query is empty or at least 3 characters
+    // This prevents unnecessary API calls while typing
+    const shouldFetch = searchQuery.length === 0 || searchQuery.length >= 3;
+    
+    if (!shouldFetch) {
+      return; // Don't fetch if search query is 1-2 characters
+    }
+    
     const timeoutId = setTimeout(() => {
       fetchRecipes();
-    }, 300); // Debounce search by 300ms
+    }, 600); // Longer debounce for better UX (600ms instead of 300ms)
     
     return () => clearTimeout(timeoutId);
   }, [user, selectedCategory, selectedStatus, searchQuery]);
