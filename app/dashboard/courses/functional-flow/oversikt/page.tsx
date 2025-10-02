@@ -221,14 +221,16 @@ export default function FunctionalFlowOverview() {
         </motion.div>
 
         {/* Course Downloads */}
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-6 mb-10 relative z-0">
           <CompleteCourseDownload courseType="flow" />
         </div>
 
         
 
         {/* Info Popup Grid */}
-        <InfoPopupGrid courseType="flow" courseId="functional-flow" />
+        <div className="relative z-10">
+          <InfoPopupGrid courseType="flow" courseId="functional-flow" />
+        </div>
       </div>
 
       {/* Help Modal */}

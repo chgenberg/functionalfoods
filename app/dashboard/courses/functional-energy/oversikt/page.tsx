@@ -200,10 +200,12 @@ export default function FunctionalEnergyOverview() {
         </motion.div>
 
         {/* Info Popup Grid */}
-        <InfoPopupGrid courseType="energy" courseId="functional-energy" />
+        <div className="relative z-10">
+          <InfoPopupGrid courseType="energy" courseId="functional-energy" />
+        </div>
 
         {/* Course Downloads */}
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-6 mb-10 relative z-0">
           <CompleteCourseDownload courseType="energy" />
         </div>
 
