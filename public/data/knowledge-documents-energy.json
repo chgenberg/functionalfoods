@@ -1,0 +1,112 @@
+[
+  {
+    "title": "Frågor och svar",
+    "slug": "fragor-och-svar",
+    "excerpt": "Vanliga frågor och tydliga svar om Functional Foods och kursupplägg.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/fragor-svar.jpg",
+    "readTime": 3,
+    "course": "energy",
+    "order": 1
+  },
+  {
+    "title": "Vad är Functional Foods?",
+    "slug": "vad-ar-functional-foods",
+    "excerpt": "Introduktion till Functional Foods – principer och grundtankar.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/vad-ar-functionalfoods.png",
+    "readTime": 4,
+    "course": "energy",
+    "order": 2
+  },
+  {
+    "title": "Dags att komma igång!",
+    "slug": "dags-att-komma-igang",
+    "excerpt": "Kom igång-guiden – så startar du på bästa sätt.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/komma-igang.jpg",
+    "readTime": 4,
+    "course": "energy",
+    "order": 3
+  },
+  {
+    "title": "Functional Foods – 3 steg till ett friskare liv",
+    "slug": "functional-foods-3-steg-till-ett-friskare-liv",
+    "excerpt": "Tre steg som skapar långsiktiga vanor och resultat.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/3-steg-rikare-liv.jpg",
+    "readTime": 4,
+    "course": "energy",
+    "order": 4
+  },
+  {
+    "title": "Varför drabbas man av diabetes typ 2 och vad innebär det?",
+    "slug": "varfor-diabetes-typ-2",
+    "excerpt": "Bakgrund, riskfaktorer och vad diagnosen innebär.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/MISC.png",
+    "readTime": 5,
+    "course": "energy",
+    "order": 5
+  },
+  {
+    "title": "Att äta ute med Functional Foods",
+    "slug": "att-a-ta-ute-med-functional-foods",
+    "excerpt": "Smarta val på restaurang, café och i farten.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/ata-ute-functionalfoods.jpg",
+    "readTime": 4,
+    "course": "energy",
+    "order": 6
+  },
+  {
+    "title": "Functional Foods för diabetiker",
+    "slug": "functional-foods-for-diabetiker",
+    "excerpt": "Grundprinciper och fokusområden för diabetes typ 2.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/functionalfoods-livsstil.jpg",
+    "readTime": 5,
+    "course": "energy",
+    "order": 7
+  },
+  {
+    "title": "Att välja rätt kolhydrater",
+    "slug": "att-va-lja-ra-tt-kolhydrater",
+    "excerpt": "Kolhydratskvalitet, fibrer och blodsockerkontroll.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/ratt-kolhydrater.jpg",
+    "readTime": 5,
+    "course": "energy",
+    "order": 8
+  },
+  {
+    "title": "Lågkolhydratkost och Functional Foods för blodsockerkontroll",
+    "slug": "lagkolhydratskost-functional-foods",
+    "excerpt": "Hur du använder lågkolhydratprinciper tillsammans med Functional Foods.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/MISC.png",
+    "readTime": 5,
+    "course": "energy",
+    "order": 9
+  },
+  {
+    "title": "Ersättningsguide för kolhydrater",
+    "slug": "ersa-ttningsguide-fo-r-kolhydrater",
+    "excerpt": "Smarta byten som stabiliserar blodsockret.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/MISC.png",
+    "readTime": 3,
+    "course": "energy",
+    "order": 10
+  },
+  {
+    "title": "Förstå insulinresistens och betacellsfunktion",
+    "slug": "insulinresistens-betacellsfunktion",
+    "excerpt": "Vad som händer i kroppen och hur kosten påverkar.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/MISC.png",
+    "readTime": 5,
+    "course": "energy",
+    "order": 11
+  },
+  {
+    "title": "En hälsosam livsstil för stabilt blodsocker",
+    "slug": "halsosam-livsstil-blodsocker",
+    "excerpt": "Sömn, stress, rörelse och mat – helheten för bättre kontroll.",
+    "headerImage": "/Ersattning-bilder/kunskapsdokument-basic/MISC.png",
+    "readTime": 4,
+    "course": "energy",
+    "order": 12
+  }
+]
+
+

@@ -68,12 +68,21 @@ export async function GET(req: NextRequest) {
           }
         }
       }
-      
+      // As last resort return empty
       return NextResponse.json({ documents: [] }, { headers: { 'Cache-Control': 'no-store' } });
     }
     
+    // Load JSON for selected course and also merge in energy if course=energy
     const raw = fs.readFileSync(filePath, 'utf8');
-    const jsonDocs = JSON.parse(raw);
+    let jsonDocs = JSON.parse(raw);
+    if (!course && slug) {
+      // If only slug provided and file didn't include it, try other courses too
+      const energyPath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-energy.json');
+      if (fs.existsSync(energyPath)) {
+        const energyDocs = JSON.parse(fs.readFileSync(energyPath, 'utf8'));
+        jsonDocs = [...jsonDocs, ...energyDocs];
+      }
+    }
     const jsonFiltered = slug ? jsonDocs.filter((d: any) => d.slug === slug) : jsonDocs;
 
     // Merge DB + JSON, prefer DB values when present, but DO NOT overwrite
