@@ -14,6 +14,19 @@ export async function GET(req: NextRequest) {
     const course = searchParams.get('course') || undefined; // 'basic' | 'flow' | 'energy'
     const slug = searchParams.get('slug') || undefined;
 
+    // Disallow known duplicate/wrong slugs (remove from all responses)
+    const disallowedSlugs = new Set<string>([
+      // Energy duplicates/wrong slugs
+      'ersattningsguide-for-kolhydrater',
+      'att-valja-ratt-kolhydrater',
+      'att-ata-ute-med-functional-foods',
+      'functional-foods-3-steg',
+      'varfor-drabbas-man-av-diabetes-typ-2'
+    ]);
+    if (slug && disallowedSlugs.has(slug)) {
+      return NextResponse.json({ documents: [] }, { headers: { 'Cache-Control': 'no-store' } });
+    }
+
     // Gather from DB (if available)
     let dbDocs: any[] = [];
     try {
@@ -25,7 +38,7 @@ export async function GET(req: NextRequest) {
           where: course ? { course } : undefined,
           orderBy: [{ course: 'asc' }, { order: 'asc' }]
         });
-        if (docs && Array.isArray(docs)) dbDocs = docs;
+        if (docs && Array.isArray(docs)) dbDocs = docs.filter((d: any) => !disallowedSlugs.has(d.slug));
       }
     } catch (e) {
       console.warn('Knowledge DB not available yet, will use JSON fallback');
@@ -83,7 +96,8 @@ export async function GET(req: NextRequest) {
         jsonDocs = [...jsonDocs, ...energyDocs];
       }
     }
-    const jsonFiltered = slug ? jsonDocs.filter((d: any) => d.slug === slug) : jsonDocs;
+    const jsonFiltered = (slug ? jsonDocs.filter((d: any) => d.slug === slug) : jsonDocs)
+      .filter((d: any) => !disallowedSlugs.has(d.slug));
 
     // Merge DB + JSON, prefer DB values when present, but DO NOT overwrite
     // existing JSON images with null/empty DB values
