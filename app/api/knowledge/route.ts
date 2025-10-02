@@ -76,10 +76,34 @@ export async function GET(req: NextRequest) {
     const jsonDocs = JSON.parse(raw);
     const jsonFiltered = slug ? jsonDocs.filter((d: any) => d.slug === slug) : jsonDocs;
 
-    // Merge DB + JSON, prefer DB by slug
+    // Merge DB + JSON, prefer DB values when present, but DO NOT overwrite
+    // existing JSON images with null/empty DB values
     const bySlug: Record<string, any> = {};
-    for (const d of jsonFiltered) bySlug[d.slug] = d;
-    for (const d of dbDocs) bySlug[d.slug] = { ...bySlug[d.slug], ...d };
+    for (const jd of jsonFiltered) {
+      bySlug[jd.slug] = jd;
+    }
+
+    for (const dbd of dbDocs) {
+      const existing = bySlug[dbd.slug] || {};
+      const mergedDoc: any = { ...existing, ...dbd };
+
+      // Preserve JSON headerImage if DB headerImage is missing/empty
+      if ((dbd.headerImage === null || dbd.headerImage === undefined || dbd.headerImage === '')) {
+        mergedDoc.headerImage = existing.headerImage ?? dbd.headerImage;
+      }
+
+      // Preserve JSON relatedImages if DB is missing
+      if ((dbd.relatedImages === null || dbd.relatedImages === undefined)) {
+        mergedDoc.relatedImages = existing.relatedImages ?? dbd.relatedImages;
+      }
+
+      // Preserve JSON excerpt/readTime when DB lacks
+      if (dbd.excerpt == null) mergedDoc.excerpt = existing.excerpt;
+      if (dbd.readTime == null) mergedDoc.readTime = existing.readTime;
+
+      bySlug[dbd.slug] = mergedDoc;
+    }
+
     const merged = Object.values(bySlug);
 
     // If DB had docs and no course param provided, merged covers both; if nothing found anywhere, return []
