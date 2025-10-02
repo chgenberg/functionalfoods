@@ -106,8 +106,21 @@ export async function GET(req: NextRequest) {
 
     const merged = Object.values(bySlug);
 
+    // Override header images by slug when we have curated replacements
+    const headerImageOverrides: Record<string, string> = {
+      'att-a-ta-ute-med-functional-foods': '/Ersattning-bilder/kunskapsdokument-basic/ata-ute-functionalfoods.jpg'
+    };
+
+    const finalDocs = (merged as any[]).map((doc: any) => {
+      const override = headerImageOverrides[doc.slug];
+      if (override) {
+        return { ...doc, headerImage: override };
+      }
+      return doc;
+    });
+
     // If DB had docs and no course param provided, merged covers both; if nothing found anywhere, return []
-    return NextResponse.json({ documents: merged }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ documents: finalDocs }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('Knowledge API error:', e);
     return NextResponse.json({ documents: [] }, { status: 500, headers: { 'Cache-Control': 'no-store' } });
