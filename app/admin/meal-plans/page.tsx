@@ -58,6 +58,33 @@ export default function AdminMealPlansPage() {
     if (!editing) return;
     try {
       const parsed = JSON.parse(editorValue);
+
+      // Enkel schema-validering för "days"
+      const dayKeys = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+      const missingDays = dayKeys.filter(k => !(parsed && typeof parsed === 'object' && k in parsed));
+      if (missingDays.length > 0) {
+        alert('Ogiltig struktur: saknar dag(ar): ' + missingDays.join(', '));
+        return;
+      }
+      for (const k of dayKeys) {
+        const d = parsed[k] || {};
+        const hasAny = !!(d.breakfast || d.lunch || d.dinner || d.snack || d.dessert);
+        if (!hasAny) {
+          alert(`Ogiltig struktur: '${k}' måste innehålla minst en av breakfast/lunch/dinner/snack/dessert`);
+          return;
+        }
+        for (const mt of ['breakfast','lunch','dinner','snack','dessert']) {
+          if (d[mt] && typeof d[mt] !== 'object') {
+            alert(`Ogiltig struktur: '${k}.${mt}' måste vara ett objekt { name, recipeLink? }`);
+            return;
+          }
+          if (d[mt] && !d[mt].name) {
+            alert(`Ogiltig struktur: '${k}.${mt}.name' saknas`);
+            return;
+          }
+        }
+      }
+
       const res = await fetch('/api/admin/meal-plans', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
