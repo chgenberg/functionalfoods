@@ -36,6 +36,9 @@ export default function AdminReviewsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Recensioner</h1>
         <p className="text-[var(--text-secondary)] font-light">Hantera kursrecensioner och feedback från användare</p>
+        <p className="text-sm text-gray-500 mt-2">
+          ⭐ <strong>Tips:</strong> Godkända recensioner visas publikt på hemsidan. Granska alltid innehållet innan godkännande.
+        </p>
       </div>
       
       <div className="admin-card mb-6">
