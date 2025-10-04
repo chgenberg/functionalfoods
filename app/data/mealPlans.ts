@@ -702,7 +702,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/saffransgrot-med-bar-och-granatapple"
         },
         "lunch": {
-          "name": "Tacokyckling med blomkålssallad rester",
+          "name": "Tacokyckling med blomkålssallad (rester från frysen)",
           "recipeLink": "/kunskapsbank/recept/tacokyckling-med-blomkalssallad"
         },
         "dinner": {
