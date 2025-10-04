@@ -345,7 +345,7 @@ export default function AdminRecipesPage() {
         </div>
 
         {/* Course Filter */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col gap-4">
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setCourseFilter('all')}
@@ -389,14 +389,14 @@ export default function AdminRecipesPage() {
             </button>
           </div>
 
-          <div className="flex-1 max-w-md relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-5 h-5" />
+          <div className="relative w-full max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-5 h-5 pointer-events-none z-10" />
             <input
               type="text"
               placeholder="Sök recept..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="admin-input pl-10"
+              className="admin-input pl-10 w-full"
             />
           </div>
         </div>
