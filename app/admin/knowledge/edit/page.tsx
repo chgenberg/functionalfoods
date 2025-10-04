@@ -35,9 +35,9 @@ export default function EditKnowledgeDocumentPage() {
   const [error, setError] = useState<string | null>(null);
 
   const courses = [
-    { id: 'basic', name: 'Functional Basics', color: 'bg-blue-100 text-blue-800', icon: '🌱' },
-    { id: 'flow', name: 'Functional Flow', color: 'bg-green-100 text-green-800', icon: '🌊' },
-    { id: 'energy', name: 'Functional Energy', color: 'bg-orange-100 text-orange-800', icon: '⚡' }
+    { id: 'basic', name: 'Functional Basics', color: 'bg-blue-100 text-blue-800', icon: 'Sprout' },
+    { id: 'flow', name: 'Functional Flow', color: 'bg-green-100 text-green-800', icon: 'Waves' },
+    { id: 'energy', name: 'Functional Energy', color: 'bg-orange-100 text-orange-800', icon: 'Zap' }
   ];
 
   useEffect(() => {

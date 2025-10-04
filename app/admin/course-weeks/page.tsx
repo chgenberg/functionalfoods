@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2, Edit, Save, Trash2, Plus } from 'lucide-react';
+import { Loader2, Edit, Save, Trash2, Plus, Info } from 'lucide-react';
 import ImageUpload from '@/app/components/admin/ImageUpload';
 
 interface CourseWeekMeta {
@@ -64,7 +64,10 @@ export default function AdminCourseWeeksPage() {
           <h1 className="text-3xl font-bold">Vecko-metadata</h1>
           <p className="text-gray-600">Rubrik, underrubrik, hero-bild och video per vecka</p>
           <p className="text-sm text-gray-500 mt-1">
-            🎯 <strong>Tips:</strong> Detta styr vad som visas högst upp på varje veckosida för eleverna
+            <span className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-blue-500" />
+              <span><strong>Tips:</strong> Detta styr vad som visas högst upp på varje veckosida för eleverna</span>
+            </span>
           </p>
         </div>
         <button

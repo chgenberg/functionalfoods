@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Filter, Star, User, Calendar } from 'lucide-react';
+import { CheckCircle, XCircle, Filter, Star, User, Calendar, Info } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -37,7 +37,10 @@ export default function AdminReviewsPage() {
         <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Recensioner</h1>
         <p className="text-[var(--text-secondary)] font-light">Hantera kursrecensioner och feedback från användare</p>
         <p className="text-sm text-gray-500 mt-2">
-          ⭐ <strong>Tips:</strong> Godkända recensioner visas publikt på hemsidan. Granska alltid innehållet innan godkännande.
+          <span className="flex items-center gap-2">
+            <Info className="w-4 h-4 text-blue-500" />
+            <span><strong>Tips:</strong> Godkända recensioner visas publikt på hemsidan. Granska alltid innehållet innan godkännande.</span>
+          </span>
         </p>
       </div>
       

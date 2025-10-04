@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Save, Plus, Trash2, Edit2, Check, X, Download, Upload } from 'lucide-react';
+import { ShoppingCart, Save, Plus, Trash2, Edit2, Check, X, Download, Upload, Info } from 'lucide-react';
 
 interface ShoppingListItem {
   name: string;
@@ -154,7 +154,10 @@ export default function AdminShoppingListsPage() {
         <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Hantera Inköpslistor</h1>
         <p className="text-[var(--text-secondary)] font-light">Redigera ingrediensmängder och namn för varje veckas inköpslista</p>
         <p className="text-sm text-gray-500 mt-2">
-          🛒 <strong>Tips:</strong> Inköpslistor genereras automatiskt från kostscheman. Du kan justera mängder och kategorier här.
+          <span className="flex items-center gap-2">
+            <Info className="w-4 h-4 text-blue-500" />
+            <span><strong>Tips:</strong> Inköpslistor genereras automatiskt från kostscheman. Du kan justera mängder och kategorier här.</span>
+          </span>
         </p>
       </div>
 

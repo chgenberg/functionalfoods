@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2, Edit, Save, Trash2, Plus } from 'lucide-react';
+import { Loader2, Edit, Save, Trash2, Plus, Info } from 'lucide-react';
 
 interface MealPlanWeek {
   id?: string;
@@ -113,7 +113,10 @@ export default function AdminMealPlansPage() {
           <h1 className="text-3xl font-bold">Kostscheman</h1>
           <p className="text-gray-600">Hantera veckomenyer för Basics, Flow och Energy</p>
           <p className="text-sm text-gray-500 mt-1">
-            💡 <strong>Tips:</strong> Ändringar här syns direkt i elevernas kostscheman efter sparning
+            <span className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-blue-500" />
+              <span><strong>Tips:</strong> Ändringar här syns direkt i elevernas kostscheman efter sparning</span>
+            </span>
           </p>
         </div>
         <button

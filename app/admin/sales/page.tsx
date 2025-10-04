@@ -7,7 +7,7 @@ import {
   Eye, RefreshCw, RotateCcw, TrendingDown, TrendingUp, XCircle,
   Search, Filter, Calendar, BarChart3, Users, Package,
   ArrowUpDown, ChevronDown, ChevronUp, FileSpreadsheet,
-  Mail, Phone, Globe, Hash, Zap
+  Mail, Phone, Globe, Hash, Zap, Info
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 
@@ -410,8 +410,9 @@ export default function EnhancedAdminSalesPage() {
           <div>
           <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Försäljning</h1>
           <p className="text-[var(--text-secondary)] font-light">Hantera och analysera alla transaktioner</p>
-          <p className="text-sm text-gray-500 mt-1">
-            💳 <strong>Tips:</strong> Data uppdateras automatiskt var 30:e sekund. Exportera till Excel för rapporter.
+          <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
+            <Info className="w-4 h-4 text-blue-500" />
+            <span><strong>Tips:</strong> Data uppdateras automatiskt var 30:e sekund. Exportera till Excel för rapporter.</span>
           </p>
           </div>
         <div className="flex gap-3">

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Plus, Edit3, Trash2, Search, Filter, Coffee, Clock, Users, ChefHat, BookOpen, Sparkles } from 'lucide-react';
+import { Plus, Edit3, Trash2, Search, Filter, Coffee, Clock, Users, ChefHat, BookOpen, Sparkles, Star, Sprout, Waves, Zap, Award, CheckCircle, FileEdit, Archive } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -335,7 +335,8 @@ export default function AdminRecipesPage() {
                       : 'bg-white text-[var(--text-secondary)] border-gray-200 hover:border-[var(--primary-light-green)] hover:shadow-sm'
                   }`}
                 >
-                  <span className="text-lg mr-1">🌟</span> Alla kurser
+                  <Star className="w-4 h-4" />
+                  Alla kurser
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-basics')}
@@ -345,7 +346,8 @@ export default function AdminRecipesPage() {
                       : 'bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-400 hover:shadow-sm'
                   }`}
                 >
-                  <span className="text-lg mr-1">🌱</span> Basics ({recipes.filter(r => r.tags?.includes('Basic')).length})
+                  <Sprout className="w-4 h-4" />
+                  Basics ({recipes.filter(r => r.tags?.includes('Basic')).length})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-flow')}
@@ -355,7 +357,8 @@ export default function AdminRecipesPage() {
                       : 'bg-green-50 text-green-700 border-green-200 hover:border-green-400 hover:shadow-sm'
                   }`}
                 >
-                  <span className="text-lg mr-1">🌊</span> Flow ({recipes.filter(r => r.tags?.includes('Flow')).length})
+                  <Waves className="w-4 h-4" />
+                  Flow ({recipes.filter(r => r.tags?.includes('Flow')).length})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-energy')}
@@ -365,7 +368,8 @@ export default function AdminRecipesPage() {
                       : 'bg-orange-50 text-orange-700 border-orange-200 hover:border-orange-400 hover:shadow-sm'
                   }`}
                 >
-                  <span className="text-lg mr-1">⚡</span> Energy ({recipes.filter(r => r.tags?.includes('Energy')).length})
+                  <Zap className="w-4 h-4" />
+                  Energy ({recipes.filter(r => r.tags?.includes('Energy')).length})
                 </button>
               </div>
             </div>
@@ -412,23 +416,27 @@ export default function AdminRecipesPage() {
               {/* Status badges */}
               <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                 {recipe.isPremium && (
-                  <span className="admin-badge admin-badge-warning backdrop-blur-sm bg-opacity-90">
-                    ⭐ Premium
+                  <span className="admin-badge admin-badge-warning backdrop-blur-sm bg-opacity-90 flex items-center gap-1">
+                    <Award className="w-3 h-3" />
+                    Premium
                   </span>
                 )}
                 {recipe.isFree && !recipe.isPremium && (
-                  <span className="admin-badge admin-badge-success backdrop-blur-sm bg-opacity-90">
-                    ✓ Gratis
+                  <span className="admin-badge admin-badge-success backdrop-blur-sm bg-opacity-90 flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" />
+                    Gratis
                   </span>
                 )}
                 {recipe.status === 'DRAFT' && (
-                  <span className="admin-badge admin-badge-info backdrop-blur-sm bg-opacity-90">
-                    📝 Utkast
+                  <span className="admin-badge admin-badge-info backdrop-blur-sm bg-opacity-90 flex items-center gap-1">
+                    <FileEdit className="w-3 h-3" />
+                    Utkast
                   </span>
                 )}
                 {recipe.status === 'ARCHIVED' && (
-                  <span className="admin-badge admin-badge-danger backdrop-blur-sm bg-opacity-90">
-                    📦 Arkiverad
+                  <span className="admin-badge admin-badge-danger backdrop-blur-sm bg-opacity-90 flex items-center gap-1">
+                    <Archive className="w-3 h-3" />
+                    Arkiverad
                   </span>
                 )}
               </div>

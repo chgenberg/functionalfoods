@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { AlertCircle, ArrowLeft, Check, Eye, FileText, Image as ImageIcon, Lightbulb, Loader, Save, Trash2, Upload, X, BookOpen, Edit3 } from "lucide-react";
+import { AlertCircle, ArrowLeft, Check, Eye, FileText, Image as ImageIcon, Lightbulb, Loader, Save, Trash2, Upload, X, BookOpen, Edit3, BarChart3 } from "lucide-react";
 import ImageUpload from '@/app/components/admin/ImageUpload';
 
 interface Recipe {
@@ -524,7 +524,10 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             </div>
             
             <p className="text-sm text-[var(--text-secondary)] mb-4">
-              📊 Ange näringsvärden <strong>per portion</strong>. Dessa värden visas för användarna på receptsidan.
+              <span className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-blue-500" />
+                <span>Ange näringsvärden <strong>per portion</strong>. Dessa värden visas för användarna på receptsidan.</span>
+              </span>
             </p>
 
             {showNutritionEdit ? (

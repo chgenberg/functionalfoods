@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Check, Copy, CreditCard, Database, Key, Server, User } from "lucide-react";;
+import { Check, Copy, CreditCard, Database, Key, Server, User, Settings, BarChart3 } from "lucide-react";
 import { useRouter } from 'next/navigation';
 
 export default function AdminDebugPage() {
@@ -37,7 +37,10 @@ export default function AdminDebugPage() {
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">🔧 Admin Debug Info</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+            <Settings className="w-8 h-8" />
+            Admin Debug Info
+          </h1>
           <p className="text-gray-600">Systeminfo och inloggningsuppgifter för administratörer</p>
         </div>
 
@@ -113,7 +116,10 @@ export default function AdminDebugPage() {
                   <Server className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">📊 Systemstatus</h2>
+                  <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <BarChart3 className="w-6 h-6" />
+                    Systemstatus
+                  </h2>
                   <p className="text-gray-600">Aktuell status för plattformen</p>
                 </div>
               </div>
