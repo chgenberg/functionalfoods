@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -8,6 +9,9 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
+
   try {
     const user = await prisma.user.findUnique({
       where: { id: params.id },
@@ -40,6 +44,9 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
+
   try {
     const data = await req.json();
     
@@ -84,6 +91,9 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
+
   try {
     // Check if user exists
     const user = await prisma.user.findUnique({

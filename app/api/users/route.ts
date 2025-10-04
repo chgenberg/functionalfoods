@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
+  const admin = await requireAdminAuth(request);
+  if ((admin as any)?.status === 401) return admin as any;
+
   try {
     const users = await prisma.user.findMany({
       select: {
@@ -34,6 +38,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(req: Request) {
+  const admin = await requireAdminAuth(req as NextRequest);
+  if ((admin as any)?.status === 401) return admin as any;
+
   try {
     const body = await req.json();
     
