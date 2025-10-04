@@ -480,7 +480,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
             </h2>
             
             <p className="text-sm text-[var(--text-secondary)] mb-4">
-              Välj vilka kurser detta recept ska vara tillgängligt för:
+              📚 Välj vilka kurser detta recept ska vara tillgängligt för. Receptet kommer att visas i kostscheman för de valda kurserna.
             </p>
 
             <div className="space-y-2">
@@ -522,6 +522,10 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                 {showNutritionEdit ? 'Dölj' : 'Redigera'}
               </button>
             </div>
+            
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              📊 Ange näringsvärden <strong>per portion</strong>. Dessa värden visas för användarna på receptsidan.
+            </p>
 
             {showNutritionEdit ? (
               <div className="grid grid-cols-2 gap-4">
@@ -662,6 +666,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
           {/* Ingredients */}
           <div className="admin-card">
             <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Ingredienser</h2>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              🥗 Lista alla ingredienser med mängd. T.ex. "2 dl mjölk", "200 g lax", "1 msk olivolja"
+            </p>
             
             <div className="space-y-2">
               {formData.ingredients.map((ingredient, index) => (
@@ -701,6 +708,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
           {/* Instructions */}
           <div className="admin-card">
             <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Instruktioner</h2>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              👨‍🍳 Beskriv varje steg i tillagningen. Var tydlig och detaljerad så att även nybörjare kan följa receptet.
+            </p>
             
             <div className="space-y-2">
               {formData.instructions.map((instruction, index) => (
@@ -744,6 +754,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
           {/* Image */}
           <div className="admin-card">
             <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Bild</h3>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              📸 Ladda upp en aptitretande bild av den färdiga rätten. Rekommenderad storlek: minst 800x600px
+            </p>
             
             <ImageUpload
               value={formData.imageUrl}
