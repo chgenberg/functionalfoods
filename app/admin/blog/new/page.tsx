@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import WysiwygEditor from '@/app/components/WysiwygEditor';
+import ImageUpload from '@/app/components/admin/ImageUpload';
 
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Save, X, Plus, Check, Eye, Calendar, Tag } from 'lucide-react';
@@ -401,16 +402,14 @@ export default function NewBlogPage() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Omslagsbild URL
-              </label>
-              <input
-                type="url"
+              <ImageUpload
                 value={blogData.coverImage}
-                onChange={(e) => updateBlogData('coverImage', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                placeholder="https://example.com/cover-image.jpg"
+                onChange={(url) => updateBlogData('coverImage', url)}
+                label="Omslagsbild"
               />
+              <p className="mt-2 text-sm text-gray-500">
+                Ladda upp en bild som representerar artikeln. Rekommenderad storlek: 1200x630px
+              </p>
             </div>
 
             <div>

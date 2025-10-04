@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, Save, Loader, AlertTriangle, Upload } from 'lucide-react';
 import WysiwygEditor from '@/app/components/WysiwygEditor';
+import ImageUpload from '@/app/components/admin/ImageUpload';
 
 interface BlogPost {
   id: string;
@@ -24,8 +25,6 @@ export default function EditBlogPostPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [dragging, setDragging] = useState(false);
   const params = useParams();
   const router = useRouter();
   const { slug } = params;
@@ -117,23 +116,6 @@ export default function EditBlogPostPage() {
     }
   };
 
-  const uploadFile = async (file: File) => {
-    try {
-      setUploading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folder', 'blog');
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Kunde inte ladda upp bild');
-      setPost({ ...post!, coverImage: data.url, imageAlt: post?.imageAlt || post?.title || 'Bild' });
-    } catch (err: any) {
-      alert(err.message || 'Fel vid bilduppladdning');
-    } finally {
-      setUploading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="p-8 flex justify-center items-center">
@@ -214,56 +196,14 @@ export default function EditBlogPostPage() {
             </div>
             
             <div>
-              <label className="admin-label">
-                Bild
-              </label>
-              <div 
-                className="space-y-3"
-              >
-                <label
-                  htmlFor="file-input"
-                  onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-                  onDragLeave={() => setDragging(false)}
-                  onDrop={async (e) => {
-                    e.preventDefault();
-                    setDragging(false);
-                    const file = e.dataTransfer.files?.[0];
-                    if (file) await uploadFile(file);
-                  }}
-                  className={`relative block w-full h-64 rounded-xl overflow-hidden border-2 ${dragging ? 'border-dashed border-[var(--primary-light-green)] bg-[var(--primary-beige)]' : 'border-[var(--border-light)] hover:border-[var(--primary-light-green)]'} transition-all cursor-pointer`}
-                >
-                  {post.coverImage ? (
-                    <Image src={post.coverImage} alt={post.imageAlt || post.title} layout="fill" objectFit="cover" />
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-[var(--text-secondary)] text-sm gap-2">
-                      {uploading ? (
-                        <>
-                          <Loader className="w-5 h-5 animate-spin text-[var(--primary-green)]" />
-                          <span>Laddar upp...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="w-8 h-8 mb-2" />
-                          <span>Dra & släpp bild här</span>
-                          <span className="text-xs">eller klicka för att välja fil</span>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </label>
-                <div className="flex items-center gap-3">
-                  <input
-                    id="file-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (file) await uploadFile(file);
-                    }}
-                    className="block text-sm"
-                  />
-                </div>
-              </div>
+              <ImageUpload
+                value={post.coverImage || ''}
+                onChange={(url) => setPost({ ...post!, coverImage: url })}
+                label="Omslagsbild"
+              />
+              <p className="mt-2 text-sm text-gray-500">
+                Rekommenderad storlek: 1200x630px för bästa visning
+              </p>
             </div>
           </div>
 
