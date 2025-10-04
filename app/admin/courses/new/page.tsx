@@ -55,6 +55,15 @@ export default function AdminNewCoursePage() {
 
       const newCourse = await response.json();
       
+      // Visa success-meddelande
+      alert(`✅ Kursen "${newCourse.title}" har skapats!\n\n` +
+            `📋 Kurs-slug: ${newCourse.courseSlug}\n` +
+            `📅 ${newCourse.message}\n\n` +
+            `Nästa steg:\n` +
+            `1. Lägg till recept för kursen\n` +
+            `2. Fyll i kostscheman för varje vecka\n` +
+            `3. Lägg till kunskapsdokument`);
+      
       // Redirecta till kursöversikten
       router.push('/admin/courses');
     } catch (err: any) {
@@ -316,12 +325,20 @@ export default function AdminNewCoursePage() {
             <div className="flex gap-3">
               <Info className="w-5 h-5 text-blue-600 mt-0.5" />
               <div className="text-sm text-blue-800">
-                <p className="font-semibold mb-2">Nästa steg efter att kursen skapats:</p>
+                <p className="font-semibold mb-2">✨ Vad händer när du skapar kursen:</p>
+                <ul className="list-disc list-inside space-y-1 mb-4">
+                  <li>Kursen skapas i databasen</li>
+                  <li>Veckostruktur skapas automatiskt (baserat på duration)</li>
+                  <li>Tomma kostscheman skapas för varje vecka</li>
+                  <li>Vecko-metadata skapas för varje vecka</li>
+                </ul>
+                <p className="font-semibold mb-2">📋 Nästa steg efter att kursen skapats:</p>
                 <ul className="list-disc list-inside space-y-1">
-                  <li>Lägg till veckovisa kostscheman via "Kostscheman" (admin/meal-plans)</li>
+                  <li>Tagga recept med kursens namn via "Recept" (admin/recipes)</li>
+                  <li>Fyll i kostscheman via "Kostscheman" (admin/meal-plans)</li>
                   <li>Lägg till kunskapsdokument via "Kunskapsdokument" (admin/knowledge)</li>
-                  <li>Konfigurera veckovisa videoklipp och innehåll via "Veckor" (admin/course-weeks)</li>
-                  <li>Skapa inköpslistor för varje vecka via "Inköpslistor" (admin/shopping-lists)</li>
+                  <li>Konfigurera veckovisa videoklipp via "Veckor" (admin/course-weeks)</li>
+                  <li>Inköpslistor genereras automatiskt från kostscheman</li>
                 </ul>
               </div>
             </div>

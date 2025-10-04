@@ -72,6 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Skapa kursen
     const course = await prisma.course.create({
       data: {
         title: data.title,
@@ -95,7 +96,53 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json(course);
+    // Skapa ett slug för kursen (används för meal plans etc)
+    const courseSlug = data.title
+      .toLowerCase()
+      .replace(/[åä]/g, 'a')
+      .replace(/ö/g, 'o')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    // Automatiskt skapa veckostruktur (6 veckor som standard)
+    const numberOfWeeks = parseInt(data.duration?.match(/\d+/)?.[0] || '6');
+    
+    for (let weekNum = 1; weekNum <= numberOfWeeks; weekNum++) {
+      // Skapa CourseWeekMeta för varje vecka
+      await prisma.courseWeekMeta.create({
+        data: {
+          course: courseSlug,
+          weekNumber: weekNum,
+          title: `Vecka ${weekNum}`,
+          subtitle: `Välkommen till vecka ${weekNum}`,
+          heroImage: data.coverImage || null,
+          videoUrl: null,
+        }
+      });
+
+      // Skapa tom MealPlanWeek för varje vecka
+      await prisma.mealPlanWeek.create({
+        data: {
+          course: courseSlug,
+          weekNumber: weekNum,
+          days: {
+            Måndag: { breakfast: null, lunch: null, dinner: null, snack: null, dessert: null },
+            Tisdag: { breakfast: null, lunch: null, dinner: null, snack: null, dessert: null },
+            Onsdag: { breakfast: null, lunch: null, dinner: null, snack: null, dessert: null },
+            Torsdag: { breakfast: null, lunch: null, dinner: null, snack: null, dessert: null },
+            Fredag: { breakfast: null, lunch: null, dinner: null, snack: null, dessert: null },
+            Lördag: { breakfast: null, lunch: null, dinner: null, snack: null, dessert: null },
+            Söndag: { breakfast: null, lunch: null, dinner: null, snack: null, dessert: null }
+          }
+        }
+      });
+    }
+
+    return NextResponse.json({
+      ...course,
+      courseSlug,
+      message: `Kurs skapad med ${numberOfWeeks} veckor`
+    });
   } catch (error) {
     console.error('Error creating course:', error);
     return NextResponse.json(
