@@ -159,8 +159,21 @@ export default function AdminCoursesPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-        <h1 className="text-4xl font-bold text-[#014421] mb-3">Kurshantering</h1>
-        <p className="text-gray-600 text-lg">Redigera kursinnehåll, kostscheman, kunskapsdokument och veckor</p>
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <h1 className="text-4xl font-bold text-[#014421] mb-3">Kurshantering</h1>
+            <p className="text-gray-600 text-lg">Redigera kursinnehåll, kostscheman, kunskapsdokument och veckor</p>
+          </div>
+          <Link
+            href="/admin/courses/new"
+            className="bg-[#014421] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#112A12] transition-colors flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Skapa ny kurs
+          </Link>
+        </div>
         
         {/* Course Selector */}
         <div className="mt-6">
