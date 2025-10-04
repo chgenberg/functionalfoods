@@ -218,6 +218,9 @@ export default function AdminCouponsPage() {
                 Rabattkoder
               </h1>
               <p className="mt-2 text-gray-600">Hantera kampanjer och erbjudanden</p>
+              <p className="text-sm text-gray-500 mt-1">
+                🎟️ <strong>Tips:</strong> Skapa tidsbegränsade kampanjer och följ användning i realtid
+              </p>
             </div>
             <button 
               onClick={openNew}
