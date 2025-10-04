@@ -37,13 +37,14 @@ export default function AdminRecipesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'free' | 'premium'>('all');
+  const [courseFilter, setCourseFilter] = useState<'all' | 'functional-basics' | 'functional-flow' | 'functional-energy'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [imageError, setImageError] = useState<Record<string, boolean>>({});
   const [fallbackImages, setFallbackImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchRecipes();
-  }, [filter, searchTerm]);
+  }, [filter, courseFilter, searchTerm]);
 
   // Fetch optimized images after recipes are loaded
   useEffect(() => {
@@ -96,6 +97,10 @@ export default function AdminRecipesPage() {
       
       if (searchTerm) {
         params.append('search', searchTerm);
+      }
+      
+      if (courseFilter !== 'all') {
+        params.append('courseFilter', courseFilter);
       }
       
       params.append('limit', '200'); // Visa många recept i admin
@@ -304,7 +309,7 @@ export default function AdminRecipesPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 mb-4">
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
@@ -335,6 +340,52 @@ export default function AdminRecipesPage() {
               }`}
             >
               Premium
+            </button>
+          </div>
+        </div>
+
+        {/* Course Filter */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setCourseFilter('all')}
+              className={`admin-btn ${
+                courseFilter === 'all' 
+                  ? 'bg-[#014421] text-white border-[#014421]' 
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#014421]'
+              }`}
+            >
+              🌟 Alla kurser
+            </button>
+            <button
+              onClick={() => setCourseFilter('functional-basics')}
+              className={`admin-btn ${
+                courseFilter === 'functional-basics' 
+                  ? 'bg-blue-600 text-white border-blue-600' 
+                  : 'bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-600'
+              }`}
+            >
+              🌱 Basics
+            </button>
+            <button
+              onClick={() => setCourseFilter('functional-flow')}
+              className={`admin-btn ${
+                courseFilter === 'functional-flow' 
+                  ? 'bg-green-600 text-white border-green-600' 
+                  : 'bg-green-50 text-green-700 border-green-200 hover:border-green-600'
+              }`}
+            >
+              🌊 Flow
+            </button>
+            <button
+              onClick={() => setCourseFilter('functional-energy')}
+              className={`admin-btn ${
+                courseFilter === 'functional-energy' 
+                  ? 'bg-orange-600 text-white border-orange-600' 
+                  : 'bg-orange-50 text-orange-700 border-orange-200 hover:border-orange-600'
+              }`}
+            >
+              ⚡ Energy
             </button>
           </div>
 
