@@ -28,27 +28,31 @@ export default function CourseRecipesPage({ params }: { params: { courseId: stri
   };
 
   useEffect(() => {
-    // Mock data för nu
-    setTimeout(() => {
-      setRecipes([
-        {
-          id: '1',
-          title: 'Quinoasallad med grönsaker',
-          description: 'Näringsrik sallad perfekt för kursen',
-          cookingTime: 25,
-          difficulty: 'Lätt'
-        },
-        {
-          id: '2',
-          title: 'Linsgryta med gurkmeja',
-          description: 'Antiinflammatorisk gryta',
-          cookingTime: 40,
-          difficulty: 'Medel'
-        }
-      ]);
+    fetchRecipes();
+  }, [params.courseId]);
+
+  const fetchRecipes = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch recipes tagged with this course
+      const response = await fetch(`/api/admin/recipes?courseFilter=${params.courseId}`, {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setRecipes(data.recipes || []);
+      } else {
+        setRecipes([]);
+      }
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      setRecipes([]);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
   if (loading) {
     return (

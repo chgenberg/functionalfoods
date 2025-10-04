@@ -28,29 +28,45 @@ export default function CourseStudentsPage({ params }: { params: { courseId: str
   };
 
   useEffect(() => {
-    // Mock data för nu
-    setTimeout(() => {
-      setStudents([
-        {
-          id: '1',
-          name: 'Anna Andersson',
-          email: 'anna@example.com',
-          enrolledAt: '2024-01-15',
-          progress: 75,
-          lastActive: '2024-01-20'
-        },
-        {
-          id: '2',
-          name: 'Erik Eriksson',
-          email: 'erik@example.com',
-          enrolledAt: '2024-01-10',
-          progress: 50,
-          lastActive: '2024-01-18'
-        }
-      ]);
+    fetchStudents();
+  }, [params.courseId]);
+
+  const fetchStudents = async () => {
+    try {
+      setLoading(true);
+      
+      // Map course ID to course name
+      const courseNameMap: Record<string, string> = {
+        'functional-basics': 'Functional Basics',
+        'functional-flow': 'Functional Flow',
+        'functional-energy': 'Functional Energy'
+      };
+      
+      const courseName = courseNameMap[params.courseId];
+      if (!courseName) {
+        setStudents([]);
+        setLoading(false);
+        return;
+      }
+      
+      // Fetch purchases for this course
+      const response = await fetch(`/api/admin/courses/${params.courseId}/students`, {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setStudents(data.students || []);
+      } else {
+        setStudents([]);
+      }
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      setStudents([]);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
   if (loading) {
     return (
