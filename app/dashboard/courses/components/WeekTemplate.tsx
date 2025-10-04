@@ -365,10 +365,34 @@ export default function WeekTemplate({
     loadKnowledgeDocuments();
   }, [courseType]);
 
-  // Get current week's meal plan (prefer provided prop -> fallback to static by course)
+  // Get current week's meal plan (prefer provided prop -> fallback to static by course, then DB override if present)
   const weekKey = `week${weekNumber}`;
   const staticByCourse = courseType === 'basics' ? basicMealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
-  const mealPlan = (mealPlans as any)?.[weekKey] || (staticByCourse as any)?.[weekKey];
+  const basePlans: any = (mealPlans as any) || (staticByCourse as any);
+
+  const [dbMealPlanOverride, setDbMealPlanOverride] = useState<any | null>(null);
+
+  useEffect(() => {
+    const loadDbMealPlan = async () => {
+      try {
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
+        const res = await fetch(`/api/meal-plans?course=${course}&week=${weekNumber}`, { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data?.days && Object.keys(data.days || {}).length > 0) {
+          setDbMealPlanOverride({ [weekKey]: { title: data.title || `Vecka ${weekNumber}`, days: data.days } });
+        } else {
+          setDbMealPlanOverride(null);
+        }
+      } catch {
+        // ignore fetch errors, fallback to provided/static
+      }
+    };
+    loadDbMealPlan();
+  }, [courseType, weekNumber]);
+
+  const effectivePlans = dbMealPlanOverride ? { ...basePlans, ...dbMealPlanOverride } : basePlans;
+  const mealPlan = (effectivePlans as any)?.[weekKey];
   
   // Validate meal plan data
   if (!mealPlan && process.env.NODE_ENV === 'development') {
