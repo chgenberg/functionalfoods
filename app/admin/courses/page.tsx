@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Edit3, Eye, Calendar, BookOpen, Users, Clock, ChevronRight, FileText, Settings, Database } from 'lucide-react';
+import { Edit3, Eye, Calendar, BookOpen, Users, Clock, ChevronRight, FileText, Settings, Database, ChefHat } from 'lucide-react';
 
 interface Course {
   id: string;
@@ -274,6 +274,17 @@ export default function AdminCoursesPage() {
                         <div className="text-sm text-green-600">Redigera artiklar och material</div>
               </div>
                     </button>
+                    
+                    <Link
+                      href={`/admin/courses/${selectedCourse}/manage-recipes`}
+                      className="flex items-center gap-3 p-4 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors border-2 border-orange-200"
+                    >
+                      <ChefHat className="w-6 h-6 text-orange-600" />
+                      <div>
+                        <div className="font-semibold text-orange-800">Hantera recept</div>
+                        <div className="text-sm text-orange-600">Lägg till och tagga recept för kursen</div>
+                      </div>
+                    </Link>
                     
                     <Link
                       href={`/admin/shopping-lists`}
