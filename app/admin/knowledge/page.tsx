@@ -173,7 +173,7 @@ export default function KnowledgeAdminPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Kunskapsdokument</h1>
-        <p className="text-[var(--text-secondary)] font-light">Hantera kunskapsdokument för Functional Basics och Flow</p>
+        <p className="text-[var(--text-secondary)] font-light">Hantera kunskapsdokument för Functional Basics, Flow och Energy</p>
       </div>
 
       {/* Filters and Actions */}
