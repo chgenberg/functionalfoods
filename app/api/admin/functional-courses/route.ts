@@ -5,61 +5,28 @@ import { requireAdminAuth } from '@/app/lib/admin-auth';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-// Hårdkodade kurser som matchar systemet
-const COURSES = {
-  'functional-basics': {
-    id: 'functional-basics',
-    name: 'Functional Basics',
-    description: 'Grundkurs i funktionell kost',
-    price: 1497,
-    duration: '6 veckor',
-    level: 'Nybörjare'
-  },
-  'functional-flow': {
-    id: 'functional-flow',
-    name: 'Functional Flow',
-    description: 'Fördjupningskurs i mag- och tarmhälsa',
-    price: 1497,
-    duration: '6 veckor',
-    level: 'Medel'
-  },
-  'functional-energy': {
-    id: 'functional-energy',
-    name: 'Functional Energy',
-    description: 'Specialkurs för blodsockerkontroll',
-    price: 1497,
-    duration: '6 veckor',
-    level: 'Avancerad'
-  }
-};
-
 export async function GET(req: NextRequest) {
-  // Temporärt inaktiverat auth för debugging
-  // const admin = await requireAdminAuth(req);
-  // if ((admin as any)?.status === 401) return admin as any;
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
 
   try {
-    // Hämta enrollments för varje kurs (med fallback om tabeller inte existerar)
-    let enrollmentCounts = [0, 0, 0];
-    try {
-      enrollmentCounts = await Promise.all([
-        prisma.purchase.count({ where: { course: { name: 'Functional Basics' } } }),
-        prisma.purchase.count({ where: { course: { name: 'Functional Flow' } } }),
-        prisma.purchase.count({ where: { course: { name: 'Functional Energy' } } })
-      ]);
-    } catch (e) {
-      console.warn('Could not fetch enrollment counts, using defaults');
-    }
+    // Hämta alla kursprodukter från databasen
+    const courseProducts = await prisma.courseProduct.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        purchases: {
+          select: { id: true }
+        }
+      }
+    });
 
-    // Hämta veckodata för varje kurs (med fallback)
-    let weekData: any[] = [];
-    try {
-      weekData = await prisma.courseWeekMeta.findMany({
-        orderBy: [{ course: 'asc' }, { weekNumber: 'asc' }]
-      });
-    } catch (e) {
-      console.warn('Could not fetch week data, using defaults');
-    }
+    // Hämta veckodata för varje kurs
+    const weekData = await prisma.courseWeekMeta.findMany({
+      orderBy: [{ course: 'asc' }, { weekNumber: 'asc' }]
+    });
 
     // Organisera veckodata per kurs
     const weeksByCourse: Record<string, any[]> = {
@@ -74,52 +41,36 @@ export async function GET(req: NextRequest) {
           weekNumber: week.weekNumber,
           title: week.weekTitle || `Vecka ${week.weekNumber}`,
           subtitle: week.weekSubtitle || '',
-          welcomeMessage: '',
+          welcomeMessage: week.welcomeMessage || '',
           videoUrl: week.videoUrl || '',
           heroImage: week.heroImage || ''
         });
       }
     });
 
-    // Skapa kursobjekt med verklig data
-    const courses = [
-      {
-        ...COURSES['functional-basics'],
-        enrollments: enrollmentCounts[0],
-        weeks: weeksByCourse['basic'].length > 0 ? weeksByCourse['basic'] : Array.from({ length: 6 }, (_, i) => ({
-          weekNumber: i + 1,
-          title: `Vecka ${i + 1}`,
-          subtitle: '',
-          welcomeMessage: '',
-          videoUrl: '',
-          heroImage: ''
-        }))
-      },
-      {
-        ...COURSES['functional-flow'],
-        enrollments: enrollmentCounts[1],
-        weeks: weeksByCourse['flow'].length > 0 ? weeksByCourse['flow'] : Array.from({ length: 6 }, (_, i) => ({
-          weekNumber: i + 1,
-          title: `Vecka ${i + 1}`,
-          subtitle: '',
-          welcomeMessage: '',
-          videoUrl: '',
-          heroImage: ''
-        }))
-      },
-      {
-        ...COURSES['functional-energy'],
-        enrollments: enrollmentCounts[2],
-        weeks: weeksByCourse['energy'].length > 0 ? weeksByCourse['energy'] : Array.from({ length: 6 }, (_, i) => ({
-          weekNumber: i + 1,
-          title: `Vecka ${i + 1}`,
-          subtitle: '',
-          welcomeMessage: '',
-          videoUrl: '',
-          heroImage: ''
-        }))
-      }
-    ];
+    // Mappa kursprodukter till kursformat
+    const courseNameToId: Record<string, string> = {
+      'Functional Basics': 'functional-basics',
+      'Functional Flow': 'functional-flow',
+      'Functional Energy': 'functional-energy'
+    };
+
+    const courseNameToCourse: Record<string, string> = {
+      'Functional Basics': 'basic',
+      'Functional Flow': 'flow',
+      'Functional Energy': 'energy'
+    };
+
+    const courses = courseProducts
+      .filter(cp => courseNameToId[cp.name]) // Endast functional foods-kurser
+      .map(cp => ({
+        id: courseNameToId[cp.name],
+        name: cp.name,
+        description: cp.description,
+        price: cp.price,
+        enrollments: cp.purchases.length,
+        weeks: weeksByCourse[courseNameToCourse[cp.name]] || []
+      }));
 
     return NextResponse.json(courses);
   } catch (error) {
