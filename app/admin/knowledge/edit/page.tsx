@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowLeft, Save, Eye, FileText, Clock, BookOpen, Upload, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, Eye, FileText, Clock, BookOpen, Upload, Image as ImageIcon, X, Plus } from 'lucide-react';
+import ImageUpload from '@/app/components/admin/ImageUpload';
 import dynamic from 'next/dynamic';
 
 // Dynamisk import av rich text editor
@@ -23,12 +25,14 @@ interface KnowledgeDocument {
 }
 
 export default function EditKnowledgeDocumentPage() {
-  const [documents, setDocuments] = useState<Record<string, KnowledgeDocument[]>>({});
-  const [selectedCourse, setSelectedCourse] = useState<'basic' | 'flow' | 'energy'>('basic');
+  const searchParams = useSearchParams();
+  const courseParam = searchParams.get('course') || 'basic';
+  const slugParam = searchParams.get('slug');
+  
   const [selectedDoc, setSelectedDoc] = useState<KnowledgeDocument | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [previewMode, setPreviewMode] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const courses = [
     { id: 'basic', name: 'Functional Basics', color: 'bg-blue-100 text-blue-800', icon: '🌱' },
@@ -37,37 +41,45 @@ export default function EditKnowledgeDocumentPage() {
   ];
 
   useEffect(() => {
-    fetchDocuments();
-  }, []);
+    if (slugParam) {
+      fetchDocument();
+    }
+  }, [slugParam, courseParam]);
 
-  const fetchDocuments = async () => {
+  const fetchDocument = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      const courseFiles = {
-        basic: '/data/knowledge-documents-basic.json',
-        flow: '/data/knowledge-documents-flow.json', 
-        energy: '/data/knowledge-documents-energy.json'
-      };
-
-      const allDocs: Record<string, KnowledgeDocument[]> = {};
-
-      for (const [courseId, filePath] of Object.entries(courseFiles)) {
-        try {
-          const response = await fetch(filePath);
-          if (response.ok) {
-            const docs = await response.json();
-            allDocs[courseId] = docs;
-          }
-        } catch (error) {
-          console.error(`Error loading ${courseId} documents:`, error);
-          allDocs[courseId] = [];
-        }
+      const response = await fetch(`/api/admin/knowledge?course=${courseParam}&slug=${slugParam}`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Kunde inte hämta dokument');
       }
-
-      setDocuments(allDocs);
+      
+      const data = await response.json();
+      const doc = data.documents?.[0];
+      
+      if (doc) {
+        setSelectedDoc({
+          title: doc.title,
+          slug: doc.slug,
+          content: doc.content,
+          headerImage: doc.headerImage || '',
+          relatedImages: doc.relatedImages || [],
+          keyTakeaways: doc.keyTakeaways || [],
+          readTime: doc.readTime || 5,
+          course: doc.course,
+          order: doc.order || 0
+        });
+      } else {
+        throw new Error('Dokument hittades inte');
+      }
     } catch (error) {
-      console.error('Error fetching documents:', error);
+      console.error('Error fetching document:', error);
+      setError(error instanceof Error ? error.message : 'Ett fel uppstod');
     } finally {
       setLoading(false);
     }
@@ -78,16 +90,23 @@ export default function EditKnowledgeDocumentPage() {
 
     try {
       setSaving(true);
+      setError(null);
       
-      // Här skulle vi spara till API/fil
-      console.log('Saving document:', selectedDoc);
+      const response = await fetch('/api/admin/knowledge', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(selectedDoc)
+      });
       
-      // Simulera API-anrop
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!response.ok) {
+        throw new Error('Kunde inte spara dokument');
+      }
       
       alert('Dokument sparat framgångsrikt!');
     } catch (error) {
       console.error('Error saving document:', error);
+      setError(error instanceof Error ? error.message : 'Fel vid sparning');
       alert('Fel vid sparning av dokument');
     } finally {
       setSaving(false);
@@ -100,16 +119,6 @@ export default function EditKnowledgeDocumentPage() {
     setSelectedDoc(prev => ({
       ...prev!,
       [field]: value
-    }));
-
-    // Uppdatera i documents-state också
-    setDocuments(prev => ({
-      ...prev,
-      [selectedCourse]: prev[selectedCourse].map(doc => 
-        doc.slug === selectedDoc.slug 
-          ? { ...doc, [field]: value }
-          : doc
-      )
     }));
   };
 
@@ -284,45 +293,14 @@ export default function EditKnowledgeDocumentPage() {
                   </div>
 
                   <div>
-                    <label className="admin-label">Header-bild URL</label>
-                    <input
-                      type="text"
+                    <ImageUpload
                       value={selectedDoc.headerImage || ''}
-                      onChange={(e) => updateDocument('headerImage', e.target.value)}
-                      className="admin-input"
-                      placeholder="/kurser/hero-image.jpg"
+                      onChange={(url) => updateDocument('headerImage', url)}
+                      label="Header-bild"
                     />
-                    <div className="mt-2 flex items-center gap-2">
-                      <label className="admin-btn admin-btn-secondary cursor-pointer inline-flex items-center gap-2">
-                        <Upload className="w-4 h-4" /> Ladda upp bild
-                        <input 
-                          type="file" 
-                          accept="image/*" 
-                          className="hidden" 
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-                            const fd = new FormData();
-                            fd.append('file', file);
-                            fd.append('type', 'course');
-                            try {
-                              const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-                              const data = await res.json();
-                              if (res.ok && data.url) {
-                                updateDocument('headerImage', data.url);
-                              } else {
-                                alert(data.error || 'Uppladdning misslyckades');
-                              }
-                            } catch (err) {
-                              alert('Uppladdning misslyckades');
-                            }
-                          }}
-                        />
-                      </label>
-                      {selectedDoc.headerImage && (
-                        <span className="text-xs text-[var(--text-secondary)]">{selectedDoc.headerImage}</span>
-                      )}
-                    </div>
+                    <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                      📸 Ladda upp en header-bild för dokumentet. Rekommenderad storlek: 1200x400px
+                    </p>
                   </div>
 
                   <div>
