@@ -410,6 +410,9 @@ export default function EnhancedAdminSalesPage() {
           <div>
           <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Försäljning</h1>
           <p className="text-[var(--text-secondary)] font-light">Hantera och analysera alla transaktioner</p>
+          <p className="text-sm text-gray-500 mt-1">
+            💳 <strong>Tips:</strong> Data uppdateras automatiskt var 30:e sekund. Exportera till Excel för rapporter.
+          </p>
           </div>
         <div className="flex gap-3">
           <button
