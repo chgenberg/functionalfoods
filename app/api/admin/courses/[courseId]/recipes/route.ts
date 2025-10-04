@@ -5,19 +5,19 @@ import { requireAdminAuth } from '@/app/lib/admin-auth';
 // Hämta alla recept för en kurs
 export async function GET(
   req: NextRequest,
-  { params }: { params: { courseSlug: string } }
+  { params }: { params: { courseId: string } }
 ) {
   const admin = await requireAdminAuth(req);
   if ((admin as any)?.status === 401) return admin as any;
 
   try {
-    const { courseSlug } = params;
+    const { courseId } = params;
 
     // Hämta recept som är taggade med denna kurs
     const recipes = await prisma.recipe.findMany({
       where: {
         tags: {
-          has: courseSlug
+          has: courseId
         }
       },
       select: {
@@ -53,13 +53,13 @@ export async function GET(
 // Lägg till recept till kurs (tagga recept)
 export async function POST(
   req: NextRequest,
-  { params }: { params: { courseSlug: string } }
+  { params }: { params: { courseId: string } }
 ) {
   const admin = await requireAdminAuth(req);
   if ((admin as any)?.status === 401) return admin as any;
 
   try {
-    const { courseSlug } = params;
+    const { courseId } = params;
     const { recipeIds } = await req.json();
 
     if (!Array.isArray(recipeIds)) {
@@ -81,11 +81,11 @@ export async function POST(
       const currentTags = Array.isArray(recipe.tags) ? recipe.tags : [];
       
       // Lägg till kurs-slug om den inte redan finns
-      if (!currentTags.includes(courseSlug)) {
+      if (!currentTags.includes(courseId)) {
         return prisma.recipe.update({
           where: { id: recipeId },
           data: {
-            tags: [...currentTags, courseSlug]
+            tags: [...currentTags, courseId]
           }
         });
       }
@@ -97,7 +97,7 @@ export async function POST(
 
     return NextResponse.json({ 
       success: true, 
-      message: `${recipeIds.length} recept taggade med ${courseSlug}` 
+      message: `${recipeIds.length} recept taggade med ${courseId}` 
     });
   } catch (error) {
     console.error('Error adding recipes to course:', error);
@@ -111,13 +111,13 @@ export async function POST(
 // Ta bort recept från kurs (ta bort tagg)
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { courseSlug: string } }
+  { params }: { params: { courseId: string } }
 ) {
   const admin = await requireAdminAuth(req);
   if ((admin as any)?.status === 401) return admin as any;
 
   try {
-    const { courseSlug } = params;
+    const { courseId } = params;
     const { searchParams } = new URL(req.url);
     const recipeId = searchParams.get('recipeId');
 
@@ -141,7 +141,7 @@ export async function DELETE(
     }
 
     const currentTags = Array.isArray(recipe.tags) ? recipe.tags : [];
-    const newTags = currentTags.filter(tag => tag !== courseSlug);
+    const newTags = currentTags.filter(tag => tag !== courseId);
 
     await prisma.recipe.update({
       where: { id: recipeId },
@@ -150,7 +150,7 @@ export async function DELETE(
 
     return NextResponse.json({ 
       success: true, 
-      message: `Recept borttaget från ${courseSlug}` 
+      message: `Recept borttaget från ${courseId}` 
     });
   } catch (error) {
     console.error('Error removing recipe from course:', error);

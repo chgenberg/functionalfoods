@@ -21,7 +21,7 @@ interface Recipe {
   prepTime?: string;
 }
 
-export default function ManageRecipesPage({ params }: { params: { courseSlug: string } }) {
+export default function ManageRecipesPage({ params }: { params: { courseId: string } }) {
   const [courseRecipes, setCourseRecipes] = useState<Recipe[]>([]);
   const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ export default function ManageRecipesPage({ params }: { params: { courseSlug: st
 
   const fetchCourseRecipes = async () => {
     try {
-      const response = await fetch(`/api/admin/courses/${params.courseSlug}/recipes`);
+      const response = await fetch(`/api/admin/courses/${params.courseId}/recipes`);
       if (response.ok) {
         const data = await response.json();
         setCourseRecipes(data.recipes || []);
@@ -66,7 +66,7 @@ export default function ManageRecipesPage({ params }: { params: { courseSlug: st
 
     setSaving(true);
     try {
-      const response = await fetch(`/api/admin/courses/${params.courseSlug}/recipes`, {
+      const response = await fetch(`/api/admin/courses/${params.courseId}/recipes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recipeIds: Array.from(selectedRecipes) })
@@ -91,7 +91,7 @@ export default function ManageRecipesPage({ params }: { params: { courseSlug: st
 
     try {
       const response = await fetch(
-        `/api/admin/courses/${params.courseSlug}/recipes?recipeId=${recipeId}`,
+        `/api/admin/courses/${params.courseId}/recipes?recipeId=${recipeId}`,
         { method: 'DELETE' }
       );
 
@@ -120,7 +120,7 @@ export default function ManageRecipesPage({ params }: { params: { courseSlug: st
     recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const courseName = params.courseSlug
+  const courseName = params.courseId
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');

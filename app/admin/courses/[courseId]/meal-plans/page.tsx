@@ -27,7 +27,7 @@ interface MealPlan {
   };
 }
 
-export default function CourseMealPlansPage({ params }: { params: { courseSlug: string } }) {
+export default function CourseMealPlansPage({ params }: { params: { courseId: string } }) {
   const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
   const [courseRecipes, setCourseRecipes] = useState<Recipe[]>([]);
   const [selectedWeek, setSelectedWeek] = useState(1);
@@ -55,7 +55,7 @@ export default function CourseMealPlansPage({ params }: { params: { courseSlug: 
 
   const fetchMealPlans = async () => {
     try {
-      const response = await fetch(`/api/admin/meal-plans?course=${params.courseSlug}`);
+      const response = await fetch(`/api/admin/meal-plans?course=${params.courseId}`);
       if (response.ok) {
         const data = await response.json();
         setMealPlans(data.mealPlans || []);
@@ -69,7 +69,7 @@ export default function CourseMealPlansPage({ params }: { params: { courseSlug: 
 
   const fetchCourseRecipes = async () => {
     try {
-      const response = await fetch(`/api/admin/courses/${params.courseSlug}/recipes`);
+      const response = await fetch(`/api/admin/courses/${params.courseId}/recipes`);
       if (response.ok) {
         const data = await response.json();
         setCourseRecipes(data.recipes || []);
@@ -96,7 +96,7 @@ export default function CourseMealPlansPage({ params }: { params: { courseSlug: 
       ...updatedDays[day],
       [mealType]: {
         name: recipe.title,
-        recipeLink: `/kunskapsbank/recept/${recipe.slug}?from=${params.courseSlug}&week=${selectedWeek}`
+        recipeLink: `/kunskapsbank/recept/${recipe.slug}?from=${params.courseId}&week=${selectedWeek}`
       }
     };
 
@@ -142,7 +142,7 @@ export default function CourseMealPlansPage({ params }: { params: { courseSlug: 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: currentPlan.id,
-          course: params.courseSlug,
+          course: params.courseId,
           weekNumber: selectedWeek,
           days: currentPlan.days
         })
@@ -165,7 +165,7 @@ export default function CourseMealPlansPage({ params }: { params: { courseSlug: 
     recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const courseName = params.courseSlug
+  const courseName = params.courseId
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
@@ -362,7 +362,7 @@ export default function CourseMealPlansPage({ params }: { params: { courseSlug: 
                   </p>
                   {courseRecipes.length === 0 && (
                     <Link
-                      href={`/admin/courses/${params.courseSlug}/manage-recipes`}
+                      href={`/admin/courses/${params.courseId}/manage-recipes`}
                       className="admin-btn admin-btn-primary"
                     >
                       Lägg till recept till kursen
