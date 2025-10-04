@@ -237,7 +237,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/biff-med-sotpotatis"
         },
         "snack": {
-          "name": "Kesofrallor med äpple och pumpafrön (249 kcal, P:21g, K:7g, F:15g)",
+          "name": "Kesofrallor med äpple och pumpafrön",
           "recipeLink": "/kunskapsbank/recept/kesofrallor-med-apple-och-pumpafron"
         },
         "dessert": {

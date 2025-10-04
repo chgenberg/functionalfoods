@@ -726,6 +726,7 @@ export default function WeekTemplate({
                       
                       const mealName = withResterName(weekNumber, day.day, idx, meal.data);
                       const label = getMealLabel(meal.type, meal.data?.name);
+                      const isEgenbakat = label === 'Egenbakat';
                       const calorieMatch = meal.data.name.match(/\((\d+\s*kcal)\)/);
                       const calories = calorieMatch ? calorieMatch[1] : '';
                       const imageKey = `${day.day}-${meal.type}`;
@@ -774,7 +775,9 @@ export default function WeekTemplate({
                             <div className="p-3 bg-white">
                               <h4 className="font-medium text-[#014421] text-sm mb-0.5">{label}</h4>
                               <p className="text-xs text-gray-700 line-clamp-2 mb-2">{formatMealName(mealName)}</p>
-                              <RecipeNutrition recipeLink={meal.data.recipeLink} />
+                              {!isEgenbakat && (
+                                <RecipeNutrition recipeLink={meal.data.recipeLink} />
+                              )}
                             </div>
                           </div>
                         </motion.div>
