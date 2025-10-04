@@ -253,16 +253,16 @@ export default function AdminCoursesPage() {
                 <div className="space-y-4">
                   <h3 className="font-bold text-lg text-[#014421]">Snabbåtgärder</h3>
                   <div className="grid grid-cols-1 gap-3">
-                    <button
-                      onClick={() => setActiveTab('meals')}
-                      className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors text-left"
+                    <Link
+                      href={`/admin/courses/${selectedCourse}/meal-plans`}
+                      className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors border-2 border-blue-200"
                     >
                       <Calendar className="w-6 h-6 text-blue-600" />
                       <div>
                         <div className="font-semibold text-blue-800">Hantera kostscheman</div>
-                        <div className="text-sm text-blue-600">Redigera veckoscheman direkt</div>
+                        <div className="text-sm text-blue-600">Planera måltider för varje vecka</div>
                       </div>
-                    </button>
+                    </Link>
                     
                     <button
                       onClick={() => setActiveTab('knowledge')}
