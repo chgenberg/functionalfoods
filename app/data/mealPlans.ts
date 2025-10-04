@@ -221,10 +221,6 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         "dinner": {
           "name": "Fisk och skaldjursgryta från medelhavet",
           "recipeLink": "/kunskapsbank/recept/fisk-och-skaldjursgryta-fran-medelhavet"
-        },
-        "snack": {
-          "name": "Kesofrallor med äpple och pumpafrön",
-          "recipeLink": "/kunskapsbank/recept/kesofrallor-med-apple-och-pumpafron"
         }
       },
       "Lördag": {
@@ -239,6 +235,10 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         "dinner": {
           "name": "Biff med sötpotatis",
           "recipeLink": "/kunskapsbank/recept/biff-med-sotpotatis"
+        },
+        "snack": {
+          "name": "Kesofrallor med äpple och pumpafrön (249 kcal, P:21g, K:7g, F:15g)",
+          "recipeLink": "/kunskapsbank/recept/kesofrallor-med-apple-och-pumpafron"
         },
         "dessert": {
           "name": "Mandelkaka med choklad",

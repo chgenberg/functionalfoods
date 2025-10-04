@@ -87,9 +87,13 @@ const getMealLabel = (type: string, name?: string): string => {
     'kesolimpa',
     'bovetegranola',
     'bananmuffins',
-    'jordgubbssylt'
+    'jordgubbssylt',
+    'kesofralla',
+    'kesofrallor'
   ];
-  if (lower && egenbakatMatchers.some(k => lower.includes(k))) return 'Egenbakat';
+  // Only classify as "Egenbakat" for snack/dessert to avoid mislabeling breakfasts
+  const egenbakatEligible = type === 'snack' || type === 'dessert';
+  if (egenbakatEligible && lower && egenbakatMatchers.some(k => lower.includes(k))) return 'Egenbakat';
 
   if (type === 'breakfast') return 'Frukost';
   if (type === 'lunch') return 'Lunch';
