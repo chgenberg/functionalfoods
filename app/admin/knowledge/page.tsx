@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Loader2, Plus, Edit, Trash2, Search, X, Bold, Italic, List, Link2 } from 'lucide-react';
 import Link from 'next/link';
+import ImageUpload from '@/app/components/admin/ImageUpload';
 import dynamic from 'next/dynamic';
 
 // Dynamisk import av rich text editor
@@ -429,16 +430,14 @@ export default function KnowledgeAdminPage() {
               </div>
 
               <div>
-                <label className="admin-label">
-                  Huvudbild URL
-                </label>
-                <input
-                  type="text"
+                <ImageUpload
                   value={editingDoc.headerImage || ''}
-                  onChange={(e) => setEditingDoc({ ...editingDoc, headerImage: e.target.value })}
-                  className="admin-input"
-                  placeholder="/images/artikel.jpg"
+                  onChange={(url) => setEditingDoc({ ...editingDoc, headerImage: url })}
+                  label="Huvudbild"
                 />
+                <p className="mt-2 text-sm text-gray-500">
+                  📸 Ladda upp en header-bild för dokumentet. Rekommenderad storlek: 1200x400px
+                </p>
               </div>
 
               <div>
