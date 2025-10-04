@@ -799,9 +799,7 @@ export default function WeekTemplate({
                             <div className="p-3 bg-white">
                               <h4 className="font-medium text-[#014421] text-sm mb-0.5">{label}</h4>
                               <p className="text-xs text-gray-700 line-clamp-2 mb-2">{formatMealName(mealName)}</p>
-                              {!isEgenbakat && (
-                                <RecipeNutrition recipeLink={meal.data.recipeLink} />
-                              )}
+                              <RecipeNutrition recipeLink={meal.data.recipeLink} />
                             </div>
                           </div>
                         </motion.div>
