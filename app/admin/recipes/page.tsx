@@ -139,24 +139,24 @@ export default function AdminRecipesPage() {
       .catch(() => {});
   }, [recipes]);
 
-  const handleDeleteRecipe = async (id: string, title: string) => {
+  const handleDeleteRecipe = async (slug: string, title: string) => {
     if (!confirm(`Är du säker på att du vill ta bort receptet "${title}"?`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/recipes/${id}`, {
+      const response = await fetch(`/api/recipes/${slug}`, {
         method: 'DELETE'
       });
 
       if (response.ok) {
-        setRecipes(recipes.filter(recipe => recipe.id !== id));
+        setRecipes(recipes.filter(recipe => recipe.slug !== slug));
         // Uppdatera stats
         setStats(prev => ({
           ...prev,
           total: prev.total - 1,
-          free: recipes.find(r => r.id === id)?.isFree ? prev.free - 1 : prev.free,
-          premium: recipes.find(r => r.id === id)?.isPremium ? prev.premium - 1 : prev.premium
+          free: recipes.find(r => r.slug === slug)?.isFree ? prev.free - 1 : prev.free,
+          premium: recipes.find(r => r.slug === slug)?.isPremium ? prev.premium - 1 : prev.premium
         }));
         alert('Receptet har tagits bort');
       } else {
@@ -466,7 +466,7 @@ export default function AdminRecipesPage() {
                   Redigera
                 </Link>
                 <button
-                  onClick={() => handleDeleteRecipe(recipe.id, recipe.title)}
+                  onClick={() => handleDeleteRecipe(recipe.slug, recipe.title)}
                   className="admin-btn admin-btn-danger justify-center"
                 >
                   <Trash2 className="w-4 h-4" />

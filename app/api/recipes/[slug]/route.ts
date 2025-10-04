@@ -75,6 +75,19 @@ export async function GET(
       localized.imageUrl = url;
     }
 
+    // Nutrition override for known recipes
+    if (canonicalSlug === 'linssallad-med-fetaost-och-pekannotter') {
+      const perServing = { energy: 345, carbohydrates: 25, fat: 11, protein: 11, fiber: 5 };
+      localized.nutrition = {
+        perServing,
+        calories: perServing.energy,
+        carbohydrates: perServing.carbohydrates,
+        fat: perServing.fat,
+        protein: perServing.protein,
+        fiber: perServing.fiber
+      };
+    }
+
     console.log(`🖼️ Recipe API: Serving recipe "${localized.title}" (slug: ${canonicalSlug}${canonicalSlug !== requestedSlug ? `, alias: ${requestedSlug}` : ''}) with imageUrl: ${localized.imageUrl}`);
     return NextResponse.json(localized, {
       headers: {
@@ -110,7 +123,7 @@ export async function PUT(
           .replace(/^-+|-+$/g, ''),
         excerpt: body.excerpt,
         content: body.description,
-        imageUrl: body.image,
+        imageUrl: body.imageUrl ?? body.image ?? null,
         categories: body.category ? [body.category] : body.categories,
         ingredients: body.ingredients,
         instructions: Array.isArray(body.instructions) 
