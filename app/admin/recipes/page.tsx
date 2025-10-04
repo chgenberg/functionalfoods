@@ -22,6 +22,7 @@ interface Recipe {
   cookTime?: string;
   servings?: number;
   date: string;
+  tags?: string[];
 }
 
 interface RecipeStats {
@@ -401,7 +402,7 @@ export default function AdminRecipesPage() {
                       : 'bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-400 hover:shadow-sm'
                   }`}
                 >
-                  <span className="text-lg mr-1">🌱</span> Basics ({recipes.filter(r => r.categories.includes('Basic')).length})
+                  <span className="text-lg mr-1">🌱</span> Basics ({recipes.filter(r => r.tags?.includes('Basic')).length})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-flow')}
@@ -411,7 +412,7 @@ export default function AdminRecipesPage() {
                       : 'bg-green-50 text-green-700 border-green-200 hover:border-green-400 hover:shadow-sm'
                   }`}
                 >
-                  <span className="text-lg mr-1">🌊</span> Flow ({recipes.filter(r => r.categories.includes('Flow')).length})
+                  <span className="text-lg mr-1">🌊</span> Flow ({recipes.filter(r => r.tags?.includes('Flow')).length})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-energy')}
@@ -421,7 +422,7 @@ export default function AdminRecipesPage() {
                       : 'bg-orange-50 text-orange-700 border-orange-200 hover:border-orange-400 hover:shadow-sm'
                   }`}
                 >
-                  <span className="text-lg mr-1">⚡</span> Energy ({recipes.filter(r => r.categories.includes('Energy')).length})
+                  <span className="text-lg mr-1">⚡</span> Energy ({recipes.filter(r => r.tags?.includes('Energy')).length})
                 </button>
               </div>
             </div>
@@ -497,17 +498,17 @@ export default function AdminRecipesPage() {
 
               {/* Course badges */}
               <div className="absolute bottom-3 right-3 flex gap-1">
-                {recipe.categories.includes('Basic') && (
+                {recipe.tags?.includes('Basic') && (
                   <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-md font-medium backdrop-blur-sm bg-opacity-90">
                     B
                   </span>
                 )}
-                {recipe.categories.includes('Flow') && (
+                {recipe.tags?.includes('Flow') && (
                   <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-md font-medium backdrop-blur-sm bg-opacity-90">
                     F
                   </span>
                 )}
-                {recipe.categories.includes('Energy') && (
+                {recipe.tags?.includes('Energy') && (
                   <span className="bg-orange-600 text-white text-xs px-2 py-1 rounded-md font-medium backdrop-blur-sm bg-opacity-90">
                     E
                   </span>
@@ -529,7 +530,7 @@ export default function AdminRecipesPage() {
 
               {/* Categories */}
               <div className="flex flex-wrap gap-1.5 mb-4">
-                {recipe.categories.filter(cat => !['Basic', 'Flow', 'Energy'].includes(cat)).slice(0, 2).map((category, index) => (
+                {recipe.categories.slice(0, 2).map((category, index) => (
                   <span 
                     key={index}
                     className="bg-[var(--primary-beige)] text-[var(--text-primary)] text-xs px-2.5 py-1 rounded-lg font-light"
@@ -537,9 +538,9 @@ export default function AdminRecipesPage() {
                     {category}
                   </span>
                 ))}
-                {recipe.categories.filter(cat => !['Basic', 'Flow', 'Energy'].includes(cat)).length > 2 && (
+                {recipe.categories.length > 2 && (
                   <span className="text-[var(--text-secondary)] text-xs self-center">
-                    +{recipe.categories.filter(cat => !['Basic', 'Flow', 'Energy'].includes(cat)).length - 2}
+                    +{recipe.categories.length - 2}
                   </span>
                 )}
               </div>
