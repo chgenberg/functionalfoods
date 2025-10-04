@@ -41,46 +41,10 @@ export default function AdminRecipesPage() {
   const [courseFilter, setCourseFilter] = useState<'all' | 'functional-basics' | 'functional-flow' | 'functional-energy'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [imageError, setImageError] = useState<Record<string, boolean>>({});
-  const [fallbackImages, setFallbackImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchRecipes();
   }, [filter, courseFilter, searchTerm]);
-
-  // Fetch optimized images after recipes are loaded
-  useEffect(() => {
-    if (recipes.length > 0) {
-      fetchRecipeImages();
-    }
-  }, [recipes]);
-
-  const fetchRecipeImages = async () => {
-    try {
-      const recipeNames = recipes.map(recipe => recipe.title);
-      const response = await fetch('/api/recipes/batch-images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          recipeNames,
-          size: 'medium',
-          usage: 'card'
-        })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        // Update recipes with optimized image URLs
-        setRecipes(prevRecipes => 
-          prevRecipes.map(recipe => ({
-            ...recipe,
-            imageUrl: data.images[recipe.title] || recipe.imageUrl
-          }))
-        );
-      }
-    } catch (error) {
-      console.error('Error fetching recipe images:', error);
-    }
-  };
 
   const fetchRecipes = async () => {
     try {
@@ -129,27 +93,6 @@ export default function AdminRecipesPage() {
       setLoading(false);
     }
   };
-
-  // After recipes load, compute fallbacks for any missing/placeholder images
-  useEffect(() => {
-    const titlesNeedingImages = recipes
-      .filter(r => !r.imageUrl || r.imageUrl.includes('placeholder'))
-      .map(r => r.title);
-    if (titlesNeedingImages.length === 0) return;
-
-    fetch('/api/recipes/batch-images', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ recipeNames: titlesNeedingImages, size: 'small', usage: 'card' })
-    })
-      .then(res => res.ok ? res.json() : Promise.reject(new Error('failed')))
-      .then(data => {
-        if (data && data.images) {
-          setFallbackImages((prev) => ({ ...prev, ...data.images }));
-        }
-      })
-      .catch(() => {});
-  }, [recipes]);
 
   const handleDeleteRecipe = async (slug: string, title: string) => {
     if (!confirm(`Är du säker på att du vill ta bort receptet "${title}"?`)) {
@@ -452,25 +395,19 @@ export default function AdminRecipesPage() {
           >
             {/* Recipe Image */}
             <div className="h-52 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
-              {(() => {
-                const primary = normalizeImageUrl(recipe.imageUrl);
-                const fallback = fallbackImages[recipe.title];
-                const useFallback = imageError[recipe.id] || !primary || primary.includes('placeholder');
-                const finalSrc = useFallback ? (fallback || '/images/recipe-placeholder.svg') : primary;
-                return finalSrc ? (
-                  <Image
-                    src={finalSrc}
-                    alt={recipe.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={() => setImageError(prev => ({ ...prev, [recipe.id]: true }))}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--primary-beige)] to-white">
-                    <Coffee className="w-20 h-20 text-[var(--primary-light-green)] opacity-50" />
-                  </div>
-                );
-              })()}
+              {recipe.imageUrl && !imageError[recipe.id] ? (
+                <Image
+                  src={normalizeImageUrl(recipe.imageUrl)}
+                  alt={recipe.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={() => setImageError(prev => ({ ...prev, [recipe.id]: true }))}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--primary-beige)] to-white">
+                  <Coffee className="w-20 h-20 text-[var(--primary-light-green)] opacity-50" />
+                </div>
+              )}
 
               {/* Status badges */}
               <div className="absolute top-3 left-3 flex flex-wrap gap-2">
