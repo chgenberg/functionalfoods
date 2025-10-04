@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Loader2, Edit, Save, Trash2, Plus } from 'lucide-react';
+import ImageUpload from '@/app/components/admin/ImageUpload';
 
 interface CourseWeekMeta {
   id?: string;
@@ -60,8 +61,11 @@ export default function AdminCourseWeeksPage() {
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Vecko‑metadata</h1>
-          <p className="text-gray-600">Rubrik, underrubrik, hero‑bild och video per vecka</p>
+          <h1 className="text-3xl font-bold">Vecko-metadata</h1>
+          <p className="text-gray-600">Rubrik, underrubrik, hero-bild och video per vecka</p>
+          <p className="text-sm text-gray-500 mt-1">
+            🎯 <strong>Tips:</strong> Detta styr vad som visas högst upp på varje veckosida för eleverna
+          </p>
         </div>
         <button
           onClick={() => setEditing({ course: 'basic', weekNumber: 1 } as CourseWeekMeta)}
@@ -152,12 +156,21 @@ export default function AdminCourseWeeksPage() {
                   <input type="text" value={editing.weekSubtitle || ''} onChange={(e) => setEditing({ ...editing, weekSubtitle: e.target.value })} className="w-full border rounded px-3 py-2" />
                 </div>
                 <div className="md:col-span-3">
-                  <label className="block text-sm mb-1">Hero‑bild (URL)</label>
-                  <input type="text" value={editing.heroImage || ''} onChange={(e) => setEditing({ ...editing, heroImage: e.target.value })} className="w-full border rounded px-3 py-2" placeholder="/path/to/image.jpg" />
+                  <ImageUpload
+                    value={editing.heroImage || ''}
+                    onChange={(url) => setEditing({ ...editing, heroImage: url })}
+                    label="Hero-bild"
+                  />
+                  <p className="mt-2 text-sm text-gray-500">
+                    🖼️ Ladda upp en hero-bild för veckan. Rekommenderad storlek: 1920x600px
+                  </p>
                 </div>
                 <div className="md:col-span-3">
-                  <label className="block text-sm mb-1">Video‑URL</label>
-                  <input type="text" value={editing.videoUrl || ''} onChange={(e) => setEditing({ ...editing, videoUrl: e.target.value })} className="w-full border rounded px-3 py-2" placeholder="https://..." />
+                  <label className="block text-sm mb-1">Video-URL</label>
+                  <input type="text" value={editing.videoUrl || ''} onChange={(e) => setEditing({ ...editing, videoUrl: e.target.value })} className="w-full border rounded px-3 py-2" placeholder="https://vimeo.com/..." />
+                  <p className="mt-1 text-xs text-gray-500">
+                    🎥 Länk till Vimeo eller YouTube-video för veckan
+                  </p>
                 </div>
               </div>
             </div>

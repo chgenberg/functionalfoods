@@ -111,7 +111,10 @@ export default function AdminMealPlansPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Kostscheman</h1>
-          <p className="text-gray-600">Hantera veckomenyer (Basics / Flow / Energy)</p>
+          <p className="text-gray-600">Hantera veckomenyer för Basics, Flow och Energy</p>
+          <p className="text-sm text-gray-500 mt-1">
+            💡 <strong>Tips:</strong> Ändringar här syns direkt i elevernas kostscheman efter sparning
+          </p>
         </div>
         <button
           onClick={() => openEditor()}
@@ -197,8 +200,18 @@ export default function AdminMealPlansPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm mb-1">Days (JSON)</label>
-                <textarea value={editorValue} onChange={(e) => setEditorValue(e.target.value)} className="w-full border rounded px-3 py-2 font-mono text-sm h-72" />
+                <label className="block text-sm font-semibold mb-2">Days (JSON)</label>
+                <p className="text-xs text-gray-600 mb-3">
+                  📅 Redigera veckoschema i JSON-format. Varje dag måste ha minst en måltid (breakfast, lunch, dinner, snack, dessert).
+                  <br />
+                  <strong>Exempel:</strong> <code className="bg-gray-100 px-1 rounded">{"{ \"name\": \"Receptnamn\", \"recipeLink\": \"/kunskapsbank/recept/slug\" }"}</code>
+                </p>
+                <textarea 
+                  value={editorValue} 
+                  onChange={(e) => setEditorValue(e.target.value)} 
+                  className="w-full border rounded px-3 py-2 font-mono text-sm h-72 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all" 
+                  placeholder='{\n  "Måndag": {\n    "breakfast": { "name": "Receptnamn", "recipeLink": "/kunskapsbank/recept/slug" }\n  }\n}'
+                />
               </div>
             </div>
             <div className="p-4 border-t flex items-center justify-end gap-3">
