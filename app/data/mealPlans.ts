@@ -595,7 +595,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
           "recipeLink": "/kunskapsbank/recept/kokta-agg-med-kaviar"
         },
         "lunch": {
-          "name": "Lax- och broccolipaj rester",
+          "name": "Lax- och broccolipaj (rester från frysen)",
           "recipeLink": "/kunskapsbank/recept/lax-och-broccolipaj"
         },
         "dinner": {
