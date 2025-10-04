@@ -62,9 +62,9 @@ export async function GET(req: NextRequest) {
       premium: allRecipes.filter(r => r.isPremium).length,
       visible: allRecipes.filter(r => r.status === 'PUBLISHED').length,
       byCourse: {
-        'functional-basics': allRecipes.filter(r => r.tags?.includes('functional-basics')).length,
-        'functional-flow': allRecipes.filter(r => r.tags?.includes('functional-flow')).length,
-        'functional-energy': allRecipes.filter(r => r.tags?.includes('functional-energy')).length
+        'Basic': allRecipes.filter(r => r.tags?.includes('Basic')).length,
+        'Flow': allRecipes.filter(r => r.tags?.includes('Flow')).length,
+        'Energy': allRecipes.filter(r => r.tags?.includes('Energy')).length
       }
     };
 

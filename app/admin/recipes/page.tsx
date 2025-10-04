@@ -30,6 +30,11 @@ interface RecipeStats {
   free: number;
   premium: number;
   visible: number;
+  byCourse?: {
+    Basic: number;
+    Flow: number;
+    Energy: number;
+  };
 }
 
 export default function AdminRecipesPage() {
@@ -347,7 +352,7 @@ export default function AdminRecipesPage() {
                   }`}
                 >
                   <Sprout className="w-4 h-4" />
-                  Basics ({recipes.filter(r => r.tags?.includes('Basic')).length})
+                  Basics ({stats.byCourse?.Basic || 0})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-flow')}
@@ -358,7 +363,7 @@ export default function AdminRecipesPage() {
                   }`}
                 >
                   <Waves className="w-4 h-4" />
-                  Flow ({recipes.filter(r => r.tags?.includes('Flow')).length})
+                  Flow ({stats.byCourse?.Flow || 0})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-energy')}
@@ -369,7 +374,7 @@ export default function AdminRecipesPage() {
                   }`}
                 >
                   <Zap className="w-4 h-4" />
-                  Energy ({recipes.filter(r => r.tags?.includes('Energy')).length})
+                  Energy ({stats.byCourse?.Energy || 0})
                 </button>
               </div>
             </div>
