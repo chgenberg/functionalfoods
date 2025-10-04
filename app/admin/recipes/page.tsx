@@ -100,7 +100,13 @@ export default function AdminRecipesPage() {
       }
       
       if (courseFilter !== 'all') {
-        params.append('courseFilter', courseFilter);
+        // Map UI filter to actual tags in database
+        const courseTagMap: Record<string, string> = {
+          'functional-basics': 'Basic',
+          'functional-flow': 'Flow',
+          'functional-energy': 'Energy'
+        };
+        params.append('courseFilter', courseTagMap[courseFilter] || courseFilter);
       }
       
       params.append('limit', '200'); // Visa många recept i admin
