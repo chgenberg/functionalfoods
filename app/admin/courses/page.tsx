@@ -158,46 +158,44 @@ export default function AdminCoursesPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-        <div className="flex items-start justify-between mb-3">
+      <div className="mb-8">
+        <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-[#014421] mb-3">Kurshantering</h1>
-            <p className="text-gray-600 text-lg">Redigera kursinnehåll, kostscheman, kunskapsdokument och veckor</p>
+            <h1 className="text-3xl font-light text-[var(--primary-green)] mb-1">Kurser</h1>
+            <p className="text-sm text-[var(--text-secondary)] font-light">Hantera kursinnehåll och struktur</p>
           </div>
           <Link
             href="/admin/courses/new"
-            className="bg-[#014421] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#112A12] transition-colors flex items-center gap-2"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-all text-sm"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Skapa ny kurs
+            <Plus className="w-4 h-4" />
+            Skapa kurs
           </Link>
         </div>
         
         {/* Course Selector */}
-        <div className="mt-6">
-          <label className="block text-sm font-bold text-[#014421] mb-3">Välj kurs att hantera</label>
-          <div className="flex gap-3">
+        <div>
+          <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-3">Välj kurs</p>
+          <div className="flex gap-2 flex-wrap">
             {courses.map(course => (
               <button
-            key={course.id}
+                key={course.id}
                 onClick={() => setSelectedCourse(course.id)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg text-sm transition-all ${
                   selectedCourse === course.id
-                    ? 'bg-[#014421] text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-[var(--primary-green)] text-white'
+                    : 'bg-white border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-green)]'
                 }`}
               >
-                    {course.name}
+                {course.name}
               </button>
             ))}
-                </div>
-              </div>
+          </div>
+        </div>
               
         {/* Tab Navigation */}
         {selectedCourse && (
-          <div className="mt-8 border-b border-gray-200">
+          <div className="mt-6 border-b border-gray-200">
             <div className="flex gap-1">
               {[
                 { id: 'overview', label: 'Översikt', icon: Eye },
@@ -209,13 +207,13 @@ export default function AdminCoursesPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 px-6 py-4 font-semibold transition-all duration-300 border-b-2 ${
+                    className={`flex items-center gap-2 px-4 py-2.5 text-sm transition-all border-b-2 ${
                       activeTab === tab.id
-                        ? 'border-[#014421] text-[#014421] bg-[#014421]/5'
-                        : 'border-transparent text-gray-600 hover:text-[#014421] hover:bg-gray-50'
+                        ? 'border-[var(--primary-green)] text-[var(--primary-green)]'
+                        : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--primary-green)]'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-4 h-4" />
                     {tab.label}
                   </button>
                 );
@@ -227,74 +225,74 @@ export default function AdminCoursesPage() {
 
       {/* Tab Content */}
       {selectedCourse && (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200">
+        <div className="bg-white rounded-lg border border-[var(--border-light)]">
           {activeTab === 'overview' && (
-            <div className="p-8">
-              <h2 className="text-2xl font-bold text-[#014421] mb-6">Kursöversikt: {selectedCourseData?.name}</h2>
+            <div className="p-6">
+              <h2 className="text-xl font-medium text-[var(--primary-green)] mb-5">{selectedCourseData?.name}</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Course Info */}
                 <div className="space-y-6">
-                  <div className="bg-gray-50 p-6 rounded-xl">
-                    <h3 className="font-bold text-lg text-[#014421] mb-3">Kursinformation</h3>
-                    <div className="space-y-3">
-                      <div><span className="font-semibold">Pris:</span> {selectedCourseData?.price.toLocaleString('sv-SE')} kr</div>
-                      <div><span className="font-semibold">Deltagare:</span> {selectedCourseData?.enrollments}</div>
-                      <div><span className="font-semibold">Veckor:</span> {selectedCourseData?.weeks.length}</div>
+                  <div className="bg-gray-50 p-5 rounded-lg">
+                    <h3 className="text-sm font-medium text-[var(--primary-green)] mb-3">Kursinformation</h3>
+                    <div className="space-y-2">
+                      <div className="text-sm"><span className="text-[var(--text-secondary)]">Pris:</span> <span className="font-medium">{selectedCourseData?.price.toLocaleString('sv-SE')} kr</span></div>
+                      <div className="text-sm"><span className="text-[var(--text-secondary)]">Deltagare:</span> <span className="font-medium">{selectedCourseData?.enrollments}</span></div>
+                      <div className="text-sm"><span className="text-[var(--text-secondary)]">Veckor:</span> <span className="font-medium">{selectedCourseData?.weeks.length}</span></div>
                     </div>
             </div>
 
-                  <div className="bg-gray-50 p-6 rounded-xl">
-                    <h3 className="font-bold text-lg text-[#014421] mb-3">Beskrivning</h3>
-                    <p className="text-gray-700">{selectedCourseData?.description}</p>
+                  <div className="bg-gray-50 p-5 rounded-lg">
+                    <h3 className="text-sm font-medium text-[var(--primary-green)] mb-3">Beskrivning</h3>
+                    <p className="text-sm text-[var(--text-primary)]">{selectedCourseData?.description}</p>
                   </div>
                 </div>
                 
                 {/* Quick Actions */}
-                <div className="space-y-4">
-                  <h3 className="font-bold text-lg text-[#014421]">Snabbåtgärder</h3>
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-[var(--primary-green)]">Snabbåtgärder</h3>
                   <div className="grid grid-cols-1 gap-3">
                     <Link
                       href={`/admin/courses/${selectedCourse}/meal-plans`}
-                      className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors border-2 border-blue-200"
+                      className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
                     >
-                      <Calendar className="w-6 h-6 text-blue-600" />
+                      <Calendar className="w-5 h-5 text-[var(--primary-green)]" />
                       <div>
-                        <div className="font-semibold text-blue-800">Hantera kostscheman</div>
-                        <div className="text-sm text-blue-600">Planera måltider för varje vecka</div>
+                        <div className="text-sm font-medium text-[var(--text-primary)]">Hantera kostscheman</div>
+                        <div className="text-xs text-[var(--text-secondary)]">Planera måltider</div>
                       </div>
                     </Link>
                     
                     <button
                       onClick={() => setActiveTab('knowledge')}
-                      className="flex items-center gap-3 p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors text-left"
+                      className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all text-left"
                     >
-                      <FileText className="w-6 h-6 text-green-600" />
+                      <FileText className="w-5 h-5 text-[var(--primary-green)]" />
                       <div>
-                        <div className="font-semibold text-green-800">Hantera kunskapsdokument</div>
-                        <div className="text-sm text-green-600">Redigera artiklar och material</div>
-              </div>
+                        <div className="text-sm font-medium text-[var(--text-primary)]">Kunskapsdokument</div>
+                        <div className="text-xs text-[var(--text-secondary)]">Redigera material</div>
+                      </div>
                     </button>
                     
                     <Link
                       href={`/admin/courses/${selectedCourse}/manage-recipes`}
-                      className="flex items-center gap-3 p-4 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors border-2 border-orange-200"
+                      className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
                     >
-                      <ChefHat className="w-6 h-6 text-orange-600" />
+                      <ChefHat className="w-5 h-5 text-[var(--primary-green)]" />
                       <div>
-                        <div className="font-semibold text-orange-800">Hantera recept</div>
-                        <div className="text-sm text-orange-600">Lägg till och tagga recept för kursen</div>
+                        <div className="text-sm font-medium text-[var(--text-primary)]">Hantera recept</div>
+                        <div className="text-xs text-[var(--text-secondary)]">Tagga recept</div>
                       </div>
                     </Link>
                     
                     <Link
                       href={`/admin/shopping-lists`}
-                      className="flex items-center gap-3 p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors"
+                      className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
                     >
-                      <Database className="w-6 h-6 text-purple-600" />
+                      <Database className="w-5 h-5 text-[var(--primary-green)]" />
                       <div>
-                        <div className="font-semibold text-purple-800">Hantera inköpslistor</div>
-                        <div className="text-sm text-purple-600">Redigera veckolistor</div>
-                </div>
+                        <div className="text-sm font-medium text-[var(--text-primary)]">Inköpslistor</div>
+                        <div className="text-xs text-[var(--text-secondary)]">Veckolistor</div>
+                      </div>
                     </Link>
               </div>
                 </div>
