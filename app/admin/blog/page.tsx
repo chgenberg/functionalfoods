@@ -106,128 +106,95 @@ export default function AdminBlogPage() {
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">
-              Blogghantering
+            <h1 className="text-3xl font-light text-[var(--primary-green)] mb-1">
+              Blogg
             </h1>
-            <p className="text-[var(--text-secondary)] font-light">Hantera artiklar och innehåll</p>
+            <p className="text-sm text-[var(--text-secondary)] font-light">Hantera artiklar och innehåll</p>
           </div>
-          <div className="flex gap-3 w-full sm:w-auto">
+          <div className="flex gap-2 w-full sm:w-auto">
             <Link 
               href="/admin/blog/auto-generator" 
-              className="admin-btn admin-btn-secondary flex-1 sm:flex-none"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-all text-sm"
             >
               <Zap className="w-4 h-4" />
-              <span className="hidden sm:inline">AI Generator</span>
-              <span className="sm:hidden">AI</span>
+              <span>AI Generator</span>
             </Link>
             <Link 
               href="/admin/blog/new" 
-              className="admin-btn admin-btn-primary flex-1 sm:flex-none"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-all text-sm"
             >
               <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Skapa ny artikel</span>
-              <span className="sm:hidden">Ny</span>
+              <span>Skapa artikel</span>
             </Link>
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="admin-stat-card"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value">{posts.length}</div>
-                <div className="admin-stat-label">Totalt antal</div>
-              </div>
-              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
-                <FileText className="w-6 h-6 text-[var(--primary-green)]" />
-              </div>
+          <div className="bg-white rounded-lg border border-[var(--border-light)] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <FileText className="w-5 h-5 text-[var(--primary-green)]" />
             </div>
-          </motion.div>
+            <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Totalt</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)]">{posts.length}</p>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="admin-stat-card"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value">
-                  {posts.filter(p => p.published).length}
-                </div>
-                <div className="admin-stat-label">Publicerade</div>
-              </div>
-              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
-                <Check className="w-6 h-6 text-[var(--primary-light-green)]" />
-              </div>
+          <div className="bg-white rounded-lg border border-[var(--border-light)] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Check className="w-5 h-5 text-green-600" />
             </div>
-          </motion.div>
+            <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Publicerade</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)]">{posts.filter(p => p.published).length}</p>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="admin-stat-card"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value">
-                  {posts.filter(p => !p.published).length}
-                </div>
-                <div className="admin-stat-label">Utkast</div>
-              </div>
-              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
-                <Edit3 className="w-5 h-5 text-[var(--text-secondary)]" />
-              </div>
+          <div className="bg-white rounded-lg border border-[var(--border-light)] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Edit3 className="w-5 h-5 text-[var(--text-secondary)]" />
             </div>
-          </motion.div>
+            <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Utkast</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)]">{posts.filter(p => !p.published).length}</p>
+          </div>
         </div>
 
         {/* Search and filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[var(--text-secondary)]" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]" />
             <input
               type="text"
               placeholder="Sök artiklar..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="admin-input pl-10"
+              className="w-full pl-10 pr-4 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)] transition-colors"
             />
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`admin-btn ${
+              className={`px-4 py-2 text-sm rounded-lg transition-all ${
                 filter === 'all' 
-                  ? 'admin-btn-primary' 
-                  : 'admin-btn-secondary'
+                  ? 'bg-[var(--primary-green)] text-white' 
+                  : 'bg-white border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-green)]'
               }`}
             >
               Alla
             </button>
             <button
               onClick={() => setFilter('published')}
-              className={`admin-btn ${
+              className={`px-4 py-2 text-sm rounded-lg transition-all ${
                 filter === 'published' 
-                  ? 'admin-btn-primary' 
-                  : 'admin-btn-secondary'
+                  ? 'bg-[var(--primary-green)] text-white' 
+                  : 'bg-white border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-green)]'
               }`}
             >
               Publicerade
             </button>
             <button
               onClick={() => setFilter('draft')}
-              className={`admin-btn ${
+              className={`px-4 py-2 text-sm rounded-lg transition-all ${
                 filter === 'draft' 
-                  ? 'admin-btn-primary' 
-                  : 'admin-btn-secondary'
+                  ? 'bg-[var(--primary-green)] text-white' 
+                  : 'bg-white border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-green)]'
               }`}
             >
               Utkast
