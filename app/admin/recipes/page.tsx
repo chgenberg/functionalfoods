@@ -180,200 +180,154 @@ export default function AdminRecipesPage() {
     <div>
       {/* Header */}
       <div className="mb-10">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-8"
-        >
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-[var(--primary-light-green)] to-[var(--primary-green)] rounded-2xl flex items-center justify-center shadow-lg">
-                <ChefHat className="w-7 h-7 text-white" />
-              </div>
-              <h1 className="text-4xl font-light text-[var(--primary-green)]">Recepthantering</h1>
-            </div>
-            <p className="text-[var(--text-secondary)] font-light text-lg ml-15">
-              Skapa, redigera och organisera recept för alla kurser
+            <h1 className="text-3xl font-light text-[var(--primary-green)] mb-1">Recept</h1>
+            <p className="text-sm text-[var(--text-secondary)] font-light">
+              Hantera recept för alla kurser
             </p>
           </div>
           <Link 
             href="/admin/recipes/new"
-            className="admin-btn admin-btn-primary shadow-lg hover:shadow-xl group"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-all text-sm"
           >
-            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-            Skapa nytt recept
+            <Plus className="w-4 h-4" />
+            Skapa recept
           </Link>
-        </motion.div>
+        </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="admin-stat-card hover:shadow-xl transition-all duration-300"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value bg-gradient-to-r from-[var(--primary-green)] to-[var(--primary-light-green)] bg-clip-text text-transparent">{stats.total}</div>
-                <div className="admin-stat-label">Totalt antal</div>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-[var(--primary-beige)] to-white rounded-2xl flex items-center justify-center shadow-inner">
-                <Coffee className="w-7 h-7 text-[var(--primary-green)]" />
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-lg border border-[var(--border-light)] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Coffee className="w-5 h-5 text-[var(--primary-green)]" />
             </div>
-          </motion.div>
+            <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Totalt</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)]">{stats.total}</p>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="admin-stat-card hover:shadow-xl transition-all duration-300"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value text-[var(--primary-light-green)]">{stats.free}</div>
-                <div className="admin-stat-label">Gratis recept</div>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl flex items-center justify-center shadow-inner">
-                <Coffee className="w-7 h-7 text-[var(--primary-light-green)]" />
-              </div>
+          <div className="bg-white rounded-lg border border-[var(--border-light)] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Coffee className="w-5 h-5 text-green-600" />
             </div>
-          </motion.div>
+            <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Gratis</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)]">{stats.free}</p>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="admin-stat-card hover:shadow-xl transition-all duration-300"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value text-[var(--coral-accent)]">{stats.premium}</div>
-                <div className="admin-stat-label">Premium recept</div>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl flex items-center justify-center shadow-inner">
-                <Coffee className="w-7 h-7 text-[var(--coral-accent)]" />
-              </div>
+          <div className="bg-white rounded-lg border border-[var(--border-light)] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Coffee className="w-5 h-5 text-[var(--coral-accent)]" />
             </div>
-          </motion.div>
+            <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Premium</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)]">{stats.premium}</p>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="admin-stat-card hover:shadow-xl transition-all duration-300"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value text-[var(--primary-green)]">{stats.visible}</div>
-                <div className="admin-stat-label">Publicerade</div>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-[var(--primary-beige)] to-white rounded-2xl flex items-center justify-center shadow-inner">
-                <Coffee className="w-7 h-7 text-[var(--primary-green)]" />
-              </div>
+          <div className="bg-white rounded-lg border border-[var(--border-light)] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Coffee className="w-5 h-5 text-[var(--primary-green)]" />
             </div>
-          </motion.div>
+            <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Publicerade</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)]">{stats.visible}</p>
+          </div>
         </div>
 
         {/* Filter Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-[var(--border-light)] p-6 mb-8">
+        <div className="bg-white rounded-lg border border-[var(--border-light)] p-5 mb-6">
           <div className="space-y-4">
             {/* Top row - Status filters and search */}
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
               <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setFilter('all')}
-                  className={`admin-btn transition-all duration-200 ${
-                filter === 'all' 
-                      ? 'admin-btn-primary shadow-md' 
-                      : 'admin-btn-secondary hover:shadow-sm'
-              }`}
-            >
-                  <Filter className="w-4 h-4" />
-                  Alla recept
-            </button>
-            <button
-              onClick={() => setFilter('free')}
-                  className={`admin-btn transition-all duration-200 ${
-                filter === 'free' 
-                      ? 'admin-btn-success shadow-md' 
-                      : 'admin-btn-secondary hover:shadow-sm'
-              }`}
-            >
-              Gratis
-            </button>
-            <button
-              onClick={() => setFilter('premium')}
-                  className={`admin-btn transition-all duration-200 ${
-                filter === 'premium' 
-                      ? 'bg-[var(--coral-accent)] text-white shadow-md' 
-                      : 'admin-btn-secondary hover:shadow-sm'
-              }`}
-            >
-              Premium
-            </button>
-          </div>
+                <button
+                  onClick={() => setFilter('all')}
+                  className={`px-4 py-2 text-sm rounded-lg transition-all ${
+                    filter === 'all' 
+                      ? 'bg-[var(--primary-green)] text-white' 
+                      : 'bg-white border border-[var(--border-light)] hover:border-[var(--primary-green)]'
+                  }`}
+                >
+                  Alla
+                </button>
+                <button
+                  onClick={() => setFilter('free')}
+                  className={`px-4 py-2 text-sm rounded-lg transition-all ${
+                    filter === 'free' 
+                      ? 'bg-[var(--primary-green)] text-white' 
+                      : 'bg-white border border-[var(--border-light)] hover:border-[var(--primary-green)]'
+                  }`}
+                >
+                  Gratis
+                </button>
+                <button
+                  onClick={() => setFilter('premium')}
+                  className={`px-4 py-2 text-sm rounded-lg transition-all ${
+                    filter === 'premium' 
+                      ? 'bg-[var(--primary-green)] text-white' 
+                      : 'bg-white border border-[var(--border-light)] hover:border-[var(--primary-green)]'
+                  }`}
+                >
+                  Premium
+                </button>
+              </div>
 
               {/* Search bar */}
               <div className="relative w-full lg:max-w-md">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-5 h-5 pointer-events-none z-10" />
-            <input
-              type="text"
-              placeholder="Sök recept..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-                  className="admin-input pl-12 w-full shadow-sm focus:shadow-md transition-shadow duration-200"
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Sök recept..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)] transition-colors"
                 />
               </div>
             </div>
 
             {/* Course filters */}
-            <div className="pt-4 border-t border-[var(--border-light)]">
-              <p className="text-sm text-[var(--text-secondary)] mb-3 font-medium">Filtrera per kurs:</p>
+            <div className="pt-3 border-t border-gray-100">
+              <p className="text-xs text-[var(--text-secondary)] mb-2 font-medium uppercase tracking-wide">Kurs</p>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setCourseFilter('all')}
-                  className={`admin-btn transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all ${
                     courseFilter === 'all' 
-                      ? 'bg-gradient-to-r from-[var(--primary-green)] to-[var(--primary-light-green)] text-white shadow-md border-transparent' 
-                      : 'bg-white text-[var(--text-secondary)] border-gray-200 hover:border-[var(--primary-light-green)] hover:shadow-sm'
+                      ? 'bg-[var(--primary-green)] text-white' 
+                      : 'bg-white border border-[var(--border-light)] hover:border-[var(--primary-green)]'
                   }`}
                 >
-                  <Star className="w-4 h-4" />
-                  Alla kurser
+                  <Star className="w-3.5 h-3.5" />
+                  Alla
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-basics')}
-                  className={`admin-btn transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all ${
                     courseFilter === 'functional-basics' 
-                      ? 'bg-blue-600 text-white shadow-md border-blue-600' 
-                      : 'bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-400 hover:shadow-sm'
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-white border border-blue-200 text-blue-700 hover:border-blue-600'
                   }`}
                 >
-                  <Sprout className="w-4 h-4" />
+                  <Sprout className="w-3.5 h-3.5" />
                   Basics ({stats.byCourse?.Basic || 0})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-flow')}
-                  className={`admin-btn transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all ${
                     courseFilter === 'functional-flow' 
-                      ? 'bg-green-600 text-white shadow-md border-green-600' 
-                      : 'bg-green-50 text-green-700 border-green-200 hover:border-green-400 hover:shadow-sm'
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-white border border-green-200 text-green-700 hover:border-green-600'
                   }`}
                 >
-                  <Waves className="w-4 h-4" />
+                  <Waves className="w-3.5 h-3.5" />
                   Flow ({stats.byCourse?.Flow || 0})
                 </button>
                 <button
                   onClick={() => setCourseFilter('functional-energy')}
-                  className={`admin-btn transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all ${
                     courseFilter === 'functional-energy' 
-                      ? 'bg-orange-600 text-white shadow-md border-orange-600' 
-                      : 'bg-orange-50 text-orange-700 border-orange-200 hover:border-orange-400 hover:shadow-sm'
+                      ? 'bg-orange-600 text-white' 
+                      : 'bg-white border border-orange-200 text-orange-700 hover:border-orange-600'
                   }`}
                 >
-                  <Zap className="w-4 h-4" />
+                  <Zap className="w-3.5 h-3.5" />
                   Energy ({stats.byCourse?.Energy || 0})
                 </button>
               </div>
@@ -400,7 +354,7 @@ export default function AdminRecipesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.03 }}
-            className="group bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-[var(--border-light)] hover:border-[var(--primary-light-green)]"
+            className="group bg-white rounded-lg overflow-hidden hover:shadow-md transition-all border border-[var(--border-light)] hover:border-[var(--primary-green)]"
           >
             {/* Recipe Image */}
             <div className="h-52 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
