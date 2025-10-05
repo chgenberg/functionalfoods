@@ -612,7 +612,7 @@ export default function EnhancedAdminSalesPage() {
             <span className="text-gray-600 text-sm">Total försäljning</span>
             <DollarSign className="w-5 h-5 text-gray-400" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
             {(summary.totalAmount / 100).toFixed(0)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
@@ -630,7 +630,7 @@ export default function EnhancedAdminSalesPage() {
             <span className="text-gray-600 text-sm">Snitt ordervärde</span>
             <BarChart3 className="w-5 h-5 text-gray-400" />
               </div>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
             {(summary.avgOrderValue / 100).toFixed(0)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
@@ -648,7 +648,7 @@ export default function EnhancedAdminSalesPage() {
             <span className="text-gray-600 text-sm">Lyckade</span>
             <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
-          <p className="text-2xl font-bold text-green-600">
+          <p className="text-xl font-semibold text-green-600">
             {summary.successful}
           </p>
           <p className="text-xs text-gray-500 mt-1">
@@ -666,7 +666,7 @@ export default function EnhancedAdminSalesPage() {
             <span className="text-gray-600 text-sm">Väntande</span>
             <Clock className="w-5 h-5 text-yellow-600" />
               </div>
-          <p className="text-2xl font-bold text-yellow-600">
+          <p className="text-xl font-semibold text-yellow-600">
             {summary.pending}
           </p>
           <p className="text-xs text-gray-500 mt-1">
@@ -684,7 +684,7 @@ export default function EnhancedAdminSalesPage() {
             <span className="text-gray-600 text-sm">Återbetalat</span>
             <RotateCcw className="w-5 h-5 text-gray-400" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
             {(summary.refundedAmount / 100).toFixed(0)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
