@@ -110,15 +110,27 @@ export async function PUT(
   try {
     const body = await req.json();
     
+    // Hämta befintligt recept för att jämföra titel
+    const existingRecipe = await prisma.recipe.findUnique({
+      where: { slug: params.slug },
+      select: { title: true }
+    });
+
+    // Generera ny slug endast om titeln faktiskt har ändrats
+    let newSlug = params.slug;
+    if (existingRecipe && body.title && body.title !== existingRecipe.title) {
+      newSlug = body.title.toLowerCase()
+        .replace(/[åä]/g, 'a')
+        .replace(/ö/g, 'o')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+    
     const recipe = await prisma.recipe.update({
       where: { slug: params.slug },
       data: {
         title: body.title,
-        slug: body.title.toLowerCase()
-          .replace(/[åä]/g, 'a')
-          .replace(/ö/g, 'o')
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-+|-+$/g, ''),
+        slug: newSlug,
         excerpt: body.excerpt,
         content: body.description,
         imageUrl: body.imageUrl ?? body.image ?? null,
@@ -143,11 +155,9 @@ export async function PUT(
   } catch (error) {
     console.error('Error updating recipe:', error);
     return NextResponse.json(
-      { error: 'Failed to update recipe' },
+      { error: 'Failed to update recipe', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
