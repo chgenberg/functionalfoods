@@ -1,7 +1,45 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/app/lib/database';
 
 export const dynamic = 'force-dynamic';
+
+interface IngredientRequest {
+  recipeSlug: string;
+  servings?: number;
+  courseType?: string;
+  weekNumber?: number;
+}
+
+// Helper function to scale ingredient amounts
+function scaleIngredient(ingredient: string, targetServings: number, originalServings: number, multiplier: number = 1): string {
+  const scaleFactor = (targetServings / originalServings) * multiplier;
+  
+  return ingredient.replace(/(\d+(?:[.,]\d+)?)\s*(kg|g|mg|l|dl|cl|ml|msk|tsk|krm|st|st\.|stycken|styck|burk|burkar|påse|påsar|förpackning|förpackningar|klyfta|klyftor)?/gi, 
+    (match, amount, unit) => {
+      const numAmount = parseFloat(amount.replace(',', '.'));
+      if (isNaN(numAmount) || !isFinite(numAmount)) {
+        return match;
+      }
+      let scaledAmount = numAmount * scaleFactor;
+      
+      // Format numbers nicely
+      if (scaledAmount % 1 === 0) {
+        return `${scaledAmount}${unit ? ' ' + unit : ''}`;
+      } else if (scaledAmount < 1) {
+        if (Math.abs(scaledAmount - 0.5) < 0.01) return `0.5${unit ? ' ' + unit : ''}`;
+        if (Math.abs(scaledAmount - 0.25) < 0.01) return `0.25${unit ? ' ' + unit : ''}`;
+        if (Math.abs(scaledAmount - 0.75) < 0.01) return `0.75${unit ? ' ' + unit : ''}`;
+        return `${scaledAmount.toFixed(1)}${unit ? ' ' + unit : ''}`;
+      } else {
+        const formatted = scaledAmount.toFixed(1);
+        if (formatted.endsWith('.0')) {
+          return `${Math.round(scaledAmount)}${unit ? ' ' + unit : ''}`;
+        }
+        return `${formatted}${unit ? ' ' + unit : ''}`;
+      }
+    }
+  );
+}
 
 export async function GET() {
   try {
