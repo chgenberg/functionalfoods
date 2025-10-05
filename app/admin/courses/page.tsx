@@ -128,10 +128,11 @@ export default function AdminCoursesPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        setKnowledgeDocs(data || []);
+        setKnowledgeDocs(data.documents || data || []);
       }
     } catch (error) {
       console.error('Error fetching knowledge docs:', error);
+      setKnowledgeDocs([]);
     }
   };
 
