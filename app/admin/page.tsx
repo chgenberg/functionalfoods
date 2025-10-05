@@ -82,18 +82,13 @@ export default function AdminDashboard() {
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12 py-8"
+        className="mb-10"
       >
-        <div className="flex items-center justify-center mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-[var(--primary-green)] to-[var(--primary-light-green)] rounded-full flex items-center justify-center">
-            <Activity className="w-8 h-8 text-white" />
-          </div>
-        </div>
-        <h1 className="text-4xl font-light text-[var(--primary-green)] mb-3">
-          {greeting}!
+        <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">
+          {greeting}
         </h1>
-        <p className="text-lg text-[var(--text-secondary)]">
-          Här är en översikt av din verksamhet
+        <p className="text-sm text-[var(--text-secondary)] font-light">
+          Översikt av din verksamhet
         </p>
       </motion.div>
 
@@ -103,86 +98,70 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="admin-stat-card"
+          className="bg-white rounded-xl border border-[var(--border-light)] p-5 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="admin-stat-label">Användare</p>
-              <p className="admin-stat-value">{stats?.totalUsers || 0}</p>
-              {stats?.newUsersThisWeek && (
-                <p className="text-sm text-green-600 mt-1">
-                  +{stats.newUsersThisWeek} denna vecka
-                </p>
-              )}
-            </div>
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
-              <Users className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
+          <div className="flex items-center justify-between mb-3">
+            <Users className="w-5 h-5 text-[var(--primary-green)]" />
+            {stats?.newUsersThisWeek && (
+              <span className="text-xs text-green-600 font-medium">
+                +{stats.newUsersThisWeek}
+              </span>
+            )}
           </div>
+          <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Användare</p>
+          <p className="text-2xl font-semibold text-[var(--text-primary)]">{stats?.totalUsers || 0}</p>
         </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="admin-stat-card"
+          className="bg-white rounded-xl border border-[var(--border-light)] p-5 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="admin-stat-label">Ordrar</p>
-              <p className="admin-stat-value">{stats?.totalOrders || 0}</p>
-              {stats?.ordersThisMonth && (
-                <p className="text-sm text-[var(--text-secondary)] mt-1">
-                  {stats.ordersThisMonth} denna månad
-                </p>
-              )}
-            </div>
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
-              <ShoppingCart className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
+          <div className="flex items-center justify-between mb-3">
+            <ShoppingCart className="w-5 h-5 text-[var(--primary-green)]" />
+            {stats?.ordersThisMonth && (
+              <span className="text-xs text-[var(--text-secondary)] font-medium">
+                {stats.ordersThisMonth}/mån
+              </span>
+            )}
           </div>
+          <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Ordrar</p>
+          <p className="text-2xl font-semibold text-[var(--text-primary)]">{stats?.totalOrders || 0}</p>
         </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="admin-stat-card"
+          className="bg-white rounded-xl border border-[var(--border-light)] p-5 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="admin-stat-label">Intäkter</p>
-              <p className="admin-stat-value">{formatCurrency(stats?.totalRevenue || 0)}</p>
-              {stats?.revenueThisMonth && (
-                <p className="text-sm text-green-600 mt-1">
-                  {formatCurrency(stats.revenueThisMonth)} denna månad
-                </p>
-              )}
-            </div>
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
+          <div className="flex items-center justify-between mb-3">
+            <TrendingUp className="w-5 h-5 text-[var(--primary-green)]" />
+            {stats?.revenueThisMonth && (
+              <span className="text-xs text-green-600 font-medium">
+                {formatCurrency(stats.revenueThisMonth)}
+              </span>
+            )}
           </div>
+          <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Intäkter</p>
+          <p className="text-2xl font-semibold text-[var(--text-primary)]">{formatCurrency(stats?.totalRevenue || 0)}</p>
         </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="admin-stat-card"
+          className="bg-white rounded-xl border border-[var(--border-light)] p-5 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="admin-stat-label">Recept</p>
-              <p className="admin-stat-value">{stats?.totalRecipes || 0}</p>
-              <p className="text-sm text-[var(--text-secondary)] mt-1">
-                Publicerade recept
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
+          <div className="flex items-center justify-between mb-3">
+            <BookOpen className="w-5 h-5 text-[var(--primary-green)]" />
           </div>
+          <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-1">Recept</p>
+          <p className="text-2xl font-semibold text-[var(--text-primary)]">{stats?.totalRecipes || 0}</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
+            Publicerade
+          </p>
         </motion.div>
       </div>
 
@@ -191,48 +170,39 @@ export default function AdminDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="admin-card"
       >
-        <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Snabblänkar</h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <h2 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wide mb-4">Snabbåtgärder</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <Link 
             href="/admin/recipes/new"
-            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
+            className="group flex items-center gap-3 p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
           >
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
-              <BookOpen className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
-            <span className="text-sm text-[var(--text-primary)] font-medium">Nytt recept</span>
+            <BookOpen className="w-5 h-5 text-[var(--primary-green)]" />
+            <span className="text-sm text-[var(--text-primary)]">Nytt recept</span>
           </Link>
           
           <Link 
             href="/admin/blog/new"
-            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
+            className="group flex items-center gap-3 p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
           >
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
-              <Activity className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
-            <span className="text-sm text-[var(--text-primary)] font-medium">Nytt blogginlägg</span>
+            <Activity className="w-5 h-5 text-[var(--primary-green)]" />
+            <span className="text-sm text-[var(--text-primary)]">Nytt inlägg</span>
           </Link>
           
           <Link 
             href="/admin/coupons"
-            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
+            className="group flex items-center gap-3 p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
           >
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
-              <Package className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
-            <span className="text-sm text-[var(--text-primary)] font-medium">Ny kupong</span>
+            <Package className="w-5 h-5 text-[var(--primary-green)]" />
+            <span className="text-sm text-[var(--text-primary)]">Ny kupong</span>
           </Link>
           
           <Link 
             href="/admin/sales"
-            className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:bg-[var(--primary-beige)] transition-all duration-200"
+            className="group flex items-center gap-3 p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
           >
-            <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
-              <BarChart3 className="w-6 h-6 text-[var(--primary-green)]" />
-            </div>
-            <span className="text-sm text-[var(--text-primary)] font-medium">Visa statistik</span>
+            <BarChart3 className="w-5 h-5 text-[var(--primary-green)]" />
+            <span className="text-sm text-[var(--text-primary)]">Statistik</span>
           </Link>
         </div>
       </motion.div>
@@ -244,13 +214,13 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
-          className="admin-card"
+          className="bg-white rounded-xl border border-[var(--border-light)] p-5"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-[var(--primary-green)]">Senaste användare</h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-sm font-medium text-[var(--text-primary)]">Senaste användare</h2>
             <Link 
               href="/admin/users"
-              className="text-sm text-[var(--primary-light-green)] hover:text-[var(--primary-green)] transition-colors"
+              className="text-xs text-[var(--primary-green)] hover:underline"
             >
               Visa alla
             </Link>
@@ -258,13 +228,13 @@ export default function AdminDashboard() {
           
           <div className="space-y-3">
             {stats?.recentUsers.slice(0, 5).map((user: any) => (
-              <div key={user.id} className="flex items-center justify-between py-2 border-b last:border-0">
+              <div key={user.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
-                  <p className="text-sm font-medium text-[var(--text-primary)]">{user.name || 'Ingen namn'}</p>
+                  <p className="text-sm text-[var(--text-primary)]">{user.name || 'Ingen namn'}</p>
                   <p className="text-xs text-[var(--text-secondary)]">{user.email}</p>
                 </div>
                 <p className="text-xs text-[var(--text-secondary)]">
-                  {new Date(user.createdAt).toLocaleDateString('sv-SE')}
+                  {new Date(user.createdAt).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}
                 </p>
               </div>
             ))}
@@ -276,13 +246,13 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
-          className="admin-card"
+          className="bg-white rounded-xl border border-[var(--border-light)] p-5"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-[var(--primary-green)]">Senaste ordrar</h2>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-sm font-medium text-[var(--text-primary)]">Senaste ordrar</h2>
             <Link 
               href="/admin/orders"
-              className="text-sm text-[var(--primary-light-green)] hover:text-[var(--primary-green)] transition-colors"
+              className="text-xs text-[var(--primary-green)] hover:underline"
             >
               Visa alla
             </Link>
@@ -290,9 +260,9 @@ export default function AdminDashboard() {
           
           <div className="space-y-3">
             {stats?.recentOrders.slice(0, 5).map((order: any) => (
-              <div key={order.id} className="flex items-center justify-between py-2 border-b last:border-0">
+              <div key={order.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
-                  <p className="text-sm font-medium text-[var(--text-primary)]">
+                  <p className="text-sm text-[var(--text-primary)]">
                     {order.user?.name || 'Gäst'}
                   </p>
                   <p className="text-xs text-[var(--text-secondary)]">
@@ -304,7 +274,7 @@ export default function AdminDashboard() {
                     {formatCurrency(order.totalAmount)}
                   </p>
                   <p className="text-xs text-[var(--text-secondary)]">
-                    {new Date(order.createdAt).toLocaleDateString('sv-SE')}
+                    {new Date(order.createdAt).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}
                   </p>
                 </div>
               </div>
@@ -318,18 +288,17 @@ export default function AdminDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="admin-card"
       >
-        <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Kurshantering</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wide mb-4">Kurshantering</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <Link 
             href="/admin/courses"
-            className="p-4 rounded-lg border hover:bg-[var(--primary-beige)] transition-all group"
+            className="p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all group"
           >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-medium text-[var(--text-primary)]">Kurser</h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-1">Hantera kurser</p>
+                <h3 className="text-sm text-[var(--text-primary)]">Kurser</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">Hantera kurser</p>
               </div>
               <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] group-hover:text-[var(--primary-green)] transition-colors" />
             </div>
@@ -337,12 +306,12 @@ export default function AdminDashboard() {
           
           <Link 
             href="/admin/course-weeks"
-            className="p-4 rounded-lg border hover:bg-[var(--primary-beige)] transition-all group"
+            className="p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all group"
           >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-medium text-[var(--text-primary)]">Vecko-metadata</h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-1">Rubrik, bild, video</p>
+                <h3 className="text-sm text-[var(--text-primary)]">Vecko-metadata</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">Rubrik, bild, video</p>
               </div>
               <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] group-hover:text-[var(--primary-green)] transition-colors" />
             </div>
@@ -350,12 +319,12 @@ export default function AdminDashboard() {
           
           <Link 
             href="/admin/meal-plans"
-            className="p-4 rounded-lg border hover:bg-[var(--primary-beige)] transition-all group"
+            className="p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all group"
           >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-medium text-[var(--text-primary)]">Kostscheman</h3>
-                <p className="text-xs text-[var(--text-secondary)] mt-1">Hantera veckomenyer</p>
+                <h3 className="text-sm text-[var(--text-primary)]">Kostscheman</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">Hantera veckomenyer</p>
               </div>
               <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] group-hover:text-[var(--primary-green)] transition-colors" />
             </div>
