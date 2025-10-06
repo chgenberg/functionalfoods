@@ -335,7 +335,7 @@ async function handleFreeOrder(session: any) {
 
       if (!user) {
         // Create new user with temporary password
-        const bcrypt = require('bcrypt');
+        const bcrypt = require('bcryptjs');
         temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
         const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
         
@@ -540,7 +540,7 @@ async function completePayment(paymentId: string, webhookData: any) {
       temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
       
       // Update user with temporary password
-      const bcrypt = require('bcrypt');
+      const bcrypt = require('bcryptjs');
       const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
       await tx.user.update({
         where: { id: user.id },

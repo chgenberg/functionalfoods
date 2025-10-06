@@ -31,9 +31,23 @@ export async function PUT(req: NextRequest) {
 
     if (newPassword) {
       if (!currentPassword) return NextResponse.json({ error: 'Nuvarande lösenord krävs' }, { status: 400 });
-      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-      if (!isPasswordValid) return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 400 });
-      updateData.password = await bcrypt.hash(newPassword, 10);
+      
+      // Trim whitespace from password (in case it was copied from email with spaces)
+      const trimmedCurrentPassword = currentPassword.trim();
+      
+      console.log('🔐 Password verification attempt for user:', user.email);
+      console.log('   Current password length:', trimmedCurrentPassword.length);
+      console.log('   Stored hash starts with:', user.password.substring(0, 10));
+      
+      const isPasswordValid = await bcrypt.compare(trimmedCurrentPassword, user.password);
+      
+      if (!isPasswordValid) {
+        console.error('❌ Password verification failed for user:', user.email);
+        return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 400 });
+      }
+      
+      console.log('✅ Password verified successfully');
+      updateData.password = await bcrypt.hash(newPassword, 12); // Match webhook's 12 rounds
     }
 
     updateData.addressLine1 = addressLine1 ?? user.addressLine1;

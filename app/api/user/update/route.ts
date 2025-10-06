@@ -66,11 +66,14 @@ export async function PATCH(request: Request) {
 
         // Hantera lösenordsbyte
         if (currentPassword && newPassword) {
-            const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+            // Trim whitespace from password
+            const trimmedCurrentPassword = currentPassword.trim();
+            const isPasswordValid = await bcrypt.compare(trimmedCurrentPassword, user.password);
             if (!isPasswordValid) {
+                console.error('❌ Password verification failed for user:', user.email);
                 return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 401 });
             }
-            dataToUpdate.password = await bcrypt.hash(newPassword, 10);
+            dataToUpdate.password = await bcrypt.hash(newPassword, 12); // Match webhook's 12 rounds
         } else if (currentPassword || newPassword) {
             return NextResponse.json({ error: 'Både nuvarande och nytt lösenord krävs' }, { status: 400 });
         }
