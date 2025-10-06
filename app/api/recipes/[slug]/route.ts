@@ -32,7 +32,8 @@ export async function GET(
       'stek-torsk-med-bearnaisesas-och-haricot-verts': 'stekt-torsk-med-bearnaisesas-och-haricots-verts',
       // New: slugs missing in meal plan mapped to existing ones
       'smoothiebowl-med-mango-och-jordgubbar': 'smoothiebowl',
-      'laxsallad-med-druvor': 'laxsallad-med-vindruvor'
+      'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
+      'lax-broccolipaj': 'lax-och-broccolipaj'
     };
     const requestedSlug = params.slug;
     const canonicalSlug = ALIASES[requestedSlug] || requestedSlug;
