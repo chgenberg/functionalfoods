@@ -358,12 +358,9 @@ async function handleFreeOrder(session: any) {
         data: {
           orderNumber,
           userId: user.id,
-          customerEmail: customerEmail,
-          customerName: customerName,
           status: 'COMPLETED',
           totalAmount: 0,
           currency: 'SEK',
-          processedAt: new Date(),
           items: {
             create: items.map((item: any) => ({
               courseId: null, // Will be set when we find the course
