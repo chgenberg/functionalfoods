@@ -93,7 +93,19 @@ const nextConfig = {
       {
         source: '/api/images/:path*',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400' }
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' } // 1 year - images never change
+        ],
+      },
+      {
+        source: '/recept_images_vision_optimized/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }
+        ],
+      },
+      {
+        source: '/recept_images_optimized/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }
         ],
       },
     ];

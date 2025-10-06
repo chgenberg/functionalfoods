@@ -144,7 +144,7 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
             variants={item}
             className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden h-full"
           >
-            {doc.headerImage && (
+            {doc.headerImage && doc.headerImage.trim() && (
               <div className="relative h-48 w-full overflow-hidden bg-gray-100">
                 <Image
                   src={(doc.headerImage.startsWith('/api/images') ? doc.headerImage : `/api/images${doc.headerImage.startsWith('/') ? '' : '/'}${doc.headerImage}`) + `?cb=${Date.now()}`}
@@ -159,6 +159,13 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
                   unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              </div>
+            )}
+            
+            {(!doc.headerImage || !doc.headerImage.trim()) && (
+              <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-[#e8f5e9] to-[#f1f8f4] flex items-center justify-center">
+                <div className="text-6xl opacity-30">📚</div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
             )}
             
