@@ -92,6 +92,25 @@ export async function POST(req: NextRequest) {
       quantity: item.quantity,
     }));
 
+    // Log checkout details for verification
+    console.log('🔍 Stripe Checkout Debug:', {
+      items: validatedItems.map(i => ({
+        name: i.name,
+        priceInSEK: i.price,
+        quantity: i.quantity,
+        stripeUnitAmount: Math.round(i.price * 100),
+        totalInOre: Math.round(i.price * 100) * i.quantity,
+        totalInSEK: i.price * i.quantity
+      })),
+      subtotalInOre: subtotal,
+      subtotalInSEK: subtotal / 100,
+      discountInOre: discountAmount,
+      discountInSEK: discountAmount / 100,
+      finalInOre: subtotal - discountAmount,
+      finalInSEK: (subtotal - discountAmount) / 100,
+      couponCode: couponCode || 'none'
+    });
+
     const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     // Configure allowed payment methods explicitly (Stripe Checkout does not support automatic_payment_methods)

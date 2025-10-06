@@ -177,7 +177,7 @@ async function handleStripeWebhook(body: string, signature: string): Promise<Nex
 }
 
 async function handlePaymentSuccess(paymentIntent: any) {
-  console.log('Payment succeeded:', paymentIntent.id);
+  console.log('💰 Payment succeeded:', paymentIntent.id);
   
   const payment = await prisma.payment.findFirst({
     where: { externalId: paymentIntent.id },
@@ -185,9 +185,32 @@ async function handlePaymentSuccess(paymentIntent: any) {
   });
 
   if (payment) {
+    // Verify amount matches
+    const expectedAmountInOre = Math.round(payment.order.totalAmount * 100);
+    const actualAmountInOre = paymentIntent.amount;
+    
+    console.log('🔍 Amount Verification:', {
+      orderNumber: payment.order.orderNumber,
+      expectedInSEK: payment.order.totalAmount,
+      expectedInOre: expectedAmountInOre,
+      actualInOre: actualAmountInOre,
+      actualInSEK: actualAmountInOre / 100,
+      match: Math.abs(expectedAmountInOre - actualAmountInOre) <= 1,
+      difference: actualAmountInOre - expectedAmountInOre
+    });
+    
+    if (Math.abs(expectedAmountInOre - actualAmountInOre) > 1) {
+      console.error('❌ AMOUNT MISMATCH DETECTED!', {
+        expected: expectedAmountInOre,
+        actual: actualAmountInOre,
+        difference: actualAmountInOre - expectedAmountInOre,
+        orderNumber: payment.order.orderNumber
+      });
+    }
+    
     await completePayment(payment.id, paymentIntent);
   } else {
-    console.error('Payment not found for PaymentIntent:', paymentIntent.id);
+    console.error('❌ Payment not found for PaymentIntent:', paymentIntent.id);
   }
 }
 
