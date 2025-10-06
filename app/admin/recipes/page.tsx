@@ -49,7 +49,7 @@ export default function AdminRecipesPage() {
 
   useEffect(() => {
     fetchRecipes();
-  }, [filter, courseFilter, searchTerm]);
+  }, [filter, courseFilter]);
 
   const fetchRecipes = async () => {
     try {
@@ -270,15 +270,28 @@ export default function AdminRecipesPage() {
               </div>
 
               {/* Search bar */}
-              <div className="relative w-full lg:max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4 pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder="Sök recept..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)] transition-colors"
-                />
+              <div className="relative w-full lg:max-w-md flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-4 h-4 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder="Sök recept..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        fetchRecipes();
+                      }
+                    }}
+                    className="w-full pl-10 pr-4 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)] transition-colors"
+                  />
+                </div>
+                <button
+                  onClick={fetchRecipes}
+                  className="px-4 py-2 text-sm bg-[var(--primary-green)] text-white rounded-lg hover:bg-[var(--primary-green-dark)] transition-colors whitespace-nowrap"
+                >
+                  Sök
+                </button>
               </div>
             </div>
 

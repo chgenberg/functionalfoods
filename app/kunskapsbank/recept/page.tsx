@@ -151,20 +151,9 @@ const RecipesPage = () => {
   }, [page, selectedCategory, selectedStatus, searchQuery, user]);
 
   useEffect(() => {
-    // Only fetch from API when search query is empty or at least 3 characters
-    // This prevents unnecessary API calls while typing
-    const shouldFetch = searchQuery.length === 0 || searchQuery.length >= 3;
-    
-    if (!shouldFetch) {
-      return; // Don't fetch if search query is 1-2 characters
-    }
-    
-    const timeoutId = setTimeout(() => {
-      fetchRecipes();
-    }, 600); // Longer debounce for better UX (600ms instead of 300ms)
-    
-    return () => clearTimeout(timeoutId);
-  }, [user, selectedCategory, selectedStatus, searchQuery]);
+    // Only auto-fetch when filters change, not on search query change
+    fetchRecipes();
+  }, [user, selectedCategory, selectedStatus]);
 
   // Trigger fetching when page increments (infinite scroll)
   useEffect(() => {
@@ -174,13 +163,13 @@ const RecipesPage = () => {
   }, [page]);
 
   useEffect(() => {
-    // Reset recipes and page when filters change
+    // Reset recipes and page when filters change (not search query)
     setRecipes([]);
     setPage(1);
     setHasMore(true);
     // Scroll to top when filters change for better UX
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [selectedCategory, selectedStatus, searchQuery]);
+  }, [selectedCategory, selectedStatus]);
 
   useEffect(() => {
     // Enhanced intelligent search suggestions
@@ -331,24 +320,43 @@ const RecipesPage = () => {
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Enhanced Search with Intelligence */}
-            <div className={`flex-1 relative transition-all duration-300 ${isSearchFocused ? 'scale-[1.02]' : ''}`} ref={searchRef}>
-              <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${isSearchFocused ? 'text-orange-500' : 'text-gray-400'}`} />
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder={t('recipes.list.search.placeholder','Sök recept, ingredienser eller kategori...')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => {
-                  setIsSearchFocused(true);
-                  searchQuery.length > 0 && setShowSuggestions(true);
+            <div className={`flex-1 relative transition-all duration-300 ${isSearchFocused ? 'scale-[1.02]' : ''} flex gap-2`} ref={searchRef}>
+              <div className="flex-1 relative">
+                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${isSearchFocused ? 'text-orange-500' : 'text-gray-400'}`} />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder={t('recipes.list.search.placeholder','Sök recept, ingredienser eller kategori...')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setRecipes([]);
+                      setPage(1);
+                      fetchRecipes(true);
+                    }
+                  }}
+                  onFocus={() => {
+                    setIsSearchFocused(true);
+                    searchQuery.length > 0 && setShowSuggestions(true);
+                  }}
+                  onBlur={() => {
+                    setIsSearchFocused(false);
+                    setTimeout(() => setShowSuggestions(false), 200);
+                  }}
+                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 bg-white/90 backdrop-blur-sm hover:border-gray-300"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setRecipes([]);
+                  setPage(1);
+                  fetchRecipes(true);
                 }}
-                onBlur={() => {
-                  setIsSearchFocused(false);
-                  setTimeout(() => setShowSuggestions(false), 200);
-                }}
-                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 bg-white/90 backdrop-blur-sm hover:border-gray-300"
-              />
+                className="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors duration-300 whitespace-nowrap font-medium"
+              >
+                Sök
+              </button>
               
               {/* Enhanced Autocomplete Suggestions */}
               <AnimatePresence>
