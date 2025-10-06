@@ -185,11 +185,13 @@ export class EmailService {
             <!-- Personlig hälsning -->
             <div style="text-align: center; margin-bottom: 30px;">
               <h2 style="color: #1a4324; margin: 0 0 16px 0; font-size: 28px; font-weight: 600;">
-                Hej ${data.customerName}! 👋
+                ${data.loginCredentials ? 'Välkommen till Functional Foods! 🎉' : 'Tack för ditt förtroende! 💚'}
               </h2>
               <p style="color: #555; line-height: 1.8; font-size: 16px; margin: 0;">
-                Din beställning är bekräftad och du har nu tillgång till dina kurser.<br>
-                Vi är så glada att du är med på denna hälsoresa! 🌱
+                ${data.loginCredentials 
+                  ? `Hej ${data.customerName}! 👋<br>Din beställning är bekräftad och du har nu tillgång till dina kurser.<br>Vi är så glada att du är med på denna hälsoresa! 🌱`
+                  : `Hej ${data.customerName}! 👋<br>Tack för ditt återkommande förtroende! Din nya beställning är bekräftad.<br>Vi är glada att du fortsätter din hälsoresa tillsammans med oss! 🌱`
+                }
               </p>
             </div>
 
@@ -236,12 +238,21 @@ export class EmailService {
             <!-- Nästa steg -->
             <div style="background: linear-gradient(135deg, #f8fffe 0%, #f0f7f5 100%); border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #d4e8df;">
               <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 18px;">📚 Dina nästa steg:</h3>
-              <ol style="color: #555; line-height: 2; margin: 0; padding-left: 20px;">
-                <li>Logga in på ditt konto</li>
-                <li>Utforska ditt kursmaterial</li>
-                <li>Börja med vecka 1</li>
-                <li>Anslut till vår community</li>
-              </ol>
+              ${data.loginCredentials ? `
+                <ol style="color: #555; line-height: 2; margin: 0; padding-left: 20px;">
+                  <li>Logga in med dina nya uppgifter</li>
+                  <li>Utforska ditt kursmaterial</li>
+                  <li>Börja med vecka 1</li>
+                  <li>Anslut till vår community</li>
+                </ol>
+              ` : `
+                <ol style="color: #555; line-height: 2; margin: 0; padding-left: 20px;">
+                  <li>Logga in på ditt konto</li>
+                  <li>Dina nya kurser finns redan i din dashboard</li>
+                  <li>Börja där det passar dig bäst</li>
+                  <li>Fortsätt din hälsoresa i din egen takt</li>
+                </ol>
+              `}
             </div>
 
             <!-- Help Section med ikoner -->

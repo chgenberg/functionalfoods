@@ -437,25 +437,24 @@ async function handleFreeOrder(session: any) {
         }
       }
 
-      // Send order confirmation email with login credentials if new user
-      if (isNewUser && temporaryPassword) {
-        try {
-          await emailService.sendOrderConfirmation({
-            customerEmail: user.email,
-            customerName: user.name || user.email,
-            orderNumber: order.orderNumber,
-            totalAmount: 0,
-            courses: purchasedCourses.map(c => ({ name: c.name, price: 0 })),
-            loginCredentials: {
-              email: user.email,
-              password: temporaryPassword,
-              loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
-            }
-          });
-          console.log('✅ Order confirmation email sent to:', user.email);
-        } catch (emailError) {
-          console.error('❌ Failed to send order confirmation email:', emailError);
-        }
+      // Send order confirmation email to ALL users (new and existing)
+      try {
+        await emailService.sendOrderConfirmation({
+          customerEmail: user.email,
+          customerName: user.name || user.email,
+          orderNumber: order.orderNumber,
+          totalAmount: 0,
+          courses: purchasedCourses.map(c => ({ name: c.name, price: 0 })),
+          // Only include login credentials for NEW users
+          loginCredentials: (isNewUser && temporaryPassword) ? {
+            email: user.email,
+            password: temporaryPassword,
+            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
+          } : undefined
+        });
+        console.log(`✅ Order confirmation email sent to: ${user.email} (${isNewUser ? 'new user' : 'existing user'})`);
+      } catch (emailError) {
+        console.error('❌ Failed to send order confirmation email:', emailError);
       }
     });
 
