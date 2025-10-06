@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { emailService } from '@/app/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -141,6 +142,20 @@ export async function POST(request: NextRequest) {
         { error: data.detail || M[lang].addFailed },
         { status: response.status }
       );
+    }
+
+    // Send notification email to info@functionalfoods.se about new subscriber
+    try {
+      await emailService.sendNewsletterNotification({
+        email,
+        firstName: firstName || '',
+        lastName: lastName || '',
+        lang
+      });
+      console.log('✅ Newsletter notification sent to info@functionalfoods.se');
+    } catch (emailError) {
+      console.error('⚠️ Failed to send newsletter notification email:', emailError);
+      // Don't fail the whole request if notification fails
     }
 
     return NextResponse.json(

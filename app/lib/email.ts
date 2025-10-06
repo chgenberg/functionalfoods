@@ -447,6 +447,45 @@ export class EmailService {
     });
   }
 
+  // Send newsletter subscription notification
+  async sendNewsletterNotification(params: { email: string; firstName: string; lastName: string; lang: string; }): Promise<boolean> {
+    const { email, firstName, lastName, lang } = params;
+    const name = [firstName, lastName].filter(Boolean).join(' ') || 'Ingen namn angiven';
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+      <body style="margin:0;padding:20px;font-family:Arial, sans-serif;background:#f7faf7;color:#1a4324;">
+        <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5efe2;border-radius:12px;box-shadow:0 8px 20px rgba(26,67,36,0.06);overflow:hidden;">
+          <div style="background:linear-gradient(135deg,#FF7e70 0%,#e56b5e 100%);padding:24px;color:#fff;">
+            <h1 style="margin:0;font-size:20px;">📬 Ny nyhetsbrevsprenumerant!</h1>
+            <p style="margin:8px 0 0 0;opacity:0.9;">${new Date().toLocaleString('sv-SE')}</p>
+          </div>
+          <div style="padding:24px;">
+            <p style="margin:0 0 8px 0;"><strong>Namn:</strong> ${name}</p>
+            <p style="margin:0 0 8px 0;"><strong>E-post:</strong> <a href="mailto:${email}">${email}</a></p>
+            <p style="margin:0 0 16px 0;"><strong>Språk:</strong> ${lang.toUpperCase()}</p>
+            <div style="background:#f8fbf7;border:1px solid #e5efe2;border-radius:8px;padding:16px;">
+              <p style="margin:0;color:#254a31;">✅ Prenumeranten har automatiskt lagts till i er Mailchimp audience lista.</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return this.sendEmail({
+      to: 'info@functionalfoods.se',
+      toName: 'Functional Foods',
+      subject: `📬 Ny nyhetsbrevsprenumerant: ${email}`,
+      html,
+      fromEmail: 'no-reply@functionalfoods.se',
+      fromName: 'Functional Foods Nyhetsbrev',
+      tags: ['newsletter', 'notification', 'website']
+    });
+  }
+
   // Send password reset email
   async sendCourseReviewRequest(data: { email: string; name: string; courseId: string; courseName: string; userId: string }): Promise<boolean> {
     const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/review/email?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}&courseName=${encodeURIComponent(data.courseName)}`;
