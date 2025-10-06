@@ -265,20 +265,206 @@ async function handlePaymentProcessing(paymentIntent: any) {
 
 async function handleCheckoutSessionCompleted(session: any) {
   try {
+    console.log('🎉 Checkout session completed:', {
+      sessionId: session.id,
+      customer_email: session.customer_email,
+      amount_total: session.amount_total,
+      payment_status: session.payment_status,
+      has_payment_intent: !!session.payment_intent
+    });
+
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    
+    // Handle free orders (0 kr with coupon) - no payment_intent is created
+    if (session.amount_total === 0 || !session.payment_intent) {
+      console.log('💰 Free order detected (0 kr) - processing without payment_intent');
+      await handleFreeOrder(session);
+      return;
+    }
+
+    // Handle paid orders with payment_intent
     const paymentIntentId = typeof session.payment_intent === 'string'
       ? session.payment_intent
       : session.payment_intent?.id;
-
-    if (!paymentIntentId) {
-      console.warn('checkout.session.completed received without payment_intent');
-      return;
-    }
 
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     await handlePaymentSuccess(paymentIntent);
   } catch (error) {
     console.error('Failed to handle checkout.session.completed:', error);
+  }
+}
+
+async function handleFreeOrder(session: any) {
+  console.log('📦 Processing free order from session:', session.id);
+  
+  try {
+    const customerEmail = session.customer_email || session.customer_details?.email;
+    const customerName = session.customer_details?.name || customerEmail?.split('@')[0] || 'Kund';
+    
+    if (!customerEmail) {
+      console.error('❌ No customer email in session');
+      return;
+    }
+
+    // Parse metadata to get items
+    const metadata = session.metadata || {};
+    let items: any[] = [];
+    
+    try {
+      if (metadata.items) {
+        items = JSON.parse(metadata.items);
+      }
+    } catch (e) {
+      console.error('Failed to parse session metadata items:', e);
+      return;
+    }
+
+    if (items.length === 0) {
+      console.error('❌ No items in session metadata');
+      return;
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // Get or create user
+      let user = await tx.user.findUnique({
+        where: { email: customerEmail }
+      });
+
+      const isNewUser = !user;
+      let temporaryPassword = '';
+
+      if (!user) {
+        // Create new user with temporary password
+        const bcrypt = require('bcrypt');
+        temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
+        const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
+        
+        user = await tx.user.create({
+          data: {
+            email: customerEmail,
+            name: customerName,
+            password: hashedPassword,
+            role: 'customer'
+          }
+        });
+        console.log(`✅ New user created: ${user.email}`);
+      } else {
+        console.log(`✅ Existing user found: ${user.email}`);
+      }
+
+      // Create order
+      const orderNumber = `STRIPE-FREE-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+      const order = await tx.order.create({
+        data: {
+          orderNumber,
+          userId: user.id,
+          customerEmail: customerEmail,
+          customerName: customerName,
+          status: 'COMPLETED',
+          totalAmount: 0,
+          currency: 'SEK',
+          processedAt: new Date(),
+          items: {
+            create: items.map((item: any) => ({
+              courseId: null, // Will be set when we find the course
+              name: item.name,
+              price: 0,
+              quantity: item.quantity || 1,
+              type: item.type || 'course'
+            }))
+          }
+        },
+        include: { items: true }
+      });
+
+      console.log(`✅ Order created: ${order.orderNumber}`);
+
+      // Increment coupon usage if applicable (only once in webhook, not in verify endpoint)
+      if (metadata.couponCode) {
+        try {
+          const couponCode = metadata.couponCode.toUpperCase().trim();
+          await tx.coupon.update({
+            where: { code: couponCode },
+            data: { timesUsed: { increment: 1 } }
+          });
+          console.log(`✅ Incremented usage for coupon: ${couponCode}`);
+        } catch (couponError) {
+          console.warn('⚠️ Failed to increment coupon usage:', couponError);
+        }
+      }
+
+      // Create purchases for courses
+      const purchasedCourses = [];
+      for (const item of items.filter((i: any) => i.type === 'course')) {
+        // Find course by name
+        const course = await tx.courseProduct.findFirst({
+          where: { 
+            name: {
+              in: [
+                item.name,
+                item.name.replace('Functional Insulin balance/Energy', 'Functional Energy'),
+                item.name.replace('Functional Gut Health/Flow', 'Functional Flow')
+              ]
+            }
+          }
+        });
+
+        if (!course) {
+          console.warn(`⚠️ Course not found: ${item.name}`);
+          continue;
+        }
+
+        // Check if purchase already exists
+        const existingPurchase = await tx.purchase.findUnique({
+          where: {
+            userId_courseId: {
+              userId: user.id,
+              courseId: course.id
+            }
+          }
+        });
+
+        if (!existingPurchase) {
+          const purchase = await tx.purchase.create({
+            data: {
+              userId: user.id,
+              courseId: course.id,
+              amount: 0,
+              status: 'completed',
+              orderId: order.id,
+              accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+            }
+          });
+          purchasedCourses.push(course);
+          console.log(`✅ Purchase created for: ${course.name}`);
+        }
+      }
+
+      // Send order confirmation email with login credentials if new user
+      if (isNewUser && temporaryPassword) {
+        try {
+          await emailService.sendOrderConfirmation({
+            customerEmail: user.email,
+            customerName: user.name || user.email,
+            orderNumber: order.orderNumber,
+            totalAmount: 0,
+            courses: purchasedCourses.map(c => ({ name: c.name, price: 0 })),
+            loginCredentials: {
+              email: user.email,
+              password: temporaryPassword,
+              loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
+            }
+          });
+          console.log('✅ Order confirmation email sent to:', user.email);
+        } catch (emailError) {
+          console.error('❌ Failed to send order confirmation email:', emailError);
+        }
+      }
+    });
+
+    console.log('✅ Free order processed successfully');
+  } catch (error) {
+    console.error('❌ Error processing free order:', error);
   }
 }
 

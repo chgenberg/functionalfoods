@@ -17,20 +17,8 @@ export async function GET(req: NextRequest) {
     const stripe = require('stripe')(secretKey);
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
-    // If payment is successful and we have a coupon code in metadata, increment usage
-    if (session.payment_status === 'paid' && session.metadata?.couponCode) {
-      try {
-        const couponCode = session.metadata.couponCode.toUpperCase().trim();
-        await prisma.coupon.update({
-          where: { code: couponCode },
-          data: { timesUsed: { increment: 1 } }
-        });
-        console.log(`✅ Incremented usage for coupon: ${couponCode}`);
-      } catch (couponError) {
-        console.error('❌ Failed to increment coupon usage:', couponError);
-        // Don't fail the entire verification if coupon update fails
-      }
-    }
+    // NOTE: Coupon usage is incremented in webhook, not here
+    // to avoid double-counting if this endpoint is called multiple times
 
     return NextResponse.json({
       id: session.id,
