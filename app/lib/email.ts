@@ -229,7 +229,7 @@ export class EmailService {
 
             <!-- CTA Buttons -->
             <div style="text-align: center; margin: 40px 0;">
-              <a href="https://functionalfoods.se/dashboard" 
+              <a href="https://functionalfoods.se" 
                  style="display: inline-block; background: linear-gradient(135deg, #1a4324 0%, #2d5a3d 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(26, 67, 36, 0.3); transition: all 0.3s;">
                 ✨ Kom igång med dina kurser
               </a>
