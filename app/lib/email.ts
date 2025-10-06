@@ -448,9 +448,10 @@ export class EmailService {
   }
 
   // Send newsletter subscription notification
-  async sendNewsletterNotification(params: { email: string; firstName: string; lastName: string; lang: string; }): Promise<boolean> {
-    const { email, firstName, lastName, lang } = params;
+  async sendNewsletterNotification(params: { email: string; firstName: string; lastName: string; lang: string; source?: string; }): Promise<boolean> {
+    const { email, firstName, lastName, lang, source } = params;
     const name = [firstName, lastName].filter(Boolean).join(' ') || 'Ingen namn angiven';
+    const sourceLabel = source === 'health-quiz' ? '🧪 Hälsoquiz' : '🌐 Hemsida';
     
     const html = `
       <!DOCTYPE html>
@@ -465,9 +466,10 @@ export class EmailService {
           <div style="padding:24px;">
             <p style="margin:0 0 8px 0;"><strong>Namn:</strong> ${name}</p>
             <p style="margin:0 0 8px 0;"><strong>E-post:</strong> <a href="mailto:${email}">${email}</a></p>
+            <p style="margin:0 0 8px 0;"><strong>Källa:</strong> ${sourceLabel}</p>
             <p style="margin:0 0 16px 0;"><strong>Språk:</strong> ${lang.toUpperCase()}</p>
             <div style="background:#f8fbf7;border:1px solid #e5efe2;border-radius:8px;padding:16px;">
-              <p style="margin:0;color:#254a31;">✅ Prenumeranten har automatiskt lagts till i er Mailchimp audience lista.</p>
+              <p style="margin:0;color:#254a31;">✅ Prenumeranten har automatiskt lagts till i er Mailchimp audience lista${source === 'health-quiz' ? ' med tagg "Health Quiz"' : ''}.</p>
             </div>
           </div>
         </div>

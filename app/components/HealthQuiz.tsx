@@ -713,11 +713,15 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     }
 
     setIsAnimating(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       if (currentQuestion < quizQuestions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
       } else {
         setCurrentStep('result');
+        
+        // Subscribe to newsletter if email provided
+        await subscribeToNewsletter();
+        
         onComplete?.(newAnswers, locationContext);
         try { localStorage.removeItem(STORAGE_KEY); } catch {}
       }
@@ -725,13 +729,43 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     }, 300);
   };
 
-  const handleMultiSelectNext = () => {
+  const handleMultiSelectNext = async () => {
     if (currentQuestion < quizQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setCurrentStep('result');
+      
+      // Subscribe to newsletter if email provided
+      await subscribeToNewsletter();
+      
       onComplete?.(answers, locationContext);
       try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    }
+  };
+
+  // Subscribe to newsletter when quiz completes
+  const subscribeToNewsletter = async () => {
+    const trimmedEmail = email.trim();
+    const trimmedFirstName = firstName.trim();
+    
+    if (trimmedEmail && trimmedEmail.includes('@') && consent) {
+      try {
+        console.log('📬 Subscribing quiz user to newsletter:', trimmedEmail);
+        await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: trimmedEmail, 
+            firstName: trimmedFirstName,
+            lastName: '',
+            source: 'health-quiz'
+          }),
+        });
+        console.log('✅ Quiz user subscribed to newsletter');
+      } catch (error) {
+        console.error('⚠️ Failed to subscribe quiz user to newsletter:', error);
+        // Don't block quiz completion if newsletter fails
+      }
     }
   };
   const skipQuestion = () => {

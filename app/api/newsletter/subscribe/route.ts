@@ -78,7 +78,7 @@ function getLang(request: NextRequest): Lang {
 export async function POST(request: NextRequest) {
   try {
     const lang = getLang(request);
-    const { email, firstName, lastName } = await request.json();
+    const { email, firstName, lastName, source } = await request.json();
 
     if (!email || !email.includes('@')) {
       return NextResponse.json(
@@ -109,6 +109,11 @@ export async function POST(request: NextRequest) {
 
     const checkUrl = `${url}/${subscriberHash}`;
     
+    const tags = ['Website Signup', 'Functional Foods', (lang || 'sv').toUpperCase()];
+    if (source === 'health-quiz') {
+      tags.push('Health Quiz');
+    }
+    
     const memberData = {
       email_address: email,
       status: 'subscribed',
@@ -116,7 +121,7 @@ export async function POST(request: NextRequest) {
         FNAME: firstName || '',
         LNAME: lastName || ''
       },
-      tags: ['Website Signup', 'Functional Foods', (lang || 'sv').toUpperCase()]
+      tags
     } as any;
 
     const response = await fetch(checkUrl, {
@@ -150,7 +155,8 @@ export async function POST(request: NextRequest) {
         email,
         firstName: firstName || '',
         lastName: lastName || '',
-        lang
+        lang,
+        source: source || 'website'
       });
       console.log('✅ Newsletter notification sent to info@functionalfoods.se');
     } catch (emailError) {
