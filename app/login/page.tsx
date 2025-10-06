@@ -295,7 +295,10 @@ function LoginForm() {
 
             {isLogin && (
               <div className="flex justify-end">
-                <Link href="/forgot-password" className="text-sm text-primary hover:text-primary-light">
+                <Link 
+                  href="/forgot-password" 
+                  className="text-sm font-medium text-[#014421] hover:text-[#116530] hover:underline transition-all cursor-pointer"
+                >
                   Glömt lösenordet?
                 </Link>
               </div>
