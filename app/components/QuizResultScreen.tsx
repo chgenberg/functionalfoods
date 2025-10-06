@@ -369,12 +369,12 @@ const QuizResultScreen: React.FC<QuizResultScreenProps> = ({ quizData, contextDa
   const scoreMessage = getScoreMessage(totalScore);
 
   const tabs = [
-    { id: 'course', label: 'Kursrekommendation', icon: BookOpen },
+    { id: 'course', label: 'Kurs', icon: BookOpen },
     ...(contextData ? [{ id: 'context', label: 'Din plats', icon: MapPin }] : []),
     ...(contextData?.enhanced?.safety?.warnings?.length > 0 ? [{ id: 'safety', label: 'Säkerhet', icon: Shield }] : []),
-    { id: 'recommendations', label: 'Functional Foods', icon: Salad },
+    { id: 'recommendations', label: 'Foods', icon: Salad },
     { id: 'lifestyle', label: 'Livsstil', icon: Activity },
-    { id: 'nextsteps', label: 'Handlingsplan', icon: Star },
+    { id: 'nextsteps', label: 'Plan', icon: Star },
     { id: 'metrics', label: 'Mätning', icon: TrendingUp }
   ];
   const orderedTabIds = tabs.map(t => t.id);
