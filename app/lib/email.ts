@@ -227,7 +227,7 @@ export class EmailService {
 
             <!-- CTA Buttons -->
             <div style="text-align: center; margin: 40px 0;">
-              <a href="https://ulrika-functional-foods-production.up.railway.app/dashboard" 
+              <a href="https://functionalfoods.se/dashboard" 
                  style="display: inline-block; background: linear-gradient(135deg, #1a4324 0%, #2d5a3d 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(26, 67, 36, 0.3); transition: all 0.3s;">
                 ✨ Kom igång med dina kurser
               </a>
@@ -293,7 +293,7 @@ export class EmailService {
 
   // Send temporary password to a user (bulk reset helper)
   async sendTemporaryPasswordEmail(params: { email: string; name?: string | null; password: string }): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se';
     const html = `
       <!DOCTYPE html>
       <html>
@@ -438,7 +438,7 @@ export class EmailService {
 
   // Send password reset email
   async sendCourseReviewRequest(data: { email: string; name: string; courseId: string; courseName: string; userId: string }): Promise<boolean> {
-    const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app'}/review/email?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}&courseName=${encodeURIComponent(data.courseName)}`;
+    const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/review/email?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}&courseName=${encodeURIComponent(data.courseName)}`;
     
     const html = `
       <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff;">
@@ -496,7 +496,7 @@ export class EmailService {
   }
 
   async sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se';
     const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
     
     const html = `
