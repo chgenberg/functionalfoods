@@ -169,12 +169,13 @@ export class EmailService {
       <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; color: #333;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">
           
-          <!-- Header med gradient -->
-          <div style="background: linear-gradient(135deg, #1a4324 0%, #2d5a3d 100%); padding: 40px 30px; text-align: center; position: relative; overflow: hidden;">
-            <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(157, 196, 109, 0.2); border-radius: 50%;"></div>
-            <div style="position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(157, 196, 109, 0.15); border-radius: 50%;"></div>
-            <h1 style="color: white; margin: 0; font-size: 32px; font-weight: 700; position: relative; z-index: 1;">Functional Foods</h1>
-            <p style="color: #9dc46d; margin: 12px 0 0 0; font-size: 18px; position: relative; z-index: 1;">Tack för din beställning! 🎉</p>
+          <!-- Header med bild -->
+          <div style="position: relative; width: 100%; height: auto; overflow: hidden;">
+            <img 
+              src="https://functionalfoods.se/mail/header.png" 
+              alt="Functional Foods" 
+              style="width: 100%; height: auto; display: block; max-height: 300px; object-fit: cover;"
+            />
           </div>
           
           <!-- Grön accent-linje -->
