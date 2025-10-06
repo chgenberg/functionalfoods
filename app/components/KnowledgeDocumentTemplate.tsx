@@ -123,7 +123,7 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
       className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto"
     >
       {/* Header Image - Square format for both portrait and landscape */}
-      {document.headerImage && (
+      {document.headerImage && document.headerImage.trim() && (
         <motion.div 
           className="relative w-full"
           initial={{ opacity: 0, y: 20 }}
@@ -228,7 +228,7 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
             >
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Relaterade bilder</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {document.relatedImages.map((image, index) => (
+                {document.relatedImages.filter(image => image && image.src && image.src.trim()).map((image, index) => (
                   <div key={index} className="relative h-64 rounded-lg overflow-hidden shadow-md">
                     <Image
                       src={(image.src.startsWith('/api/images') ? image.src : `/api/images${image.src.startsWith('/') ? '' : '/'}${image.src}`) + `?cb=${Date.now()}`}
