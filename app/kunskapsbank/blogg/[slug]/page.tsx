@@ -469,10 +469,9 @@ export default function BlogPostPage({ params }: Props) {
           {/* Article Body */}
           <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
             <div className="prose prose-lg max-w-none">
-              <div 
-                className="text-gray-800 leading-loose space-y-6"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+              <div className="text-gray-800 leading-loose space-y-6">
+                {formatContent(post.content)}
+              </div>
             </div>
 
             {/* Article Footer */}

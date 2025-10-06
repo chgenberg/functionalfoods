@@ -35,6 +35,8 @@ export async function GET(
     localized.title = pick(post, 'title', lang);
     localized.excerpt = pick(post, 'excerpt', lang);
     localized.content = pick(post, 'content', lang);
+    // Ensure coverImage is included
+    localized.coverImage = post.coverImage;
 
     return NextResponse.json({ post: localized });
   } catch (error) {
