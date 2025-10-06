@@ -55,7 +55,8 @@ export class EmailService {
 
   private async sendEmail(data: EmailData): Promise<boolean> {
     if (!mailchimpClient) {
-      console.error('Mailchimp Transactional not configured');
+      console.error('❌ Mailchimp Transactional not configured - MAILCHIMP_TRANSACTIONAL_API_KEY missing');
+      console.error('❌ Please set MAILCHIMP_TRANSACTIONAL_API_KEY in environment variables');
       return false;
     }
 
@@ -79,11 +80,29 @@ export class EmailService {
         global_merge_vars: []
       };
 
+      console.log('📧 Attempting to send email to:', data.to, 'Subject:', data.subject);
       const response = await mailchimpClient.messages.send({ message });
-      console.log('Email sent successfully:', response);
+      console.log('✅ Email sent successfully:', JSON.stringify(response, null, 2));
+      
+      // Check if email was actually sent (Mailchimp returns status per recipient)
+      if (Array.isArray(response) && response.length > 0) {
+        const firstRecipient = response[0];
+        if (firstRecipient.status === 'rejected' || firstRecipient.status === 'invalid') {
+          console.error('❌ Email was rejected by Mailchimp:', firstRecipient);
+          return false;
+        }
+      }
+      
       return true;
-    } catch (error) {
-      console.error('Error sending email:', error);
+    } catch (error: any) {
+      console.error('❌ Error sending email:', error);
+      console.error('❌ Error details:', {
+        message: error?.message,
+        name: error?.name,
+        status: error?.status,
+        code: error?.code,
+        response: error?.response?.body || error?.response
+      });
       return false;
     }
   }

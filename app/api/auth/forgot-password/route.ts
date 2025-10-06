@@ -66,28 +66,29 @@ export async function POST(request: NextRequest) {
       });
       
       // Send password reset email
-      try {
-        await emailService.sendPasswordResetEmail(user.email, resetToken);
-        logInfo('Password reset email sent', { 
-          userId: user.id, 
-          email: normalizedEmail 
-        });
-      } catch (emailError) {
-        logError(emailError instanceof Error ? emailError : new Error('Failed to send password reset email'), { 
+      const emailSent = await emailService.sendPasswordResetEmail(user.email, resetToken);
+      
+      if (!emailSent) {
+        logError(new Error('Failed to send password reset email'), { 
           userId: user.id,
+          email: normalizedEmail,
           severity: 'high',
           timestamp: new Date().toISOString()
         });
-        logWarn('Password reset email send failure metadata', {
-          email: normalizedEmail,
-          error: emailError as any
-        });
         
-        // Don't expose email sending errors to user
+        // Don't expose email sending errors to user - but log them
+        console.error('❌ Password reset email failed for user:', user.id, user.email);
+        console.error('❌ Check MAILCHIMP_TRANSACTIONAL_API_KEY configuration');
+        
         return NextResponse.json({
-          error: 'Ett tekniskt fel uppstod. Försök igen senare.'
+          error: 'Ett tekniskt fel uppstod vid skickning av email. Kontakta supporten om problemet kvarstår.'
         }, { status: 500 });
       }
+      
+      logInfo('Password reset email sent successfully', { 
+        userId: user.id, 
+        email: normalizedEmail 
+      });
       
       return NextResponse.json(successResponse);
       
