@@ -70,6 +70,50 @@ export default function BlogPostPage({ params }: Props) {
 
   // Format content for display (convert markdown to proper HTML)
   const formatContent = (content: string) => {
+    // Check if content contains HTML tags
+    const hasHtmlTags = /<[^>]+>/.test(content);
+    
+    if (hasHtmlTags) {
+      // Content is HTML - strip tags and convert to plain text with basic formatting
+      let cleanContent = content
+        // Convert HTML headings to markdown style
+        .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '\n\n# $1\n\n')
+        .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '\n\n## $1\n\n')
+        .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '\n\n### $1\n\n')
+        .replace(/<h4[^>]*>(.*?)<\/h4>/gi, '\n\n#### $1\n\n')
+        // Convert strong/bold to markdown
+        .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**')
+        .replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**')
+        // Convert emphasis to markdown
+        .replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*')
+        .replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*')
+        // Convert paragraphs to double newlines
+        .replace(/<p[^>]*>/gi, '\n\n')
+        .replace(/<\/p>/gi, '')
+        // Convert line breaks
+        .replace(/<br\s*\/?>/gi, '\n')
+        // Convert lists
+        .replace(/<ul[^>]*>/gi, '\n')
+        .replace(/<\/ul>/gi, '\n')
+        .replace(/<ol[^>]*>/gi, '\n')
+        .replace(/<\/ol>/gi, '\n')
+        .replace(/<li[^>]*>(.*?)<\/li>/gi, '\n- $1')
+        // Remove all remaining HTML tags
+        .replace(/<[^>]+>/g, '')
+        // Decode HTML entities
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        // Clean up multiple newlines
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+      
+      content = cleanContent;
+    }
+    
     // Clean up content gently - avoid aggressive text manipulation
     let cleanContent = content
       .replace(/\r\n/g, '\n')
