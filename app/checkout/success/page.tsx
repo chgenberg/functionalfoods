@@ -3,9 +3,8 @@ import { useCart } from '../../context/CartContext';
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-import { GiSparkles } from 'react-icons/gi';
 import Link from 'next/link';
-import { CheckCircle, Book, Play, Mail, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Book, Play, Mail, AlertTriangle, Key, ArrowRight } from 'lucide-react';
 
 function CheckoutSuccessContent() {
   const { clearCart } = useCart();
@@ -65,11 +64,11 @@ function CheckoutSuccessContent() {
 
   if (isVerifying) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4 text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#1a4324] mx-auto mb-6"></div>
-          <h1 className="text-xl font-semibold text-gray-800 mb-2">Verifierar din betalning...</h1>
-          <p className="text-gray-600">Vänligen vänta medan vi bekräftar din beställning.</p>
+      <div className="min-h-screen bg-background flex items-center justify-center py-12">
+        <div className="bg-background-secondary rounded-3xl shadow-xl p-8 max-w-md w-full mx-4 text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#014421] mx-auto mb-6"></div>
+          <h1 className="text-xl font-semibold text-text-primary mb-2">Verifierar din betalning...</h1>
+          <p className="text-text-secondary">Vänligen vänta medan vi bekräftar din beställning.</p>
         </div>
       </div>
     );
@@ -77,21 +76,21 @@ function CheckoutSuccessContent() {
 
   if (!paymentVerified || error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4 text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen bg-background flex items-center justify-center py-12">
+        <div className="bg-background-secondary rounded-3xl shadow-xl p-8 max-w-md w-full mx-4 text-center">
+          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <AlertTriangle className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Betalning ej verifierad</h1>
+          <h1 className="text-2xl font-bold text-text-primary mb-4">Betalning ej verifierad</h1>
           <div className="space-y-3 mb-6">
-            <p className="text-gray-600">{error || 'Vi kunde inte verifiera din betalning. Ingen beställning har genomförts.'}</p>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-700">Om du tror att du har blivit debiterad men inte fått tillgång, kontakta kundtjänst.</p>
+            <p className="text-text-secondary">{error || 'Vi kunde inte verifiera din betalning. Ingen beställning har genomförts.'}</p>
+            <div className="bg-[#fff5e6] border border-[#ffc586] rounded-xl p-4">
+              <p className="text-sm text-[#8B4513]">Om du tror att du har blivit debiterad men inte fått tillgång, kontakta kundtjänst.</p>
             </div>
           </div>
           <div className="space-y-4">
-            <Link href="/checkout" className="block w-full bg-[#1a4324] text-white text-center py-3 rounded-lg hover:bg-[#9dc46d] hover:text-[#1a4324] transition-colors font-medium">Försök igen</Link>
-            <Link href="/kontakt" className="block w-full border-2 border-[#1a4324] text-[#1a4324] text-center py-3 rounded-lg hover:bg-[#1a4324] hover:text-white transition-colors font-medium">Kontakta kundtjänst</Link>
+            <Link href="/checkout" className="block w-full bg-[#014421] text-white text-center py-3 rounded-xl hover:bg-[#116530] transition-colors font-medium">Försök igen</Link>
+            <Link href="/kontakt" className="block w-full border-2 border-[#014421] text-[#014421] text-center py-3 rounded-xl hover:bg-[#014421] hover:text-white transition-colors font-medium">Kontakta kundtjänst</Link>
           </div>
         </div>
       </div>
@@ -106,36 +105,36 @@ function CheckoutSuccessContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+          <div className="w-20 h-20 bg-[#e8f5e9] rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-12 h-12 text-[#014421]" />
           </div>
           
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-text-primary mb-4">
             {isNewUser ? 'Välkommen till Functional Foods!' : 'Tack för ditt köp!'}
           </h1>
           
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-xl text-text-secondary mb-8">
             Din betalning har genomförts och du har nu tillgång till dina kurser.
           </p>
         </div>
 
         {/* What happens now section */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Vad händer nu?</h2>
+        <div className="bg-background-secondary rounded-3xl shadow-xl p-8 mb-8">
+          <h2 className="text-2xl font-semibold text-text-primary mb-6 text-center">Vad händer nu?</h2>
           
           <div className="space-y-6">
             {/* Step 1: Order Confirmation */}
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+              <div className="flex-shrink-0 w-10 h-10 bg-[#e8f5e9] rounded-full flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-[#014421]" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">✅ Beställningen är bekräftad</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="font-semibold text-text-primary mb-1">Beställningen är bekräftad</h3>
+                <p className="text-text-secondary text-sm">
                   Din order är genomförd och bekräftad. Du har nu omedelbar tillgång till kursmaterialet.
                 </p>
               </div>
@@ -143,17 +142,17 @@ function CheckoutSuccessContent() {
 
             {/* Step 2: Email with credentials */}
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <Mail className="w-6 h-6 text-blue-600" />
+              <div className="flex-shrink-0 w-10 h-10 bg-[#ffe4e1] rounded-full flex items-center justify-center">
+                <Mail className="w-6 h-6 text-[#FF7e70]" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">📧 Orderbekräftelse via email</h3>
-                <p className="text-gray-600 text-sm mb-2">
+                <h3 className="font-semibold text-text-primary mb-1">Orderbekräftelse via email</h3>
+                <p className="text-text-secondary text-sm mb-2">
                   Ett orderkvitto{isNewUser ? ' med dina inloggningsuppgifter' : ''} skickas till <strong>{user?.email || 'din e-postadress'}</strong>
                 </p>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-2">
-                  <p className="text-sm text-yellow-800">
-                    <strong>💡 Tips:</strong> Kolla även din skräppost-mapp om du inte ser emailet inom 5 minuter.
+                <div className="bg-[#fff5e6] border border-[#ffc586] rounded-xl p-3 mt-2">
+                  <p className="text-sm text-[#8B4513]">
+                    <strong>Tips:</strong> Kolla även din skräppost-mapp om du inte ser emailet inom 5 minuter.
                   </p>
                 </div>
               </div>
@@ -161,39 +160,38 @@ function CheckoutSuccessContent() {
 
             {/* Step 3: Login alternative */}
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                </svg>
+              <div className="flex-shrink-0 w-10 h-10 bg-[#f5e9ff] rounded-full flex items-center justify-center">
+                <Key className="w-6 h-6 text-[#7e70ff]" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-1">🔑 Har du inte fått email?</h3>
-                <p className="text-gray-600 text-sm mb-3">
+                <h3 className="font-semibold text-text-primary mb-1">Har du inte fått email?</h3>
+                <p className="text-text-secondary text-sm mb-3">
                   Inga problem! Du kan alltid återställa ditt lösenord via "Glömt lösenord" på inloggningssidan.
                 </p>
                 <Link
                   href="/forgot-password"
-                  className="inline-flex items-center gap-2 text-sm text-[#014421] hover:text-[#1a5530] font-medium"
+                  className="inline-flex items-center gap-2 text-sm text-[#014421] hover:text-[#116530] font-medium"
                 >
-                  Återställ lösenord →
+                  Återställ lösenord
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
 
             {/* Step 4: Access course */}
             <div className="flex gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                <Book className="w-6 h-6 text-green-600" />
+              <div className="flex-shrink-0 w-10 h-10 bg-accent rounded-full flex items-center justify-center">
+                <Book className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">🎓 Kom åt din kurs</h3>
-                <p className="text-gray-600 text-sm mb-3">
+                <h3 className="font-semibold text-text-primary mb-1">Kom åt din kurs</h3>
+                <p className="text-text-secondary text-sm mb-3">
                   Logga in på ditt konto för att börja din hälsoresa idag!
                 </p>
                 {user ? (
                   <Link
                     href={getDirectCourseLink()}
-                    className="inline-flex items-center gap-2 bg-[#014421] text-white px-6 py-3 rounded-lg hover:bg-[#1a5530] transition-colors font-medium"
+                    className="inline-flex items-center gap-2 bg-[#FF7e70] text-white px-6 py-3 rounded-xl hover:bg-[#e56b5e] transition-colors font-medium shadow-lg hover:shadow-xl"
                   >
                     <Play className="w-4 h-4" />
                     Kom igång med din kurs
@@ -201,9 +199,10 @@ function CheckoutSuccessContent() {
                 ) : (
                   <Link
                     href="/login"
-                    className="inline-flex items-center gap-2 bg-[#014421] text-white px-6 py-3 rounded-lg hover:bg-[#1a5530] transition-colors font-medium"
+                    className="inline-flex items-center gap-2 bg-[#FF7e70] text-white px-6 py-3 rounded-xl hover:bg-[#e56b5e] transition-colors font-medium shadow-lg hover:shadow-xl"
                   >
                     Logga in och börja
+                    <ArrowRight className="w-4 h-4" />
                   </Link>
                 )}
               </div>
@@ -213,14 +212,13 @@ function CheckoutSuccessContent() {
 
         {/* Footer */}
         <div className="text-center mt-12">
-          <p className="text-gray-600 mb-4 flex items-center justify-center gap-2">
-            <GiSparkles className="w-5 h-5" />
+          <p className="text-text-secondary mb-4">
             Din resa mot bättre hälsa börjar nu!
           </p>
-          <p className="text-gray-600">
+          <p className="text-text-secondary">
             Har du frågor?{' '}
-            <Link href="/kontakt" className="text-[#014421] hover:text-[#1a5530] font-medium">
-              Kontakta oss →
+            <Link href="/kontakt" className="text-[#014421] hover:text-[#116530] font-medium">
+              Kontakta oss
             </Link>
           </p>
         </div>
