@@ -30,24 +30,43 @@ export async function PUT(req: NextRequest) {
     }
 
     if (newPassword) {
-      if (!currentPassword) return NextResponse.json({ error: 'Nuvarande lösenord krävs' }, { status: 400 });
+      if (!currentPassword) {
+        console.error('❌ Password change attempt without current password for user:', user.email);
+        return NextResponse.json({ error: 'Nuvarande lösenord krävs' }, { status: 400 });
+      }
       
       // Trim whitespace from password (in case it was copied from email with spaces)
       const trimmedCurrentPassword = currentPassword.trim();
       
-      console.log('🔐 Password verification attempt for user:', user.email);
-      console.log('   Current password length:', trimmedCurrentPassword.length);
-      console.log('   Stored hash starts with:', user.password.substring(0, 10));
+      console.log('🔐 Password verification attempt');
+      console.log('   User:', user.email);
+      console.log('   Current password provided length:', currentPassword.length);
+      console.log('   Current password trimmed length:', trimmedCurrentPassword.length);
+      console.log('   New password length:', newPassword.length);
+      console.log('   Stored hash type:', user.password.substring(0, 7)); // Show bcrypt prefix
+      console.log('   Stored hash length:', user.password.length);
       
       const isPasswordValid = await bcrypt.compare(trimmedCurrentPassword, user.password);
       
       if (!isPasswordValid) {
-        console.error('❌ Password verification failed for user:', user.email);
-        return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 400 });
+        console.error('❌ Password verification FAILED');
+        console.error('   User:', user.email);
+        console.error('   Tried password length:', trimmedCurrentPassword.length);
+        console.error('   Hash in DB starts:', user.password.substring(0, 20));
+        
+        // Try without trimming (in case it's actually part of the password)
+        const isPasswordValidUntrimmed = await bcrypt.compare(currentPassword, user.password);
+        if (isPasswordValidUntrimmed) {
+          console.log('✅ Password matched WITHOUT trimming!');
+          updateData.password = await bcrypt.hash(newPassword, 12);
+        } else {
+          console.error('❌ Password also failed without trimming');
+          return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 400 });
+        }
+      } else {
+        console.log('✅ Password verified successfully (with trimming)');
+        updateData.password = await bcrypt.hash(newPassword, 12); // Match webhook's 12 rounds
       }
-      
-      console.log('✅ Password verified successfully');
-      updateData.password = await bcrypt.hash(newPassword, 12); // Match webhook's 12 rounds
     }
 
     updateData.addressLine1 = addressLine1 ?? user.addressLine1;

@@ -271,6 +271,29 @@ export default function SettingsPage() {
                   />
                 </div>
               </div>
+
+              {/* Save Password Button */}
+              {(newPassword || currentPassword) && (
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  >
+                    {saving ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                        Sparar lösenord...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        Spara nytt lösenord
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
