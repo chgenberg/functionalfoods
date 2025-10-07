@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
-import { verifyToken } from '@/app/lib/auth';
+import { verify } from 'jsonwebtoken';
 
 export async function POST(req: NextRequest) {
   try {
-    // Get token from Authorization header
+    // Get token from Authorization header (same pattern as app/api/recipes/route.ts)
     const authHeader = req.headers.get('authorization');
-    const token = authHeader?.split(' ')[1];
-    
     let userId: string | null = null;
-    if (token) {
-      const payload = await verifyToken(token);
-      userId = payload?.userId || null;
+    if (authHeader?.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.substring(7);
+        const decoded = verify(token, process.env.JWT_SECRET! ) as any;
+        if (decoded.userId) {
+          userId = decoded.userId;
+        }
+      } catch {
+        // invalid token → proceed as guest
+      }
     }
     
     const { slugs } = await req.json();
@@ -43,40 +48,30 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    // Check access for premium recipes if user is logged in
-    let userCourseIds: string[] = [];
+    // Determine user course names if logged in (align with /api/recipes logic)
+    let userCourseNames: string[] = [];
     if (userId) {
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        include: {
-          purchases: {
-            include: {
-              course: true
-            }
-          }
-        }
+      const purchases = await prisma.purchase.findMany({
+        where: { userId, status: 'completed' },
+        include: { course: true }
       });
-
-      if (user) {
-        userCourseIds = user.purchases.map(p => p.courseId);
-      }
+      userCourseNames = purchases.map(p => p.course?.name || '').filter(Boolean) as string[];
     }
 
-    // Filter out premium recipes the user doesn't have access to
-    const accessibleRecipes = recipes.filter(recipe => {
-      if (!recipe.isPremium) return true;
-      if (!userId) return false;
-      
-      // Map course names to tags
-      const userCourseTags = userCourseIds.map(courseId => {
-        if (courseId.includes('basics')) return 'Basic';
-        if (courseId.includes('flow')) return 'Flow';
-        if (courseId.includes('energy')) return 'Energy';
-        return '';
-      }).filter(Boolean);
+    // Map course names to tag labels used on recipes
+    const userCourseTags = userCourseNames.map((name) => {
+      const n = name.toLowerCase();
+      if (n.includes('basic')) return 'Basic';
+      if (n.includes('flow') || n.includes('gut')) return 'Flow';
+      if (n.includes('energy') || n.includes('insulin')) return 'Energy';
+      return '';
+    }).filter(Boolean);
 
-      // Check if recipe tags overlap with user's course tags
-      const recipeTags = recipe.tags || [];
+    // Filter out premium recipes the user doesn't have access to
+    const accessibleRecipes = recipes.filter((recipe: any) => {
+      if (!recipe.isPremium) return true; // always allow free/non-premium
+      if (!userId) return false; // guest cannot access premium
+      const recipeTags: string[] = recipe.tags || [];
       return recipeTags.some(tag => userCourseTags.includes(tag));
     });
 
