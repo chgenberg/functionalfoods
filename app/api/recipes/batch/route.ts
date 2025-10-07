@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/lib/auth';
-import prisma from '@/app/lib/prisma';
+import { prisma } from '@/app/lib/database';
+import { verifyToken } from '@/app/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    // Get token from Authorization header
+    const authHeader = req.headers.get('authorization');
+    const token = authHeader?.split(' ')[1];
+    
+    let userId: string | null = null;
+    if (token) {
+      const payload = await verifyToken(token);
+      userId = payload?.userId || null;
+    }
+    
     const { slugs } = await req.json();
 
     if (!slugs || !Array.isArray(slugs)) {
@@ -37,9 +45,9 @@ export async function POST(req: NextRequest) {
 
     // Check access for premium recipes if user is logged in
     let userCourseIds: string[] = [];
-    if (session?.user?.email) {
+    if (userId) {
       const user = await prisma.user.findUnique({
-        where: { email: session.user.email },
+        where: { id: userId },
         include: {
           purchases: {
             include: {
@@ -57,7 +65,7 @@ export async function POST(req: NextRequest) {
     // Filter out premium recipes the user doesn't have access to
     const accessibleRecipes = recipes.filter(recipe => {
       if (!recipe.isPremium) return true;
-      if (!session) return false;
+      if (!userId) return false;
       
       // Map course names to tags
       const userCourseTags = userCourseIds.map(courseId => {

@@ -91,11 +91,19 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     if (slugs.length === 0) return [];
     
     try {
+      // Get auth token from localStorage
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const response = await fetch('/api/recipes/batch', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({ slugs })
       });
       
