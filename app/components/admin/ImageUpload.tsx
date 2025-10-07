@@ -72,10 +72,11 @@ export default function ImageUpload({ value, onChange, label = "Bild", className
         <div className="relative group">
           <div className="relative h-48 w-full rounded-lg overflow-hidden bg-gray-100">
             <Image
-              src={value}
+              src={`${value.startsWith('/api/images') ? value : `/api/images${value.startsWith('/') ? '' : '/'}${value}`}?cb=${Date.now()}`}
               alt="Uploaded image"
               fill
               className="object-cover"
+              unoptimized
             />
           </div>
           <button
