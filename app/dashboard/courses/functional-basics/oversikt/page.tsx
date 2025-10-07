@@ -211,10 +211,7 @@ export default function FunctionalBasicsOverview() {
           </div>
         </motion.div>
 
-        {/* Course Downloads */}
-        <div className="grid grid-cols-1 gap-6 mb-10 relative z-0">
-          <CompleteCourseDownload courseType="basics" />
-        </div>
+        {/* Course Downloads removed per request */}
 
         {/* Coaching Button after Progress */}
         <motion.div

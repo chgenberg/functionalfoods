@@ -220,10 +220,7 @@ export default function FunctionalFlowOverview() {
 
         </motion.div>
 
-        {/* Course Downloads */}
-        <div className="grid grid-cols-1 gap-6 mb-10 relative z-0">
-          <CompleteCourseDownload courseType="flow" />
-        </div>
+        {/* Course Downloads removed per request */}
 
         
 
