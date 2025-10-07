@@ -33,6 +33,9 @@ interface Recipe {
   prepTime?: string;
   cookTime?: string;
   servings?: number;
+  // Optional fields provided by API for access control/tagging
+  courseTags?: string[];
+  tags?: string[];
 }
 
 interface RecipeData {
@@ -561,11 +564,7 @@ const RecipesPage = () => {
                                 : 'bg-white text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-orange-300'
                             }`}
                             style={selectedStatus === option.value ? {
-                              backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`,
-                              '--tw-gradient-from': option.gradient.split(' ')[1],
-                              '--tw-gradient-to': option.gradient.split(' ')[3],
-                              '--tw-gradient-stops': `var(--tw-gradient-from), var(--tw-gradient-to)`,
-                              background: `linear-gradient(to right, ${option.gradient.includes('gray') ? '#6b7280' : option.gradient.includes('green') ? '#10b981' : option.gradient.includes('amber') ? '#f59e0b' : '#a855f7'}, ${option.gradient.includes('gray') ? '#4b5563' : option.gradient.includes('green') ? '#059669' : option.gradient.includes('amber') ? '#d97706' : '#9333ea'})`
+                              background: option.value === 'all' ? '#6b7280' : option.value === 'free' ? '#10b981' : option.value === 'premium' ? '#f59e0b' : '#a855f7'
                             } : {}}
                           >
                             <span className="text-base">{option.icon}</span>
@@ -700,7 +699,7 @@ const RecipesPage = () => {
                   window.scrollTo({ top: currentScroll, behavior: 'instant' });
                 });
               }}
-              className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-8 py-4 rounded-full hover:shadow-xl transition-all transform hover:scale-105 font-medium text-lg"
+              className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full hover:shadow-xl transition-all transform hover:scale-105 font-medium text-lg"
             >
               Ladda fler recept
             </button>
