@@ -608,6 +608,124 @@ export class EmailService {
       tags: ['password-reset', 'transactional']
     });
   }
+
+  // Send migration welcome email to existing customers
+  async sendMigrationWelcomeEmail(params: { email: string; name: string; tempPassword: string; courses: string[] }): Promise<boolean> {
+    const { email, name, tempPassword, courses } = params;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se';
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f5f5; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">
+          
+          <!-- Header Image -->
+          <div style="position: relative; width: 100%; height: auto; overflow: hidden;">
+            <img 
+              src="${baseUrl}/mail/header.png" 
+              alt="Functional Foods" 
+              style="width: 100%; height: auto; display: block; max-height: 300px; object-fit: cover;"
+            />
+          </div>
+          
+          <!-- Green accent line -->
+          <div style="height: 4px; background: linear-gradient(90deg, #9dc46d 0%, #7fb05a 100%);"></div>
+          
+          <!-- Content -->
+          <div style="padding: 40px 30px;">
+            <h2 style="color: #1a4324; font-size: 28px; font-weight: 700; margin-bottom: 20px; text-align: center;">
+              Välkommen till nya Functional Foods! 🎉
+            </h2>
+            
+            <p style="color: #555; line-height: 1.8; font-size: 16px; margin-bottom: 20px;">
+              Hej ${name}!
+            </p>
+            
+            <p style="color: #555; line-height: 1.8; font-size: 16px; margin-bottom: 20px;">
+              Vi har uppgraderat vår plattform och migrerat ditt konto till det nya systemet! 
+              Som befintlig kund har du fortfarande full tillgång till alla dina kurser.
+            </p>
+            
+            <!-- Courses Box -->
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin: 25px 0;">
+              <h3 style="color: #1a4324; margin: 0 0 15px 0; font-size: 18px;">📚 Dina kurser:</h3>
+              <ul style="margin: 0; padding-left: 20px; color: #2c3e50;">
+                ${courses.map(course => `<li style="margin: 8px 0;">${course}</li>`).join('')}
+              </ul>
+            </div>
+            
+            <!-- Login Credentials Box -->
+            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ed 100%); border: 2px solid #9dc46d; border-radius: 12px; padding: 24px; margin: 30px 0;">
+              <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 20px;">
+                🔐 Dina nya inloggningsuppgifter
+              </h3>
+              <div style="background: white; border-radius: 8px; padding: 16px;">
+                <p style="margin: 8px 0; color: #1a4324;"><strong>E-post:</strong> <span style="color: #555;">${email}</span></p>
+                <p style="margin: 8px 0; color: #1a4324;"><strong>Tillfälligt lösenord:</strong> <span style="font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; color: #1a4324;">${tempPassword}</span></p>
+              </div>
+              <p style="color: #666; font-size: 14px; margin: 16px 0 0 0; font-style: italic;">
+                💡 Vi rekommenderar starkt att du byter lösenord efter första inloggningen.
+              </p>
+            </div>
+            
+            <!-- CTA Button -->
+            <div style="text-align: center; margin: 40px 0;">
+              <a href="${baseUrl}/login" 
+                 style="display: inline-block; background: linear-gradient(135deg, #1a4324 0%, #2d5a3d 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(26, 67, 36, 0.3);">
+                ✨ Logga in nu
+              </a>
+            </div>
+            
+            <!-- What's New -->
+            <div style="background: #f8fffe; border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #d4e8df;">
+              <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 18px;">🆕 Vad är nytt?</h3>
+              <ul style="color: #555; line-height: 2; margin: 0; padding-left: 20px;">
+                <li>Snabbare och mer stabil plattform</li>
+                <li>Förbättrad användarupplevelse</li>
+                <li>Enklare navigering mellan kurser</li>
+                <li>PDF-nedladdning av måltidsplaner med recept</li>
+                <li>Bättre mobil-anpassning</li>
+              </ul>
+            </div>
+            
+            <!-- Help Section -->
+            <div style="border-top: 2px solid #f0f0f0; padding-top: 30px; margin-top: 40px; text-align: center;">
+              <h3 style="color: #1a4324; margin: 0 0 20px 0;">Behöver du hjälp? Vi finns här! 💚</h3>
+              <p style="color: #666; margin-bottom: 20px;">
+                Har du frågor eller problem med inloggningen? Kontakta oss gärna!
+              </p>
+              <a href="${baseUrl}/kontakt" style="color: #1a4324; text-decoration: none; font-weight: 600;">
+                Kontakta support →
+              </a>
+            </div>
+          </div>
+          
+          <!-- Footer -->
+          <div style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e9ecef;">
+            <p style="color: #6c757d; margin: 0; font-size: 14px;">
+              © ${new Date().getFullYear()} Functional Foods • functionalfoods.se
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return this.sendEmail({
+      to: email,
+      toName: name,
+      subject: '🎉 Välkommen till nya Functional Foods - Dina inloggningsuppgifter',
+      html,
+      fromEmail: 'info@functionalfoods.se',
+      fromName: 'Functional Foods',
+      tags: ['migration', 'welcome', 'platform-upgrade']
+    });
+  }
 }
 
 // Export singleton instance
