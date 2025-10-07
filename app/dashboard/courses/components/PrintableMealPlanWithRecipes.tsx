@@ -126,54 +126,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     return [];
   };
 
-  // Fetch shopping list
-  const fetchShoppingList = async (): Promise<string[]> => {
-    try {
-      // Map course type to the correct shopping list file name format
-      const courseNameMap: Record<string, string> = {
-        'basics': 'basic',
-        'flow': 'flow', 
-        'energy': 'energy'
-      };
-      const courseName = courseNameMap[courseType] || courseType;
-      
-      // Try to fetch the shopping list file
-      let url = `/Shopping-lists/${courseName}_week${weekNumber}_shopping_list.txt`;
-      let response = await fetch(url);
-      if (!response.ok && courseName === 'basic') {
-        // Fallbacks for Basics naming variants in repo
-        const fallbacks = [
-          `/Shopping-lists/week${weekNumber}_shopping_list_corrected.txt`,
-          `/Shopping-lists/basic_week${weekNumber}_manual_input.txt`,
-          `/Shopping-lists/basic_week${weekNumber}_manual_parsed.json`
-        ];
-        for (const fb of fallbacks) {
-          response = await fetch(fb);
-          if (response.ok) {
-            url = fb;
-            break;
-          }
-        }
-      }
-      if (response.ok) {
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          const json = await response.json();
-          const items = Array.isArray(json.items) ? json.items.map((i: any) => i.ingredient || i) : [];
-          return items;
-        } else {
-          const text = await response.text();
-          const lines = text.split('\n')
-            .map(line => line.trim())
-            .filter(line => line && !line.startsWith('INKÖPSLISTA') && !line.startsWith('Vecka'));
-          return lines;
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch shopping list:', error);
-    }
-    return [];
-  };
+  // Shopping list is now printed separately; no fetch here
 
   const handlePrint = async () => {
     setIsLoading(true);
@@ -184,8 +137,6 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
       console.log('📋 Extracted slugs:', slugs);
       const recipes = await fetchRecipeDetails(slugs);
       console.log('🍽️ Fetched recipes:', recipes.length);
-      const shoppingList = await fetchShoppingList();
-      console.log('🛒 Shopping list items:', shoppingList.length);
 
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
@@ -518,7 +469,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     <div class="header">
       <div class="logo-text">Functional Foods</div>
       <h2 class="week-title">${courseName} - Vecka ${weekNumber}</h2>
-      <p style="color: #666; margin-top: 8px;">Komplett måltidsplan med recept och inköpslista</p>
+      <p style="color: #666; margin-top: 8px;">Alla recept för veckan</p>
     </div>
     
     <!-- Meal Plan Overview -->
@@ -600,17 +551,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     </div>
     ` : '<div class="recipes-section"><p style="text-align: center; color: #666; padding: 40px;">Inga recept kunde hämtas. Kontrollera din internetanslutning.</p></div>'}
     
-    <!-- Shopping List -->
-    ${shoppingList.length > 0 ? `
-      <div class="shopping-list-section">
-        <h2 class="section-title">Inköpslista för vecka ${weekNumber}</h2>
-        <div class="shopping-list">
-          <ul class="shopping-items">
-            ${shoppingList.map(item => `<li>${item}</li>`).join('')}
-          </ul>
-        </div>
-      </div>
-    ` : ''}
+    
     
     <!-- Footer -->
     <div class="footer">
