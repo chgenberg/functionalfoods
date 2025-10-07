@@ -175,7 +175,7 @@ export default function FunctionalFlowPage() {
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 tracking-tight"
             >
-              Functional <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Gut Health/Flow</span>
+              Functional <span className="text-primary font-bold">Gut Health/Flow</span>
             </motion.h1>
             
             <motion.div 
