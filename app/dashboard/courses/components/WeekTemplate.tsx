@@ -13,7 +13,7 @@ import { dayImages } from '@/app/data/dayImages';
 import { mealPlans as basicMealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun, FileText, ExternalLink, X } from 'lucide-react';
 import InfoPopupGrid from '@/app/dashboard/courses/components/InfoPopupGrid';
-import PrintableMealPlan from './PrintableMealPlan';
+import PrintableMealPlanWithRecipes from './PrintableMealPlanWithRecipes';
 
 // Helper function to format meal names with bold "rester" and "rester från frysen"
 const formatMealName = (mealName: string) => {
@@ -669,7 +669,7 @@ export default function WeekTemplate({
                 </p>
               </div>
               <div className="flex-shrink-0">
-                <PrintableMealPlan 
+                <PrintableMealPlanWithRecipes 
                   mealPlan={Object.fromEntries(
                     ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'].map((day, index) => {
                       const dayData = mealPlan?.days?.[day] || mealPlan?.days?.[`day${index + 1}`];
@@ -678,6 +678,7 @@ export default function WeekTemplate({
                   )}
                   weekNumber={weekNumber}
                   courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                  courseType={courseType}
                 />
               </div>
             </div>
