@@ -649,7 +649,7 @@ export class EmailService {
                 Så här loggar du in:
               </h3>
             <ol style="color: #333; line-height: 2; margin: 0; padding-left: 20px;">
-              <li style="margin: 8px 0;">Gå till <a href="https://www.functionalfoods.se/login" style="color: #1a4324; font-weight: 600;">inloggningssidan</a>.</li>
+              <li style="margin: 8px 0;">Gå till <a href="https://www.functionalfoods.se" style="color: #1a4324; font-weight: 600;">functionalfoods.se</a>.</li>
               <li style="margin: 8px 0;">Fyll i din e-postadress: <strong style="color: #1a4324;">${email}</strong></li>
               <li style="margin: 8px 0;">Ange det temporära lösenordet: <span style="font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; color: #1a4324; font-weight: 600;">${tempPassword}</span></li>
               <li style="margin: 8px 0;">Klicka på <strong>Logga in</strong>.</li>
