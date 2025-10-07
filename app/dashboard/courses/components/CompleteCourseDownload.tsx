@@ -10,24 +10,114 @@ interface CompleteCourseDownloadProps {
   courseType: 'basics' | 'flow' | 'energy';
 }
 
-export default function CompleteCourseDownload({ courseType }: CompleteCourseDownloadProps) {
+interface Recipe {
+  title: string;
+  slug: string;
+  ingredients?: string[];
+  instructions?: string[];
+  nutrition?: {
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+  };
+}
+
+export default function CompleteCourseDownloadWithRecipes({ courseType }: CompleteCourseDownloadProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy';
   const courseData: Record<string, WeekMealPlan> = courseType === 'basics' ? mealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
 
   // Count total meals
-
   const totalMeals = Object.values(courseData).reduce((total, week) => {
     return total + Object.values(week.days).reduce((weekTotal, day) => {
       return weekTotal + Object.values(day as DayMeals).length;
     }, 0);
   }, 0);
 
+  // Helper to slugify meal name
+  const slugify = (name: string): string => {
+    return name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/å/g, 'a')
+      .replace(/ä/g, 'a')
+      .replace(/ö/g, 'o')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+  };
+
+  // Collect all unique meal names
+  const getAllMealNames = (): string[] => {
+    const mealNames = new Set<string>();
+    Object.values(courseData).forEach(week => {
+      Object.values(week.days).forEach(day => {
+        Object.values(day as DayMeals).forEach(meal => {
+          mealNames.add(meal.name);
+        });
+      });
+    });
+    return Array.from(mealNames);
+  };
+
+  // Fetch all recipes
+  const fetchAllRecipes = async (): Promise<Record<string, Recipe>> => {
+    const mealNames = getAllMealNames();
+    const recipeMap: Record<string, Recipe> = {};
+
+    console.log(`📚 Fetching ${mealNames.length} recipes for PDF generation...`);
+
+    // Fetch recipes in parallel
+    await Promise.all(
+      mealNames.map(async (mealName) => {
+        try {
+          const slug = slugify(mealName);
+          const response = await fetch(`/api/recipes/${slug}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            recipeMap[mealName] = {
+              title: data.title || mealName,
+              slug: data.slug || slug,
+              ingredients: data.ingredients || [],
+              instructions: data.instructions || [],
+              nutrition: data.nutrition || {}
+            };
+            console.log(`✅ Fetched recipe: ${mealName}`);
+          } else {
+            console.warn(`⚠️ Recipe not found: ${mealName}`);
+            recipeMap[mealName] = {
+              title: mealName,
+              slug,
+              ingredients: [],
+              instructions: []
+            };
+          }
+        } catch (error) {
+          console.error(`❌ Error fetching recipe ${mealName}:`, error);
+          recipeMap[mealName] = {
+            title: mealName,
+            slug: slugify(mealName),
+            ingredients: [],
+            instructions: []
+          };
+        }
+      })
+    );
+
+    console.log(`✅ Fetched ${Object.keys(recipeMap).length} recipes`);
+    return recipeMap;
+  };
+
   const generateCompletePDF = async () => {
     setIsGenerating(true);
     
     try {
       const today = new Date().toLocaleDateString('sv-SE');
+      
+      // Fetch all recipes first
+      const recipes = await fetchAllRecipes();
 
       const htmlContent = `
 <!DOCTYPE html>
@@ -35,7 +125,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Måltidsplan - ${courseName}</title>
+    <title>Komplett Kurspaket - ${courseName}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
         
@@ -140,7 +230,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             opacity: 0.7;
         }
         
-        /* Header for content pages */
+        /* Page Header */
         .page-header {
             background: linear-gradient(135deg, #014421 0%, #116530 100%);
             color: white;
@@ -161,49 +251,10 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             opacity: 0.9;
         }
         
-        /* Table of Contents */
-        .toc {
-            background: #f8f9fa;
-            padding: 40px;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            page-break-after: always;
-        }
-        
-        .toc h2 {
-            font-family: 'Work Sans', sans-serif;
-            font-size: 2rem;
-            color: #014421;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .toc-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px dashed #e0e0e0;
-        }
-        
-        .toc-item:last-child {
-            border-bottom: none;
-        }
-        
-        .toc-title {
-            font-weight: 500;
-            color: #014421;
-        }
-        
-        .toc-page {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
         /* Week Section */
         .week-section {
-            margin-bottom: 60px;
-            page-break-inside: avoid;
+            margin-bottom: 80px;
+            page-break-before: always;
         }
         
         .week-header {
@@ -211,6 +262,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             padding: 30px;
             border-radius: 20px 20px 0 0;
             border-left: 5px solid #014421;
+            margin-bottom: 0;
         }
         
         .week-number {
@@ -227,37 +279,26 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             font-weight: 400;
         }
         
-        /* Day Cards Grid */
-        .days-container {
+        /* Day Section */
+        .day-section {
             background: white;
             padding: 30px;
+            border-left: 5px solid #93C560;
+            border-right: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+            page-break-inside: avoid;
+        }
+        
+        .day-section:last-child {
             border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .day-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        
-        .day-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .day-card:hover {
-            box-shadow: 0 4px 12px rgba(1,68,33,0.1);
         }
         
         .day-name {
+            font-family: 'Work Sans', sans-serif;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.8rem;
             color: #014421;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -265,37 +306,148 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         
         .day-name::before {
             content: '';
-            width: 8px;
-            height: 8px;
+            width: 12px;
+            height: 12px;
             background: #014421;
             border-radius: 50%;
         }
         
-        .meal-item {
-            margin-bottom: 15px;
-            padding-left: 20px;
-            position: relative;
+        /* Recipe Card */
+        .recipe-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+            page-break-inside: avoid;
         }
         
-        .meal-item:last-child {
+        .recipe-card:last-child {
             margin-bottom: 0;
         }
         
-        .meal-type {
-            font-weight: 600;
-            color: #6c757d;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
+        .recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #014421;
         }
         
-        .meal-name {
-            color: #2c3e50;
-            font-size: 0.95rem;
-            line-height: 1.4;
+        .meal-type-badge {
+            background: #014421;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
-
+        
+        .recipe-title {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #014421;
+            margin-bottom: 8px;
+        }
+        
+        .recipe-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        
+        .recipe-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Ingredients */
+        .ingredients-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #014421;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: '▸';
+            color: #93C560;
+            font-size: 1.2rem;
+        }
+        
+        .ingredients-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .ingredient-item {
+            padding: 8px 0 8px 25px;
+            position: relative;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .ingredient-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #93C560;
+            font-weight: bold;
+        }
+        
+        /* Instructions */
+        .instructions-section {
+            margin-top: 20px;
+        }
+        
+        .instructions-list {
+            list-style: none;
+            counter-reset: instruction-counter;
+            padding-left: 0;
+        }
+        
+        .instruction-item {
+            padding: 10px 0 10px 40px;
+            position: relative;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            line-height: 1.6;
+            counter-increment: instruction-counter;
+        }
+        
+        .instruction-item::before {
+            content: counter(instruction-counter);
+            position: absolute;
+            left: 0;
+            top: 10px;
+            background: #014421;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        
         /* Footer */
         .footer {
             margin-top: 100px;
@@ -306,6 +458,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             margin-left: -20px;
             margin-right: -20px;
             margin-bottom: -40px;
+            page-break-before: always;
         }
         
         .footer-logo {
@@ -333,22 +486,22 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
                 padding: 0;
             }
             .container {
-                padding: 0;
+                max-width: 100%;
+                padding: 20px;
             }
             .cover-page {
                 height: 100vh;
             }
-            .day-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 15px;
-            }
             .week-section {
+                page-break-before: always;
+            }
+            .recipe-card {
                 page-break-inside: avoid;
             }
         }
         
         @page {
-            margin: 0;
+            margin: 20mm;
             size: A4;
         }
     </style>
@@ -357,7 +510,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
     <!-- Cover Page -->
     <div class="cover-page">
         <h1>${courseName}</h1>
-                        <div class="subtitle">Komplett måltidsplan för alla veckor</div>
+        <div class="subtitle">Komplett receptsamling med alla recept</div>
         
         <div class="cover-stats">
             <div class="cover-stat">
@@ -368,61 +521,88 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
                 <div class="cover-stat-number">${totalMeals}</div>
                 <div class="cover-stat-label">Måltider</div>
             </div>
+            <div class="cover-stat">
+                <div class="cover-stat-number">${Object.keys(recipes).length}</div>
+                <div class="cover-stat-label">Recept</div>
+            </div>
         </div>
         
         <div class="cover-date">Genererad ${today}</div>
     </div>
     
     <div class="container">
-        <!-- Table of Contents -->
-        <div class="toc">
-            <h2>Innehållsförteckning</h2>
-            ${Object.entries(courseData).map(([weekKey, week], index) => {
-              const weekNumber = weekKey.replace('week', '');
-              return `
-                <div class="toc-item">
-                    <div class="toc-title">Vecka ${weekNumber}</div>
-                    <div class="toc-page">Sida ${index + 3}</div>
-                </div>
-              `;
-            }).join('')}
-
-        </div>
-        
-        <!-- Weekly Meal Plans -->
-        <div class="page-header">
-            <h2>Måltidsplan</h2>
-            <p>Komplett översikt för ${Object.keys(courseData).length} veckor</p>
-        </div>
-        
+        <!-- Weekly Recipes -->
         ${Object.entries(courseData).map(([weekKey, week]) => {
           const weekNumber = weekKey.replace('week', '');
           return `
             <div class="week-section">
                 <div class="week-header">
                     <div class="week-number">Vecka ${weekNumber}</div>
-                    <div class="week-title">Måltidsplan för vecka ${weekNumber}</div>
+                    <div class="week-title">Alla recept för vecka ${weekNumber}</div>
                 </div>
                 
-                <div class="days-container">
-                    <div class="day-grid">
-                        ${Object.entries(week.days).map(([dayName, dayMeals]) => `
-                            <div class="day-card">
-                                <div class="day-name">${dayName}</div>
-                                ${Object.entries(dayMeals as DayMeals).map(([mealType, meal]) => `
-                                    <div class="meal-item">
-                                        <div class="meal-type">${getMealTypeSwedish(mealType)}</div>
-                                        <div class="meal-name">${meal.name}</div>
+                ${Object.entries(week.days).map(([dayName, dayMeals]) => `
+                    <div class="day-section">
+                        <div class="day-name">${dayName}</div>
+                        
+                        ${Object.entries(dayMeals as DayMeals).map(([mealType, meal]) => {
+                          const recipe = recipes[meal.name];
+                          const hasRecipeData = recipe && (recipe.ingredients.length > 0 || recipe.instructions.length > 0);
+                          
+                          return `
+                            <div class="recipe-card">
+                                <div class="recipe-header">
+                                    <div>
+                                        <div class="meal-type-badge">${getMealTypeSwedish(mealType)}</div>
                                     </div>
-                                `).join('')}
+                                </div>
+                                
+                                <div class="recipe-title">${meal.name}</div>
+                                
+                                ${recipe?.nutrition?.calories || recipe?.nutrition?.protein ? `
+                                    <div class="recipe-meta">
+                                        ${recipe.nutrition.calories ? `<div class="recipe-meta-item">🔥 ${recipe.nutrition.calories} kcal</div>` : ''}
+                                        ${recipe.nutrition.protein ? `<div class="recipe-meta-item">🥩 ${recipe.nutrition.protein}g protein</div>` : ''}
+                                        ${recipe.nutrition.carbs ? `<div class="recipe-meta-item">🍞 ${recipe.nutrition.carbs}g kolhydrater</div>` : ''}
+                                        ${recipe.nutrition.fat ? `<div class="recipe-meta-item">🧈 ${recipe.nutrition.fat}g fett</div>` : ''}
+                                    </div>
+                                ` : ''}
+                                
+                                ${hasRecipeData ? `
+                                    ${recipe.ingredients.length > 0 ? `
+                                        <div class="ingredients-section">
+                                            <div class="section-title">Ingredienser</div>
+                                            <ul class="ingredients-list">
+                                                ${recipe.ingredients.map(ing => `
+                                                    <li class="ingredient-item">${ing}</li>
+                                                `).join('')}
+                                            </ul>
+                                        </div>
+                                    ` : ''}
+                                    
+                                    ${recipe.instructions.length > 0 ? `
+                                        <div class="instructions-section">
+                                            <div class="section-title">Instruktioner</div>
+                                            <ol class="instructions-list">
+                                                ${recipe.instructions.map(inst => `
+                                                    <li class="instruction-item">${inst}</li>
+                                                `).join('')}
+                                            </ol>
+                                        </div>
+                                    ` : ''}
+                                ` : `
+                                    <p style="color: #6c757d; font-style: italic; margin-top: 15px;">
+                                        Receptinformation kommer snart...
+                                    </p>
+                                `}
                             </div>
-                        `).join('')}
+                          `;
+                        }).join('')}
                     </div>
-                </div>
+                `).join('')}
             </div>
           `;
         }).join('')}
-
     </div>
     
     <!-- Footer -->
@@ -448,17 +628,18 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         printWindow.onload = () => {
           setTimeout(() => {
             printWindow.print();
-          }, 500);
+          }, 1000); // Longer delay to allow recipe data to load
         };
       }
       
       // Clean up
       setTimeout(() => {
         URL.revokeObjectURL(url);
-      }, 1000);
+      }, 2000);
       
     } catch (error) {
       console.error('Error generating PDF:', error);
+      alert('Det uppstod ett fel vid generering av PDF. Försök igen.');
     } finally {
       setIsGenerating(false);
     }
@@ -488,7 +669,7 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
             Komplett Kurspaket
           </h3>
           <p className="text-white/80 text-lg">
-                            Ladda ner alla måltidsplaner som en snygg PDF
+            Ladda ner alla recept med ingredienser och instruktioner
           </p>
         </div>
       </div>
@@ -517,19 +698,19 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
       <div className="grid md:grid-cols-2 gap-4 mb-8">
         <div className="flex items-center gap-3">
           <Calendar className="text-xl text-white/80" />
-                              <span className="text-white/90">Alla 6 veckors måltidsplaner</span>
+          <span className="text-white/90">Alla {Object.keys(courseData).length} veckors recept</span>
         </div>
         <div className="flex items-center gap-3">
           <User className="text-xl text-white/80" />
-          <span className="text-white/90">Detaljerade måltidsplaner</span>
+          <span className="text-white/90">Fullständiga ingredienslistor</span>
         </div>
         <div className="flex items-center gap-3">
           <Book className="text-xl text-white/80" />
-          <span className="text-white/90">Snygg layout för utskrift</span>
+          <span className="text-white/90">Steg-för-steg instruktioner</span>
         </div>
         <div className="flex items-center gap-3">
           <FileText className="text-xl text-white/80" />
-          <span className="text-white/90">Enkel veckoöversikt</span>
+          <span className="text-white/90">Näringsv\u00e4rden per recept</span>
         </div>
       </div>
 
@@ -544,21 +725,23 @@ export default function CompleteCourseDownload({ courseType }: CompleteCourseDow
         {isGenerating ? (
           <>
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#014421]"></div>
-            <span>Genererar PDF...</span>
+            <span>Hämtar recept och genererar PDF...</span>
           </>
         ) : (
           <>
             <Download className="text-xl" />
-                                <span>Ladda ner måltidsplan (PDF)</span>
+            <span>Ladda ner komplett receptbok (PDF)</span>
           </>
         )}
       </motion.button>
 
       <div className="mt-4 text-center">
         <p className="text-white/60 text-sm">
-          PDF:en öppnas i en ny flik där du kan spara eller skriva ut den
+          {isGenerating 
+            ? 'Hämtar alla recept från databasen...' 
+            : 'PDF:en innehåller alla recept med ingredienser och instruktioner'}
         </p>
       </div>
     </motion.div>
   );
-} 
+}
