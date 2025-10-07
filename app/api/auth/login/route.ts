@@ -27,18 +27,19 @@ export async function POST(req: NextRequest) {
 
     const validPassword = await bcrypt.compare(password, user.password);
 
-    // If user must change password, redirect to reset flow (only if password is correct)
+    // If user must change password, issue reset token and short-circuit immediately
     if ((user as any).mustChangePassword && validPassword) {
       const token = (await prisma.passwordReset.upsert({
         where: { userId: (user as any).id },
         create: {
           userId: (user as any).id,
           token: crypto.randomBytes(32).toString('hex'),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          // kortare giltighet räcker för första inloggningen
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000)
         },
         update: {
           token: crypto.randomBytes(32).toString('hex'),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
           used: false
         }
       })).token;
