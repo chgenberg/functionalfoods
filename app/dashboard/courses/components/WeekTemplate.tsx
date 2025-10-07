@@ -313,6 +313,13 @@ export default function WeekTemplate({
   courseStartDate,
   customContent
 }: WeekTemplateProps) {
+  // Hydration-safe meta state (avoid mutating props inside effects)
+  const [metaWeekTitle, setMetaWeekTitle] = useState<string>(weekTitle);
+  const [metaWeekSubtitle, setMetaWeekSubtitle] = useState<string>(weekSubtitle);
+  const [metaHeroImage, setMetaHeroImage] = useState<string>(heroImage);
+  // Preserve SSR markup: initial video matches existing logic (weeklyVideos[weekNumber])
+  const initialVideoForWeek = weeklyVideos[weekNumber] || '';
+  const [effectiveVideoUrl, setEffectiveVideoUrl] = useState<string>(initialVideoForWeek);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -328,7 +335,7 @@ export default function WeekTemplate({
     return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);
 
-  // Load course week meta (title/subtitle/hero/video) and override props if present
+  // Load course week meta (title/subtitle/hero/video) and override via state if present
   useEffect(() => {
     const loadMeta = async () => {
       try {
@@ -336,10 +343,10 @@ export default function WeekTemplate({
         const res = await fetch(`/api/course-weeks?course=${course}&week=${weekNumber}`);
         const meta = await res.json();
         if (meta) {
-          if (meta.weekTitle) weekTitle = meta.weekTitle;
-          if (meta.weekSubtitle) weekSubtitle = meta.weekSubtitle;
-          if (meta.heroImage) heroImage = meta.heroImage;
-          if (meta.videoUrl) videoUrl = meta.videoUrl;
+          if (meta.weekTitle) setMetaWeekTitle(meta.weekTitle);
+          if (meta.weekSubtitle) setMetaWeekSubtitle(meta.weekSubtitle);
+          if (meta.heroImage) setMetaHeroImage(meta.heroImage);
+          if (meta.videoUrl) setEffectiveVideoUrl(meta.videoUrl);
         }
       } catch (e) {
         // ignore, fallback to passed props
@@ -597,18 +604,18 @@ export default function WeekTemplate({
                   Välkommen till vecka {weekNumber}!
                 </h1>
                 <p className="text-lg text-gray-600">
-                  {weekTitle}
+                  {metaWeekTitle}
                 </p>
               </div>
               
               {/* Video section - only show if video exists for this week */}
-              {weeklyVideos[weekNumber] && (
+              {effectiveVideoUrl && (
                 <div className="mb-8">
                   <div className="max-w-4xl mx-auto">
                     <div className="relative rounded-xl overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
                       <iframe
                         className="absolute inset-0 w-full h-full"
-                        src={weeklyVideos[weekNumber]}
+                        src={effectiveVideoUrl}
                         title={`Vecka ${weekNumber} video`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
