@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Save, Eye, AlertCircle, Calendar, BookOpen, ShoppingCart, FileText } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface Course {
   id: string;
@@ -89,6 +90,12 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     setSaving(true);
     try {
       // Spara verklig data via API
+      const now = new Date();
+      const isSaleActive = course?.salePrice && (
+        (!course?.saleStartsAt || new Date(course.saleStartsAt) <= now) &&
+        (!course?.saleEndsAt || new Date(course.saleEndsAt) >= now)
+      );
+      const activeExPrice = (isSaleActive ? course?.salePrice : (course?.basePrice ?? course?.price)) as number;
       const response = await fetch('/api/admin/functional-courses', {
         method: 'PUT',
         headers: {
@@ -97,7 +104,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         credentials: 'include',
         body: JSON.stringify({
           courseId: params.courseId,
-          price: course?.price,
+          price: activeExPrice,
           basePrice: course?.basePrice ?? undefined,
           salePrice: course?.salePrice ?? undefined,
           saleStartsAt: course?.saleStartsAt ?? undefined,
@@ -145,6 +152,19 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
       </div>
     );
   }
+
+  // Helpers for momsvisning (25%)
+  const toIncl = (ex?: number | null) => ex != null ? Math.round(ex * 1.25) : '';
+  const fromIncl = (incl: number) => Math.round(incl / 1.25);
+  const activeInclPrice = useMemo(() => {
+    const now = new Date();
+    const isSaleActive = course?.salePrice && (
+      (!course?.saleStartsAt || new Date(course.saleStartsAt) <= now) &&
+      (!course?.saleEndsAt || new Date(course.saleEndsAt) >= now)
+    );
+    const ex = (isSaleActive ? course?.salePrice : (course?.basePrice ?? course?.price)) as number;
+    return toIncl(ex as number);
+  }, [course]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -202,8 +222,8 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
           {/* Course Info */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
             <div className="bg-[var(--primary-beige)] rounded-lg p-4">
-              <span className="text-[var(--text-secondary)] block">Pris</span>
-              <span className="font-semibold text-lg text-[var(--text-primary)]">{course.price} kr</span>
+              <span className="text-[var(--text-secondary)] block">Aktuellt pris (inkl. moms)</span>
+              <span className="font-semibold text-lg text-[var(--text-primary)]">{activeInclPrice} kr</span>
             </div>
             <div className="bg-[var(--primary-beige)] rounded-lg p-4">
               <span className="text-[var(--text-secondary)] block">Längd</span>
@@ -251,16 +271,6 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="admin-label">Pris (kr)</label>
-                  <input
-                    type="number"
-                    value={course.price}
-                    onChange={(e) => setCourse(prev => prev ? { ...prev, price: parseInt(e.target.value) } : null)}
-                    className="admin-input"
-                  />
-                </div>
-                
-                <div>
                   <label className="admin-label">Längd</label>
                   <input
                     type="text"
@@ -287,20 +297,26 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
               {/* Campaign pricing */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div>
-                  <label className="admin-label">Ordinarie pris (kr)</label>
+                  <label className="admin-label">Ordinarie pris (inkl. moms)</label>
                   <input
                     type="number"
-                    value={(course as any).basePrice ?? 0}
-                    onChange={(e) => setCourse(prev => prev ? ({ ...prev, basePrice: parseInt(e.target.value) } as any) : null)}
+                    value={toIncl((course as any).basePrice ?? null) as any}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value || '0', 10);
+                      setCourse(prev => prev ? ({ ...prev, basePrice: isNaN(v) ? null : fromIncl(v) } as any) : null);
+                    }}
                     className="admin-input"
                   />
                 </div>
                 <div>
-                  <label className="admin-label">Kampanjpris (kr)</label>
+                  <label className="admin-label">Kampanjpris (inkl. moms)</label>
                   <input
                     type="number"
-                    value={(course as any).salePrice ?? 0}
-                    onChange={(e) => setCourse(prev => prev ? ({ ...prev, salePrice: parseInt(e.target.value) } as any) : null)}
+                    value={toIncl((course as any).salePrice ?? null) as any}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value || '0', 10);
+                      setCourse(prev => prev ? ({ ...prev, salePrice: isNaN(v) ? null : fromIncl(v) } as any) : null);
+                    }}
                     className="admin-input"
                   />
                 </div>
