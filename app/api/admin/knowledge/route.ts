@@ -13,9 +13,13 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const course = searchParams.get('course') || undefined;
+  const slug = searchParams.get('slug') || undefined;
 
   const docs = await prisma.knowledgeDocument.findMany({
-    where: course ? { course } : undefined,
+    where: {
+      ...(course ? { course } : {}),
+      ...(slug ? { slug } : {})
+    },
     orderBy: [{ course: 'asc' }, { order: 'asc' }]
   });
   return NextResponse.json({ documents: docs }, { headers: { 'Cache-Control': 'no-store' } });

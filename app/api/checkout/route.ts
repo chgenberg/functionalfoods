@@ -47,8 +47,12 @@ export async function POST(req: NextRequest) {
 
     const stripe = require('stripe')(secretKey);
 
-    // Calculate subtotal from validated items
-    const subtotal = validatedItems.reduce((sum: number, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
+    // Calculate subtotal using price INCLUDING VAT (25%) for Stripe display
+    const VAT_RATE = 0.25;
+    const subtotal = validatedItems.reduce((sum: number, i) => {
+      const grossInOre = Math.round(i.price * (1 + VAT_RATE) * 100);
+      return sum + grossInOre * i.quantity;
+    }, 0);
 
     // Optional: validate coupon and compute discount amount in öre
     let discountAmount = 0;
@@ -83,24 +87,29 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const line_items = validatedItems.map((item) => ({
-      price_data: {
-        currency: 'sek',
-        product_data: { name: item.name },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.quantity,
-    }));
+    const line_items = validatedItems.map((item) => {
+      const grossUnitAmount = Math.round(item.price * (1 + VAT_RATE) * 100);
+      return {
+        price_data: {
+          currency: 'sek',
+          product_data: { name: item.name },
+          // Charge price including VAT so Checkout shows 2295 kr instead of 1836 kr
+          unit_amount: grossUnitAmount,
+        },
+        quantity: item.quantity,
+      };
+    });
 
     // Log checkout details for verification
-    console.log('🔍 Stripe Checkout Debug:', {
+    console.log('🔍 Stripe Checkout Debug (gross incl. VAT):', {
       items: validatedItems.map(i => ({
         name: i.name,
-        priceInSEK: i.price,
+        priceExVatSEK: i.price,
+        priceInclVatSEK: Math.round(i.price * (1 + VAT_RATE)),
         quantity: i.quantity,
-        stripeUnitAmount: Math.round(i.price * 100),
-        totalInOre: Math.round(i.price * 100) * i.quantity,
-        totalInSEK: i.price * i.quantity
+        stripeUnitAmount: Math.round(i.price * (1 + VAT_RATE) * 100),
+        totalInOre: Math.round(i.price * (1 + VAT_RATE) * 100) * i.quantity,
+        totalInSEK: Math.round(i.price * (1 + VAT_RATE)) * i.quantity
       })),
       subtotalInOre: subtotal,
       subtotalInSEK: subtotal / 100,

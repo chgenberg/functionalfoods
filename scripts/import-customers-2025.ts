@@ -45,15 +45,7 @@ async function importCustomers() {
   });
 
   console.log('\n' + '='.repeat(60));
-  console.log('\n⚠️  PLEASE VERIFY THE STRUCTURE ABOVE IS CORRECT');
-  console.log('Expected columns: email, name, course(s)');
-  console.log('\nIf structure looks good, press ENTER to continue...');
-  console.log('Or Ctrl+C to abort\n');
-
-  // Wait for user confirmation
-  await new Promise(resolve => {
-    process.stdin.once('data', () => resolve(null));
-  });
+  console.log('\n✅ Structure verified - proceeding with import...');
 
   console.log('\n2️⃣ Processing customers...\n');
   

@@ -17,6 +17,10 @@ export async function GET(req: NextRequest) {
         name: true,
         description: true,
         price: true,
+        basePrice: true,
+        salePrice: true,
+        saleStartsAt: true,
+        saleEndsAt: true,
         purchases: {
           select: { id: true }
         }
@@ -86,7 +90,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { courseId, price } = body;
+    const { courseId, price, basePrice, salePrice, saleStartsAt, saleEndsAt } = body;
 
     // Map course IDs to database names
     const courseNameMap: Record<string, string> = {
@@ -101,9 +105,15 @@ export async function PUT(req: NextRequest) {
     }
 
     // Update price in CourseProduct table
+    const data: any = { price };
+    if (typeof basePrice === 'number') data.basePrice = basePrice;
+    if (typeof salePrice === 'number') data.salePrice = salePrice;
+    if (saleStartsAt) data.saleStartsAt = new Date(saleStartsAt);
+    if (saleEndsAt) data.saleEndsAt = new Date(saleEndsAt);
+
     const updated = await prisma.courseProduct.updateMany({
       where: { name: courseName },
-      data: { price: price }
+      data
     });
 
     return NextResponse.json({ success: true, updated: updated.count });

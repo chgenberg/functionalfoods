@@ -13,6 +13,7 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import 'react-quill/dist/quill.snow.css';
 
 interface KnowledgeDocument {
+  id?: string;
   title: string;
   slug: string;
   content: string;
@@ -64,6 +65,7 @@ export default function EditKnowledgeDocumentPage() {
       
       if (doc) {
         setSelectedDoc({
+          id: doc.id,
           title: doc.title,
           slug: doc.slug,
           content: doc.content,

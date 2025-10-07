@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Save, Loader2, Info } from 'lucide-react';
+import ImageUpload from '@/app/components/admin/ImageUpload';
 
 export default function AdminNewCoursePage() {
   const router = useRouter();
@@ -246,15 +247,11 @@ export default function AdminNewCoursePage() {
             <h2 className="text-2xl font-bold text-[#014421] mb-6">Media och innehåll</h2>
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-bold text-[#014421] mb-2">
-                  Omslagsbild URL
-                </label>
-                <input
-                  type="url"
+                <ImageUpload
                   value={formData.coverImage}
-                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#014421] focus:ring-2 focus:ring-[#014421]/20 transition-all"
-                  placeholder="https://exempel.se/bild.jpg"
+                  onChange={(url) => setFormData({ ...formData, coverImage: url })}
+                  label="Omslagsbild"
+                  uploadType="course"
                 />
               </div>
 

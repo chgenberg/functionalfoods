@@ -9,9 +9,10 @@ interface ImageUploadProps {
   onChange: (url: string) => void;
   label?: string;
   className?: string;
+  uploadType?: 'general' | 'recipe' | 'blog' | 'course';
 }
 
-export default function ImageUpload({ value, onChange, label = "Bild", className = "" }: ImageUploadProps) {
+export default function ImageUpload({ value, onChange, label = "Bild", className = "", uploadType = 'general' }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
@@ -24,9 +25,10 @@ export default function ImageUpload({ value, onChange, label = "Bild", className
     
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('type', uploadType);
     
     try {
-      const res = await fetch('/api/admin/media/upload', {
+      const res = await fetch('/api/admin/upload', {
         method: 'POST',
         body: formData
       });
