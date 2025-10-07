@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2, Edit, Save, Trash2, Plus, Info } from 'lucide-react';
+import { Loader2, Edit, Save, Trash2, Plus, Info, ChevronDown } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 interface MealPlanWeek {
   id?: string;
@@ -19,6 +20,8 @@ export default function AdminMealPlansPage() {
   const [courseFilter, setCourseFilter] = useState<'basic' | 'flow' | 'energy' | 'all'>('all');
   const [editing, setEditing] = useState<MealPlanWeek | null>(null);
   const [editorValue, setEditorValue] = useState('');
+  const [showSimpleEditor, setShowSimpleEditor] = useState(true);
+  const searchParams = useSearchParams();
 
   const fetchWeeks = async () => {
     setLoading(true);
@@ -35,8 +38,21 @@ export default function AdminMealPlansPage() {
   };
 
   useEffect(() => {
+    const q = searchParams?.get('course');
+    if (q) {
+      const map: Record<string, 'basic'|'flow'|'energy'> = {
+        'functional-basics': 'basic',
+        'functional-flow': 'flow',
+        'functional-energy': 'energy',
+        'basic': 'basic',
+        'flow': 'flow',
+        'energy': 'energy'
+      };
+      const mapped = map[q];
+      if (mapped && mapped !== courseFilter) setCourseFilter(mapped);
+    }
     fetchWeeks();
-  }, [courseFilter]);
+  }, [courseFilter, searchParams]);
 
   const openEditor = (week?: MealPlanWeek) => {
     if (week) {
@@ -202,6 +218,15 @@ export default function AdminMealPlansPage() {
                   <input type="text" value={editing.title || ''} onChange={(e) => setEditing({ ...editing, title: e.target.value })} className="w-full border rounded px-3 py-2" />
                 </div>
               </div>
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-semibold">Enkel redigering</label>
+                <button type="button" onClick={() => setShowSimpleEditor(!showSimpleEditor)} className="text-sm text-green-700 flex items-center gap-1 hover:underline">
+                  {showSimpleEditor ? 'Göm' : 'Visa'} <ChevronDown className={`h-4 w-4 transition-transform ${showSimpleEditor ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
+              {showSimpleEditor && (
+                <SimpleDaysEditor value={editorValue} onChange={setEditorValue} />
+              )}
               <div>
                 <label className="block text-sm font-semibold mb-2">Days (JSON)</label>
                 <p className="text-xs text-gray-600 mb-3">
@@ -213,7 +238,7 @@ export default function AdminMealPlansPage() {
                   value={editorValue} 
                   onChange={(e) => setEditorValue(e.target.value)} 
                   className="w-full border rounded px-3 py-2 font-mono text-sm h-72 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all" 
-                  placeholder='{\n  "Måndag": {\n    "breakfast": { "name": "Receptnamn", "recipeLink": "/kunskapsbank/recept/slug" }\n  }\n}'
+                  placeholder='{"\n  \"Måndag\": {\n    \"breakfast\": { \"name\": \"Receptnamn\", \"recipeLink\": \"/kunskapsbank/recept/slug\" }\n  }\n}'
                 />
               </div>
             </div>
@@ -226,6 +251,66 @@ export default function AdminMealPlansPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+} 
+
+// SimpleDaysEditor component (inline)
+function SimpleDaysEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  // parse JSON defensively
+  let parsed: any = {};
+  try { parsed = JSON.parse(value || '{}'); } catch {}
+  const dayNames = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+  const mealDefs = [
+    { key: 'breakfast', label: 'Frukost' },
+    { key: 'lunch', label: 'Lunch' },
+    { key: 'dinner', label: 'Middag' },
+    { key: 'snack', label: 'Mellanmål' },
+    { key: 'dessert', label: 'Efterrätt' },
+  ];
+  const ensureStructure = () => {
+    const next: any = { ...parsed };
+    dayNames.forEach(d => { if (!next[d]) next[d] = {}; });
+    return next;
+  };
+  const updateCell = (day: string, meal: string, field: 'name'|'recipeLink', val: string) => {
+    const next = ensureStructure();
+    if (!next[day][meal]) next[day][meal] = { name: '' };
+    next[day][meal][field] = val;
+    onChange(JSON.stringify(next, null, 2));
+  };
+  const data = ensureStructure();
+  return (
+    <div className="border rounded-lg p-3 bg-gray-50 mb-4">
+      <div className="text-sm text-gray-700 mb-2">Fyll i receptnamn och (valfritt) länk till recept. Du kan lämna tomt för måltider som inte används.</div>
+      <div className="space-y-4">
+        {dayNames.map((day) => (
+          <div key={day} className="bg-white rounded-lg border p-3">
+            <div className="font-medium text-[var(--primary-green)] mb-2">{day}</div>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+              {mealDefs.map(m => (
+                <div key={m.key} className="space-y-1">
+                  <div className="text-xs text-gray-600">{m.label}</div>
+                  <input
+                    type="text"
+                    placeholder="Receptnamn"
+                    className="admin-input"
+                    value={data[day][m.key]?.name || ''}
+                    onChange={(e) => updateCell(day, m.key, 'name', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="/kunskapsbank/recept/slug"
+                    className="admin-input"
+                    value={data[day][m.key]?.recipeLink || ''}
+                    onChange={(e) => updateCell(day, m.key, 'recipeLink', e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 } 
