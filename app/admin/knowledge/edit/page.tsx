@@ -34,6 +34,13 @@ export default function EditKnowledgeDocumentPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<'basic' | 'flow' | 'energy'>(courseParam as any);
+  const [documents, setDocuments] = useState<Record<'basic' | 'flow' | 'energy', KnowledgeDocument[]>>({
+    basic: [],
+    flow: [],
+    energy: []
+  });
 
   const courses = [
     { id: 'basic', name: 'Functional Basics', color: 'bg-blue-100 text-blue-800', icon: 'Sprout' },
@@ -46,6 +53,19 @@ export default function EditKnowledgeDocumentPage() {
       fetchDocument();
     }
   }, [slugParam, courseParam]);
+
+  useEffect(() => {
+    // Load document list for sidebar
+    const loadList = async () => {
+      try {
+        const res = await fetch(`/api/admin/knowledge?course=${selectedCourse}`, { credentials: 'include' });
+        if (!res.ok) return;
+        const data = await res.json();
+        setDocuments(prev => ({ ...prev, [selectedCourse]: (data.documents || []) }));
+      } catch {}
+    };
+    loadList();
+  }, [selectedCourse]);
 
   const fetchDocument = async () => {
     try {

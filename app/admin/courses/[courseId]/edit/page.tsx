@@ -12,6 +12,10 @@ interface Course {
   duration: string;
   level: string;
   enrollments?: number;
+  basePrice?: number | null;
+  salePrice?: number | null;
+  saleStartsAt?: string | null;
+  saleEndsAt?: string | null;
 }
 
 export default function EditCoursePage({ params }: { params: { courseId: string } }) {
@@ -93,7 +97,11 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         credentials: 'include',
         body: JSON.stringify({
           courseId: params.courseId,
-          price: course?.price
+          price: course?.price,
+          basePrice: course?.basePrice ?? undefined,
+          salePrice: course?.salePrice ?? undefined,
+          saleStartsAt: course?.saleStartsAt ?? undefined,
+          saleEndsAt: course?.saleEndsAt ?? undefined
         })
       });
 
@@ -273,6 +281,48 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
                     <option value="Medel">Medel</option>
                     <option value="Avancerad">Avancerad</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Campaign pricing */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div>
+                  <label className="admin-label">Ordinarie pris (kr)</label>
+                  <input
+                    type="number"
+                    value={(course as any).basePrice ?? 0}
+                    onChange={(e) => setCourse(prev => prev ? ({ ...prev, basePrice: parseInt(e.target.value) } as any) : null)}
+                    className="admin-input"
+                  />
+                </div>
+                <div>
+                  <label className="admin-label">Kampanjpris (kr)</label>
+                  <input
+                    type="number"
+                    value={(course as any).salePrice ?? 0}
+                    onChange={(e) => setCourse(prev => prev ? ({ ...prev, salePrice: parseInt(e.target.value) } as any) : null)}
+                    className="admin-input"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-1">
+                  <div>
+                    <label className="admin-label">Kampanj start</label>
+                    <input
+                      type="datetime-local"
+                      value={(course as any).saleStartsAt ?? ''}
+                      onChange={(e) => setCourse(prev => prev ? ({ ...prev, saleStartsAt: e.target.value } as any) : null)}
+                      className="admin-input"
+                    />
+                  </div>
+                  <div>
+                    <label className="admin-label">Kampanj slut</label>
+                    <input
+                      type="datetime-local"
+                      value={(course as any).saleEndsAt ?? ''}
+                      onChange={(e) => setCourse(prev => prev ? ({ ...prev, saleEndsAt: e.target.value } as any) : null)}
+                      className="admin-input"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
