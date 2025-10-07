@@ -138,14 +138,36 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
       const courseName = courseNameMap[courseType] || courseType;
       
       // Try to fetch the shopping list file
-      const response = await fetch(`/Shopping-lists/${courseName}_week${weekNumber}_shopping_list.txt`);
+      let url = `/Shopping-lists/${courseName}_week${weekNumber}_shopping_list.txt`;
+      let response = await fetch(url);
+      if (!response.ok && courseName === 'basic') {
+        // Fallbacks for Basics naming variants in repo
+        const fallbacks = [
+          `/Shopping-lists/week${weekNumber}_shopping_list_corrected.txt`,
+          `/Shopping-lists/basic_week${weekNumber}_manual_input.txt`,
+          `/Shopping-lists/basic_week${weekNumber}_manual_parsed.json`
+        ];
+        for (const fb of fallbacks) {
+          response = await fetch(fb);
+          if (response.ok) {
+            url = fb;
+            break;
+          }
+        }
+      }
       if (response.ok) {
-        const text = await response.text();
-        // Parse the shopping list - skip header lines and empty lines
-        const lines = text.split('\n')
-          .map(line => line.trim())
-          .filter(line => line && !line.startsWith('INKÖPSLISTA') && !line.startsWith('Vecka'));
-        return lines;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const json = await response.json();
+          const items = Array.isArray(json.items) ? json.items.map((i: any) => i.ingredient || i) : [];
+          return items;
+        } else {
+          const text = await response.text();
+          const lines = text.split('\n')
+            .map(line => line.trim())
+            .filter(line => line && !line.startsWith('INKÖPSLISTA') && !line.startsWith('Vecka'));
+          return lines;
+        }
       }
     } catch (error) {
       console.error('Failed to fetch shopping list:', error);

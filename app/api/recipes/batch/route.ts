@@ -34,17 +34,18 @@ export async function POST(req: NextRequest) {
         id: true,
         title: true,
         slug: true,
-        description: true,
         ingredients: true,
         instructions: true,
-        cookingTime: true,
+        prepTime: true,
+        cookTime: true,
+        totalTime: true,
         servings: true,
         difficulty: true,
-        category: true,
+        categories: true,
         tags: true,
         isPremium: true,
-        nutritionPerServing: true,
-        image: true
+        nutrition: true,
+        imageUrl: true
       }
     });
 
@@ -75,7 +76,32 @@ export async function POST(req: NextRequest) {
       return recipeTags.some(tag => userCourseTags.includes(tag));
     });
 
-    return NextResponse.json(accessibleRecipes);
+    // Normalize shape for frontend (instructions to array, nutrition to perServing if applicable)
+    const normalized = accessibleRecipes.map((r: any) => {
+      let instructionsArray: string[] = [];
+      if (Array.isArray(r.instructions)) {
+        instructionsArray = r.instructions.filter(Boolean);
+      } else if (typeof r.instructions === 'string') {
+        instructionsArray = r.instructions
+          .split(/\r?\n+/)
+          .map((s: string) => s.trim())
+          .filter(Boolean);
+      }
+      return {
+        title: r.title,
+        slug: r.slug,
+        ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+        instructions: instructionsArray,
+        cookingTime: r.totalTime || r.cookTime || r.prepTime || null,
+        servings: r.servings || 4,
+        nutritionPerServing: r.nutrition || null,
+        tags: r.tags || [],
+        isPremium: r.isPremium === true,
+        imageUrl: r.imageUrl || null
+      };
+    });
+
+    return NextResponse.json(normalized);
   } catch (error) {
     console.error('Error fetching batch recipes:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
