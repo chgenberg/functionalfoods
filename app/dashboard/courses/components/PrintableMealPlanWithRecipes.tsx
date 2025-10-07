@@ -159,8 +159,11 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     try {
       // Fetch all recipe details
       const slugs = extractRecipeSlugs();
+      console.log('📋 Extracted slugs:', slugs);
       const recipes = await fetchRecipeDetails(slugs);
+      console.log('🍽️ Fetched recipes:', recipes.length);
       const shoppingList = await fetchShoppingList();
+      console.log('🛒 Shopping list items:', shoppingList.length);
 
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
@@ -492,8 +495,8 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     <!-- Header -->
     <div class="header">
       <div class="logo-text">Functional Foods</div>
-      <h1 class="course-title">${courseName}</h1>
-      <h2 class="week-title">Vecka ${weekNumber} - Komplett måltidsplan</h2>
+      <h2 class="week-title">${courseName} - Vecka ${weekNumber}</h2>
+      <p style="color: #666; margin-top: 8px;">Komplett måltidsplan med recept och inköpslista</p>
     </div>
     
     <!-- Meal Plan Overview -->
@@ -515,6 +518,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     </div>
     
     <!-- Recipes Section -->
+    ${recipes.length > 0 ? `
     <div class="recipes-section">
       <h2 class="section-title page-break">Recept för veckan</h2>
       ${recipes.map((recipe, index) => `
@@ -572,6 +576,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
         </div>
       `).join('')}
     </div>
+    ` : '<div class="recipes-section"><p style="text-align: center; color: #666; padding: 40px;">Inga recept kunde hämtas. Kontrollera din internetanslutning.</p></div>'}
     
     <!-- Shopping List -->
     ${shoppingList.length > 0 ? `
