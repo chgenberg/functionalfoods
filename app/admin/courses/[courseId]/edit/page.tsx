@@ -90,12 +90,8 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     setSaving(true);
     try {
       // Spara verklig data via API
-      const now = new Date();
-      const isSaleActive = course?.salePrice && (
-        (!course?.saleStartsAt || new Date(course.saleStartsAt) <= now) &&
-        (!course?.saleEndsAt || new Date(course.saleEndsAt) >= now)
-      );
-      const activeExPrice = (isSaleActive ? course?.salePrice : (course?.basePrice ?? course?.price)) as number;
+      // For admin display/save, prefer salePrice if present; otherwise basePrice, otherwise existing price
+      const activeExPrice = ((course?.salePrice ?? course?.basePrice ?? course?.price) as number) || 0;
       const response = await fetch('/api/admin/functional-courses', {
         method: 'PUT',
         headers: {
@@ -157,13 +153,8 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
   const toIncl = (ex?: number | null) => ex != null ? Math.round(ex * 1.25) : '';
   const fromIncl = (incl: number) => Math.round(incl / 1.25);
   const activeInclPrice = useMemo(() => {
-    const now = new Date();
-    const isSaleActive = course?.salePrice && (
-      (!course?.saleStartsAt || new Date(course.saleStartsAt) <= now) &&
-      (!course?.saleEndsAt || new Date(course.saleEndsAt) >= now)
-    );
-    const ex = (isSaleActive ? course?.salePrice : (course?.basePrice ?? course?.price)) as number;
-    return toIncl(ex as number);
+    const ex = ((course?.salePrice ?? course?.basePrice ?? course?.price) as number) || 0;
+    return toIncl(ex);
   }, [course]);
 
   return (
