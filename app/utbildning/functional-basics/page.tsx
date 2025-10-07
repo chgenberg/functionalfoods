@@ -50,7 +50,7 @@ export default function FunctionalBasicsPage() {
   const course = {
     id: 'functional-basics',
     name: 'Functional Basics',
-    price: 1148,
+    price: 1836, // Pris exkl. moms (2295 kr inkl. moms)
     type: 'course' as const,
     image: '/functional_basics.png',
     quantity: 1
@@ -274,13 +274,14 @@ export default function FunctionalBasicsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[260px] mx-auto flex flex-col items-center gap-3"
+              className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
               <div className="flex items-center gap-2">
-                <span className="text-lg text-gray-400 line-through">{formatPrice(2295)} kr</span>
-                <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full">-50%</span>
+                <span className="text-lg text-gray-400 line-through">{formatPrice(2995)} kr</span>
+                <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full">-23%</span>
               </div>
-              <div className="text-2xl font-bold text-primary">{formatPrice(1148)} kr</div>
+              <div className="text-2xl font-bold text-primary">{formatPrice(2295)} kr</div>
+              <div className="text-xs text-gray-500">({formatPrice(1836)} kr exkl. moms + 459 kr moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
                 onClick={handleAddToCart}

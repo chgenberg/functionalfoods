@@ -50,7 +50,7 @@ export default function FunctionalEnergyPage() {
   const course = {
     id: 'functional-energy',
     name: 'Functional Insulin balance/Energy',
-    price: 2295,
+    price: 1836, // Pris exkl. moms (2295 kr inkl. moms)
     type: 'course' as const,
     image: '/Kurser_bilder/Functional_insulin balance.jpg',
     quantity: 1
@@ -246,9 +246,14 @@ export default function FunctionalEnergyPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-[#93C560]/20 max-w-[260px] mx-auto flex flex-col items-center gap-3"
+              className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-[#93C560]/20 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
+              <div className="flex items-center gap-2">
+                <span className="text-lg text-gray-400 line-through">{formatPrice(2995)} kr</span>
+                <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full">-23%</span>
+              </div>
               <div className="text-2xl font-bold text-primary">{formatPrice(2295)} kr</div>
+              <div className="text-xs text-gray-500">({formatPrice(1836)} kr exkl. moms + 459 kr moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
                 onClick={handleAddToCart}
