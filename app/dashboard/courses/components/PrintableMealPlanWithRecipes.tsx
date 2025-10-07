@@ -518,24 +518,34 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
                 ${recipe.instructions.map(inst => `<li>${inst}</li>`).join('')}
               </ol>
               
-              ${recipe.nutritionPerServing ? `
+              ${recipe.nutritionPerServing && (
+                (recipe.nutritionPerServing.kcal && recipe.nutritionPerServing.kcal > 0) ||
+                (recipe.nutritionPerServing.protein && recipe.nutritionPerServing.protein > 0) ||
+                (recipe.nutritionPerServing.carbs && recipe.nutritionPerServing.carbs > 0) ||
+                (recipe.nutritionPerServing.fat && recipe.nutritionPerServing.fat > 0) ||
+                (recipe.nutritionPerServing.fiber && recipe.nutritionPerServing.fiber > 0)
+              ) ? `
                 <div class="nutrition-info">
+                  ${recipe.nutritionPerServing.kcal ? `
                   <div class="nutrition-item">
                     <span class="nutrition-label">Energi:</span>
-                    <span>${recipe.nutritionPerServing.kcal || 0} kcal</span>
-                  </div>
+                    <span>${recipe.nutritionPerServing.kcal} kcal</span>
+                  </div>` : ''}
+                  ${recipe.nutritionPerServing.protein ? `
                   <div class="nutrition-item">
                     <span class="nutrition-label">Protein:</span>
-                    <span>${recipe.nutritionPerServing.protein || 0}g</span>
-                  </div>
+                    <span>${recipe.nutritionPerServing.protein}g</span>
+                  </div>` : ''}
+                  ${recipe.nutritionPerServing.carbs ? `
                   <div class="nutrition-item">
                     <span class="nutrition-label">Kolhydrater:</span>
-                    <span>${recipe.nutritionPerServing.carbs || 0}g</span>
-                  </div>
+                    <span>${recipe.nutritionPerServing.carbs}g</span>
+                  </div>` : ''}
+                  ${recipe.nutritionPerServing.fat ? `
                   <div class="nutrition-item">
                     <span class="nutrition-label">Fett:</span>
-                    <span>${recipe.nutritionPerServing.fat || 0}g</span>
-                  </div>
+                    <span>${recipe.nutritionPerServing.fat}g</span>
+                  </div>` : ''}
                   ${recipe.nutritionPerServing.fiber ? `
                     <div class="nutrition-item">
                       <span class="nutrition-label">Fiber:</span>

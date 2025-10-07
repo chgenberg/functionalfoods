@@ -78,6 +78,25 @@ export async function POST(req: NextRequest) {
 
     // Normalize shape for frontend (instructions to array, nutrition to perServing if applicable)
     const normalized = accessibleRecipes.map((r: any) => {
+      // Normalize nutrition fields
+      const rawN = (r.nutrition || {}) as any;
+      const toNum = (v: any) => {
+        const n = typeof v === 'string' ? parseFloat(v.replace(/[^0-9.,-]/g, '').replace(',', '.')) : v;
+        return Number.isFinite(n) ? Number(n) : undefined;
+      };
+      const kcal = toNum(rawN.kcal ?? rawN.calories ?? rawN.energy);
+      const protein = toNum(rawN.protein ?? rawN.proteins);
+      const carbs = toNum(rawN.carbs ?? rawN.carbohydrates);
+      const fat = toNum(rawN.fat ?? rawN.fats);
+      const fiber = toNum(rawN.fiber ?? rawN.fibre ?? rawN.fibers);
+      const nutritionPerServing = {
+        ...(kcal ? { kcal } : {}),
+        ...(protein ? { protein } : {}),
+        ...(carbs ? { carbs } : {}),
+        ...(fat ? { fat } : {}),
+        ...(fiber ? { fiber } : {})
+      } as any;
+      const hasNutrition = Object.keys(nutritionPerServing).length > 0;
       let instructionsArray: string[] = [];
       if (Array.isArray(r.instructions)) {
         instructionsArray = r.instructions.filter(Boolean);
@@ -94,7 +113,7 @@ export async function POST(req: NextRequest) {
         instructions: instructionsArray,
         cookingTime: r.totalTime || r.cookTime || r.prepTime || null,
         servings: r.servings || 4,
-        nutritionPerServing: r.nutrition || null,
+        nutritionPerServing: hasNutrition ? nutritionPerServing : null,
         tags: r.tags || [],
         isPremium: r.isPremium === true,
         imageUrl: r.imageUrl || null
