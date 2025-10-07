@@ -16,7 +16,7 @@ async function previewPlatformLiveEmail() {
   };
 
   // Generera HTML (vi använder en privat metod här för test)
-  const baseUrl = 'https://functionalfoods.se';
+  const baseUrl = 'https://www.functionalfoods.se';
   
   const html = `
     <!DOCTYPE html>
@@ -31,7 +31,7 @@ async function previewPlatformLiveEmail() {
         <!-- LIVE Banner Image -->
         <div style="position: relative; width: 100%; height: auto; overflow: hidden;">
           <img 
-            src="${baseUrl}/mail/LIVE.png" 
+            src="https://www.functionalfoods.se/mail/LIVE.png" 
             alt="LIVE - Functional Foods" 
             style="width: 100%; height: auto; display: block; max-height: 300px; object-fit: cover;"
           />
@@ -53,7 +53,7 @@ async function previewPlatformLiveEmail() {
               Så här loggar du in:
             </h3>
             <ol style="color: #333; line-height: 2; margin: 0; padding-left: 20px;">
-              <li style="margin: 8px 0;">Gå till <a href="${baseUrl}/login" style="color: #1a4324; font-weight: 600;">inloggningssidan</a>.</li>
+              <li style="margin: 8px 0;">Gå till <a href="https://www.functionalfoods.se/login" style="color: #1a4324; font-weight: 600;">inloggningssidan</a>.</li>
               <li style="margin: 8px 0;">Fyll i din e-postadress: <strong style="color: #1a4324;">${testData.email}</strong></li>
               <li style="margin: 8px 0;">Ange det temporära lösenordet: <span style="font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; color: #1a4324; font-weight: 600;">${testData.tempPassword}</span></li>
               <li style="margin: 8px 0;">Klicka på <strong>Logga in</strong>.</li>
