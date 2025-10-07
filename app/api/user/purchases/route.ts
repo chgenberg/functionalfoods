@@ -55,7 +55,7 @@ export async function GET(request: Request) {
       return { ...p, accessExpiresAt, isActive };
     });
 
-    return NextResponse.json(enriched);
+    return NextResponse.json({ purchases: enriched });
   } catch (error) {
     console.error('Error fetching purchases:', error);
     return NextResponse.json(

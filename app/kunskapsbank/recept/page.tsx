@@ -62,7 +62,7 @@ const RecipesPage = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userAccess, setUserAccess] = useState<{ hasAccess: boolean; userId: string | null }>({ hasAccess: false, userId: null });
+  const [userAccess, setUserAccess] = useState<{ hasAccess: boolean; userId: string | null; userCourses: string[] }>({ hasAccess: false, userId: null, userCourses: [] });
   const [statistics, setStatistics] = useState({ total: 0, free: 0, premium: 0, visible: 0 });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [categories, setCategories] = useState<string[]>([]);
@@ -134,9 +134,35 @@ const RecipesPage = () => {
       setStatistics(data.statistics || { total: 0, free: 0, premium: 0, visible: 0 });
       setHasMore(data.pagination.hasMore);
       
+      // Fetch user's purchased courses
+      let userCourses: string[] = [];
+      if (user && token) {
+        try {
+          const purchasesResponse = await fetch('/api/user/purchases', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (purchasesResponse.ok) {
+            const purchasesData = await purchasesResponse.json();
+            // Extract course names from purchases
+            userCourses = purchasesData.purchases?.map((p: any) => {
+              const courseName = p.course?.name || '';
+              // Map course names to tags (Basic, Flow, Energy)
+              if (courseName.includes('Basics')) return 'Basic';
+              if (courseName.includes('Flow')) return 'Flow';
+              if (courseName.includes('Energy')) return 'Energy';
+              return '';
+            }).filter(Boolean) || [];
+            console.log('👤 User purchased courses:', userCourses);
+          }
+        } catch (err) {
+          console.error('Error fetching user courses:', err);
+        }
+      }
+      
       setUserAccess({ 
         hasAccess: !!user && !!token, 
-        userId: user?.email || null 
+        userId: user?.email || null,
+        userCourses
       });
       
     } catch (err) {
@@ -228,7 +254,37 @@ const RecipesPage = () => {
 
   // Removed automatic infinite scroll - using manual "Load More" button instead
 
-	const visibleRecipes = userAccess.hasAccess ? recipes : recipes.filter(r => !r.isPremium);
+	// Filter recipes based on user's purchased courses
+	const visibleRecipes = recipes.filter(recipe => {
+    // Always show free recipes
+    if (recipe.isFree || !recipe.isPremium) {
+      return true;
+    }
+    
+    // If not logged in, hide premium recipes
+    if (!userAccess.hasAccess) {
+      return false;
+    }
+    
+    // Check if recipe belongs to user's purchased courses
+    const recipeCourses = recipe.courseTags || recipe.tags?.filter((t: string) => ['Basic', 'Flow', 'Energy'].includes(t)) || [];
+    
+    // If recipe has no course tags, it's available to all logged in users (old premium recipes)
+    if (recipeCourses.length === 0) {
+      return true;
+    }
+    
+    // Check if user has access to ANY of the required courses
+    const hasAccess = recipeCourses.some((course: string) => userAccess.userCourses.includes(course));
+    
+    console.log(`🔍 Recipe "${recipe.title}":`, {
+      recipeCourses,
+      userCourses: userAccess.userCourses,
+      hasAccess
+    });
+    
+    return hasAccess;
+  });
 
 	const filteredRecipes = visibleRecipes.filter(recipe => {
     const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
@@ -720,7 +776,12 @@ const RecipesPage = () => {
 
 // Recipe Card Component
 const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
-  const canAccess = recipe.isAccessible !== false && (recipe.isFree || !recipe.isPremium || userAccess.hasAccess);
+  // Check course-specific access
+  const recipeCourses = recipe.courseTags || recipe.tags?.filter((t: string) => ['Basic', 'Flow', 'Energy'].includes(t)) || [];
+  const requiresCourse = recipe.isPremium && recipeCourses.length > 0;
+  const hasCourseAccess = !requiresCourse || recipeCourses.some((course: string) => userAccess.userCourses?.includes(course));
+  
+  const canAccess = recipe.isAccessible !== false && (recipe.isFree || !recipe.isPremium || (userAccess.hasAccess && hasCourseAccess));
   const isComingSoon = recipe.isComingSoon === true;
   const [imageError, setImageError] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>('');
@@ -875,7 +936,12 @@ const RecipeCard: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, use
 
 // Recipe List Item Component
 const RecipeListItem: React.FC<{ recipe: Recipe; userAccess: any }> = ({ recipe, userAccess }) => {
-  const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
+  // Check course-specific access
+  const recipeCourses = recipe.courseTags || recipe.tags?.filter((t: string) => ['Basic', 'Flow', 'Energy'].includes(t)) || [];
+  const requiresCourse = recipe.isPremium && recipeCourses.length > 0;
+  const hasCourseAccess = !requiresCourse || recipeCourses.some((course: string) => userAccess.userCourses?.includes(course));
+  
+  const canAccess = recipe.isFree || !recipe.isPremium || (userAccess.hasAccess && hasCourseAccess);
   const [imageError, setImageError] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>('');
   const [imageLoading, setImageLoading] = useState(true);
