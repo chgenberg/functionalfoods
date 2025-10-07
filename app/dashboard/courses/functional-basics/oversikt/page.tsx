@@ -211,6 +211,11 @@ export default function FunctionalBasicsOverview() {
           </div>
         </motion.div>
 
+        {/* Course Downloads */}
+        <div className="grid grid-cols-1 gap-6 mb-10 relative z-0">
+          <CompleteCourseDownload courseType="basics" />
+        </div>
+
         {/* Coaching Button after Progress */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -240,11 +245,6 @@ export default function FunctionalBasicsOverview() {
         {/* Info Popup Grid */}
         <div className="relative z-10">
           <InfoPopupGrid courseType="basics" courseId="functional-basics" />
-        </div>
-
-        {/* Course Downloads */}
-        <div className="grid grid-cols-1 gap-6 mb-10 relative z-0">
-          <CompleteCourseDownload courseType="basics" />
         </div>
 
         
