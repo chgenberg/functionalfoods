@@ -140,6 +140,13 @@ export default function Checkout() {
 
   // Calculate if we have a discount
   const hasDiscount = discount > 0;
+  // VAT breakdown for display
+  const VAT_RATE = 0.25;
+  const subtotalExVat = total;
+  const discountExVat = discount;
+  const taxableBaseExVat = Math.max(0, subtotalExVat - discountExVat);
+  const vatAmount = Math.round(taxableBaseExVat * VAT_RATE);
+  const totalInclVat = taxableBaseExVat + vatAmount;
 
   return (
     <main className="min-h-screen bg-[#F7F5F0] py-12">
@@ -351,7 +358,7 @@ export default function Checkout() {
                       <p className="text-sm text-gray-500">
                         {item.type === 'course' ? 'Kurs' : 'Bok'} • {item.quantity} st
                       </p>
-                      <p className="font-medium text-gray-900 mt-1">{item.price.toLocaleString()} kr</p>
+                      <p className="font-medium text-gray-900 mt-1">{Math.round(item.price * (1 + VAT_RATE)).toLocaleString()} kr</p>
                     </div>
                   </div>
                 ))}
@@ -390,21 +397,25 @@ export default function Checkout() {
                   )}
                 </div>
 
-                {/* Totals */}
+                {/* Totals with VAT breakdown */}
                 <div className="pt-4 border-t border-gray-100 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{t('checkout.subtotal','Delsumma')}</span>
-                    <span className="text-gray-900">{total.toLocaleString()} kr</span>
+                    <span className="text-gray-600">Delsumma (exkl. moms)</span>
+                    <span className="text-gray-900">{subtotalExVat.toLocaleString()} kr</span>
                   </div>
                   {hasDiscount && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">{t('checkout.discount','Rabatt')}</span>
-                      <span className="text-green-600">-{discount.toLocaleString()} kr</span>
+                      <span className="text-gray-600">Rabatt</span>
+                      <span className="text-green-600">-{discountExVat.toLocaleString()} kr</span>
                     </div>
                   )}
-                  <div className="flex justify-between pt-2 border-t">
-                    <span className="text-lg font-medium">{t('checkout.total','Totalt')}</span>
-                    <span className="text-lg font-bold text-gray-900">{finalTotal.toLocaleString()} kr</span>
+                  <div className="flex justify-between text-sm pb-2 border-b">
+                    <span className="text-gray-600">Moms (25%)</span>
+                    <span className="text-gray-900">{vatAmount.toLocaleString()} kr</span>
+                  </div>
+                  <div className="flex justify-between pt-2">
+                    <span className="text-lg font-medium">Totalt (inkl. moms)</span>
+                    <span className="text-lg font-bold text-gray-900">{totalInclVat.toLocaleString()} kr</span>
                   </div>
                 </div>
 
