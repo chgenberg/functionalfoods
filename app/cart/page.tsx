@@ -257,7 +257,7 @@ export default function CartPage() {
 
               <div className="py-6 space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Delsumma</span>
+                  <span className="text-gray-600">Delsumma (exkl. moms)</span>
                   <span className="text-gray-900">{total.toLocaleString('sv-SE')} kr</span>
                 </div>
                 {discount > 0 && (
@@ -266,11 +266,14 @@ export default function CartPage() {
                     <span className="text-[#93C560]">-{discount.toLocaleString('sv-SE')} kr</span>
                   </div>
                 )}
-                <div className="flex justify-between text-xl font-bold pt-3 border-t">
-                  <span className="text-[#014421]">Totalt</span>
-                  <span className="text-[#014421]">{finalTotal.toLocaleString('sv-SE')} kr</span>
+                <div className="flex justify-between text-sm pb-3 border-b border-gray-200">
+                  <span className="text-gray-600">Moms (25%)</span>
+                  <span className="text-gray-900">{Math.round((finalTotal) * 0.25).toLocaleString('sv-SE')} kr</span>
                 </div>
-                <p className="text-xs text-gray-500">Inklusive moms</p>
+                <div className="flex justify-between text-xl font-bold pt-3">
+                  <span className="text-[#014421]">Totalt (inkl. moms)</span>
+                  <span className="text-[#014421]">{Math.round((finalTotal) * 1.25).toLocaleString('sv-SE')} kr</span>
+                </div>
               </div>
 
               {/* Checkout Button */}
