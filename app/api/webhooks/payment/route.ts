@@ -344,7 +344,8 @@ async function handleFreeOrder(session: any) {
             email: customerEmail,
             name: customerName,
             password: hashedPassword,
-            role: 'customer'
+            role: 'customer',
+            mustChangePassword: true
           }
         });
         console.log(`✅ New user created: ${user.email}`);
@@ -544,7 +545,7 @@ async function completePayment(paymentId: string, webhookData: any) {
       const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
       await tx.user.update({
         where: { id: user.id },
-        data: { password: hashedPassword }
+        data: { password: hashedPassword, mustChangePassword: true }
       });
     }
 

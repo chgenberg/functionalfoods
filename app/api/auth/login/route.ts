@@ -27,16 +27,14 @@ export async function POST(req: NextRequest) {
 
     const validPassword = await bcrypt.compare(password, user.password);
 
-    // If user must change password, always redirect to reset flow
-    // (even if password was entered wrong) to avoid dead-ends on first login.
-    if ((user as any).mustChangePassword) {
-      // Create reset token
+    // If user must change password, redirect to reset flow (only if password is correct)
+    if ((user as any).mustChangePassword && validPassword) {
       const token = (await prisma.passwordReset.upsert({
         where: { userId: (user as any).id },
         create: {
           userId: (user as any).id,
           token: crypto.randomBytes(32).toString('hex'),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 dagar
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         },
         update: {
           token: crypto.randomBytes(32).toString('hex'),
@@ -45,10 +43,7 @@ export async function POST(req: NextRequest) {
         }
       })).token;
 
-      return NextResponse.json({
-        requirePasswordChange: true,
-        resetUrl: `/reset-password?token=${encodeURIComponent(token)}`
-      });
+      return NextResponse.json({ requirePasswordChange: true, resetUrl: `/reset-password?token=${encodeURIComponent(token)}` });
     }
 
     if (!validPassword) {

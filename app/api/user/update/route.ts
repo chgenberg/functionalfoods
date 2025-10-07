@@ -74,6 +74,7 @@ export async function PATCH(request: Request) {
                 return NextResponse.json({ error: 'Felaktigt nuvarande lösenord' }, { status: 401 });
             }
             dataToUpdate.password = await bcrypt.hash(newPassword, 12); // Match webhook's 12 rounds
+            dataToUpdate.mustChangePassword = false;
         } else if (currentPassword || newPassword) {
             return NextResponse.json({ error: 'Både nuvarande och nytt lösenord krävs' }, { status: 400 });
         }

@@ -75,6 +75,11 @@ export async function PUT(req: NextRequest) {
     updateData.city = city ?? user.city;
     updateData.country = country ?? user.country;
 
+    // If password changed, clear mustChangePassword flag
+    if (updateData.password) {
+      updateData.mustChangePassword = false;
+    }
+
     const updated: any = await prisma.user.update({ where: { id: userId }, data: updateData });
 
     const safeUser = {
