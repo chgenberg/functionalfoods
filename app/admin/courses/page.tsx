@@ -165,13 +165,24 @@ export default function AdminCoursesPage() {
             <h1 className="text-3xl font-light text-[var(--primary-green)] mb-1">Kurser</h1>
             <p className="text-sm text-[var(--text-secondary)] font-light">Hantera kursinnehåll och struktur</p>
           </div>
-          <Link
-            href="/admin/courses/new"
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-all text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Skapa kurs
-          </Link>
+          <div className="flex gap-2">
+            {selectedCourse && (
+              <Link
+                href={`/admin/courses/${selectedCourse}/edit`}
+                className="flex items-center gap-2 px-4 py-2 border border-[var(--primary-green)] text-[var(--primary-green)] rounded-lg hover:bg-[var(--primary-green)] hover:text-white transition-all text-sm"
+              >
+                <Edit3 className="w-4 h-4" />
+                Redigera kurs
+              </Link>
+            )}
+            <Link
+              href="/admin/courses/new"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-all text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Skapa kurs
+            </Link>
+          </div>
         </div>
         
         {/* Course Selector */}
