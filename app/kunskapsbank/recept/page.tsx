@@ -59,7 +59,6 @@ interface RecipeData {
 const RecipesPage = () => {
   // All state declarations first
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -115,9 +114,6 @@ const RecipesPage = () => {
         params.append('category', selectedCategory);
       }
       
-      if (selectedStatus !== 'all') {
-        params.append('status', selectedStatus);
-      }
       
       if (searchQuery.trim()) {
         params.append('search', searchQuery.trim());
@@ -177,12 +173,12 @@ const RecipesPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, selectedCategory, selectedStatus, searchQuery, user]);
+  }, [page, selectedCategory, searchQuery, user]);
 
   useEffect(() => {
     // Only auto-fetch when filters change, not on search query change
     fetchRecipes();
-  }, [user, selectedCategory, selectedStatus]);
+  }, [user, selectedCategory]);
 
   // Trigger fetching when page increments (infinite scroll)
   useEffect(() => {
@@ -198,7 +194,7 @@ const RecipesPage = () => {
     setHasMore(true);
     // Scroll to top when filters change for better UX
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [selectedCategory, selectedStatus]);
+  }, [selectedCategory]);
 
   useEffect(() => {
     // Enhanced intelligent search suggestions
@@ -291,15 +287,11 @@ const RecipesPage = () => {
 
 	const filteredRecipes = visibleRecipes.filter(recipe => {
     const matchesCategory = selectedCategory === 'all' || (recipe.categories && recipe.categories.includes(selectedCategory));
-    const matchesStatus = selectedStatus === 'all' || 
-                         (selectedStatus === 'free' && recipe.isFree && !recipe.isPremium) ||
-                         (selectedStatus === 'premium' && recipe.isPremium) ||
-                         (selectedStatus === 'coming-soon' && recipe.isComingSoon === true);
     const matchesSearch = !searchQuery || 
                          recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (recipe.excerpt && recipe.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
                          (recipe.ingredients && recipe.ingredients.some(ing => ing.toLowerCase().includes(searchQuery.toLowerCase())));
-    return matchesCategory && matchesStatus && matchesSearch;
+    return matchesCategory && matchesSearch;
   });
 
   const selectSuggestion = (suggestion: string) => {
@@ -462,11 +454,11 @@ const RecipesPage = () => {
             >
               <Filter className={`w-5 h-5 transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`} />
               <span>{t('recipes.list.filters.button','Filter')}</span>
-              {(selectedCategory !== 'all' || selectedStatus !== 'all') && (
+              {selectedCategory !== 'all' && (
                 <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
                   showFilters ? 'bg-white/20 text-white' : 'bg-orange-500 text-white'
                 }`}>
-                  {[selectedCategory !== 'all', selectedStatus !== 'all'].filter(Boolean).length}
+                  1
                 </span>
               )}
             </button>
@@ -540,44 +532,11 @@ const RecipesPage = () => {
                           </button>
                         ))}
                       </div>
-                    </div>
-
-                    {/* Enhanced Type Filter */}
-                    <div>
-                      <label className="text-sm font-semibold text-gray-800 mb-3 block flex items-center gap-2">
-                        <span className="w-1 h-4 bg-yellow-500 rounded-full"></span>
-                        {t('recipes.list.filters.type','Recepttyp')}
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {[
-                          { value: 'all', label: t('recipes.list.filters.typeAll','Alla recept'), icon: '🍽️', gradient: 'from-gray-500 to-gray-600' },
-                          { value: 'free', label: t('recipes.list.filters.typeFree','Gratis'), icon: '✨', gradient: 'from-green-500 to-green-600' },
-                          { value: 'premium', label: t('recipes.list.filters.typePremium','Premium'), icon: '👑', gradient: 'from-amber-500 to-amber-600' },
-                          { value: 'coming-soon', label: 'Kommer snart', icon: '⏳', gradient: 'from-purple-500 to-purple-600' }
-                        ].map(option => (
-                          <button
-                            key={option.value}
-                            onClick={() => setSelectedStatus(option.value)}
-                            className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md transform hover:scale-105 ${
-                              selectedStatus === option.value
-                                ? 'text-white shadow-lg'
-                                : 'bg-white text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-orange-300'
-                            }`}
-                            style={selectedStatus === option.value ? {
-                              background: option.value === 'all' ? '#6b7280' : option.value === 'free' ? '#10b981' : option.value === 'premium' ? '#f59e0b' : '#a855f7'
-                            } : {}}
-                          >
-                            <span className="text-base">{option.icon}</span>
-                            {option.label}
-                            {selectedStatus === option.value && <Check className="w-3.5 h-3.5 ml-1" />}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                  </div>
                   </div>
 
                   {/* Enhanced Active Filters Summary */}
-                  {(selectedCategory !== 'all' || selectedStatus !== 'all' || searchQuery) && (
+                  {(selectedCategory !== 'all' || searchQuery) && (
                     <div className="mt-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border border-orange-200">
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-semibold text-gray-700">{t('recipes.list.filters.active','Aktiva filter:')}</span>
@@ -612,31 +571,11 @@ const RecipesPage = () => {
                               </button>
                             </span>
                           )}
-                          {selectedStatus !== 'all' && (
-                            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white text-gray-700 rounded-full shadow-sm border border-gray-200 font-medium text-sm">
-                              <span className="text-base">
-                                {selectedStatus === 'free' ? '✨' : selectedStatus === 'premium' ? '👑' : '⏳'}
-                              </span>
-                              {selectedStatus === 'free' ? t('recipes.list.filters.typeFree','Gratis') : 
-                               selectedStatus === 'premium' ? t('recipes.list.filters.typePremium','Premium') : 
-                               selectedStatus === 'coming-soon' ? 'Kommer snart' : ''}
-                              <button 
-                                onClick={() => setSelectedStatus('all')} 
-                                className="ml-1 p-0.5 hover:bg-gray-100 rounded-full transition-colors"
-                                title="Ta bort typ"
-                              >
-                                <svg className="w-3.5 h-3.5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </button>
-                            </span>
-                          )}
                         </div>
                         <button
                           onClick={() => {
                             setSearchQuery('');
                             setSelectedCategory('all');
-                            setSelectedStatus('all');
                           }}
                           className="ml-auto text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors"
                         >
@@ -740,7 +679,6 @@ const RecipesPage = () => {
               onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('all');
-                setSelectedStatus('all');
               }}
               className="bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition-colors"
             >
@@ -750,25 +688,6 @@ const RecipesPage = () => {
         )}
       </div>
 
-      {/* CTA Section */}
-      {!userAccess.hasAccess && recipes.some(r => r.isPremium) && (
-        <div className="bg-gradient-to-br from-orange-100 to-yellow-50 py-16 mt-16">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              {t('recipes.list.cta.title','Få tillgång till alla premium-recept')}
-            </h2>
-            <p className="text-lg text-gray-700 mb-8">
-              {t('recipes.list.cta.subtitle','Köp en kurs och lås upp hela vårt receptbibliotek med exklusiva, näringsrika recept')}
-            </p>
-            <Link
-              href="/utbildning"
-              className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full hover:bg-orange-600 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              {t('recipes.list.cta.button','Utforska våra kurser')}
-            </Link>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
