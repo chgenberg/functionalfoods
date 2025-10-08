@@ -76,6 +76,32 @@ export async function GET(
       localized.imageUrl = url;
     }
 
+    // Normalize nutrition to perServing if present in shorthand (kcal/protein/carbs/fat/fiber)
+    if (localized.nutrition && !(localized.nutrition as any).perServing) {
+      const n: any = localized.nutrition || {};
+      const kcal = n.kcal || n.calories || n.energy;
+      const protein = n.protein;
+      const carbs = n.carbs || n.carbohydrates;
+      const fat = n.fat;
+      const fiber = n.fiber || n.fibre;
+      const perServing: any = {};
+      if (typeof kcal === 'number' && kcal > 0) perServing.energy = Math.round(kcal);
+      if (typeof protein === 'number' && protein > 0) perServing.protein = Math.round(protein);
+      if (typeof carbs === 'number' && carbs > 0) perServing.carbohydrates = Math.round(carbs);
+      if (typeof fat === 'number' && fat > 0) perServing.fat = Math.round(fat);
+      if (typeof fiber === 'number' && fiber > 0) perServing.fiber = Math.round(fiber);
+      if (Object.keys(perServing).length > 0) {
+        localized.nutrition = {
+          perServing,
+          calories: perServing.energy,
+          protein: perServing.protein,
+          carbohydrates: perServing.carbohydrates,
+          fat: perServing.fat,
+          fiber: perServing.fiber
+        } as any;
+      }
+    }
+
     // Nutrition override for known recipes
     if (canonicalSlug === 'linssallad-med-fetaost-och-pekannotter') {
       const perServing = { energy: 345, carbohydrates: 25, fat: 11, protein: 11, fiber: 5 };
