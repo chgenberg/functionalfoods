@@ -21,7 +21,8 @@ interface KnowledgeDocument {
   relatedImages?: string[];
   keyTakeaways?: string[];
   readTime: number;
-  course: 'basic' | 'flow' | 'energy';
+  course: 'basic' | 'flow' | 'energy'; // kept for backward-compat
+  courses?: Array<'basic' | 'flow' | 'energy'>; // new multi-course
   order: number;
 }
 
@@ -94,6 +95,7 @@ export default function EditKnowledgeDocumentPage() {
           keyTakeaways: doc.keyTakeaways || [],
           readTime: doc.readTime || 5,
           course: doc.course,
+          courses: doc.courses || (doc.course ? [doc.course] : []),
           order: doc.order || 0
         });
       } else {
@@ -301,6 +303,26 @@ export default function EditKnowledgeDocumentPage() {
                       onChange={(e) => updateDocument('title', e.target.value)}
                       className="admin-input"
                     />
+                  </div>
+
+                  <div>
+                    <label className="admin-label">Tillhör kurser</label>
+                    <div className="flex gap-2 flex-wrap">
+                      {(['basic','flow','energy'] as const).map(c => (
+                        <label key={c} className="inline-flex items-center gap-2 text-sm bg-[var(--primary-beige)] px-3 py-2 rounded-lg">
+                          <input
+                            type="checkbox"
+                            checked={selectedDoc.courses?.includes(c) || false}
+                            onChange={(e) => {
+                              const next = new Set(selectedDoc.courses || []);
+                              if (e.target.checked) next.add(c); else next.delete(c);
+                              updateDocument('courses', Array.from(next) as any);
+                            }}
+                          />
+                          <span>{c === 'basic' ? 'Functional Basics' : c === 'flow' ? 'Functional Flow' : 'Functional Energy'}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
 
                   <div>

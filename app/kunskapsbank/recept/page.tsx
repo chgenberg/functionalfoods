@@ -73,6 +73,7 @@ const RecipesPage = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [usePagedNavigation, setUsePagedNavigation] = useState(true);
   
   // All refs after state
   const searchRef = useRef<HTMLDivElement>(null);
@@ -621,31 +622,27 @@ const RecipesPage = () => {
           </div>
         )}
 
-        {/* Load More Button */}
-        {hasMore && !loading && filteredRecipes.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center mt-12"
-            id="load-more-section"
-          >
+        {/* Paged Navigation */}
+        {!loading && filteredRecipes.length > 0 && (
+          <div className="flex items-center justify-center gap-3 mt-12">
             <button
-              onClick={() => {
-                const currentScroll = window.scrollY;
-                setPage(prev => prev + 1);
-                // Preserve scroll position after state update
-                requestAnimationFrame(() => {
-                  window.scrollTo({ top: currentScroll, behavior: 'instant' });
-                });
-              }}
-              className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-full hover:shadow-xl transition-all transform hover:scale-105 font-medium text-lg"
+              disabled={page <= 1}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              className={`px-4 py-2 rounded-lg border ${page <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}
             >
-              Ladda fler recept
+              Föregående
             </button>
-            <p className="text-gray-500 text-sm mt-3">
-              Visar {filteredRecipes.length} av {statistics.visible} recept
-            </p>
-          </motion.div>
+            <span className="text-sm text-gray-600">
+              Sida {page} av {Math.max(1, Math.ceil(statistics.visible / 20))}
+            </span>
+            <button
+              disabled={!hasMore}
+              onClick={() => setPage(p => p + 1)}
+              className={`px-4 py-2 rounded-lg border ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}
+            >
+              Nästa
+            </button>
+          </div>
         )}
 
         {/* Loading More Indicator */}

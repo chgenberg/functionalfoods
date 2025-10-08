@@ -30,21 +30,28 @@ export async function POST(req: NextRequest) {
   if ((admin as any)?.status === 401) return admin as any;
 
   const body = await req.json();
-  const { title, slug, content, headerImage, relatedImages, keyTakeaways, readTime, course, order, weekNumber } = body;
+  const { title, slug, content, headerImage, relatedImages, keyTakeaways, readTime, course, courses, order, weekNumber } = body;
 
-  const doc = await prisma.knowledgeDocument.create({
-    data: {
-      title,
-      slug,
-      content,
-      headerImage: headerImage || null,
-      relatedImages: relatedImages || null,
-      keyTakeaways: keyTakeaways || null,
-      readTime: readTime || 5,
-      course,
-      order: order ?? 0,
-      weekNumber: weekNumber || null
-    }
+  const createData: any = {
+    title,
+    slug,
+    content,
+    headerImage: headerImage || null,
+    relatedImages: relatedImages || null,
+    keyTakeaways: keyTakeaways || null,
+    readTime: readTime || 5,
+    course: course || (Array.isArray(courses) && courses.length === 1 ? courses[0] : 'basic'),
+    order: order ?? 0,
+    weekNumber: weekNumber || null
+  };
+  if (Array.isArray(courses) && courses.length > 0) {
+    createData.courses = courses;
+  } else if (course) {
+    createData.courses = [course];
+  }
+
+  const doc = await (prisma as any).knowledgeDocument.create({
+    data: createData
   });
   return NextResponse.json({ document: doc });
 }
@@ -57,11 +64,18 @@ export async function PUT(req: NextRequest) {
   const { id, ...rest } = body;
   if (!id) return NextResponse.json({ error: 'id krävs' }, { status: 400 });
 
-  const doc = await prisma.knowledgeDocument.update({
-    where: { id },
-    data: {
-      ...rest,
+  // Normalize single course vs multi courses
+  const updateData: any = { ...rest };
+  if (rest.courses && Array.isArray(rest.courses)) {
+    updateData.courses = rest.courses;
+    if (!rest.course && rest.courses.length === 1) {
+      updateData.course = rest.courses[0];
     }
+  }
+
+  const doc = await (prisma as any).knowledgeDocument.update({
+    where: { id },
+    data: updateData
   });
   return NextResponse.json({ document: doc });
 }

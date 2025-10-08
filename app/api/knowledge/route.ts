@@ -35,7 +35,12 @@ export async function GET(req: NextRequest) {
         if (doc) dbDocs = [doc];
       } else {
         const docs = await (prisma as any).knowledgeDocument?.findMany({
-          where: course ? { course } : undefined,
+          where: course ? {
+            OR: [
+              { course: course },
+              { courses: { has: course } }
+            ]
+          } : undefined,
           orderBy: [{ course: 'asc' }, { order: 'asc' }]
         });
         if (docs && Array.isArray(docs)) dbDocs = docs.filter((d: any) => !disallowedSlugs.has(d.slug));
@@ -123,6 +128,11 @@ export async function GET(req: NextRequest) {
       // Preserve JSON excerpt/readTime when DB lacks
       if (dbd.excerpt == null) mergedDoc.excerpt = existing.excerpt;
       if (dbd.readTime == null) mergedDoc.readTime = existing.readTime;
+
+      // Ensure courses array exists (prefer DB courses, fallback to single course)
+      if (!Array.isArray(mergedDoc.courses) || mergedDoc.courses.length === 0) {
+        mergedDoc.courses = mergedDoc.course ? [mergedDoc.course] : [];
+      }
 
       bySlug[dbd.slug] = mergedDoc;
     }

@@ -27,14 +27,22 @@ export async function POST(req: NextRequest) {
     }));
 
     // Validate and enrich items with server-side data
+    const now = new Date();
     const validatedItems = items.map(item => {
       const product = productMap.get(item.id);
       if (!product) {
         throw new Error(`Produkten med id "${item.id}" hittades inte.`);
       }
+      // Determine effective price (excl. VAT) using campaign if active
+      const basePrice = typeof product.basePrice === 'number' ? product.basePrice : product.price;
+      const saleActive = product.salePrice && (
+        (!product.saleStartsAt || new Date(product.saleStartsAt) <= now) &&
+        (!product.saleEndsAt || new Date(product.saleEndsAt) >= now)
+      );
+      const effectivePrice = saleActive ? (product.salePrice as number) : basePrice;
       return {
         ...item,
-        price: product.price, // Use price from database
+        price: effectivePrice, // Use dynamic price (campaign-aware), excl. VAT
         name: product.name,   // Use name from database
       };
     });
