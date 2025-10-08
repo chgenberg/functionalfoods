@@ -126,14 +126,19 @@ export async function GET(req: NextRequest) {
                 }
               }
 
-              // Send email
+              // Send email (course lines incl VAT)
               try {
+                const VAT_RATE = 0.25;
+                const emailCourses = items.filter(i => i.type === 'course').map(it => ({
+                  name: it.name,
+                  price: Math.round(it.price * (1 + VAT_RATE)) * (it.quantity || 1)
+                }));
                 await emailService.sendOrderConfirmation({
                   customerEmail: user.email,
                   customerName: user.name || user.email,
                   orderNumber: order.orderNumber,
                   totalAmount: totalIncl,
-                  courses: purchasedCourses.map(c => ({ name: c.name, price: c.price })),
+                  courses: emailCourses,
                   loginCredentials: isNewUser && tempPassword ? {
                     email: user.email,
                     password: tempPassword,

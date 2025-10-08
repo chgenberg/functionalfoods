@@ -274,21 +274,163 @@ async function handleCheckoutSessionCompleted(session: any) {
     });
 
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-    
-    // Handle free orders (0 kr with coupon) - no payment_intent is created
+
+    // Free orders (0 kr) → no PI → process like free
     if (session.amount_total === 0 || !session.payment_intent) {
       console.log('💰 Free order detected (0 kr) - processing without payment_intent');
       await handleFreeOrder(session);
       return;
     }
 
-    // Handle paid orders with payment_intent
+    // Paid order path with payment_intent
     const paymentIntentId = typeof session.payment_intent === 'string'
       ? session.payment_intent
       : session.payment_intent?.id;
 
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    await handlePaymentSuccess(paymentIntent);
+    // Idempotency guard: if we already recorded this payment, exit
+    const already = await prisma.payment.findFirst({ where: { externalId: String(paymentIntentId) } });
+    if (already) {
+      console.log('ℹ️ Payment already recorded. Skipping duplicate processing.');
+      return;
+    }
+
+    // Parse items from metadata; fallback to Stripe line items if needed
+    let items: Array<{ id: string; name: string; price: number; quantity: number; type: string }> = [];
+    try {
+      const raw = (session.metadata as any)?.items || '';
+      if (raw) items = JSON.parse(raw);
+    } catch (e) {
+      console.warn('⚠️ Failed to parse metadata items, will try Stripe line_items');
+    }
+    if (items.length === 0) {
+      try {
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 50 });
+        items = lineItems.data.map((li: any) => ({
+          id: 'course',
+          name: li.description || li.price?.product || 'Kurs',
+          price: (li.amount_total || li.amount_subtotal || 0) / 100,
+          quantity: li.quantity || 1,
+          type: 'course'
+        }));
+      } catch {}
+    }
+    if (items.length === 0) {
+      console.error('❌ No items found on completed session');
+      return;
+    }
+
+    const customerEmail = (session.customer_details?.email || session.customer_email || '').trim();
+    const customerName = session.customer_details?.name || customerEmail.split('@')[0] || 'Kund';
+    const totalIncl = (session.amount_total || 0) / 100;
+
+    await prisma.$transaction(async (tx) => {
+      // Get or create user
+      let user = await tx.user.findUnique({ where: { email: customerEmail } });
+      const isNewUser = !user;
+      let temporaryPassword = '';
+      if (!user) {
+        const bcrypt = require('bcryptjs');
+        temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
+        const hashed = await bcrypt.hash(temporaryPassword, 12);
+        user = await tx.user.create({
+          data: {
+            email: customerEmail,
+            name: customerName,
+            password: hashed,
+            role: 'customer',
+            mustChangePassword: true
+          }
+        });
+        console.log(`✅ New user created via webhook: ${user.email}`);
+      }
+
+      // Create order
+      const order = await tx.order.create({
+        data: {
+          orderNumber: `STRIPE-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`,
+          userId: user.id,
+          status: 'COMPLETED',
+          totalAmount: totalIncl,
+          currency: String(session.currency || 'SEK').toUpperCase(),
+          items: {
+            create: items.map((it) => ({
+              courseId: null,
+              name: it.name,
+              price: it.price,
+              quantity: it.quantity || 1,
+              type: it.type || 'course'
+            }))
+          }
+        }
+      });
+
+      // Record payment
+      await tx.payment.create({
+        data: {
+          orderId: order.id,
+          paymentMethod: 'stripe',
+          status: 'COMPLETED',
+          amount: totalIncl,
+          currency: String(session.currency || 'SEK').toUpperCase(),
+          externalId: String(paymentIntentId),
+          processedAt: new Date(),
+          gatewayResponse: { sessionId: session.id }
+        }
+      });
+
+      // Create purchases for courses
+      const purchasedCourses: any[] = [];
+      for (const it of items.filter(i => i.type === 'course')) {
+        const course = await tx.courseProduct.findFirst({
+          where: {
+            OR: [
+              { name: it.name },
+              { name: { contains: it.name.split('Functional ')[1] || '', mode: 'insensitive' } }
+            ]
+          }
+        });
+        if (!course) continue;
+        const existingPurchase = await tx.purchase.findUnique({ where: { userId_courseId: { userId: user.id, courseId: course.id } } });
+        if (!existingPurchase) {
+          const purchase = await tx.purchase.create({
+            data: {
+              userId: user.id,
+              courseId: course.id,
+              amount: it.price * (it.quantity || 1),
+              status: 'completed',
+              orderId: order.id,
+              accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+            },
+            include: { course: true }
+          });
+          purchasedCourses.push(purchase.course);
+        }
+      }
+
+      // Send order confirmation (with credentials for new users)
+      try {
+        const VAT_RATE = 0.25;
+        const emailCourses = items.filter(i => i.type === 'course').map(it => ({
+          name: it.name,
+          price: Math.round(it.price * (1 + VAT_RATE)) * (it.quantity || 1)
+        }));
+        await emailService.sendOrderConfirmation({
+          customerEmail: user.email,
+          customerName: user.name || user.email,
+          orderNumber: order.orderNumber,
+          totalAmount: totalIncl,
+          courses: emailCourses,
+          loginCredentials: (isNewUser && temporaryPassword) ? {
+            email: user.email,
+            password: temporaryPassword,
+            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
+          } : undefined
+        });
+        console.log('✅ Order confirmation sent via webhook to', user.email);
+      } catch (e) {
+        console.error('❌ Failed to send confirmation via webhook:', e);
+      }
+    });
   } catch (error) {
     console.error('Failed to handle checkout.session.completed:', error);
   }
@@ -584,15 +726,19 @@ async function completePayment(paymentId: string, webhookData: any) {
 
     // Send order confirmation email with login credentials if needed
     try {
+      const VAT_RATE = 0.25;
+      const emailCourses = payment.order.items
+        .filter((it: any) => it.type === 'course')
+        .map((it: any) => ({
+          name: it.name,
+          price: Math.round(it.price * (1 + VAT_RATE)) * it.quantity
+        }));
       const emailData = {
         customerEmail: user.email,
         customerName: user.name || user.email.split('@')[0],
         orderNumber: payment.order.orderNumber,
         totalAmount: payment.order.totalAmount,
-        courses: purchasedCourses.map(course => ({
-          name: course.name,
-          price: course.price
-        })),
+        courses: emailCourses,
         ...(needsLoginCredentials && {
           loginCredentials: {
             email: user.email,
