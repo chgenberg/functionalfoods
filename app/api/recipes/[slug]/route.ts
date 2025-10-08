@@ -25,7 +25,8 @@ export async function GET(
     const ALIASES: Record<string, string> = {
       'tonfisksallad-apple-sallad': 'tonfisksallad-med-apple',
       'squashspagetti-kottfarssas': 'squashspagetti-med-kottfarssas',
-      'omelett-bar': 'ugnsomelett-med-keso-och-bar',
+      // Map short slug to the correct "Omelett med bär" recipe
+      'omelett-bar': 'omelett-med-bar',
       'agghack-kalkon': 'agghack-med-kalkon',
       'stekt-agg-lax-2': 'stekt-agg-med-champinjoner-2',
       'stek-torsk-med-bearnaisesas-och-haricot-verts': 'stekt-torsk-med-bearnaisesas-och-haricots-verts',
