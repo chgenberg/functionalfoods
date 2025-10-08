@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ArrowRight, ChevronDown, Eye, EyeOff, Leaf, Lock, LogOut, Mail, Menu, Search, ShoppingCart, User, X } from "lucide-react";;
 import { useCart } from '../context/CartContext';
-import LanguageSwitcher from './LanguageSwitcher';
 import MobileMenu from './MobileMenu';
 import { useT } from '../lib/i18n/LanguageProvider';
 import { useAuth } from '../hooks/useAuth';
@@ -237,7 +236,6 @@ export default function Header() {
                   <User className="w-5 h-5 text-primary" />
                 </button>
               )}
-              <div className="hidden sm:block"><LanguageSwitcher /></div>
               <Link href="/cart" className="rounded-full p-2 hover:bg-primary/10 transition relative" aria-label={t('cart.label','Varukorg')}>
                 <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 {isLoaded && items.length > 0 && (<span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">{items.length}</span>)}
