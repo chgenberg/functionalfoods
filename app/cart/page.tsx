@@ -174,12 +174,12 @@ export default function CartPage() {
 
                       {/* Price */}
                       <div className="text-right">
-                        <div className="text-xl font-bold text-[#014421]">
-                          {(item.price * item.quantity).toLocaleString('sv-SE')} kr
-                        </div>
+                      <div className="text-xl font-bold text-[#014421]">
+                        {Math.round(item.price * item.quantity * 1.25).toLocaleString('sv-SE')} kr
+                      </div>
                         {item.quantity > 1 && (
                           <div className="text-sm text-gray-500">
-                            {item.price.toLocaleString('sv-SE')} kr/st
+                          {Math.round(item.price * 1.25).toLocaleString('sv-SE')} kr/st (inkl. moms)
                           </div>
                         )}
                       </div>
@@ -249,7 +249,7 @@ export default function CartPage() {
                       {item.name} × {item.quantity}
                     </span>
                     <span className="font-medium text-gray-900">
-                      {(item.price * item.quantity).toLocaleString('sv-SE')} kr
+                      {Math.round(item.price * item.quantity * 1.25).toLocaleString('sv-SE')} kr
                     </span>
                   </div>
                 ))}
@@ -257,8 +257,8 @@ export default function CartPage() {
 
               <div className="py-6 space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Delsumma (exkl. moms)</span>
-                  <span className="text-gray-900">{total.toLocaleString('sv-SE')} kr</span>
+                  <span className="text-gray-600">Delsumma (inkl. moms)</span>
+                  <span className="text-gray-900">{Math.round(total * 1.25).toLocaleString('sv-SE')} kr</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-sm">
@@ -268,11 +268,11 @@ export default function CartPage() {
                 )}
                 <div className="flex justify-between text-sm pb-3 border-b border-gray-200">
                   <span className="text-gray-600">Moms (25%)</span>
-                  <span className="text-gray-900">{Math.round((finalTotal) * 0.25).toLocaleString('sv-SE')} kr</span>
+                  <span className="text-gray-900">{Math.round(finalTotal * 0.25).toLocaleString('sv-SE')} kr</span>
                 </div>
                 <div className="flex justify-between text-xl font-bold pt-3">
                   <span className="text-[#014421]">Totalt (inkl. moms)</span>
-                  <span className="text-[#014421]">{Math.round((finalTotal) * 1.25).toLocaleString('sv-SE')} kr</span>
+                  <span className="text-[#014421]">{Math.round(finalTotal * 1.25).toLocaleString('sv-SE')} kr</span>
                 </div>
               </div>
 

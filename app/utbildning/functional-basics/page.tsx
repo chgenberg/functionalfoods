@@ -57,7 +57,7 @@ export default function FunctionalBasicsPage() {
     name: 'Functional Basics',
     price: campaignPriceExcl, // Pris exkl. moms (1147 kr inkl. moms kampanj)
     type: 'course' as const,
-    image: '/functional_basics.png',
+    image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
     quantity: 1
   };
 
