@@ -71,9 +71,6 @@ const FunctionalFoodsOverview: React.FC<FunctionalFoodsOverviewProps> = ({ onCon
               <p>
                 Känner du dig trött när du har ätit? Hamnar du ofta i matkoma? Det gör du inte när du äter Functional Foods. Första steget är det mest betydande för hälsan, för att läka och bygga en hälsosam kropp och ett alert sinne. Maten du äter ska ge mervärde för kroppen och stötta och läka kroppens alla organ. Maten ska ge energi och framförallt vara njutbar att äta!
               </p>
-              <p>
-                Recepten i den här boken bygger på Functional Foods och du kommer upptäcka såväl nya smaker som nya råvaror och hur de kan tillagas. Ge dig själv tid i köket så hoppas jag att du ska känna lust och inspiration när du väl lagar maten.
-              </p>
             </div>
           </motion.div>
 
