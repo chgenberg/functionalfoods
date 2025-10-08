@@ -25,7 +25,6 @@ export async function GET(
     const ALIASES: Record<string, string> = {
       'tonfisksallad-apple-sallad': 'tonfisksallad-med-apple',
       'squashspagetti-kottfarssas': 'squashspagetti-med-kottfarssas',
-      'laxfile-med-ratatouille': 'het-ratatouille',
       'omelett-bar': 'ugnsomelett-med-keso-och-bar',
       'agghack-kalkon': 'agghack-med-kalkon',
       'stekt-agg-lax-2': 'stekt-agg-med-champinjoner-2',
