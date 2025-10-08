@@ -90,11 +90,11 @@ export async function POST(req: NextRequest) {
       const fat = toNum(rawN.fat ?? rawN.fats);
       const fiber = toNum(rawN.fiber ?? rawN.fibre ?? rawN.fibers);
       const nutritionPerServing = {
-        ...(kcal ? { kcal } : {}),
-        ...(protein ? { protein } : {}),
-        ...(carbs ? { carbs } : {}),
-        ...(fat ? { fat } : {}),
-        ...(fiber ? { fiber } : {})
+        ...(kcal !== undefined ? { kcal } : {}),
+        ...(protein !== undefined ? { protein } : {}),
+        ...(carbs !== undefined ? { carbs } : {}),
+        ...(fat !== undefined ? { fat } : {}),
+        ...(fiber !== undefined ? { fiber } : {})
       } as any;
       const hasNutrition = Object.keys(nutritionPerServing).length > 0;
       let instructionsArray: string[] = [];
