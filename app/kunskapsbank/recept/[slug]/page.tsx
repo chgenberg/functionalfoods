@@ -118,7 +118,8 @@ export default function RecipePage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             recipeSlug: recipe.slug,
-            servings: servings,
+            // Ensure we never request fewer than the recipe's base servings to avoid initial halved amounts
+            servings: Math.max(servings, (recipe.servings as number | undefined) || 1),
             courseType: fromCourse,
             weekNumber: fromWeek ? parseInt(fromWeek) : undefined
           })
