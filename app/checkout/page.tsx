@@ -358,7 +358,7 @@ export default function Checkout() {
                       <p className="text-sm text-gray-500">
                         {item.type === 'course' ? 'Kurs' : 'Bok'} • {item.quantity} st
                       </p>
-                      <p className="font-medium text-gray-900 mt-1">{Math.round(item.price * (1 + VAT_RATE)).toLocaleString()} kr</p>
+                      <p className="font-medium text-gray-900 mt-1">{Math.ceil(item.price * (1 + VAT_RATE)).toLocaleString()} kr</p>
                     </div>
                   </div>
                 ))}

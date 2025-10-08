@@ -281,6 +281,7 @@ export default function FunctionalBasicsPage() {
               transition={{ delay: 0.4 }}
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
+              <div className="text-sm text-gray-500 line-through">{formatPrice(2295)} kr</div>
               <div className="text-3xl font-bold text-primary">{formatPrice(campaignPriceIncl)} kr</div>
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
