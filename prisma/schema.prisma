@@ -582,7 +582,7 @@ model KnowledgeDocument {
   keyTakeaways  Json?
   readTime      Int      @default(5)
   course        String   // deprecated: single course; kept for backward-compat
-  courses       String[]? // multi-course support: e.g., ["basic","flow","energy"]
+  courses       String[] @default([]) // multi-course support: e.g., ["basic","flow","energy"]
   order         Int      @default(0)
   weekNumber    Int?
   createdAt     DateTime @default(now())
