@@ -48,16 +48,19 @@ export default function UtbildningPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {courses.map((course) => (
+          {courses.map((course, idx) => (
             <div key={course.id} className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-shadow">
               <div className="relative h-48 md:h-60 w-full overflow-hidden">
+                {/* Make image clickable to course page */}
+                <Link href={course.href} className="absolute inset-0 z-10" aria-label={course.title} />
                 <Image
                   src={course.image}
                   alt={course.title}
                   fill
-                  priority={true}
-                  loading="eager"
-                  quality={85}
+                  priority={idx < 2}
+                  loading={idx < 2 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  quality={70}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                 />
