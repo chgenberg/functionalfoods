@@ -106,7 +106,8 @@ const getMealLabel = (type: string, name?: string): string => {
     'bananmuffins',
     'jordgubbssylt',
     'kesofralla',
-    'kesofrallor'
+    'kesofrallor',
+    'havrefrallor'
   ];
   // Only classify as "Egenbakat" for snack/dessert to avoid mislabeling breakfasts
   const egenbakatEligible = type === 'snack' || type === 'dessert';
