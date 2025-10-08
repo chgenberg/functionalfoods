@@ -47,10 +47,15 @@ export default function FunctionalBasicsPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const { addItem } = useCart();
 
+  // Campaign pricing: 1147 kr incl. VAT
+  const VAT_RATE = 0.25;
+  const campaignPriceIncl = 1147; // SEK inkl. moms
+  const campaignPriceExcl = Math.round((campaignPriceIncl / (1 + VAT_RATE)) * 100) / 100; // exkl. moms
+
   const course = {
     id: 'functional-basics',
     name: 'Functional Basics',
-    price: 1836, // Pris exkl. moms (2295 kr inkl. moms)
+    price: campaignPriceExcl, // Pris exkl. moms (1147 kr inkl. moms kampanj)
     type: 'course' as const,
     image: '/functional_basics.png',
     quantity: 1
@@ -276,7 +281,7 @@ export default function FunctionalBasicsPage() {
               transition={{ delay: 0.4 }}
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
-              <div className="text-3xl font-bold text-primary">{formatPrice(2295)} kr</div>
+              <div className="text-3xl font-bold text-primary">{formatPrice(campaignPriceIncl)} kr</div>
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
@@ -558,7 +563,7 @@ export default function FunctionalBasicsPage() {
               <AddToCart 
                 id="functional-basics"
                 name="Functional Basics"
-                price={997}
+                price={campaignPriceExcl}
                 type="course"
                 image={course.image}
               />
