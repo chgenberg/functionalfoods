@@ -57,11 +57,28 @@ const RecipeNutrition = ({ recipeLink }: { recipeLink?: string }) => {
   
   if (!nutrition) return null;
   
+  const kcal = Math.round(
+    (nutrition as any).kcal || nutrition.calories || nutrition.perServing?.energy || 0
+  );
+  const protein = Math.round(
+    nutrition.protein || nutrition.perServing?.protein || 0
+  );
+  const carbs = Math.round(
+    (nutrition as any).carbs || nutrition.carbohydrates || nutrition.perServing?.carbohydrates || 0
+  );
+  const fat = Math.round(
+    nutrition.fat || nutrition.perServing?.fat || 0
+  );
+  const fiber = Math.round(
+    (nutrition as any).fiber || (nutrition as any).fibre || (nutrition.perServing as any)?.fiber || (nutrition.perServing as any)?.fibre || 0
+  );
+
   const values = [
-    { label: 'kcal', value: Math.round(nutrition.calories || nutrition.perServing?.energy || 0) },
-    { label: 'P', value: Math.round(nutrition.protein || nutrition.perServing?.protein || 0), unit: 'g' },
-    { label: 'K', value: Math.round(nutrition.carbohydrates || nutrition.perServing?.carbohydrates || 0), unit: 'g' },
-    { label: 'F', value: Math.round(nutrition.fat || nutrition.perServing?.fat || 0), unit: 'g' }
+    { label: 'kcal', value: kcal },
+    { label: 'P', value: protein, unit: 'g' },
+    { label: 'K', value: carbs, unit: 'g' },
+    { label: 'F', value: fat, unit: 'g' },
+    { label: 'Fi', value: fiber, unit: 'g' }
   ];
   
   return (
