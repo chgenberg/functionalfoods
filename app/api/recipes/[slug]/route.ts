@@ -30,6 +30,8 @@ export async function GET(
       'agghack-kalkon': 'agghack-med-kalkon',
       'stekt-agg-lax-2': 'stekt-agg-med-champinjoner-2',
       'stek-torsk-med-bearnaisesas-och-haricot-verts': 'stekt-torsk-med-bearnaisesas-och-haricots-verts',
+      // Ensure common variation resolves too
+      'stekt-torsk-med-bearnaisesas-och-haricot-verts': 'stekt-torsk-med-bearnaisesas-och-haricots-verts',
       // New: slugs missing in meal plan mapped to existing ones
       'smoothiebowl-med-mango-och-jordgubbar': 'smoothiebowl',
       'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
