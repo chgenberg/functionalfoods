@@ -10,7 +10,13 @@ const prisma = new PrismaClient();
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const course = (searchParams.get('course') || 'basic') as 'basic' | 'flow' | 'energy';
+    const courseRaw = (searchParams.get('course') || 'basic').toLowerCase();
+    // Normalize course ids coming from URLs like 'functional-flow', 'functional-basics', etc.
+    const course = (courseRaw.includes('flow')
+      ? 'flow'
+      : courseRaw.includes('energy') || courseRaw.includes('insulin')
+      ? 'energy'
+      : 'basic') as 'basic' | 'flow' | 'energy';
     const weekNumber = parseInt(searchParams.get('week') || '1', 10);
 
     // Prefer static TS meal plans to avoid stale DB overriding during launch,
