@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { mealPlans as basicMealPlans, flowMealPlans, energyMealPlans } from '@/app/data/mealPlans';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -12,19 +13,29 @@ export async function GET(req: NextRequest) {
     const course = (searchParams.get('course') || 'basic') as 'basic' | 'flow' | 'energy';
     const weekNumber = parseInt(searchParams.get('week') || '1', 10);
 
-    // DB is the single source of truth. Do not fall back to TS.
+    // Prefer static TS meal plans to avoid stale DB overriding during launch,
+    // but keep DB title if present.
     const row = await (prisma as any).mealPlanWeek?.findUnique({
       where: { course_weekNumber: { course, weekNumber } }
     });
 
-    if (row) {
+    const map = course === 'basic' ? basicMealPlans : course === 'flow' ? flowMealPlans : energyMealPlans;
+    const weekKey = `week${weekNumber}` as keyof typeof map;
+    const staticWeek = (map as any)[weekKey];
+
+    if (staticWeek) {
       return NextResponse.json({
-        title: row.title || `Vecka ${weekNumber}`,
-        days: row.days
+        title: row?.title || staticWeek.title || `Vecka ${weekNumber}`,
+        days: staticWeek.days
       }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    // If not found, return an empty structure so UI doesn't show stale content
+    // Fallback to DB if TS missing (shouldn't happen)
+    if (row) {
+      return NextResponse.json({ title: row.title || `Vecka ${weekNumber}`, days: row.days }, { headers: { 'Cache-Control': 'no-store' } });
+    }
+
+    // As last resort
     return NextResponse.json({ title: `Vecka ${weekNumber}`, days: {} }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('Meal Plans API error:', e);
