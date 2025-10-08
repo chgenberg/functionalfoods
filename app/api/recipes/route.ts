@@ -290,7 +290,7 @@ export async function GET(request: NextRequest) {
       },
       categories: allCategories.sort(),
       statistics
-    }, { headers });
+    }, { headers: new Headers({ 'Cache-Control': 'no-store, max-age=0' }) });
 
   } catch (error) {
     console.error('Error in recipes API:', error);

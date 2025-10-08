@@ -163,7 +163,7 @@ export async function GET(req: NextRequest) {
     });
 
     // If DB had docs and no course param provided, merged covers both; if nothing found anywhere, return []
-    return NextResponse.json({ documents: finalDocs }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ documents: finalDocs }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
   } catch (e) {
     console.error('Knowledge API error:', e);
     return NextResponse.json({ documents: [] }, { status: 500, headers: { 'Cache-Control': 'no-store' } });
