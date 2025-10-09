@@ -19,7 +19,19 @@ export default function FunctionalEnergyOverview() {
   const [currentDay, setCurrentDay] = useState(1);
   
   useEffect(() => {
-    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem('energyStartDate') : null;
+    // Get user email from auth to make localStorage key user-specific
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    let userEmail = '';
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        userEmail = payload.email || payload.userId || '';
+      } catch {}
+    }
+    
+    const storageKey = userEmail ? `energyStartDate_${userEmail}` : 'energyStartDate';
+    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+    
     if (savedStartDate) {
       const startDate = new Date(savedStartDate as string);
       setCourseStartDate(startDate);
@@ -31,6 +43,16 @@ export default function FunctionalEnergyOverview() {
       
       setCurrentWeek(calculatedWeek);
       setCurrentDay(calculatedDay);
+    } else {
+      // New user - set start date to TODAY
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(storageKey, today.toISOString());
+      }
+      setCourseStartDate(today);
+      setCurrentWeek(1);
+      setCurrentDay(1);
     }
   }, []);
 
