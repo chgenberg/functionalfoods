@@ -21,13 +21,15 @@ export async function POST(request: NextRequest) {
     const { userIds, testMode = false } = body;
 
     // Fetch users to send emails to
+    // NOTE: Email is non-nullable in schema, so no need for email: { not: null }
+    // Select users who DO NOT have an active (unused, unexpired) password reset token
     const where: any = {
-      email: { not: null },
-      // Only send to users who don't have a reset token yet (haven't been migrated)
-      OR: [
-        { resetToken: null },
-        { resetTokenExpiry: { lt: new Date() } } // Or token has expired
-      ]
+      passwordResets: {
+        none: {
+          used: false,
+          expiresAt: { gt: new Date() }
+        }
+      }
     };
 
     if (userIds && Array.isArray(userIds) && userIds.length > 0) {
@@ -83,12 +85,20 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        // Update user with reset token
-        await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            resetToken,
-            resetTokenExpiry
+        // Upsert password reset token in PasswordReset table
+        await prisma.passwordReset.upsert({
+          where: { userId: user.id },
+          update: {
+            token: resetToken,
+            expiresAt: resetTokenExpiry,
+            used: false,
+            createdAt: new Date()
+          },
+          create: {
+            userId: user.id,
+            token: resetToken,
+            expiresAt: resetTokenExpiry,
+            used: false
           }
         });
 
