@@ -112,7 +112,10 @@ export async function POST(request: NextRequest) {
     const tags = ['Website Signup', 'Functional Foods', (lang || 'sv').toUpperCase()];
     if (source === 'health-quiz') {
       tags.push('Health Quiz');
+      console.log('🏷️ Adding "Health Quiz" tag to subscriber:', email);
     }
+    
+    console.log('📧 Subscribing to Mailchimp with tags:', tags);
     
     const memberData = {
       email_address: email,
