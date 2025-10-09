@@ -72,6 +72,7 @@ interface FilterOptions {
   minAmount: string;
   maxAmount: string;
   customer: string;
+  couponCode: string;
   sortBy: string;
   sortOrder: 'asc' | 'desc';
 }
@@ -102,6 +103,7 @@ export default function EnhancedAdminSalesPage() {
     minAmount: '',
     maxAmount: '',
     customer: '',
+    couponCode: '',
     sortBy: 'created',
     sortOrder: 'desc'
   });
@@ -196,6 +198,14 @@ export default function EnhancedAdminSalesPage() {
       filtered = filtered.filter(p => 
         p.customer.email.toLowerCase().includes(search) ||
         p.customer.name?.toLowerCase().includes(search)
+      );
+    }
+
+    // Coupon code filter (search in order metadata)
+    if (filters.couponCode) {
+      const search = filters.couponCode.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.orderInfo?.items.some(item => item.name.toLowerCase().includes(search))
       );
     }
 
@@ -367,9 +377,51 @@ export default function EnhancedAdminSalesPage() {
       minAmount: '',
       maxAmount: '',
       customer: '',
+      couponCode: '',
       sortBy: 'created',
       sortOrder: 'desc'
     });
+  };
+
+  // Calculate course-specific stats from filtered payments
+  const getCourseStats = () => {
+    const courseMap: Record<string, { count: number; revenue: number }> = {};
+    
+    filteredPayments.forEach(payment => {
+      if (payment.status !== 'succeeded') return;
+      
+      const course = extractCourseFromDescription(payment.description);
+      if (course !== '-') {
+        if (!courseMap[course]) {
+          courseMap[course] = { count: 0, revenue: 0 };
+        }
+        courseMap[course].count += 1;
+        courseMap[course].revenue += payment.amount - payment.refundAmount;
+      }
+    });
+    
+    return Object.entries(courseMap)
+      .map(([course, stats]) => ({ course, ...stats }))
+      .sort((a, b) => b.revenue - a.revenue);
+  };
+
+  // Calculate daily revenue for chart
+  const getDailyRevenue = () => {
+    const dailyMap: Record<string, number> = {};
+    
+    filteredPayments.forEach(payment => {
+      if (payment.status !== 'succeeded') return;
+      
+      const date = new Date(payment.created).toISOString().split('T')[0];
+      if (!dailyMap[date]) {
+        dailyMap[date] = 0;
+      }
+      dailyMap[date] += (payment.amount - payment.refundAmount) / 100;
+    });
+    
+    return Object.entries(dailyMap)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .slice(-30); // Last 30 days
   };
 
   if (loading) {
@@ -549,7 +601,7 @@ export default function EnhancedAdminSalesPage() {
                 </div>
 
                 {/* Customer Search */}
-                <div className="lg:col-span-2">
+                <div>
                   <label className="admin-label">Sök kund</label>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -558,6 +610,21 @@ export default function EnhancedAdminSalesPage() {
                       value={filters.customer}
                       onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
                       placeholder="Namn eller e-postadress..."
+                      className="admin-input pl-10"
+                    />
+                  </div>
+                </div>
+
+                {/* Coupon Code Search */}
+                <div>
+                  <label className="admin-label">Rabattkod</label>
+                  <div className="relative">
+                    <Zap className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={filters.couponCode}
+                      onChange={(e) => setFilters(prev => ({ ...prev, couponCode: e.target.value }))}
+                      placeholder="Sök rabattkod..."
                       className="admin-input pl-10"
                     />
                   </div>
@@ -594,12 +661,92 @@ export default function EnhancedAdminSalesPage() {
                   {filters.dateRange !== 'all' && ` • ${dateRangePresets[filters.dateRange as keyof typeof dateRangePresets].label}`}
                   {filters.status !== 'all' && ` • ${getStatusText(filters.status)}`}
                   {filters.course !== 'all' && ` • ${filters.course}`}
+                  {filters.couponCode && ` • Rabattkod: ${filters.couponCode}`}
                 </p>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue Over Time Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="admin-card"
+        >
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Försäljning över tid (senaste 30 dagarna)</h3>
+          <div className="space-y-2">
+            {getDailyRevenue().map(([date, revenue], idx) => {
+              const maxRevenue = Math.max(...getDailyRevenue().map(([, r]) => r));
+              const percentage = maxRevenue > 0 ? (revenue / maxRevenue) * 100 : 0;
+              
+              return (
+                <div key={date} className="flex items-center gap-3">
+                  <span className="text-xs text-gray-500 w-20">{new Date(date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}</span>
+                  <div className="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${percentage}%` }}
+                      transition={{ delay: idx * 0.02, duration: 0.5 }}
+                      className="h-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-end pr-2"
+                    >
+                      {revenue > 0 && (
+                        <span className="text-xs text-white font-medium">{revenue.toFixed(0)} kr</span>
+                      )}
+                    </motion.div>
+                  </div>
+                </div>
+              );
+            })}
+            {getDailyRevenue().length === 0 && (
+              <p className="text-sm text-gray-500 text-center py-8">Ingen försäljningsdata tillgänglig</p>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Course Sales Breakdown */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="admin-card"
+        >
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Försäljning per kurs</h3>
+          <div className="space-y-4">
+            {getCourseStats().map((stat, idx) => {
+              const totalRevenue = getCourseStats().reduce((sum, s) => sum + s.revenue, 0);
+              const percentage = totalRevenue > 0 ? (stat.revenue / totalRevenue) * 100 : 0;
+              const colors = ['from-blue-500 to-blue-600', 'from-purple-500 to-purple-600', 'from-orange-500 to-orange-600'];
+              
+              return (
+                <div key={stat.course}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">{stat.course}</span>
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-gray-900">{(stat.revenue / 100).toFixed(0)} kr</p>
+                      <p className="text-xs text-gray-500">{stat.count} st</p>
+                    </div>
+                  </div>
+                  <div className="bg-gray-100 rounded-full h-3 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${percentage}%` }}
+                      transition={{ delay: idx * 0.1, duration: 0.6 }}
+                      className={`h-full bg-gradient-to-r ${colors[idx % colors.length]}`}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            {getCourseStats().length === 0 && (
+              <p className="text-sm text-gray-500 text-center py-8">Ingen kursdata tillgänglig</p>
+            )}
+          </div>
+        </motion.div>
+      </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
