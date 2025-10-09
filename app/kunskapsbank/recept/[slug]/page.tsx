@@ -13,6 +13,7 @@ import { optimizeImageUrl, getResponsiveSizes } from '../../../lib/imageOptimiza
 import { getRawMaterials, findRawMaterial, type RawMaterial } from '../../../lib/ingredientLinker';
 import LinkedIngredient from '../../../components/LinkedIngredient';
 import { useSearchParams } from 'next/navigation';
+import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 import { mealPlans, flowMealPlans, energyMealPlans } from '../../../data/mealPlans';
 import { generateRecipePrintHTML } from '../../../lib/recipePrint';
 
@@ -54,6 +55,7 @@ export default function RecipePage() {
   const { user } = useAuth();
   const t = useT();
   const searchParams = useSearchParams();
+  const { toggleFavorite } = useFavoriteRecipes();
   
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
@@ -617,6 +619,21 @@ export default function RecipePage() {
     }
     
     localStorage.setItem('favoriteRecipeIds', JSON.stringify(favoriteIds));
+
+    // Sync with global favorites used by course completion tab
+    try {
+      const from = (searchParams.get('from') || 'basics') as 'basics' | 'flow' | 'energy';
+      const week = parseInt(searchParams.get('week') || '1', 10) || 1;
+      const link = typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : undefined;
+      toggleFavorite({
+        name: recipe.title || recipe.slug,
+        recipeLink: link,
+        courseType: (from === 'basics' || from === 'flow' || from === 'energy') ? from : 'basics',
+        weekNumber: week,
+        dayName: 'Okänd',
+        mealType: 'dinner'
+      });
+    } catch {}
   };
 
   const toggleIngredient = (index: number) => {
