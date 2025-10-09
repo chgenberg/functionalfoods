@@ -90,11 +90,18 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ documents: [] }, { headers: { 'Cache-Control': 'no-store' } });
     }
     
-    // Load JSON for selected course and also merge in energy if course=energy
+    // Load JSON for selected course; if querying by slug without explicit course
+    // make sure we search across Flow and Energy JSON too so valid docs aren't missed
     const raw = fs.readFileSync(filePath, 'utf8');
     let jsonDocs = JSON.parse(raw);
     if (!course && slug) {
-      // If only slug provided and file didn't include it, try other courses too
+      // Always augment with Flow docs
+      const flowPath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-flow.json');
+      if (fs.existsSync(flowPath)) {
+        const flowDocs = JSON.parse(fs.readFileSync(flowPath, 'utf8'));
+        jsonDocs = [...jsonDocs, ...flowDocs];
+      }
+      // And Energy docs
       const energyPath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-energy.json');
       if (fs.existsSync(energyPath)) {
         const energyDocs = JSON.parse(fs.readFileSync(energyPath, 'utf8'));
