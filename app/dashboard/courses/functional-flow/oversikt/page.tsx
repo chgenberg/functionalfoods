@@ -76,10 +76,7 @@ export default function FunctionalFlowOverview() {
     return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
   }, []);
 
-  const totalDays = 42; // 6 weeks * 7 days
-  const completedDays = Math.max(0, Math.min((currentWeek - 1) * 7 + currentDay - 1, totalDays));
-  const progressPercentage = (completedDays / totalDays) * 100;
-  const daysRemaining = totalDays - completedDays;
+  // Progress calculations removed - not needed after removing progress section
 
   const weekData = [
     { number: 1, title: "Optimera din energi", subtitle: "Grundläggande energioptimering", recipes: 22 },

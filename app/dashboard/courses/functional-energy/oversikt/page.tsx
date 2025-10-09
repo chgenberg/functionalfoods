@@ -76,13 +76,7 @@ export default function FunctionalEnergyOverview() {
     return () => window.removeEventListener('dashboard-help-click', handler as EventListener);
   }, []);
 
-  const totalDays = 42; // 6 weeks * 7 days
-  const completedDays = courseStartDate ? Math.min(
-    Math.floor((new Date().getTime() - courseStartDate.getTime()) / (1000 * 60 * 60 * 24)),
-    totalDays
-  ) : 0;
-  const progressPercentage = Math.round((completedDays / totalDays) * 100);
-  const daysRemaining = Math.max(0, totalDays - completedDays);
+  // Progress calculations removed - not needed after removing progress section
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#F7F5F0] via-[#F7F1E8] to-[#F3EFE3]">
