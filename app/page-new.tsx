@@ -34,6 +34,7 @@ export default function Home() {
   const searchParams = useSearchParams();
   const heroRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
   const [heroInView, setHeroInView] = useState(false);
 
   useEffect(() => {
@@ -44,6 +45,35 @@ export default function Home() {
       }
     } catch {}
   }, [searchParams]);
+
+  // Ensure mobile video autoplays even if iOS blocks initial autoplay
+  useEffect(() => {
+    const video = mobileVideoRef.current;
+    if (!video) return;
+
+    const attemptPlay = () => {
+      try {
+        video.muted = true;
+        if (video.paused) {
+          void video.play();
+        }
+      } catch {}
+    };
+
+    // Try immediately, on first touch, and when tab becomes visible
+    attemptPlay();
+    const onFirstTouch = () => attemptPlay();
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') attemptPlay();
+    };
+
+    window.addEventListener('touchstart', onFirstTouch, { once: true });
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   useEffect(() => {
     const chosen = typeof localStorage !== 'undefined' ? localStorage.getItem('lang') : null;
@@ -124,6 +154,7 @@ export default function Home() {
           />
           {/* Mobile: Local video optimized for portrait */}
           <video
+            ref={mobileVideoRef}
             className="absolute inset-0 w-full h-full object-cover md:hidden"
             style={{ zIndex: 12, objectPosition: 'center center' }}
             poster="/hero_poster.jpg"
