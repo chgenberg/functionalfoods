@@ -25,13 +25,20 @@ export async function GET(req: NextRequest) {
 
       // Only proceed if we have an email and either paid or free order
       if (customerEmail && (session.amount_total === 0 || session.payment_status === 'paid')) {
-        // Idempotency: if payment exists, assume webhook handled it
+        // Idempotency: if payment OR order with this session ID exists, assume webhook handled it
         let existingPayment = null as any;
         if (paymentIntentId) {
           existingPayment = await prisma.payment.findFirst({ where: { externalId: String(paymentIntentId) } });
         }
+        
+        // Also check if order with this session ID exists
+        const existingOrder = await prisma.order.findFirst({
+          where: {
+            orderNumber: { contains: session.id }
+          }
+        });
 
-        if (!existingPayment) {
+        if (!existingPayment && !existingOrder) {
           // Parse items from metadata
           let items: Array<{ id: string; name: string; price: number; quantity: number; type: string }> = [];
           try {
@@ -60,11 +67,11 @@ export async function GET(req: NextRequest) {
                 });
               }
 
-              // Create order if missing
+              // Create order if missing (use session.id for idempotency)
               const totalIncl = (session.amount_total || 0) / 100;
               const order = await tx.order.create({
                 data: {
-                  orderNumber: `STRIPE-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`,
+                  orderNumber: session.amount_total === 0 ? `STRIPE-FREE-${session.id}` : `STRIPE-${session.id}`,
                   userId: user.id,
                   status: 'COMPLETED',
                   totalAmount: totalIncl,

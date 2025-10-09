@@ -287,10 +287,23 @@ async function handleCheckoutSessionCompleted(session: any) {
       ? session.payment_intent
       : session.payment_intent?.id;
 
-    // Idempotency guard: if we already recorded this payment, exit
-    const already = await prisma.payment.findFirst({ where: { externalId: String(paymentIntentId) } });
-    if (already) {
-      console.log('ℹ️ Payment already recorded. Skipping duplicate processing.');
+    // Idempotency guard: if we already recorded this payment OR session, exit
+    const alreadyPayment = await prisma.payment.findFirst({ where: { externalId: String(paymentIntentId) } });
+    if (alreadyPayment) {
+      console.log('ℹ️ Payment already recorded for PI:', paymentIntentId, '- Skipping duplicate processing.');
+      return;
+    }
+    // Also check if we already processed this session ID (stored in gatewayResponse)
+    const alreadySession = await prisma.payment.findFirst({
+      where: {
+        gatewayResponse: {
+          path: ['sessionId'],
+          equals: session.id
+        }
+      }
+    });
+    if (alreadySession) {
+      console.log('ℹ️ Session already processed:', session.id, '- Skipping duplicate processing.');
       return;
     }
 
@@ -344,10 +357,10 @@ async function handleCheckoutSessionCompleted(session: any) {
         console.log(`✅ New user created via webhook: ${user.email}`);
       }
 
-      // Create order
+      // Create order with session ID in orderNumber for idempotency
       const order = await tx.order.create({
         data: {
-          orderNumber: `STRIPE-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`,
+          orderNumber: `STRIPE-${session.id}`,
           userId: user.id,
           status: 'COMPLETED',
           totalAmount: totalIncl,
@@ -448,6 +461,17 @@ async function handleFreeOrder(session: any) {
       return;
     }
 
+    // Idempotency guard: check if we already processed this free session
+    const alreadyProcessed = await prisma.order.findFirst({
+      where: {
+        orderNumber: { contains: session.id }
+      }
+    });
+    if (alreadyProcessed) {
+      console.log('ℹ️ Free order session already processed:', session.id, '- Skipping duplicate.');
+      return;
+    }
+
     // Parse metadata to get items
     const metadata = session.metadata || {};
     let items: any[] = [];
@@ -495,8 +519,8 @@ async function handleFreeOrder(session: any) {
         console.log(`✅ Existing user found: ${user.email}`);
       }
 
-      // Create order
-      const orderNumber = `STRIPE-FREE-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+      // Create order with session ID in orderNumber for idempotency
+      const orderNumber = `STRIPE-FREE-${session.id}`;
       const order = await tx.order.create({
         data: {
           orderNumber,
