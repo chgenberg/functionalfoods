@@ -8,10 +8,12 @@ import { MdDinnerDining } from 'react-icons/md';
 import { getWeekData } from '@/app/data/mealPlans';
 import Image from 'next/image';
 import { ArrowLeft, ArrowRight, Calendar, Check, Clock, Coffee, Heart, Lightbulb, Share2, ShoppingCart, Sun } from "lucide-react";;
+import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 
 export default function Week1Day1Page() {
   const [completedMeals, setCompletedMeals] = useState<string[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { toggleFavorite, isFavorite } = useFavoriteRecipes();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -193,10 +195,26 @@ export default function Week1Day1Page() {
                         >
                           Se fullständigt recept →
                         </Link>
-                        
-                        <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
-                          <Heart className="w-5 h-5 text-gray-600" />
-                        </button>
+                        {(() => {
+                          const favPayload = {
+                            name: mealData.meal.name,
+                            recipeLink: mealData.meal.recipeLink as string,
+                            courseType: 'basics' as const,
+                            weekNumber: 1 as const,
+                            dayName: dayName,
+                            mealType: (mealData.type as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert')
+                          };
+                          const active = isFavorite(favPayload);
+                          return (
+                            <button
+                              onClick={() => toggleFavorite(favPayload)}
+                              title={active ? 'Ta bort från favoriter' : 'Lägg till som favorit'}
+                              className={`p-2 rounded-lg transition-colors ${active ? 'bg-yellow-100' : 'hover:bg-white/50'}`}
+                            >
+                              <Heart className={`w-5 h-5 ${active ? 'text-yellow-600' : 'text-gray-600'}`} />
+                            </button>
+                          );
+                        })()}
                         
                         <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
                           <Share2 className="w-5 h-5 text-gray-600" />

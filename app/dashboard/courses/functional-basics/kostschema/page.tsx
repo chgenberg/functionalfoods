@@ -10,9 +10,11 @@ import Image from 'next/image';
 
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import { ChevronLeft, ChevronRight, Calendar, Clock, Star, Heart, ShoppingCart, Download, Printer, Sun, Coffee, Check, ArrowLeft, Search, Filter } from 'lucide-react';
+import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: string, icon: any, time: string, day: string }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const { toggleFavorite, isFavorite } = useFavoriteRecipes();
 
   const typeColors: Record<string, { bg: string, text: string, accent: string }> = {
     breakfast: { bg: 'bg-yellow-50', text: 'text-orange-700', accent: 'bg-orange-400' },
@@ -85,6 +87,28 @@ const MealCard = ({ meal, type, icon: Icon, time, day }: { meal: any, type: stri
                 →
               </motion.span>
             </Link>
+          )}
+          {meal.name && (
+            (() => {
+              const fav = {
+                name: meal.name as string,
+                recipeLink: meal.recipeLink as string,
+                courseType: 'basics' as const,
+                weekNumber: 1 as const,
+                dayName: day,
+                mealType: (type as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert')
+              };
+              const active = isFavorite(fav);
+              return (
+                <button
+                  onClick={(e) => { e.stopPropagation(); toggleFavorite(fav); }}
+                  className={`ml-3 p-2 rounded-lg transition-colors ${active ? 'bg-yellow-100' : 'hover:bg-white/50'}`}
+                  title={active ? 'Ta bort från favoriter' : 'Lägg till som favorit'}
+                >
+                  <Heart className={`w-5 h-5 ${active ? 'text-yellow-600' : 'text-gray-600'}`} />
+                </button>
+              );
+            })()
           )}
         </div>
       </div>
