@@ -318,13 +318,15 @@ export default function FunctionalFlowOverview() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                 <a
-                  href="/dashboard/community"
+                  href="https://www.facebook.com/groups/1168295381877412/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-3 p-4 bg-[#014421] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
                   <Users className="w-6 h-6" />
                   <div>
                     <div className="font-bold">COMMUNITY</div>
-                    <div className="text-sm opacity-90">Gå med i vår grupp</div>
+                    <div className="text-sm opacity-90">Gå med i vår Facebook‑grupp</div>
                   </div>
                 </a>
                 
