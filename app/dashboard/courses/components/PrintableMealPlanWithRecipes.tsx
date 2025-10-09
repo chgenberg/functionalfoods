@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { Printer } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Printer, X, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Meal {
   name: string;
@@ -41,6 +41,7 @@ interface RecipeDetails {
 
 export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, courseName, courseType }: PrintableMealPlanProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPopupBlockedModal, setShowPopupBlockedModal] = useState(false);
 
   const formatMealName = (name: string) => {
     if (!name) return '';
@@ -136,7 +137,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
       const printWindow = window.open('', '_blank', 'noopener');
       if (!printWindow) {
         setIsLoading(false);
-        alert('Tillåt popup-fönster för att kunna skriva ut.');
+        setShowPopupBlockedModal(true);
         return;
       }
 
@@ -600,15 +601,105 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
   };
 
   return (
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={handlePrint}
-      disabled={isLoading}
-      className="flex items-center gap-2 bg-[#014421] text-white px-6 py-3 rounded-xl hover:bg-[#116530] transition-all shadow-lg hover:shadow-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      <Printer className="w-5 h-5" />
-      <span>{isLoading ? 'Förbereder...' : 'Skriv ut måltidsplan'}</span>
-    </motion.button>
+    <>
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={handlePrint}
+        disabled={isLoading}
+        className="flex items-center gap-2 bg-[#014421] text-white px-6 py-3 rounded-xl hover:bg-[#116530] transition-all shadow-lg hover:shadow-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Printer className="w-5 h-5" />
+        <span>{isLoading ? 'Förbereder...' : 'Skriv ut måltidsplan'}</span>
+      </motion.button>
+
+      {/* Popup Blocked Modal */}
+      <AnimatePresence>
+        {showPopupBlockedModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                    <AlertCircle className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Popup-fönster blockerade
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowPopupBlockedModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="space-y-4 mb-6">
+                <p className="text-gray-700">
+                  Din webbläsare blockerar popup-fönster som behövs för utskrift. Följ dessa steg för att tillåta popups:
+                </p>
+
+                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                  <div className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-[#014421] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      1
+                    </span>
+                    <p className="text-sm text-gray-700">
+                      Klicka på <strong>Safari</strong> i menyn högst upp
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-[#014421] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      2
+                    </span>
+                    <p className="text-sm text-gray-700">
+                      Välj <strong>Inställningar för denna webbplats</strong>
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-[#014421] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      3
+                    </span>
+                    <p className="text-sm text-gray-700">
+                      Hitta <strong>Popup-fönster</strong> och ändra till <strong>Tillåt</strong>
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-[#014421] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      4
+                    </span>
+                    <p className="text-sm text-gray-700">
+                      Försök skriva ut igen
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-500 italic">
+                  💡 Du behöver bara göra detta en gång. Safari kommer ihåg dina inställningar.
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowPopupBlockedModal(false)}
+                  className="flex-1 px-4 py-2.5 bg-[#014421] text-white rounded-xl hover:bg-[#116530] transition-colors font-medium"
+                >
+                  Jag förstår
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
