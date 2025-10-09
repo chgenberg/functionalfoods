@@ -299,27 +299,28 @@ async function sendPlatformMigrationEmail(params: {
  */
 export async function GET() {
   try {
-    const totalUsers = await prisma.user.count({
-      where: {
-        email: { not: null }
-      }
-    });
+    // Email is non-nullable in schema; count all users
+    const totalUsers = await prisma.user.count();
 
     const usersNeedingMigration = await prisma.user.count({
       where: {
-        email: { not: null },
-        OR: [
-          { resetToken: null },
-          { resetTokenExpiry: { lt: new Date() } }
-        ]
+        passwordResets: {
+          none: {
+            used: false,
+            expiresAt: { gt: new Date() }
+          }
+        }
       }
     });
 
     const usersMigrated = await prisma.user.count({
       where: {
-        email: { not: null },
-        resetToken: { not: null },
-        resetTokenExpiry: { gte: new Date() }
+        passwordResets: {
+          some: {
+            used: false,
+            expiresAt: { gte: new Date() }
+          }
+        }
       }
     });
 
