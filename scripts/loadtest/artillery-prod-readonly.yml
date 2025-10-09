@@ -1,0 +1,38 @@
+config:
+  target: "https://ulrika-functional-foods-production.up.railway.app"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: Warmup
+    - duration: 60
+      arrivalRate: 20
+      rampTo: 40
+      name: Ramp
+    - duration: 30
+      arrivalRate: 40
+      name: Hold
+  defaults:
+    headers:
+      User-Agent: "artillery-loadtest/production-readonly"
+      Accept: "text/html,application/json"
+      Cache-Control: "no-cache"
+
+scenarios:
+  - name: Public browse
+    flow:
+      - get:
+          url: "/"
+      - get:
+          url: "/kunskapsbank/recept?free=true&limit=21&page=1"
+      - get:
+          url: "/kunskapsbank/recept?free=true&limit=21&page=2"
+      - get:
+          url: "/utbildning"
+      - get:
+          url: "/api/recipes?free=true&limit=21&page=1"
+      - get:
+          url: "/api/recipes?featured=true&limit=12&free=true"
+      - get:
+          url: "/api/recipes/random"
+
+
