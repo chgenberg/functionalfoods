@@ -132,17 +132,23 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
     setIsLoading(true);
     
     try {
-      // Fetch all recipe details
+      // Open the window synchronously to avoid popup blockers
+      const printWindow = window.open('', '_blank', 'noopener');
+      if (!printWindow) {
+        setIsLoading(false);
+        alert('Tillåt popup-fönster för att kunna skriva ut.');
+        return;
+      }
+
+      // Write a lightweight placeholder immediately so the window stays open
+      printWindow.document.write(`<!DOCTYPE html><html lang="sv"><head><meta charset="UTF-8"><title>Förbereder utskrift...</title><style>body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;color:#1a1a1a}</style></head><body><p>Förbereder utskrift av vecka ${weekNumber} ...</p></body></html>`);
+      printWindow.document.close();
+
+      // Fetch all recipe details after the window has opened
       const slugs = extractRecipeSlugs();
       console.log('📋 Extracted slugs:', slugs);
       const recipes = await fetchRecipeDetails(slugs);
       console.log('🍽️ Fetched recipes:', recipes.length);
-
-      const printWindow = window.open('', '_blank');
-      if (!printWindow) {
-        setIsLoading(false);
-        return;
-      }
 
       // Create a map for quick recipe lookup
       const recipeMap = new Map(recipes.map(r => [r.slug, r]));
@@ -572,6 +578,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
 </html>
       `;
 
+      printWindow.document.open();
       printWindow.document.write(htmlContent);
       printWindow.document.close();
       
