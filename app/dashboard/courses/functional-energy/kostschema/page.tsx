@@ -8,6 +8,7 @@ import { getMealForDay, getEnergyWeekData } from '@/app/data/mealPlans';
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Calendar, Clock, Star, Heart, ShoppingCart, Download, Printer, Sun, Moon, Coffee, Check, Plus } from 'lucide-react';
+import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 // no next/navigation hooks to avoid suspense in export
 
 // Helper function to generate recipe slug from name
@@ -24,6 +25,7 @@ const generateRecipeSlug = (name: string): string => {
 };
 
 const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: any }) => {
+  const { toggleFavorite, isFavorite } = useFavoriteRecipes();
   const typeColors: Record<string, string> = {
     breakfast: 'from-yellow-400 to-orange-500',
     lunch: 'from-emerald-400 to-teal-500',
@@ -49,6 +51,16 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
 
   // Generate recipe link from meal name if not provided
   const recipeLink = meal.recipeLink || `/kunskapsbank/recept/${generateRecipeSlug(meal.name)}`;
+
+  const fav = {
+    name: meal.name as string,
+    recipeLink: (meal.recipeLink || `/kunskapsbank/recept/${generateRecipeSlug(meal.name)}`) as string,
+    courseType: 'energy' as const,
+    weekNumber: 1 as const,
+    dayName: 'Dag',
+    mealType: (type as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert')
+  };
+  const active = isFavorite(fav);
 
   return (
     <motion.div
@@ -83,9 +95,10 @@ const MealCard = ({ meal, type, icon: Icon }: { meal: any, type: string, icon: a
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            onClick={() => toggleFavorite(fav)}
+            className={`p-1 rounded-full transition-colors ${active ? 'bg-yellow-100' : 'hover:bg-gray-100'}`}
           >
-            <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-red-500" />
+            <Heart className={`w-3 h-3 sm:w-4 sm:h-4 ${active ? 'text-yellow-600' : 'text-gray-400 hover:text-red-500'}`} />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
