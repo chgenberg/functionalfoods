@@ -129,6 +129,11 @@ export async function GET(req: NextRequest) {
       if (dbd.excerpt == null) mergedDoc.excerpt = existing.excerpt;
       if (dbd.readTime == null) mergedDoc.readTime = existing.readTime;
 
+      // CRITICAL: Preserve JSON content if DB has empty or null content to avoid blank pages
+      if (dbd.content === null || dbd.content === undefined || (typeof dbd.content === 'string' && dbd.content.trim() === '')) {
+        mergedDoc.content = existing.content ?? dbd.content;
+      }
+
       // Ensure courses array exists (prefer DB courses, fallback to single course)
       if (!Array.isArray(mergedDoc.courses) || mergedDoc.courses.length === 0) {
         mergedDoc.courses = mergedDoc.course ? [mergedDoc.course] : [];

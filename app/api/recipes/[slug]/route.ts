@@ -118,11 +118,14 @@ export async function GET(
     }
 
     console.log(`🖼️ Recipe API: Serving recipe "${localized.title}" (slug: ${canonicalSlug}${canonicalSlug !== requestedSlug ? `, alias: ${requestedSlug}` : ''}) with imageUrl: ${localized.imageUrl}`);
-    return NextResponse.json(localized, {
-      headers: {
-        'Cache-Control': 'no-store, max-age=0'
-      }
-    });
+    const isPersonalized = req.nextUrl.searchParams.has('tk');
+    const headers = new Headers();
+    if (isPersonalized) {
+      headers.set('Cache-Control', 'no-store');
+    } else {
+      headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+    }
+    return NextResponse.json(localized, { headers });
   } catch (error) {
     console.error('Error fetching recipe:', error);
     return NextResponse.json(

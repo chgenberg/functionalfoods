@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
       take: count
     });
 
-    return NextResponse.json(recipes);
+    const headers = new Headers();
+    headers.set('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
+    return NextResponse.json(recipes, { headers });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch random recipes' }, { status: 500 });
   }
