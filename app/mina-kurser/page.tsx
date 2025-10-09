@@ -297,31 +297,6 @@ export default function MyCoursesPage() {
                   </div>
                   
                   <div className="p-8">
-                    {metadata.progress && (
-                      <div className="mb-6">
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-lg font-semibold text-gray-700">Framsteg</span>
-                          <span className="text-lg font-bold text-[#014421]">{metadata.progress}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-3">
-                          <div
-                            className="h-3 rounded-full transition-all duration-1000"
-                            style={{ 
-                              backgroundColor: metadata.color,
-                              width: `${metadata.progress}%`
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                    
-                    {metadata.nextLesson && (
-                      <div className="mb-6 p-4 bg-gray-50 rounded-xl">
-                        <p className="text-sm text-gray-600 mb-1">Nästa lektion</p>
-                        <p className="font-semibold text-[#014421]">{metadata.nextLesson}</p>
-                      </div>
-                    )}
-                    
                     <button
                       onClick={() => handleCourseAccess(purchase.course.name)}
                       className="w-full bg-[#014421] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#112A12] transition-colors flex items-center justify-center gap-3"
@@ -394,105 +369,14 @@ export default function MyCoursesPage() {
                         </div>
                       </div>
                       
-                      {/* Content */}
-                      <div className="p-6">
-                        {/* Progress bar */}
-                        {metadata.progress && (
-                          <div className="mb-6">
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-sm text-gray-600">Framsteg</span>
-                              <span className="text-sm font-medium text-[#014421]">{metadata.progress}%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                              <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${metadata.progress}%` }}
-                                transition={{ duration: 1, delay: 0.5 }}
-                                className="h-full rounded-full"
-                                style={{ backgroundColor: metadata.color }}
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Metadata */}
-                        <div className="space-y-3 mb-6">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-lg ${metadata.bgColor} flex items-center justify-center`}>
-                              <Clock className="w-5 h-5" style={{ color: metadata.color }} />
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-500">Kurslängd</p>
-                              <p className="font-medium text-gray-900">{metadata.duration}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-lg ${metadata.bgColor} flex items-center justify-center`}>
-                              <TrendingUp className="w-5 h-5" style={{ color: metadata.color }} />
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-500">Nivå</p>
-                              <p className="font-medium text-gray-900">{metadata.level}</p>
-                            </div>
-                          </div>
-
-                          {metadata.nextLesson && (
-                            <div className="flex items-center gap-3">
-                              <div className={`w-10 h-10 rounded-lg ${metadata.bgColor} flex items-center justify-center`}>
-                                <BookOpen className="w-5 h-5" style={{ color: metadata.color }} />
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-500">Nästa lektion</p>
-                                <p className="font-medium text-gray-900 text-sm">{metadata.nextLesson}</p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* CTA Button removed per request */}
-                        {/* Previously here: Fortsätt kursen button */}
-                      </div>
+                      {/* No progress/metadata content as requested */}
                     </div>
                   </motion.div>
                 );
               })}
             </div>
 
-            {/* Quick stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mt-12 bg-white rounded-2xl shadow-sm p-8"
-            >
-              <h2 className="text-xl font-bold text-[#014421] mb-6 text-center">Din lärande resa</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-[#93C560]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Award className="w-8 h-8 text-[#93C560]" />
-                  </div>
-                  <p className="text-3xl font-bold text-[#014421]">{purchases.length}</p>
-                  <p className="text-gray-600">Aktiva kurser</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-[#6B8DD6]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Zap className="w-8 h-8 text-[#6B8DD6]" />
-                  </div>
-                  <p className="text-3xl font-bold text-[#014421]">
-                    {Math.round(purchases.reduce((acc, p) => acc + (courseMetadata[p.course.name]?.progress || 0), 0) / purchases.length)}%
-                  </p>
-                  <p className="text-gray-600">Total framsteg</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-[#FF7E70]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Sparkles className="w-8 h-8 text-[#FF7E70]" />
-                  </div>
-                  <p className="text-3xl font-bold text-[#014421]">∞</p>
-                  <p className="text-gray-600">1 års åtkomst</p>
-                </div>
-              </div>
-            </motion.div>
+            {/* Quick stats removed per request */}
           </>
         )}
       </div>
