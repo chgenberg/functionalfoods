@@ -514,6 +514,10 @@ export default function DayModal({
                               dayName,
                               mealType: meal.mealType.toLowerCase() as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert'
                             };
+                            console.log('🌟 Star button clicked! Recipe data:', recipeData);
+                            console.log('📍 courseType value:', courseType);
+                            console.log('📅 weekNumber:', weekNumber);
+                            console.log('📆 dayName:', dayName);
                             toggleFavorite(recipeData);
                           }}
                           whileHover={{ scale: 1.2 }}

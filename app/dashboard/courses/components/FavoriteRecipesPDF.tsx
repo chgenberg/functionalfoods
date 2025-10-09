@@ -12,9 +12,18 @@ interface FavoriteRecipesPDFProps {
 
 export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const { getFavoritesByCoursetype, isLoaded } = useFavoriteRecipes();
+  const { getFavoritesByCoursetype, isLoaded, favorites: allFavorites } = useFavoriteRecipes();
   const favorites = getFavoritesByCoursetype(courseType);
   const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy';
+  
+  // Debug logging
+  console.log('🎯 FavoriteRecipesPDF rendered with courseType:', courseType);
+  console.log('📊 Total favorites in localStorage:', allFavorites.length);
+  console.log('🔍 Favorites for this course:', favorites.length);
+  console.log('📝 All favorites by course:', allFavorites.reduce((acc, fav) => {
+    acc[fav.courseType] = (acc[fav.courseType] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>));
 
   // Group favorites by week - moved to component level
   const favoritesByWeek = favorites.reduce((acc, fav) => {

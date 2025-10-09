@@ -8,6 +8,7 @@ import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigatio
 import FavoriteRecipesPDF from '@/app/dashboard/courses/components/FavoriteRecipesPDF';
 import CourseReviewForm from '@/app/dashboard/courses/components/CourseReviewForm';
 import HelpGuide from '@/app/components/HelpGuide';
+import FavoritesDebug from '@/app/dashboard/courses/components/FavoritesDebug';
 import { ArrowLeft, Check, Star, Target, BookOpen } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -165,6 +166,9 @@ export default function CompletionPage() {
         isOpen={showHelpGuide} 
         onClose={() => setShowHelpGuide(false)} 
       />
+
+      {/* Debug Component - Remove after testing */}
+      <FavoritesDebug courseType="flow" />
     </div>
   );
 } 
