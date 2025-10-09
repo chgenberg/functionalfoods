@@ -16,6 +16,8 @@ export function useFavoriteRecipes() {
 
   // Load favorites from localStorage on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     try {
       const saved = localStorage.getItem('favoriteRecipes');
       console.log('📚 Loading favorite recipes from localStorage:', saved);
@@ -36,6 +38,7 @@ export function useFavoriteRecipes() {
 
   // Save to localStorage whenever favorites change
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (isLoaded) {
       localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
       console.log('💾 Saved favorites to localStorage:', favorites.length, 'recipes');
