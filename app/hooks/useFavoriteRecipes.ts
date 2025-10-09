@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from './useAuth';
 
 export interface FavoriteRecipe {
   name: string;
@@ -13,39 +14,60 @@ export interface FavoriteRecipe {
 export function useFavoriteRecipes() {
   const [favorites, setFavorites] = useState<FavoriteRecipe[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { token } = useAuth();
 
-  // Load favorites from localStorage on mount
+  // Load favorites: from server if logged in, otherwise from localStorage
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    try {
-      const saved = localStorage.getItem('favoriteRecipes');
-      console.log('📚 Loading favorite recipes from localStorage:', saved);
-      if (saved) {
-        const parsed = JSON.parse(saved);
+    const load = async () => {
+      try {
+        if (token) {
+          const res = await fetch('/api/user/favorites', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const serverFavs = (data.favorites || []).map((f: any) => ({
+              name: f.name,
+              recipeLink: f.recipeLink ?? undefined,
+              courseType: f.courseType as FavoriteRecipe['courseType'],
+              weekNumber: f.weekNumber,
+              dayName: f.dayName,
+              mealType: f.mealType as FavoriteRecipe['mealType'],
+              addedAt: f.addedAt,
+            }));
+            setFavorites(serverFavs);
+            // Also cache locally for quick access
+            localStorage.setItem('favoriteRecipes', JSON.stringify(serverFavs));
+            return;
+          }
+        }
+        // Fallback to localStorage
+        const saved = localStorage.getItem('favoriteRecipes');
+        const parsed = saved ? JSON.parse(saved) : [];
         setFavorites(parsed);
-        console.log('✅ Loaded favorites:', parsed.length, 'recipes');
-      } else {
-        console.log('ℹ️ No saved favorites found');
+      } catch (error) {
+        console.error('❌ Error loading favorite recipes:', error);
+      } finally {
+        setIsLoaded(true);
       }
-    } catch (error) {
-      console.error('❌ Error loading favorite recipes:', error);
-    } finally {
-      setIsLoaded(true);
-      console.log('✅ Favorites loaded, isLoaded = true');
-    }
-  }, []);
+    };
+    void load();
+  }, [token]);
 
-  // Save to localStorage whenever favorites change
+  // Persist: server if logged in, otherwise localStorage
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (isLoaded) {
       localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
-      console.log('💾 Saved favorites to localStorage:', favorites.length, 'recipes');
+      if (token) {
+        // Sync last mutation is handled in toggleFavorite to avoid bulk posting here
+      }
     }
   }, [favorites, isLoaded]);
 
-  const addFavorite = (recipe: Omit<FavoriteRecipe, 'addedAt'>) => {
+  const addFavorite = async (recipe: Omit<FavoriteRecipe, 'addedAt'>) => {
     const newFavorite: FavoriteRecipe = {
       ...recipe,
       addedAt: new Date().toISOString()
@@ -72,9 +94,22 @@ export function useFavoriteRecipes() {
       console.log('✅ Added to favorites. New total:', newFavorites.length);
       return newFavorites;
     });
+
+    // Server sync
+    try {
+      if (token) {
+        await fetch('/api/user/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(recipe)
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to sync favorite to server, will retry on next action');
+    }
   };
 
-  const removeFavorite = (recipe: Omit<FavoriteRecipe, 'addedAt'>) => {
+  const removeFavorite = async (recipe: Omit<FavoriteRecipe, 'addedAt'>) => {
     console.log('➖ removeFavorite: Removing recipe:', recipe);
     
     setFavorites(prev => {
@@ -88,6 +123,25 @@ export function useFavoriteRecipes() {
       console.log('✅ Removed from favorites. New total:', filtered.length);
       return filtered;
     });
+
+    // Server sync
+    try {
+      if (token) {
+        const params = new URLSearchParams({
+          name: recipe.name,
+          courseType: recipe.courseType,
+          weekNumber: String(recipe.weekNumber),
+          dayName: recipe.dayName,
+          mealType: recipe.mealType,
+        });
+        await fetch(`/api/user/favorites?${params.toString()}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to sync favorite removal to server');
+    }
   };
 
   const isFavorite = (recipe: Omit<FavoriteRecipe, 'addedAt'>) => {

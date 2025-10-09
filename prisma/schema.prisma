@@ -44,6 +44,7 @@ model User {
   symptomAnalyses   SymptomAnalysis[]
   passwordResets    PasswordReset[]
   notifications     Notification[]
+  favorites         UserFavorite[]
 }
 
 model Course {
@@ -298,6 +299,22 @@ model MealProgress {
   @@index([userId])
   @@index([courseType])
   @@index([weekNumber])
+}
+
+model UserFavorite {
+  id         String   @id @default(uuid())
+  userId     String
+  name       String
+  recipeLink String?
+  courseType String   // 'basics' | 'flow' | 'energy'
+  weekNumber Int
+  dayName    String
+  mealType   String   // 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert'
+  addedAt    DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([courseType])
 }
 
 model ForumCategory {
