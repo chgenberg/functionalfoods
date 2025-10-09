@@ -63,6 +63,8 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status') || '';
     const search = searchParams.get('search') || '';
     const slug = searchParams.get('slug') || '';
+    const freeParam = (searchParams.get('free') || '').toLowerCase();
+    const featuredParam = (searchParams.get('featured') || '').toLowerCase();
 
     // Kontrollera användarens autentisering och kursåtkomst
     let userId: string | null = null;
@@ -108,6 +110,21 @@ export async function GET(request: NextRequest) {
         
         // Ta INTE bort följande rad - vi vill visa ALLA recept i listan
         // where.isFree = true;
+      }
+
+      // Respektera free=true|false för klienter som vill hämta enbart gratis eller premium
+      if (freeParam === 'true') {
+        where.isFree = true;
+        where.isPremium = false;
+        // Exkludera admin-only från publika listor
+        where.NOT = { tags: { has: 'ADMIN_ONLY' } };
+      } else if (freeParam === 'false') {
+        where.isFree = false;
+      }
+
+      // En enkel "featured"-tolkning: om featured=true, prioritera nyare gratisrecept (ingen separat flagga i schema)
+      if (featuredParam === 'true') {
+        // Låt where gälla som ovan; ordningen styrs nedan av orderBy
       }
     }
 
