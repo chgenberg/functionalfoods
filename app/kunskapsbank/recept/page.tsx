@@ -74,6 +74,7 @@ const RecipesPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [usePagedNavigation, setUsePagedNavigation] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
   
   // All refs after state
   const searchRef = useRef<HTMLDivElement>(null);
@@ -118,6 +119,11 @@ const RecipesPage = () => {
         params.append('search', searchQuery.trim());
       }
 
+      // If user is not logged in, only fetch free recipes to avoid sparse pages
+      if (!token) {
+        params.append('free', 'true');
+      }
+
       const response = await fetch(`/api/recipes?${params}`, { headers, cache: 'no-store' });
       
       if (!response.ok) {
@@ -132,6 +138,7 @@ const RecipesPage = () => {
       setCategories(data.categories || []);
       setStatistics(data.statistics || { total: 0, free: 0, premium: 0, visible: 0 });
       setHasMore(data.pagination.hasMore);
+      setTotalPages(data.pagination.totalPages || 1);
       
       // Fetch user's purchased courses
       let userCourses: string[] = [];
@@ -631,7 +638,7 @@ const RecipesPage = () => {
               Föregående
             </button>
             <span className="text-sm text-gray-600">
-              Sida {page} av {Math.max(1, Math.ceil(statistics.visible / 20))}
+              Sida {page} av {totalPages}
             </span>
             <button
               disabled={!hasMore}
