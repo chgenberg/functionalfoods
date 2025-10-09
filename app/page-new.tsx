@@ -75,16 +75,9 @@ export default function Home() {
     };
   }, []);
 
+  // Disable geo language prompt – we focus on Swedish only for now
   useEffect(() => {
-    const chosen = typeof localStorage !== 'undefined' ? localStorage.getItem('lang') : null;
-    if (!chosen) {
-      fetch('/api/geo').then(r => r.json()).then(data => {
-        if (data?.suggested && data.suggested !== locale) {
-          setSuggestedLocale(data.suggested);
-          setShowGeoSuggest(true);
-        }
-      }).catch(() => {});
-    }
+    setShowGeoSuggest(false);
   }, [locale]);
 
   // Lazy-load the hero video only when in view
