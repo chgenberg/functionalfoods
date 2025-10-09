@@ -113,18 +113,31 @@ export default function Home() {
       
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Vimeo background video with Safari-friendly autoplay; keep local <video> fallback hidden behind */}
+          {/* Desktop: Vimeo background video with Safari-friendly autoplay */}
           <iframe
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 w-full h-full hidden md:block"
             style={{ zIndex: 12, opacity: 1 }}
             src="https://player.vimeo.com/video/1120885431?background=1&autoplay=1&muted=1&loop=1&byline=0&title=0&controls=0&autopause=0&playsinline=1&transparent=0"
             allow="autoplay; fullscreen; picture-in-picture"
             loading="eager"
             referrerPolicy="no-referrer-when-downgrade"
           />
+          {/* Mobile: Local video optimized for portrait */}
+          <video
+            className="absolute inset-0 w-full h-full object-cover md:hidden"
+            style={{ zIndex: 12, objectPosition: 'center center' }}
+            poster="/hero_poster.jpg"
+            src="/introvideo_mobile.mp4"
+            playsInline
+            muted
+            loop
+            autoPlay
+            preload="auto"
+          />
+          {/* Desktop fallback video */}
           <video
             ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover hidden md:block"
             style={{ zIndex: 10, opacity: 0, transition: 'opacity .25s ease' }}
             poster="/hero_poster.jpg"
             src="/introvideo_compressed.mp4"
@@ -149,23 +162,23 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex items-center justify-center min-h-[600px]">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+          <div className="flex items-center justify-center min-h-[500px] sm:min-h-[550px] md:min-h-[600px]">
             <div className="text-center max-w-4xl">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-lg">
                 UPPTÄCK KRAFTEN I
-                <span className="block text-white mt-2 drop-shadow-lg">
+                <span className="block text-white mt-1 sm:mt-2 drop-shadow-lg">
                   FUNCTIONAL FOODS
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl lg:text-3xl text-white/90 mb-12 leading-relaxed drop-shadow-lg">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 mb-8 sm:mb-10 md:mb-12 leading-relaxed drop-shadow-lg px-4 sm:px-0">
                 Mat som medicin för kropp och själ
               </p>
               
-              <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center px-2 sm:px-0">
                 <button
                   onClick={() => setShowQuiz(true)}
-                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-sm sm:text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative"
+                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-6 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-base sm:text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative w-full sm:w-auto"
                   style={{ position: 'relative', zIndex: 50, pointerEvents: 'auto' }}
                   aria-label="Starta hälsoquiz"
                 >
@@ -174,7 +187,7 @@ export default function Home() {
                 </button>
                 <Link
                   href="/utbildning"
-                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-sm sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-base sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3 w-full sm:w-auto"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
                   <Book className="w-5 h-5" />
@@ -182,7 +195,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="/kunskapsbank/blogg"
-                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-sm sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3"
+                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-base sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3 w-full sm:w-auto"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
                   <TrendingUp className="w-5 h-5" />
