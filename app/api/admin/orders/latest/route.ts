@@ -27,16 +27,7 @@ export async function GET() {
             }
           }
         },
-        payment: {
-          select: {
-            id: true,
-            status: true,
-            amount: true,
-            paymentMethod: true,
-            externalId: true,
-            processedAt: true,
-          }
-        }
+        payment: true
       }
     });
 
@@ -59,18 +50,19 @@ export async function GET() {
         courseName: item.course?.name,
         coursePrice: item.course?.price,
       })),
-      payment: order.payment.map(p => ({
-        status: p.status,
-        amount: p.amount,
-        paymentMethod: p.paymentMethod,
-        externalId: p.externalId,
-        processedAt: p.processedAt,
-      })),
+      payment: order.payment ? {
+        id: order.payment.id,
+        status: order.payment.status,
+        amount: order.payment.amount,
+        paymentMethod: order.payment.paymentMethod,
+        externalId: order.payment.externalId,
+        processedAt: order.payment.processedAt,
+      } : null,
       // Check if amounts match
       verification: {
         orderTotal: order.totalAmount,
-        paymentAmount: order.payment[0]?.amount,
-        match: order.payment[0] ? Math.abs(order.totalAmount - order.payment[0].amount) < 0.01 : null,
+        paymentAmount: order.payment?.amount ?? null,
+        match: order.payment ? Math.abs(order.totalAmount - order.payment.amount) < 0.01 : null,
         itemsTotal: order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
       }
     }));
