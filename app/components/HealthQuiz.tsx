@@ -542,7 +542,7 @@ interface HealthQuizProps {
 const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const { locale } = useLanguage();
   const t = useT();
-  const [currentStep, setCurrentStep] = useState<'welcome' | 'intro' | 'location' | 'quiz' | 'result'>('quiz');
+  const [currentStep, setCurrentStep] = useState<'email' | 'welcome' | 'intro' | 'location' | 'quiz' | 'result'>('email');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
   const [isAnimating, setIsAnimating] = useState(false);
@@ -553,6 +553,7 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
   const [locationConsent, setLocationConsent] = useState<boolean | null>(null);
   const [locationContext, setLocationContext] = useState<any>(null);
   const [loadingContext, setLoadingContext] = useState(false);
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
   
   // Move these declarations after all useState hooks
   const quizQuestions: QuizQuestion[] = locale === 'en' ? QUIZ_EN : locale === 'es' ? QUIZ_ES : locale === 'de' ? QUIZ_DE : locale === 'fr' ? QUIZ_FR : QUIZ_SV;
@@ -570,21 +571,21 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
-        // No saved state, start fresh at quiz
-        setCurrentStep('quiz');
+        // No saved state, start fresh at email collection
+        setCurrentStep('email');
         return;
       }
-      const saved = JSON.parse(raw) as { step: 'welcome'|'intro'|'location'|'quiz'|'result'; q: number; a: Record<number,string>; locationConsent?: boolean; locationContext?: any };
+      const saved = JSON.parse(raw) as { step: 'email'|'welcome'|'intro'|'location'|'quiz'|'result'; q: number; a: Record<number,string>; locationConsent?: boolean; locationContext?: any };
       if (saved && typeof saved.q === 'number' && saved.a) {
-        // Always start directly at quiz, ignore saved step
-        setCurrentStep('quiz');
+        // Start at quiz if answers exist, else start at email
+        setCurrentStep(Object.keys(saved.a).length > 0 ? 'quiz' : 'email');
         setCurrentQuestion(saved.q);
         setAnswers(saved.a);
         if (saved.locationConsent !== undefined) setLocationConsent(saved.locationConsent);
         if (saved.locationContext) setLocationContext(saved.locationContext);
       } else {
-        // Invalid saved state, start fresh at quiz
-        setCurrentStep('quiz');
+        // Invalid saved state, start fresh at email
+        setCurrentStep('email');
       }
       // restore identity if available
       const idRaw = localStorage.getItem('health_test_identity_v2');
@@ -593,10 +594,14 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
         setFirstName(id.firstName || '');
         setEmail(id.email || '');
         setConsent(!!id.consent);
+        // If email already saved and consented, skip directly to quiz
+        if (id.email && id.consent) {
+          setCurrentStep('quiz');
+        }
       }
     } catch {
-      // Error reading localStorage, start fresh at quiz
-      setCurrentStep('quiz');
+      // Error reading localStorage, start fresh at email
+      setCurrentStep('email');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [STORAGE_KEY]);
@@ -799,6 +804,163 @@ const HealthQuiz: React.FC<HealthQuizProps> = ({ onComplete, onClose }) => {
 
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
   const question = quizQuestions[currentQuestion];
+
+  // Email collection step (new initial screen)
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setFormError('Ange en giltig e-postadress');
+      return;
+    }
+    if (!consent) {
+      setFormError('Du måste godkänna integritetspolicyn för att fortsätta');
+      return;
+    }
+    setFormError('');
+    setEmailSubmitting(true);
+
+    // Subscribe to Mailchimp
+    try {
+      await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: email.trim(), 
+          firstName: firstName.trim(),
+          source: 'health-quiz' 
+        })
+      });
+      console.log('✅ Quiz email subscribed to Mailchimp');
+    } catch (err) {
+      console.error('⚠️ Mailchimp subscription failed (non-blocking):', err);
+    }
+
+    // Save identity to localStorage
+    try {
+      localStorage.setItem('health_test_identity_v2', JSON.stringify({ firstName: firstName.trim(), email: email.trim(), consent: true }));
+    } catch {}
+
+    setEmailSubmitting(false);
+    setCurrentStep('quiz'); // Proceed to quiz questions
+  };
+
+  if (currentStep === 'email') {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-primary/95 via-green-700/95 to-green-900/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative"
+        >
+          {/* Close button */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          )}
+
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Välkommen till vårt hälsoquiz
+            </h2>
+            <p className="text-gray-600">
+              För att ge dig de bästa personliga rekommendationerna behöver vi din e-postadress
+            </p>
+          </div>
+
+          <form onSubmit={handleEmailSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="quiz-firstname" className="block text-sm font-medium text-gray-700 mb-2">
+                Förnamn (valfritt)
+              </label>
+              <input
+                id="quiz-firstname"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Ditt förnamn"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                disabled={emailSubmitting}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="quiz-email" className="block text-sm font-medium text-gray-700 mb-2">
+                E-postadress <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="quiz-email"
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setFormError('');
+                }}
+                placeholder="din@email.se"
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all ${
+                  formError ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary'
+                }`}
+                required
+                disabled={emailSubmitting}
+              />
+            </div>
+
+            <div className="flex items-start gap-3">
+              <input
+                id="quiz-consent"
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => {
+                  setConsent(e.target.checked);
+                  setFormError('');
+                }}
+                className="mt-1 w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                disabled={emailSubmitting}
+              />
+              <label htmlFor="quiz-consent" className="text-sm text-gray-700">
+                Jag godkänner att min e-postadress sparas för att ta emot personliga hälsorekommendationer, nyhetsbrev och marknadsutskick från Functional Foods. Läs vår{' '}
+                <a href="/integritetspolicy" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-green-700">
+                  integritetspolicy
+                </a>.
+              </label>
+            </div>
+
+            {formError && (
+              <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                <p className="text-sm text-red-700">{formError}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={emailSubmitting || !email || !consent}
+              className="w-full bg-primary hover:bg-green-700 text-white py-4 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {emailSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Registrerar...
+                </>
+              ) : (
+                <>
+                  Starta quizet
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
 
   // Skip welcome and intro steps - go directly to quiz
 
