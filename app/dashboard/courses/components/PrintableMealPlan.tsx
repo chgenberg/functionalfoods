@@ -52,8 +52,16 @@ export default function PrintableMealPlan({ mealPlan, weekNumber, courseName }: 
   };
 
   const handlePrint = () => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+    // Open synchronously and write a quick placeholder to avoid popup blockers
+    const printWindow = window.open('', '_blank', 'noopener');
+    if (!printWindow) {
+      alert('Din webbläsare blockerade popup-fönstret. Tillåt popup för denna sida och försök igen.');
+      return;
+    }
+
+    // Lightweight placeholder keeps window alive while content is built
+    printWindow.document.write(`<!DOCTYPE html><html lang="sv"><head><meta charset="UTF-8"><title>Förbereder utskrift...</title><style>body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;color:#1a1a1a}</style></head><body><p>Förbereder utskrift av vecka ${weekNumber} ...</p></body></html>`);
+    printWindow.document.close();
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -389,18 +397,19 @@ export default function PrintableMealPlan({ mealPlan, weekNumber, courseName }: 
 </html>
     `;
 
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-    
-    // Wait for content to load then print
-    printWindow.onload = () => {
+    // Replace placeholder with full content and print
+    setTimeout(() => {
+      printWindow.document.open();
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      printWindow.focus();
       setTimeout(() => {
         printWindow.print();
         printWindow.onafterprint = () => {
           printWindow.close();
         };
-      }, 250);
-    };
+      }, 300);
+    }, 50);
   };
 
   return (
