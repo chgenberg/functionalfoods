@@ -19,7 +19,8 @@ import {
   MessageSquare,
   Image,
   Star,
-  Leaf
+  Leaf,
+  ShoppingBag
 } from 'lucide-react';
 
 export default function AdminLayout({
@@ -71,7 +72,8 @@ export default function AdminLayout({
     { icon: Star, label: 'Recensioner', href: '/admin/reviews' },
     { icon: MessageSquare, label: 'Community', href: '/admin/community' },
     { icon: Tag, label: 'Kuponger', href: '/admin/coupons' },
-    { icon: BarChart3, label: 'Försäljning', href: '/admin/sales' },
+    { icon: BarChart3, label: 'Försäljning (Stripe)', href: '/admin/sales' },
+    { icon: ShoppingBag, label: 'Kunder & Försäljning', href: '/admin/sales-unified' },
     { icon: FileText, label: 'Kunskapsdokument', href: '/admin/knowledge' },
     { icon: Settings, label: 'Inställningar', href: '/admin/settings' }
   ];
