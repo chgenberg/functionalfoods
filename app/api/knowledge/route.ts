@@ -15,13 +15,11 @@ export async function GET(req: NextRequest) {
     const slug = searchParams.get('slug') || undefined;
 
     // Disallow known duplicate/wrong slugs (remove from all responses)
+    // Note: Keep this list minimal - only block true duplicates or incorrect slugs
+    // The slugs with hyphens between letters (e.g. "att-va-lja-ra-tt-kolhydrater") are the correct ones
     const disallowedSlugs = new Set<string>([
-      // Energy duplicates/wrong slugs
-      'ersattningsguide-for-kolhydrater',
-      'att-valja-ratt-kolhydrater',
-      'att-ata-ute-med-functional-foods',
-      'functional-foods-3-steg',
-      'varfor-drabbas-man-av-diabetes-typ-2'
+      // Only block slugs that are confirmed duplicates or wrong versions
+      // Most were removed as they were actually valid documents
     ]);
     if (slug && disallowedSlugs.has(slug)) {
       return NextResponse.json({ documents: [] }, { headers: { 'Cache-Control': 'no-store' } });
@@ -137,7 +135,11 @@ export async function GET(req: NextRequest) {
       if (dbd.readTime == null) mergedDoc.readTime = existing.readTime;
 
       // CRITICAL: Preserve JSON content if DB has empty or null content to avoid blank pages
-      if (dbd.content === null || dbd.content === undefined || (typeof dbd.content === 'string' && dbd.content.trim() === '')) {
+      // Also preserve if DB content is suspiciously short (less than 100 chars)
+      const dbContentLength = (typeof dbd.content === 'string') ? dbd.content.trim().length : 0;
+      const jsonContentLength = (typeof existing.content === 'string') ? existing.content.trim().length : 0;
+      
+      if (dbd.content === null || dbd.content === undefined || dbContentLength === 0 || (dbContentLength < 100 && jsonContentLength > dbContentLength)) {
         mergedDoc.content = existing.content ?? dbd.content;
       }
 

@@ -17,7 +17,12 @@ export async function GET(req: NextRequest) {
 
   const docs = await prisma.knowledgeDocument.findMany({
     where: {
-      ...(course ? { course } : {}),
+      ...(course ? {
+        OR: [
+          { course: course },
+          { courses: { has: course } }
+        ]
+      } : {}),
       ...(slug ? { slug } : {})
     },
     orderBy: [{ course: 'asc' }, { order: 'asc' }]

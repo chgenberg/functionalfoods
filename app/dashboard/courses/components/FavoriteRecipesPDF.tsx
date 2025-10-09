@@ -12,7 +12,7 @@ interface FavoriteRecipesPDFProps {
 
 export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const { getFavoritesByCoursetype } = useFavoriteRecipes();
+  const { getFavoritesByCoursetype, isLoaded } = useFavoriteRecipes();
   const favorites = getFavoritesByCoursetype(courseType);
   const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy';
 
@@ -487,6 +487,23 @@ export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFPro
     };
     return translations[mealType] || mealType;
   };
+
+  // Show loading state while favorites are being loaded from localStorage
+  if (!isLoaded) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-2xl shadow-sm p-8 border border-gray-200"
+      >
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421] mx-auto mb-4"></div>
+          <p className="text-gray-600">Laddar dina favoritrecept...</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   if (favorites.length === 0) {
     return (
