@@ -88,12 +88,9 @@ const RecipesPage = () => {
   };
 
   // Define fetchRecipes before any effects that reference it to avoid TDZ errors
-  const fetchRecipes = useCallback(async (reset = false) => {
+  const fetchRecipes = useCallback(async (reset = false, pageOverride?: number) => {
     try {
-      if (reset) {
-        setPage(1);
-        setRecipes([]);
-      }
+      if (reset) setRecipes([]);
       
       setLoading(true);
       setError(null);
@@ -109,7 +106,8 @@ const RecipesPage = () => {
 
       const params = new URLSearchParams();
       params.append('limit', '21');
-      params.append('page', page.toString());
+      const effectivePage = typeof pageOverride === 'number' ? pageOverride : page;
+      params.append('page', effectivePage.toString());
       
       if (selectedCategory !== 'all') {
         params.append('category', selectedCategory);
@@ -129,6 +127,7 @@ const RecipesPage = () => {
       const data: RecipeData = await response.json();
       const fetchedRecipes = data.recipes || [];
 
+      // Replace list on paged navigation; only append when explicitly desired
       setRecipes(prev => reset ? fetchedRecipes : [...prev, ...fetchedRecipes]);
       setCategories(data.categories || []);
       setStatistics(data.statistics || { total: 0, free: 0, premium: 0, visible: 0 });
@@ -181,12 +180,7 @@ const RecipesPage = () => {
     fetchRecipes();
   }, [user, selectedCategory]);
 
-  // Trigger fetching when page increments (infinite scroll)
-  useEffect(() => {
-    if (page > 1) {
-      fetchRecipes(false); // false = don't reset, append to existing recipes
-    }
-  }, [page]);
+  // Removed auto-append on page change; navigation buttons will fetch with reset
 
   useEffect(() => {
     // Reset recipes and page when filters change (not search query)
@@ -627,7 +621,11 @@ const RecipesPage = () => {
           <div className="flex items-center justify-center gap-3 mt-12">
             <button
               disabled={page <= 1}
-              onClick={() => setPage(p => Math.max(1, p - 1))}
+              onClick={() => setPage(p => {
+                const nextPage = Math.max(1, p - 1);
+                fetchRecipes(true, nextPage);
+                return nextPage;
+              })}
               className={`px-4 py-2 rounded-lg border ${page <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}
             >
               Föregående
@@ -637,7 +635,11 @@ const RecipesPage = () => {
             </span>
             <button
               disabled={!hasMore}
-              onClick={() => setPage(p => p + 1)}
+              onClick={() => setPage(p => {
+                const nextPage = p + 1;
+                fetchRecipes(true, nextPage);
+                return nextPage;
+              })}
               className={`px-4 py-2 rounded-lg border ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}
             >
               Nästa
