@@ -236,7 +236,7 @@ export default function FunctionalFlowPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <User className="w-4 h-4 text-primary" />
-                  1-på-1 coaching
+                  Coaching med Ulrika + team
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <Clock className="w-4 h-4 text-primary" />
