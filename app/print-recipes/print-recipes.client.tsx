@@ -44,10 +44,8 @@ export default function Client() {
         const listData = listRes.ok ? await listRes.json() : null;
         
         console.log('📋 Shopping list API response:', listData);
-        
-        const slugs: string[] = Array.isArray(listData?.recipes)
-          ? listData.recipes
-          : [];
+        const entries: Array<{ day: string; mealType: string; slug: string }> = Array.isArray(listData?.recipeEntries) ? listData.recipeEntries : [];
+        const slugs: string[] = entries.map(e => e.slug);
 
         console.log('🔍 Recipe slugs:', slugs);
 
@@ -74,15 +72,25 @@ export default function Client() {
           console.warn('⚠️ No recipe slugs found in shopping list API');
         }
 
-        const normalized: Recipe[] = (fetched || []).map((r: any) => ({
-          title: r.title,
-          description: r.description || '',
-          servings: r.servings || 4,
-          cookingTime: r.cookingTime || r.totalTime || r.prepTime || '',
-          ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
-          instructions: Array.isArray(r.instructions) ? r.instructions : [],
-          nutritionalInfo: r.nutritionPerServing || undefined
-        }));
+        // Map slug -> recipe details
+        const bySlug = new Map<string, any>();
+        (fetched || []).forEach((r: any) => { bySlug.set(r.slug, r); });
+        // Build normalized list in the exact day/meal order
+        const normalized: Recipe[] = entries
+          .map((e) => {
+            const r = bySlug.get(e.slug);
+            if (!r) return null;
+            return {
+              title: `${e.day} • ${e.mealType === 'breakfast' ? 'Frukost' : e.mealType === 'lunch' ? 'Lunch' : e.mealType === 'dinner' ? 'Middag' : e.mealType === 'snack' ? 'Mellanmål' : 'Dessert'} — ${r.title}`,
+              description: r.description || '',
+              servings: r.servings || 4,
+              cookingTime: r.cookingTime || r.totalTime || r.prepTime || '',
+              ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+              instructions: Array.isArray(r.instructions) ? r.instructions : [],
+              nutritionalInfo: r.nutritionPerServing || undefined
+            } as Recipe;
+          })
+          .filter(Boolean) as Recipe[];
 
         setRecipes(normalized);
       } catch (error) {

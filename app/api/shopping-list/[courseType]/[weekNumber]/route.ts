@@ -236,17 +236,23 @@ export async function GET(
             : courseType === 'flow' 
             ? flowMealPlans[weekKey]
             : energyMealPlans[weekKey];
-          const recipeLinksForCurated = new Set<string>();
+          const orderedEntries: Array<{ day: string; mealType: string; slug: string }>= [];
+          const dayOrder = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+          const mealOrder: Array<keyof any> = ['breakfast','lunch','dinner','snack','dessert'];
           if (weekMeals && weekMeals.days) {
-            Object.values(weekMeals.days).forEach((day: any) => {
-              if (day?.breakfast?.recipeLink) recipeLinksForCurated.add(day.breakfast.recipeLink);
-              if (day?.lunch?.recipeLink) recipeLinksForCurated.add(day.lunch.recipeLink);
-              if (day?.dinner?.recipeLink) recipeLinksForCurated.add(day.dinner.recipeLink);
-              if (day?.snack?.recipeLink) recipeLinksForCurated.add(day.snack.recipeLink);
-              if (day?.dessert?.recipeLink) recipeLinksForCurated.add(day.dessert.recipeLink);
+            dayOrder.forEach((dayName, idx) => {
+              const day: any = (weekMeals as any).days[dayName] || (weekMeals as any).days[`day${idx+1}`];
+              if (!day) return;
+              mealOrder.forEach((mt) => {
+                const m = day[mt];
+                if (m?.recipeLink) {
+                  const slug = String(m.recipeLink).replace(/^\/kunskapsbank\/recept\//,'');
+                  orderedEntries.push({ day: dayName, mealType: String(mt), slug });
+                }
+              });
             });
           }
-          const recipeSlugsForCurated = Array.from(recipeLinksForCurated).map(link => link.replace(/^\/kunskapsbank\/recept\//, ''));
+          const recipeSlugsForCurated = orderedEntries.map(e=>e.slug);
 
           return NextResponse.json({
             week: weekNum,
@@ -255,7 +261,8 @@ export async function GET(
             ingredients,
             generatedAt: new Date().toISOString(),
             source: 'curated',
-            recipes: recipeSlugsForCurated
+            recipes: recipeSlugsForCurated,
+            recipeEntries: orderedEntries
           });
         }
       }
@@ -273,28 +280,24 @@ export async function GET(
       return NextResponse.json({ error: 'Week not found' }, { status: 404 });
     }
     
-    // Collect all recipe links from the week
-    const recipeLinks = new Set<string>();
-    
-    Object.values(weekMeals.days).forEach(day => {
-      if (day.breakfast?.recipeLink) recipeLinks.add(day.breakfast.recipeLink);
-      if (day.lunch?.recipeLink) recipeLinks.add(day.lunch.recipeLink);
-      if (day.dinner?.recipeLink) recipeLinks.add(day.dinner.recipeLink);
-      if (day.snack?.recipeLink) recipeLinks.add(day.snack.recipeLink);
-      if (day.dessert?.recipeLink) recipeLinks.add(day.dessert.recipeLink);
+    // Build ordered entries (day + meal type) and slugs
+    const orderedEntries: Array<{ day: string; mealType: string; slug: string }> = [];
+    const dayOrder = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+    const mealOrder: Array<keyof any> = ['breakfast','lunch','dinner','snack','dessert'];
+    dayOrder.forEach((dayName, idx) => {
+      const day: any = (weekMeals as any).days[dayName] || (weekMeals as any).days[`day${idx+1}`];
+      if (!day) return;
+      mealOrder.forEach((mt) => {
+        const m = day[mt];
+        if (m?.recipeLink) {
+          const slug = String(m.recipeLink).replace(/^\/kunskapsbank\/recept\//,'');
+          orderedEntries.push({ day: dayName, mealType: String(mt), slug });
+        }
+      });
     });
+    const recipeSlugs = orderedEntries.map(e=>e.slug);
     
-    // Extract slugs from recipe links (remove /kunskapsbank/recept/ prefix)
-    const recipeSlugs = Array.from(recipeLinks).map(link => {
-      return link.replace(/^\/kunskapsbank\/recept\//, '');
-    }).filter(slug => slug.length > 0);
-    
-    console.log('Shopping list debug:', {
-      weekKey,
-      recipeLinks: Array.from(recipeLinks),
-      recipeSlugs,
-      courseType
-    });
+    console.log('Shopping list debug:', { weekKey, recipeSlugs, courseType });
     
     // Fetch recipes from database
     const recipes: any[] = await prisma.recipe.findMany({
@@ -387,7 +390,8 @@ export async function GET(
       generatedAt: new Date().toISOString(),
       servings: targetServings,
       source: 'aggregated',
-      recipes: recipeSlugs
+      recipes: recipeSlugs,
+      recipeEntries: orderedEntries
     });
     
   } catch (error) {
