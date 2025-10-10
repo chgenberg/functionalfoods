@@ -144,7 +144,7 @@ export default function Client() {
         {recipes.length > 0 ? (
           <div className="space-y-8">
             {recipes.map((recipe, index) => (
-              <div key={index} className="recipe-page">
+              <div key={index} className="recipe-page" style={{ pageBreakAfter: 'always' }}>
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">{recipe.title}</h2>
                   {(recipe.servings || recipe.cookingTime) && (
@@ -223,9 +223,6 @@ export default function Client() {
                   </div>
                 )}
 
-                {index < recipes.length - 1 && (
-                  <div className="page-break mt-8 pt-8 border-t-2 border-gray-200"></div>
-                )}
               </div>
             ))}
           </div>
@@ -245,8 +242,13 @@ export default function Client() {
           .print-content { max-width: 100%; padding: 20px; }
           h1, h2, h3 { color: #1a1a1a !important; }
           .bg-gray-50 { background-color: #f9f9f9 !important; }
-          .page-break { page-break-before: always; }
-          .recipe-page { page-break-inside: avoid; }
+          .recipe-page { 
+            page-break-after: always !important;
+            page-break-inside: avoid;
+          }
+          .recipe-page:last-child {
+            page-break-after: auto;
+          }
         }
       `}</style>
     </div>
