@@ -313,7 +313,7 @@ export default function Home() {
                 transition={{ delay: 0.4 }}
               >
                 <button
-                  onClick={() => setShowQuiz(true)}
+                  onClick={() => { setShowQuiz(true); try { router.push(`/?quiz=1`); } catch {} }}
                   className="group relative bg-primary hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-3 shadow-lg hover:shadow-xl inline-flex"
                 >
                   <span>Starta hälsoquizet</span>
@@ -507,8 +507,8 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
-                console.log('CTA button clicked!');
                 setShowQuiz(true);
+                try { router.push('/?quiz=1'); } catch {}
               }}
               className="bg-[#FF7e70] text-white px-6 sm:px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base sm:text-lg md:text-xl hover:bg-[#e56b5e] transition-all shadow-xl md:shadow-2xl inline-flex items-center gap-3 cursor-pointer relative"
               style={{ position: 'relative', zIndex: 50 }}
