@@ -154,7 +154,7 @@ async function sendPlatformMigrationEmail(params: {
   name: string;
   resetToken: string;
 }): Promise<boolean> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
   const resetLink = `${baseUrl}/reset-password?token=${params.resetToken}`;
   
   const html = `
