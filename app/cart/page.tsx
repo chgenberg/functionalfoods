@@ -290,7 +290,6 @@ export default function CartPage() {
                 <p className="text-xs text-gray-500 mb-3">Vi accepterar</p>
                 <div className="flex justify-center items-center gap-3 text-sm text-gray-600">
                   <span><CreditCard className="w-5 h-5 inline" /> Kort</span>
-                  <span>📱 Swish</span>
                 </div>
               </div>
             </div>
