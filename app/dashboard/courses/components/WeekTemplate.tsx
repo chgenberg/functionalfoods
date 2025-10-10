@@ -14,6 +14,8 @@ import { mealPlans as basicMealPlans, flowMealPlans, energyMealPlans } from '@/a
 import { Play, Clock, CheckCircle, Book, Download, TrendingUp, Award, Star, ChevronRight, Users, ShoppingCart, Calendar, Lock, ArrowRight, Settings, HelpCircle, Sun, FileText, ExternalLink, X } from 'lucide-react';
 import InfoPopupGrid from '@/app/dashboard/courses/components/InfoPopupGrid';
 import PrintableMealPlanWithRecipes from './PrintableMealPlanWithRecipes';
+import PrintShoppingList from './PrintShoppingList';
+import PrintRecipes from './PrintRecipes';
 
 // Helper function to format meal names with bold "rester" and "rester från frysen"
 const formatMealName = (mealName: string) => {
@@ -694,17 +696,27 @@ export default function WeekTemplate({
                 </p>
               </div>
               <div className="flex-shrink-0">
-                <PrintableMealPlanWithRecipes 
-                  mealPlan={Object.fromEntries(
-                    ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'].map((day, index) => {
-                      const dayData = mealPlan?.days?.[day] || mealPlan?.days?.[`day${index + 1}`];
-                      return [day, dayData || { breakfast: { name: '' }, lunch: { name: '' }, dinner: { name: '' } }];
-                    })
-                  )}
-                  weekNumber={weekNumber}
-                  courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
-                  courseType={courseType}
-                />
+                <div className="flex flex-wrap gap-3 justify-center">
+                  <PrintShoppingList 
+                    weekNumber={weekNumber} 
+                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                  />
+                  <PrintRecipes 
+                    weekNumber={weekNumber} 
+                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                  />
+                  <PrintableMealPlanWithRecipes 
+                    mealPlan={Object.fromEntries(
+                      ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'].map((day, index) => {
+                        const dayData = mealPlan?.days?.[day] || mealPlan?.days?.[`day${index + 1}`];
+                        return [day, dayData || { breakfast: { name: '' }, lunch: { name: '' }, dinner: { name: '' } }];
+                      })
+                    )}
+                    weekNumber={weekNumber}
+                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                    courseType={courseType}
+                  />
+                </div>
               </div>
             </div>
           </div>

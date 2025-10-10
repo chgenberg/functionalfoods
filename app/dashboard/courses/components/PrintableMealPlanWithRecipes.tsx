@@ -617,9 +617,9 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
         whileTap={{ scale: 0.98 }}
         onClick={handlePrint}
         disabled={isLoading}
-        className="flex items-center gap-2 bg-[#014421] text-white px-6 py-3 rounded-xl hover:bg-[#116530] transition-all shadow-lg hover:shadow-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 bg-[#014421] text-white px-4 py-2.5 rounded-xl hover:bg-[#116530] transition-all shadow-md hover:shadow-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <Printer className="w-5 h-5" />
+        <Printer className="w-4 h-4" />
         <span>{isLoading ? 'Förbereder...' : 'Skriv ut måltidsplan'}</span>
       </motion.button>
 
