@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ArrowRight, User, LogOut, Search } from 'lucide-react';
-import LanguageSwitcher from './LanguageSwitcher';
 import { useT } from '../lib/i18n/LanguageProvider';
 
 interface MenuItem {
@@ -134,11 +133,6 @@ export default function MobileMenu({
           {/* Content */}
           <div className="flex-1 overflow-y-auto overscroll-contain">
             <nav className="py-4 px-4" role="navigation">
-              {/* Language switcher */}
-              <div className="mb-6">
-                <LanguageSwitcher />
-              </div>
-
               {/* Main menu items */}
               <div className="space-y-1">
                 {menuItems && menuItems.map((item, index) => (
