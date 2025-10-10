@@ -52,17 +52,6 @@ export default function PrintableMealPlan({ mealPlan, weekNumber, courseName }: 
   };
 
   const handlePrint = () => {
-    // Open synchronously and write a quick placeholder to avoid popup blockers
-    const printWindow = window.open('', '_blank', 'noopener');
-    if (!printWindow) {
-      alert('Din webbläsare blockerade popup-fönstret. Tillåt popup för denna sida och försök igen.');
-      return;
-    }
-
-    // Lightweight placeholder keeps window alive while content is built
-    printWindow.document.write(`<!DOCTYPE html><html lang="sv"><head><meta charset="UTF-8"><title>Förbereder utskrift...</title><style>body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;color:#1a1a1a}</style></head><body><p>Förbereder utskrift av vecka ${weekNumber} ...</p></body></html>`);
-    printWindow.document.close();
-
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="sv">
@@ -397,19 +386,49 @@ export default function PrintableMealPlan({ mealPlan, weekNumber, courseName }: 
 </html>
     `;
 
-    // Replace placeholder with full content and print
-    setTimeout(() => {
-      printWindow.document.open();
-      printWindow.document.write(htmlContent);
-      printWindow.document.close();
-      printWindow.focus();
-      setTimeout(() => {
-        printWindow.print();
-        printWindow.onafterprint = () => {
-          printWindow.close();
+    // Print via hidden iframe to bypass popup blockers
+    try {
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow?.document;
+      if (doc) {
+        doc.open();
+        doc.write(htmlContent);
+        doc.close();
+        iframe.onload = () => {
+          try {
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+          } finally {
+            setTimeout(() => document.body.removeChild(iframe), 1000);
+          }
         };
-      }, 300);
-    }, 50);
+      } else {
+        // Fallback to popup
+        const win = window.open('', '_blank', 'noopener');
+        if (win) {
+          win.document.write(htmlContent);
+          win.document.close();
+          win.focus();
+          setTimeout(() => win.print(), 300);
+        }
+      }
+    } catch {
+      const win = window.open('', '_blank', 'noopener');
+      if (win) {
+        win.document.write(htmlContent);
+        win.document.close();
+        win.focus();
+        setTimeout(() => win.print(), 300);
+      }
+    }
   };
 
   return (
