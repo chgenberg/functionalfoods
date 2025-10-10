@@ -305,7 +305,7 @@ export class EmailService {
 
   // Send temporary password to a user (bulk reset helper)
   async sendTemporaryPasswordEmail(params: { email: string; name?: string | null; password: string }): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
     const html = `
       <!DOCTYPE html>
       <html>
@@ -549,7 +549,7 @@ export class EmailService {
   }
 
   async sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
     const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
     
     const html = `
@@ -612,7 +612,7 @@ export class EmailService {
   // Send platform live announcement email to existing customers
   async sendPlatformLiveEmail(params: { email: string; name: string; tempPassword: string; courses: string[] }): Promise<boolean> {
     const { email, name, tempPassword, courses } = params;
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
     
     const html = `
       <!DOCTYPE html>
@@ -709,7 +709,7 @@ export class EmailService {
   // Send migration welcome email to existing customers
   async sendMigrationWelcomeEmail(params: { email: string; name: string; tempPassword: string; courses: string[] }): Promise<boolean> {
     const { email, name, tempPassword, courses } = params;
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
     
     const html = `
       <!DOCTYPE html>
