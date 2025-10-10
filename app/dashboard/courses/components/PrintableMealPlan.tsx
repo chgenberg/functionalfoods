@@ -52,6 +52,16 @@ export default function PrintableMealPlan({ mealPlan, weekNumber, courseName }: 
   };
 
   const handlePrint = () => {
+    // Navigate to dedicated print page to avoid popup blockers
+    const courseSlug = courseName.includes('Basics') 
+      ? 'basics' 
+      : courseName.includes('Flow') 
+      ? 'flow' 
+      : 'energy';
+    window.location.href = `/print-mealplan?week=${weekNumber}&course=${courseSlug}`;
+  };
+
+  const handlePrintOld = () => {
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="sv">
