@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { GiBrain, GiStomach, GiWheat, GiHeartBeats } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +17,7 @@ export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const { addItem } = useCart();
+  const router = useRouter();
 
   const course = {
     id: 'functional-flow',
@@ -29,6 +31,7 @@ export default function FunctionalFlowPage() {
 
   const handleAddToCart = () => {
     addItem(course);
+    router.push('/cart');
   };
 
   const benefits = [

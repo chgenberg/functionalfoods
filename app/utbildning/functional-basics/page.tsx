@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { GiBrain, GiStomach, GiWheat, GiHeartBeats, GiMuscleUp } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,6 +14,8 @@ import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, S
 import { formatPrice } from '@/app/lib/utils';
 
 export default function FunctionalBasicsPage() {
+  const router = useRouter();
+  
   // Add CSS for gradient animation
   if (typeof document !== 'undefined') {
     const style = document.createElement('style');
@@ -63,6 +66,7 @@ export default function FunctionalBasicsPage() {
 
   const handleAddToCart = () => {
     addItem(course);
+    router.push('/cart');
   };
 
   const benefits = [
