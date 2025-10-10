@@ -135,18 +135,17 @@ export default function Client() {
       </div>
 
       {/* Printable content */}
-      <div className="print-content max-w-4xl mx-auto p-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Veckans recept</h1>
-          <p className="text-lg text-gray-600">{courseName} - Vecka {week}</p>
-        </div>
-
+      <div className="print-content max-w-4xl mx-auto">
         {recipes.length > 0 ? (
-          <div className="space-y-8">
+          <div>
             {recipes.map((recipe, index) => (
-              <div key={index} className="recipe-page" style={{ pageBreakAfter: 'always' }}>
-                <div className="mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{recipe.title}</h2>
+              <div key={index} className="recipe-page">
+                {/* Recipe header */}
+                <div className="recipe-header">
+                  <h1 className="text-3xl font-bold text-gray-900 mb-4">{recipe.title}</h1>
+                  <div className="text-sm text-gray-500 mb-6">
+                    {courseName} • Vecka {week}
+                  </div>
                   {(recipe.servings || recipe.cookingTime) && (
                     <div className="flex items-center gap-4 text-gray-600 mb-4">
                       {recipe.servings && (
@@ -168,7 +167,8 @@ export default function Client() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Recipe content */}
+                <div className="recipe-content">
                   {recipe.ingredients && recipe.ingredients.length > 0 && (
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800 mb-3">Ingredienser</h3>
@@ -183,11 +183,25 @@ export default function Client() {
                     </div>
                   )}
 
+                  {recipe.instructions && recipe.instructions.length > 0 && (
+                    <div className="mt-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">Instruktioner</h3>
+                      <ol className="space-y-2">
+                        {recipe.instructions.map((instruction, i) => (
+                          <li key={i} className="text-gray-700 flex">
+                            <span className="font-semibold mr-3 flex-shrink-0">{i + 1}.</span>
+                            <span>{instruction}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+
                   {recipe.nutritionalInfo && (
-                    <div>
+                    <div className="mt-6">
                       <h3 className="text-lg font-semibold text-gray-800 mb-3">Näringsvärde per portion</h3>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="bg-gray-50 p-3 rounded-lg inline-block">
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
                           {recipe.nutritionalInfo.calories && (
                             <div>Kalorier: <span className="font-medium">{recipe.nutritionalInfo.calories} kcal</span></div>
                           )}
@@ -209,19 +223,6 @@ export default function Client() {
                   )}
                 </div>
 
-                {recipe.instructions && recipe.instructions.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Instruktioner</h3>
-                    <ol className="space-y-3">
-                      {recipe.instructions.map((instruction, i) => (
-                        <li key={i} className="text-gray-700 flex">
-                          <span className="font-semibold mr-3 flex-shrink-0">{i + 1}.</span>
-                          <span>{instruction}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
 
               </div>
             ))}
@@ -229,25 +230,80 @@ export default function Client() {
         ) : (
           <p className="text-gray-600 text-center">Inga recept tillgängliga för denna vecka.</p>
         )}
-
-        <div className="mt-12 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} Functional Foods. Alla rättigheter förbehållna.</p>
-        </div>
       </div>
 
       <style jsx>{`
         @media print {
-          .no-print { display: none !important; }
-          body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-          .print-content { max-width: 100%; padding: 20px; }
-          h1, h2, h3 { color: #1a1a1a !important; }
-          .bg-gray-50 { background-color: #f9f9f9 !important; }
-          .recipe-page { 
-            page-break-after: always !important;
-            page-break-inside: avoid;
+          .no-print { 
+            display: none !important; 
           }
+          
+          body { 
+            print-color-adjust: exact; 
+            -webkit-print-color-adjust: exact;
+            margin: 0;
+            padding: 0;
+          }
+          
+          .print-content { 
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 0;
+          }
+          
+          .recipe-page { 
+            page-break-before: auto;
+            page-break-after: always;
+            page-break-inside: avoid;
+            padding: 40px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .recipe-page:first-child {
+            page-break-before: auto;
+          }
+          
           .recipe-page:last-child {
             page-break-after: auto;
+          }
+          
+          .recipe-header {
+            margin-bottom: 30px;
+          }
+          
+          .recipe-content {
+            flex: 1;
+          }
+          
+          h1 { 
+            font-size: 28px !important;
+            margin-bottom: 10px !important;
+            color: #1a1a1a !important; 
+          }
+          
+          h3 { 
+            font-size: 18px !important;
+            margin-top: 20px !important;
+            margin-bottom: 10px !important;
+            color: #333 !important; 
+          }
+          
+          .bg-gray-50 { 
+            background-color: #f5f5f5 !important;
+            border: 1px solid #e0e0e0 !important;
+          }
+          
+          ul, ol {
+            margin: 0;
+            padding-left: 20px;
+          }
+          
+          li {
+            margin-bottom: 5px;
           }
         }
       `}</style>
