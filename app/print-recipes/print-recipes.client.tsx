@@ -37,32 +37,28 @@ export default function Client() {
     async function fetchRecipes() {
       try {
         // Get JWT token if present (for premium access)
-        let token: string | null = null;
-        try {
-          const raw = localStorage.getItem('auth');
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            token = parsed?.token || null;
-          }
-        } catch {}
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
         // Get meal plan slugs from API built for shopping list (it extracts slugs too)
         const listRes = await fetch(`/api/shopping-list/${course}/${week}`);
         const listData = listRes.ok ? await listRes.json() : null;
+        
+        console.log('📋 Shopping list API response:', listData);
+        
         const slugs: string[] = Array.isArray(listData?.recipes)
           ? listData.recipes
           : [];
 
-        // If API didn't include recipes array, derive from page URL pattern
-        if (slugs.length === 0 && Array.isArray(listData?.ingredients)) {
-          // Fallback: don't have slugs; just show empty list gracefully
-        }
+        console.log('🔍 Recipe slugs:', slugs);
 
         // Use batch API to fetch details efficiently if available
         let fetched: any[] = [];
         if (slugs.length > 0) {
           const headers: Record<string, string> = { 'Content-Type': 'application/json' };
           if (token) headers['Authorization'] = `Bearer ${token}`;
+          
+          console.log('📡 Fetching recipes with token:', !!token);
+          
           const resp = await fetch('/api/recipes/batch', {
             method: 'POST',
             headers,
@@ -70,7 +66,12 @@ export default function Client() {
           });
           if (resp.ok) {
             fetched = await resp.json();
+            console.log('✅ Fetched recipes:', fetched.length);
+          } else {
+            console.error('❌ Batch API error:', resp.status, await resp.text());
           }
+        } else {
+          console.warn('⚠️ No recipe slugs found in shopping list API');
         }
 
         const normalized: Recipe[] = (fetched || []).map((r: any) => ({
