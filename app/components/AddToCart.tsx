@@ -2,6 +2,7 @@
 import { useCart } from '../context/CartContext';
 import { ShoppingCart, Loader } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface AddToCartProps {
   id: string;
@@ -14,6 +15,7 @@ interface AddToCartProps {
 export default function AddToCart({ id, name, price, type, image }: AddToCartProps) {
   const { addItem, isLoaded } = useCart();
   const [isAdded, setIsAdded] = useState(false);
+  const router = useRouter();
 
   const handleAddToCart = () => {
     if (!isLoaded) return;
@@ -21,7 +23,8 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
     try {
       addItem({ id, name, price, type, image, quantity: 1 });
       setIsAdded(true);
-      setTimeout(() => setIsAdded(false), 2000);
+      // Redirect directly to cart for smoother checkout flow
+      router.push('/cart');
     } catch (error) {
       console.error('Error adding item to cart:', error);
     }
