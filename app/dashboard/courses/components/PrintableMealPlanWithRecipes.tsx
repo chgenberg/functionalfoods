@@ -130,6 +130,16 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
   // Shopping list is now printed separately; no fetch here
 
   const handlePrint = async () => {
+    // Navigate to dedicated print page instead of popup
+    const courseSlug = courseName.includes('Basics') 
+      ? 'basics' 
+      : courseName.includes('Flow') 
+      ? 'flow' 
+      : 'energy';
+    window.location.href = `/print-mealplan?week=${weekNumber}&course=${courseSlug}`;
+  };
+
+  const handlePrintOld = async () => {
     setIsLoading(true);
     
     try {
