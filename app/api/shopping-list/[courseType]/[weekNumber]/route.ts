@@ -229,6 +229,25 @@ export async function GET(
             return a.name.localeCompare(b.name);
           });
           
+          // Also compute recipe slugs from meal plan for this week so print-recipes can load
+          const weekKey = `week${weekNum}`;
+          const weekMeals: WeekMealPlan | undefined = courseType === 'basics' 
+            ? mealPlans[weekKey]
+            : courseType === 'flow' 
+            ? flowMealPlans[weekKey]
+            : energyMealPlans[weekKey];
+          const recipeLinksForCurated = new Set<string>();
+          if (weekMeals && weekMeals.days) {
+            Object.values(weekMeals.days).forEach((day: any) => {
+              if (day?.breakfast?.recipeLink) recipeLinksForCurated.add(day.breakfast.recipeLink);
+              if (day?.lunch?.recipeLink) recipeLinksForCurated.add(day.lunch.recipeLink);
+              if (day?.dinner?.recipeLink) recipeLinksForCurated.add(day.dinner.recipeLink);
+              if (day?.snack?.recipeLink) recipeLinksForCurated.add(day.snack.recipeLink);
+              if (day?.dessert?.recipeLink) recipeLinksForCurated.add(day.dessert.recipeLink);
+            });
+          }
+          const recipeSlugsForCurated = Array.from(recipeLinksForCurated).map(link => link.replace(/^\/kunskapsbank\/recept\//, ''));
+
           return NextResponse.json({
             week: weekNum,
             courseType,
@@ -236,7 +255,7 @@ export async function GET(
             ingredients,
             generatedAt: new Date().toISOString(),
             source: 'curated',
-            recipes: []
+            recipes: recipeSlugsForCurated
           });
         }
       }
