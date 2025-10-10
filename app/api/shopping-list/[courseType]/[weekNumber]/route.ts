@@ -235,7 +235,8 @@ export async function GET(
             recipeCount: -1,
             ingredients,
             generatedAt: new Date().toISOString(),
-            source: 'curated'
+            source: 'curated',
+            recipes: []
           });
         }
       }
@@ -366,7 +367,8 @@ export async function GET(
       ingredients,
       generatedAt: new Date().toISOString(),
       servings: targetServings,
-      source: 'aggregated'
+      source: 'aggregated',
+      recipes: recipeSlugs
     });
     
   } catch (error) {

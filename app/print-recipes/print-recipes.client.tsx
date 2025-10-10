@@ -36,10 +36,20 @@ export default function Client() {
   useEffect(() => {
     async function fetchRecipes() {
       try {
+        // Get JWT token if present (for premium access)
+        let token: string | null = null;
+        try {
+          const raw = localStorage.getItem('auth');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            token = parsed?.token || null;
+          }
+        } catch {}
+
         // Get meal plan slugs from API built for shopping list (it extracts slugs too)
         const listRes = await fetch(`/api/shopping-list/${course}/${week}`);
         const listData = listRes.ok ? await listRes.json() : null;
-        const slugs: string[] = Array.isArray(listData?.ingredients) && Array.isArray(listData?.recipes)
+        const slugs: string[] = Array.isArray(listData?.recipes)
           ? listData.recipes
           : [];
 
@@ -51,9 +61,11 @@ export default function Client() {
         // Use batch API to fetch details efficiently if available
         let fetched: any[] = [];
         if (slugs.length > 0) {
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+          if (token) headers['Authorization'] = `Bearer ${token}`;
           const resp = await fetch('/api/recipes/batch', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({ slugs })
           });
           if (resp.ok) {
