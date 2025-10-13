@@ -11,6 +11,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './context/ToastContext';
 import { generateMetadata as generateSEOMetadata } from './lib/seo';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import MetaPixel from './components/MetaPixel';
 
 // Force dynamic rendering across the app to avoid prerender CSR bailouts when using useSearchParams
 export const dynamic = 'force-dynamic';
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <LanguageProvider>
               <CartProvider>
                 <GoogleAnalytics />
+                <MetaPixel />
                 <AutoTranslate />
                 <div className="flex flex-col min-h-screen">
                   <header role="banner" aria-label="Huvud">
