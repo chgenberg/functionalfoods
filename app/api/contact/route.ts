@@ -88,8 +88,8 @@ export async function POST(request: Request) {
       meddelande: data.meddelande,
       lang
     });
-    
-    return NextResponse.json(result);
+    // Return non-200 if email could not be sent so client can show error
+    return NextResponse.json(result, { status: result.success ? 200 : 502 });
   } catch (error) {
     console.error('Contact form error:', error);
     const lang = getLang(request);

@@ -41,8 +41,8 @@ export default function AdressPage() {
       });
 
       const result = await res.json();
-      if (!res.ok) {
-        alert(result?.error || "Ett fel uppstod. Försök igen senare.");
+      if (!res.ok || !result?.success) {
+        alert(result?.error || result?.message || "Ett fel uppstod. Försök igen senare.");
         return;
       }
 

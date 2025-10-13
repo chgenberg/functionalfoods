@@ -28,12 +28,12 @@ export default function ContactFormCompact() {
         }),
       });
       const result = await response.json();
-      if (response.ok) {
+      if (response.ok && result?.success) {
         setShowSuccess(true);
         setFormData({ namn: '', email: '', meddelande: '' });
         setTimeout(() => { setShowSuccess(false); setIsExpanded(false); }, 5000);
       } else {
-        alert(result.error || t('newsletter.error','Något gick fel. Försök igen senare.'));
+        alert(result.error || result.message || t('newsletter.error','Något gick fel. Försök igen senare.'));
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
