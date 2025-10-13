@@ -12,6 +12,10 @@ import { ToastProvider } from './context/ToastContext';
 import { generateMetadata as generateSEOMetadata } from './lib/seo';
 import GoogleAnalytics from './components/GoogleAnalytics';
 
+// Force dynamic rendering across the app to avoid prerender CSR bailouts when using useSearchParams
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = generateSEOMetadata({
