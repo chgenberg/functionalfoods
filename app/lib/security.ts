@@ -7,11 +7,11 @@ export function addSecurityHeaders(response: NextResponse): NextResponse {
   // Content Security Policy - prevents XSS attacks
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://www.google-analytics.com https://vimeo.com https://*.vimeo.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://vimeo.com https://*.vimeo.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: blob: https: http:",
     "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self' https://api.stripe.com https://www.google-analytics.com https://vitals.vercel-insights.com https://vimeo.com https://*.vimeo.com wss://vimeo.com wss://*.vimeo.com",
+    "connect-src 'self' https://api.stripe.com https://www.google-analytics.com https://www.googletagmanager.com https://connect.facebook.net https://www.facebook.com https://vitals.vercel-insights.com https://vimeo.com https://*.vimeo.com wss://vimeo.com wss://*.vimeo.com",
     "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://vimeo.com",
     "media-src 'self' https: data: blob:",
     "object-src 'none'",
