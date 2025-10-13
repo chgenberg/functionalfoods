@@ -10,6 +10,7 @@ import AutoTranslate from './lib/i18n/useAutoTranslate';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './context/ToastContext';
 import { generateMetadata as generateSEOMetadata } from './lib/seo';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToastProvider>
             <LanguageProvider>
               <CartProvider>
+                <GoogleAnalytics />
                 <AutoTranslate />
                 <div className="flex flex-col min-h-screen">
                   <header role="banner" aria-label="Huvud">

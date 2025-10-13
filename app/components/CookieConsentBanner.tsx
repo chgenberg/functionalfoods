@@ -86,6 +86,11 @@ export default function CookieConsentBanner() {
     }
     
     console.log('🍪 Cookie preferences saved:', prefs);
+    try {
+      // Notify listeners (e.g., GA component) that consent was updated
+      const evt = new Event('cookie-consent-updated');
+      window.dispatchEvent(evt);
+    } catch {}
   };
 
   const cookieTypes = [
