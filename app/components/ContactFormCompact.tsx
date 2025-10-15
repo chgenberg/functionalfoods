@@ -2,6 +2,7 @@
 import { useState } from 'react';
 
 import { useT } from '../lib/i18n/LanguageProvider';
+import { trackGenerateLead } from '../lib/analytics';
 import { Send, Mail, MessageSquare } from 'lucide-react';
 
 export default function ContactFormCompact() {
@@ -32,6 +33,8 @@ export default function ContactFormCompact() {
         setShowSuccess(true);
         setFormData({ namn: '', email: '', meddelande: '' });
         setTimeout(() => { setShowSuccess(false); setIsExpanded(false); }, 5000);
+        // GA4: generate_lead
+        trackGenerateLead('footer_compact');
       } else {
         alert(result.error || result.message || t('newsletter.error','Något gick fel. Försök igen senare.'));
       }

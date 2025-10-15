@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, ArrowRight, Book, Download, X, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { trackPurchase } from '@/app/lib/analytics';
 
 function SveaSuccessContent() {
   const searchParams = useSearchParams();
@@ -47,6 +48,21 @@ function SveaSuccessContent() {
         // Clear session storage
         sessionStorage.removeItem('svea_order_id');
         sessionStorage.removeItem('svea_checkout_id');
+        // GA4: purchase event
+        try {
+          const items = Array.isArray(data.order?.items) ? data.order.items.map((i: any) => ({
+            id: i.productId,
+            name: i.productName,
+            quantity: i.quantity,
+            price: i.price,
+          })) : [];
+          trackPurchase({
+            transactionId: data.order?.id,
+            value: Number(data.order?.totalAmount) || 0,
+            currency: 'SEK',
+            items,
+          });
+        } catch {}
       } else if (data.success && !data.paymentCompleted) {
         // Payment is still pending
         setError('Betalningen behandlas fortfarande. Vänligen vänta...');

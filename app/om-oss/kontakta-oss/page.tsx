@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Send, User, Mail } from 'lucide-react';
 import { useT } from "@/app/lib/i18n/LanguageProvider";
+import { trackGenerateLead } from "@/app/lib/analytics";
 
 export default function AdressPage() {
   const t = useT();
@@ -47,6 +48,8 @@ export default function AdressPage() {
       }
 
       setShowSuccess(true);
+      // GA4: generate_lead
+      trackGenerateLead('contact_page');
       setFormData({ namn: "", email: "", meddelande: "" });
       setConsent(false);
       setTimeout(() => setShowSuccess(false), 5000);
