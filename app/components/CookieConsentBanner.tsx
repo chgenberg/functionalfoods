@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Check, Cookie, Settings, Shield, Target, X } from "lucide-react";;
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface CookiePreferences {
   necessary: boolean;
@@ -13,6 +14,9 @@ interface CookiePreferences {
 }
 
 export default function CookieConsentBanner() {
+  const pathname = usePathname();
+  // Hide banner on admin routes
+  if (pathname?.startsWith('/admin')) return null;
   const [isVisible, setIsVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
