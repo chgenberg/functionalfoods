@@ -13,6 +13,10 @@ function updateMarketingConsentFromStorage() {
     const marketingGranted = !!parsed?.preferences?.marketing;
     if (typeof window !== 'undefined' && (window as any).fbq) {
       (window as any).fbq('consent', marketingGranted ? 'grant' : 'revoke');
+      // Fire an immediate PageView once consent is granted so pixel activates without waiting for navigation
+      if (marketingGranted && PIXEL_ID) {
+        (window as any).fbq('track', 'PageView');
+      }
     }
   } catch {}
 }

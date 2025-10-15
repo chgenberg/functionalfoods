@@ -16,6 +16,16 @@ function updateConsentFromStorage() {
         analytics_storage: analyticsGranted ? 'granted' : 'denied',
         ad_storage: 'denied'
       });
+      // Fire an immediate page_view once consent is granted so GA4 activates without waiting for navigation
+      if (analyticsGranted && GA_ID) {
+        const pagePath = window.location.pathname + (window.location.search ? `?${window.location.search.substring(1)}` : '');
+        (window as any).gtag('event', 'page_view', {
+          page_title: document.title,
+          page_location: window.location.href,
+          page_path: pagePath,
+          send_to: GA_ID
+        });
+      }
     }
   } catch {}
 }
