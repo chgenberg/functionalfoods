@@ -34,6 +34,9 @@ export default function GoogleAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  // Do not load GA on admin routes
+  if (pathname?.startsWith('/admin')) return null;
+
   // Update consent on load and when banner saves
   useEffect(() => {
     const onConsent = () => updateConsentFromStorage();

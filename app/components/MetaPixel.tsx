@@ -25,6 +25,9 @@ export default function MetaPixel() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  // Do not load Meta Pixel on admin routes
+  if (pathname?.startsWith('/admin')) return null;
+
   // Update consent on change from banner
   useEffect(() => {
     const onConsent = () => updateMarketingConsentFromStorage();
