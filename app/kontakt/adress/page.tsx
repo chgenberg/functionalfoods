@@ -96,9 +96,7 @@ export default function AdressPage() {
 
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
           <div className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-white">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs md:text-sm mb-2">
-              <span>{t('contact.replyIn24h','Vi svarar inom 24 timmar')}</span>
-            </div>
+            {/* Removed the 24h reply badge per request */}
             <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight drop-shadow">{t('contact.title','Kontakta oss')}</h1>
           </div>
         </div>
@@ -119,7 +117,7 @@ export default function AdressPage() {
             <p className="text-text-secondary">
               {t('contact.tipText1','Titta gärna om du kan hitta svaret på din fråga under ')}
               <Link href="/kontakt/faq" className="text-accent hover:underline">
-                {t('contact.faq','Frågor & Svar')}
+                {t('contact.faqTitle','Frågor & Svar')}
               </Link>{" "}
               {t('contact.tipText2','innan du kontaktar oss.')}
             </p>

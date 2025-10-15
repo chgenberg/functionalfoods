@@ -70,6 +70,7 @@ export default function Header() {
       { label: t('nav.podcasts','Poddar'), href: "/kunskapsbank/poddar" },
     ] },
     { label: t('nav.about','Om oss'), href: "/om-oss", submenu: [
+      { label: t('nav.about','Om oss'), href: "/om-oss" },
       { label: t('nav.contact','Kontakta oss'), href: "/om-oss/kontakta-oss" },
     ] },
   ];

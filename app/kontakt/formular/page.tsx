@@ -40,10 +40,7 @@ export default function KontaktFormular() {
     <main className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
       <div className="container-custom section-padding">
         <div className="text-center max-w-3xl mx-auto mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium mb-4">
-            <Send className="w-4 h-4" />
-            <span>{t('contact.replyIn24h','Vi svarar inom 24 timmar')}</span>
-          </div>
+          {/* Removed the 24h reply badge per request */}
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
             {t('contact.title','Kontakta')} <span className="bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent font-extrabold animate-gradient">{t('contact.weAreHere','oss')}</span>
           </h1>
@@ -209,7 +206,7 @@ export default function KontaktFormular() {
 
         <div className="mt-16 text-center animate-fade-in" style={{ animationDelay: '0.8s' }}>
           <div className="bg-white rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-primary mb-3">{t('contact.faq','Vanliga frågor?')}</h2>
+            <h2 className="text-2xl font-bold text-primary mb-3">{t('contact.faqTitle','Vanliga frågor?')}</h2>
             <p className="text-text-secondary mb-6">
               {t('contact.faqIntro','Kolla in vår FAQ-sektion för snabba svar på de vanligaste frågorna om functional foods.')}
             </p>
