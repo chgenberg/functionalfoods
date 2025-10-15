@@ -25,6 +25,17 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Helpers for momsvisning (25%) must be defined before any hooks that use them
+  const toIncl = (ex?: number | null) => ex != null ? Math.round(ex * 1.25) : '';
+  const fromIncl = (incl: number) => Math.round(incl / 1.25);
+
+  // IMPORTANT: Hooks must not be called after conditional returns.
+  // Compute memoized price BEFORE any early returns to keep hooks order stable.
+  const activeInclPrice = useMemo(() => {
+    const ex = ((course?.salePrice ?? course?.basePrice ?? course?.price) as number) || 0;
+    return toIncl(ex);
+  }, [course]);
+
   useEffect(() => {
     fetchCourse();
   }, [params.courseId]);
@@ -149,13 +160,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
     );
   }
 
-  // Helpers for momsvisning (25%)
-  const toIncl = (ex?: number | null) => ex != null ? Math.round(ex * 1.25) : '';
-  const fromIncl = (incl: number) => Math.round(incl / 1.25);
-  const activeInclPrice = useMemo(() => {
-    const ex = ((course?.salePrice ?? course?.basePrice ?? course?.price) as number) || 0;
-    return toIncl(ex);
-  }, [course]);
+  // (helpers moved above to ensure hooks run before returns)
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
