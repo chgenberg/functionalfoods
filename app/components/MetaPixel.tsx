@@ -24,27 +24,28 @@ function updateMarketingConsentFromStorage() {
 export default function MetaPixel() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  // Do not load Meta Pixel on admin routes
-  if (pathname?.startsWith('/admin')) return null;
+  const isAdmin = pathname?.startsWith('/admin');
 
   // Update consent on change from banner
   useEffect(() => {
+    if (isAdmin) return; // skip on admin
     const onConsent = () => updateMarketingConsentFromStorage();
     window.addEventListener('cookie-consent-updated', onConsent as any);
     // Run once on mount
     updateMarketingConsentFromStorage();
     return () => window.removeEventListener('cookie-consent-updated', onConsent as any);
-  }, []);
+  }, [isAdmin]);
 
   // Track page views on route changes
   useEffect(() => {
+    if (isAdmin) return; // skip on admin
     if (!PIXEL_ID) return;
     if (typeof window !== 'undefined' && (window as any).fbq) {
       (window as any).fbq('track', 'PageView');
     }
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, isAdmin]);
 
+  if (isAdmin) return null;
   if (!PIXEL_ID) return null;
 
   return (

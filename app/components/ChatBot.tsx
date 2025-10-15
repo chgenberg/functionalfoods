@@ -21,8 +21,7 @@ export default function ChatBot() {
   const { locale } = useLanguage();
   const t = useT();
   const pathname = usePathname();
-  // Hide ChatBot on admin routes
-  if (pathname?.startsWith('/admin')) return null;
+  const isAdmin = pathname?.startsWith('/admin');
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -38,10 +37,11 @@ export default function ChatBot() {
 
   // Allow external trigger to open chat
   useEffect(() => {
+    if (isAdmin) return; // skip on admin
     const handler = () => setIsOpen(true);
     window.addEventListener('openChatBot' as any, handler);
     return () => window.removeEventListener('openChatBot' as any, handler);
-  }, []);
+  }, [isAdmin]);
 
   // Ensure welcome message follows current language and only once at start
   useEffect(() => {
@@ -116,6 +116,7 @@ export default function ChatBot() {
     t('chat.example3','Vad är functional foods?')
   ];
 
+  if (isAdmin) return null;
   return (
     <>
       {/* Chat Button - Now visible on mobile too */}

@@ -33,21 +33,21 @@ function updateConsentFromStorage() {
 export default function GoogleAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  // Do not load GA on admin routes
-  if (pathname?.startsWith('/admin')) return null;
+  const isAdmin = pathname?.startsWith('/admin');
 
   // Update consent on load and when banner saves
   useEffect(() => {
+    if (isAdmin) return; // skip on admin
     const onConsent = () => updateConsentFromStorage();
     window.addEventListener('cookie-consent-updated', onConsent as any);
     // run once on mount
     updateConsentFromStorage();
     return () => window.removeEventListener('cookie-consent-updated', onConsent as any);
-  }, []);
+  }, [isAdmin]);
 
   // Send page_view on route changes
   useEffect(() => {
+    if (isAdmin) return; // skip on admin
     if (!GA_ID) return;
     const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
     if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -58,8 +58,9 @@ export default function GoogleAnalytics() {
         send_to: GA_ID
       });
     }
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, isAdmin]);
 
+  if (isAdmin) return null;
   if (!GA_ID) return null;
 
   return (

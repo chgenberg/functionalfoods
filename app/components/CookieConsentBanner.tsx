@@ -15,8 +15,7 @@ interface CookiePreferences {
 
 export default function CookieConsentBanner() {
   const pathname = usePathname();
-  // Hide banner on admin routes
-  if (pathname?.startsWith('/admin')) return null;
+  const isAdmin = pathname?.startsWith('/admin');
   const [isVisible, setIsVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
@@ -27,13 +26,14 @@ export default function CookieConsentBanner() {
   });
 
   useEffect(() => {
+    if (isAdmin) return; // skip on admin
     // Check if user has already given consent
     const hasConsent = localStorage.getItem('cookie-consent');
     if (!hasConsent) {
       // Show banner after a short delay for better UX
       setTimeout(() => setIsVisible(true), 1500);
     }
-  }, []);
+  }, [isAdmin]);
 
   const handleAcceptAll = () => {
     const allAccepted = {
@@ -132,6 +132,7 @@ export default function CookieConsentBanner() {
     }
   ];
 
+  if (isAdmin) return null;
   return (
     <AnimatePresence>
       {isVisible && (
