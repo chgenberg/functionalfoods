@@ -1,6 +1,6 @@
 "use client";
 
-// Lightweight helpers for GA4 events
+// Lightweight helpers for GA4 and Meta Pixel events
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
@@ -14,8 +14,21 @@ function safeGtagEvent(eventName: string, params: Record<string, any> = {}): voi
   } catch {}
 }
 
+function safeFbqTrack(eventName: string, params?: Record<string, any>): void {
+  if (typeof window === 'undefined') return;
+  const fbq = (window as any).fbq;
+  if (!fbq) return;
+  try {
+    if (params) fbq('track', eventName, params);
+    else fbq('track', eventName);
+  } catch {}
+}
+
 export function trackGenerateLead(source: string): void {
+  // GA4
   safeGtagEvent('generate_lead', { source });
+  // Meta Pixel
+  safeFbqTrack('Lead', { source });
 }
 
 export function trackPurchase(params: {
@@ -25,6 +38,7 @@ export function trackPurchase(params: {
   items?: Array<{ id?: string; name?: string; quantity?: number; price?: number; }>
 }): void {
   const { transactionId, value, currency = 'SEK', items = [] } = params;
+  // GA4
   safeGtagEvent('purchase', {
     transaction_id: transactionId,
     value,
@@ -35,6 +49,14 @@ export function trackPurchase(params: {
       quantity: i.quantity,
       price: i.price,
     }))
+  });
+  // Meta Pixel
+  safeFbqTrack('Purchase', {
+    value,
+    currency,
+    contents: items.map((i) => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
+    content_ids: items.map((i) => i.id).filter(Boolean),
+    content_type: 'product'
   });
 }
 
