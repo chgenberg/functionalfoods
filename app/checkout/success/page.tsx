@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 import { CheckCircle, Book, Play, Mail, AlertTriangle, Key, ArrowRight } from 'lucide-react';
+import { trackPurchase } from '@/app/lib/analytics';
 
 function CheckoutSuccessContent() {
   const { clearCart } = useCart();
@@ -28,6 +29,20 @@ function CheckoutSuccessContent() {
           if (res.ok && (data.payment_status === 'paid' || data.status === 'complete')) {
             setPaymentVerified(true);
             clearCart();
+            // GA4 purchase for Stripe session
+            try {
+              trackPurchase({
+                transactionId: data.order?.id || data.session_id || sessionId,
+                value: Number(data.amount_total ? data.amount_total / 100 : data.total_amount || 0),
+                currency: (data.currency || 'SEK').toUpperCase(),
+                items: Array.isArray(data.line_items) ? data.line_items.map((li: any) => ({
+                  id: li.price?.product || li.id,
+                  name: li.description,
+                  quantity: li.quantity,
+                  price: li.price?.unit_amount ? li.price.unit_amount / 100 : undefined,
+                })) : []
+              });
+            } catch {}
           } else {
             setError(data.error || 'Betalningen kunde inte verifieras.');
           }
@@ -41,6 +56,14 @@ function CheckoutSuccessContent() {
           if (response.ok && result.success && result.status === 'succeeded') {
             setPaymentVerified(true);
             clearCart();
+            // GA4 purchase for PaymentIntent fallback (amount not returned here)
+            try {
+              trackPurchase({
+                transactionId: result.paymentId || paymentIntentId,
+                value: 0,
+                currency: 'SEK',
+              });
+            } catch {}
           } else {
             setError(result.error || 'Betalningen kunde inte verifieras.');
           }
