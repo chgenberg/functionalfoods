@@ -18,6 +18,7 @@ import RecipeCarousel from "./components/RecipeCarousel";
 import CustomerReviews from "./components/CustomerReviews";
 import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
+import { trackGenerateLead } from "./lib/analytics";
 
 export default function Home() {
   const t = useT();
@@ -105,6 +106,7 @@ export default function Home() {
   const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
     setQuizResults({ answers, context });
     setShowQuiz(false);
+    try { trackGenerateLead('health_quiz'); } catch {}
   };
 
   const handleRestartQuiz = () => {

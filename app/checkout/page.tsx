@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { GiSparkles } from 'react-icons/gi';
 import { useT } from '../lib/i18n/LanguageProvider';
 import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X, Smartphone, ShoppingCart, ArrowRight, Book } from 'lucide-react';
+import { trackInitiateCheckout } from '../lib/analytics';
 
 // Course images mapping
 const courseImages: Record<string, string> = {
@@ -88,6 +89,14 @@ export default function Checkout() {
         } : undefined),
         couponCode: appliedCoupon?.code || undefined
       };
+
+      // Fire analytics: Initiate Checkout / begin_checkout before redirect
+      try {
+        trackInitiateCheckout({
+          items: items.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
+          value: finalTotal
+        });
+      } catch {}
 
       // Store checkout data temporarily
       sessionStorage.setItem('checkout_data', JSON.stringify(checkoutData));

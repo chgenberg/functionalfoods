@@ -60,4 +60,55 @@ export function trackPurchase(params: {
   });
 }
 
+export function trackAddToCart(item: { id?: string; name?: string; quantity?: number; price?: number; }, currency: string = 'SEK'): void {
+  const { id, name, quantity = 1, price } = item || {};
+  // GA4
+  safeGtagEvent('add_to_cart', {
+    currency,
+    value: typeof price === 'number' ? price * quantity : undefined,
+    items: [{
+      item_id: id,
+      item_name: name,
+      quantity,
+      price
+    }]
+  });
+  // Meta Pixel
+  safeFbqTrack('AddToCart', {
+    value: typeof price === 'number' ? price * quantity : undefined,
+    currency,
+    content_name: name,
+    content_ids: id ? [id] : undefined,
+    contents: [{ id, quantity, item_price: price }],
+    content_type: 'product'
+  });
+}
+
+export function trackInitiateCheckout(params: {
+  items: Array<{ id?: string; name?: string; quantity?: number; price?: number; }>,
+  value?: number,
+  currency?: string
+}): void {
+  const { items, value, currency = 'SEK' } = params;
+  // GA4 (recommended event name is begin_checkout)
+  safeGtagEvent('begin_checkout', {
+    currency,
+    value,
+    items: items.map(i => ({
+      item_id: i.id,
+      item_name: i.name,
+      quantity: i.quantity,
+      price: i.price
+    }))
+  });
+  // Meta Pixel
+  safeFbqTrack('InitiateCheckout', {
+    value,
+    currency,
+    content_ids: items.map(i => i.id).filter(Boolean),
+    contents: items.map(i => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
+    content_type: 'product'
+  });
+}
+
 

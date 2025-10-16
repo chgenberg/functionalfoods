@@ -2,6 +2,7 @@
 import { useCart } from '../context/CartContext';
 import { ShoppingCart, Loader } from 'lucide-react';
 import { useState } from 'react';
+import { trackAddToCart } from '../lib/analytics';
 import { useRouter } from 'next/navigation';
 
 interface AddToCartProps {
@@ -22,6 +23,8 @@ export default function AddToCart({ id, name, price, type, image }: AddToCartPro
     
     try {
       addItem({ id, name, price, type, image, quantity: 1 });
+      // Analytics
+      try { trackAddToCart({ id, name, price, quantity: 1 }); } catch {}
       setIsAdded(true);
       // Redirect directly to cart for smoother checkout flow
       router.push('/cart');
