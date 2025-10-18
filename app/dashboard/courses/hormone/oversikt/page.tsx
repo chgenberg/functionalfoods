@@ -101,13 +101,16 @@ export default function HormoneOverview() {
               </h1>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  Under dessa 6 veckor får du lära dig om hormoner, näring och hur mat påverkar din hormonella balans.
+                  Nu har du en spännande resa framför dig under 6 veckor med näringsrika recept och du får lära dig hur mat påverkar din hormonella balans. Du får praktiska kostscheman, recept för alla måltider och inköpslistor varje vecka.
                 </p>
                 <p>
-                  Du får praktiska kostscheman, recept och inköpslistor för varje vecka.
+                  Efter dessa veckor kommer du ha lärt dig om matlagning och de fördelar som kommer med en näringsrik kost: bättre hormonbalans, ökad energi, minskad inflammation och ett starkare immunförsvar.
+                </p>
+                <p>
+                  Mitt bästa tips är planering – laga flera maträtter samtidigt för att vara väl förberedd.
                 </p>
                 <p className="font-semibold">
-                  Varmt välkommen!
+                  Varmt välkommen till framtidens kost för bättre hälsa och ett friskare liv!
                 </p>
                 <p className="text-[#014421] font-signature text-xl">
                   /Ulrika
@@ -115,100 +118,167 @@ export default function HormoneOverview() {
               </div>
             </div>
             
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-gray-100">
-              {/* Placeholder för introvideo */}
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                <BookOpen className="w-16 h-16" />
-              </div>
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
+              <iframe
+                src="https://player.vimeo.com/video/1084931582?h=79f8062094"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+                title="Välkommen till Hormonell Balans"
+              />
             </div>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-3 flex-wrap">
+            <motion.button
+              onClick={() => setShowHelpModal(true)}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#014421] to-[#116530] text-white rounded-full font-medium shadow-lg hover:shadow-xl transform transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <motion.div
+                className="absolute inset-0 rounded-full bg-[#93C560] opacity-0 group-hover:opacity-20 blur-xl"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+                <HelpCircle className="w-6 h-6" />
+              </motion.div>
+              <span className="relative z-10 text-lg">Så använder du kursen</span>
+              <motion.svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </motion.svg>
+            </motion.button>
+
+            <a
+              href="https://www.facebook.com/groups/1168295381877412/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-6 py-4 rounded-full bg-[#1877F2] text-white font-medium shadow-lg hover:shadow-xl transition-all hover:bg-[#166FE1]"
+              aria-label="Gå med i Facebook-gruppen"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.19 8.44 9.94v-7.03H7.9v-2.91h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.75 8.44-4.92 8.44-9.94Z" />
+              </svg>
+              Facebook‑grupp
+            </a>
           </div>
         </div>
       </div>
 
-      {/* Info Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-8">
         <InfoPopupGrid courseType="hormone" courseId="hormonell-balans" />
       </div>
 
-      {/* Week Selection */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-[#014421] mb-6">Välj vecka</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {weekData.map((week, index) => {
-              const status = getWeekStatus(week.number);
-              const isLocked = status === 'locked';
-              
-              return (
-                <motion.div
-                  key={week.number}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <div
-                    onClick={() => !isLocked && (window.location.href = `/dashboard/courses/hormone/week/${week.number}`)}
-                    className={`
-                      p-6 rounded-2xl border-2 transition-all cursor-pointer
-                      ${status === 'current' ? 'border-[#8B5CF6] bg-[#8B5CF6]/5' : ''}
-                      ${status === 'completed' ? 'border-green-200 bg-green-50' : ''}
-                      ${isLocked ? 'border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed' : 'hover:shadow-lg'}
-                    `}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`
-                          w-12 h-12 rounded-full flex items-center justify-center
-                          ${status === 'current' ? 'bg-[#8B5CF6] text-white' : ''}
-                          ${status === 'completed' ? 'bg-green-600 text-white' : ''}
-                          ${isLocked ? 'bg-gray-300 text-gray-500' : ''}
-                        `}>
-                          <span className="font-bold text-lg">{week.number}</span>
-                        </div>
-                        {getWeekIcon(status)}
-                      </div>
-                    </div>
-                    <h3 className="font-bold text-[#014421] mb-1">{week.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{week.subtitle}</p>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <BookOpen className="w-4 h-4" />
-                      <span>{week.recipes} recept</span>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
-              onClick={() => window.location.href = '/dashboard/courses/hormone'}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
-            >
-              <Calendar className="w-5 h-5" />
-              Översikt
-            </button>
-            <button
-              onClick={() => window.location.href = `/dashboard/courses/hormone/week/${currentWeek}`}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-xl transition-colors"
-            >
-              <TrendingUp className="w-5 h-5" />
-              Gå till vecka {currentWeek}
-            </button>
-            <button
-              onClick={() => window.location.href = '/dashboard/courses/hormone/kostschema'}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
-            >
-              <BookOpen className="w-5 h-5" />
-              Alla kostscheman
-            </button>
-          </div>
-        </div>
-      </div>
-
       {showHelpModal && (
-        <HelpGuide onClose={() => setShowHelpModal(false)} />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6"
+          >
+            <div className="text-center">
+              <HelpCircle className="w-16 h-16 text-purple-500 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Hur navigerar du?</h3>
+              <div className="text-left space-y-3 text-sm text-gray-600">
+                <p>• <strong>Översikt:</strong> Se din framsteg och kursöversikt</p>
+                <p>• <strong>Vecka 1-6:</strong> Klicka för att gå till specifik vecka</p>
+                <p>• <strong>Grön vecka:</strong> Din nuvarande vecka</p>
+                <p>• <strong>Grå vecka:</strong> Låst tills du når dit</p>
+                <p>• <strong>Avslutning:</strong> Slutför kursen när du är klar</p>
+              </div>
+              <button
+                onClick={() => setShowHelpModal(false)}
+                className="mt-6 bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition-colors"
+              >
+                Förstått!
+              </button>
+            </div>
+          </motion.div>
+        </div>
       )}
+
+      {showCoachingModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-8"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg sm:text-2xl font-bold text-gray-900 pr-4">COACHNING OCH FUNCTIONAL FOODS PÅ SOCIALA MEDIER</h2>
+              <button
+                onClick={() => setShowCoachingModal(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4 text-gray-700">
+              <p>
+                För att du ska få en så värdefull och lärorik tid i din kurs som möjligt så erbjuder vi coachning via vår Facebook-grupp. 
+                I vår community kan du hålla kontakt med oss coacher som finns tillgängliga för att svara på dina frågor. 
+                Klicka på knappen nedan för att gå med i vår Facebook-grupp och bli en del av vår växande community.
+              </p>
+              
+              <p>
+                Du kan alltid kontakta oss via vår kundsupport: <a href="mailto:info@functionalfoods.se" className="text-[#014421] font-medium hover:underline">info@functionalfoods.se</a>
+              </p>
+              
+              <p className="font-medium">
+                Vill du följa vad som händer kring Functional Foods och ta del av tips, recept, nyheter, erbjudanden och vår härliga gemenskap så häng med oss här →
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                <a
+                  href="https://www.facebook.com/groups/1168295381877412/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 bg-[#014421] text-white rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                >
+                  <Users className="w-6 h-6" />
+                  <div>
+                    <div className="font-bold">COMMUNITY</div>
+                    <div className="text-sm opacity-90">Gå med i vår Facebook‑grupp</div>
+                  </div>
+                </a>
+                
+                <a
+                  href="https://www.instagram.com/functionalfoods.se/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 bg-[#F4B4C3] text-[#014421] rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                >
+                  <Instagram className="w-6 h-6" />
+                  <div>
+                    <div className="font-bold">INSTAGRAM</div>
+                    <div className="text-sm opacity-90">@functionalfoods.se</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setShowCoachingModal(false)}
+              className="mt-8 w-full bg-[#014421] text-white px-6 py-3 rounded-full font-bold hover:bg-[#116530] transition-colors"
+            >
+              Stäng
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      <HelpGuide 
+        isOpen={showHelpModal} 
+        onClose={() => setShowHelpModal(false)} 
+      />
     </main>
   );
 }
