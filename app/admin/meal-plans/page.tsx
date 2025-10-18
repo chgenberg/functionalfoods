@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 
 interface MealPlanWeek {
   id?: string;
-  course: 'basic' | 'flow' | 'energy';
+  course: 'basic' | 'flow' | 'energy' | 'hormone';
   weekNumber: number;
   title?: string | null;
   days: any;
@@ -17,7 +17,7 @@ interface MealPlanWeek {
 export default function AdminMealPlansPage() {
   const [weeks, setWeeks] = useState<MealPlanWeek[]>([]);
   const [loading, setLoading] = useState(true);
-  const [courseFilter, setCourseFilter] = useState<'basic' | 'flow' | 'energy' | 'all'>('all');
+  const [courseFilter, setCourseFilter] = useState<'basic' | 'flow' | 'energy' | 'hormone' | 'all'>('all');
   const [editing, setEditing] = useState<MealPlanWeek | null>(null);
   const [editorValue, setEditorValue] = useState('');
   const [showSimpleEditor, setShowSimpleEditor] = useState(true);
@@ -40,13 +40,15 @@ export default function AdminMealPlansPage() {
   useEffect(() => {
     const q = searchParams?.get('course');
     if (q) {
-      const map: Record<string, 'basic'|'flow'|'energy'> = {
+      const map: Record<string, 'basic'|'flow'|'energy'|'hormone'> = {
         'functional-basics': 'basic',
         'functional-flow': 'flow',
         'functional-energy': 'energy',
+        'hormonell-balans': 'hormone',
         'basic': 'basic',
         'flow': 'flow',
-        'energy': 'energy'
+        'energy': 'energy',
+        'hormone': 'hormone'
       };
       const mapped = map[q];
       if (mapped && mapped !== courseFilter) setCourseFilter(mapped);
@@ -150,6 +152,7 @@ export default function AdminMealPlansPage() {
           <option value="basic">Basics</option>
           <option value="flow">Flow</option>
           <option value="energy">Energy</option>
+          <option value="hormone">Hormonell Balans</option>
         </select>
       </div>
 
@@ -207,6 +210,7 @@ export default function AdminMealPlansPage() {
                     <option value="basic">Basics</option>
                     <option value="flow">Flow</option>
                     <option value="energy">Energy</option>
+                    <option value="hormone">Hormonell Balans</option>
                   </select>
                 </div>
                 <div>
