@@ -68,7 +68,8 @@ export default function CourseWeeksPage({ params }: { params: { courseId: string
     const names = {
       'functional-basics': 'Functional Basics',
       'functional-flow': 'Functional Flow',
-      'functional-energy': 'Functional Energy'
+      'functional-energy': 'Functional Energy',
+      'hormonell-balans': 'Hormonell Balans'
     };
     return names[courseId as keyof typeof names] || 'Kurs';
   };

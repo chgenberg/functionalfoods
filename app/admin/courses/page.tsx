@@ -97,7 +97,8 @@ export default function AdminCoursesPage() {
       const courseMap: Record<string, string> = {
         'functional-basics': 'basic',
         'functional-flow': 'flow',
-        'functional-energy': 'energy'
+        'functional-energy': 'energy',
+        'hormonell-balans': 'hormone'
       };
       const courseType = courseMap[selectedCourse] || 'basic';
       
@@ -119,7 +120,8 @@ export default function AdminCoursesPage() {
       const courseMap: Record<string, string> = {
         'functional-basics': 'basic',
         'functional-flow': 'flow',
-        'functional-energy': 'energy'
+        'functional-energy': 'energy',
+        'hormonell-balans': 'hormone'
       };
       const courseType = courseMap[selectedCourse] || 'basic';
       

@@ -56,13 +56,15 @@ export async function GET(req: NextRequest) {
     const courseNameToId: Record<string, string> = {
       'Functional Basics': 'functional-basics',
       'Functional Flow': 'functional-flow',
-      'Functional Energy': 'functional-energy'
+      'Functional Energy': 'functional-energy',
+      'Hormonell Balans': 'hormonell-balans'
     };
 
     const courseNameToCourse: Record<string, string> = {
       'Functional Basics': 'basic',
       'Functional Flow': 'flow',
-      'Functional Energy': 'energy'
+      'Functional Energy': 'energy',
+      'Hormonell Balans': 'hormone'
     };
 
     const courses = courseProducts
