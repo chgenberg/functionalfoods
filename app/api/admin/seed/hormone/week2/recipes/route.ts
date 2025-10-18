@@ -1,0 +1,217 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/app/lib/database';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[åä]/g, 'a')
+    .replace(/[ö]/g, 'o')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+type Seed = {
+  title: string;
+  servings?: number;
+  image?: string | null;
+  ingredients: string[];
+  instructions: string;
+  categories?: string[];
+};
+
+const IMG = '/Hormonell_balans/Bilder_v2';
+
+const RECIPES: Seed[] = [
+  {
+    title: 'Yoghurt med kokosgranola och mango',
+    servings: 1,
+    image: `${IMG}/YOGHURT_MED_KOKOSGRANOLA_OCH_MANGO.JPG`,
+    categories: ['frukost'],
+    ingredients: ['100 g frysta mangotärningar','1 dl grekisk yoghurt 6 %','3/4 dl kokosgranola'],
+    instructions: 'Tina mangon. Lägg yoghurt i en skål och lägg på kokosgranola och mango.'
+  },
+  {
+    title: 'Bärsmoothie',
+    servings: 2,
+    image: `${IMG}/BÄRSMOOTHIE.JPG`,
+    categories: ['frukost'],
+    ingredients: ['2 dl frysta blåbär','2 dl frysta hallon','150 g fryst mango','2 dl mandelmjölk'],
+    instructions: 'Mixa blåbär, hallon, mango och mandelmjölk till en jämn smoothie.'
+  },
+  {
+    title: 'Äggröra med tomatsallad',
+    servings: 1,
+    image: `${IMG}/ÄGGRÖRA_MED_TOMATSALLAD.JPG`,
+    categories: ['frukost'],
+    ingredients: ['1 tomat','1/5 rödlök','1/2 tsk olivolja','1 tsk basilika','2 ägg','1 msk mjölk','Salt','Svartpeppar','1 tsk smör'],
+    instructions: 'Gör tomatsallad av tomat, finhackad rödlök, basilika, olivolja, salt och peppar. Vispa ägg och mjölk, krydda. Stek snabbt i smör. Servera med tomatsallad.'
+  },
+  {
+    title: 'Kokt ägg med kaviar',
+    servings: 1,
+    image: `${IMG}/KOKT_ÄGG_MED_KAVIAR.JPG`,
+    categories: ['frukost'],
+    ingredients: ['2 ägg','1 msk kaviar'],
+    instructions: 'Koka äggen och servera med kaviar.'
+  },
+  {
+    title: 'Spenatbiffar med tomatsallad',
+    servings: 2,
+    image: `${IMG}/SPENATBIFFAR_MED_TOMATSALLAD.JPG`,
+    categories: ['vego','lunch','middag'],
+    ingredients: ['100 g bladspenat','1 schalottenlök','1/2 vitlöksklyfta','1 dl keso','40 g fetaost','1 ägg','1/2 dl mandelmjöl','1 tsk fiberhusk','Salt','Svartpeppar','1 krm örtagårdskrydda','1 tsk olivolja','Tomatsallad: 2 tomater, 1/4 rödlök, 2 msk basilika, 1 tsk olivolja, 1 tsk vinäger, salt, peppar','Chiliyoghurt: 1/2 dl grekisk yoghurt, 1/5 vitlök, 1 krm sriracha, salt, peppar'],
+    instructions: 'Blanda chiliyoghurt. Hacka spenat, finhacka lök och vitlök. Blanda ned keso, feta, ägg, mandelmjöl, fiberhusk och kryddor. Forma biffar och stek i olja. Tomatsallad: tärna tomat, finhacka lök och basilika, blanda med olja och vinäger. Servera biffarna med sallad och chiliyoghurt.'
+  },
+  {
+    title: 'Kyckling med blomkålsmos',
+    servings: 2,
+    image: `${IMG}/KYCKLING_MED_BLOMKÅLSMOS.JPG`,
+    categories: ['kyckling','middag'],
+    ingredients: ['1 tsk olivolja','300 g kycklinglårfilé','Salt','Svartpeppar','1/2 blomkålshuvud','2 msk grädde','1/2 dl mjölk','1 dl edamamebönor','25 g bacontärningar','1 salladslök','1 msk gräslök'],
+    instructions: 'Stek kyckling i olja, salta och peppra. Koka blomkål mjuk och mixa med grädde och mjölk; smaka av. Stek bacon med edamame, blanda i strimlad salladslök. Servera mos med kyckling och bacon/edamame, toppa med gräslök.'
+  },
+  {
+    title: 'Kycklingklubbor med kikärtssallad',
+    servings: 2,
+    image: `${IMG}/KYCKLINGKLUBBOR_MED_KIKÄRTSSALLAD.JPG`,
+    categories: ['kyckling','lunch','middag'],
+    ingredients: ['550 g kycklingklubbor','1/2 msk ketjap manis','1 tsk olivolja','1 vitlöksklyfta','Salt','Svartpeppar','1 krm örtagård','1 krm paprika','1 krm curry','Kikärtssallad: 200 g kikärtor, 1 tsk olivolja, 1/2 tsk örtagård, salt, peppar, 1/2 vitlök, 2 msk persilja, 4 soltorkade tomater, 1/4 rödlök, 1/4 röd paprika, 1/4 gul paprika, 6 cocktailtomater','Mango chutney yoghurt: 3/4 dl yoghurt, 1 krm sriracha, 1 msk mango chutney, 1/4 vitlök, salt, peppar'],
+    instructions: 'Marinera kyckling i ketjap manis, olja, vitlök och kryddor. Baka 200°C ca 40 min. Blanda kikärtssalladen enligt listan. Rör ihop mango‑chutney‑yoghurten. Servera.'
+  },
+  {
+    title: 'Lax med saffranssås och quinoasallad',
+    servings: 2,
+    image: `${IMG}/LAX_MED_SAFFRANSSÅS_OCH_QUINOASALLAD.JPG`,
+    categories: ['fisk','middag'],
+    ingredients: ['300 g laxfilé','Salt','Vitpeppar','Quinoasallad: 1.5 dl vit quinoa, 1/4 rödlök, 1 morot, 1 dl frysta ärtor, 1 tsk olivolja, 1/4 citron, 2 msk persilja, salt, peppar','Saffranssås: 1/4 gul lök, 1/4 vitlök, 1 tsk smör, 0.25 g saffran, 1 dl havregrädde, salt, peppar','Dekoration: 2 färska fikon, 2 citronskivor'],
+    instructions: 'Baka lax 200°C ca 20 min. Koka quinoa, blanda med tärnad morot, finhackad rödlök, ärtor, olja, citron och persilja. Saffranssås: fräs lök och vitlök i smör, tillsätt saffran och havregrädde, smaka av. Servera med fikon och citron.'
+  },
+  {
+    title: 'Köttfärssås med glutenfri pasta',
+    servings: 2,
+    image: `${IMG}/KÖTTFÄRSSÅS_MED_GLUTENFRI_PASTA.JPG`,
+    categories: ['kött','lunch','middag'],
+    ingredients: ['1 tsk olivolja','Salt','Svartpeppar','300 g nötfärs','1/2 gul lök','1 vitlöksklyfta','1 morot','1 stjälkselleri','200 ml krossade tomater','1/2 msk stark chilisås','1 krm torkade örter','Lite färsk basilika','Tillbehör: 150 g glutenfri spirelli'],
+    instructions: 'Stek färsen i olja, krydda. Stek lök, vitlök, morot, selleri. Tillsätt tomater, chilisås, örter och sjud ca 20 min. Koka pastan. Servera och toppa med basilika.'
+  },
+  {
+    title: 'Mortadella med päron',
+    servings: 1,
+    image: `${IMG}/MORTADELLA_MED_PÄRON.JPG`,
+    categories: ['kallrätt','middag','lunch'],
+    ingredients: ['2 skivor mortadella','2 skivor lufttorkad skinka','1/2 päron','50 g getost','25 g ruccola','Persiljekvist (dekoration)'],
+    instructions: 'Lägg upp chark på tallrik. Skär päron i tärningar/klyftor. Lägg på chèvre och ruccola. Dekorera med persilja.'
+  },
+  {
+    title: 'Köttfärsbiff med champinjonsås',
+    servings: 2,
+    image: `${IMG}/KÖTTFÄRSBIFF_MED_CHAMPINJONSÅS.JPG`,
+    categories: ['kött','middag'],
+    ingredients: ['250 g nötfärs','1/2 gul lök','1/2 vitlök','Salt','Svartpeppar','2 msk persilja','1 tsk smör','1/2 dl vatten','50 g ruccola','1/2 dl inlagda rödbetor','4 skivor inlagd gurka','Champinjonsås: 150 g champinjoner, 1/2 gul lök, 1 tsk smör, 1 1/4 dl havregrädde, 1 tsk ketjap manis, 2 msk persilja, salt, peppar','Vitkålssallad: 1/4 vitkål, 1 morot, 1/4 röd paprika, 100 g sockerärtor, 2 msk persilja, 2 tsk olivolja, 1 tsk sötstark senap, 1 tsk vitvinsvinäger, 2 krm örtagårdskrydda'],
+    instructions: 'Gör vitkålssallad (strimla, blanda med dressing). Blanda färs med lök, vitlök, persilja, salt, peppar; forma biffar och stek i smör. Slå på vatten och reducera. Champinjonsås: fräs svamp och lök i smör, tillsätt grädde, ketjap, persilja; smaka av. Servera med sallad, ruccola, rödbetor och gurka.'
+  },
+  {
+    title: 'Glutenfri banankaka',
+    servings: 15,
+    image: `${IMG}/GLUTENFRI_BANANKAKA.JPG`,
+    categories: ['dessert'],
+    ingredients: ['150 g smör','2 dl kokossocker','3 ägg','4 dl mandelmjöl','2 dl kokosmjöl','2 tsk bakpulver','1/2 tsk kardemumma','1 tsk vaniljpulver','4 bananer','100 g valnötter','50 g mörk choklad','Form: 1 tsk olja, 2 msk glutenfritt ströbröd, 10 valnötter'],
+    instructions: 'Sätt ugnen på 175°C. Vispa smör och socker, tillsätt ägg ett i taget. Blanda torra ingredienser och vänd ned med mosad banan, valnötter och hackad choklad. I med smet i smord/bröad form, dekorera med valnötter. Grädda ca 60 min. Kyl, skär i skivor.'
+  }
+];
+
+export async function POST(req: NextRequest) {
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
+
+  try {
+    const created: any[] = [];
+    for (const r of RECIPES) {
+      const slug = slugify(r.title);
+      const doc = await prisma.recipe.upsert({
+        where: { slug },
+        create: {
+          title: r.title,
+          slug,
+          servings: r.servings || null,
+          imageUrl: r.image || undefined,
+          ingredients: r.ingredients,
+          content: r.instructions,
+          categories: r.categories || [],
+          isPremium: true,
+          isFree: false
+        },
+        update: {
+          servings: r.servings || null,
+          imageUrl: r.image || undefined,
+          ingredients: r.ingredients,
+          content: r.instructions,
+          categories: r.categories || []
+        }
+      });
+      created.push({ id: doc.id, slug });
+    }
+
+    // Update meal plan links
+    const course = 'hormone';
+    const weekNumber = 2;
+    const link = (title: string) => `/kunskapsbank/recept/${slugify(title)}`;
+    const days = {
+      'Måndag': {
+        breakfast: { name: 'Yoghurt med kokosgranola och mango', recipeLink: link('Yoghurt med kokosgranola och mango') },
+        lunch: { name: 'Stekt lax med citronmarinerad broccoli (rester)', recipeLink: link('Stekt lax med citronmarinerad broccoli') },
+        dinner: { name: 'Köttfärssås med glutenfri pasta', recipeLink: link('Köttfärssås med glutenfri pasta') }
+      },
+      'Tisdag': {
+        breakfast: { name: 'Citronvatten och svart kaffe/te', recipeLink: link('Citronvatten och svart kaffe/te') },
+        lunch: { name: 'Torskgryta med rotfrukter och curry (rester från frysen)', recipeLink: link('Torskgryta med rotfrukter och curry') },
+        dinner: { name: 'Spenatbiffar med tomatsallad', recipeLink: link('Spenatbiffar med tomatsallad') }
+      },
+      'Onsdag': {
+        breakfast: { name: 'Kokt ägg med kaviar', recipeLink: link('Kokt ägg med kaviar') },
+        lunch: { name: 'Köttfärssås med glutenfri pasta (rester)', recipeLink: link('Köttfärssås med glutenfri pasta') },
+        dinner: { name: 'Kycklingklubbor med kikärtssallad', recipeLink: link('Kycklingklubbor med kikärtssallad') }
+      },
+      'Torsdag': {
+        breakfast: { name: 'Citronvatten och svart kaffe/te', recipeLink: link('Citronvatten och svart kaffe/te') },
+        lunch: { name: 'Spenatbiffar med tomatsallad (rester)', recipeLink: link('Spenatbiffar med tomatsallad') },
+        dinner: { name: 'Mortadella med päron', recipeLink: link('Mortadella med päron') }
+      },
+      'Fredag': {
+        breakfast: { name: 'Äggröra med tomatsallad', recipeLink: link('Äggröra med tomatsallad') },
+        lunch: { name: 'Kycklingklubbor med kikärtssallad (rester)', recipeLink: link('Kycklingklubbor med kikärtssallad') },
+        dinner: { name: 'Köttfärsbiff med champinjonsås', recipeLink: link('Köttfärsbiff med champinjonsås') }
+      },
+      'Lördag': {
+        breakfast: { name: 'Citronvatten med svart kafffe/te', recipeLink: link('Citronvatten och svart kaffe/te') },
+        lunch: { name: 'Köttfärsbiff med champinjonsås (rester)', recipeLink: link('Köttfärsbiff med champinjonsås') },
+        dinner: { name: 'Lax med saffranssås och quinoasallad', recipeLink: link('Lax med saffranssås och quinoasallad') }
+      },
+      'Söndag': {
+        breakfast: { name: 'Bärsmoothie', recipeLink: link('Bärsmoothie') },
+        lunch: { name: 'Lax med saffranssås och quinoasallad (rester)', recipeLink: link('Lax med saffranssås och quinoasallad') },
+        dinner: { name: 'Kyckling med blomkålsmos', recipeLink: link('Kyckling med blomkålsmos') },
+        dessert: { name: 'Banankaka', recipeLink: link('Glutenfri banankaka') }
+      }
+    } as any;
+
+    await (prisma as any).mealPlanWeek?.upsert({
+      where: { course_weekNumber: { course, weekNumber } },
+      create: { course, weekNumber, title: 'Vecka 2', days },
+      update: { days }
+    });
+
+    return NextResponse.json({ ok: true, created });
+  } catch (error) {
+    console.error('Seed hormone week2 recipes error:', error);
+    return NextResponse.json({ error: 'Failed to seed week 2 recipes' }, { status: 500 });
+  }
+}
+
+
