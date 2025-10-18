@@ -21,6 +21,30 @@ function updateMarketingConsentFromStorage() {
   } catch {}
 }
 
+function ensureInitialPixelPageViewOnce() {
+  try {
+    const raw = localStorage.getItem('cookie-consent');
+    const parsed = raw ? JSON.parse(raw) as { preferences?: { marketing?: boolean } } : null;
+    const marketingGranted = !!parsed?.preferences?.marketing;
+    if (!marketingGranted || !PIXEL_ID) return;
+    const send = () => {
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'PageView');
+        return true;
+      }
+      return false;
+    };
+    if (send()) return;
+    let attempts = 0;
+    const id = window.setInterval(() => {
+      attempts += 1;
+      if (send() || attempts > 20) {
+        window.clearInterval(id);
+      }
+    }, 150);
+  } catch {}
+}
+
 export default function MetaPixel() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -33,6 +57,7 @@ export default function MetaPixel() {
     window.addEventListener('cookie-consent-updated', onConsent as any);
     // Run once on mount
     updateMarketingConsentFromStorage();
+    ensureInitialPixelPageViewOnce();
     return () => window.removeEventListener('cookie-consent-updated', onConsent as any);
   }, [isAdmin]);
 
@@ -62,6 +87,12 @@ export default function MetaPixel() {
         id="fbp-loader"
         strategy="afterInteractive"
         src="https://connect.facebook.net/en_US/fbevents.js"
+        onLoad={() => {
+          try {
+            updateMarketingConsentFromStorage();
+            ensureInitialPixelPageViewOnce();
+          } catch {}
+        }}
       />
       <Script id="fbp-init" strategy="afterInteractive">
         {`

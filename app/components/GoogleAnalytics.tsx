@@ -30,6 +30,37 @@ function updateConsentFromStorage() {
   } catch {}
 }
 
+function ensureInitialPageViewOnce() {
+  try {
+    const raw = localStorage.getItem('cookie-consent');
+    const parsed = raw ? JSON.parse(raw) as { preferences?: { analytics?: boolean } } : null;
+    const analyticsGranted = !!parsed?.preferences?.analytics;
+    if (!analyticsGranted || !GA_ID) return;
+    const send = () => {
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        const pagePath = window.location.pathname + (window.location.search ? `?${window.location.search.substring(1)}` : '');
+        (window as any).gtag('event', 'page_view', {
+          page_title: document.title,
+          page_location: window.location.href,
+          page_path: pagePath,
+          send_to: GA_ID
+        });
+        return true;
+      }
+      return false;
+    };
+    // Try immediately, then a few retries while script initializes
+    if (send()) return;
+    let attempts = 0;
+    const id = window.setInterval(() => {
+      attempts += 1;
+      if (send() || attempts > 20) {
+        window.clearInterval(id);
+      }
+    }, 150);
+  } catch {}
+}
+
 export default function GoogleAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -42,6 +73,8 @@ export default function GoogleAnalytics() {
     window.addEventListener('cookie-consent-updated', onConsent as any);
     // run once on mount
     updateConsentFromStorage();
+    // and ensure first page_view after GA loads if consent already granted
+    ensureInitialPageViewOnce();
     return () => window.removeEventListener('cookie-consent-updated', onConsent as any);
   }, [isAdmin]);
 
@@ -79,6 +112,12 @@ export default function GoogleAnalytics() {
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
         strategy="afterInteractive"
+        onLoad={() => {
+          try {
+            updateConsentFromStorage();
+            ensureInitialPageViewOnce();
+          } catch {}
+        }}
       />
       <Script id="ga4-init" strategy="afterInteractive">
         {`
