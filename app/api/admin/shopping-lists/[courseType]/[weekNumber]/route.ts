@@ -34,7 +34,8 @@ export async function GET(
     const courseNameMap: Record<string, string> = {
       'basics': 'Basic',
       'flow': 'Flow', 
-      'energy': 'Energy'
+      'energy': 'Energy',
+      'hormone': 'Hormonell Balans'
     };
     const courseName = courseNameMap[courseType];
     if (!courseName) {
@@ -110,7 +111,8 @@ export async function POST(
     const courseNameMap: Record<string, string> = {
       'basics': 'Basic',
       'flow': 'Flow', 
-      'energy': 'Energy'
+      'energy': 'Energy',
+      'hormone': 'Hormonell Balans'
     };
     const courseName = courseNameMap[courseType];
     if (!courseName) {
@@ -191,7 +193,8 @@ export async function DELETE(
     const courseNameMap: Record<string, string> = {
       'basics': 'Basic',
       'flow': 'Flow', 
-      'energy': 'Energy'
+      'energy': 'Energy',
+      'hormone': 'Hormonell Balans'
     };
     const courseName = courseNameMap[courseType];
     if (!courseName) {
