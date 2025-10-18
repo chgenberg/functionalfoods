@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { PaymentService } from '../../../lib/payment';
 import { emailService } from '../../../lib/email';
+import { trackPurchaseServer } from '@/app/lib/server-analytics';
 
 export const dynamic = 'force-dynamic';
 
@@ -779,6 +780,25 @@ async function completePayment(paymentId: string, webhookData: any) {
     }
 
     console.log(`Payment completed for order ${payment.order.orderNumber}`);
+
+    // Fire server-side GA4 purchase (browser may block client scripts)
+    try {
+      await trackPurchaseServer({
+        transactionId: payment.order.orderNumber,
+        value: payment.order.totalAmount,
+        currency: payment.order.currency || 'SEK',
+        items: payment.order.items.map((it: any) => ({
+          item_id: it.courseId ? String(it.courseId) : it.name,
+          item_name: it.name,
+          quantity: it.quantity,
+          price: it.price
+        })),
+        userId: payment.order.user.id,
+        clientSeed: payment.order.user.email
+      });
+    } catch (e) {
+      console.warn('GA4 server purchase failed (non-fatal):', e);
+    }
   });
 }
 

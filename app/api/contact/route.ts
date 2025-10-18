@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { emailService } from '@/app/lib/email';
+import { trackLeadServer } from '@/app/lib/server-analytics';
 
 const SUPPORTED = ['sv', 'en', 'es', 'de', 'fr'] as const;
 type Lang = typeof SUPPORTED[number];
@@ -88,6 +89,10 @@ export async function POST(request: Request) {
       meddelande: data.meddelande,
       lang
     });
+    // Server-side GA4 Lead (deduped by UA if client fires too)
+    try {
+      await trackLeadServer({ source: 'contact_form', clientSeed: data.email });
+    } catch {}
     // Return non-200 if email could not be sent so client can show error
     return NextResponse.json(result, { status: result.success ? 200 : 502 });
   } catch (error) {

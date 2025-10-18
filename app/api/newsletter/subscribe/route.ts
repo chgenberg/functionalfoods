@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/app/lib/email';
+import { trackLeadServer } from '@/app/lib/server-analytics';
 
 export const dynamic = 'force-dynamic';
 
@@ -166,6 +167,11 @@ export async function POST(request: NextRequest) {
       console.error('⚠️ Failed to send newsletter notification email:', emailError);
       // Don't fail the whole request if notification fails
     }
+
+  // Server-side GA4 generate_lead for newsletter/quiz
+  try {
+    await trackLeadServer({ source: source || 'newsletter', clientSeed: email });
+  } catch {}
 
     return NextResponse.json(
       { 
