@@ -1,18 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function HormoneFreeTest() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [status, setStatus] = useState<string>("Förbereder varukorgen...");
 
   useEffect(() => {
     const run = async () => {
       try {
         // 1) Lägg Hormonell Balans i varukorgen (exkl. moms)
+        const productIdFromUrl = searchParams?.get('id') || undefined; // optional override with DB id
+        const overrideCode = searchParams?.get('code') || undefined;
+
         const item = {
-          id: "hormonell-balans",
+          id: productIdFromUrl || "hormonell-balans",
           name: "Hormonell Balans",
           price: 1836, // 2295 inkl. moms
           quantity: 1,
@@ -28,7 +32,7 @@ export default function HormoneFreeTest() {
         const res = await fetch("/api/coupons/validate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: "TEST123", items: cart }),
+          body: JSON.stringify({ code: overrideCode || "TEST123", items: cart }),
         });
         if (res.ok) {
           const data = await res.json();

@@ -93,8 +93,17 @@ const courseMetadata: Record<string, {
     duration: '6 veckor',
     level: 'Avancerad',
     image: '/Kurser_bilder/Functional_insulin balance.jpg',
-    progress: 20,
-    nextLesson: 'Vecka 1: Energimetabolism'
+  },
+  'Hormonell Balans': {
+    color: '#8B5CF6',
+    bgColor: 'bg-[#8B5CF6]/10',
+    icon: '✨',
+    dashboardPath: '/dashboard/courses/hormone',
+    duration: '6 veckor',
+    level: 'Avancerad',
+    image: '/Hormonell_balans/Bilder_v1/KAVRING_MED_FRÖN.JPG',
+    progress: 0,
+    nextLesson: 'Vecka 1'
   },
   'Functional Energy': {
     color: '#FF7E70',
@@ -358,10 +367,7 @@ export default function MyCoursesPage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                         
-                        {/* Course icon overlay */}
-                        <div className="absolute top-4 right-4 text-4xl bg-white/90 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
-                          {metadata.icon}
-                        </div>
+                        {/* Course icon overlay removed per request */}
                         
                         {/* Course name overlay */}
                         <div className="absolute bottom-4 left-6 right-6">
