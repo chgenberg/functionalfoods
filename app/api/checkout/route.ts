@@ -20,11 +20,22 @@ export async function POST(req: NextRequest) {
 
     // --- SECURITY FIX: Fetch product data from database ---
     const courseProducts = await prisma.courseProduct.findMany();
-    const productMap = new Map(courseProducts.map(p => {
-      // Normalize name for robust matching (e.g., 'Functional Basics' -> 'functional-basics')
-      const key = p.name.toLowerCase().replace(/\s+/g, '-');
-      return [key, p];
-    }));
+    const slugify = (s: string) => s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9\-]+/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    const productMap = new Map<string, any>();
+    for (const p of courseProducts) {
+      const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
+      const key2 = slugify(p.name);
+      productMap.set(key1, p);
+      productMap.set(key2, p);
+      productMap.set(p.id, p); // allow using DB id directly
+    }
 
     // Validate and enrich items with server-side data
     const now = new Date();
