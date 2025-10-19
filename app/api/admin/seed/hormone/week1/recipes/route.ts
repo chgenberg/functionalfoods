@@ -322,28 +322,28 @@ export async function POST(req: NextRequest) {
       },
       'Onsdag': {
         breakfast: { name: 'Yoghurt med kokosgranola', recipeLink: getLink('Yoghurt med kokosgranola') },
-        lunch: { name: 'Lövbiff teriyaki med nudelsallad (rester)' },
+        lunch: { name: 'Lövbiff teriyaki med nudelsallad (rester)', recipeLink: getLink('Lövbiff teriyaki med nudelsallad') },
         dinner: { name: 'Ratatouille med quinoa och raita', recipeLink: getLink('Ratatouille med quinoa och raita') }
       },
       'Torsdag': {
         breakfast: { name: 'Citronvatten och svart kaffe/te', recipeLink: getLink('Citronvatten och svart kaffe/te') },
-        lunch: { name: 'Kycklingbiffar med mangosalsa (rester)' },
+        lunch: { name: 'Kycklingbiffar med mangosalsa (rester)', recipeLink: getLink('Kycklingbiffar med mangosalsa') },
         dinner: { name: 'Tomatsoppa med kanel och ingefära', recipeLink: getLink('Tomatsoppa med kanel och ingefära') }
       },
       'Fredag': {
         breakfast: { name: 'Mangosmoothie med spenat', recipeLink: getLink('Mangosmoothie med spenat') },
-        lunch: { name: 'Ratatouille med quinoa och raita (rester)' },
+        lunch: { name: 'Ratatouille med quinoa och raita (rester)', recipeLink: getLink('Ratatouille med quinoa och raita') },
         dinner: { name: 'Kycklinggryta med garam masala', recipeLink: getLink('Kycklinggryta med garam masala') }
       },
       'Lördag': {
         breakfast: { name: 'Citronvatten och svart kaffe/te', recipeLink: getLink('Citronvatten och svart kaffe/te') },
-        lunch: { name: 'Kycklinggryta med garam masala (rester)' },
+        lunch: { name: 'Kycklinggryta med garam masala (rester)', recipeLink: getLink('Kycklinggryta med garam masala') },
         dinner: { name: 'Köttfärsbiffar med champinjonhattar', recipeLink: getLink('Köttfärsbiffar med champinjonhattar') },
         dessert: { name: 'Snickerskaka', recipeLink: getLink('Snickerskaka') }
       },
       'Söndag': {
-        breakfast: { name: 'Mangosmoothie med spenat (rester)' },
-        lunch: { name: 'Köttfärsbiffar med champinjonhattar (rester)' },
+        breakfast: { name: 'Mangosmoothie med spenat (rester)', recipeLink: getLink('Mangosmoothie med spenat') },
+        lunch: { name: 'Köttfärsbiffar med champinjonhattar (rester)', recipeLink: getLink('Köttfärsbiffar med champinjonhattar') },
         dinner: { name: 'Stekt lax med citronmarinerad broccoli', recipeLink: getLink('Stekt lax med citronmarinerad broccoli') }
       }
     } as any;
