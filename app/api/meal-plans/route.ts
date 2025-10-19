@@ -11,16 +11,26 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const courseRaw = (searchParams.get('course') || 'basic').toLowerCase();
-    // Normalize course ids coming from URLs like 'functional-flow', 'functional-basics', etc.
+    const weekNumber = parseInt(searchParams.get('week') || '1', 10);
+
+    // If course is 'hormone', use DB exclusively (no static fallback)
+    if (courseRaw === 'hormone') {
+      const row = await (prisma as any).mealPlanWeek?.findUnique({
+        where: { course_weekNumber: { course: 'hormone', weekNumber } }
+      });
+      if (row) {
+        return NextResponse.json({ title: row.title || `Vecka ${weekNumber}`, days: row.days }, { headers: { 'Cache-Control': 'no-store' } });
+      }
+      return NextResponse.json({ title: `Vecka ${weekNumber}`, days: {} }, { headers: { 'Cache-Control': 'no-store' } });
+    }
+
+    // For basics/flow/energy: normalize and prefer static TS
     const course = (courseRaw.includes('flow')
       ? 'flow'
       : courseRaw.includes('energy') || courseRaw.includes('insulin')
       ? 'energy'
       : 'basic') as 'basic' | 'flow' | 'energy';
-    const weekNumber = parseInt(searchParams.get('week') || '1', 10);
 
-    // Prefer static TS meal plans to avoid stale DB overriding during launch,
-    // but keep DB title if present.
     const row = await (prisma as any).mealPlanWeek?.findUnique({
       where: { course_weekNumber: { course, weekNumber } }
     });
@@ -36,12 +46,10 @@ export async function GET(req: NextRequest) {
       }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    // Fallback to DB if TS missing (shouldn't happen)
     if (row) {
       return NextResponse.json({ title: row.title || `Vecka ${weekNumber}`, days: row.days }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    // As last resort
     return NextResponse.json({ title: `Vecka ${weekNumber}`, days: {} }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('Meal Plans API error:', e);
