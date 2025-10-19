@@ -60,7 +60,8 @@ export async function POST(req: NextRequest) {
         const content = steps.length > 0 ? steps.map((s, i) => `${i+1}. ${s}`).join(' ') : (r.content || '');
         await prisma.recipe.update({
           where: { id: r.id },
-          data: { instructions: steps.length > 0 ? (steps as any) : undefined, content }
+          // Store as strings (DB column is String). UI will split numbered content to steps.
+          data: { instructions: content, content }
         });
         updatedRecipes.push(r.slug);
       }
