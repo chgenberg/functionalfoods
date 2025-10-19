@@ -18,7 +18,7 @@ interface Document {
 }
 
 interface InfoPopupGridProps {
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
   courseId: string;
   currentWeek?: number;
 }

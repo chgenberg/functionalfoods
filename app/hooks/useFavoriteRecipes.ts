@@ -4,7 +4,7 @@ import { useAuth } from './useAuth';
 export interface FavoriteRecipe {
   name: string;
   recipeLink?: string;
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
   weekNumber: number;
   dayName: string;
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert';
@@ -168,7 +168,7 @@ export function useFavoriteRecipes() {
     }
   };
 
-  const getFavoritesByCoursetype = (courseType: 'basics' | 'flow' | 'energy') => {
+  const getFavoritesByCoursetype = (courseType: 'basics' | 'flow' | 'energy' | 'hormone') => {
     const filtered = favorites.filter(fav => fav.courseType === courseType);
     console.log(`📋 getFavoritesByCoursetype(${courseType}): Found ${filtered.length} favorites`);
     return filtered;

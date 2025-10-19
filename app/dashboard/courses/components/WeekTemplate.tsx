@@ -133,7 +133,7 @@ interface WeekDay {
 
 interface WeekTemplateProps {
   weekNumber: number;
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
   weekTitle: string;
   weekSubtitle: string;
   heroImage?: string;
@@ -359,7 +359,7 @@ export default function WeekTemplate({
   useEffect(() => {
     const loadMeta = async () => {
       try {
-        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : courseType === 'hormone' ? 'hormone' : 'energy';
         const res = await fetch(`/api/course-weeks?course=${course}&week=${weekNumber}`);
         const meta = await res.json();
         if (meta) {
@@ -379,7 +379,7 @@ export default function WeekTemplate({
   useEffect(() => {
     const loadKnowledgeDocuments = async () => {
       try {
-        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : courseType === 'hormone' ? 'hormone' : 'energy';
         const response = await fetch(`/api/knowledge?course=${course}`, { cache: 'no-store' });
         const data = await response.json();
         const documents: KnowledgeDocument[] = Array.isArray(data?.documents) ? data.documents : [];
@@ -402,7 +402,7 @@ export default function WeekTemplate({
   useEffect(() => {
     const loadDbMealPlan = async () => {
       try {
-        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : courseType === 'hormone' ? 'hormone' : 'energy';
         const res = await fetch(`/api/meal-plans?course=${course}&week=${weekNumber}`, { cache: 'no-store' });
         if (!res.ok) return;
         const data = await res.json();
@@ -713,7 +713,7 @@ export default function WeekTemplate({
                       })
                     )}
                     weekNumber={weekNumber}
-                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : courseType === 'hormone' ? 'Hormonell Balans' : 'Functional Insulin balance/Energy'}
                     courseType={courseType}
                   />
                 </div>

@@ -20,7 +20,7 @@ interface PrintableMealPlanProps {
   mealPlan: Record<string, DayMeals>;
   weekNumber: number;
   courseName: string;
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
 }
 
 interface RecipeDetails {

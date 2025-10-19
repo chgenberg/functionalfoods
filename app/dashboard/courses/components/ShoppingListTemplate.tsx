@@ -25,7 +25,7 @@ interface Ingredient {
 }
 
 interface ShoppingListTemplateProps {
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
   weekNumber: number;
 }
 
