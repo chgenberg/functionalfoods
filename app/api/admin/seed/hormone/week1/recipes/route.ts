@@ -171,32 +171,77 @@ const RECIPES: RecipeSeed[] = [
     servings: 4,
     image: `${IMG_BASE}/KYCKLINGGRYTA_MED_GARAM_MASALA.JPG`,
     categories: ['kyckling','middag'],
-    ingredients: ['2 tsk olivolja', '1 kg kycklingklubbor', '1 gul lök', '1 vitlöksklyfta', 'Salt och peppar', '1/4 blomkål', '2 tomater', '33 g garam masala', '400 ml kokosmjölk', '2 msk persilja', 'Tillbehör: fefferoni, grekisk yoghurt, mango chutney, persilja'],
-    instructions: 'Bryn kycklingen med lök och vitlök, krydda. Lägg i gryta, tillsätt garam masala och kokosmjölk. Sjuda ca 40 min. Lägg i blomkål och tomater, låt koka kort. Strö persilja och servera med tillbehör.'
+    ingredients: [
+      '2 tsk olivolja',
+      '1 kg kycklingklubbor',
+      '1 gul lök',
+      '1 vitlöksklyfta',
+      'Salt och svartpeppar',
+      '1/4 blomkål',
+      '2 tomater',
+      '33 g garam masala (en förpackning)',
+      '400 ml kokosmjölk',
+      '2 msk persilja',
+      'Tillbehör: 2 dl fefferoni, 1 dl grekisk yoghurt, 1 dl mango chutney, 1/2 dl persilja'
+    ],
+    instructions: 'Skala och hacka lök och riv vitlök. Hetta upp en stekpanna med olja och bryn kycklingklubborna. Lägg ner lök och vitlök och krydda med salt och peppar. Lägg över kycklingen i en gryta. Tillsätt garam masala och kokosmjölk och låt sjuda på svag värme i 40 minuter. Skär blomkål i buketter och dela tomater i klyftor, hacka persilja. Blanda ner i grytan och låt koka i några minuter. Strö på persilja. Servera grytan med fefferoni, grekisk yoghurt, mango chutney och persilja.'
   },
   {
     title: 'Laxsallad med ägg',
     servings: 1,
     image: `${IMG_BASE}/LAXSALLAD_MED_ÄGG.JPG`,
     categories: ['fisk','lunch'],
-    ingredients: ['2 kokta ägg', '1/2 msk majonnäs', 'Salt och peppar', '3 dl ruccola', '100 g rökt lax', '100 g broccoli', '1/4 citron', '2 cocktailtomater', '1 tsk gräslök'],
-    instructions: 'Blanda hackat ägg med majonnäs, salt och peppar. Lägg upp ruccola, laxrosetter, citronmarinerad broccoli och cocktailtomater. Toppa med ägg och gräslök.'
+    ingredients: [
+      '2 kokta ägg',
+      '1/2 msk majonnäs',
+      'salt och svartpeppar',
+      '3 dl ruccolasallad',
+      '100 g rökt lax',
+      '100 g broccoli',
+      '1/4 citron',
+      '2 cocktailtomater',
+      'Topping: 1 tsk gräslök'
+    ],
+    instructions: 'Skala ägg och hacka fint i en skål. Blanda i majonnäs, salt och peppar. Lägg ruccolasallad i en skål. Rulla ihop laxen till rosetter och lägg på ruccolan. Skär broccoli i små buketter och pressa citronjuice över. Skär cocktailtomater i klyftor och hacka gräslök. Lägg äggen tillsammans med de övriga ingredienserna i skålen. Strö på gräslök.'
   },
   {
     title: 'Stekt lax med citronmarinerad broccoli',
     servings: 2,
     image: `${IMG_BASE}/STEKT_LAX_MED_CITRONMARINERAD_BROCCOLI.JPG`,
     categories: ['fisk','middag'],
-    ingredients: ['300 g laxfilé', 'Salt och peppar', '1 tsk olivolja', '1/2 broccolistånd', '1/2 citron', '1 tsk olivolja', 'Tillbehör: 2 citronskivor, 2 msk gräslök, 2 msk romsås'],
-    instructions: 'Marinera broccoli i citron, olja, salt och peppar. Stek lax ca 8 min. Servera med broccoli, romsås och gräslök, dekorera med citronskivor.'
+    ingredients: [
+      '300 g laxfilé',
+      'Salt och svartpeppar',
+      '1 tsk olivolja',
+      '1/2 broccolistånd',
+      '1/2 citron',
+      '1 tsk olivolja',
+      'Tillbehör: 2 citronskivor, 2 msk gräslök, 2 msk romsås (Erik Lallerstedt)'
+    ],
+    instructions: 'Dela laxen i 2 bitar och strö på salt och peppar. Skär broccoli i buketter och lägg i en skål. Tillsätt citronjuice, olivolja, salt och peppar. Hetta upp en stekpanna med olja och bryn laxen runt om i cirka 8 minuter. Servera laxen med den citronmarinerade broccolin och romsås. Hacka gräslök och strö på. Dekorera med citronskivor.'
   },
   {
     title: 'Torskgryta med rotfrukter och curry',
     servings: 2,
     image: `${IMG_BASE}/TORSKGRYTA_MED_ROTFRUKTER_OCH_CURRY.JPG`,
     categories: ['fisk','lunch','middag'],
-    ingredients: ['300 g torskrygg', 'Salt och peppar', '1 vitlöksklyfta', '1/2 fänkål', '1 morot', '1/2 palsternacka', '10 cm purjolök', '1/2 msk olivolja', '1 tsk malen curry', '1/2 fiskbuljongtärning', '3 dl vatten', '1/2 dl havregrädde', '8 cocktailtomater', '2 msk gräslök'],
-    instructions: 'Fräs vitlök, fänkål och rotfrukter i olja med curry. Tillsätt buljong, vatten, grädde. Lägg i torsk, tomater och purjo, sjud tills fisken är klar. Toppa med gräslök.'
+    ingredients: [
+      '300 g fryst torskrygg',
+      'Salt och svartpeppar',
+      '1 vitlöksklyfta',
+      '1/2 fänkål',
+      '1 morot',
+      '1/2 palsternacka',
+      '10 cm purjolök',
+      '1/2 msk olivolja',
+      '1 tsk malen curry',
+      '1/2 fiskbuljongtärning',
+      '3 dl vatten',
+      '1/2 dl havregrädde',
+      '8 cocktailtomater',
+      '2 msk gräslök'
+    ],
+    instructions: 'Tina torsk och skär i bitar, salta och peppra. Riv vitlök och hacka gräslök. Skär fänkål i mindre bitar, morot och palsternacka i mindre bitar och strimla purjolök. Hetta upp en kastrull med olja och bryn vitlök, fänkål och rotfrukter i någon minut. Tillsätt curry. Smula ner buljongtärning och häll på vatten och havregrädde. Låt koka ihop i 5 minuter och lägg ner torsk, cocktailtomater och purjolök. Låt sjuda några minuter och häll upp soppan i skålar. Strö på gräslök.'
   },
   {
     title: 'Lövbiff teriyaki med nudelsallad',
