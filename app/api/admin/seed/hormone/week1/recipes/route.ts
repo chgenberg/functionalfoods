@@ -360,6 +360,7 @@ export async function POST(req: NextRequest) {
           title: r.title,
           slug,
           content: instructionsString,
+          instructions: instructionsString,
           ingredients: r.ingredients,
           categories: r.categories || [],
           servings: r.servings || null,
@@ -369,6 +370,7 @@ export async function POST(req: NextRequest) {
         },
         update: {
           content: instructionsString,
+          instructions: instructionsString,
           ingredients: r.ingredients,
           categories: r.categories || [],
           servings: r.servings || null,
