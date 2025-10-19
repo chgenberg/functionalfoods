@@ -351,12 +351,15 @@ export async function POST(req: NextRequest) {
     const created: any[] = [];
     for (const r of RECIPES) {
       const slug = slugify(r.title);
+      const instructionsString = Array.isArray(r.instructions)
+        ? r.instructions.map((s, i) => `${i + 1}. ${s}`).join(' ')
+        : (r.instructions || '');
       const doc = await prisma.recipe.upsert({
         where: { slug },
         create: {
           title: r.title,
           slug,
-          content: r.instructions,
+          content: instructionsString,
           ingredients: r.ingredients,
           categories: r.categories || [],
           servings: r.servings || null,
@@ -365,7 +368,7 @@ export async function POST(req: NextRequest) {
           isFree: false
         },
         update: {
-          content: r.instructions,
+          content: instructionsString,
           ingredients: r.ingredients,
           categories: r.categories || [],
           servings: r.servings || null,
