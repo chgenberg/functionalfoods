@@ -247,6 +247,7 @@ export async function POST(request: Request) {
       select: { slug: true, imageUrl: true }
     }) : [];
     const slugToImage: Record<string, string | null> = {};
+    const slugsWithExplicitNoImage = new Set<string>();
     for (const r of dbRecipes) {
       if (r.imageUrl) {
         // Normalize local asset path
@@ -254,6 +255,9 @@ export async function POST(request: Request) {
         slugToImage[r.slug] = url;
         console.log(`🎯 DB imageUrl for ${r.slug}: ${url}`);
       } else {
+        // Mark that this slug exists in DB but intentionally has no image yet
+        slugsWithExplicitNoImage.add(r.slug);
+        // Still attempt slug-based filesystem image (may return null)
         slugToImage[r.slug] = slugToOptimizedUrl(r.slug, size, usage);
         console.log(`⚠️  No DB imageUrl for ${r.slug}, using filesystem fallback`);
       }
@@ -273,6 +277,14 @@ export async function POST(request: Request) {
         const url = slugToImage[slug] as string;
         imageMap[originalName] = url;
         imageMap[slug] = url; // expose by slug too
+        continue;
+      }
+
+      // 1b) If recipe exists in DB but explicitly has no image yet, return a neutral placeholder
+      if (slug && slugsWithExplicitNoImage.has(slug)) {
+        const placeholder = getFallbackImage(size as 'small' | 'medium' | 'large');
+        imageMap[originalName] = placeholder;
+        imageMap[slug] = placeholder;
         continue;
       }
 
