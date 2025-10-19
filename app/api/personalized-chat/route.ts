@@ -211,16 +211,16 @@ export async function POST(request: NextRequest) {
             where: { id: userId },
             include: {
               quizResults: {
-                orderBy: { createdAt: 'desc' } as any,
+                orderBy: { completedAt: 'desc' },
                 take: 1 // Senaste quiz-resultatet
               },
               healthProfile: true,
               symptomAnalyses: {
-                orderBy: { createdAt: 'desc' } as any,
+                orderBy: { id: 'desc' },
                 take: 3 // Senaste 3 symptomanalyserna
               },
               chatMessages: {
-                orderBy: { createdAt: 'desc' } as any,
+                orderBy: { id: 'desc' },
                 take: 5 // Senaste 5 chat-meddelandena för kontext
               },
               courses: true
