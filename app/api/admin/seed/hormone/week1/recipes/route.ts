@@ -108,10 +108,22 @@ const RECIPES: RecipeSeed[] = [
     image: `${IMG_BASE}/TOMATSOPPA_MED_KANEL_OCH_INGEFÄRA.png`,
     categories: ['vego','lunch','middag'],
     ingredients: [
-      '1 gul lök', '1 vitlöksklyfta', '1 tsk olivolja', '1 tsk ingefära', '1 tsk malen kanel', '400 ml krossade tomater',
-      '5 dl vatten', '1 grönsaksbuljongtärning', 'Salt', 'Svartpeppar', '1 krm chiliflakes', '100 g halloumi', '10 mandlar', '1 tsk olivolja', '2 msk persilja'
+      '1 gul lök',
+      '1 vitlöksklyfta',
+      '1 tsk olivolja',
+      '1 tsk ingefära',
+      '1 tsk malen kanel',
+      '400 ml krossade tomater',
+      '5 dl vatten',
+      '1 buljongtärning grönsak',
+      'Salt och svartpeppar',
+      '1 krm chiliflakes',
+      '100 g halloumi',
+      '10 mandlar',
+      '1 tsk olivolja',
+      '2 msk persilja'
     ],
-    instructions: 'Fräs lök, vitlök, ingefära och kanel i olja. Tillsätt tomater, vatten, buljong. Koka och mixa. Stek halloumi och mandlar. Toppa soppan med persilja.'
+    instructions: 'Skala och hacka lök och vitlök. Riv ingefära. Hetta upp en kastrull med olja och bryn lök, vitlök, ingefära och kanel i någon minut. Tillsätt krossade tomater, vatten och smula i buljongtärningen. Låt koka upp och smaka av med salt, peppar och chiliflakes. Mixa soppan slät i matberedare eller med stavmixer. Skär halloumi i mindre bitar. Grovhacka mandlar och hacka persilja. Hetta upp en stekpanna och stek ost och mandlar i några minuter tills de får färg. Häll upp soppan och toppa med persilja.'
   },
   {
     title: 'Ratatouille med quinoa och raita',
@@ -119,17 +131,40 @@ const RECIPES: RecipeSeed[] = [
     image: `${IMG_BASE}/RATATOUILLE_MED_QUINOA_OCH_RAITA.JPG`,
     categories: ['vego','lunch','middag'],
     ingredients: [
-      '1 morot', '1 palsternacka', '1/2 gul paprika', '1/2 röd paprika', '1/2 gul lök', '1/2 röd chili', '1 vitlöksklyfta', '1 tsk olivolja', '200 ml krossade tomater', '2 msk persilja', '1/2 grönsaksbuljongtärning', 'Kryddor: paprikapulver, spiskummin, örtagård', 'Salt', 'Svartpeppar', 'Lite vatten', '1/2 dl persilja', '2 dl kokt vit quinoa', '2 msk rostade solrosfrön'
+      '1 morot',
+      '1 palsternacka',
+      '1/2 gul paprika',
+      '1/2 röd paprika',
+      '1/2 gul lök',
+      '1/2 röd chili',
+      '1 vitlöksklyfta',
+      '1 tsk olivolja',
+      '200 ml krossade tomater',
+      '2 msk hackad färsk persilja',
+      '1/2 grönsaksbuljongtärning',
+      '1 krm paprikapulver',
+      '1 krm spiskummin',
+      '1 krm örtagårdskrydda',
+      'Salt och svartpeppar',
+      'Lite vatten',
+      '1/2 dl persilja',
+      'Raita: 1 dl grekisk yoghurt, 1/2 riven morot, 5 cm gurka, 1 krm malen spiskummin, salt och peppar',
+      'Tillbehör: 2 dl kokt vit quinoa, 2 msk rostade solrosfrön, 2 msk persilja'
     ],
-    instructions: 'Koka quinoa. Stek rotfrukter, lök och chili, tillsätt paprika, tomater, buljong och kryddor. Låt puttra. Rör i persilja. Raita: yoghurt + finhackad morot och gurka + spiskummin. Servera med quinoa, raita och solrosfrön.'
+    instructions: 'Koka quinoan enligt anvisning. Skala och skär morot och palsternacka i bitar, strimla lök, skär paprikorna i större bitar. Finhacka chili och riv vitlök. Hetta upp olja och stek morot, palsternacka, lök, vitlök och chili några minuter. Tillsätt paprika, krossade tomater, kryddor och smula ner buljongtärning. Låt puttra tills grönsakerna mjuknat, späd med lite vatten vid behov. Smaka av med salt och peppar och rör ner persilja. Blanda ihop raitan (yoghurt, riven morot, finhackad gurka, spiskummin, salt/peppar). Servera ratatouillen med kokt vit quinoa, klicka på raita och toppa med persilja och rostade solrosfrön.'
   },
   {
     title: 'Kycklingbiffar med mangosalsa',
     servings: 2,
     image: `${IMG_BASE}/KYCKLINGBIFFAR_MED_MANGOSALSA.JPG`,
     categories: ['kyckling','lunch','middag'],
-    ingredients: ['300 g kycklingfärs', '1/2 vitlöksklyfta', '1/4 rödlök', 'Salt och peppar', '1 tsk olivolja', '1/2 mango', '5 cm gurka', '1/4 rödlök', '1 chili', '6 cocktailtomater', '2 msk koriander', '1/4 vitlöksklyfta', '1 tsk ingefära', '1 tsk sesamolja', '1/2 lime', 'Salt och peppar'],
-    instructions: 'Blanda färs med vitlök, rödlök, salt och peppar. Stek biffar i olja. Mangosalsa: tärna mango och grönsaker, blanda med vitlök, ingefära, sesamolja och lime. Servera biffar med salsan.'
+    ingredients: [
+      '300 g kycklingfärs', '1/2 vitlöksklyfta', '1/4 rödlök', 'salt och svartpeppar', '1 tsk olivolja',
+      '1/2 mango', '5 cm gurka', '1/4 rödlök', '1 chili', '6 cocktailtomater', '2 msk koriander',
+      '1/4 vitlöksklyfta', '1 tsk ingefära', '1 tsk sesamolja', '1/2 lime', 'salt och svartpeppar',
+      'Dekoration: 2 msk koriander, 2 limeklyftor'
+    ],
+    instructions: 'Lägg kycklingfärsen i en skål. Riv vitlök och finhacka rödlök; blanda med färsen och krydda med salt och peppar. Forma två biffar och stek i olja några minuter per sida. Skala och tärna mango, tärna gurka, finhacka rödlök och chili, dela cocktailtomater och hacka koriander. Riv vitlök och ingefära och blanda allt till en salsa med sesamolja och limesaft. Smaka av med salt och peppar. Servera biffarna med mangosalsan och dekorera med koriander och limeklyftor.'
   },
   {
     title: 'Kycklinggryta med garam masala',
