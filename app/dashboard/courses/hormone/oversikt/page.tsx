@@ -170,8 +170,60 @@ export default function HormoneOverview() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <InfoPopupGrid courseType="hormone" courseId="hormonell-balans" />
+      </div>
+
+      {/* Week Selection Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          <h2 className="text-2xl font-bold text-[#014421] mb-6">Välj vecka</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {weekData.map((week, index) => {
+              const status = getWeekStatus(week.number);
+              const isLocked = status === 'locked';
+              
+              return (
+                <motion.div
+                  key={week.number}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div
+                    onClick={() => !isLocked && (window.location.href = `/dashboard/courses/hormone/week/${week.number}`)}
+                    className={`
+                      p-6 rounded-2xl border-2 transition-all cursor-pointer
+                      ${status === 'current' ? 'border-[#8B5CF6] bg-[#8B5CF6]/5' : ''}
+                      ${status === 'completed' ? 'border-green-200 bg-green-50' : ''}
+                      ${isLocked ? 'border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed' : 'hover:shadow-lg'}
+                    `}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`
+                          w-12 h-12 rounded-full flex items-center justify-center
+                          ${status === 'current' ? 'bg-[#8B5CF6] text-white' : ''}
+                          ${status === 'completed' ? 'bg-green-600 text-white' : ''}
+                          ${isLocked ? 'bg-gray-300 text-gray-500' : ''}
+                        `}>
+                          <span className="font-bold text-lg">{week.number}</span>
+                        </div>
+                        {getWeekIcon(status)}
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-[#014421] mb-1">{week.title}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{week.subtitle}</p>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <BookOpen className="w-4 h-4" />
+                      <span>{week.recipes} recept</span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {showHelpModal && (
