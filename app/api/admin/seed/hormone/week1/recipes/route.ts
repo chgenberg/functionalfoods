@@ -81,7 +81,7 @@ const RECIPES: RecipeSeed[] = [
     categories: ['egenbakat','frukost'],
     ingredients: [
       '1 dl paranötter', '1 dl valnötter', '1 dl hasselnötter', '1 dl mandel', '1 dl pumpafrön', '4 dl mandelmjöl',
-      '1 msk Nicks fiberhonung', '1 msk rapsolja', '1 msk malen kanel', '1 tsk malen kardemumma', '1 krm salt',
+      '1 msk Nikks fiberhonung', '1 msk rapsolja', '1 msk malen kanel', '1 tsk malen kardemumma', '1 krm salt',
       '2 dl kokosflingor', '2 dl kokosskivor'
     ],
     instructions: 'Hacka nötter. Rosta mandelmjöl med fiberhonung, olja och kryddor 5 min på låg värme. Blanda i kokosflingor/skivor. Rosta nötter och pumpafrön separat och blanda i. Förvara i burk.'
@@ -91,7 +91,7 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/YOGHURT MED_KOKOSGRANOLA.JPG`,
     categories: ['frukost'],
-    ingredients: ['1 dl grekisk yoghurt 6 %', '3/4 dl kokosgranola', '3 jordgubbar'],
+    ingredients: ['1 dl grekisk yoghurt, 6 %', '3/4 dl kokosgranola (egenbakat)', '3 jordgubbar'],
     instructions: 'Lägg yoghurt i skål, toppa med granola och skivade jordgubbar.'
   },
   {
