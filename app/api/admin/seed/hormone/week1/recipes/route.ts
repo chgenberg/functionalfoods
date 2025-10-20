@@ -316,10 +316,16 @@ const RECIPES: RecipeSeed[] = [
     categories: ['kött','lunch','middag'],
     ingredients: ['300 g lövbiff', '1/2 gul lök', '1 vitlöksklyfta', '1/2 dl teriyakisås', '1 msk ingefära', '1 tsk sesamolja', '1 msk sesamfrön', 'Salt', 'Peppar', '80 g glasnudlar', '1 morot', '1 salladslök', '100 g sockerärtor', '1/2 röd chili', '1 tsk sesamolja', '1/2 msk ketjap manis', '2 msk koriander', '1/2 dl yoghurt', '1 krm sriracha', '1/4 vitlök', 'Salt', 'Peppar'],
     instructions: [
-      'Marinera strimlad lövbiff i vitlök, ingefära, teriyakisås och sesamolja. Strö över sesamfrön.',
-      'Koka glasnudlar enligt anvisning och blanda med riven morot, strimlad salladslök, sockerärtor, finhackad chili och lite sesamolja samt ketjap manis.',
-      'Stek den marinerade lövbiffen snabbt på hög värme.',
-      'Servera med chiliyoghurt och toppa med koriander och salladslök.'
+      'Strimla lövbiffen och lägg i en skål.',
+      'Skala och strimla lök. Riv vitlök och ingefära.',
+      'Blanda ner vitlök, ingefära, teriyakisås, sesamolja och sesamfrön i skålen med lövbiff. Strö på salt och peppar och låt marinera en stund.',
+      'Koka nudlar enligt anvisningen på paketet och häll av vattnet. Lägg nudlarna i en skål.',
+      'Skala och skär morot i strimlor. Strimla salladslök och chili. Skär sockerärtor fint. Hacka koriander. Blanda ner alla grönsaker i nudelsalladen.',
+      'Blanda ner sesamolja, ketjap manis, koriander, salt och peppar i nudelsalladen.',
+      'Gör chiliyoghurten genom att riva vitlök och blanda ihop alla ingredienser i en skål.',
+      'Hetta upp en stekpanna och stek lövbiffen i ett par minuter.',
+      'Lägg upp nudlarna i en skål och lägg på lövbiffen.',
+      'Hacka koriander och strimla salladslök. Dekorera med färsk koriander och salladslök. Servera med chiliyoghurt.'
     ]
   },
   {
