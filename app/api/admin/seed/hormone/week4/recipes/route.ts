@@ -1,0 +1,363 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/app/lib/database';
+import { requireAdminAuth } from '@/app/lib/admin-auth';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove diacritics
+    .replace(/[åä]/g, 'a')
+    .replace(/[ö]/g, 'o')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+type RecipeSeed = {
+  title: string;
+  servings?: number;
+  categories?: string[];
+  image?: string | null; // relative from /public
+  ingredients: string[];
+  instructions: string | string[];
+};
+
+const IMG_BASE = '/Hormonell_balans/Bilder_v4';
+
+const RECIPES: RecipeSeed[] = [
+  {
+    title: 'Havregrynsgröt med bär och kokos',
+    servings: 1,
+    image: `${IMG_BASE}/HAVREGRYNSGRÖT_MED_BÄR_OCH_KOKOS.JPG`,
+    categories: ['frukost'],
+    ingredients: [
+      '1 dl havregryn',
+      '2 dl vatten',
+      '1/2 krm salt',
+      '1 dl frysta bär',
+      '2 msk kokosflingor',
+      '1 dl mjölk'
+    ],
+    instructions: [
+      'Lägg havregryn i en kastrull och tillsätt vatten och salt.',
+      'Lägg i de frysta bären och låt koka i cirka 2 minuter.',
+      'Servera gröten i en skål och toppa med kokosflingor.',
+      'Häll över mjölk och servera.'
+    ]
+  },
+  {
+    title: 'Ägghack med skinka och äpple',
+    servings: 1,
+    image: `${IMG_BASE}/ÄGGHACK_MED_SKINKA_OCH_ÄPPLE.JPG`,
+    categories: ['frukost'],
+    ingredients: [
+      '2 kokta ägg',
+      '30 g skinka',
+      '1 msk majonnäs',
+      'Salt och svartpeppar',
+      '1/2 äpple',
+      '10 g rucolasallad'
+    ],
+    instructions: [
+      'Hacka de kokta äggen och strimla skinkan.',
+      'Blanda i en skål med majonnäs och smaka av med salt och peppar.',
+      'Skiva äpplet tunt.',
+      'Servera ägghacket med rucolasallad och skivat äpple.'
+    ]
+  },
+  {
+    title: 'Yoghurt med kokosgranola, frukt och bär',
+    servings: 1,
+    image: `${IMG_BASE}/YOGHURT_MED_KOKOSGRANOLA_FRUKT_OCH_BÄR.JPG`,
+    categories: ['frukost'],
+    ingredients: [
+      '1 dl grekisk yoghurt',
+      '3/4 dl kokosgranola (egenbakat)',
+      '1/2 dl blåbär',
+      '1/2 clementin',
+      '1/2 dl mango',
+      '1/2 kiwi',
+      '1/4 banan'
+    ],
+    instructions: [
+      'Lägg yoghurten i en skål och toppa med kokosgranola.',
+      'Skiva frukten och lägg över tillsammans med blåbär.'
+    ]
+  },
+  {
+    title: 'Stekt ägg med majonnäs',
+    servings: 1,
+    image: `${IMG_BASE}/STEKT_ÄGG_MED_MAJONÄS.JPG`,
+    categories: ['frukost'],
+    ingredients: [
+      '1 tsk smör',
+      '2 ägg',
+      'Salt och svartpeppar',
+      '1/2 msk majonnäs',
+      '2 cocktailtomater',
+      '1 tsk gräslök'
+    ],
+    instructions: [
+      'Hetta upp en stekpanna med smör.',
+      'Knäck i äggen och stek till önskad konsistens. Krydda med salt och peppar.',
+      'Lägg upp äggen på en tallrik och klicka på majonnäs.',
+      'Dela cocktailtomaterna och hacka gräslök. Lägg tomaterna över äggen och toppa med gräslök.'
+    ]
+  },
+  {
+    title: 'Bondsoppa med vita bönor',
+    servings: 4,
+    image: `${IMG_BASE}/BONDSOPPA_MED_VITA_BÖNOR.JPG`,
+    categories: ['vego','lunch','middag'],
+    ingredients: [
+      '400 g konserverade vita bönor',
+      '1/2 rödlök',
+      '2 morötter',
+      '1 grönsaksbuljong',
+      '6 dl vatten',
+      '1 paprika',
+      '1 selleristjälk',
+      '1 tsk olivolja',
+      '1 krm torkad oregano',
+      'Salt och svartpeppar',
+      '2 lagerblad',
+      '1 tsk srirachasås',
+      '10 cocktailtomater',
+      '1 msk färsk oregano'
+    ],
+    instructions: [
+      'Skölj av bönorna i ett durkslag.',
+      'Skala och hacka rödlök. Skala och skiva morötterna.',
+      'Skär paprika i mindre bitar och sellerin i skivor.',
+      'Hetta upp en kastrull med olivolja och fräs lök, morot, paprika och selleri någon minut.',
+      'Krydda med salt, peppar och torkad oregano. Smula i buljongtärning och tillsätt vatten samt lagerblad.',
+      'Tillsätt srirachasås och låt koka 10 minuter.',
+      'Dela cocktailtomaterna och lägg i kastrullen tillsammans med vita bönor. Låt koka 5 minuter till.',
+      'Servera soppan och toppa med färsk oregano.'
+    ]
+  },
+  {
+    title: 'Kycklinggryta med mango och linser',
+    servings: 2,
+    image: `${IMG_BASE}/KYCKLINGGRYTA_MED_MANGO_OCH_LINSER.JPG`,
+    categories: ['kyckling','middag'],
+    ingredients: [
+      '300 g kycklingfilé',
+      '1 msk sweet chilisås',
+      '2 tsk sambal oelek',
+      '1 tsk olivolja',
+      'Salt och svartpeppar',
+      '2 dl vatten',
+      '1/2 kycklingbuljongtärning',
+      '1 dl röda linser (torkade)',
+      '1/2 dl havregrädde',
+      '1/2 mango',
+      '1/2 paprika',
+      '10 cm purjolök',
+      '2 msk mynta',
+      '2 msk jalapeno'
+    ],
+    instructions: [
+      'Skär kycklingen i mindre bitar och lägg i en skål med sweet chilisås, sambal oelek, salt och peppar.',
+      'Hetta upp en stekpanna med olivolja och bryn kycklingen ett par minuter.',
+      'Häll på vatten och havregrädde, smula i buljongtärningen och tillsätt linser. Låt sjuda ca 5 minuter.',
+      'Skala och tärna mango, strimla paprika och purjolök och lägg ner i grytan. Låt koka 3 minuter till.',
+      'Hacka mynta och servera grytan toppad med jalapeno.'
+    ]
+  },
+  {
+    title: 'Asiatisk tonfisksallad',
+    servings: 2,
+    image: `${IMG_BASE}/ASIATISK_TONFISKSALLAD.JPG`,
+    categories: ['fisk','lunch'],
+    ingredients: [
+      '4 dl isbergssallad',
+      '1 morot',
+      '50 g sockerärtor',
+      '1/2 paprika',
+      '10 cm purjolök',
+      '1 salladslök',
+      '2 msk koriander',
+      '150 g konserverad tonfisk',
+      '2 tsk sesamolja',
+      '1 tsk sweet chili',
+      '1 tsk soja',
+      '1 tsk sesamfrön',
+      '1/4 lime (zest + juice)',
+      '1 tsk röd chili',
+      '1 tsk sesamfrön (topping)',
+      '2 msk koriander (topping)',
+      '2 limeklyftor'
+    ],
+    instructions: [
+      'Skär isbergssallad grovt. Skär morot, sockerärtor och paprika i stavar.',
+      'Skiva purjolök och salladslök. Hacka koriander.',
+      'Fördela sallad och grönsaker på tallrikar och lägg på tonfisken.',
+      'Hacka chili och riv limezest. Blanda sesamolja, sweet chili, soja, sesamfrön, limezest och pressad limesaft till en dressing.',
+      'Häll dressingen över salladen.',
+      'Toppa med extra koriander, sesamfrön och limeklyftor.'
+    ]
+  },
+  {
+    title: 'Lax med quinoasallad',
+    servings: 2,
+    image: `${IMG_BASE}/LAX_MED_QUINOASALLAD.JPG`,
+    categories: ['fisk','middag'],
+    ingredients: [
+      '1,5 dl vit quinoa',
+      '1/4 rödlök',
+      '10 cocktailtomater',
+      '2 msk persilja',
+      '1 tsk olivolja',
+      '1/4 citron',
+      'Salt och svartpeppar',
+      '300 g laxfilé',
+      '1 tsk rapsolja',
+      '50 g inlagd kapris',
+      '1 msk rapsolja',
+      '2 citronklyftor',
+      '2 persiljekvistar',
+      '2 msk bearnaisesås (Erik Lallerstedt)'
+    ],
+    instructions: [
+      'Koka quinoan i 13 minuter i lättsaltat vatten. Häll av och lägg i en skål.',
+      'Finhacka rödlök, skär tomater i klyftor och hacka persilja. Blanda med quinoan.',
+      'Tillsätt olivolja och pressad citron. Smaka av med salt och peppar.',
+      'Dela laxen i två bitar, salta och peppra. Stek i lite rapsolja ett par minuter per sida.',
+      'Häll i 1 msk rapsolja i pannan och fritera kapris 3–4 minuter. Låt rinna av.',
+      'Servera laxen med quinoasallad och bearnaisesås. Dekorera med citronklyftor och persiljekvistar. Toppa med friterad kapris.'
+    ]
+  },
+  {
+    title: 'Köttfärsbiffar med sötpotatis',
+    servings: 2,
+    image: `${IMG_BASE}/KÖTTFÄRSBIFFAR_MED_SÖTPOTATIS.JPG`,
+    categories: ['kött','middag'],
+    ingredients: [
+      '300 g nötfärs',
+      '1 vitlöksklyfta',
+      '1/4 röd lök',
+      '2 msk persilja',
+      '1 tsk sambal oelek',
+      'Salt och svartpeppar',
+      '300 g sötpotatis',
+      '1/2 röd lök',
+      '2 tsk olivolja',
+      '2 msk creme fraiche',
+      '1 msk majonnäs',
+      '1 tsk sötstark senap',
+      '1/2 tsk dijonsenap',
+      'Salt och svartpeppar',
+      '25 g rucola',
+      '2 msk riven parmesan'
+    ],
+    instructions: [
+      'Sätt ugnen på 200°C.',
+      'Blanda nötfärs med riven vitlök, finhackad röd lök, hackad persilja, sambal oelek, salt och peppar. Forma biffar.',
+      'Skala sötpotatis och skär i stavar. Skala och skär rödlök grovt.',
+      'Ringla olivolja på en plåt och fördela sötpotatis och rödlök. Salta och peppra.',
+      'Lägg biffarna på plåten och ugnsbaka ca 20 minuter.',
+      'Rör ihop creme fraiche, majonnäs, sötstark senap och dijonsenap till en senapssås. Smaka av med salt och peppar.',
+      'Lägg rucola på ett fat. Toppa med biffarna och sötpotatisen. Servera med riven parmesan och senapssåsen.'
+    ]
+  },
+  {
+    title: 'Wokad lövbiff med nudlar',
+    servings: 2,
+    image: `${IMG_BASE}/WOKAD_LÖVBIFF_MED_NUDLAR.JPG`,
+    categories: ['kött','middag'],
+    ingredients: [
+      '100 g vermicelli nudlar',
+      '300 g lövbiff',
+      '1/2 gul lök',
+      '1/2 chili',
+      '1 vitlöksklyfta',
+      '2 tsk olivolja',
+      'Salt och svartpeppar',
+      '1 msk ingefära',
+      '120 g teriyaki woksås (Blue Dragon)',
+      '1 tsk sesamolja',
+      '150 g haricot verts',
+      '1/2 broccolistånd',
+      '2 msk koriander',
+      '1 morot (strimlad, servering)',
+      '2 korianderkvistar (dekoration)'
+    ],
+    instructions: [
+      'Koka nudlarna enligt förpackningen och häll av vattnet.',
+      'Strimla lövbiff. Finhacka gul lök, skiva chili tunt och riv vitlök och ingefära.',
+      'Hetta upp en stekpanna med olivolja och stek lövbiff med lök, vitlök, chili och ingefära några minuter. Salta och peppra.',
+      'Tillsätt teriyakisås och sesamolja och vänd ner nudlarna.',
+      'Skiva broccolistammen, dela buketter och tillsätt tillsammans med haricot verts. Hacka koriander och vänd ner.',
+      'Låt allt bli varmt. Servera med strimlad morot och dekorera med korianderkvistar.'
+    ]
+  },
+  {
+    title: 'Mandarin med kanelkräm',
+    servings: 1,
+    image: `${IMG_BASE}/MANDARIN_MED_KANELKRÄM.JPG`,
+    categories: ['dessert'],
+    ingredients: [
+      '1,5 mandarin',
+      '1 msk kokosgrädde',
+      '1 krm agavesirap',
+      '1/2 krm malen kanel',
+      '1 msk mandelspån'
+    ],
+    instructions: [
+      'Skala och dela mandarin i halvor och lägg på ett fat.',
+      'Blanda kokosgrädde och agavesirap i en skål. Tillsätt kanel och rör om.',
+      'Toppa mandarinerna med kanelkrämen.',
+      'Torrosta mandelspån snabbt i en torr stekpanna och dekorera med dem.'
+    ]
+  }
+];
+
+export async function POST(req: NextRequest) {
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
+
+  try {
+    const created: any[] = [];
+    for (const r of RECIPES) {
+      const slug = slugify(r.title);
+      const instructionsString = Array.isArray(r.instructions)
+        ? r.instructions.map((s, i) => `${i + 1}. ${s}`).join(' ')
+        : (r.instructions || '');
+      const doc = await prisma.recipe.upsert({
+        where: { slug },
+        create: {
+          title: r.title,
+          slug,
+          content: instructionsString,
+          instructions: instructionsString,
+          ingredients: r.ingredients,
+          categories: r.categories || [],
+          servings: r.servings || null,
+          imageUrl: r.image || undefined,
+          isPremium: true,
+          isFree: false
+        },
+        update: {
+          content: instructionsString,
+          instructions: instructionsString,
+          ingredients: r.ingredients,
+          categories: r.categories || [],
+          servings: r.servings || null,
+          imageUrl: r.image || undefined,
+        }
+      });
+      created.push({ id: doc.id, slug });
+    }
+
+    return NextResponse.json({ ok: true, created });
+  } catch (error) {
+    console.error('Seed hormone week4 recipes error:', error);
+    return NextResponse.json({ error: 'Failed to seed week 4 recipes' }, { status: 500 });
+  }
+}
+
+
