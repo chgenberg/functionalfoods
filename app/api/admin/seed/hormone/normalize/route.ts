@@ -56,12 +56,28 @@ export async function POST(req: NextRequest) {
       const uniqueSlugs = Array.from(new Set(recipeLinks));
       const recipes = await prisma.recipe.findMany({ where: { slug: { in: uniqueSlugs } } });
       for (const r of recipes) {
+        // 1) Rensa ingredienser som börjar med Topping:/Tillbehör:/Dekoration:/Glasyr: (vecka 1 case)
+        let ingredients = Array.isArray(r.ingredients) ? [...(r as any).ingredients] : (r as any).ingredients;
+        if (Array.isArray(ingredients)) {
+          const cleaned = ingredients.flatMap((line: string) => {
+            if (!line) return [];
+            const parts = line.split(/:\s*/); // split at first colon
+            if (parts.length >= 2 && /^(topping|tillbehör|dekoration|glasyr)$/i.test(parts[0])) {
+              // split comma-separated into separate normalized items
+              return parts.slice(1).join(': ').split(',').map(s => s.trim()).filter(Boolean);
+            }
+            return [line];
+          });
+          ingredients = cleaned;
+        }
+
+        // 2) Normalisera instruktioner till numrerad sträng
         const steps = toStepsArray(r.instructions || r.content || '');
         const content = steps.length > 0 ? steps.map((s, i) => `${i+1}. ${s}`).join(' ') : (r.content || '');
         await prisma.recipe.update({
           where: { id: r.id },
           // Store as strings (DB column is String). UI will split numbered content to steps.
-          data: { instructions: content, content }
+          data: { instructions: content, content, ingredients }
         });
         updatedRecipes.push(r.slug);
       }

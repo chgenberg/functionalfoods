@@ -186,8 +186,14 @@ const RECIPES: RecipeSeed[] = [
       'Salt och svartpeppar',
       'Lite vatten',
       '1/2 dl persilja',
-      'Raita: 1 dl grekisk yoghurt, 1/2 riven morot, 5 cm gurka, 1 krm malen spiskummin, salt och peppar',
-      'Tillbehör: 2 dl kokt vit quinoa, 2 msk rostade solrosfrön, 2 msk persilja'
+      '1 dl grekisk yoghurt',
+      '1/2 riven morot',
+      '5 cm gurka',
+      '1 krm malen spiskummin',
+      'Salt och peppar',
+      '2 dl kokt vit quinoa',
+      '2 msk rostade solrosfrön',
+      '2 msk persilja'
     ],
     instructions: [
       'Koka quinoan enligt anvisning.',
@@ -209,7 +215,8 @@ const RECIPES: RecipeSeed[] = [
       '300 g kycklingfärs', '1/2 vitlöksklyfta', '1/4 rödlök', 'salt och svartpeppar', '1 tsk olivolja',
       '1/2 mango', '5 cm gurka', '1/4 rödlök', '1 chili', '6 cocktailtomater', '2 msk koriander',
       '1/4 vitlöksklyfta', '1 tsk ingefära', '1 tsk sesamolja', '1/2 lime', 'salt och svartpeppar',
-      'Dekoration: 2 msk koriander, 2 limeklyftor'
+      '2 msk koriander',
+      '2 limeklyftor'
     ],
     instructions: [
       'Lägg kycklingfärsen i en skål.',
@@ -236,7 +243,10 @@ const RECIPES: RecipeSeed[] = [
       '33 g garam masala (en förpackning)',
       '400 ml kokosmjölk',
       '2 msk persilja',
-      'Tillbehör: 2 dl fefferoni, 1 dl grekisk yoghurt, 1 dl mango chutney, 1/2 dl persilja'
+      '2 dl fefferoni',
+      '1 dl grekisk yoghurt',
+      '1 dl mango chutney',
+      '1/2 dl persilja'
     ],
     instructions: 'Skala och hacka lök och riv vitlök. Hetta upp en stekpanna med olja och bryn kycklingklubborna. Lägg ner lök och vitlök och krydda med salt och peppar. Lägg över kycklingen i en gryta. Tillsätt garam masala och kokosmjölk och låt sjuda på svag värme i 40 minuter. Skär blomkål i buketter och dela tomater i klyftor, hacka persilja. Blanda ner i grytan och låt koka i några minuter. Strö på persilja. Servera grytan med fefferoni, grekisk yoghurt, mango chutney och persilja.'
   },
@@ -254,7 +264,7 @@ const RECIPES: RecipeSeed[] = [
       '100 g broccoli',
       '1/4 citron',
       '2 cocktailtomater',
-      'Topping: 1 tsk gräslök'
+      '1 tsk gräslök'
     ],
     instructions: 'Skala ägg och hacka fint i en skål. Blanda i majonnäs, salt och peppar. Lägg ruccolasallad i en skål. Rulla ihop laxen till rosetter och lägg på ruccolan. Skär broccoli i små buketter och pressa citronjuice över. Skär cocktailtomater i klyftor och hacka gräslök. Lägg äggen tillsammans med de övriga ingredienserna i skålen. Strö på gräslök.'
   },
@@ -270,7 +280,9 @@ const RECIPES: RecipeSeed[] = [
       '1/2 broccolistånd',
       '1/2 citron',
       '1 tsk olivolja',
-      'Tillbehör: 2 citronskivor, 2 msk gräslök, 2 msk romsås (Erik Lallerstedt)'
+      '2 citronskivor',
+      '2 msk gräslök',
+      '2 msk romsås (Erik Lallerstedt)'
     ],
     instructions: 'Dela laxen i 2 bitar och strö på salt och peppar. Skär broccoli i buketter och lägg i en skål. Tillsätt citronjuice, olivolja, salt och peppar. Hetta upp en stekpanna med olja och bryn laxen runt om i cirka 8 minuter. Servera laxen med den citronmarinerade broccolin och romsås. Hacka gräslök och strö på. Dekorera med citronskivor.'
   },
@@ -330,7 +342,7 @@ const RECIPES: RecipeSeed[] = [
     servings: 20,
     image: `${IMG_BASE}/SNICKERSKAKA.jpg`,
     categories: ['dessert'],
-    ingredients: ['150 g smör', '1 dl agavesirap', '1/2 dl kakao', '2 krm vaniljpulver', '2 dl mandelmjöl', '1 msk fiberhusk', '3 ägg', '1 dl saltade jordnötter', 'Glasyr: 150 g mörk choklad, 2 dl saltade jordnötter, 1 dl jordnötssmör'],
+    ingredients: ['150 g smör', '1 dl agavesirap', '1/2 dl kakao', '2 krm vaniljpulver', '2 dl mandelmjöl', '1 msk fiberhusk', '3 ägg', '1 dl saltade jordnötter', '150 g mörk choklad', '2 dl saltade jordnötter', '1 dl jordnötssmör'],
     instructions: [
       'Sätt ugnen på 175°C.',
       'Blanda smält smör, agavesirap, kakao, vaniljpulver, mandelmjöl, fiberhusk och ägg till en smet.',
