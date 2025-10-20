@@ -85,10 +85,14 @@ export default function RecipePage() {
       const courseNames: Record<string, string> = {
         'basics': 'Functional Basics',
         'flow': 'Functional Gut Health/Flow', 
-        'energy': 'Functional Insulin balance/Energy'
+        'energy': 'Functional Insulin balance/Energy',
+        'hormone': 'Hormonell Balans'
       };
+      const url = fromCourse === 'hormone'
+        ? `/dashboard/courses/hormone/week/${fromWeek}`
+        : `/dashboard/courses/functional-${fromCourse}/week/${fromWeek}`;
       return {
-        url: `/dashboard/courses/functional-${fromCourse}/week/${fromWeek}`,
+        url,
         text: `Tillbaka till ${courseNames[fromCourse] || 'kursen'} - Vecka ${fromWeek}`
       };
     }
