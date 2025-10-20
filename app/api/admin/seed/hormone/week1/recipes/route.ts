@@ -31,7 +31,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Citronvatten och svart kaffe/te',
     servings: 1,
-    image: null,
+    image: `${IMG_BASE}/kaffe_vatten.PNG`,
     categories: ['frukost'],
     ingredients: [
       '3 dl vatten',
