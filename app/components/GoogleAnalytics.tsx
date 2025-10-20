@@ -6,11 +6,27 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-function updateConsentFromStorage() {
+function readAnalyticsConsent(): boolean {
   try {
+    // Primary key used by our banner
     const raw = localStorage.getItem('cookie-consent');
     const parsed = raw ? JSON.parse(raw) as { preferences?: { analytics?: boolean } } : null;
-    const analyticsGranted = !!parsed?.preferences?.analytics;
+    let granted = !!parsed?.preferences?.analytics;
+    if (!granted) {
+      // Backwards compatibility: some sessions used 'cookiePrefs'
+      const legacyRaw = localStorage.getItem('cookiePrefs');
+      const legacy = legacyRaw ? JSON.parse(legacyRaw) as { analytics?: boolean } : null;
+      granted = !!legacy?.analytics;
+    }
+    return granted;
+  } catch {
+    return false;
+  }
+}
+
+function updateConsentFromStorage() {
+  try {
+    const analyticsGranted = readAnalyticsConsent();
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('consent', 'update', {
         analytics_storage: analyticsGranted ? 'granted' : 'denied',
@@ -32,9 +48,7 @@ function updateConsentFromStorage() {
 
 function ensureInitialPageViewOnce() {
   try {
-    const raw = localStorage.getItem('cookie-consent');
-    const parsed = raw ? JSON.parse(raw) as { preferences?: { analytics?: boolean } } : null;
-    const analyticsGranted = !!parsed?.preferences?.analytics;
+    const analyticsGranted = readAnalyticsConsent();
     if (!analyticsGranted || !GA_ID) return;
     const send = () => {
       if (typeof window !== 'undefined' && (window as any).gtag) {
