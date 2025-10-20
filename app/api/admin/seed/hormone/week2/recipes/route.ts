@@ -29,6 +29,18 @@ const IMG = '/Hormonell_balans/Bilder_v2';
 
 const RECIPES: Seed[] = [
   {
+    title: 'Citronvatten och svart kaffe/te',
+    servings: 1,
+    image: `${IMG}/kaffe_vatten.PNG`,
+    categories: ['frukost'],
+    ingredients: ['3 dl vatten', '1 msk citronjuice', '1 kopp kaffe/te'],
+    instructions: [
+      'Häll upp vatten i ett glas.',
+      'Pressa ner citronjuice och rör om.',
+      'Drick vattnet tillsammans med en kopp kaffe eller te.'
+    ]
+  },
+  {
     title: 'Yoghurt med kokosgranola och mango',
     servings: 1,
     image: `${IMG}/YOGHURT_MED_KOKOSGRANOLA_OCH_MANGO.JPG`,
