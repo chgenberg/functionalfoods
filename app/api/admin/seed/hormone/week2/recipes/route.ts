@@ -125,7 +125,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Köttfärssås med glutenfri pasta',
     servings: 2,
-    image: `${IMG}/KOTTFARSÅS_MED_GLUTENFRI_PASTA.JPG`,
+    image: `${IMG}/KOTTFARSAS_MED_GLUTENFRI_PASTA.JPG`,
     categories: ['kött','lunch','middag'],
     ingredients: ['1 tsk olivolja','Salt','Svartpeppar','300 g nötfärs','1/2 gul lök','1 vitlöksklyfta','1 morot','1 stjälkselleri','200 ml krossade tomater','1/2 msk stark chilisås','1 krm torkade örter','Lite färsk basilika','Tillbehör: 150 g glutenfri spirelli'],
     instructions: [
