@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
           const cleaned = ingredients.flatMap((line: string) => {
             if (!line) return [];
             const parts = line.split(/:\s*/); // split at first colon
-            if (parts.length >= 2 && /^(topping|tillbehör|dekoration|glasyr)$/i.test(parts[0])) {
+            if (parts.length >= 2 && /^(topping|tillbehör|dekoration|glasyr|chiliyoghurt)$/i.test(parts[0])) {
               // split comma-separated into separate normalized items
               return parts.slice(1).join(': ').split(',').map(s => s.trim()).filter(Boolean);
             }

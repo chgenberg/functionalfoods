@@ -314,7 +314,7 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/LÖVBIFF_TERIYAKI_MED_NUDELSALLAD.jpg`,
     categories: ['kött','lunch','middag'],
-    ingredients: ['300 g lövbiff', '1/2 gul lök', '1 vitlöksklyfta', '1/2 dl teriyakisås', '1 msk ingefära', '1 tsk sesamolja', '1 msk sesamfrön', 'Salt', 'Peppar', '80 g glasnudlar', '1 morot', '1 salladslök', '100 g sockerärtor', '1/2 röd chili', '1 tsk sesamolja', '1/2 msk ketjap manis', '2 msk koriander', 'Chiliyoghurt: 1/2 dl yoghurt, 1 krm sriracha, 1/4 vitlök, salt, peppar'],
+    ingredients: ['300 g lövbiff', '1/2 gul lök', '1 vitlöksklyfta', '1/2 dl teriyakisås', '1 msk ingefära', '1 tsk sesamolja', '1 msk sesamfrön', 'Salt', 'Peppar', '80 g glasnudlar', '1 morot', '1 salladslök', '100 g sockerärtor', '1/2 röd chili', '1 tsk sesamolja', '1/2 msk ketjap manis', '2 msk koriander', '1/2 dl yoghurt', '1 krm sriracha', '1/4 vitlök', 'Salt', 'Peppar'],
     instructions: [
       'Marinera strimlad lövbiff i vitlök, ingefära, teriyakisås och sesamolja. Strö över sesamfrön.',
       'Koka glasnudlar enligt anvisning och blanda med riven morot, strimlad salladslök, sockerärtor, finhackad chili och lite sesamolja samt ketjap manis.',
