@@ -102,15 +102,27 @@ const RECIPES: Seed[] = [
     image: `${IMG}/LAX_MED_SAFFRANSSÅS_OCH_QUINOASALLAD.JPG`,
     categories: ['fisk','middag'],
     ingredients: ['300 g laxfilé','Salt','Vitpeppar','Quinoasallad: 1.5 dl vit quinoa, 1/4 rödlök, 1 morot, 1 dl frysta ärtor, 1 tsk olivolja, 1/4 citron, 2 msk persilja, salt, peppar','Saffranssås: 1/4 gul lök, 1/4 vitlök, 1 tsk smör, 0.25 g saffran, 1 dl havregrädde, salt, peppar','Dekoration: 2 färska fikon, 2 citronskivor'],
-    instructions: 'Baka lax 200°C ca 20 min. Koka quinoa, blanda med tärnad morot, finhackad rödlök, ärtor, olja, citron och persilja. Saffranssås: fräs lök och vitlök i smör, tillsätt saffran och havregrädde, smaka av. Servera med fikon och citron.'
+    instructions: [
+      'Sätt ugnen på 200°C. Dela laxfilén i 2 bitar, salta och peppra och baka ca 20 minuter.',
+      'Koka quinoan i lättsaltat vatten i ca 13 minuter, skölj och lägg i en skål.',
+      'Tärna morot, finhacka rödlök och persilja. Blanda i quinoan med ärtor, olivolja, citronjuice, salt och peppar.',
+      'Saffranssås: finhacka gul lök och riv vitlök. Fräs i smör, tillsätt saffran och havregrädde och låt koka upp. Smaka av med salt och peppar.',
+      'Servera laxen med quinoasallad och saffranssås. Skär fikon i klyftor och dekorera med citronskivor.'
+    ]
   },
   {
     title: 'Köttfärssås med glutenfri pasta',
     servings: 2,
-    image: `${IMG}/KÖTTFÄRSSÅS_MED_GLUTENFRI_PASTA.JPG`,
+    image: `${IMG}/KOTTFARSÅS_MED_GLUTENFRI_PASTA.JPG`,
     categories: ['kött','lunch','middag'],
     ingredients: ['1 tsk olivolja','Salt','Svartpeppar','300 g nötfärs','1/2 gul lök','1 vitlöksklyfta','1 morot','1 stjälkselleri','200 ml krossade tomater','1/2 msk stark chilisås','1 krm torkade örter','Lite färsk basilika','Tillbehör: 150 g glutenfri spirelli'],
-    instructions: 'Stek färsen i olja, krydda. Stek lök, vitlök, morot, selleri. Tillsätt tomater, chilisås, örter och sjud ca 20 min. Koka pastan. Servera och toppa med basilika.'
+    instructions: [
+      'Skala morot och tärna. Tärna selleri. Finhacka lök och vitlök.',
+      'Hetta upp olja och stek nötfärsen några minuter. Krydda med salt och peppar.',
+      'Tillsätt lök, vitlök, morot och selleri och stek ytterligare några minuter.',
+      'Rör ner krossade tomater, chilisås och örtkrydda. Låt sjuda ca 20 minuter.',
+      'Koka den glutenfria pastan. Servera köttfärssåsen med pastan och toppa med färsk basilika.'
+    ]
   },
   {
     title: 'Mortadella med päron',
@@ -118,7 +130,12 @@ const RECIPES: Seed[] = [
     image: `${IMG}/MORTADELLA_MED_PÄRON.JPG`,
     categories: ['kallrätt','middag','lunch'],
     ingredients: ['2 skivor mortadella','2 skivor lufttorkad skinka','1/2 päron','50 g getost','25 g ruccola','Persiljekvist (dekoration)'],
-    instructions: 'Lägg upp chark på tallrik. Skär päron i tärningar/klyftor. Lägg på chèvre och ruccola. Dekorera med persilja.'
+    instructions: [
+      'Lägg upp mortadella och lufttorkad skinka på en tallrik.',
+      'Skär päron i tärningar och klyftor.',
+      'Lägg på skiva getost (chèvre) och ruccola.',
+      'Dekorera med en persiljekvist.'
+    ]
   },
   {
     title: 'Köttfärsbiff med champinjonsås',
@@ -126,15 +143,41 @@ const RECIPES: Seed[] = [
     image: `${IMG}/KÖTTFÄRSBIFF_MED_CHAMPINJONSÅS.JPG`,
     categories: ['kött','middag'],
     ingredients: ['250 g nötfärs','1/2 gul lök','1/2 vitlök','Salt','Svartpeppar','2 msk persilja','1 tsk smör','1/2 dl vatten','50 g ruccola','1/2 dl inlagda rödbetor','4 skivor inlagd gurka','Champinjonsås: 150 g champinjoner, 1/2 gul lök, 1 tsk smör, 1 1/4 dl havregrädde, 1 tsk ketjap manis, 2 msk persilja, salt, peppar','Vitkålssallad: 1/4 vitkål, 1 morot, 1/4 röd paprika, 100 g sockerärtor, 2 msk persilja, 2 tsk olivolja, 1 tsk sötstark senap, 1 tsk vitvinsvinäger, 2 krm örtagårdskrydda'],
-    instructions: 'Gör vitkålssallad (strimla, blanda med dressing). Blanda färs med lök, vitlök, persilja, salt, peppar; forma biffar och stek i smör. Slå på vatten och reducera. Champinjonsås: fräs svamp och lök i smör, tillsätt grädde, ketjap, persilja; smaka av. Servera med sallad, ruccola, rödbetor och gurka.'
+    instructions: [
+      'Vitkålssallad: strimla vitkål, morot och paprika. Blanda olivolja, sötstark senap, vitvinsvinäger och örtagårdskrydda till dressing och vänd ihop.',
+      'Biffar: finhacka gul lök och riv vitlök. Hacka persilja. Blanda med nötfärs, salt och peppar. Forma biffar och stek i smör ca 10 minuter. Slå på vatten och reducera.',
+      'Champinjonsås: skiva champinjoner och finhacka lök. Fräs i smör, tillsätt havregrädde, ketjap manis och persilja. Låt koka ihop och smaka av.',
+      'Servera biffarna med champinjonsås, vitkålssallad, ruccola, inlagda rödbetor och gurka.'
+    ]
   },
   {
     title: 'Glutenfri banankaka',
     servings: 15,
     image: `${IMG}/GLUTENFRI_BANANKAKA.JPG`,
     categories: ['dessert'],
-    ingredients: ['150 g smör','2 dl kokossocker','3 ägg','4 dl mandelmjöl','2 dl kokosmjöl','2 tsk bakpulver','1/2 tsk kardemumma','1 tsk vaniljpulver','4 bananer','100 g valnötter','50 g mörk choklad','Form: 1 tsk olja, 2 msk glutenfritt ströbröd, 10 valnötter'],
-    instructions: 'Sätt ugnen på 175°C. Vispa smör och socker, tillsätt ägg ett i taget. Blanda torra ingredienser och vänd ned med mosad banan, valnötter och hackad choklad. I med smet i smord/bröad form, dekorera med valnötter. Grädda ca 60 min. Kyl, skär i skivor.'
+    ingredients: [
+      '150 g smör',
+      '2 dl kokossocker',
+      '3 ägg',
+      '4 dl mandelmjöl',
+      '2 dl kokosmjöl',
+      '2 tsk bakpulver',
+      '1/2 tsk malen kardemumma',
+      '1 tsk vaniljpulver',
+      '4 bananer',
+      '100 g valnötter',
+      '50 g mörk choklad',
+      'Form: 1 tsk olja, 2 msk glutenfritt ströbröd, 10 valnötter'
+    ],
+    instructions: [
+      'Sätt ugnen på 175°C.',
+      'Vispa smör och kokossocker fluffigt med elvisp. Tillsätt ett ägg i taget och vispa luftigt.',
+      'Blanda mandelmjöl, kokosmjöl, bakpulver, kardemumma och vaniljpulver i en skål.',
+      'Mosa bananerna lätt och vänd ner i smeten tillsammans med de torra ingredienserna.',
+      'Hacka valnötter och mörk choklad grovt och blanda ner i smeten.',
+      'Pensla en brödform med olja och strö i glutenfritt ströbröd. Häll i smeten och dekorera med valnötter.',
+      'Grädda i ca 60 minuter. Låt kakan svalna och kyl den gärna. Skär i bitar. Förvara i kyl (upp till 1 vecka) eller frys in i portionsbitar.'
+    ]
   }
 ];
 
