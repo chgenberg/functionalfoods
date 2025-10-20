@@ -445,6 +445,28 @@ async function handleCheckoutSessionCompleted(session: any) {
         console.error('❌ Failed to send confirmation via webhook:', e);
       }
     });
+
+    // --- GA4 server-side purchase tracking (outside transaction) ---
+    try {
+      const { trackPurchaseServer } = await import('../../../lib/server-analytics');
+      const gaItems = (items || []).map((it) => ({
+        item_id: it.id,
+        item_name: it.name,
+        quantity: it.quantity,
+        price: it.price
+      }));
+      await trackPurchaseServer({
+        transactionId: String(paymentIntentId || session.id),
+        value: (session.amount_total || 0) / 100,
+        currency: String(session.currency || 'SEK').toUpperCase(),
+        items: gaItems,
+        userId: customerEmail || undefined,
+        clientSeed: customerEmail || session.id
+      });
+      console.log('✅ GA4 purchase sent via Measurement Protocol');
+    } catch (e) {
+      console.warn('⚠️ GA4 purchase tracking failed:', e);
+    }
   } catch (error) {
     console.error('Failed to handle checkout.session.completed:', error);
   }
