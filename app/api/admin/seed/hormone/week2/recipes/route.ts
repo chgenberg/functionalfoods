@@ -21,7 +21,7 @@ type Seed = {
   servings?: number;
   image?: string | null;
   ingredients: string[];
-  instructions: string;
+  instructions: string | string[];
   categories?: string[];
 };
 
@@ -34,7 +34,10 @@ const RECIPES: Seed[] = [
     image: `${IMG}/YOGHURT_MED_KOKOSGRANOLA_OCH_MANGO.JPG`,
     categories: ['frukost'],
     ingredients: ['100 g frysta mangotärningar','1 dl grekisk yoghurt 6 %','3/4 dl kokosgranola'],
-    instructions: 'Tina mangon. Lägg yoghurt i en skål och lägg på kokosgranola och mango.'
+    instructions: [
+      'Tina mangon.',
+      'Lägg yoghurt i en skål och toppa med kokosgranola och mango.'
+    ]
   },
   {
     title: 'Bärsmoothie',
@@ -42,7 +45,11 @@ const RECIPES: Seed[] = [
     image: `${IMG}/BÄRSMOOTHIE.JPG`,
     categories: ['frukost'],
     ingredients: ['2 dl frysta blåbär','2 dl frysta hallon','150 g fryst mango','2 dl mandelmjölk'],
-    instructions: 'Mixa blåbär, hallon, mango och mandelmjölk till en jämn smoothie.'
+    instructions: [
+      'Lägg blåbär, hallon och mango i en blender.',
+      'Häll på mandelmjölk och mixa till en jämn smoothie.',
+      'Häll upp på glas.'
+    ]
   },
   {
     title: 'Äggröra med tomatsallad',
@@ -50,7 +57,12 @@ const RECIPES: Seed[] = [
     image: `${IMG}/ÄGGRÖRA_MED_TOMATSALLAD.JPG`,
     categories: ['frukost'],
     ingredients: ['1 tomat','1/5 rödlök','1/2 tsk olivolja','1 tsk basilika','2 ägg','1 msk mjölk','Salt','Svartpeppar','1 tsk smör'],
-    instructions: 'Gör tomatsallad av tomat, finhackad rödlök, basilika, olivolja, salt och peppar. Vispa ägg och mjölk, krydda. Stek snabbt i smör. Servera med tomatsallad.'
+    instructions: [
+      'Skär tomaten i bitar och lägg i en skål. Finhacka rödlök och basilika och blanda ner med olivolja, salt och peppar.',
+      'Vispa ihop ägg och mjölk i en skål och krydda med salt och peppar.',
+      'Hetta upp smör i stekpanna och stek äggröran ca 20 sekunder på medelhög värme.',
+      'Servera med tomatsallad och dekorera med basilika.'
+    ]
   },
   {
     title: 'Kokt ägg med kaviar',
@@ -134,6 +146,9 @@ export async function POST(req: NextRequest) {
     const created: any[] = [];
     for (const r of RECIPES) {
       const slug = slugify(r.title);
+      const instructionsString = Array.isArray(r.instructions)
+        ? r.instructions.map((s: string, i: number) => `${i + 1}. ${s}`).join(' ')
+        : (r.instructions as string);
       const doc = await prisma.recipe.upsert({
         where: { slug },
         create: {
@@ -142,7 +157,7 @@ export async function POST(req: NextRequest) {
           servings: r.servings || null,
           imageUrl: r.image || undefined,
           ingredients: r.ingredients,
-          content: r.instructions,
+          content: instructionsString,
           categories: r.categories || [],
           isPremium: true,
           isFree: false
@@ -151,7 +166,7 @@ export async function POST(req: NextRequest) {
           servings: r.servings || null,
           imageUrl: r.image || undefined,
           ingredients: r.ingredients,
-          content: r.instructions,
+          content: instructionsString,
           categories: r.categories || []
         }
       });
