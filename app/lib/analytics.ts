@@ -116,7 +116,7 @@ export function trackAddToCart(item: { id?: string; name?: string; quantity?: nu
     content_ids: id ? [id] : undefined,
     contents: [{ id, quantity, item_price: price }],
     content_type: 'product'
-  });
+  }).catch(() => {}); // Don't block on server errors
   safeFbqTrack('AddToCart', {
     value: typeof price === 'number' ? price * quantity : undefined,
     currency,
@@ -154,7 +154,7 @@ export function trackInitiateCheckout(params: {
     content_ids: items.map(i => i.id).filter(Boolean),
     contents: items.map(i => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
     content_type: 'product'
-  });
+  }).catch(() => {}); // Don't block on server errors
   safeFbqTrack('InitiateCheckout', {
     value,
     currency,
@@ -184,7 +184,7 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
     content_type: 'product',
     value: price,
     currency
-  });
+  }).catch(() => {}); // Don't block on server errors
   safeFbqTrack('ViewContent', {
     content_name: name,
     content_ids: id ? [id] : undefined,
