@@ -24,6 +24,16 @@ function safeFbqTrack(eventName: string, params?: Record<string, any>): void {
   } catch {}
 }
 
+async function fallbackServerTrack(eventName: string, params?: Record<string, any>) {
+  try {
+    await fetch('/api/meta/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventName, params })
+    });
+  } catch {}
+}
+
 export function trackGenerateLead(source: string): void {
   // GA4
   safeGtagEvent('generate_lead', { source });
@@ -51,6 +61,13 @@ export function trackPurchase(params: {
     }))
   });
   // Meta Pixel
+  if (!(window as any).fbq) fallbackServerTrack('Purchase', {
+    value,
+    currency,
+    contents: items.map((i) => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
+    content_ids: items.map((i) => i.id).filter(Boolean),
+    content_type: 'product'
+  });
   safeFbqTrack('Purchase', {
     value,
     currency,
@@ -73,7 +90,15 @@ export function trackAddToCart(item: { id?: string; name?: string; quantity?: nu
       price
     }]
   });
-  // Meta Pixel
+  // Meta Pixel + server fallback
+  if (!(window as any).fbq) fallbackServerTrack('AddToCart', {
+    value: typeof price === 'number' ? price * quantity : undefined,
+    currency,
+    content_name: name,
+    content_ids: id ? [id] : undefined,
+    contents: [{ id, quantity, item_price: price }],
+    content_type: 'product'
+  });
   safeFbqTrack('AddToCart', {
     value: typeof price === 'number' ? price * quantity : undefined,
     currency,
@@ -101,7 +126,14 @@ export function trackInitiateCheckout(params: {
       price: i.price
     }))
   });
-  // Meta Pixel
+  // Meta Pixel + server fallback
+  if (!(window as any).fbq) fallbackServerTrack('InitiateCheckout', {
+    value,
+    currency,
+    content_ids: items.map(i => i.id).filter(Boolean),
+    contents: items.map(i => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
+    content_type: 'product'
+  });
   safeFbqTrack('InitiateCheckout', {
     value,
     currency,
@@ -120,7 +152,15 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
     value: price,
     items: [{ item_id: id, item_name: name, price }]
   });
-  // Meta Pixel
+  // Meta Pixel + server fallback
+  if (!(window as any).fbq) fallbackServerTrack('ViewContent', {
+    content_name: name,
+    content_ids: id ? [id] : undefined,
+    contents: [{ id, item_price: price, quantity: 1 }],
+    content_type: 'product',
+    value: price,
+    currency
+  });
   safeFbqTrack('ViewContent', {
     content_name: name,
     content_ids: id ? [id] : undefined,
@@ -135,7 +175,8 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
 export function trackLogin(method: string = 'password'): void {
   // GA4
   safeGtagEvent('login', { method });
-  // Meta Pixel
+  // Meta Pixel + server fallback
+  if (!(window as any).fbq) fallbackServerTrack('Login', { method });
   safeFbqTrack('Login', { method });
 }
 
@@ -143,7 +184,8 @@ export function trackLogin(method: string = 'password'): void {
 export function trackCompleteRegistration(method: string = 'password'): void {
   // GA4
   safeGtagEvent('sign_up', { method });
-  // Meta Pixel
+  // Meta Pixel + server fallback
+  if (!(window as any).fbq) fallbackServerTrack('CompleteRegistration', { status: true, method });
   safeFbqTrack('CompleteRegistration', { status: true, method });
 }
 
