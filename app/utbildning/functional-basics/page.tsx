@@ -23,10 +23,10 @@ export default function FunctionalBasicsPage() {
     const id = window.setInterval(() => {
       attempts += 1;
       try {
-        const fbq = (window as any).fbq;
         const consent = localStorage.getItem('cookie-consent');
-        const ok = !!fbq && !!consent && JSON.parse(consent)?.preferences?.marketing;
-        if (ok) {
+        const marketingOk = !!consent && JSON.parse(consent)?.preferences?.marketing;
+        if (marketingOk) {
+          // trackViewContent hanterar själv server‑fallback när fbq är blockerat
           trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: 1147 });
           window.clearInterval(id);
         }

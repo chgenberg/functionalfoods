@@ -73,10 +73,9 @@ export default function FunctionalEnergyPage() {
     const id = window.setInterval(() => {
       attempts += 1;
       try {
-        const fbq = (window as any).fbq;
         const consent = localStorage.getItem('cookie-consent');
-        const ok = !!fbq && !!consent && JSON.parse(consent)?.preferences?.marketing;
-        if (ok) {
+        const marketingOk = !!consent && JSON.parse(consent)?.preferences?.marketing;
+        if (marketingOk) {
           trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: 2295 });
           window.clearInterval(id);
         }
