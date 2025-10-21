@@ -109,7 +109,11 @@ const getMealLabel = (type: string, name?: string): string => {
     'jordgubbssylt',
     'kesofralla',
     'kesofrallor',
-    'havrefrallor'
+    'havrefrallor',
+    // Kavring should be displayed under Egenbakat when used as a standalone baked item
+    'kavring med frön',
+    'kavring med fron',
+    'kavring'
   ];
   // Only classify as "Egenbakat" for snack/dessert to avoid mislabeling breakfasts
   const egenbakatEligible = type === 'snack' || type === 'dessert';
