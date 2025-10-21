@@ -12,6 +12,7 @@ import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Video, User, ChevronRight } from 'lucide-react';
 import { formatPrice } from '@/app/lib/utils';
+import { trackAddToCart } from '@/app/lib/analytics';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -31,6 +32,7 @@ export default function FunctionalFlowPage() {
 
   const handleAddToCart = () => {
     addItem(course);
+    try { trackAddToCart({ id: course.id, name: course.name, price: course.price, quantity: 1 }, 'SEK'); } catch {}
     router.push('/cart');
   };
 
