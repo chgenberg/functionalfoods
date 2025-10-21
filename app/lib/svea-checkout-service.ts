@@ -290,11 +290,16 @@ export class SveaCheckoutService {
       const mode = attempts[i];
       const { response, responseText } = await tryRequest(mode);
       if (response.ok) {
-        const result = JSON.parse(responseText) as CheckoutOrderResponse;
-        if (!result.orderId || !result.gui?.snippet) {
+        const result = JSON.parse(responseText) as any;
+        // Handle both lowercase and uppercase field names from Svea
+        const orderId = result.orderId || result.OrderId;
+        const gui = result.gui || result.Gui;
+        const snippet = gui?.snippet || gui?.Snippet;
+        if (!orderId || !snippet) {
+          console.error('❌ SVEA response missing fields:', { result, orderId, gui, snippet });
           throw new Error('Invalid response from Svea: missing orderId or GUI snippet');
         }
-        return result;
+        return { orderId, gui: { snippet, width: gui.width || gui.Width || 600, height: gui.height || gui.Height || 800 }, status: result.status || result.Status || 'Created' } as CheckoutOrderResponse;
       }
       // If 401, try next mode; otherwise, stop early with the parsed error (after a Basic fallback attempt)
       if (response.status !== 401 || i === attempts.length - 1) {
