@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { GiBrain, GiStomach, GiWheat, GiHeartBeats, GiMuscleUp } from 'react-icons/gi';
@@ -16,10 +16,25 @@ import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 export default function FunctionalBasicsPage() {
   const router = useRouter();
-  // Fire ViewContent once on mount (client)
-  if (typeof window !== 'undefined') {
-    try { trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: 1147 }); } catch {}
-  }
+  // Fire ViewContent once after fbq is available and consent granted
+  useEffect(() => {
+    let attempts = 0;
+    const maxAttempts = 25;
+    const id = window.setInterval(() => {
+      attempts += 1;
+      try {
+        const fbq = (window as any).fbq;
+        const consent = localStorage.getItem('cookie-consent');
+        const ok = !!fbq && !!consent && JSON.parse(consent)?.preferences?.marketing;
+        if (ok) {
+          trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: 1147 });
+          window.clearInterval(id);
+        }
+      } catch {}
+      if (attempts >= maxAttempts) window.clearInterval(id);
+    }, 200);
+    return () => window.clearInterval(id);
+  }, []);
   
   // Add CSS for gradient animation
   if (typeof document !== 'undefined') {

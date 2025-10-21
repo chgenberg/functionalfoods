@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { GiBrain, GiStomach, GiWheat, GiHeartBeats, GiMuscleUp } from 'react-icons/gi';
@@ -66,10 +66,25 @@ export default function FunctionalEnergyPage() {
     router.push('/cart');
   };
 
-  // Fire ViewContent once on mount (client)
-  if (typeof window !== 'undefined') {
-    try { trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: 2295 }); } catch {}
-  }
+  // Fire ViewContent once after fbq is available and consent granted
+  useEffect(() => {
+    let attempts = 0;
+    const maxAttempts = 25;
+    const id = window.setInterval(() => {
+      attempts += 1;
+      try {
+        const fbq = (window as any).fbq;
+        const consent = localStorage.getItem('cookie-consent');
+        const ok = !!fbq && !!consent && JSON.parse(consent)?.preferences?.marketing;
+        if (ok) {
+          trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: 2295 });
+          window.clearInterval(id);
+        }
+      } catch {}
+      if (attempts >= maxAttempts) window.clearInterval(id);
+    }, 200);
+    return () => window.clearInterval(id);
+  }, []);
 
   const benefits = [
     {
