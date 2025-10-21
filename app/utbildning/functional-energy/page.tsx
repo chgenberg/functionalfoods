@@ -12,6 +12,7 @@ import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight, Battery, Coffee, Moon } from 'lucide-react';
 import { formatPrice } from '@/app/lib/utils';
+import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 export default function FunctionalEnergyPage() {
   const router = useRouter();
@@ -61,8 +62,14 @@ export default function FunctionalEnergyPage() {
 
   const handleAddToCart = () => {
     addItem(course);
+    try { trackAddToCart({ id: course.id, name: course.name, price: course.price, quantity: 1 }, 'SEK'); } catch {}
     router.push('/cart');
   };
+
+  // Fire ViewContent once on mount (client)
+  if (typeof window !== 'undefined') {
+    try { trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: 2295 }); } catch {}
+  }
 
   const benefits = [
     {

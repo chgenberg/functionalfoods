@@ -12,10 +12,14 @@ import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User } from 'lucide-react';
 import { formatPrice } from '@/app/lib/utils';
-import { trackAddToCart } from '@/app/lib/analytics';
+import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 export default function FunctionalBasicsPage() {
   const router = useRouter();
+  // Fire ViewContent once on mount (client)
+  if (typeof window !== 'undefined') {
+    try { trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: 1147 }); } catch {}
+  }
   
   // Add CSS for gradient animation
   if (typeof document !== 'undefined') {

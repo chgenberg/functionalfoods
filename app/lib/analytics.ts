@@ -111,4 +111,40 @@ export function trackInitiateCheckout(params: {
   });
 }
 
+// ViewContent (product/content view)
+export function trackViewContent(item: { id?: string; name?: string; price?: number }, currency: string = 'SEK'): void {
+  const { id, name, price } = item || {};
+  // GA4
+  safeGtagEvent('view_item', {
+    currency,
+    value: price,
+    items: [{ item_id: id, item_name: name, price }]
+  });
+  // Meta Pixel
+  safeFbqTrack('ViewContent', {
+    content_name: name,
+    content_ids: id ? [id] : undefined,
+    contents: [{ id, item_price: price, quantity: 1 }],
+    content_type: 'product',
+    value: price,
+    currency
+  });
+}
+
+// Login
+export function trackLogin(method: string = 'password'): void {
+  // GA4
+  safeGtagEvent('login', { method });
+  // Meta Pixel
+  safeFbqTrack('Login', { method });
+}
+
+// CompleteRegistration (sign_up)
+export function trackCompleteRegistration(method: string = 'password'): void {
+  // GA4
+  safeGtagEvent('sign_up', { method });
+  // Meta Pixel
+  safeFbqTrack('CompleteRegistration', { status: true, method });
+}
+
 

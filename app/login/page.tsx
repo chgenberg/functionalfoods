@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
+import { trackLogin, trackCompleteRegistration } from '@/app/lib/analytics';
 
 function LoginForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -56,6 +57,7 @@ function LoginForm() {
 
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+        try { trackLogin('password'); } catch {}
         
         // Handle redirect logic
         if (redirect) {
@@ -130,6 +132,7 @@ function LoginForm() {
 
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+        try { trackCompleteRegistration('password'); } catch {}
         
         // Handle redirect logic for registration
         if (redirect) {

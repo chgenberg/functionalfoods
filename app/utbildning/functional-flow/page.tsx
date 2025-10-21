@@ -12,13 +12,18 @@ import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Video, User, ChevronRight } from 'lucide-react';
 import { formatPrice } from '@/app/lib/utils';
-import { trackAddToCart } from '@/app/lib/analytics';
+import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 export default function FunctionalFlowPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const { addItem } = useCart();
   const router = useRouter();
+
+  // Fire ViewContent once on mount (client)
+  if (typeof window !== 'undefined') {
+    try { trackViewContent({ id: 'functional-flow', name: 'Functional Gut Health/Flow', price: 2295 }); } catch {}
+  }
 
   const course = {
     id: 'functional-flow',
