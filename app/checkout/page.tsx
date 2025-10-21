@@ -98,20 +98,27 @@ export default function Checkout() {
         });
       } catch {}
 
-      // Store checkout data temporarily
+      // Store checkout data temporarily (used by both Stripe and Svea flows)
       sessionStorage.setItem('checkout_data', JSON.stringify(checkoutData));
 
-      // Create Stripe Checkout Session
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(checkoutData)
-      });
-      const data = await res.json();
-      if (!res.ok || !data?.url) {
-        throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
+      // Branch by payment method
+      if (selectedPayment === 'svea') {
+        // Redirect to Svea checkout page; it will initialize via /api/checkout/svea-v2
+        window.location.href = '/checkout/svea';
+        return;
+      } else {
+        // Create Stripe Checkout Session (default)
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(checkoutData)
+        });
+        const data = await res.json();
+        if (!res.ok || !data?.url) {
+          throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
+        }
+        window.location.href = data.url;
       }
-      window.location.href = data.url;
     } catch (err: any) {
       setError(err.message || 'Något gick fel');
       setIsProcessing(false);
@@ -248,6 +255,13 @@ export default function Checkout() {
                     desc: 'Betala med Visa, Mastercard, Apple Pay, Google Pay',
                     icon: CreditCard,
                     recommended: true
+                  },
+                  {
+                    id: 'svea',
+                    name: 'Svea (Kort, Swish, Faktura)',
+                    desc: 'Betala med kort, Swish, faktura eller delbetalning via Svea',
+                    icon: CreditCard,
+                    recommended: false
                   }
                 ].map((method) => (
                   <label 
