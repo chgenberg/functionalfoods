@@ -61,7 +61,8 @@ export function trackPurchase(params: {
     }))
   });
   // Meta Pixel
-  if (!(window as any).fbq) fallbackServerTrack('Purchase', {
+  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  if (!fbqReady) fallbackServerTrack('Purchase', {
     value,
     currency,
     contents: items.map((i) => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
@@ -91,7 +92,8 @@ export function trackAddToCart(item: { id?: string; name?: string; quantity?: nu
     }]
   });
   // Meta Pixel + server fallback
-  if (!(window as any).fbq) fallbackServerTrack('AddToCart', {
+  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  if (!fbqReady) fallbackServerTrack('AddToCart', {
     value: typeof price === 'number' ? price * quantity : undefined,
     currency,
     content_name: name,
@@ -127,7 +129,8 @@ export function trackInitiateCheckout(params: {
     }))
   });
   // Meta Pixel + server fallback
-  if (!(window as any).fbq) fallbackServerTrack('InitiateCheckout', {
+  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  if (!fbqReady) fallbackServerTrack('InitiateCheckout', {
     value,
     currency,
     content_ids: items.map(i => i.id).filter(Boolean),
@@ -153,7 +156,8 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
     items: [{ item_id: id, item_name: name, price }]
   });
   // Meta Pixel + server fallback
-  if (!(window as any).fbq) fallbackServerTrack('ViewContent', {
+  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  if (!fbqReady) fallbackServerTrack('ViewContent', {
     content_name: name,
     content_ids: id ? [id] : undefined,
     contents: [{ id, item_price: price, quantity: 1 }],
@@ -176,7 +180,8 @@ export function trackLogin(method: string = 'password'): void {
   // GA4
   safeGtagEvent('login', { method });
   // Meta Pixel + server fallback
-  if (!(window as any).fbq) fallbackServerTrack('Login', { method });
+  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  if (!fbqReady) fallbackServerTrack('Login', { method });
   safeFbqTrack('Login', { method });
 }
 
@@ -185,7 +190,8 @@ export function trackCompleteRegistration(method: string = 'password'): void {
   // GA4
   safeGtagEvent('sign_up', { method });
   // Meta Pixel + server fallback
-  if (!(window as any).fbq) fallbackServerTrack('CompleteRegistration', { status: true, method });
+  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  if (!fbqReady) fallbackServerTrack('CompleteRegistration', { status: true, method });
   safeFbqTrack('CompleteRegistration', { status: true, method });
 }
 
