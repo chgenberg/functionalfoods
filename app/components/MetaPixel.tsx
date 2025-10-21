@@ -76,7 +76,7 @@ export default function MetaPixel() {
   return (
     <>
       {/* Initialize fbq stub and load script inline for better reliability */}
-      <Script id="fbp-init" strategy="beforeInteractive">
+      <Script id="fbp-init" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -86,9 +86,26 @@ export default function MetaPixel() {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('consent', 'revoke');
-          fbq('init', '${PIXEL_ID}');
-          fbq('track', 'PageView');
+        `}
+      </Script>
+      <Script id="fbp-consent-init" strategy="afterInteractive">
+        {`
+          (function() {
+            var initPixel = function() {
+              if (typeof fbq === 'function') {
+                fbq('consent', 'revoke');
+                fbq('init', '${PIXEL_ID}');
+                fbq('track', 'PageView');
+              } else {
+                setTimeout(initPixel, 100);
+              }
+            };
+            if (document.readyState === 'complete') {
+              initPixel();
+            } else {
+              window.addEventListener('load', initPixel);
+            }
+          })();
         `}
       </Script>
       {/* NoScript fallback */}
