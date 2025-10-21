@@ -229,15 +229,16 @@ export class SveaCheckoutService {
       mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded'
     ) => {
       const { auth, timestamp } = this.buildAuth('POST', requestBody, mode);
-      console.log('📤 SVEA createOrder attempt', { endpoint, mode, timestamp, baseUrl: this.baseUrl });
+      const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': auth,
+        'Timestamp': timestamp
+      };
+      console.log('📤 SVEA createOrder attempt', { endpoint, mode, timestamp, baseUrl: this.baseUrl, authHeader: auth.substring(0, 50) + '...', headers });
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': auth,
-          'Timestamp': timestamp
-        },
+        headers,
         body: requestBody
       });
       const responseText = await response.text();

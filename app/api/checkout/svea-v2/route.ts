@@ -5,6 +5,7 @@ import { emailService } from '@/app/lib/email';
 import bcrypt from 'bcryptjs';
 import type { SveaCartItem, CreateCheckoutOrderRequest } from '@/app/lib/svea-checkout-service';
 
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 interface CheckoutItem {
