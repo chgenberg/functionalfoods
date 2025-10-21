@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { emailService } from '@/app/lib/email';
 import { trackLeadServer } from '@/app/lib/server-analytics';
+import { sendMetaEvent } from '@/app/lib/meta-capi';
 
 const SUPPORTED = ['sv', 'en', 'es', 'de', 'fr'] as const;
 type Lang = typeof SUPPORTED[number];
@@ -92,6 +93,16 @@ export async function POST(request: Request) {
     // Server-side GA4 Lead (deduped by UA if client fires too)
     try {
       await trackLeadServer({ source: 'contact_form', clientSeed: data.email });
+    } catch {}
+    // Meta CAPI Lead (server-side)
+    try {
+      await sendMetaEvent({
+        eventName: 'Lead',
+        eventId: undefined,
+        email: data.email,
+        sourceUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/kontakt`,
+        params: { source: 'contact_form' }
+      });
     } catch {}
     // Return non-200 if email could not be sent so client can show error
     return NextResponse.json(result, { status: result.success ? 200 : 502 });

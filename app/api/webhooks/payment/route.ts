@@ -449,6 +449,7 @@ async function handleCheckoutSessionCompleted(session: any) {
     // --- GA4 server-side purchase tracking (outside transaction) ---
     try {
       const { trackPurchaseServer } = await import('../../../lib/server-analytics');
+      const { sendMetaEvent } = await import('../../../lib/meta-capi');
       const gaItems = (items || []).map((it) => ({
         item_id: it.id,
         item_name: it.name,
@@ -462,6 +463,20 @@ async function handleCheckoutSessionCompleted(session: any) {
         items: gaItems,
         userId: customerEmail || undefined,
         clientSeed: customerEmail || session.id
+      });
+      // Meta CAPI purchase (dedupe occurs against client if event_id reused; here we use session.id)
+      await sendMetaEvent({
+        eventName: 'Purchase',
+        eventId: String(session.id),
+        email: customerEmail,
+        sourceUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/checkout/success`,
+        params: {
+          value: (session.amount_total || 0) / 100,
+          currency: String(session.currency || 'SEK').toUpperCase(),
+          contents: (items || []).map((it) => ({ id: it.id, quantity: it.quantity, item_price: it.price })),
+          content_type: 'product',
+          content_ids: (items || []).map((it) => it.id)
+        }
       });
       console.log('✅ GA4 purchase sent via Measurement Protocol');
     } catch (e) {
