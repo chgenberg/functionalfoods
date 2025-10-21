@@ -75,39 +75,31 @@ export default function MetaPixel() {
 
   return (
     <>
-      {/* Initialize fbq stub and load script inline for better reliability */}
-      <Script id="fbp-init" strategy="afterInteractive">
+      {/* Create fbq stub FIRST before loading fbevents.js */}
+      <Script id="fbp-stub" strategy="beforeInteractive">
         {`
-          !function(f,b,e,v,n,t,s)
-          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-          n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
-          'https://connect.facebook.net/en_US/fbevents.js');
+          window.fbq = window.fbq || function(){
+            (window.fbq.q = window.fbq.q || []).push(arguments);
+          };
+          window.fbq.q = window.fbq.q || [];
+          window._fbq = window._fbq || window.fbq;
         `}
       </Script>
-      <Script id="fbp-consent-init" strategy="afterInteractive">
-        {`
-          (function() {
-            var initPixel = function() {
-              if (typeof fbq === 'function') {
-                fbq('consent', 'revoke');
-                fbq('init', '${PIXEL_ID}');
-                fbq('track', 'PageView');
-              } else {
-                setTimeout(initPixel, 100);
-              }
-            };
-            if (document.readyState === 'complete') {
-              initPixel();
-            } else {
-              window.addEventListener('load', initPixel);
-            }
-          })();
-        `}
-      </Script>
+      {/* Load Facebook Pixel script */}
+      <Script
+        id="fbp-loader"
+        src="https://connect.facebook.net/en_US/fbevents.js"
+        strategy="afterInteractive"
+        onLoad={() => {
+          if (typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('consent', 'revoke');
+            (window as any).fbq('init', PIXEL_ID);
+            (window as any).fbq('track', 'PageView');
+            // Update consent from storage after init
+            setTimeout(() => updateMarketingConsentFromStorage(), 100);
+          }
+        }}
+      />
       {/* NoScript fallback */}
       <noscript>
         <img height="1" width="1" style={{display:'none'}} alt=""
