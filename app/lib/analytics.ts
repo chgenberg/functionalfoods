@@ -90,6 +90,7 @@ export function trackPurchase(params: {
 
 export function trackAddToCart(item: { id?: string; name?: string; quantity?: number; price?: number; }, currency: string = 'SEK'): void {
   const { id, name, quantity = 1, price } = item || {};
+  console.log('🛒 trackAddToCart called:', { id, name, quantity, price, currency });
   // GA4
   safeGtagEvent('add_to_cart', {
     currency,
@@ -101,9 +102,10 @@ export function trackAddToCart(item: { id?: string; name?: string; quantity?: nu
       price
     }]
   });
-  // Meta Pixel + server fallback
+  // Meta Pixel + server fallback (always fire server for reliability)
   const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
-  if (!fbqReady) fallbackServerTrack('AddToCart', {
+  console.log('📊 AddToCart: fbqReady?', fbqReady, '→ firing server fallback');
+  fallbackServerTrack('AddToCart', {
     value: typeof price === 'number' ? price * quantity : undefined,
     currency,
     content_name: name,
@@ -127,6 +129,7 @@ export function trackInitiateCheckout(params: {
   currency?: string
 }): void {
   const { items, value, currency = 'SEK' } = params;
+  console.log('💳 trackInitiateCheckout called:', { items, value, currency });
   // GA4 (recommended event name is begin_checkout)
   safeGtagEvent('begin_checkout', {
     currency,
@@ -138,9 +141,10 @@ export function trackInitiateCheckout(params: {
       price: i.price
     }))
   });
-  // Meta Pixel + server fallback
+  // Meta Pixel + server fallback (always fire server for reliability)
   const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
-  if (!fbqReady) fallbackServerTrack('InitiateCheckout', {
+  console.log('📊 InitiateCheckout: fbqReady?', fbqReady, '→ firing server fallback');
+  fallbackServerTrack('InitiateCheckout', {
     value,
     currency,
     content_ids: items.map(i => i.id).filter(Boolean),
@@ -159,15 +163,17 @@ export function trackInitiateCheckout(params: {
 // ViewContent (product/content view)
 export function trackViewContent(item: { id?: string; name?: string; price?: number }, currency: string = 'SEK'): void {
   const { id, name, price } = item || {};
+  console.log('🔍 trackViewContent called:', { id, name, price, currency });
   // GA4
   safeGtagEvent('view_item', {
     currency,
     value: price,
     items: [{ item_id: id, item_name: name, price }]
   });
-  // Meta Pixel + server fallback
+  // Meta Pixel + server fallback (always fire server for reliability)
   const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
-  if (!fbqReady) fallbackServerTrack('ViewContent', {
+  console.log('📊 ViewContent: fbqReady?', fbqReady, '→ firing server fallback');
+  fallbackServerTrack('ViewContent', {
     content_name: name,
     content_ids: id ? [id] : undefined,
     contents: [{ id, item_price: price, quantity: 1 }],

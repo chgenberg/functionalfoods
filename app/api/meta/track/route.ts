@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
       testEventCode
     } = body || {};
 
+    console.log('📊 META /api/meta/track called:', { eventName, params, hasEmail: !!email, sourceUrl, testEventCode });
+
     if (!eventName || typeof eventName !== 'string') {
       return NextResponse.json({ error: 'Missing eventName' }, { status: 400 });
     }
@@ -40,6 +42,8 @@ export async function POST(req: NextRequest) {
       sourceUrl: sourceUrl || req.headers.get('referer') || undefined,
       testEventCode
     });
+
+    console.log('✅ META event sent successfully:', eventName);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
