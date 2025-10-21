@@ -36,12 +36,16 @@ async function fallbackServerTrack(eventName: string, params?: Record<string, an
   try {
     let testEventCode: string | undefined;
     try { testEventCode = sessionStorage.getItem('meta_test_code') || undefined; } catch {}
-    await fetch('/api/meta/track', {
+    console.log('🚀 fallbackServerTrack firing:', eventName, { params, testEventCode });
+    const res = await fetch('/api/meta/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ eventName, params, testEventCode })
     });
-  } catch {}
+    console.log('📡 fallbackServerTrack response:', res.status, res.ok);
+  } catch (e) {
+    console.error('❌ fallbackServerTrack error:', e);
+  }
 }
 
 export function trackGenerateLead(source: string): void {
