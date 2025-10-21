@@ -250,6 +250,29 @@ export class SveaCheckoutService {
       return { response, responseText };
     };
 
+    // Basic Auth fallback used by some SVEA environments (merchantId:secretWord)
+    const tryBasicAuth = async () => {
+      const basic = Buffer.from(`${this.config.merchantId}:${this.config.secretWord}`).toString('base64');
+      console.warn('🔁 SVEA falling back to Basic auth');
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Basic ${basic}`
+        },
+        body: requestBody
+      });
+      const responseText = await response.text();
+      console.log('📥 SVEA Basic createOrder Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: responseText.substring(0, 500) + (responseText.length > 500 ? '...' : '')
+      });
+      return { response, responseText };
+    };
+
     // Try multiple formats, including Europe/Stockholm local time
     const attempts: Array<'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded'> = [
       'localDate_utcTime',
@@ -271,22 +294,33 @@ export class SveaCheckoutService {
         }
         return result;
       }
-      // If 401, try next mode; otherwise, stop early with the parsed error
+      // If 401, try next mode; otherwise, stop early with the parsed error (after a Basic fallback attempt)
       if (response.status !== 401 || i === attempts.length - 1) {
-        const errorDetail = this.parseErrorResponse(responseText);
+        // Attempt Basic Auth fallback once before failing
+        const { response: basicResp, responseText: basicText } = await tryBasicAuth();
+        if (basicResp.ok) {
+          const result = JSON.parse(basicText) as CheckoutOrderResponse;
+          if (!result.orderId || !result.gui?.snippet) {
+            throw new Error('Invalid response from Svea (Basic): missing orderId or GUI snippet');
+          }
+          return result;
+        }
+
+        const errorDetail = this.parseErrorResponse(basicText || responseText);
         console.error('❌ SVEA createOrder Error (final):', {
-          status: response.status,
-          statusText: response.statusText,
-          responseBody: responseText,
+          status: basicResp.status || response.status,
+          statusText: basicResp.statusText || response.statusText,
+          responseBody: (basicText || responseText),
           parsedError: errorDetail
         });
-        throw new Error(`Svea API Error (${response.status}): ${errorDetail}`);
+        throw new Error(`Svea API Error (${basicResp.status || response.status}): ${errorDetail}`);
       } else {
         console.warn('⚠️ SVEA 401 with mode, retrying with next mode...', { mode, status: response.status });
       }
     }
 
-    throw new Error('Svea API Error: All timestamp modes failed');
+    // Should not reach here due to early returns above
+    throw new Error('Svea API Error: All attempts failed');
   }
 
   /**
