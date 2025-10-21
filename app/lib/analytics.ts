@@ -1,6 +1,14 @@
 "use client";
 
 // Lightweight helpers for GA4 and Meta Pixel events
+// Capture Meta Test Events code from URL once per session for easier debugging
+try {
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const testCode = params.get('fb_test') || params.get('fbtest') || params.get('fbcapitest');
+    if (testCode) sessionStorage.setItem('meta_test_code', testCode);
+  }
+} catch {}
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
@@ -26,10 +34,12 @@ function safeFbqTrack(eventName: string, params?: Record<string, any>): void {
 
 async function fallbackServerTrack(eventName: string, params?: Record<string, any>) {
   try {
+    let testEventCode: string | undefined;
+    try { testEventCode = sessionStorage.getItem('meta_test_code') || undefined; } catch {}
     await fetch('/api/meta/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventName, params })
+      body: JSON.stringify({ eventName, params, testEventCode })
     });
   } catch {}
 }
