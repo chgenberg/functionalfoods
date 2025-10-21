@@ -251,10 +251,11 @@ export class SveaCheckoutService {
     };
 
     // Basic Auth fallback used by some SVEA environments (merchantId:secretWord)
-    const tryBasicAuth = async () => {
+    const tryBasicAuth = async (overrideBaseUrl?: string) => {
       const basic = Buffer.from(`${this.config.merchantId}:${this.config.secretWord}`).toString('base64');
-      console.warn('🔁 SVEA falling back to Basic auth');
-      const response = await fetch(endpoint, {
+      const ep = `${overrideBaseUrl || this.baseUrl}/api/orders`;
+      console.warn('🔁 SVEA falling back to Basic auth', { endpoint: ep });
+      const response = await fetch(ep, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -306,14 +307,34 @@ export class SveaCheckoutService {
           return result;
         }
 
-        const errorDetail = this.parseErrorResponse(basicText || responseText);
+        // If still unauthorized, try alternate environment (swap stage/prod) with Basic auth
+        let finalStatus = basicResp.status;
+        let finalStatusText = basicResp.statusText;
+        let finalBody = basicText;
+        if (basicResp.status === 401) {
+          const altBase = this.baseUrl.includes('checkoutapistage') ? 'https://checkoutapi.svea.com' : 'https://checkoutapistage.svea.com';
+          console.warn('🔄 SVEA trying alternate environment with Basic auth', { altBase });
+          const { response: altResp, responseText: altText } = await tryBasicAuth(altBase);
+          if (altResp.ok) {
+            const result = JSON.parse(altText) as CheckoutOrderResponse;
+            if (!result.orderId || !result.gui?.snippet) {
+              throw new Error('Invalid response from Svea (Alt Basic): missing orderId or GUI snippet');
+            }
+            return result;
+          }
+          finalStatus = altResp.status;
+          finalStatusText = altResp.statusText;
+          finalBody = altText;
+        }
+
+        const errorDetail = this.parseErrorResponse(finalBody || responseText);
         console.error('❌ SVEA createOrder Error (final):', {
-          status: basicResp.status || response.status,
-          statusText: basicResp.statusText || response.statusText,
-          responseBody: (basicText || responseText),
+          status: finalStatus || response.status,
+          statusText: finalStatusText || response.statusText,
+          responseBody: (finalBody || responseText),
           parsedError: errorDetail
         });
-        throw new Error(`Svea API Error (${basicResp.status || response.status}): ${errorDetail}`);
+        throw new Error(`Svea API Error (${finalStatus || response.status}): ${errorDetail}`);
       } else {
         console.warn('⚠️ SVEA 401 with mode, retrying with next mode...', { mode, status: response.status });
       }
