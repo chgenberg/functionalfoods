@@ -32,12 +32,12 @@ function safeFbqTrack(eventName: string, params?: Record<string, any>): void {
   } catch {}
 }
 
-async function fallbackServerTrack(eventName: string, params?: Record<string, any>) {
+async function fallbackServerTrack(eventName: string, params?: Record<string, any>, providedEventId?: string) {
   try {
     let testEventCode: string | undefined;
     try { testEventCode = sessionStorage.getItem('meta_test_code') || undefined; } catch {}
     // Generate a lightweight event id for dedup
-    const eventId = `${eventName}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const eventId = providedEventId || `${eventName}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     // Extract fbp/fbc from cookies for better matching
     let fbp: string | undefined;
     let fbc: string | undefined;
@@ -115,6 +115,7 @@ export function trackPurchase(params: {
 export function trackAddToCart(item: { id?: string; name?: string; quantity?: number; price?: number; }, currency: string = 'SEK'): void {
   const { id, name, quantity = 1, price } = item || {};
   console.log('🛒 trackAddToCart called:', { id, name, quantity, price, currency });
+  const eventId = `AddToCart_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   // GA4
   safeGtagEvent('add_to_cart', {
     currency,
@@ -136,14 +137,15 @@ export function trackAddToCart(item: { id?: string; name?: string; quantity?: nu
     content_ids: id ? [id] : undefined,
     contents: [{ id, quantity, item_price: price }],
     content_type: 'product'
-  }).catch(() => {}); // Don't block on server errors
+  }, eventId).catch(() => {}); // Don't block on server errors
   safeFbqTrack('AddToCart', {
     value: typeof price === 'number' ? price * quantity : undefined,
     currency,
     content_name: name,
     content_ids: id ? [id] : undefined,
     contents: [{ id, quantity, item_price: price }],
-    content_type: 'product'
+    content_type: 'product',
+    event_id: eventId
   });
 }
 
@@ -154,6 +156,7 @@ export function trackInitiateCheckout(params: {
 }): void {
   const { items, value, currency = 'SEK' } = params;
   console.log('💳 trackInitiateCheckout called:', { items, value, currency });
+  const eventId = `InitiateCheckout_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   // GA4 (recommended event name is begin_checkout)
   safeGtagEvent('begin_checkout', {
     currency,
@@ -174,13 +177,14 @@ export function trackInitiateCheckout(params: {
     content_ids: items.map(i => i.id).filter(Boolean),
     contents: items.map(i => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
     content_type: 'product'
-  }).catch(() => {}); // Don't block on server errors
+  }, eventId).catch(() => {}); // Don't block on server errors
   safeFbqTrack('InitiateCheckout', {
     value,
     currency,
     content_ids: items.map(i => i.id).filter(Boolean),
     contents: items.map(i => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
-    content_type: 'product'
+    content_type: 'product',
+    event_id: eventId
   });
 }
 
@@ -188,6 +192,7 @@ export function trackInitiateCheckout(params: {
 export function trackViewContent(item: { id?: string; name?: string; price?: number }, currency: string = 'SEK'): void {
   const { id, name, price } = item || {};
   console.log('🔍 trackViewContent called:', { id, name, price, currency });
+  const eventId = `ViewContent_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   // GA4
   safeGtagEvent('view_item', {
     currency,
@@ -204,14 +209,15 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
     content_type: 'product',
     value: price,
     currency
-  }).catch(() => {}); // Don't block on server errors
+  }, eventId).catch(() => {}); // Don't block on server errors
   safeFbqTrack('ViewContent', {
     content_name: name,
     content_ids: id ? [id] : undefined,
     contents: [{ id, item_price: price, quantity: 1 }],
     content_type: 'product',
     value: price,
-    currency
+    currency,
+    event_id: eventId
   });
 }
 
