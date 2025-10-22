@@ -12,10 +12,13 @@ export async function POST(req: NextRequest) {
       params = {},
       email,
       sourceUrl,
-      testEventCode
+      testEventCode,
+      eventId,
+      fbp,
+      fbc
     } = body || {};
 
-    console.log('📊 META /api/meta/track called:', { eventName, params, hasEmail: !!email, sourceUrl, testEventCode });
+    console.log('📊 META /api/meta/track called:', { eventName, params, hasEmail: !!email, sourceUrl, testEventCode, eventId, hasFbp: !!fbp, hasFbc: !!fbc });
 
     if (!eventName || typeof eventName !== 'string') {
       return NextResponse.json({ error: 'Missing eventName' }, { status: 400 });
@@ -37,10 +40,14 @@ export async function POST(req: NextRequest) {
 
     await sendMetaEvent({
       eventName,
-      params,
+      params: { ...params },
       email,
       sourceUrl: sourceUrl || req.headers.get('referer') || undefined,
-      testEventCode
+      testEventCode,
+      eventId,
+      userAgent: req.headers.get('user-agent') || undefined,
+      fbp,
+      fbc
     });
 
     console.log('✅ META event sent successfully:', eventName);

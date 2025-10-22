@@ -33,6 +33,8 @@ export async function sendMetaEvent(args: {
   sourceUrl?: string;
   testEventCode?: string;
   userAgent?: string;
+  fbp?: string;
+  fbc?: string;
 }): Promise<void> {
   const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
   const ACCESS_TOKEN = process.env.META_CAPI_TOKEN;
@@ -54,16 +56,24 @@ export async function sendMetaEvent(args: {
   if (args.userAgent) {
     payload.user_data!.client_user_agent = args.userAgent;
   }
+  if (args.fbp) {
+    try { payload.user_data!.fbp = args.fbp; } catch {}
+  }
+  if (args.fbc) {
+    try { payload.user_data!.fbc = args.fbc; } catch {}
+  }
 
   const endpoint = `https://graph.facebook.com/v17.0/${encodeURIComponent(PIXEL_ID)}/events?access_token=${encodeURIComponent(ACCESS_TOKEN)}`
     + (args.testEventCode ? `&test_event_code=${encodeURIComponent(args.testEventCode)}` : '');
 
   try {
-    await fetch(endpoint, {
+    const resp = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: [payload] })
     });
+    const txt = await resp.text();
+    console.log('📬 Meta CAPI response:', resp.status, txt.substring(0, 200));
   } catch (e) {
     console.warn('Meta CAPI send error:', e);
   }

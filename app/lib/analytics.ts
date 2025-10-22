@@ -36,11 +36,31 @@ async function fallbackServerTrack(eventName: string, params?: Record<string, an
   try {
     let testEventCode: string | undefined;
     try { testEventCode = sessionStorage.getItem('meta_test_code') || undefined; } catch {}
-    console.log('🚀 fallbackServerTrack firing:', eventName, { params, testEventCode });
+    // Generate a lightweight event id for dedup
+    const eventId = `${eventName}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    // Extract fbp/fbc from cookies for better matching
+    let fbp: string | undefined;
+    let fbc: string | undefined;
+    try {
+      const cookie = document.cookie || '';
+      const mFbp = /(?:^|;\s*)_fbp=([^;]+)/.exec(cookie);
+      const mFbc = /(?:^|;\s*)_fbc=([^;]+)/.exec(cookie);
+      fbp = mFbp ? decodeURIComponent(mFbp[1]) : undefined;
+      fbc = mFbc ? decodeURIComponent(mFbc[1]) : undefined;
+    } catch {}
+    console.log('🚀 fallbackServerTrack firing:', eventName, { params, testEventCode, eventId, fbp: !!fbp, fbc: !!fbc });
     const res = await fetch('/api/meta/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventName, params, testEventCode })
+      body: JSON.stringify({ 
+        eventName, 
+        params, 
+        testEventCode,
+        eventId,
+        sourceUrl: (typeof window !== 'undefined' ? window.location.href : undefined),
+        fbp,
+        fbc
+      })
     });
     console.log('📡 fallbackServerTrack response:', res.status, res.ok);
   } catch (e) {
