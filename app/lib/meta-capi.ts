@@ -14,6 +14,7 @@ type MetaEvent = {
     ph?: string[]; // sha256 hashed phones
     external_id?: string[];
     client_user_agent?: string;
+    client_ip_address?: string;
     fbc?: string;
     fbp?: string;
   };
@@ -35,6 +36,7 @@ export async function sendMetaEvent(args: {
   userAgent?: string;
   fbp?: string;
   fbc?: string;
+  clientIp?: string;
 }): Promise<void> {
   const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
   const ACCESS_TOKEN = process.env.META_CAPI_TOKEN;
@@ -55,6 +57,11 @@ export async function sendMetaEvent(args: {
   }
   if (args.userAgent) {
     payload.user_data!.client_user_agent = args.userAgent;
+  }
+  if (args.clientIp) {
+    // Meta expects the literal field name client_ip_address
+    // @ts-ignore
+    payload.user_data!.client_ip_address = args.clientIp;
   }
   if (args.fbp) {
     try { payload.user_data!.fbp = args.fbp; } catch {}

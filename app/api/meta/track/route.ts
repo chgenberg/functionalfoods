@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendMetaEvent } from '@/app/lib/meta-capi';
 
+function requestIp(req: NextRequest): string | null {
+  const hdr = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '';
+  const ip = hdr.split(',')[0].trim();
+  return ip || null;
+}
+
 export const dynamic = 'force-dynamic';
 
 // Lightweight endpoint to forward client events to Meta CAPI (server-side)
@@ -38,6 +44,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Event not allowed' }, { status: 400 });
     }
 
+    // Build best-effort user data for attribution
+    const ip = requestIp(req);
+
     await sendMetaEvent({
       eventName,
       params: { ...params },
@@ -47,7 +56,9 @@ export async function POST(req: NextRequest) {
       eventId,
       userAgent: req.headers.get('user-agent') || undefined,
       fbp,
-      fbc
+      fbc,
+      // @ts-ignore – extended type with client_ip_address used in meta-capi
+      clientIp: ip || undefined
     });
 
     console.log('✅ META event sent successfully:', eventName);
