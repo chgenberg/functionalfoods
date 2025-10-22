@@ -295,14 +295,15 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
               {params.courseId === 'hormonell-balans' && (
                 <Link
                   href="/admin/hormone"
-                  className="group relative flex items-center justify-between p-6 bg-gradient-to-br from-[var(--primary-green)] to-[var(--primary-light-green)] rounded-xl hover:shadow-xl transition-all overflow-hidden"
+                  className="group relative flex items-center justify-between p-6 bg-white rounded-xl border-2 border-[#93C560] hover:border-[#014421] hover:shadow-lg transition-all overflow-hidden"
+                  style={{background: 'linear-gradient(135deg, #F3EFE3 0%, #FEFDF9 100%)'}}
                 >
                   <div className="relative z-10">
-                    <h3 className="font-semibold text-white text-xl mb-2">💚 Snabbredigering Hormonell Balans</h3>
-                    <p className="text-sm text-white/90">Klicka & redigera kostscheman, inköpslistor, veckoinställningar och kunskapsdokument direkt</p>
+                    <h3 className="font-semibold text-[#014421] text-xl mb-2">Förenklad kurshantering</h3>
+                    <p className="text-sm text-gray-600">Hantera allt innehåll för Hormonell Balans på ett ställe - minimalistisk och effektiv</p>
                   </div>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <ChevronRight className="w-7 h-7 text-white" />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-[#014421]/10 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-[#014421]/20 transition-all">
+                    <ChevronRight className="w-7 h-7 text-[#014421]" />
                   </div>
                 </Link>
               )}

@@ -1,721 +1,684 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, ShoppingCart, ChefHat, Save, Plus, Trash2, Edit2, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import '../admin-ulrika-design.css';
 
-interface Recipe {
-  id: string;
-  title: string;
-  slug: string;
-}
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-interface MealPlanWeek {
-  id?: string;
-  course: string;
-  weekNumber: number;
-  days: Record<string, any>;
-}
-
-interface ShoppingListItem {
-  name: string;
-  amount: string;
-  unit: string;
-  category: string;
-}
-
-interface WeekMeta {
-  course: string;
-  weekNumber: number;
-  weekTitle?: string;
-  weekSubtitle?: string;
-  heroImage?: string;
-  videoUrl?: string;
-  welcomeMessage?: string;
-}
-
-interface KnowledgeDoc {
-  id?: string;
-  title: string;
-  slug: string;
-  content: string;
-  course: string;
-  weekNumber?: number;
-  order: number;
-}
-
-export default function HormoneManagementPage() {
+export default function HormonePage() {
+  const router = useRouter();
   const [activeView, setActiveView] = useState<'meals' | 'shopping' | 'weeks' | 'knowledge'>('meals');
   const [selectedWeek, setSelectedWeek] = useState(1);
-  const [mealPlans, setMealPlans] = useState<MealPlanWeek[]>([]);
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
-  const [weekMetas, setWeekMetas] = useState<WeekMeta[]>([]);
-  const [knowledgeDocs, setKnowledgeDocs] = useState<KnowledgeDoc[]>([]);
-  const [editingDoc, setEditingDoc] = useState<KnowledgeDoc | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [editingMeal, setEditingMeal] = useState<{ day: string; mealType: string } | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [recipes, setRecipes] = useState<any[]>([]);
+  const [mealPlans, setMealPlans] = useState<any[]>([]);
+  const [shoppingList, setShoppingList] = useState<any>(null);
+  const [weekMetas, setWeekMetas] = useState<any[]>([]);
+  const [knowledgeDocs, setKnowledgeDocs] = useState<any[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
 
-  const days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-  const mealTypes = [
-    { key: 'breakfast', label: 'Frukost', emoji: '🌅' },
-    { key: 'lunch', label: 'Lunch', emoji: '🍽️' },
-    { key: 'dinner', label: 'Middag', emoji: '🌙' },
-    { key: 'snack', label: 'Mellanmål', emoji: '🍎' },
-    { key: 'dessert', label: 'Efterrätt', emoji: '🍰' }
-  ];
-
+  // Fetcha all data
   useEffect(() => {
-    if (activeView === 'meals') {
-      fetchMealPlans();
-      fetchRecipes();
-    } else if (activeView === 'shopping') {
-      fetchShoppingList();
-    } else if (activeView === 'weeks') {
-      fetchWeekMetas();
-    } else if (activeView === 'knowledge') {
-      fetchKnowledgeDocs();
-    }
-  }, [activeView, selectedWeek]);
+    loadData();
+  }, []);
 
-  const fetchMealPlans = async () => {
-    setLoading(true);
+  const loadData = async () => {
+    setIsLoading(true);
     try {
-      const res = await fetch('/api/admin/meal-plans?course=hormone');
-      const data = await res.json();
-      setMealPlans(data.weeks || []);
+      const [recipesRes, mealsRes, weekMetasRes, knowledgeRes] = await Promise.all([
+        fetch('/api/recipes/search?tags=hormonell-balans', { credentials: 'include' }),
+        fetch('/api/admin/meal-plans?course=hormone', { credentials: 'include' }),
+        fetch('/api/admin/course-weeks?course=hormone', { credentials: 'include' }),
+        fetch('/api/admin/knowledge/course-documents?course=hormone', { credentials: 'include' })
+      ]);
+
+      if (recipesRes.ok) {
+        const recipesData = await recipesRes.json();
+        setRecipes(recipesData.recipes || []);
+      }
+
+      if (mealsRes.ok) {
+        const mealsData = await mealsRes.json();
+        setMealPlans(mealsData.weeks || []);
+      }
+
+      if (weekMetasRes.ok) {
+        const weekMetasData = await weekMetasRes.json();
+        setWeekMetas(weekMetasData.weeks || []);
+      }
+
+      if (knowledgeRes.ok) {
+        const knowledgeData = await knowledgeRes.json();
+        setKnowledgeDocs(knowledgeData.documents || []);
+      }
+    } catch (error) {
+      console.error('Failed to load data:', error);
+      showNotification('error', 'Kunde inte ladda data');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const fetchRecipes = async () => {
+  // Ladda shopping list för vald vecka
+  useEffect(() => {
+    if (activeView === 'shopping' && selectedWeek) {
+      loadShoppingList(selectedWeek);
+    }
+  }, [selectedWeek, activeView]);
+
+  const loadShoppingList = async (week: number) => {
     try {
-      const res = await fetch('/api/admin/courses/hormonell-balans/recipes');
-      const data = await res.json();
-      setRecipes(data.recipes || []);
-    } catch (e) {
-      console.error(e);
+      const res = await fetch(`/api/admin/shopping-lists?course=hormone&week=${week}`, {
+        credentials: 'include'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setShoppingList(data.lists?.[0] || null);
+      }
+    } catch (error) {
+      console.error('Failed to load shopping list:', error);
     }
   };
 
-  const fetchShoppingList = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/shopping-lists/hormone/${selectedWeek}`);
-      const data = await res.json();
-      setShoppingList(data.items || []);
-    } finally {
-      setLoading(false);
-    }
+  const showNotification = (type: 'success' | 'error', message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 4000);
   };
 
-  const saveMealPlan = async () => {
-    const currentPlan = mealPlans.find(mp => mp.weekNumber === selectedWeek);
-    if (!currentPlan) return;
-
-    setSaving(true);
+  // Spara kostschema
+  const saveMealPlan = async (weekNumber: number, days: any) => {
+    setIsSaving(true);
     try {
       const res = await fetch('/api/admin/meal-plans', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
-          id: currentPlan.id,
           course: 'hormone',
-          weekNumber: selectedWeek,
-          days: currentPlan.days
+          weekNumber,
+          days
         })
       });
+
       if (res.ok) {
-        alert('✅ Kostschema sparat!');
-      }
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const saveShoppingList = async () => {
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/admin/shopping-lists/hormone/${selectedWeek}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: shoppingList })
-      });
-      if (res.ok) {
-        alert('✅ Inköpslista sparad!');
-      }
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const updateMeal = (day: string, mealType: string, recipe: Recipe | null) => {
-    const updatedPlans = mealPlans.map(mp => {
-      if (mp.weekNumber !== selectedWeek) return mp;
-      
-      const updatedDays = { ...mp.days };
-      if (!updatedDays[day]) updatedDays[day] = {};
-      
-      updatedDays[day] = {
-        ...updatedDays[day],
-        [mealType]: recipe ? {
-          name: recipe.title,
-          recipeLink: `/kunskapsbank/recept/${recipe.slug}`
-        } : null
-      };
-      
-      return { ...mp, days: updatedDays };
-    });
-    
-    setMealPlans(updatedPlans);
-    setEditingMeal(null);
-    setSearchTerm('');
-  };
-
-  const addShoppingItem = () => {
-    setShoppingList([...shoppingList, { name: 'Ny ingrediens', amount: '1', unit: 'st', category: 'Övrigt' }]);
-  };
-
-  const updateShoppingItem = (index: number, field: keyof ShoppingListItem, value: string) => {
-    const updated = [...shoppingList];
-    updated[index] = { ...updated[index], [field]: value };
-    setShoppingList(updated);
-  };
-
-  const deleteShoppingItem = (index: number) => {
-    setShoppingList(shoppingList.filter((_, i) => i !== index));
-  };
-
-  const fetchWeekMetas = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/admin/course-weeks?course=hormone');
-      const data = await res.json();
-      setWeekMetas(data.weeks || []);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const saveWeekMeta = async (meta: WeekMeta) => {
-    setSaving(true);
-    try {
-      const res = await fetch('/api/admin/course-weeks', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(meta)
-      });
-      if (res.ok) {
-        alert('✅ Veckoinställningar sparade!');
-        fetchWeekMetas();
-      }
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const updateWeekMeta = (weekNumber: number, field: keyof WeekMeta, value: string) => {
-    setWeekMetas(prev => {
-      const existing = prev.find(w => w.weekNumber === weekNumber);
-      if (existing) {
-        return prev.map(w => w.weekNumber === weekNumber ? { ...w, [field]: value } : w);
+        showNotification('success', `Vecka ${weekNumber} sparad`);
+        await loadData();
       } else {
-        return [...prev, { course: 'hormone', weekNumber, [field]: value } as WeekMeta];
+        throw new Error('Failed to save');
       }
-    });
-  };
-
-  const fetchKnowledgeDocs = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/admin/knowledge?course=hormone');
-      const data = await res.json();
-      setKnowledgeDocs(data.documents || []);
+    } catch (error) {
+      showNotification('error', 'Kunde inte spara kostschema');
     } finally {
-      setLoading(false);
+      setIsSaving(false);
     }
   };
 
-  const saveKnowledgeDoc = async () => {
-    if (!editingDoc) return;
-    setSaving(true);
-    try {
-      const method = editingDoc.id ? 'PUT' : 'POST';
-      const res = await fetch('/api/admin/knowledge', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...editingDoc, courses: ['hormone'] })
-      });
-      if (res.ok) {
-        alert('✅ Kunskapsdokument sparat!');
-        setEditingDoc(null);
-        fetchKnowledgeDocs();
-      }
-    } finally {
-      setSaving(false);
+  // Uppdatera ett recept i kostschemat
+  const updateMealRecipe = (weekPlan: any, dayKey: string, mealType: string, recipeSlug: string) => {
+    const updatedDays = { ...weekPlan.days };
+    if (!updatedDays[dayKey][mealType]) {
+      updatedDays[dayKey][mealType] = {};
     }
+    updatedDays[dayKey][mealType] = {
+      recipeLink: `/kunskapsbank/recept/${recipeSlug}`,
+      portions: updatedDays[dayKey][mealType]?.portions || 1
+    };
+    saveMealPlan(weekPlan.weekNumber, updatedDays);
   };
 
-  const deleteKnowledgeDoc = async (id: string) => {
-    if (!confirm('Ta bort detta dokument?')) return;
-    try {
-      await fetch(`/api/admin/knowledge?id=${id}`, { method: 'DELETE' });
-      fetchKnowledgeDocs();
-    } catch (e) {
-      alert('Fel vid borttagning');
-    }
+  // Ta bort recept från kostschema
+  const removeMealRecipe = (weekPlan: any, dayKey: string, mealType: string) => {
+    const updatedDays = { ...weekPlan.days };
+    delete updatedDays[dayKey][mealType];
+    saveMealPlan(weekPlan.weekNumber, updatedDays);
   };
 
-  const currentPlan = mealPlans.find(mp => mp.weekNumber === selectedWeek);
-  const filteredRecipes = recipes.filter(r => r.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  // Renderera kostschema-vyn
+  const renderMealPlansView = () => {
+    const weekPlan = mealPlans.find(p => p.weekNumber === selectedWeek);
+    if (!weekPlan) return <div className="text-center py-8 text-gray-500">Inga kostscheman för vecka {selectedWeek}</div>;
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-[var(--primary-beige)]/20 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-light text-[var(--primary-green)] mb-3">
-            💚 Hormonell Balans
-          </h1>
-          <p className="text-[var(--text-secondary)] text-lg">
-            Hantera allt kursinnehåll enkelt på ett ställe
-          </p>
-        </div>
+    const days = weekPlan.days as any;
+    const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+    const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const mealTypes = ['breakfast', 'snack1', 'lunch', 'snack2', 'dinner', 'evening'];
+    const mealLabels = {
+      breakfast: 'Frukost',
+      snack1: 'Mellanmål FM',
+      lunch: 'Lunch',
+      snack2: 'Mellanmål EM',
+      dinner: 'Middag',
+      evening: 'Kvällsmål'
+    };
 
-        {/* View Toggle */}
-        <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
-          <button
-            onClick={() => setActiveView('meals')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
-              activeView === 'meals'
-                ? 'bg-[var(--primary-green)] text-white shadow-lg'
-                : 'bg-white text-[var(--text-secondary)] hover:bg-gray-50'
-            }`}
-          >
-            <Calendar className="w-5 h-5" />
-            Kostscheman
-          </button>
-          <button
-            onClick={() => setActiveView('shopping')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
-              activeView === 'shopping'
-                ? 'bg-[var(--primary-green)] text-white shadow-lg'
-                : 'bg-white text-[var(--text-secondary)] hover:bg-gray-50'
-            }`}
-          >
-            <ShoppingCart className="w-5 h-5" />
-            Inköpslistor
-          </button>
-          <button
-            onClick={() => setActiveView('weeks')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
-              activeView === 'weeks'
-                ? 'bg-[var(--primary-green)] text-white shadow-lg'
-                : 'bg-white text-[var(--text-secondary)] hover:bg-gray-50'
-            }`}
-          >
-            <Edit2 className="w-5 h-5" />
-            Veckoinställningar
-          </button>
-          <button
-            onClick={() => setActiveView('knowledge')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
-              activeView === 'knowledge'
-                ? 'bg-[var(--primary-green)] text-white shadow-lg'
-                : 'bg-white text-[var(--text-secondary)] hover:bg-gray-50'
-            }`}
-          >
-            <ChefHat className="w-5 h-5" />
-            Kunskapsdokument
-          </button>
-        </div>
+    return (
+      <div className="admin-card">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Måltid</th>
+                {dayNames.map(day => (
+                  <th key={day} className="text-left py-3 px-4 font-medium text-gray-700 min-w-[140px]">
+                    {day}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {mealTypes.map(mealType => (
+                <tr key={mealType} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <td className="py-3 px-4 font-medium text-gray-700">
+                    {mealLabels[mealType as keyof typeof mealLabels]}
+                  </td>
+                  {dayKeys.map(dayKey => {
+                    const meal = days[dayKey]?.[mealType];
+                    const recipeSlug = meal?.recipeLink?.split('/').pop();
+                    const recipe = recipes.find(r => r.slug === recipeSlug);
 
-        {/* Week Selector */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          {[1, 2, 3, 4, 5, 6].map(week => (
-            <button
-              key={week}
-              onClick={() => setSelectedWeek(week)}
-              className={`px-5 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${
-                selectedWeek === week
-                  ? 'bg-gradient-to-r from-[var(--primary-green)] to-[var(--primary-light-green)] text-white shadow-lg scale-105'
-                  : 'bg-white text-[var(--text-secondary)] hover:shadow-md'
-              }`}
-            >
-              Vecka {week}
-            </button>
-          ))}
-        </div>
-
-        {/* Content */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 min-h-[600px]">
-          {activeView === 'meals' && currentPlan && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-medium text-[var(--primary-green)]">
-                  Kostschema Vecka {selectedWeek}
-                </h2>
-                <button
-                  onClick={saveMealPlan}
-                  disabled={saving}
-                  className="flex items-center gap-2 px-6 py-3 bg-[var(--primary-green)] text-white rounded-xl hover:bg-[var(--primary-green)]/90 transition-all disabled:opacity-50"
-                >
-                  <Save className="w-5 h-5" />
-                  {saving ? 'Sparar...' : 'Spara ändringar'}
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {days.map(day => (
-                  <motion.div
-                    key={day}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="border-2 border-[var(--border-light)] rounded-xl p-5 hover:border-[var(--primary-light-green)] transition-all"
-                  >
-                    <h3 className="text-lg font-semibold text-[var(--primary-green)] mb-4">{day}</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                      {mealTypes.map(({ key, label, emoji }) => {
-                        const meal = currentPlan.days[day]?.[key];
-                        const isEditing = editingMeal?.day === day && editingMeal?.mealType === key;
-
-                        return (
-                          <div key={key} className="relative">
-                            <div className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
-                              <span>{emoji}</span>
-                              <span>{label}</span>
-                            </div>
-                            
-                            {meal?.name && !isEditing ? (
-                              <div className="bg-green-50 border-2 border-green-200 rounded-lg p-3 group hover:border-green-400 transition-all">
-                                <p className="text-sm font-medium text-green-900 mb-2 line-clamp-2">
-                                  {meal.name}
-                                </p>
-                                <div className="flex gap-1">
-                                  <button
-                                    onClick={() => setEditingMeal({ day, mealType: key })}
-                                    className="flex-1 bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700"
-                                  >
-                                    <Edit2 className="w-3 h-3 mx-auto" />
-                                  </button>
-                                  <button
-                                    onClick={() => updateMeal(day, key, null)}
-                                    className="flex-1 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-                                  >
-                                    <Trash2 className="w-3 h-3 mx-auto" />
-                                  </button>
-                                </div>
-                              </div>
-                            ) : isEditing ? (
-                              <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-3">
-                                <input
-                                  type="text"
-                                  placeholder="Sök recept..."
-                                  value={searchTerm}
-                                  onChange={(e) => setSearchTerm(e.target.value)}
-                                  className="w-full px-2 py-1 text-sm border rounded mb-2"
-                                  autoFocus
-                                />
-                                <div className="max-h-40 overflow-y-auto space-y-1 mb-2">
-                                  {filteredRecipes.slice(0, 5).map(recipe => (
-                                    <button
-                                      key={recipe.id}
-                                      onClick={() => updateMeal(day, key, recipe)}
-                                      className="w-full text-left px-2 py-1 text-xs bg-white hover:bg-blue-100 rounded"
-                                    >
-                                      {recipe.title}
-                                    </button>
-                                  ))}
-                                </div>
-                                <button
-                                  onClick={() => setEditingMeal(null)}
-                                  className="w-full bg-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-400"
-                                >
-                                  Avbryt
-                                </button>
-                              </div>
-                            ) : (
+                    return (
+                      <td key={dayKey} className="py-3 px-4">
+                        {recipe ? (
+                          <div className="flex flex-col gap-1">
+                            <span className="text-sm font-medium text-gray-900">{recipe.title}</span>
+                            <div className="flex gap-1">
                               <button
-                                onClick={() => setEditingMeal({ day, mealType: key })}
-                                className="w-full border-2 border-dashed border-gray-300 rounded-lg p-3 hover:border-[var(--primary-light-green)] hover:bg-green-50 transition-all"
+                                onClick={() => removeMealRecipe(weekPlan, dayKey, mealType)}
+                                className="text-xs text-red-600 hover:text-red-700 transition-colors"
                               >
-                                <Plus className="w-5 h-5 mx-auto text-gray-400" />
+                                Ta bort
                               </button>
-                            )}
+                            </div>
                           </div>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
+                        ) : (
+                          <select
+                            className="admin-select text-sm"
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                updateMealRecipe(weekPlan, dayKey, mealType, e.target.value);
+                              }
+                            }}
+                            value=""
+                          >
+                            <option value="">+ Lägg till</option>
+                            {recipes.map(r => (
+                              <option key={r.id} value={r.slug}>{r.title}</option>
+                            ))}
+                          </select>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
 
-          {activeView === 'shopping' && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-medium text-[var(--primary-green)]">
-                  Inköpslista Vecka {selectedWeek}
-                </h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={addShoppingItem}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Lägg till
-                  </button>
-                  <button
-                    onClick={saveShoppingList}
-                    disabled={saving}
-                    className="flex items-center gap-2 px-6 py-3 bg-[var(--primary-green)] text-white rounded-xl hover:bg-[var(--primary-green)]/90 disabled:opacity-50"
-                  >
-                    <Save className="w-5 h-5" />
-                    {saving ? 'Sparar...' : 'Spara'}
-                  </button>
-                </div>
-              </div>
+  // Renderera inköpslista-vyn
+  const renderShoppingListView = () => {
+    if (!shoppingList) {
+      return <div className="text-center py-8 text-gray-500">Ingen inköpslista för vecka {selectedWeek}</div>;
+    }
 
+    const updateShoppingItem = (index: number, field: 'name' | 'quantity', value: string) => {
+      const updatedItems = [...shoppingList.items];
+      updatedItems[index] = { ...updatedItems[index], [field]: value };
+      setShoppingList({ ...shoppingList, items: updatedItems });
+    };
+
+    const removeShoppingItem = (index: number) => {
+      const updatedItems = shoppingList.items.filter((_: any, i: number) => i !== index);
+      setShoppingList({ ...shoppingList, items: updatedItems });
+    };
+
+    const addShoppingItem = () => {
+      const newItem = { name: '', quantity: '', category: 'Övrigt' };
+      setShoppingList({ ...shoppingList, items: [...shoppingList.items, newItem] });
+    };
+
+    const saveShoppingList = async () => {
+      setIsSaving(true);
+      try {
+        const res = await fetch(`/api/admin/shopping-lists/${shoppingList.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            items: shoppingList.items
+          })
+        });
+
+        if (res.ok) {
+          showNotification('success', 'Inköpslista sparad');
+        } else {
+          throw new Error('Failed to save');
+        }
+      } catch (error) {
+        showNotification('error', 'Kunde inte spara inköpslista');
+      } finally {
+        setIsSaving(false);
+      }
+    };
+
+    const categories = ['Frukt & Grönt', 'Mejeri', 'Kött & Fisk', 'Skafferi', 'Frys', 'Övrigt'];
+    const groupedItems = categories.reduce((acc, category) => {
+      acc[category] = shoppingList.items.filter((item: any) => item.category === category);
+      return acc;
+    }, {} as any);
+
+    return (
+      <div className="space-y-6">
+        {categories.map(category => {
+          const items = groupedItems[category];
+          if (items.length === 0 && category !== 'Övrigt') return null;
+
+          return (
+            <div key={category} className="admin-card">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">{category}</h3>
               <div className="space-y-2">
-                {shoppingList.map((item, idx) => (
-                  <div key={idx} className="flex gap-2 items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
-                    <input
-                      type="text"
-                      value={item.name}
-                      onChange={(e) => updateShoppingItem(idx, 'name', e.target.value)}
-                      className="flex-1 px-3 py-2 border rounded-lg"
-                      placeholder="Ingrediens"
-                    />
-                    <input
-                      type="text"
-                      value={item.amount}
-                      onChange={(e) => updateShoppingItem(idx, 'amount', e.target.value)}
-                      className="w-20 px-3 py-2 border rounded-lg"
-                      placeholder="Mängd"
-                    />
-                    <input
-                      type="text"
-                      value={item.unit}
-                      onChange={(e) => updateShoppingItem(idx, 'unit', e.target.value)}
-                      className="w-16 px-3 py-2 border rounded-lg"
-                      placeholder="Enhet"
-                    />
-                    <button
-                      onClick={() => deleteShoppingItem(idx)}
-                      className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeView === 'weeks' && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-medium text-[var(--primary-green)]">
-                  Veckoinställningar
-                </h2>
-              </div>
-
-              <div className="space-y-4">
-                {[1, 2, 3, 4, 5, 6].map(weekNum => {
-                  const meta = weekMetas.find(w => w.weekNumber === weekNum) || { course: 'hormone', weekNumber: weekNum } as WeekMeta;
+                {items.map((item: any, index: number) => {
+                  const originalIndex = shoppingList.items.indexOf(item);
                   return (
-                    <div key={weekNum} className="border-2 border-[var(--border-light)] rounded-xl p-5">
-                      <h3 className="text-lg font-semibold text-[var(--primary-green)] mb-4">Vecka {weekNum}</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Veckotitel</label>
-                          <input
-                            type="text"
-                            value={meta.weekTitle || ''}
-                            onChange={(e) => updateWeekMeta(weekNum, 'weekTitle', e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            placeholder="Vecka 1"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Undertitel</label>
-                          <input
-                            type="text"
-                            value={meta.weekSubtitle || ''}
-                            onChange={(e) => updateWeekMeta(weekNum, 'weekSubtitle', e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            placeholder="Introduktion till hormonell balans"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Hero-bild URL</label>
-                          <input
-                            type="text"
-                            value={meta.heroImage || ''}
-                            onChange={(e) => updateWeekMeta(weekNum, 'heroImage', e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            placeholder="/images/hero.jpg"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Video URL</label>
-                          <input
-                            type="text"
-                            value={meta.videoUrl || ''}
-                            onChange={(e) => updateWeekMeta(weekNum, 'videoUrl', e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            placeholder="https://youtube.com/..."
-                          />
-                        </div>
-                        <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Välkomstmeddelande</label>
-                          <textarea
-                            value={meta.welcomeMessage || ''}
-                            onChange={(e) => updateWeekMeta(weekNum, 'welcomeMessage', e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            rows={3}
-                            placeholder="Välkommen till vecka..."
-                          />
-                        </div>
-                      </div>
+                    <div key={originalIndex} className="flex gap-2 items-center group">
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={(e) => updateShoppingItem(originalIndex, 'name', e.target.value)}
+                        placeholder="Vara"
+                        className="admin-input flex-1"
+                      />
+                      <input
+                        type="text"
+                        value={item.quantity}
+                        onChange={(e) => updateShoppingItem(originalIndex, 'quantity', e.target.value)}
+                        placeholder="Mängd"
+                        className="admin-input w-32"
+                      />
                       <button
-                        onClick={() => saveWeekMeta(meta)}
-                        disabled={saving}
-                        className="mt-4 flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[var(--primary-green)]/90 disabled:opacity-50"
+                        onClick={() => removeShoppingItem(originalIndex)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity admin-btn admin-btn-danger text-sm"
                       >
-                        <Save className="w-4 h-4" />
-                        {saving ? 'Sparar...' : 'Spara vecka ' + weekNum}
+                        Ta bort
                       </button>
                     </div>
                   );
                 })}
+                {category === 'Övrigt' && (
+                  <button
+                    onClick={addShoppingItem}
+                    className="admin-btn admin-btn-secondary text-sm w-full"
+                  >
+                    + Lägg till vara
+                  </button>
+                )}
               </div>
             </div>
-          )}
+          );
+        })}
+        
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={saveShoppingList}
+            disabled={isSaving}
+            className="admin-btn admin-btn-primary"
+          >
+            {isSaving ? 'Sparar...' : 'Spara inköpslista'}
+          </button>
+        </div>
+      </div>
+    );
+  };
 
-          {activeView === 'knowledge' && (
+  // Renderera veckoinställningar
+  const renderWeekSettingsView = () => {
+    const weekMeta = weekMetas.find(w => w.weekNumber === selectedWeek) || {
+      weekNumber: selectedWeek,
+      weekTitle: '',
+      weekSubtitle: '',
+      heroImage: '',
+      videoUrl: '',
+      welcomeMessage: ''
+    };
+
+    const saveWeekMeta = async (data: any) => {
+      setIsSaving(true);
+      try {
+        const res = await fetch('/api/admin/course-weeks', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            course: 'hormone',
+            weekNumber: selectedWeek,
+            ...data
+          })
+        });
+
+        if (res.ok) {
+          showNotification('success', 'Veckoinställningar sparade');
+          await loadData();
+        } else {
+          throw new Error('Failed to save');
+        }
+      } catch (error) {
+        showNotification('error', 'Kunde inte spara veckoinställningar');
+      } finally {
+        setIsSaving(false);
+      }
+    };
+
+    return (
+      <div className="admin-card max-w-2xl">
+        <h3 className="text-lg font-medium text-gray-900 mb-6">Vecka {selectedWeek} - Inställningar</h3>
+        
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          saveWeekMeta({
+            weekTitle: formData.get('weekTitle'),
+            weekSubtitle: formData.get('weekSubtitle'),
+            heroImage: formData.get('heroImage'),
+            videoUrl: formData.get('videoUrl'),
+            welcomeMessage: formData.get('welcomeMessage')
+          });
+        }} className="space-y-4">
+          <div>
+            <label className="admin-label">Veckotitel</label>
+            <input
+              name="weekTitle"
+              defaultValue={weekMeta.weekTitle}
+              placeholder="T.ex. Balansera dina hormoner"
+              className="admin-input"
+            />
+          </div>
+
+          <div>
+            <label className="admin-label">Undertitel</label>
+            <input
+              name="weekSubtitle"
+              defaultValue={weekMeta.weekSubtitle}
+              placeholder="T.ex. Grundläggande hormonbalans"
+              className="admin-input"
+            />
+          </div>
+
+          <div>
+            <label className="admin-label">Hero-bild URL</label>
+            <input
+              name="heroImage"
+              defaultValue={weekMeta.heroImage}
+              placeholder="https://..."
+              className="admin-input"
+            />
+          </div>
+
+          <div>
+            <label className="admin-label">Video URL</label>
+            <input
+              name="videoUrl"
+              defaultValue={weekMeta.videoUrl}
+              placeholder="https://vimeo.com/..."
+              className="admin-input"
+            />
+          </div>
+
+          <div>
+            <label className="admin-label">Välkomstmeddelande</label>
+            <textarea
+              name="welcomeMessage"
+              defaultValue={weekMeta.welcomeMessage}
+              placeholder="Välkommen till vecka..."
+              rows={4}
+              className="admin-textarea"
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="admin-btn admin-btn-primary"
+            >
+              {isSaving ? 'Sparar...' : 'Spara inställningar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  };
+
+  // Renderera kunskapsdokument
+  const renderKnowledgeView = () => {
+    const weekDocs = knowledgeDocs.filter(doc => doc.weekNumber === selectedWeek);
+
+    const saveKnowledgeDoc = async (doc: any) => {
+      setIsSaving(true);
+      try {
+        const method = doc.id ? 'PUT' : 'POST';
+        const url = doc.id 
+          ? `/api/admin/knowledge/documents/${doc.id}`
+          : '/api/admin/knowledge/documents';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            ...doc,
+            course: 'hormone',
+            weekNumber: selectedWeek
+          })
+        });
+
+        if (res.ok) {
+          showNotification('success', 'Kunskapsdokument sparat');
+          await loadData();
+        } else {
+          throw new Error('Failed to save');
+        }
+      } catch (error) {
+        showNotification('error', 'Kunde inte spara kunskapsdokument');
+      } finally {
+        setIsSaving(false);
+      }
+    };
+
+    const deleteKnowledgeDoc = async (id: string) => {
+      if (!confirm('Är du säker på att du vill ta bort detta dokument?')) return;
+      
+      try {
+        const res = await fetch(`/api/admin/knowledge/documents/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        if (res.ok) {
+          showNotification('success', 'Dokument borttaget');
+          await loadData();
+        }
+      } catch (error) {
+        showNotification('error', 'Kunde inte ta bort dokument');
+      }
+    };
+
+    return (
+      <div className="space-y-6">
+        {weekDocs.map((doc, index) => (
+          <div key={doc.id} className="admin-card">
+            <div className="flex justify-between items-start mb-4">
+              <h4 className="text-lg font-medium text-gray-900">Dokument {index + 1}</h4>
+              <button
+                onClick={() => deleteKnowledgeDoc(doc.id)}
+                className="admin-btn admin-btn-danger text-sm"
+              >
+                Ta bort
+              </button>
+            </div>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              saveKnowledgeDoc({
+                id: doc.id,
+                title: formData.get('title'),
+                content: formData.get('content'),
+                order: parseInt(formData.get('order') as string) || 0
+              });
+            }} className="space-y-4">
+              <div>
+                <label className="admin-label">Titel</label>
+                <input
+                  name="title"
+                  defaultValue={doc.title}
+                  className="admin-input"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="admin-label">Innehåll</label>
+                <textarea
+                  name="content"
+                  defaultValue={doc.content}
+                  rows={8}
+                  className="admin-textarea"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="admin-label">Ordning</label>
+                <input
+                  name="order"
+                  type="number"
+                  defaultValue={doc.order}
+                  className="admin-input w-24"
+                />
+              </div>
+
+              <button type="submit" className="admin-btn admin-btn-primary">
+                Spara ändringar
+              </button>
+            </form>
+          </div>
+        ))}
+
+        <button
+          onClick={() => saveKnowledgeDoc({ title: 'Nytt dokument', content: '', order: weekDocs.length })}
+          className="admin-btn admin-btn-secondary w-full"
+        >
+          + Lägg till kunskapsdokument
+        </button>
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F3EFE3] to-[#FEFDF9] p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="admin-skeleton h-12 w-64 mb-8"></div>
+          <div className="admin-skeleton h-96 w-full"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#F3EFE3] to-[#FEFDF9]">
+      {/* Notification */}
+      {notification && (
+        <div className={`fixed top-4 right-4 z-50 admin-alert ${
+          notification.type === 'success' ? 'admin-alert-success' : 'admin-alert-error'
+        } admin-fade-in`}>
+          {notification.message}
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          <div className="flex items-center justify-between">
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-medium text-[var(--primary-green)]">
-                  Kunskapsdokument ({knowledgeDocs.length})
-                </h2>
-                <button
-                  onClick={() => setEditingDoc({ title: '', slug: '', content: '', course: 'hormone', order: knowledgeDocs.length })}
-                  className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-xl hover:bg-[var(--primary-green)]/90"
-                >
-                  <Plus className="w-4 h-4" />
-                  Nytt dokument
-                </button>
-              </div>
-
-              {editingDoc ? (
-                <div className="border-2 border-[var(--primary-green)] rounded-xl p-6 mb-6">
-                  <h3 className="text-lg font-semibold mb-4">{editingDoc.id ? 'Redigera' : 'Skapa nytt'} dokument</h3>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Titel</label>
-                        <input
-                          type="text"
-                          value={editingDoc.title}
-                          onChange={(e) => setEditingDoc({ ...editingDoc, title: e.target.value })}
-                          className="w-full px-3 py-2 border rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Slug (URL-vänlig)</label>
-                        <input
-                          type="text"
-                          value={editingDoc.slug}
-                          onChange={(e) => setEditingDoc({ ...editingDoc, slug: e.target.value })}
-                          className="w-full px-3 py-2 border rounded-lg"
-                          placeholder="min-artikel"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Vecka (valfritt)</label>
-                        <input
-                          type="number"
-                          value={editingDoc.weekNumber || ''}
-                          onChange={(e) => setEditingDoc({ ...editingDoc, weekNumber: e.target.value ? parseInt(e.target.value) : undefined })}
-                          className="w-full px-3 py-2 border rounded-lg"
-                          placeholder="1-6"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Ordning</label>
-                        <input
-                          type="number"
-                          value={editingDoc.order}
-                          onChange={(e) => setEditingDoc({ ...editingDoc, order: parseInt(e.target.value) || 0 })}
-                          className="w-full px-3 py-2 border rounded-lg"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Innehåll (Markdown)</label>
-                      <textarea
-                        value={editingDoc.content}
-                        onChange={(e) => setEditingDoc({ ...editingDoc, content: e.target.value })}
-                        className="w-full px-3 py-2 border rounded-lg font-mono text-sm"
-                        rows={12}
-                      />
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={saveKnowledgeDoc}
-                        disabled={saving}
-                        className="flex items-center gap-2 px-6 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[var(--primary-green)]/90 disabled:opacity-50"
-                      >
-                        <Save className="w-4 h-4" />
-                        {saving ? 'Sparar...' : 'Spara'}
-                      </button>
-                      <button
-                        onClick={() => setEditingDoc(null)}
-                        className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                      >
-                        Avbryt
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {knowledgeDocs.map(doc => (
-                    <div key={doc.id} className="flex items-center justify-between p-4 border-2 border-[var(--border-light)] rounded-xl hover:border-[var(--primary-light-green)]">
-                      <div>
-                        <h3 className="font-medium text-[var(--text-primary)]">{doc.title}</h3>
-                        <p className="text-sm text-gray-600">
-                          {doc.weekNumber ? `Vecka ${doc.weekNumber}` : 'Allmän'} • Ordning: {doc.order}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setEditingDoc(doc)}
-                          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => doc.id && deleteKnowledgeDoc(doc.id)}
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <h1 className="text-2xl font-semibold text-gray-900">Hormonell Balans</h1>
+              <p className="text-sm text-gray-600 mt-1">Hantera kursinnehåll</p>
             </div>
-          )}
+            <Link href="/admin/courses" className="admin-btn admin-btn-secondary">
+              Tillbaka till kurser
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-8 py-8">
+        {/* Tabs */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
+          <div className="flex">
+            {[
+              { id: 'meals', label: 'Kostscheman', icon: '🍽️' },
+              { id: 'shopping', label: 'Inköpslistor', icon: '🛒' },
+              { id: 'weeks', label: 'Veckoinställningar', icon: '📅' },
+              { id: 'knowledge', label: 'Kunskapsdokument', icon: '📚' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveView(tab.id as any)}
+                className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${
+                  activeView === tab.id
+                    ? 'text-[#014421] bg-[#F3EFE3]/50'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+              >
+                <span className="flex items-center justify-center gap-2">
+                  {tab.label}
+                </span>
+                {activeView === tab.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#014421]"></div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Week Selector */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
+          <div className="flex items-center gap-4">
+            <label className="text-sm font-medium text-gray-700">Välj vecka:</label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5, 6].map(week => (
+                <button
+                  key={week}
+                  onClick={() => setSelectedWeek(week)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedWeek === week
+                      ? 'bg-[#014421] text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Vecka {week}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="min-h-[500px]">
+          {activeView === 'meals' && renderMealPlansView()}
+          {activeView === 'shopping' && renderShoppingListView()}
+          {activeView === 'weeks' && renderWeekSettingsView()}
+          {activeView === 'knowledge' && renderKnowledgeView()}
         </div>
       </div>
     </div>
   );
 }
-
