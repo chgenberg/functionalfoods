@@ -18,7 +18,7 @@ interface ShoppingList {
 }
 
 export default function AdminShoppingListsPage() {
-  const [courseType, setCourseType] = useState<'basics' | 'flow' | 'energy'>('basics');
+  const [courseType, setCourseType] = useState<'basics' | 'flow' | 'energy' | 'hormone'>('basics');
   const [weekNumber, setWeekNumber] = useState(1);
   const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -168,12 +168,13 @@ export default function AdminShoppingListsPage() {
             <label className="admin-label">Kurs</label>
             <select
               value={courseType}
-              onChange={(e) => setCourseType(e.target.value as 'basics' | 'flow' | 'energy')}
+              onChange={(e) => setCourseType(e.target.value as 'basics' | 'flow' | 'energy' | 'hormone')}
               className="admin-select"
             >
               <option value="basics">Functional Basics</option>
               <option value="flow">Functional Flow</option>
               <option value="energy">Functional Insulin balance/Energy</option>
+              <option value="hormone">Hormonell Balans</option>
             </select>
           </div>
           <div>

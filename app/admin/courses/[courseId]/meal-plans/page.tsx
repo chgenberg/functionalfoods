@@ -39,6 +39,20 @@ export default function CourseMealPlansPage({ params }: { params: { courseId: st
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Map route slug to API course key used by meal plan endpoints
+  const courseMap: Record<string, 'basic' | 'flow' | 'energy' | 'hormone'> = {
+    'functional-basics': 'basic',
+    'functional-flow': 'flow',
+    'functional-energy': 'energy',
+    'hormonell-balans': 'hormone',
+    // Allow already-mapped keys to pass through
+    'basic': 'basic',
+    'flow': 'flow',
+    'energy': 'energy',
+    'hormone': 'hormone'
+  };
+  const apiCourse = courseMap[params.courseId] || 'basic';
+
   const days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
   const mealTypes = [
     { key: 'breakfast', label: 'Frukost' },
@@ -55,10 +69,10 @@ export default function CourseMealPlansPage({ params }: { params: { courseId: st
 
   const fetchMealPlans = async () => {
     try {
-      const response = await fetch(`/api/admin/meal-plans?course=${params.courseId}`);
+      const response = await fetch(`/api/admin/meal-plans?course=${apiCourse}`);
       if (response.ok) {
         const data = await response.json();
-        setMealPlans(data.mealPlans || []);
+        setMealPlans(data.weeks || []);
       }
     } catch (error) {
       console.error('Error fetching meal plans:', error);
@@ -142,7 +156,7 @@ export default function CourseMealPlansPage({ params }: { params: { courseId: st
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: currentPlan.id,
-          course: params.courseId,
+          course: apiCourse,
           weekNumber: selectedWeek,
           days: currentPlan.days
         })
