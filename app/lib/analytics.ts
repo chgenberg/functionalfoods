@@ -23,10 +23,33 @@ function safeGtagEvent(eventName: string, params: Record<string, any> = {}): voi
 }
 async function gaServerTrack(eventName: string, params?: Record<string, any>) {
   try {
+    // Try to derive a stable GA client_id
+    let clientId: string | undefined;
+    try {
+      const cookie = document.cookie || '';
+      // _ga=GA1.2.XXXXXXXXX.YYYYYYYYY
+      const m = /(?:^|;\s*)_ga=GA\d+\.\d+\.(\d+)\.(\d+)/.exec(cookie);
+      if (m) {
+        clientId = `${m[1]}.${m[2]}`;
+      } else {
+        clientId = localStorage.getItem('ga_cid') || undefined;
+        if (!clientId) {
+          clientId = `cid_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+          localStorage.setItem('ga_cid', clientId);
+        }
+      }
+    } catch {}
+
+    // Optional user_id if present (set elsewhere on login)
+    let userId: string | undefined;
+    try {
+      userId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id') || undefined;
+    } catch {}
+
     const res = await fetch('/api/ga/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventName, params, debug: false })
+      body: JSON.stringify({ eventName, params, clientId, userId, debug: false })
     });
     // optional: console.log('📡 GA serverTrack response:', res.ok);
   } catch {}
