@@ -64,6 +64,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }}
           />
         )}
+        {PIXEL_ID && (
+          // NoScript fallback image as per Meta's recommended snippet
+          // This is used when JS is disabled to still send a minimal PageView
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          <noscript>
+            <img height="1" width="1" style={{display:'none'}} alt=""
+                 src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`} />
+          </noscript>
+        )}
         {/* Split JSON-LD into separate script tags to avoid client-side parsing issues */}
         <script
           type="application/ld+json"
