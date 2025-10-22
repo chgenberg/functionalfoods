@@ -1,91 +1,65 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const admin = await requireAdminAuth(req);
   if ((admin as any)?.status === 401) return admin as any;
 
   const { searchParams } = new URL(req.url);
-  const course = searchParams.get('course') || undefined;
+  const course = searchParams.get('course');
 
-  const rows = await (prisma as any).courseWeekMeta?.findMany({
-    where: course ? { course } : undefined,
-    orderBy: [{ course: 'asc' }, { weekNumber: 'asc' }]
-  });
-  return NextResponse.json({ weeks: rows || [] }, { headers: { 'Cache-Control': 'no-store' } });
+  try {
+    const weeks = await prisma.courseWeekMeta.findMany({
+      where: course ? { course } : undefined,
+      orderBy: [{ course: 'asc' }, { weekNumber: 'asc' }]
+    });
+
+    return NextResponse.json({ weeks }, { headers: { 'Cache-Control': 'no-store' } });
+  } catch (error) {
+    console.error('Error fetching course week metas:', error);
+    return NextResponse.json({ error: 'Failed to fetch week metas' }, { status: 500 });
+  }
 }
 
 export async function PUT(req: NextRequest) {
   const admin = await requireAdminAuth(req);
   if ((admin as any)?.status === 401) return admin as any;
 
-  const body = await req.json();
-  const { 
-    course, 
-    weekNumber, 
-    weekTitle, 
-    weekSubtitle, 
-    heroImage, 
-    videoUrl,
-    welcomeMessage,
-    mainContent,
-    keyTakeaways,
-    weeklyChallenge,
-    reflectionQuestions
-  } = body;
-  
-  if (!course || !weekNumber) {
-    return NextResponse.json({ error: 'course och weekNumber krävs' }, { status: 400 });
-  }
+  try {
+    const body = await req.json();
+    const { course, weekNumber, weekTitle, weekSubtitle, heroImage, videoUrl, welcomeMessage } = body;
 
-  const row = await (prisma as any).courseWeekMeta?.upsert({
-    where: { course_weekNumber: { course, weekNumber } },
-    create: { 
-      course, 
-      weekNumber, 
-      weekTitle: weekTitle || null, 
-      weekSubtitle: weekSubtitle || null, 
-      heroImage: heroImage || null, 
-      videoUrl: videoUrl || null,
-      welcomeMessage: welcomeMessage || null,
-      mainContent: mainContent || null,
-      keyTakeaways: keyTakeaways || null,
-      weeklyChallenge: weeklyChallenge || null,
-      reflectionQuestions: reflectionQuestions || null
-    },
-    update: { 
-      weekTitle: weekTitle || null, 
-      weekSubtitle: weekSubtitle || null, 
-      heroImage: heroImage || null, 
-      videoUrl: videoUrl || null,
-      welcomeMessage: welcomeMessage || null,
-      mainContent: mainContent || null,
-      keyTakeaways: keyTakeaways || null,
-      weeklyChallenge: weeklyChallenge || null,
-      reflectionQuestions: reflectionQuestions || null
+    if (!course || !weekNumber) {
+      return NextResponse.json({ error: 'course and weekNumber required' }, { status: 400 });
     }
-  });
 
-  return NextResponse.json({ week: row });
+    const week = await prisma.courseWeekMeta.upsert({
+      where: { course_weekNumber: { course, weekNumber } },
+      create: {
+        course,
+        weekNumber,
+        weekTitle: weekTitle || null,
+        weekSubtitle: weekSubtitle || null,
+        heroImage: heroImage || null,
+        videoUrl: videoUrl || null,
+        welcomeMessage: welcomeMessage || null
+      },
+      update: {
+        weekTitle: weekTitle || null,
+        weekSubtitle: weekSubtitle || null,
+        heroImage: heroImage || null,
+        videoUrl: videoUrl || null,
+        welcomeMessage: welcomeMessage || null
+      }
+    });
+
+    return NextResponse.json({ ok: true, week });
+  } catch (error) {
+    console.error('Error saving course week meta:', error);
+    return NextResponse.json({ error: 'Failed to save week meta' }, { status: 500 });
+  }
 }
-
-export async function DELETE(req: NextRequest) {
-  const admin = await requireAdminAuth(req);
-  if ((admin as any)?.status === 401) return admin as any;
-
-  const { searchParams } = new URL(req.url);
-  const course = searchParams.get('course');
-  const weekNumber = parseInt(searchParams.get('week') || '', 10);
-  if (!course || !weekNumber) return NextResponse.json({ error: 'course och week krävs' }, { status: 400 });
-
-  await (prisma as any).courseWeekMeta?.delete({
-    where: { course_weekNumber: { course, weekNumber } }
-  });
-  return NextResponse.json({ ok: true });
-} 

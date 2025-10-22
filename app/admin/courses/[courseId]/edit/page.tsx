@@ -292,16 +292,31 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6">Kursinnehåll</h2>
             
             <div className="space-y-4">
+              {params.courseId === 'hormonell-balans' && (
+                <Link
+                  href="/admin/hormone"
+                  className="group relative flex items-center justify-between p-6 bg-gradient-to-br from-[var(--primary-green)] to-[var(--primary-light-green)] rounded-xl hover:shadow-xl transition-all overflow-hidden"
+                >
+                  <div className="relative z-10">
+                    <h3 className="font-semibold text-white text-xl mb-2">💚 Snabbredigering Hormonell Balans</h3>
+                    <p className="text-sm text-white/90">Klicka & redigera kostscheman, inköpslistor, veckoinställningar och kunskapsdokument direkt</p>
+                  </div>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <ChevronRight className="w-7 h-7 text-white" />
+                  </div>
+                </Link>
+              )}
+              
               <Link
                 href={`/admin/courses/${params.courseId}/manage`}
-                className="group relative flex items-center justify-between p-6 bg-gradient-to-br from-[var(--primary-green)] to-[var(--primary-light-green)] rounded-xl hover:shadow-xl transition-all overflow-hidden"
+                className="group relative flex items-center justify-between p-6 bg-gradient-to-br from-white to-[var(--primary-beige)]/50 rounded-xl border-2 border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
               >
                 <div className="relative z-10">
-                  <h3 className="font-semibold text-white text-xl mb-2">🎯 Hantera allt kursinnehåll</h3>
-                  <p className="text-sm text-white/90">Redigera kostscheman, recept, inköpslistor och kunskapsdokument på ett ställe</p>
+                  <h3 className="font-semibold text-[var(--primary-green)] text-lg mb-1">📋 Översikt kursinnehåll</h3>
+                  <p className="text-sm text-[var(--text-secondary)]">Visa kostscheman, recept, inköpslistor och kunskapsdokument</p>
                 </div>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <ChevronRight className="w-7 h-7 text-white" />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center group-hover:bg-[var(--primary-light-green)] transition-colors">
+                  <ChevronRight className="w-6 h-6 text-[var(--primary-green)] group-hover:text-white transition-colors" />
                 </div>
               </Link>
 
