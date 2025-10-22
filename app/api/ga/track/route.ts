@@ -8,6 +8,8 @@ type GaTrackBody = {
   clientId?: string;
   userId?: string;
   debug?: boolean;
+  sessionId?: string;
+  engagementTime?: number; // ms
 };
 
 export async function POST(req: NextRequest) {
@@ -21,7 +23,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = (await req.json().catch(() => ({}))) as GaTrackBody;
-    const { eventName, params = {}, clientId, userId, debug } = body || {};
+    const { eventName, params = {}, clientId, userId, debug, sessionId, engagementTime } = body || {};
     if (!eventName || typeof eventName !== 'string') {
       return NextResponse.json({ error: 'Missing eventName' }, { status: 400 });
     }
@@ -43,6 +45,14 @@ export async function POST(req: NextRequest) {
     if (!eventParams.page_location) {
       const ref = req.headers.get('referer');
       if (ref) eventParams.page_location = ref;
+    }
+
+    // Attach session parameters if provided
+    if (sessionId) {
+      eventParams.session_id = sessionId;
+    }
+    if (typeof engagementTime === 'number' && engagementTime > 0) {
+      eventParams.engagement_time_msec = Math.round(engagementTime);
     }
 
     const payload: any = {

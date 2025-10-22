@@ -46,10 +46,20 @@ async function gaServerTrack(eventName: string, params?: Record<string, any>) {
       userId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id') || undefined;
     } catch {}
 
+    // Derive a simple session id (resets per tab if needed)
+    let sessionId: string | undefined;
+    try {
+      sessionId = sessionStorage.getItem('ga_sid') || undefined;
+      if (!sessionId) {
+        sessionId = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        sessionStorage.setItem('ga_sid', sessionId);
+      }
+    } catch {}
+
     const res = await fetch('/api/ga/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventName, params, clientId, userId, debug: false })
+      body: JSON.stringify({ eventName, params, clientId, userId, sessionId, engagementTime: 1000, debug: false })
     });
     // optional: console.log('📡 GA serverTrack response:', res.ok);
   } catch {}
