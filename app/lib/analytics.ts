@@ -21,6 +21,16 @@ function safeGtagEvent(eventName: string, params: Record<string, any> = {}): voi
     gtag('event', eventName, payload);
   } catch {}
 }
+async function gaServerTrack(eventName: string, params?: Record<string, any>) {
+  try {
+    const res = await fetch('/api/ga/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventName, params, debug: false })
+    });
+    // optional: console.log('📡 GA serverTrack response:', res.ok);
+  } catch {}
+}
 
 function safeFbqTrack(eventName: string, params?: Record<string, any>): void {
   if (typeof window === 'undefined') return;
@@ -94,6 +104,13 @@ export function trackPurchase(params: {
       price: i.price,
     }))
   });
+  // GA server fallback
+  gaServerTrack('purchase', {
+    transaction_id: transactionId,
+    value,
+    currency,
+    items: items.map(i => ({ item_id: i.id, item_name: i.name, quantity: i.quantity, price: i.price }))
+  });
   // Meta Pixel (works even when queued)
   const fbqReady = typeof (window as any).fbq === 'function';
   if (!fbqReady) fallbackServerTrack('Purchase', {
@@ -126,6 +143,12 @@ export function trackAddToCart(item: { id?: string; name?: string; quantity?: nu
       quantity,
       price
     }]
+  });
+  // GA server fallback
+  gaServerTrack('add_to_cart', {
+    currency,
+    value: typeof price === 'number' ? price * quantity : undefined,
+    items: [{ item_id: id, item_name: name, quantity, price }]
   });
   // Meta Pixel + server fallback (always fire server for reliability, pixel works even when queued)
   const fbqReady = typeof (window as any).fbq === 'function';
@@ -168,6 +191,12 @@ export function trackInitiateCheckout(params: {
       price: i.price
     }))
   });
+  // GA server fallback
+  gaServerTrack('begin_checkout', {
+    currency,
+    value,
+    items: items.map(i => ({ item_id: i.id, item_name: i.name, quantity: i.quantity, price: i.price }))
+  });
   // Meta Pixel + server fallback (always fire server for reliability, pixel works even when queued)
   const fbqReady = typeof (window as any).fbq === 'function';
   console.log('📊 InitiateCheckout: fbqReady?', fbqReady, '→ firing server fallback');
@@ -195,6 +224,12 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
   const eventId = `ViewContent_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   // GA4
   safeGtagEvent('view_item', {
+    currency,
+    value: price,
+    items: [{ item_id: id, item_name: name, price }]
+  });
+  // GA server fallback
+  gaServerTrack('view_item', {
     currency,
     value: price,
     items: [{ item_id: id, item_name: name, price }]
