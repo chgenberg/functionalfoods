@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 import { ShoppingCart, Save, Plus, Trash2, Edit2, Check, X, Download, Upload, Info } from 'lucide-react';
 
 interface ShoppingListItem {
@@ -18,6 +19,7 @@ interface ShoppingList {
 }
 
 export default function AdminShoppingListsPage() {
+  const searchParams = useSearchParams();
   const [courseType, setCourseType] = useState<'basics' | 'flow' | 'energy' | 'hormone'>('basics');
   const [weekNumber, setWeekNumber] = useState(1);
   const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
@@ -36,6 +38,26 @@ export default function AdminShoppingListsPage() {
     'Fryst',
     'Övrigt'
   ];
+
+  useEffect(() => {
+    // Initialize course from query (?course=functional-basics|functional-flow|functional-energy|hormonell-balans)
+    const q = searchParams?.get('course');
+    if (q) {
+      const map: Record<string, 'basics' | 'flow' | 'energy' | 'hormone'> = {
+        'functional-basics': 'basics',
+        'functional-flow': 'flow',
+        'functional-energy': 'energy',
+        'hormonell-balans': 'hormone',
+        // direct keys support
+        'basics': 'basics',
+        'flow': 'flow',
+        'energy': 'energy',
+        'hormone': 'hormone'
+      };
+      const mapped = map[q];
+      if (mapped && mapped !== courseType) setCourseType(mapped);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     loadShoppingList();
@@ -170,6 +192,7 @@ export default function AdminShoppingListsPage() {
               value={courseType}
               onChange={(e) => setCourseType(e.target.value as 'basics' | 'flow' | 'energy' | 'hormone')}
               className="admin-select"
+              disabled={Boolean(searchParams?.get('course'))}
             >
               <option value="basics">Functional Basics</option>
               <option value="flow">Functional Flow</option>

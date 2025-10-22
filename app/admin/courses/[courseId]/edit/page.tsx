@@ -216,18 +216,10 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
           )}
 
           {/* Course Info */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div className="bg-[var(--primary-beige)] rounded-lg p-4">
               <span className="text-[var(--text-secondary)] block">Aktuellt pris (inkl. moms)</span>
               <span className="font-semibold text-lg text-[var(--text-primary)]">{activeInclPrice} kr</span>
-            </div>
-            <div className="bg-[var(--primary-beige)] rounded-lg p-4">
-              <span className="text-[var(--text-secondary)] block">Längd</span>
-              <span className="font-semibold text-lg text-[var(--text-primary)]">{course.duration}</span>
-            </div>
-            <div className="bg-[var(--primary-beige)] rounded-lg p-4">
-              <span className="text-[var(--text-secondary)] block">Nivå</span>
-              <span className="font-semibold text-lg text-[var(--text-primary)]">{course.level}</span>
             </div>
             <div className="bg-[var(--primary-beige)] rounded-lg p-4">
               <span className="text-[var(--text-secondary)] block">Deltagare</span>
@@ -242,54 +234,9 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         {/* Main Course Settings */}
         <div className="lg:col-span-2 space-y-6">
           <div className="admin-card">
-            <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6">Grundinställningar</h2>
+            <h2 className="text-xl font-medium text-[var(--primary-green)] mb-6">Prissättning</h2>
             
             <div className="space-y-6">
-              <div>
-                <label className="admin-label">Kursnamn</label>
-                <input
-                  type="text"
-                  value={course.name}
-                  onChange={(e) => setCourse(prev => prev ? { ...prev, name: e.target.value } : null)}
-                  className="admin-input"
-                />
-              </div>
-              
-              <div>
-                <label className="admin-label">Beskrivning</label>
-                <textarea
-                  value={course.description || ''}
-                  onChange={(e) => setCourse(prev => prev ? { ...prev, description: e.target.value } : null)}
-                  className="admin-textarea"
-                  rows={4}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="admin-label">Längd</label>
-                  <input
-                    type="text"
-                    value={course.duration}
-                    onChange={(e) => setCourse(prev => prev ? { ...prev, duration: e.target.value } : null)}
-                    className="admin-input"
-                  />
-                </div>
-                
-                <div>
-                  <label className="admin-label">Nivå</label>
-                  <select
-                    value={course.level}
-                    onChange={(e) => setCourse(prev => prev ? { ...prev, level: e.target.value } : null)}
-                    className="admin-select"
-                  >
-                    <option value="Nybörjare">Nybörjare</option>
-                    <option value="Medel">Medel</option>
-                    <option value="Avancerad">Avancerad</option>
-                  </select>
-                </div>
-              </div>
-
               {/* Campaign pricing */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div>
@@ -346,6 +293,31 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             
             <div className="space-y-4">
               <Link
+                href={`/admin/courses/${params.courseId}/manage`}
+                className="group relative flex items-center justify-between p-6 bg-gradient-to-br from-[var(--primary-green)] to-[var(--primary-light-green)] rounded-xl hover:shadow-xl transition-all overflow-hidden"
+              >
+                <div className="relative z-10">
+                  <h3 className="font-semibold text-white text-xl mb-2">🎯 Hantera allt kursinnehåll</h3>
+                  <p className="text-sm text-white/90">Redigera kostscheman, recept, inköpslistor och kunskapsdokument på ett ställe</p>
+                </div>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <ChevronRight className="w-7 h-7 text-white" />
+                </div>
+              </Link>
+
+              <Link
+                href={`/admin/courses/${params.courseId}/manage-recipes`}
+                className="group relative flex items-center justify-between p-5 bg-gradient-to-br from-white to-[var(--primary-beige)]/30 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
+              >
+                <div className="relative z-10">
+                  <h3 className="text-sm font-semibold text-[var(--primary-green)] mb-1">Hantera recept för kursen</h3>
+                  <p className="text-xs text-[var(--text-secondary)]">Tagga/avtagga recept som ska ingå i kostscheman</p>
+                </div>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center group-hover:bg-[var(--primary-light-green)] transition-colors">
+                  <BookOpen className="w-6 h-6 text-[var(--primary-green)] group-hover:text-white transition-colors" />
+                </div>
+              </Link>
+              <Link
                 href={`/admin/courses/${params.courseId}/weeks`}
                 className="group relative flex items-center justify-between p-5 bg-gradient-to-br from-white to-[var(--primary-beige)]/30 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
               >
@@ -385,7 +357,14 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
               </Link>
 
               <Link
-                href={`/admin/knowledge?course=${params.courseId}`}
+                href={`/admin/knowledge?course=${
+                  {
+                    'functional-basics': 'basic',
+                    'functional-flow': 'flow',
+                    'functional-energy': 'energy',
+                    'hormonell-balans': 'hormone'
+                  }[params.courseId] || 'basic'
+                }`}
                 className="group relative flex items-center justify-between p-5 bg-gradient-to-br from-white to-[var(--primary-beige)]/30 rounded-xl border border-[var(--border-light)] hover:border-[var(--primary-light-green)] hover:shadow-lg transition-all overflow-hidden"
               >
                 <div className="relative z-10">
@@ -453,39 +432,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
             </div>
           </div>
 
-          {/* Course Status */}
-          <div className="admin-card">
-            <h3 className="text-lg font-medium text-[var(--primary-green)] mb-4">Kursstatus</h3>
-            <div className="space-y-3">
-              <label className="flex items-center justify-between cursor-pointer">
-                <span className="text-[var(--text-primary)]">Aktiv</span>
-                <input
-                  type="checkbox"
-                  checked={true}
-                  onChange={() => {}}
-                  className="sr-only"
-                />
-                <div className="relative">
-                  <div className="block w-10 h-6 bg-[var(--primary-green)] rounded-full"></div>
-                  <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform translate-x-4"></div>
-                </div>
-              </label>
-              
-              <label className="flex items-center justify-between cursor-pointer">
-                <span className="text-[var(--text-primary)]">Synlig i katalog</span>
-                <input
-                  type="checkbox"
-                  checked={true}
-                  onChange={() => {}}
-                  className="sr-only"
-                />
-                <div className="relative">
-                  <div className="block w-10 h-6 bg-[var(--primary-green)] rounded-full"></div>
-                  <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform translate-x-4"></div>
-                </div>
-              </label>
-            </div>
-          </div>
+          {/* Removed decorative Course Status toggles to reduce clutter */}
         </div>
       </div>
     </div>

@@ -62,7 +62,7 @@ export default function AdminMealPlansPage() {
       setEditorValue(JSON.stringify(week.days, null, 2));
     } else {
       const newWeek: MealPlanWeek = {
-        course: 'basic',
+        course: (courseFilter === 'all' ? 'basic' : courseFilter) as any,
         weekNumber: 1,
         title: '',
         days: { Måndag: {}, Tisdag: {}, Onsdag: {}, Torsdag: {}, Fredag: {}, Lördag: {}, Söndag: {} }
@@ -147,7 +147,7 @@ export default function AdminMealPlansPage() {
 
       <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex items-center gap-4">
         <label className="text-sm text-gray-600">Kurs</label>
-        <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value as any)} className="border rounded px-3 py-2">
+        <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value as any)} className="border rounded px-3 py-2" disabled={Boolean(searchParams?.get('course'))}>
           <option value="all">Alla</option>
           <option value="basic">Basics</option>
           <option value="flow">Flow</option>
@@ -206,7 +206,7 @@ export default function AdminMealPlansPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm mb-1">Kurs</label>
-                  <select value={editing.course} onChange={(e) => setEditing({ ...editing, course: e.target.value as any })} className="w-full border rounded px-3 py-2">
+                  <select value={editing.course} onChange={(e) => setEditing({ ...editing, course: e.target.value as any })} className="w-full border rounded px-3 py-2" disabled={Boolean(searchParams?.get('course'))}>
                     <option value="basic">Basics</option>
                     <option value="flow">Flow</option>
                     <option value="energy">Energy</option>
