@@ -74,8 +74,8 @@ export function trackPurchase(params: {
       price: i.price,
     }))
   });
-  // Meta Pixel
-  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  // Meta Pixel (works even when queued)
+  const fbqReady = typeof (window as any).fbq === 'function';
   if (!fbqReady) fallbackServerTrack('Purchase', {
     value,
     currency,
@@ -106,8 +106,8 @@ export function trackAddToCart(item: { id?: string; name?: string; quantity?: nu
       price
     }]
   });
-  // Meta Pixel + server fallback (always fire server for reliability)
-  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  // Meta Pixel + server fallback (always fire server for reliability, pixel works even when queued)
+  const fbqReady = typeof (window as any).fbq === 'function';
   console.log('📊 AddToCart: fbqReady?', fbqReady, '→ firing server fallback');
   fallbackServerTrack('AddToCart', {
     value: typeof price === 'number' ? price * quantity : undefined,
@@ -145,8 +145,8 @@ export function trackInitiateCheckout(params: {
       price: i.price
     }))
   });
-  // Meta Pixel + server fallback (always fire server for reliability)
-  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  // Meta Pixel + server fallback (always fire server for reliability, pixel works even when queued)
+  const fbqReady = typeof (window as any).fbq === 'function';
   console.log('📊 InitiateCheckout: fbqReady?', fbqReady, '→ firing server fallback');
   fallbackServerTrack('InitiateCheckout', {
     value,
@@ -174,8 +174,8 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
     value: price,
     items: [{ item_id: id, item_name: name, price }]
   });
-  // Meta Pixel + server fallback (always fire server for reliability)
-  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  // Meta Pixel + server fallback (always fire server for reliability, pixel works even when queued)
+  const fbqReady = typeof (window as any).fbq === 'function';
   console.log('📊 ViewContent: fbqReady?', fbqReady, '→ firing server fallback');
   fallbackServerTrack('ViewContent', {
     content_name: name,
@@ -199,8 +199,8 @@ export function trackViewContent(item: { id?: string; name?: string; price?: num
 export function trackLogin(method: string = 'password'): void {
   // GA4
   safeGtagEvent('login', { method });
-  // Meta Pixel + server fallback
-  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  // Meta Pixel + server fallback (pixel works even when queued)
+  const fbqReady = typeof (window as any).fbq === 'function';
   if (!fbqReady) fallbackServerTrack('Login', { method });
   safeFbqTrack('Login', { method });
 }
@@ -209,8 +209,8 @@ export function trackLogin(method: string = 'password'): void {
 export function trackCompleteRegistration(method: string = 'password'): void {
   // GA4
   safeGtagEvent('sign_up', { method });
-  // Meta Pixel + server fallback
-  const fbqReady = typeof (window as any).fbq === 'function' && typeof (window as any).fbq.callMethod === 'function';
+  // Meta Pixel + server fallback (pixel works even when queued)
+  const fbqReady = typeof (window as any).fbq === 'function';
   if (!fbqReady) fallbackServerTrack('CompleteRegistration', { status: true, method });
   safeFbqTrack('CompleteRegistration', { status: true, method });
 }
