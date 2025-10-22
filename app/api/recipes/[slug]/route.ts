@@ -35,6 +35,8 @@ export async function GET(
       // New: slugs missing in meal plan mapped to existing ones
       'smoothiebowl-med-mango-och-jordgubbar': 'smoothiebowl',
       'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
+      // Basic week 1: ensure Egenbakat recipe slug resolves
+      'havrefrallor-morotter-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
       'lax-broccolipaj': 'lax-och-broccolipaj'
     };
     const requestedSlug = params.slug;
