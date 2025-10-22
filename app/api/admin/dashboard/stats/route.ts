@@ -87,6 +87,16 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);
-    return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
+    // Return safe defaults to keep admin UI functional even if stats fail
+    return NextResponse.json({
+      totalUsers: 0,
+      totalOrders: 0,
+      totalRevenue: 0,
+      totalRecipes: 0,
+      totalBlogPosts: 0,
+      recentOrders: [],
+      recentUsers: [],
+      popularContent: []
+    }, { status: 200 });
   }
 } 

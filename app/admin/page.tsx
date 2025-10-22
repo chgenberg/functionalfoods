@@ -39,10 +39,33 @@ export default function AdminDashboard() {
   const fetchStats = async () => {
     try {
       const response = await fetch('/api/admin/dashboard/stats');
+      if (!response.ok) {
+        // Fallback to safe defaults so UI still renders
+        setStats({
+          totalUsers: 0,
+          totalOrders: 0,
+          totalRevenue: 0,
+          totalRecipes: 0,
+          totalBlogPosts: 0,
+          recentOrders: [],
+          recentUsers: []
+        });
+        return;
+      }
       const data = await response.json();
       setStats(data);
     } catch (error) {
       console.error('Failed to fetch stats:', error);
+      // Ensure UI has safe defaults even on network/runtime failures
+      setStats({
+        totalUsers: 0,
+        totalOrders: 0,
+        totalRevenue: 0,
+        totalRecipes: 0,
+        totalBlogPosts: 0,
+        recentOrders: [],
+        recentUsers: []
+      });
     } finally {
       setLoading(false);
     }
@@ -227,7 +250,7 @@ export default function AdminDashboard() {
           </div>
           
           <div className="space-y-3">
-            {stats?.recentUsers.slice(0, 5).map((user: any) => (
+            {(stats?.recentUsers ?? []).slice(0, 5).map((user: any) => (
               <div key={user.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
                   <p className="text-sm text-[var(--text-primary)]">{user.name || 'Ingen namn'}</p>
@@ -259,7 +282,7 @@ export default function AdminDashboard() {
           </div>
           
           <div className="space-y-3">
-            {stats?.recentOrders.slice(0, 5).map((order: any) => (
+            {(stats?.recentOrders ?? []).slice(0, 5).map((order: any) => (
               <div key={order.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
                   <p className="text-sm text-[var(--text-primary)]">
