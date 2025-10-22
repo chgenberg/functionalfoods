@@ -119,6 +119,26 @@ export async function GET(
       };
     }
 
+    // Ingredient override for Egenbakat: Havrefrallor med morötter och aprikoser
+    if (canonicalSlug === 'havrefralla-med-morotter-och-torkade-aprikoser') {
+      const fallbackIngredients = [
+        '4 dl havregryn',
+        '4 torkade aprikoser',
+        '1 morot',
+        '3 dl keso 4%',
+        '4 ägg',
+        '1 dl solroskärnor',
+        '1 dl pumpafrön',
+        '1 dl hampafrön',
+        '1 dl sesamfrön',
+        '1.5 tsk bakpulver',
+        '1 krm salt'
+      ];
+      if (!Array.isArray(localized.ingredients) || localized.ingredients.length === 0) {
+        localized.ingredients = fallbackIngredients;
+      }
+    }
+
     console.log(`🖼️ Recipe API: Serving recipe "${localized.title}" (slug: ${canonicalSlug}${canonicalSlug !== requestedSlug ? `, alias: ${requestedSlug}` : ''}) with imageUrl: ${localized.imageUrl}`);
     const isPersonalized = req.nextUrl.searchParams.has('tk');
     const headers = new Headers();
