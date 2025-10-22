@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import '../../admin-ulrika-design.css';
+import '../../../admin-ulrika-design.css';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
