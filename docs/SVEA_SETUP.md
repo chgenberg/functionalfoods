@@ -1,115 +1,137 @@
-# Svea Checkout Integration Setup Guide
+# Svea Checkout Integration Guide
 
-## Översikt
+## Environment Variables
 
-Detta dokument beskriver hur du konfigurerar Svea Checkout för Ulrika Functional Foods e-handel.
+Set these in Railway or your `.env.production`:
 
-## Miljövariabler
-
-Lägg till följande miljövariabler i din `.env` fil:
-
-```bash
-# Svea Test/Staging Credentials
-SVEA_MERCHANT_ID=your_test_merchant_id
-SVEA_SECRET_WORD=your_test_secret_word
-SVEA_TEST_MODE=true
-
-# Svea Production Credentials (när redo för produktion)
-SVEA_PROD_MERCHANT_ID=your_production_merchant_id
-SVEA_PROD_SECRET_WORD=your_production_secret_word
-
-# Optional: Force webhook validation in development
-SVEA_WEBHOOK_VALIDATION=false
+```env
+# Svea Configuration
+SVEA_MERCHANT_ID=your_merchant_id_here
+SVEA_SECRET_WORD=your_secret_word_here
+SVEA_TEST_MODE=false  # Set to 'true' for test environment
 ```
 
-## Viktiga URL:er att konfigurera i Svea Merchant Portal
+### Getting Your Credentials
 
-När du konfigurerar din Svea-merchant måste följande URL:er vara korrekt inställda:
+1. Log in to Svea Payment Admin: https://paymentadmin.svea.com
+2. Navigate to **Integration > API Keys**
+3. Copy your **Merchant ID** and **Secret Word**
+4. Paste them into Railway as `SVEA_MERCHANT_ID` and `SVEA_SECRET_WORD`
 
-### Test/Staging
-- **Checkout URI**: `https://your-test-domain.com/checkout`
-- **Confirmation URI**: `https://your-test-domain.com/checkout/success/svea-v2?checkoutOrderId={checkout.order.id}&orderId={merchantData}`
-- **Terms URI**: `https://your-test-domain.com/anvandarvillkor`
-- **Push URI (Webhook)**: `https://your-test-domain.com/api/webhooks/svea-v2`
+## Registered Domains
 
-### Produktion
-- **Checkout URI**: `https://ulrikafunctionalfoods.com/checkout`
-- **Confirmation URI**: `https://ulrikafunctionalfoods.com/checkout/success/svea-v2?checkoutOrderId={checkout.order.id}&orderId={merchantData}`
-- **Terms URI**: `https://ulrikafunctionalfoods.com/anvandarvillkor`
-- **Push URI (Webhook)**: `https://ulrikafunctionalfoods.com/api/webhooks/svea-v2`
+**Important:** You must register your callback domains with Svea support:
+
+- Production: `functionalfoods.se`
+- Production: `www.functionalfoods.se`
+- Test (if applicable): Your test domain
+
+Contact: support@svea.com
 
 ## API Endpoints
 
-### Nya endpoints (v2)
-- `POST /api/checkout/svea-v2` - Skapar en ny checkout-session
-- `POST /api/webhooks/svea-v2` - Tar emot webhooks från Svea
-- `POST /api/checkout/verify-svea-v2` - Verifierar betalningsstatus
-- `/checkout/svea` - Checkout-sida med Svea iframe
-- `/checkout/success/svea-v2` - Success-sida efter genomförd betalning
+### Checkout Creation
+- **Endpoint:** `POST /api/checkout/svea-v2`
+- **Request:**
+```json
+{
+  "items": [
+    {
+      "id": "functional-basics",
+      "name": "Functional Basics",
+      "price": 499,
+      "quantity": 1,
+      "type": "course"
+    }
+  ],
+  "customer": {
+    "email": "customer@example.com",
+    "name": "John Doe"
+  },
+  "couponCode": "OPTIONAL"
+}
+```
 
-### Gamla endpoints (kommer tas bort)
-- `/api/checkout/svea`
-- `/api/webhooks/svea`
-- `/api/checkout/verify-svea`
+### Verify Configuration
+- **Endpoint:** `GET /api/debug/svea-config`
+- **Response:** Shows if Svea is properly configured
 
-## Test-flöde
+## Test Cards (Svea Test Environment)
 
-1. **Skapa testorder**:
-   - Gå till `/checkout`
-   - Lägg till produkter i varukorgen
-   - Fyll i kunduppgifter
-   - Klicka "Gå till betalning"
+When `SVEA_TEST_MODE=true`, use these test cards:
 
-2. **Svea Checkout**:
-   - Du kommer till `/checkout/svea` med Svea's iframe
-   - Använd Sveas testkortuppgifter:
-     - Kortnummer: `4111 1111 1111 1111`
-     - Utgångsdatum: Valfritt framtida datum
-     - CVV: `123`
+| Result   | Card Type   | Card Number         | CVV  | Expiry Date |
+|----------|-------------|---------------------|------|-------------|
+| Approved | Visa        | 4916-4232-3977-8102 | Any  | Any future  |
+| Approved | Mastercard  | 5392-1273-3201-0533 | Any  | Any future  |
 
-3. **Efter betalning**:
-   - Du omdirigeras till `/checkout/success/svea-v2`
-   - Ordern verifieras och användarkonto skapas om nödvändigt
-   - Kurser blir tillgängliga i dashboard
+## Webhook Configuration
 
-## Webhook-hantering
+Svea will POST to: `https://functionalfoods.se/api/webhooks/svea-v2`
 
-Svea skickar webhooks för olika orderhändelser:
+Webhook headers include:
+- `x-svea-signature`: SHA512 validation
 
-- `Final` / `Confirmed` - Betalning genomförd
-- `Cancelled` - Beställning avbruten
-- `Expired` - Beställning har gått ut
+Response should be `{ received: true }` with HTTP 200.
 
-Webhooks verifieras med SHA-512 signatur: `hash(body + secretWord)`
+## Article Numbers
 
-## Felsökning
+Mapped to Svea's system:
 
-### Vanliga problem
+| Course                | Article Number |
+|-----------------------|-----------------|
+| Functional Basics     | 21122           |
+| Functional Flow       | 21127           |
+| Functional Energy     | 21128           |
+| Hormonell Balans      | (Not set yet)   |
 
-1. **"Betalningssystemet är inte konfigurerat"**
-   - Kontrollera att `SVEA_MERCHANT_ID` och `SVEA_SECRET_WORD` är satta
+## Pricing
 
-2. **401 Unauthorized från Svea API**
-   - Verifiera att credentials är korrekta
-   - Kontrollera att du använder rätt miljö (test/prod)
+All prices are in **öre** (minor units):
+- 1 kr = 100 öre
+- 499 kr = 49900 öre
+- Conversion: `priceInOre = priceInKronor * 100`
 
-3. **Webhook signature validation fails**
-   - Säkerställ att `SVEA_SECRET_WORD` är exakt samma som i Svea Merchant Portal
-   - I utveckling, sätt `SVEA_WEBHOOK_VALIDATION=false` för att hoppa över validering
+## VAT
 
-4. **Order skapas men användare får ingen access**
-   - Kontrollera att webhook-URL:en är korrekt i Svea Merchant Portal
-   - Verifiera att webhooks kommer fram (kolla logs)
+Courses are configured with 25% VAT (2500 basis points in Svea API).
 
-## Migrering från gamla systemet
+## Troubleshooting
 
-1. Uppdatera alla länkar från `/api/checkout/svea` till `/api/checkout/svea-v2`
-2. Uppdatera webhook-URL i Svea Merchant Portal
-3. Testa hela flödet i staging innan produktion
-4. När allt fungerar, ta bort gamla endpoints
+### 401 Unauthorized
+- Check `SVEA_MERCHANT_ID` and `SVEA_SECRET_WORD` are set correctly
+- Verify timestamp format (should be `YYYY-MM-DD HH:mm`)
+- Ensure domain is registered with Svea
 
-## Support
+### 400 Bad Request
+- Check all required fields in request
+- Verify prices are in öre (100x normal price)
+- Ensure items have valid `articleNumber`
 
-För teknisk support med Svea-integrationen:
-- Svea Support: support@svea.com
-- Svea Utvecklardokumentation: https://developers.svea.com/
+### Webhook Not Received
+- Check that `pushUri` is registered with Svea
+- Verify domain is publicly accessible
+- Check firewall isn't blocking incoming webhooks
+- Enable webhook validation: Set `SVEA_WEBHOOK_VALIDATION=true`
+
+## Testing Flow
+
+1. Check configuration: `curl https://functionalfoods.se/api/debug/svea-config`
+2. Create test order:
+```bash
+curl -X POST https://functionalfoods.se/api/checkout/svea-v2 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [{"id": "functional-basics", "name": "Functional Basics", "price": 499, "quantity": 1, "type": "course"}],
+    "customer": {"email": "test@example.com", "name": "Test User"}
+  }'
+```
+3. Complete payment with test card
+4. Verify webhook received in logs
+
+## Useful Links
+
+- [Svea Checkout Docs](https://docs.payments.svea.com/docs/getting-started/authentication)
+- [Test Data](https://docs.payments.svea.com/docs/getting-started/testdata)
+- [Go Live Checklist](https://docs.payments.svea.com/docs/getting-started/golive)
+- [Order Management API](https://docs.payments.svea.com/docs/checkout/get-a-order)
