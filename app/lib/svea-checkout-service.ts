@@ -569,29 +569,23 @@ export class SveaCheckoutService {
   }
 }
 
-// Create singleton instance
-let sveaCheckoutInstance: SveaCheckoutService | null = null;
-
+/**
+ * Factory function to get configured Svea service
+ */
 export function getSveaCheckout(): SveaCheckoutService {
-  if (!sveaCheckoutInstance) {
-    const merchantId = process.env.SVEA_MERCHANT_ID;
-    const testMode = process.env.SVEA_TEST_MODE === 'true' || process.env.NODE_ENV !== 'production';
+  const merchantId = process.env.SVEA_MERCHANT_ID;
+  const secretWord = process.env.SVEA_SECRET_WORD;
+  const testMode = (process.env.SVEA_TEST_MODE || '').toLowerCase() === 'true';
 
-    // Allow separate secrets for test/prod; fallback to SVEA_SECRET_WORD if only one is provided
-    const secretWord = testMode
-      ? (process.env.SVEA_SECRET_WORD_TEST || process.env.SVEA_SECRET_WORD)
-      : (process.env.SVEA_SECRET_WORD_PROD || process.env.SVEA_SECRET_WORD);
-    
-    if (!merchantId || !secretWord) {
-      throw new Error('Svea credentials not configured. Please set SVEA_MERCHANT_ID and SVEA_SECRET_WORD_TEST/PROD (or SVEA_SECRET_WORD).');
-    }
-    
-    sveaCheckoutInstance = new SveaCheckoutService({
-      merchantId,
-      secretWord,
-      testMode
-    });
+  if (!merchantId || !secretWord) {
+    throw new Error(
+      'Svea configuration missing. Please set SVEA_MERCHANT_ID and SVEA_SECRET_WORD environment variables.'
+    );
   }
-  
-  return sveaCheckoutInstance;
+
+  return new SveaCheckoutService({
+    merchantId,
+    secretWord,
+    testMode
+  });
 }
