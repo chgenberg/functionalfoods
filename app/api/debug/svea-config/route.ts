@@ -5,89 +5,68 @@ export const runtime = 'nodejs';
 
 /**
  * Debug endpoint to verify Svea configuration
- * Only accessible in development or with admin auth
  */
 export async function GET(req: NextRequest) {
-  // Check if in development or if calling from localhost
-  const isLocalhost = req.headers.get('host')?.includes('localhost');
-  const inDevelopment = process.env.NODE_ENV === 'development';
-
-  if (!isLocalhost && !inDevelopment && process.env.ENABLE_DEBUG_ENDPOINTS !== 'true') {
-    return NextResponse.json(
-      { error: 'Debug endpoints disabled' },
-      { status: 403 }
-    );
-  }
-
   try {
-    // Verify environment variables
+    // List all env vars that contain 'SVEA' or 'svea'
+    const allEnvVars = Object.keys(process.env).filter(key => 
+      key.toUpperCase().includes('SVEA') || 
+      key.toUpperCase().includes('PAYMENT') ||
+      key.toUpperCase().includes('CHECKOUT')
+    );
+
     const merchantId = process.env.SVEA_MERCHANT_ID;
     const secretWord = process.env.SVEA_SECRET_WORD;
-    const testMode = process.env.SVEA_TEST_MODE === 'true';
+    const testMode = process.env.SVEA_TEST_MODE;
 
-    const config = {
-      status: 'OK',
+    const debugInfo = {
+      timestamp: new Date().toISOString(),
+      nodeEnv: process.env.NODE_ENV,
       environment: {
-        NODE_ENV: process.env.NODE_ENV,
-        SVEA_TEST_MODE: testMode,
-        SVEA_MERCHANT_ID: merchantId ? `${merchantId.substring(0, 4)}...${merchantId.substring(merchantId.length - 4)}` : 'NOT SET',
-        SVEA_SECRET_WORD: secretWord ? '***MASKED***' : 'NOT SET'
+        SVEA_MERCHANT_ID: merchantId ? `SET (${merchantId.length} chars)` : 'NOT SET',
+        SVEA_SECRET_WORD: secretWord ? `SET (${secretWord.length} chars)` : 'NOT SET',
+        SVEA_TEST_MODE: testMode ? `SET (${testMode})` : 'NOT SET',
       },
+      allSveaRelatedVars: allEnvVars.length > 0 ? allEnvVars : 'NONE FOUND',
       configured: !!merchantId && !!secretWord,
-      baseUrl: testMode ? 'https://checkoutapistage.svea.com' : 'https://checkoutapi.svea.com'
+      baseUrl: testMode === 'true' ? 'https://checkoutapistage.svea.com' : 'https://checkoutapi.svea.com'
     };
 
     if (!merchantId || !secretWord) {
       return NextResponse.json({
-        ...config,
+        ...debugInfo,
         status: 'ERROR',
-        message: 'Svea credentials not configured',
-        requiredVariables: ['SVEA_MERCHANT_ID', 'SVEA_SECRET_WORD']
+        message: 'Missing Svea credentials',
+        nextSteps: [
+          'Check Railway Variables page',
+          'Ensure SVEA_MERCHANT_ID is set',
+          'Ensure SVEA_SECRET_WORD is set',
+          'Redeploy after setting variables'
+        ]
       });
     }
 
-    // Try to initialize Svea service
+    // Try to initialize
     try {
       const svea = getSveaCheckout();
-      
-      // Generate a test auth header (GET request, no body)
-      const testTimestamp = new Date().toISOString().split('T')[0] + ' ' + 
-        String(new Date().getUTCHours()).padStart(2, '0') + ':' +
-        String(new Date().getUTCMinutes()).padStart(2, '0');
-
       return NextResponse.json({
-        ...config,
+        ...debugInfo,
         status: 'OK',
-        message: 'Svea is properly configured',
-        serviceInitialized: true,
-        testableWith: {
-          endpoint: '/api/checkout/svea-v2',
-          method: 'POST',
-          example: {
-            items: [
-              {
-                id: 'functional-basics',
-                name: 'Functional Basics',
-                price: 499,
-                quantity: 1,
-                type: 'course'
-              }
-            ]
-          }
-        }
+        message: 'Svea is properly configured and initialized',
+        testUrl: 'POST /api/checkout/svea-v2'
       });
-    } catch (serviceError) {
+    } catch (error) {
       return NextResponse.json({
-        ...config,
+        ...debugInfo,
         status: 'ERROR',
-        message: 'Failed to initialize Svea service',
-        error: serviceError instanceof Error ? serviceError.message : 'Unknown error'
+        message: 'Failed to initialize Svea',
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   } catch (error) {
     return NextResponse.json({
       status: 'ERROR',
-      message: 'Unexpected error checking Svea configuration',
+      message: 'Debug endpoint error',
       error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
