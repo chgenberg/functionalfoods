@@ -12,6 +12,7 @@ import { ToastProvider } from './context/ToastContext';
 import { generateMetadata as generateSEOMetadata } from './lib/seo';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import MetaPixel from './components/MetaPixel';
+import { getAttributionFromUrl, saveAttribution } from './lib/attribution';
 
 // Force dynamic rendering across the app to avoid prerender CSR bailouts when using useSearchParams
 export const dynamic = 'force-dynamic';
@@ -117,6 +118,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToastProvider>
             <LanguageProvider>
               <CartProvider>
+                {/* Capture attribution params as early as possible on the client */}
+                <script
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                      (function(){
+                        try {
+                          var params = new URLSearchParams(window.location.search);
+                          var hasUtm = params.get('utm_source') || params.get('utm_medium') || params.get('utm_campaign') || params.get('gclid') || params.get('gbraid') || params.get('wbraid');
+                          if (hasUtm) {
+                            window.localStorage.setItem('ff_attr_url', window.location.href);
+                          }
+                        } catch(e) {}
+                      })();
+                    `
+                  }}
+                />
                 <GoogleAnalytics />
                 <AutoTranslate />
                 <div className="flex flex-col min-h-screen">

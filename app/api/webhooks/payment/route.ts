@@ -366,6 +366,7 @@ async function handleCheckoutSessionCompleted(session: any) {
           status: 'COMPLETED',
           totalAmount: totalIncl,
           currency: String(session.currency || 'SEK').toUpperCase(),
+          // Note: attribution is stored on payment.gatewayResponse; avoid order metadata to match current schema
           items: {
             create: items.map((it) => ({
               courseId: null,
@@ -388,7 +389,16 @@ async function handleCheckoutSessionCompleted(session: any) {
           currency: String(session.currency || 'SEK').toUpperCase(),
           externalId: String(paymentIntentId),
           processedAt: new Date(),
-          gatewayResponse: { sessionId: session.id }
+          gatewayResponse: { sessionId: session.id, attribution: {
+            gclid: session.metadata?.gclid,
+            gbraid: session.metadata?.gbraid,
+            wbraid: session.metadata?.wbraid,
+            utm_source: session.metadata?.utm_source,
+            utm_medium: session.metadata?.utm_medium,
+            utm_campaign: session.metadata?.utm_campaign,
+            utm_term: session.metadata?.utm_term,
+            utm_content: session.metadata?.utm_content
+          }}
         }
       });
 

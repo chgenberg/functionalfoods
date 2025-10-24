@@ -6,34 +6,38 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-function readAnalyticsConsent(): boolean {
+function readConsent(): { analytics: boolean; marketing: boolean } {
   try {
     // Primary key used by our banner
     const raw = localStorage.getItem('cookie-consent');
-    const parsed = raw ? JSON.parse(raw) as { preferences?: { analytics?: boolean } } : null;
-    let granted = !!parsed?.preferences?.analytics;
-    if (!granted) {
+    const parsed = raw ? JSON.parse(raw) as { preferences?: { analytics?: boolean; marketing?: boolean } } : null;
+    let analyticsGranted = !!parsed?.preferences?.analytics;
+    let marketingGranted = !!parsed?.preferences?.marketing;
+    if (!analyticsGranted) {
       // Backwards compatibility: some sessions used 'cookiePrefs'
       const legacyRaw = localStorage.getItem('cookiePrefs');
-      const legacy = legacyRaw ? JSON.parse(legacyRaw) as { analytics?: boolean } : null;
-      granted = !!legacy?.analytics;
+      const legacy = legacyRaw ? JSON.parse(legacyRaw) as { analytics?: boolean; marketing?: boolean } : null;
+      analyticsGranted = !!legacy?.analytics;
+      marketingGranted = marketingGranted || !!legacy?.marketing;
     }
-    return granted;
+    return { analytics: analyticsGranted, marketing: marketingGranted };
   } catch {
-    return false;
+    return { analytics: false, marketing: false };
   }
 }
 
 function updateConsentFromStorage() {
   try {
-    const analyticsGranted = readAnalyticsConsent();
+    const { analytics: analyticsGranted, marketing: marketingGranted } = readConsent();
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('consent', 'update', {
         analytics_storage: analyticsGranted ? 'granted' : 'denied',
-        ad_storage: 'denied'
+        ad_storage: marketingGranted ? 'granted' : 'denied',
+        ad_user_data: marketingGranted ? 'granted' : 'denied',
+        ad_personalization: marketingGranted ? 'granted' : 'denied'
       });
-      // Fire an immediate page_view once consent is granted so GA4 activates without waiting for navigation
-      if (analyticsGranted && GA_ID) {
+      // Fire a single initial page_view regardless of consent (cookieless if denied)
+      if (GA_ID && !(window as any).__ff_initial_pv_sent) {
         const pagePath = window.location.pathname + (window.location.search ? `?${window.location.search.substring(1)}` : '');
         (window as any).gtag('event', 'page_view', {
           page_title: document.title,
@@ -41,6 +45,7 @@ function updateConsentFromStorage() {
           page_path: pagePath,
           send_to: GA_ID
         });
+        (window as any).__ff_initial_pv_sent = true;
       }
     }
   } catch {}
@@ -48,8 +53,9 @@ function updateConsentFromStorage() {
 
 function ensureInitialPageViewOnce() {
   try {
-    const analyticsGranted = readAnalyticsConsent();
-    if (!analyticsGranted || !GA_ID) return;
+    const { analytics: analyticsGranted } = readConsent();
+    if (!GA_ID) return;
+    if ((typeof window !== 'undefined') && (window as any).__ff_initial_pv_sent) return;
     const send = () => {
       if (typeof window !== 'undefined' && (window as any).gtag) {
         const pagePath = window.location.pathname + (window.location.search ? `?${window.location.search.substring(1)}` : '');
@@ -59,6 +65,7 @@ function ensureInitialPageViewOnce() {
           page_path: pagePath,
           send_to: GA_ID
         });
+        (window as any).__ff_initial_pv_sent = true;
         return true;
       }
       return false;
@@ -119,8 +126,12 @@ export default function GoogleAnalytics() {
           function gtag(){dataLayer.push(arguments);}
           gtag('consent', 'default', {
             'analytics_storage': 'denied',
-            'ad_storage': 'denied'
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied'
           });
+          // URL passthrough to preserve gclid even when ad_storage is denied
+          gtag('set', 'url_passthrough', true);
         `}
       </Script>
       <Script

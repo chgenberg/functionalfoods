@@ -47,6 +47,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
+    const debug = (searchParams.get('debug') || '').toLowerCase() === '1' || (searchParams.get('debug') || '').toLowerCase() === 'true';
     const source = searchParams.get('source') || 'all';
     const courseFilter = searchParams.get('course') || 'all';
     const dateFrom = searchParams.get('dateFrom');
@@ -299,7 +300,19 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Failed to fetch unified sales data:', error);
-    
+    if (request && typeof request.url === 'string') {
+      try {
+        const { searchParams } = new URL(request.url);
+        const debug = (searchParams.get('debug') || '').toLowerCase() === '1' || (searchParams.get('debug') || '').toLowerCase() === 'true';
+        if (debug) {
+          return NextResponse.json({
+            error: 'Failed to fetch sales data',
+            detail: (error as any)?.message || String(error),
+            stack: (error as any)?.stack || undefined
+          }, { status: 500 });
+        }
+      } catch {}
+    }
     return NextResponse.json({
       error: 'Failed to fetch sales data',
       customers: [],

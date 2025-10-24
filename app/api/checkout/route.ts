@@ -8,10 +8,15 @@ export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
   try {
     const body = await req.json();
-    const { items, customer, couponCode } = body as {
+    const { items, customer, couponCode, attribution } = body as {
       items: Array<{ id: string; name: string; price: number; quantity: number; type: 'course'|'book' }>
       customer?: { email?: string; name?: string; id?: string }
       couponCode?: string
+      attribution?: {
+        gclid?: string; gbraid?: string; wbraid?: string;
+        utm_source?: string; utm_medium?: string; utm_campaign?: string; utm_term?: string; utm_content?: string;
+        ref?: string; ts?: number;
+      }
     };
 
     if (!Array.isArray(items) || items.length === 0) {
@@ -161,7 +166,16 @@ export async function POST(req: NextRequest) {
         courseNames: validatedItems.map(item => item.name).join(', '),
         totalItems: validatedItems.length.toString(),
         customerEmail: customer?.email || '',
-        customerName: customer?.name || ''
+        customerName: customer?.name || '',
+        // Attribution (flattened for Stripe metadata limits)
+        gclid: attribution?.gclid || '',
+        gbraid: attribution?.gbraid || '',
+        wbraid: attribution?.wbraid || '',
+        utm_source: attribution?.utm_source || '',
+        utm_medium: attribution?.utm_medium || '',
+        utm_campaign: attribution?.utm_campaign || '',
+        utm_term: attribution?.utm_term || '',
+        utm_content: attribution?.utm_content || ''
       }
     };
 

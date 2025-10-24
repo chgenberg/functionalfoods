@@ -9,6 +9,7 @@ import { GiSparkles } from 'react-icons/gi';
 import { useT } from '../lib/i18n/LanguageProvider';
 import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X, Smartphone, ShoppingCart, ArrowRight, Book } from 'lucide-react';
 import { trackInitiateCheckout } from '../lib/analytics';
+import { readAttribution } from '../lib/attribution';
 
 // Course images mapping
 const courseImages: Record<string, string> = {
@@ -71,6 +72,7 @@ export default function Checkout() {
       }
 
       // Build checkout payload (compatible with Stripe /api/checkout endpoint)
+      const attribution = readAttribution();
       const checkoutData = {
         items: items.map(item => ({
           id: item.id,
@@ -87,7 +89,8 @@ export default function Checkout() {
           email: user.email, 
           id: user.id 
         } : undefined),
-        couponCode: appliedCoupon?.code || undefined
+        couponCode: appliedCoupon?.code || undefined,
+        attribution
       };
 
       // Fire analytics: Initiate Checkout / begin_checkout before redirect
