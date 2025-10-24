@@ -185,7 +185,7 @@ export class SveaCheckoutService {
   private buildAuth(
     method: string,
     body: string = '',
-    mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded' = 'localDate_utcTime'
+    mode: 'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded' = 'stockholm_local_padded'
   ): { auth: string; timestamp: string } {
     const d = new Date();
     let ts = '';
@@ -275,15 +275,15 @@ export class SveaCheckoutService {
       return { response, responseText };
     };
 
-    // Try multiple formats, including Europe/Stockholm local time
+    // Try multiple formats, prioritizing Stockholm time
     const attempts: Array<'localDate_utcTime' | 'utcDate_utcTime' | 'localDate_localTime' | 'utc_padded' | 'localDate_utcTime_padded' | 'stockholm_local' | 'stockholm_local_padded'> = [
-      'localDate_utcTime',
-      'utcDate_utcTime',
-      'localDate_localTime',
-      'utc_padded',
+      'stockholm_local_padded',  // FIRST: Stockholm time with padding (YYYY-MM-DD HH:mm)
+      'stockholm_local',         // Stockholm time without padding
+      'utc_padded',              // UTC with padding
+      'utcDate_utcTime',         // Pure UTC without padding
       'localDate_utcTime_padded',
-      'stockholm_local',
-      'stockholm_local_padded'
+      'localDate_utcTime',
+      'localDate_localTime'
     ];
 
     for (let i = 0; i < attempts.length; i++) {
