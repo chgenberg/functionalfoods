@@ -71,18 +71,18 @@ export default function PromoPopup() {
           </button>
 
           {/* Content */}
-          <div className="flex flex-col md:flex-row items-center">
+          <div className="flex flex-col md:flex-row items-stretch">
             {/* Image */}
             <div className="w-full md:w-2/3 relative">
               <img
-                src="/pop-up-okt-2025.png"
+                src="/popup-okt.PNG"
                 alt="Kampanjerbjudande"
-                className="w-full h-auto object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
 
-            {/* CTA Button */}
-            <div className="w-full md:w-1/3 p-8 flex flex-col items-center justify-center bg-gradient-to-br from-[#F3EFE3] to-[#FEFDF9]">
+            {/* CTA Button - Full background color */}
+            <div className="w-full md:w-1/3 p-8 flex flex-col items-center justify-center bg-gradient-to-br from-[#F3EFE3] to-[#FEFDF9] min-h-[400px]">
               <a
                 href="/utbildning/alla-kurser" 
                 onClick={handleClose}
@@ -90,7 +90,7 @@ export default function PromoPopup() {
               >
                 LÄS MER HÄR!
               </a>
-              <p className="text-xs text-gray-600 mt-4 text-center">
+              <p className="text-sm text-gray-700 mt-6 text-center font-medium">
                 Erbjudandet gäller till och med 31 oktober
               </p>
             </div>
