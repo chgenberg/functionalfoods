@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Save, Eye, AlertCircle, Calendar, BookOpen, ShoppingCart, FileText } from 'lucide-react';
+import { ArrowLeft, Save, Eye, AlertCircle, Calendar, BookOpen, ShoppingCart, FileText, ChevronRight } from 'lucide-react';
 import { useMemo } from 'react';
 
 interface Course {
