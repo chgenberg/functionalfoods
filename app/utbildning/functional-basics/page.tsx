@@ -16,6 +16,36 @@ import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 export default function FunctionalBasicsPage() {
   const router = useRouter();
+  const [coursePrice, setCoursePrice] = useState<number | null>(null);
+  const [priceLoading, setPriceLoading] = useState(true);
+
+  // Fetch actual course price from database
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch('/api/admin/functional-courses', {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const courses = await response.json();
+          const basics = courses.find((c: any) => c.id === 'functional-basics');
+          if (basics) {
+            // Use salePrice if active, otherwise use basePrice or price
+            const priceExcl = basics.salePrice ?? basics.basePrice ?? basics.price;
+            setCoursePrice(Math.round(priceExcl * 1.25)); // Convert to incl. VAT
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch course price:', error);
+        // Fallback to hardcoded price
+        setCoursePrice(2295);
+      } finally {
+        setPriceLoading(false);
+      }
+    };
+    fetchPrice();
+  }, []);
+
   // Fire ViewContent once after fbq is available and consent granted
   useEffect(() => {
     let attempts = 0;
@@ -25,16 +55,16 @@ export default function FunctionalBasicsPage() {
       try {
         const consent = localStorage.getItem('cookie-consent');
         const marketingOk = !!consent && JSON.parse(consent)?.preferences?.marketing;
-        if (marketingOk) {
+        if (marketingOk && coursePrice) {
           // trackViewContent hanterar själv server‑fallback när fbq är blockerat
-          trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: 1147 });
+          trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: coursePrice });
           window.clearInterval(id);
         }
       } catch {}
       if (attempts >= maxAttempts) window.clearInterval(id);
     }, 200);
     return () => window.clearInterval(id);
-  }, []);
+  }, [coursePrice]);
   
   // Add CSS for gradient animation
   if (typeof document !== 'undefined') {
@@ -70,15 +100,15 @@ export default function FunctionalBasicsPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const { addItem } = useCart();
 
-  // Campaign pricing: 1147 kr incl. VAT
+  // Use fetched price or fallback
   const VAT_RATE = 0.25;
-  const campaignPriceIncl = 1147; // SEK inkl. moms
-  const campaignPriceExcl = Math.round((campaignPriceIncl / (1 + VAT_RATE)) * 100) / 100; // exkl. moms
+  const displayPriceIncl = coursePrice ?? 2295; // Fallback to normal price
+  const displayPriceExcl = Math.round((displayPriceIncl / (1 + VAT_RATE)) * 100) / 100;
 
   const course = {
     id: 'functional-basics',
     name: 'Functional Basics',
-    price: campaignPriceExcl, // Pris exkl. moms (1147 kr inkl. moms kampanj)
+    price: displayPriceExcl, // Pris exkl. moms
     type: 'course' as const,
     image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
     quantity: 1
@@ -307,7 +337,7 @@ export default function FunctionalBasicsPage() {
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
               <div className="text-sm text-gray-500 line-through">{formatPrice(2295)} kr</div>
-              <div className="text-3xl font-bold text-primary">{formatPrice(campaignPriceIncl)} kr</div>
+              <div className="text-3xl font-bold text-primary">{formatPrice(displayPriceIncl)} kr</div>
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
@@ -589,7 +619,7 @@ export default function FunctionalBasicsPage() {
               <AddToCart 
                 id="functional-basics"
                 name="Functional Basics"
-                price={campaignPriceExcl}
+                price={course.price}
                 type="course"
                 image={course.image}
               />
