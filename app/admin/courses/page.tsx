@@ -191,19 +191,47 @@ export default function AdminCoursesPage() {
         <div>
           <p className="text-xs text-[var(--text-secondary)] font-medium uppercase tracking-wide mb-3">Välj kurs</p>
           <div className="flex gap-2 flex-wrap">
-            {courses.map(course => (
-              <button
-                key={course.id}
-                onClick={() => setSelectedCourse(course.id)}
-                className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                  selectedCourse === course.id
-                    ? 'bg-[var(--primary-green)] text-white'
-                    : 'bg-white border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-green)]'
-                }`}
-              >
-                {course.name}
-              </button>
-            ))}
+            {courses.map(course => {
+              // Map course IDs to admin pages
+              const adminPageMap: Record<string, string> = {
+                'hormonell-balans': '/admin/hormone',
+                'functional-basics': '/admin/basic',
+                'functional-flow': '/admin/flow',
+                'functional-energy': '/admin/energy'
+              };
+              
+              const adminPage = adminPageMap[course.id];
+              
+              if (adminPage) {
+                return (
+                  <Link
+                    key={course.id}
+                    href={adminPage}
+                    className={`px-4 py-2 rounded-lg text-sm transition-all ${
+                      selectedCourse === course.id
+                        ? 'bg-[var(--primary-green)] text-white'
+                        : 'bg-white border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-green)]'
+                    }`}
+                  >
+                    {course.name}
+                  </Link>
+                );
+              }
+              
+              return (
+                <button
+                  key={course.id}
+                  onClick={() => setSelectedCourse(course.id)}
+                  className={`px-4 py-2 rounded-lg text-sm transition-all ${
+                    selectedCourse === course.id
+                      ? 'bg-[var(--primary-green)] text-white'
+                      : 'bg-white border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-green)]'
+                  }`}
+                >
+                  {course.name}
+                </button>
+              );
+            })}
           </div>
         </div>
               
