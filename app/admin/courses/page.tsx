@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Edit3, Eye, Calendar, BookOpen, Users, Clock, ChevronRight, FileText, Settings, Database, ChefHat, Plus } from 'lucide-react';
+import { Edit3, Eye, Calendar, BookOpen, Users, Clock, FileText, Settings, Database, ChefHat, Plus } from 'lucide-react';
 
 interface Course {
   id: string;
