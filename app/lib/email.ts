@@ -228,10 +228,34 @@ export class EmailService {
 
             ${loginSection}
 
+            <!-- E-bok Promotion -->
+            <div style="background: linear-gradient(135deg, #fff8e1 0%, #ffe8b6 100%); border: 2px solid #ffc107; border-radius: 12px; padding: 24px; margin: 30px 0; position: relative; overflow: hidden;">
+              <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: #ffc107; border-radius: 50%; opacity: 0.1;"></div>
+              <h3 style="color: #856404; margin: 0 0 16px 0; font-size: 20px; display: flex; align-items: center;">
+                <span style="font-size: 28px; margin-right: 12px;">📘</span>
+                Bonuserbjudande - 100% rabatt på E-boken!
+              </h3>
+              <p style="color: #856404; margin: 0 0 16px 0; line-height: 1.6;">
+                Som tack för ditt köp erbjuder vi dig en helt gratis E-bok: <strong>Functional Foods</strong> ✨
+              </p>
+              <p style="color: #856404; margin: 0 0 16px 0; font-size: 14px;">
+                Använd denna rabattkod när du hämtar boken:
+              </p>
+              <div style="background: white; border-radius: 8px; padding: 12px; margin: 12px 0; text-align: center;">
+                <span style="font-family: monospace; background: #f5f5f5; padding: 8px 16px; border-radius: 4px; color: #1a4324; font-weight: 700; font-size: 16px;">FUNCTIONAL100</span>
+              </div>
+              <div style="text-align: center; margin-top: 16px;">
+                <a href="https://thebookaffair.se/collections/ulrika-davidsson/products/functional-foods" 
+                   style="display: inline-block; background: #ffc107; color: #1a4324; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                  Hämta din E-bok här →
+                </a>
+              </div>
+            </div>
+
             <!-- CTA Buttons -->
             <div style="text-align: center; margin: 40px 0;">
               <a href="https://functionalfoods.se" 
-                 style="display: inline-block; background: linear-gradient(135deg, #1a4324 0%, #2d5a3d 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(26, 67, 36, 0.3); transition: all 0.3s;">
+                 style="display: inline-block; background: linear-gradient(135deg, #8b3a3a 0%, #6b2e2e 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(139, 58, 58, 0.3); transition: all 0.3s;">
                 ✨ Kom igång med dina kurser
               </a>
             </div>
