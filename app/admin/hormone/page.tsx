@@ -37,6 +37,13 @@ export default function HormonePage() {
   const loadData = async () => {
     setIsLoading(true);
     try {
+      // Load course settings
+      const settingsRes = await fetch('/api/admin/hormone/course-settings', { credentials: 'include' });
+      if (settingsRes.ok) {
+        const settingsData = await settingsRes.json();
+        setCourseSettings(settingsData);
+      }
+
       const [recipesRes, mealsRes, weekMetasRes, knowledgeRes] = await Promise.all([
         fetch('/api/recipes/search?tags=hormonell-balans', { credentials: 'include' }),
         fetch('/api/admin/meal-plans?course=hormone', { credentials: 'include' }),
@@ -685,17 +692,40 @@ export default function HormonePage() {
           {activeView === 'overview' && (
             <div className="admin-card max-w-2xl">
               <h3 className="text-lg font-medium text-gray-900 mb-6">Kursinställningar</h3>
-              <form onSubmit={(e) => {
+              <form onSubmit={async (e) => {
                 e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                setCourseSettings(prev => ({
-                  ...prev,
-                  name: formData.get('name') as string,
-                  welcomeText: formData.get('welcomeText') as string,
-                  overviewVideoUrl: formData.get('overviewVideoUrl') as string,
-                  description: formData.get('description') as string
-                }));
-                showNotification('success', 'Kursinställningar uppdaterade');
+                setIsSaving(true);
+                try {
+                  const formData = new FormData(e.currentTarget);
+                  const response = await fetch('/api/admin/hormone/course-settings', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                      name: formData.get('name'),
+                      welcomeText: formData.get('welcomeText'),
+                      overviewVideoUrl: formData.get('overviewVideoUrl'),
+                      description: formData.get('description')
+                    })
+                  });
+
+                  if (response.ok) {
+                    setCourseSettings({
+                      name: formData.get('name') as string,
+                      welcomeText: formData.get('welcomeText') as string,
+                      overviewVideoUrl: formData.get('overviewVideoUrl') as string,
+                      description: formData.get('description') as string
+                    });
+                    showNotification('success', '✅ Kursinställningar sparade!');
+                  } else {
+                    showNotification('error', '❌ Fel vid sparande av inställningar');
+                  }
+                } catch (error) {
+                  console.error('Error saving settings:', error);
+                  showNotification('error', '❌ Något gick fel');
+                } finally {
+                  setIsSaving(false);
+                }
               }} className="space-y-4">
                 <div>
                   <label className="admin-label">Kursnamn</label>
@@ -707,22 +737,22 @@ export default function HormonePage() {
                   />
                 </div>
                 <div>
-                  <label className="admin-label">Välkomstmeddelande</label>
+                  <label className="admin-label">Välkomstmeddelande från Ulrika</label>
                   <textarea
                     name="welcomeText"
                     defaultValue={courseSettings.welcomeText}
                     rows={4}
-                    className="admin-textarea"
+                    className="admin-input"
                     placeholder="Välkommen till kursen..."
                   />
                 </div>
                 <div>
-                  <label className="admin-label">Översiktsvideo URL</label>
+                  <label className="admin-label">Översiktsvideo URL (Vimeo/YouTube)</label>
                   <input
                     name="overviewVideoUrl"
                     defaultValue={courseSettings.overviewVideoUrl}
                     className="admin-input"
-                    placeholder="https://vimeo.com/..."
+                    placeholder="https://player.vimeo.com/video/..."
                   />
                 </div>
                 <div>
@@ -731,12 +761,12 @@ export default function HormonePage() {
                     name="description"
                     defaultValue={courseSettings.description}
                     rows={6}
-                    className="admin-textarea"
+                    className="admin-input"
                     placeholder="Beskriv kursens syfte och innehåll..."
                   />
                 </div>
-                <button type="submit" className="admin-btn admin-btn-primary">
-                  Spara inställningar
+                <button type="submit" disabled={isSaving} className="admin-btn admin-btn-primary">
+                  {isSaving ? '⏳ Sparar...' : '💾 Spara inställningar'}
                 </button>
               </form>
             </div>
