@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 export default function HormonePage() {
   const router = useRouter();
-  const [activeView, setActiveView] = useState<'meals' | 'shopping' | 'weeks' | 'knowledge'>('meals');
+  const [activeView, setActiveView] = useState<'overview' | 'meals' | 'shopping' | 'weeks' | 'knowledge' | 'settings'>('overview');
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [recipes, setRecipes] = useState<any[]>([]);
@@ -20,6 +20,14 @@ export default function HormonePage() {
   const [knowledgeDocs, setKnowledgeDocs] = useState<any[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
+  
+  // Course settings state
+  const [courseSettings, setCourseSettings] = useState({
+    name: 'Hormonell Balans',
+    welcomeText: '',
+    overviewVideoUrl: 'https://player.vimeo.com/video/1058943393',
+    description: ''
+  });
 
   // Fetcha all data
   useEffect(() => {
@@ -624,6 +632,7 @@ export default function HormonePage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
           <div className="flex">
             {[
+              { id: 'overview', label: 'Kursinställningar', icon: '⚙️' },
               { id: 'meals', label: 'Kostscheman', icon: '🍽️' },
               { id: 'shopping', label: 'Inköpslistor', icon: '🛒' },
               { id: 'weeks', label: 'Veckoinställningar', icon: '📅' },
@@ -673,6 +682,65 @@ export default function HormonePage() {
 
         {/* Content Area */}
         <div className="min-h-[500px]">
+          {activeView === 'overview' && (
+            <div className="admin-card max-w-2xl">
+              <h3 className="text-lg font-medium text-gray-900 mb-6">Kursinställningar</h3>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                setCourseSettings(prev => ({
+                  ...prev,
+                  name: formData.get('name') as string,
+                  welcomeText: formData.get('welcomeText') as string,
+                  overviewVideoUrl: formData.get('overviewVideoUrl') as string,
+                  description: formData.get('description') as string
+                }));
+                showNotification('success', 'Kursinställningar uppdaterade');
+              }} className="space-y-4">
+                <div>
+                  <label className="admin-label">Kursnamn</label>
+                  <input
+                    name="name"
+                    defaultValue={courseSettings.name}
+                    className="admin-input"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="admin-label">Välkomstmeddelande</label>
+                  <textarea
+                    name="welcomeText"
+                    defaultValue={courseSettings.welcomeText}
+                    rows={4}
+                    className="admin-textarea"
+                    placeholder="Välkommen till kursen..."
+                  />
+                </div>
+                <div>
+                  <label className="admin-label">Översiktsvideo URL</label>
+                  <input
+                    name="overviewVideoUrl"
+                    defaultValue={courseSettings.overviewVideoUrl}
+                    className="admin-input"
+                    placeholder="https://vimeo.com/..."
+                  />
+                </div>
+                <div>
+                  <label className="admin-label">Kursbeskrivning</label>
+                  <textarea
+                    name="description"
+                    defaultValue={courseSettings.description}
+                    rows={6}
+                    className="admin-textarea"
+                    placeholder="Beskriv kursens syfte och innehåll..."
+                  />
+                </div>
+                <button type="submit" className="admin-btn admin-btn-primary">
+                  Spara inställningar
+                </button>
+              </form>
+            </div>
+          )}
           {activeView === 'meals' && renderMealPlansView()}
           {activeView === 'shopping' && renderShoppingListView()}
           {activeView === 'weeks' && renderWeekSettingsView()}
