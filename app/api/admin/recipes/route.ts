@@ -138,3 +138,40 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  const admin = await requireAdminAuth(req);
+  if ((admin as any)?.status === 401) return admin as any;
+  try {
+    const { searchParams } = new URL(req.url);
+    const recipeId = searchParams.get('id');
+    
+    if (!recipeId) {
+      return NextResponse.json(
+        { error: 'Recipe ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const body = await req.json();
+    
+    // Uppdatera receptet
+    const recipe = await prisma.recipe.update({
+      where: { id: recipeId },
+      data: {
+        ...(body.title && { title: body.title }),
+        ...(body.excerpt && { excerpt: body.excerpt }),
+        ...(body.imageUrl !== undefined && { imageUrl: body.imageUrl })
+      }
+    });
+
+    return NextResponse.json(recipe);
+
+  } catch (error) {
+    console.error('Error updating recipe:', error);
+    return NextResponse.json(
+      { error: 'Failed to update recipe' },
+      { status: 500 }
+    );
+  }
+}

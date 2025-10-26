@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, X, Search, Check, Coffee, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, X, Search, Check, Coffee, Loader2, Edit2, Save } from 'lucide-react';
 
 interface Recipe {
   id: string;
@@ -21,6 +21,10 @@ interface Recipe {
   prepTime?: string;
 }
 
+interface EditingRecipe extends Recipe {
+  newImageUrl?: string;
+}
+
 export default function ManageRecipesPage({ params }: { params: { courseId: string } }) {
   const [courseRecipes, setCourseRecipes] = useState<Recipe[]>([]);
   const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
@@ -29,6 +33,8 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedRecipes, setSelectedRecipes] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
+  const [editingRecipe, setEditingRecipe] = useState<EditingRecipe | null>(null);
+  const [editingSaving, setEditingSaving] = useState(false);
 
   useEffect(() => {
     fetchCourseRecipes();
@@ -105,6 +111,35 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
     }
   };
 
+  const handleEditRecipe = async () => {
+    if (!editingRecipe) return;
+    setEditingSaving(true);
+    try {
+      const response = await fetch(`/api/admin/recipes?id=${editingRecipe.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: editingRecipe.title,
+          excerpt: editingRecipe.excerpt,
+          imageUrl: editingRecipe.newImageUrl || editingRecipe.imageUrl
+        })
+      });
+
+      if (response.ok) {
+        await fetchCourseRecipes();
+        setEditingRecipe(null);
+        alert('✅ Receptet uppdaterat');
+      } else {
+        alert('❌ Fel vid uppdatering av receptet');
+      }
+    } catch (error) {
+      console.error('Error editing recipe:', error);
+      alert('❌ Fel vid uppdatering');
+    } finally {
+      setEditingSaving(false);
+    }
+  };
+
   const toggleRecipeSelection = (recipeId: string) => {
     const newSelection = new Set(selectedRecipes);
     if (newSelection.has(recipeId)) {
@@ -151,7 +186,7 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
               Hantera recept för {courseName}
             </h1>
             <p className="text-[var(--text-secondary)] font-light">
-              {courseRecipes.length} recept i kursen
+              {courseRecipes.length} recept i kursen • Klicka på ett recept för att redigera
             </p>
           </div>
           
@@ -190,7 +225,8 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
               key={recipe.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl overflow-hidden border border-[var(--border-light)] hover:shadow-lg transition-all"
+              className="bg-white rounded-xl overflow-hidden border border-[var(--border-light)] hover:shadow-lg transition-all cursor-pointer"
+              onClick={() => setEditingRecipe({ ...recipe })}
             >
               {/* Image */}
               <div className="h-48 bg-gray-100 relative">
@@ -202,17 +238,32 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
                     className="object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center flex-col gap-2">
                     <Coffee className="w-16 h-16 text-gray-300" />
+                    <span className="text-sm text-gray-400">Ingen bild</span>
                   </div>
                 )}
                 
                 <button
-                  onClick={() => handleRemoveRecipe(recipe.id, recipe.title)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveRecipe(recipe.id, recipe.title);
+                  }}
                   className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
                   title="Ta bort från kurs"
                 >
                   <X className="w-4 h-4" />
+                </button>
+                
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingRecipe({ ...recipe });
+                  }}
+                  className="absolute bottom-2 right-2 bg-[var(--primary-green)] text-white p-2 rounded-full hover:bg-[#012a14] transition-colors"
+                  title="Redigera recept"
+                >
+                  <Edit2 className="w-4 h-4" />
                 </button>
               </div>
 
@@ -239,6 +290,112 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
               </div>
             </motion.div>
           ))}
+        </div>
+      )}
+
+      {/* Edit Recipe Modal */}
+      {editingRecipe && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            {/* Modal Header */}
+            <div className="p-6 border-b border-[var(--border-light)] flex justify-between items-center">
+              <h2 className="text-2xl font-light text-[var(--primary-green)]">
+                Redigera recept
+              </h2>
+              <button
+                onClick={() => setEditingRecipe(null)}
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                  Titel
+                </label>
+                <input
+                  type="text"
+                  value={editingRecipe.title}
+                  onChange={(e) => setEditingRecipe({ ...editingRecipe, title: e.target.value })}
+                  className="admin-input w-full"
+                />
+              </div>
+
+              {/* Excerpt */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                  Beskrivning
+                </label>
+                <textarea
+                  value={editingRecipe.excerpt || ''}
+                  onChange={(e) => setEditingRecipe({ ...editingRecipe, excerpt: e.target.value })}
+                  className="admin-input w-full min-h-24"
+                  placeholder="Kort beskrivning av receptet..."
+                />
+              </div>
+
+              {/* Image */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                  Bildlänk
+                </label>
+                <input
+                  type="url"
+                  value={editingRecipe.newImageUrl || editingRecipe.imageUrl || ''}
+                  onChange={(e) => setEditingRecipe({ ...editingRecipe, newImageUrl: e.target.value })}
+                  className="admin-input w-full"
+                  placeholder="https://example.com/image.jpg"
+                />
+                
+                {/* Image Preview */}
+                {(editingRecipe.newImageUrl || editingRecipe.imageUrl) && (
+                  <div className="mt-3 relative h-48 rounded-lg overflow-hidden">
+                    <Image
+                      src={editingRecipe.newImageUrl || editingRecipe.imageUrl!}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4 border-t border-[var(--border-light)]">
+                <button
+                  onClick={() => setEditingRecipe(null)}
+                  className="flex-1 px-4 py-2 border border-[var(--border-light)] text-[var(--text-primary)] rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Avbryt
+                </button>
+                <button
+                  onClick={handleEditRecipe}
+                  disabled={editingSaving}
+                  className="flex-1 admin-btn admin-btn-primary"
+                >
+                  {editingSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Sparar...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      Spara ändringar
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </motion.div>
         </div>
       )}
 
