@@ -27,11 +27,16 @@ export async function POST(req: NextRequest) {
     const slugsToTag = new Set<string>();
     for (const w of weeks) {
       const days = (w as any).days || {};
-      for (const day of Object.values(days) as any[]) {
-        if (!day) continue;
-        for (const mealType of ['breakfast', 'lunch', 'dinner', 'snack', 'snack1', 'snack2', 'dessert', 'evening']) {
-          const meal = day[mealType];
-          if (meal?.recipeLink) {
+      // Handle both Swedish (Måndag, Tisdag) and English (monday, tuesday) keys
+      const allDays = Object.values(days) as any[];
+      
+      for (const day of allDays) {
+        if (!day || typeof day !== 'object') continue;
+        
+        // Iterate through all properties of the day object
+        for (const [key, value] of Object.entries(day)) {
+          const meal = value as any;
+          if (meal && typeof meal === 'object' && meal.recipeLink) {
             const slug = extractSlug(meal.recipeLink);
             if (slug) slugsToTag.add(slug);
           }
