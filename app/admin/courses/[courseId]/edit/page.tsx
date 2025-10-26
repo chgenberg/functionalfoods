@@ -245,7 +245,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
                     type="number"
                     value={toIncl((course as any).basePrice ?? null) as any}
                     onChange={(e) => {
-                      const v = parseInt(e.target.value || '0', 10);
+                      const v = e.target.value.trim() === '' ? 0 : parseFloat(e.target.value);
                       setCourse(prev => prev ? ({ ...prev, basePrice: isNaN(v) ? null : fromIncl(v) } as any) : null);
                     }}
                     className="admin-input"
@@ -257,7 +257,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
                     type="number"
                     value={toIncl((course as any).salePrice ?? null) as any}
                     onChange={(e) => {
-                      const v = parseInt(e.target.value || '0', 10);
+                      const v = e.target.value.trim() === '' ? 0 : parseFloat(e.target.value);
                       setCourse(prev => prev ? ({ ...prev, salePrice: isNaN(v) ? null : fromIncl(v) } as any) : null);
                     }}
                     className="admin-input"
