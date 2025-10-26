@@ -90,9 +90,6 @@ export default function PromoPopup() {
               >
                 LÄS MER HÄR!
               </a>
-              <p className="text-sm text-gray-700 mt-6 text-center font-medium">
-                Erbjudandet gäller till och med 31 oktober
-              </p>
             </div>
           </div>
         </div>
