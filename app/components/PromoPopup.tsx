@@ -84,7 +84,7 @@ export default function PromoPopup() {
             {/* CTA Button */}
             <div className="w-full md:w-1/3 p-8 flex flex-col items-center justify-center bg-gradient-to-br from-[#F3EFE3] to-[#FEFDF9]">
               <a
-                href="/boken" 
+                href="/utbildning/alla-kurser" 
                 onClick={handleClose}
                 className="inline-block bg-gradient-to-r from-[#014421] to-[#1a5c35] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center"
               >
