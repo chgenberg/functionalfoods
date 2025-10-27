@@ -125,7 +125,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Yoghurt med kokosgranola',
     servings: 1,
-    image: `${IMG_BASE}/YOGHURT_MED_KOKOSGRANOLA.JPG`,
+    image: `${IMG_BASE}/YOGHURT MED_KOKOSGRANOLA.JPG`,
     categories: ['frukost'],
     ingredients: [
       '1 dl grekisk yoghurt, 6 %',
@@ -461,7 +461,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Köttfärsbiffar med champinjonhattar',
     servings: 2,
-    image: `${IMG_BASE}/KÖTTFÄRSBIFFAR_MED_CHAMPINJONHATTAR.JPG`,
+    image: `${IMG_BASE}/KÖTTFÄRSB IFFAR_MED_CHAMPINJONHATTAR.JPG`,
     categories: ['kött','middag'],
     ingredients: [
       '1 vitlöksklyfta',
