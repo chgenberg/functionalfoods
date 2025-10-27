@@ -31,7 +31,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Yoghurt med blåbär och kokosgranola',
     servings: 1,
-    image: `${IMG_BASE}/YOGHURT_MED_BLÅBÄR_OCH_KOKOSGRANOLA.JPG`,
+    image: `${IMG_BASE}/YOGHURT_MED_BLABAR_OCH_KOKOSGRANOLA.JPG`,
     categories: ['frukost'],
     ingredients: ['1 dl grekisk yoghurt', '1 dl blåbär', '3/4 dl kokosgranola'],
     instructions: [
@@ -54,7 +54,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Äggröra med bär',
     servings: 1,
-    image: `${IMG_BASE}/ÄGGRÖRA_MED_BÄR.JPG`,
+    image: `${IMG_BASE}/AGGRORA_MED_BAR.jpg`,
     categories: ['frukost'],
     ingredients: ['2 ägg', '1 msk grädde', 'Salt och svartpeppar', '1 tsk smör', '2 msk blåbär', '2 jordgubbar'],
     instructions: [
@@ -68,7 +68,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Blåbärssmoothie',
     servings: 2,
-    image: `${IMG_BASE}/BLÅBÄRSSMOOTHIE.JPG`,
+    image: `${IMG_BASE}/BLABARSSMOOTHIE.JPG`,
     categories: ['frukost'],
     ingredients: ['1/2 banan', '200 g fryst mango', '2 dl frysta blåbär', '2 dl mandelmjölk'],
     instructions: [
@@ -80,7 +80,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Tofugryta med jordnötter och blomkålsris',
     servings: 2,
-    image: `${IMG_BASE}/TOFUGRYTA_MED_JORDNÖTTER_OCH_BLOMKÅLSRIS.JPG`,
+    image: `${IMG_BASE}/TOFUGRYTA_MED_JORDNOTTER_OCH_BLOMKALSRIS.JPG`,
     categories: ['vego','middag'],
     ingredients: ['250 g tofu','1 vitlöksklyfta','1 dl jordnötter','1 tsk olivolja','1.5 tsk currypasta','200 ml kokosmjölk','1 msk koriander','1 limeklyfta','Salt och svartpeppar','250 g blomkål','1 limeklyfta','1 morot','2 msk jordnötter','0,5 msk koriander','1/4 salladslök','2 limeklyftor'],
     instructions: [
@@ -107,7 +107,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Tacosoppa',
     servings: 2,
-    image: `${IMG_BASE}/TACOSOPPA.JPG`,
+    image: `${IMG_BASE}/TACOSOPPA.jpg`,
     categories: ['vego','middag'],
     ingredients: [
       '100 g blomkål',
@@ -138,7 +138,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Rödbetsquinoa med chevrelax',
     servings: 2,
-    image: `${IMG_BASE}/RÖDBETSQUINOA_MED_CHEVRELAX.JPG`,
+    image: `${IMG_BASE}/RODBETSQUINOA_MED_CHEVRELAX.JPG`,
     categories: ['fisk','middag'],
     ingredients: [
       '300 g laxfilé',
@@ -241,7 +241,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Korvstroganoff med svartkål',
     servings: 2,
-    image: `${IMG_BASE}/KORVSTROGANOFF_MED_SVARTKÅL.JPG`,
+    image: `${IMG_BASE}/KORVSTROGANOFF_MED_SVARTKAL.JPG`,
     categories: ['middag'],
     ingredients: [
       '300 g falukorv med hög kötthalt',
@@ -272,7 +272,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Persisk köttgryta med råris',
     servings: 2,
-    image: `${IMG_BASE}/PERSISK_KÖTTGRYTA_MED_RÅRIS.JPG`,
+    image: `${IMG_BASE}/PERSISK_KOTTGRYTA_MED_RARIS.JPG`,
     categories: ['kött','middag'],
     ingredients: [
       '1/2 gul lök',
@@ -313,7 +313,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Kladdkaka med grädde och hallon',
     servings: 10,
-    image: `${IMG_BASE}/KLADDKAKA_MED_GRÄDDE_OCH_HALLON.JPG`,
+    image: `${IMG_BASE}/KLADDKAKA_MED_GRADDE_OCH_HALLON.jpg`,
     categories: ['dessert'],
     ingredients: ['150 g smör','200 g mörk choklad','4 ägg','1 dl sötströ','0,5 krm vaniljpulver','1,5 dl mandelmjöl','1 tsk bakpulver','0,5 dl grädde','10 hallon'],
     instructions: [
