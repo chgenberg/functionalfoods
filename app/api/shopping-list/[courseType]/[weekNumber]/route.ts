@@ -182,32 +182,41 @@ export async function GET(
     // For hormone course, fetch from database
     if (courseType === 'hormone') {
       try {
-        const list = await prisma.weeklyShoppingList.findUnique({
+        // Find the course product by name
+        const course = await prisma.courseProduct.findFirst({
           where: {
-            courseType_weekNumber: {
-              courseType: 'hormonell-balans',
-              weekNumber: weekNum
-            }
+            name: { contains: 'hormonell-balans', mode: 'insensitive' }
           }
         });
 
-        if (list && list.items) {
-          const ingredients = (list.items as any[]).map((item: any) => ({
-            name: item.name || item.ingredient || '',
-            amount: item.amount || '1',
-            unit: item.unit || 'st',
-            category: item.category || 'Övrigt',
-            checked: false
-          }));
-
-          return NextResponse.json({
-            week: weekNum,
-            courseType,
-            recipeCount: 0,
-            ingredients,
-            generatedAt: new Date().toISOString(),
-            source: 'database'
+        if (course) {
+          const list = await prisma.weeklyShoppingList.findUnique({
+            where: {
+              courseId_week: {
+                courseId: course.id,
+                week: weekNum
+              }
+            }
           });
+
+          if (list && list.items) {
+            const ingredients = (list.items as any[]).map((item: any) => ({
+              name: item.ingredient || item.name || '',
+              amount: item.amount || '1',
+              unit: item.unit || 'st',
+              category: item.category || 'Övrigt',
+              checked: false
+            }));
+
+            return NextResponse.json({
+              week: weekNum,
+              courseType,
+              recipeCount: 0,
+              ingredients,
+              generatedAt: new Date().toISOString(),
+              source: 'database'
+            });
+          }
         }
       } catch (err) {
         console.error('Error fetching hormone shopping list from DB:', err);

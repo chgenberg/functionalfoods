@@ -5,15 +5,29 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
+    // First, find the hormone course by name
+    const course = await prisma.courseProduct.findFirst({
+      where: {
+        name: { contains: 'hormonell-balans', mode: 'insensitive' }
+      }
+    });
+
+    if (!course) {
+      return NextResponse.json({ 
+        error: 'Hormone course not found in CourseProduct',
+        info: 'Make sure a CourseProduct with name containing "hormonell-balans" exists'
+      }, { status: 404 });
+    }
+
     // Check what exists in the database for hormone course
     const lists = await prisma.weeklyShoppingList.findMany({
       where: {
-        courseType: 'hormonell-balans'
+        courseId: course.id
       },
       select: {
         id: true,
-        courseType: true,
-        weekNumber: true,
+        courseId: true,
+        week: true,
         items: true
       }
     });
@@ -22,10 +36,12 @@ export async function GET() {
 
     return NextResponse.json({
       ok: true,
+      courseId: course.id,
+      courseName: course.name,
       count: lists.length,
       lists: lists.map(l => ({
-        courseType: l.courseType,
-        weekNumber: l.weekNumber,
+        courseId: l.courseId,
+        week: l.week,
         itemCount: Array.isArray(l.items) ? l.items.length : 0,
         firstItem: Array.isArray(l.items) && l.items.length > 0 ? l.items[0] : null
       }))
