@@ -91,7 +91,7 @@ export default function KostschemaPage() {
                 <Printer className="w-5 h-5" />
                 <span className="hidden sm:inline">Skriv ut</span>
               </button>
-              <Link href={`/dashboard/courses/hormone/inkopslista?week=${selectedWeek}`} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary">
+              <Link href={`/dashboard/courses/functional-hormone/inkopslista?week=${selectedWeek}`} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary">
                 <ShoppingCart className="w-5 h-5" />
                 <span className="hidden sm:inline">Inköpslista</span>
               </Link>

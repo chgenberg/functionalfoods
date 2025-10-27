@@ -104,7 +104,7 @@ export default function HormoneAvslutningPage() {
           <h2 className="text-2xl font-bold text-[#014421] mb-6">Nästa steg</h2>
           <div className="space-y-4">
             <Link
-              href="/dashboard/courses/hormone/oversikt"
+              href="/dashboard/courses/functional-hormone/oversikt"
               className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
             >
               <span className="font-medium text-[#014421]">Tillbaka till kursöversikt</span>

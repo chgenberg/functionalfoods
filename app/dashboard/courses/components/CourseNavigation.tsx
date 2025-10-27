@@ -15,7 +15,7 @@ interface CourseNavigationProps {
 export default function CourseNavigation({ courseType, currentWeek = 1 }: CourseNavigationProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const basePath = courseType === 'hormone' ? '/dashboard/courses/hormone' : `/dashboard/courses/functional-${courseType}`;
+  const basePath = courseType === 'hormone' ? '/dashboard/courses/functional-hormone' : `/dashboard/courses/functional-${courseType}`;
   
   // Auto-scroll to left on mobile when component mounts
   useEffect(() => {

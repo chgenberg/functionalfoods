@@ -191,7 +191,7 @@ export default function HormoneOverview() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <div
-                    onClick={() => !isLocked && (window.location.href = `/dashboard/courses/hormone/week/${week.number}`)}
+                    onClick={() => !isLocked && (window.location.href = `/dashboard/courses/functional-hormone/week/${week.number}`)}
                     className={`
                       p-6 rounded-2xl border-2 transition-all cursor-pointer
                       ${status === 'current' ? 'border-[#8B5CF6] bg-[#8B5CF6]/5' : ''}

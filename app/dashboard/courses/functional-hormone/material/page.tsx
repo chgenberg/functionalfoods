@@ -42,7 +42,7 @@ export default function HormoneMaterialPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link
-          href="/dashboard/courses/hormone/oversikt"
+          href="/dashboard/courses/functional-hormone/oversikt"
           className="inline-flex items-center gap-2 text-[#014421] hover:text-[#116530] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
