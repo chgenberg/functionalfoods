@@ -41,7 +41,8 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
       setError(null);
 
       try {
-        const url = `/api/shopping-list?courseId=${courseId}&week=${weekNumber}`;
+        // Use the direct shopping list API endpoint with courseType in path
+        const url = `/api/shopping-list/hormone/${weekNumber}`;
         console.log('🛒 Fetching shopping list from:', url);
         
         const response = await fetch(url);
@@ -53,7 +54,13 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
         const data = await response.json();
         console.log('🛒 Shopping list data:', data);
         
-        const items: ShoppingListItem[] = data.items || [];
+        // Transform API response to match expected format
+        const items: ShoppingListItem[] = (data.ingredients || []).map((ing: any, idx: number) => ({
+          id: `${idx}`,
+          name: ing.name || '',
+          quantity: `${ing.amount || ''} ${ing.unit || ''}`.trim(),
+          category: ing.category || 'Övrigt'
+        }));
         setList(items);
 
         // Automatically open all categories that have items
