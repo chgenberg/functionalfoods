@@ -35,8 +35,7 @@ const RECIPES: RecipeSeed[] = [
     categories: ['frukost'],
     ingredients: ['1 dl grekisk yoghurt', '1 dl blåbär', '3/4 dl kokosgranola'],
     instructions: [
-      'Lägg yoghurt i en skål.',
-      'Toppa med blåbär och kokosgranola.'
+      'Lägg yoghurt och blåbär i en skål och lägg på kokosgranola.'
     ]
   },
   {
@@ -46,9 +45,10 @@ const RECIPES: RecipeSeed[] = [
     categories: ['frukost'],
     ingredients: ['1 dl keso', '1/2 persika', '2 jordgubbar'],
     instructions: [
-      'Lägg keso i en skål.',
-      'Skiva halva persikan och tärna den andra halvan.',
-      'Skiva jordgubbar och toppa keson med persika och jordgubbar.'
+      'Häll upp yoghurt i en skål.',
+      'Skiva hälften av persikan och tärna den andra halvan.',
+      'Skiva jordgubbar.',
+      'Toppa yoghurten med persika och jordgubbar.'
     ]
   },
   {
@@ -58,10 +58,11 @@ const RECIPES: RecipeSeed[] = [
     categories: ['frukost'],
     ingredients: ['2 ägg', '1 msk grädde', 'Salt och svartpeppar', '1 tsk smör', '2 msk blåbär', '2 jordgubbar'],
     instructions: [
-      'Dela jordgubbarna.',
-      'Vispa ihop ägg, grädde, salt och peppar.',
-      'Hetta upp en stekpanna med smör och häll i äggsmeten.',
-      'Rör i ca 30 sekunder tills krämig. Servera med färska bär.'
+      'Dela jordgubbar i mitten.',
+      'Vispa ihop ägg, grädde, salt och svartpeppar.',
+      'Hetta upp en stekpanna med smör och häll ner äggröran.',
+      'Rör om i cirka 30 sekunder och lägg upp på ett fat.',
+      'Servera med färska bär.'
     ]
   },
   {
@@ -71,8 +72,9 @@ const RECIPES: RecipeSeed[] = [
     categories: ['frukost'],
     ingredients: ['1/2 banan', '200 g fryst mango', '2 dl frysta blåbär', '2 dl mandelmjölk'],
     instructions: [
-      'Lägg alla ingredienser i en blender.',
-      'Mixa slätt. Späd med vatten vid behov och häll upp i glas.'
+      'Lägg alla ingredienser i en blender och mixa till en jämn smoothie.',
+      'Späd med vatten om det behövs.',
+      'Häll upp på glas.'
     ]
   },
   {
@@ -80,32 +82,26 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/TOFUGRYTA_MED_JORDNÖTTER_OCH_BLOMKÅLSRIS.JPG`,
     categories: ['vego','middag'],
-    ingredients: [
-      '250 g tofu',
-      '1 vitlöksklyfta',
-      '1 dl jordnötter',
-      '1 tsk olivolja',
-      '1,5 tsk currypasta',
-      '200 ml kokosmjölk',
-      '1 msk koriander',
-      '1 limeklyfta',
-      'Salt och svartpeppar',
-      '250 g blomkål',
-      '1 limeklyfta',
-      'Salt och svartpeppar',
-      '1 morot',
-      '2 msk jordnötter (topping)',
-      '1/2 msk koriander (topping)',
-      '1/4 salladslök',
-      '2 limeklyftor (servering)'
-    ],
+    ingredients: ['250 g tofu','1 vitlöksklyfta','1 dl jordnötter','1 tsk olivolja','1.5 tsk currypasta','200 ml kokosmjölk','1 msk koriander','1 limeklyfta','Salt och svartpeppar','250 g blomkål','1 limeklyfta','1 morot','2 msk jordnötter','0,5 msk koriander','1/4 salladslök','2 limeklyftor'],
     instructions: [
-      'Skär tofu i tärningar. Riv vitlök. Hacka jordnötter grovt.',
-      'Hetta upp olivolja och stek tofu med vitlök och jordnötter.',
-      'Tillsätt currypasta och kokosmjölk. Låt sjuda några minuter.',
-      'Hacka koriander och vänd ner. Pressa limejuice. Smaka av med salt och peppar.',
-      'Riv blomkål grovt till blomkålsris. Pressa lime, salta och peppra.',
-      'Strimla morot. Servera blomkålsris med tofugrytan, toppa med jordnötter, koriander och salladslök. Servera med limeklyftor.'
+      'Skär tofu i tärningar.',
+      'Skala och riv vitlök.',
+      'Hacka jordnötter grovt.',
+      'Hetta upp en stekpanna med olivolja.',
+      'Stek tofu tillsammans med vitlök och jordnötter.',
+      'Tillsätt currypasta och kokosmjölk och låt koka i några minuter.',
+      'Hacka koriander och tillsätt i grytan.',
+      'Pressa ned limejuice.',
+      'Salta och peppra.',
+      'Riv blomkål grovt på ett rivjärn.',
+      'Lägg i en skål.',
+      'Pressa i limejuice.',
+      'Salta och peppra.',
+      'Skala och strimla morot.',
+      'Lägg upp blomkålsriset på tallrikar.',
+      'Häll tofugrytan bredvid och toppa med jordnötter.',
+      'Lägg på koriander och limeklyftor.',
+      'Skär salladslök i strimlor och placera på toppen.'
     ]
   },
   {
@@ -127,9 +123,16 @@ const RECIPES: RecipeSeed[] = [
       '2 persiljekvistar'
     ],
     instructions: [
-      'Skär blomkål i mindre bitar och paprika i tärningar. Riv vitlök och ingefära, och hacka lök och chili.',
-      'Lägg allt i en kastrull med linser och tacokrydda. Häll på vatten och koka ca 10 minuter.',
-      'Servera i skålar med en klick gräddfil och persilja.'
+      'Skär blomkål i mindre bitar.',
+      'Skär paprikorna i tärningar.',
+      'Skala och riv vitlök och ingefära.',
+      'Skala och hacka lök.',
+      'Skär chili i tunna skivor.',
+      'Lägg alla ingredienser i en kastrull.',
+      'Tillsätt linser och tacokrydda.',
+      'Häll på vatten och låt koka i 10 minuter.',
+      'Servera i djupa skålar med en klick gräddfil.',
+      'Dekorera med persilja.'
     ]
   },
   {
@@ -154,11 +157,19 @@ const RECIPES: RecipeSeed[] = [
       '2 fikon'
     ],
     instructions: [
-      'Sätt ugnen på 200°C. Lägg laxen på plåt, skär ett snitt i varje filé och krydda med salt, peppar och örtagårdskrydda.',
-      'Lägg skivor av chèvre i snittet, ringla honung och lägg på valnötter. Baka i ca 20 minuter.',
-      'Koka quinoan 13 minuter i lättsaltat vatten. Skölj och lägg i skål.',
-      'Pressa citron och blanda med olivolja, rosmarin och finhackad rödlök. Smaka av med salt och peppar.',
-      'Tärna rödbetor och vänd ner i quinoan. Servera lax med quinoasallad, rucola och fikon.'
+      'Sätt ugnen på 200 grader.',
+      'Lägg laxfiléer på en ugnsplåt och skär ett snitt i varje filé.',
+      'Strö på salt, peppar och örtagårdskrydda.',
+      'Skiva getosten och lägg ner i snittet.',
+      'Ringla honung över och lägg på valnötter.',
+      'Sätt in i ugnen i 20 minuter.',
+      'Finhacka rödlök och rosmarin.',
+      'Koka quinoan i lättsaltat vatten i 13 minuter.',
+      'Skölj och lägg i en skål.',
+      'Pressa ner citronjuice och blanda i olivolja, rosmarin, rödlök, salt och peppar.',
+      'Skär rödbetor i tärningar och blanda ner i quinoasalladen.',
+      'Skär fikon i klyftor.',
+      'Servera laxen med quinoasallad, rucolasallad och fikon.'
     ]
   },
   {
@@ -166,24 +177,18 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/TONFISKSALLAD_MED_TOMAT.JPG`,
     categories: ['fisk','lunch'],
-    ingredients: [
-      '1 bifftomat',
-      '125 g tonfisk i vatten',
-      '1,5 soltorkade tomater',
-      '1/2 selleristjälk',
-      '2 msk rödlök',
-      '1/2 tsk olivolja',
-      '1,5 msk kapris',
-      '1 msk persilja',
-      'Salt och svartpeppar',
-      '1 persiljekvist (dekoration)',
-      '1 citronklyfta (servering)'
-    ],
+    ingredients: ['1 bifftomat','125 g tonfisk i vatten','1,5 soltorkade tomater','1/2 selleristjälk','2 msk rödlök','1/2 tsk olivolja','1,5 msk kapris','1 msk persilja','Salt och svartpeppar','1 persiljekvist','1 citronklyfta'],
     instructions: [
-      'Skiva bifftomat tunt och lägg på ett fat.',
-      'Blanda tonfisk med finhackade soltorkade tomater, selleri och rödlök.',
-      'Tillsätt olivolja, kapris och hackad persilja. Smaka av med salt och peppar.',
-      'Lägg röran på de skivade tomaterna och dekorera med citronklyfta och persilja.'
+      'Skär tomater i tunna skivor.',
+      'Lägg på ett fat.',
+      'Lägg tonfisk i en skål.',
+      'Skär soltorkad tomat och selleri i små bitar.',
+      'Skala och finhacka löken.',
+      'Hacka persilja.',
+      'Blanda ner allt med tonfisken och tillsätt olivolja, kapris och persilja.',
+      'Salta och peppra.',
+      'Lägg tonfiskröran på de skivade tomaterna.',
+      'Dekorera med en citronklyfta och en persiljekvist.'
     ]
   },
   {
@@ -212,12 +217,25 @@ const RECIPES: RecipeSeed[] = [
       '100 g rucola'
     ],
     instructions: [
-      'Sätt ugnen på 150°C. Mixa mandelmjöl, sesamfrön, fiberhusk och salt. Tillsätt smör och ägg och blanda till en deg.',
-      'Låt vila i kylen 30 minuter. Kavla ut och klä en pajform (22 cm) med bakplåtspapper. Förgrädda 10 minuter.',
-      'Höj ugnen till 200°C. Skär broccoli i buketter. Strimla skinka, paprika och purjolök.',
-      'Lägg hälften av fyllningen i pajskalet, lägg på cheddar, fyll på med resten.',
-      'Vispa ihop ägg, havregrädde, mjölk, salt, peppar och örtagårdskrydda. Häll i pajskalet.',
-      'Strö över riven ost och grädda ca 30 minuter. Servera med rucola.'
+      'Sätt ugnen på 150 grader.',
+      'Blanda ner mandelmjöl, sesamfrön, fiberhusk och salt i en matberedare.',
+      'Mixa och tillsätt smör och ägg.',
+      'Blanda ihop till en smidig deg.',
+      'Plasta in och låt vila i kylen i 30 minuter.',
+      'Kavla ut degen på ett mjölat bakbord.',
+      'Lägg bakplåtspapper i en pajform, 22 cm i diameter, med avtagbar kant.',
+      'Lägg ner pajdegen och fäst vid kanterna.',
+      'Pricka med en gaffel och förgrädda i 10 minuter.',
+      'Ta ut pajskalet och höj temperaturen till 200 grader.',
+      'Skär broccoli i buketter.',
+      'Strimla skinka, paprika och purjolök.',
+      'Lägg hälften av fyllningen i pajskalet.',
+      'Lägg på cheddarost.',
+      'Fyll på med resten av fyllningen.',
+      'Blanda ägg, grädde, mjölk, salt, peppar och örtagårdskrydda i en skål.',
+      'Häll äggstanningen i pajskalet.',
+      'Strö på riven ost och ugnsbaka ytterligare i 30 minuter.',
+      'Låt svalna något och servera med rucolasallad.'
     ]
   },
   {
@@ -239,10 +257,16 @@ const RECIPES: RecipeSeed[] = [
       '1/2 msk basilika'
     ],
     instructions: [
-      'Skär korven i stavar. Finhacka lök och riv vitlök. Skär svartkål grovt.',
-      'Stek korv, lök och vitlök i smör några minuter.',
-      'Tillsätt chilisås, senap och grädde. Salta och peppra och låt koka ihop.',
-      'Vänd ner svartkålen och låt bli varmt. Toppa med basilika.'
+      'Skär falukorv i stavar.',
+      'Skala och hacka gul lök fint.',
+      'Skala och riv vitlök.',
+      'Skär svartkålen grovt.',
+      'Hetta upp en stekpanna med smör och stek korv, lök och vitlök i några minuter.',
+      'Tillsätt chilisås, senap och grädde.',
+      'Salta och peppra.',
+      'Låt koka ihop.',
+      'Blanda ner svartkålen och låt allt bli varmt.',
+      'Lägg upp på tallrikar och dekorera med basilika.'
     ]
   },
   {
@@ -275,10 +299,15 @@ const RECIPES: RecipeSeed[] = [
       '4 dl kokt råris'
     ],
     instructions: [
-      'Skiva lök, finhacka vitlök och chili. Riv ingefära. Skär köttet i grytbitar.',
-      'Bryn kött, lök, vitlök, chili och ingefära i olivolja. Krydda med salt, peppar och kryddorna.',
-      'Lägg över i gryta. Tillsätt tomater, vatten, ketjap manis, dadlar och kanelstång. Sjud ca 1,5 timme.',
-      'Servera med pistagenötter, granatäppelkärnor, yoghurt, fefferoni och kokt råris.'
+      'Skala och skiva löken, finhacka vitlök och chili.',
+      'Finriv ingefäran.',
+      'Skär köttet i grytbitar.',
+      'Hetta upp en stekpanna med olivolja och stek kött, lök, vitlök, chili och ingefära.',
+      'Krydda med salt, peppar, malen kardemumma, curry, kryddpeppar, nejlika och paprikapulver.',
+      'Lägg över allt i en stor järngryta.',
+      'Tillsätt tomater, vatten, ketjap manis, hela dadlar och kanelstång.',
+      'Koka grytan i 1,5 timme.',
+      'Servera grytan med pistagenötter, granatäppelkärnor, yoghurt, fefferoni och kokt råris.'
     ]
   },
   {
@@ -286,22 +315,16 @@ const RECIPES: RecipeSeed[] = [
     servings: 10,
     image: `${IMG_BASE}/KLADDKAKA_MED_GRÄDDE_OCH_HALLON.JPG`,
     categories: ['dessert'],
-    ingredients: [
-      '150 g smör',
-      '200 g mörk choklad',
-      '4 ägg',
-      '1 dl sötströ',
-      '1/2 krm vaniljpulver',
-      '1,5 dl mandelmjöl',
-      '1 tsk bakpulver',
-      '1/2 dl grädde',
-      '10 hallon'
-    ],
+    ingredients: ['150 g smör','200 g mörk choklad','4 ägg','1 dl sötströ','0,5 krm vaniljpulver','1,5 dl mandelmjöl','1 tsk bakpulver','0,5 dl grädde','10 hallon'],
     instructions: [
-      'Sätt ugnen på 175°C. Smält smör och choklad försiktigt.',
-      'Vispa ägg och sötströ fluffigt. Vänd ner chokladsmöret, vaniljpulver, mandelmjöl och bakpulver.',
-      'Häll i form med avtagbar kant klädd med bakplåtspapper. Grädda ca 8 minuter.',
-      'Låt svalna. Vispa grädde och dekorera varje bit med en klick grädde och ett hallon.'
+      'Sätt ugnen på 175 grader.',
+      'Smält smör och choklad i en kastrull.',
+      'Vispa ägg och sötströ fluffigt.',
+      'Rör ner choklad- och smörblandningen och tillsätt vaniljpulver, mandelmjöl och bakpulver.',
+      'Vispa ihop och häll smeten i en bakplåtsklädd pajform med avtagbar kant.',
+      'Grädda i 8 minuter i ugnen.',
+      'Låt svalna.',
+      'Vispa grädde och dekorera varje bit med en klick grädde och ett hallon.'
     ]
   }
 ];
