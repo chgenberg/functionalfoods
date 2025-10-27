@@ -45,10 +45,10 @@ const RECIPES: Seed[] = [
     servings: 1,
     image: `${IMG}/YOGHURT_MED_KOKOSGRANOLA_OCH_MANGO.JPG`,
     categories: ['frukost'],
-    ingredients: ['100 g frysta mangotärningar','1 dl grekisk yoghurt 6 %','3/4 dl kokosgranola'],
+    ingredients: ['100 g frysta mangotärningar','1 dl grekisk yoghurt, 6 %','3/4 dl kokosgranola (egenbakat)'],
     instructions: [
       'Tina mangon.',
-      'Lägg yoghurt i en skål och toppa med kokosgranola och mango.'
+      'Lägg yoghurt i en skål och lägg på kokosgranola och mango.'
     ]
   },
   {
@@ -60,7 +60,7 @@ const RECIPES: Seed[] = [
     instructions: [
       'Lägg blåbär, hallon och mango i en blender.',
       'Häll på mandelmjölk och mixa till en jämn smoothie.',
-      'Häll upp på glas.'
+      'Häll upp i glas och förvara rester i kylen.'
     ]
   },
   {
@@ -68,12 +68,15 @@ const RECIPES: Seed[] = [
     servings: 1,
     image: `${IMG}/ÄGGRÖRA_MED_TOMATSALLAD.JPG`,
     categories: ['frukost'],
-    ingredients: ['1 tomat','1/5 rödlök','1/2 tsk olivolja','1 tsk basilika','2 ägg','1 msk mjölk','Salt','Svartpeppar','1 tsk smör'],
+    ingredients: ['1 tomat','1/5 rödlök','1/2 tsk olivolja','1 tsk basilika','2 ägg','1 msk mjölk','Salt och svartpeppar','1 tsk smör'],
     instructions: [
-      'Skär tomaten i bitar och lägg i en skål. Finhacka rödlök och basilika och blanda ner med olivolja, salt och peppar.',
-      'Vispa ihop ägg och mjölk i en skål och krydda med salt och peppar.',
-      'Hetta upp smör i stekpanna och stek äggröran ca 20 sekunder på medelhög värme.',
-      'Servera med tomatsallad och dekorera med basilika.'
+      'Skär tomaten i bitar och lägg i en skål.',
+      'Skala och finhacka rödlök, hacka basilikan och blanda ner med olivolja, salt och peppar.',
+      'Vispa ihop ägg och mjölk i en skål.',
+      'Krydda med salt och peppar.',
+      'Hetta upp en stekpanna med smör och stek äggröran i 20 sekunder på medelhög värme.',
+      'Lägg äggröran på en tallrik och servera med tomatsallad.',
+      'Dekorera med en basilikakvist.'
     ]
   },
   {
@@ -82,23 +85,51 @@ const RECIPES: Seed[] = [
     image: `${IMG}/KOKT_ÄGG_MED_KAVIAR.JPG`,
     categories: ['frukost'],
     ingredients: ['2 ägg','1 msk kaviar'],
-    instructions: 'Koka äggen och servera med kaviar.'
+    instructions: [
+      'Koka äggen och servera med kaviar.'
+    ]
   },
   {
     title: 'Spenatbiffar med tomatsallad',
     servings: 2,
     image: `${IMG}/SPENATBIFFAR_MED_TOMATSALLAD.JPG`,
     categories: ['vego','lunch','middag'],
-    ingredients: ['100 g bladspenat','1 schalottenlök','1/2 vitlöksklyfta','1 dl keso','40 g fetaost','1 ägg','1/2 dl mandelmjöl','1 tsk fiberhusk','Salt','Svartpeppar','1 krm örtagårdskrydda','1 tsk olivolja','Tomatsallad: 2 tomater, 1/4 rödlök, 2 msk basilika, 1 tsk olivolja, 1 tsk vinäger, salt, peppar','Chiliyoghurt: 1/2 dl grekisk yoghurt, 1/5 vitlök, 1 krm sriracha, salt, peppar'],
-    instructions: 'Blanda chiliyoghurt. Hacka spenat, finhacka lök och vitlök. Blanda ned keso, feta, ägg, mandelmjöl, fiberhusk och kryddor. Forma biffar och stek i olja. Tomatsallad: tärna tomat, finhacka lök och basilika, blanda med olja och vinäger. Servera biffarna med sallad och chiliyoghurt.'
+    ingredients: ['100 g bladspenat','1 schalottenlök','1/2 vitlöksklyfta','1 dl keso','40 g fetaost','1 ägg','1/2 dl mandelmjöl','1 tsk fiberhusk','Salt och svartpeppar','1 krm örtagårdskrydda','1 tsk olivolja','2 tomater','1/4 rödlök','2 msk basilika','1 tsk olivolja','1 tsk vinäger','1/2 dl grekisk yoghurt','1/5 vitlöksklyfta','1 krm srirachasås'],
+    instructions: [
+      'Riv vitlök och blanda ihop ingredienserna till chiliyoghurten och smaka av med salt och peppar.',
+      'Hacka spenaten fint och lägg i en bunke.',
+      'Skala och finhacka schalottenlök och riv vitlök och lägg ner i bunken tillsammans med spenat.',
+      'Tillsätt keso, fetaost och ägg.',
+      'Blanda i mandelmjöl, fiberhusk och kryddor.',
+      'Forma till fyra biffar.',
+      'Hetta upp en stekpanna med olja och stek ett par minuter på varje sida.',
+      'Skär tomater i tärningar och lägg i en skål.',
+      'Skala och finhacka rödlök och lägg i skålen med tomater.',
+      'Finhacka basilika och tillsätt tillsammans med olivolja och vinäger.',
+      'Salta och peppra.',
+      'Placera spenatbiffarna på en bädd av tomatsallad.',
+      'Lägg på chiliyoghurt och dekorera med basilikakvist.'
+    ]
   },
   {
     title: 'Kyckling med blomkålsmos',
     servings: 2,
     image: `${IMG}/KYCKLING_MED_BLOMKÅLSMOS.JPG`,
     categories: ['kyckling','middag'],
-    ingredients: ['1 tsk olivolja','300 g kycklinglårfilé','Salt','Svartpeppar','1/2 blomkålshuvud','2 msk grädde','1/2 dl mjölk','1 dl edamamebönor','25 g bacontärningar','1 salladslök','1 msk gräslök'],
-    instructions: 'Stek kyckling i olja, salta och peppra. Koka blomkål mjuk och mixa med grädde och mjölk; smaka av. Stek bacon med edamame, blanda i strimlad salladslök. Servera mos med kyckling och bacon/edamame, toppa med gräslök.'
+    ingredients: ['1 tsk olivolja','300 g kycklinglårfilé','Salt och svartpeppar','1/2 blomkålshuvud','2 msk grädde','1/2 dl mjölk','1 dl edamamebönor','25 g bacontärningar','1 salladslök','1 msk gräslök'],
+    instructions: [
+      'Hetta upp en stekpanna med olivolja.',
+      'Bryn kycklingen i ett par minuter.',
+      'Salta och peppra.',
+      'Skär blomkålen i bitar och koka i lättsaltat vatten i 20 minuter.',
+      'Häll av vattnet och mixa blomkålen i en matberedare eller med en stavmixer tillsammans med grädsen och mjölken.',
+      'Salta och peppra.',
+      'Hetta upp en stekpanna och stek bacontärningar tillsammans med edamamebönor i några minuter.',
+      'Strimla salladslök tunt och blanda ner.',
+      'Lägg upp blomkålsmos på en tallrik tillsammans med kycklinglårfilé.',
+      'Servera med bacon och edamamebönor.',
+      'Hacka gräslök och strö över.'
+    ]
   },
   {
     title: 'Kycklingklubbor med kikärtssallad',
