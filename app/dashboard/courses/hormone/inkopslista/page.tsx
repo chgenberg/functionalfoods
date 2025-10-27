@@ -2,13 +2,13 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import ShoppingListTemplate from '@/app/dashboard/courses/components/ShoppingListTemplate';
+import ShoppingList from './ShoppingList';
 
 function ShoppingListContent() {
   const searchParams = useSearchParams();
   const week = searchParams ? parseInt(searchParams.get('week') || '1') : 1;
 
-  return <ShoppingListTemplate courseType="hormone" weekNumber={week} />;
+  return <ShoppingList weekNumber={week} courseId="hormonell-balans" />;
 }
 
 export default function ShoppingListPage() {
