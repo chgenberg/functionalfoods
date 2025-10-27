@@ -33,23 +33,14 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/BANANPANNKAKA_MED_FRUKT_OCH_BÄR.JPG`,
     categories: ['frukost'],
-    ingredients: [
-      '1/2 banan',
-      '1 ägg',
-      '1/2 krm vaniljpulver',
-      '1 tsk smör',
-      '2 msk grekisk yoghurt',
-      '1/2 dl blåbär',
-      '1 msk granatäppelkärnor',
-      '1/2 banan (topping)'
-    ],
+    ingredients: ['1/2 banan','1 ägg','1/2 krm vaniljpulver','1 tsk smör','2 msk grekisk yoghurt','1/2 dl blåbär','1 msk granatäppelkärnor','1/2 banan'],
     instructions: [
-      'Mosa 1/2 banan i en skål.',
-      'Knäck ner ägget och tillsätt vaniljpulver. Vispa till en slät smet.',
+      'Mosa banan i en skål.',
+      'Knäck ner ägg och tillsätt vaniljpulver.',
+      'Vispa till en slät smet.',
       'Hetta upp en stekpanna med smör.',
-      'Stek pannkakan i 2–3 minuter per sida på medelvärme.',
-      'Skiva resterande 1/2 banan.',
-      'Lägg upp pannkakan på en tallrik och toppa med yoghurt, blåbär, granatäppelkärnor och banan.'
+      'Stek pannkakan i 2-3 minuter på varje sida.',
+      'Skiva banan. Lägg upp på en tallrik och dekorera med yoghurt, blåbär, granatäppelkärnor och banan.'
     ]
   },
   {
@@ -57,19 +48,13 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/OMELETT_MED_SKINKA.JPG`,
     categories: ['frukost'],
-    ingredients: [
-      '2 ägg',
-      'salt och svartpeppar',
-      '1 tsk smör',
-      '25 g rökt skinka',
-      '1 msk gräslök'
-    ],
+    ingredients: ['2 ägg','Salt och svartpeppar','1 tsk smör','25 g rökt skinka','1 msk gräslök'],
     instructions: [
-      'Vispa ihop äggen i en skål och krydda med salt och peppar.',
-      'Hetta upp en stekpanna med smör på medelstark värme.',
-      'Häll i äggsmeten och stek omeletten i någon minut tills den sätter sig.',
-      'Hacka gräslök fint.',
-      'Lägg skinka över omeletten och toppa med gräslök. Servera direkt.'
+      'Vispa ihop äggen i en skål.',
+      'Krydda med salt och peppar.',
+      'Hetta upp en stekpanna med smör och stek omeletten i någon minut på medelstark värme.',
+      'Hacka gräslök.',
+      'Lägg på en skiva skinka på omeletten och toppa med gräslök.'
     ]
   },
   {
@@ -77,18 +62,35 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/OST_OCH_SKINKMACKA_MED_GURKA.JPG`,
     categories: ['frukost'],
-    ingredients: [
-      '1 skiva kavring med frön (egenbakat)',
-      '1 tsk smör',
-      '1 salladsblad',
-      '1 skiva ost',
-      '1 skiva skinka',
-      '3 skivor gurka'
-    ],
+    ingredients: ['1 skiva kavring med frön (egenbakat)','1 tsk smör','1 salladsblad','1 skiva ost','1 skiva skinka','3 skivor gurka'],
     instructions: [
-      'Bred smör på brödskivan.',
-      'Lägg på salladsblad, ost och skinka.',
-      'Toppa med gurkskivor och servera.'
+      'Bred smör på mackan och lägg på sallad, ost, skinka och gurka.'
+    ]
+  },
+  {
+    title: 'Falafel med grönsaker',
+    servings: 2,
+    image: `${IMG_BASE}/FALAFEL_MED_GRÖNSAKER.JPG`,
+    categories: ['vego','lunch','middag'],
+    ingredients: ['115 g konserverade kikärtor','1/2 gul lök','1/2 vitlöksklyfta','1/2 tsk malen spiskummin','1 krm salt','2 msk persilja','1 krm sambal oelek','1 msk majsstärkelse','1 tsk olivolja','2 morötter','1/2 paprika','1/2 rödlök','10 cm gurka','10 cocktailtomater','50 g spenat','1/2 dl grekisk yoghurt','1/2 msk sweet chili sås','1/2 vitlögsklyfta'],
+    instructions: [
+      'Gör dressingen genom att riva vitlök och blanda ihop alla ingredienser i en skål.',
+      'Skölj kikärtorna och låt rinna av i ett durkslag.',
+      'Skala och hacka lök.',
+      'Skala och riv vitlök.',
+      'Mixa kikärtor, lök och vitlök i en mixer eller med en stavmixer.',
+      'Tillsätt spiskummin, salt, persilja, sambal oelek och majsstärkelse.',
+      'Forma smeten till bullar.',
+      'Hetta upp en stekpanna med olja och stek i cirka 5 minuter.',
+      'Skala och skär morötter i strimlor.',
+      'Skär paprika i strimlor.',
+      'Skala och skär lök i strimlor.',
+      'Skär gurkan i bitar.',
+      'Dela cocktailtomaterna.',
+      'Lägg spenat i botten på tallrikar.',
+      'Fördela grönsakerna ovanpå spenaten.',
+      'Toppa med falafel och dressing.',
+      'Dekorera med en persiljekvist.'
     ]
   }
 ];
