@@ -47,7 +47,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Kavring med frön',
     servings: 14,
-    image: `${IMG_BASE}/KAVRING_MED_FRÖN.JPG`,
+    image: `${IMG_BASE}/KAVRING_MED_FRON.JPG`,
     categories: ['frukost','egenbakat'],
     ingredients: [
       '5 dl filmjölk',
@@ -160,7 +160,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Tomatsoppa med kanel och ingefära',
     servings: 3,
-    image: `${IMG_BASE}/TOMATSOPPA_MED_KANEL_OCH_INGEFÄRA.png`,
+    image: `${IMG_BASE}/TOMATSOPPA_MED_KANEL_OCH_INGEFARA.png`,
     categories: ['vego','lunch','middag'],
     ingredients: [
       '1 gul lök',
@@ -320,7 +320,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Laxsallad med ägg',
     servings: 1,
-    image: `${IMG_BASE}/LAXSALLAD_MED_ÄGG.JPG`,
+    image: `${IMG_BASE}/LAXSALLAD_MED_AGG.JPG`,
     categories: ['fisk','lunch'],
     ingredients: [
       '2 kokta ägg',
@@ -410,7 +410,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Lövbiff teriyaki med nudelsallad',
     servings: 2,
-    image: `${IMG_BASE}/LÖVBIFF_TERIYAKI_MED_NUDELSALLAD.jpg`,
+    image: `${IMG_BASE}/LOVBIFF_TERIYAKI_MED_NUDELSALLAD.jpg`,
     categories: ['kött','lunch','middag'],
     ingredients: [
       '300 g lövbiff',
@@ -461,7 +461,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Köttfärsbiffar med champinjonhattar',
     servings: 2,
-    image: `${IMG_BASE}/KÖTTFÄRSB IFFAR_MED_CHAMPINJONHATTAR.JPG`,
+    image: `${IMG_BASE}/KOTTFARSB IFFAR_MED_CHAMPINJONHATTAR.JPG`,
     categories: ['kött','middag'],
     ingredients: [
       '1 vitlöksklyfta',
