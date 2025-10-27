@@ -41,8 +41,8 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
       setError(null);
 
       try {
-        // Use the direct shopping list API endpoint with courseType in path
-        const url = `/api/shopping-list/hormone/${weekNumber}`;
+        // Use admin endpoint which returns items in the correct format
+        const url = `/api/admin/shopping-lists/hormone/${weekNumber}`;
         console.log('🛒 Fetching shopping list from:', url);
         
         const response = await fetch(url);
@@ -54,12 +54,12 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ weekNumber, courseId }) => 
         const data = await response.json();
         console.log('🛒 Shopping list data:', data);
         
-        // Transform API response to match expected format
-        const items: ShoppingListItem[] = (data.ingredients || []).map((ing: any, idx: number) => ({
-          id: `${idx}`,
-          name: ing.name || '',
-          quantity: `${ing.amount || ''} ${ing.unit || ''}`.trim(),
-          category: ing.category || 'Övrigt'
+        // Transform items to match expected format
+        const items: ShoppingListItem[] = (data.items || []).map((item: any, idx: number) => ({
+          id: item.id || `${idx}`,
+          name: item.ingredient || item.name || '',
+          quantity: `${item.amount || ''} ${item.unit || ''}`.trim() || '1 st',
+          category: item.category || 'Övrigt'
         }));
         setList(items);
 

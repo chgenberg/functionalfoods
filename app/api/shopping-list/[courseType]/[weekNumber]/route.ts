@@ -189,6 +189,8 @@ export async function GET(
           }
         });
 
+        console.log(`🔍 Hormone API: Looking for course "Hormonell Balans"`, { found: !!course, courseId: course?.id });
+
         if (course) {
           const list = await prisma.weeklyShoppingList.findUnique({
             where: {
@@ -198,6 +200,8 @@ export async function GET(
               }
             }
           });
+
+          console.log(`🔍 Hormone API: Looking for week ${weekNum}`, { found: !!list, itemCount: (list?.items as any)?.length });
 
           if (list && list.items) {
             const ingredients = (list.items as any[]).map((item: any) => ({
@@ -219,7 +223,7 @@ export async function GET(
           }
         }
       } catch (err) {
-        console.error('Error fetching hormone shopping list from DB:', err);
+        console.error('❌ Error fetching hormone shopping list from DB:', err);
       }
     }
     
