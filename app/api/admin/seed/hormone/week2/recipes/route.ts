@@ -54,7 +54,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Bärsmoothie',
     servings: 2,
-    image: `${IMG}/BÄRSMOOTHIE.JPG`,
+    image: `${IMG}/BARSMOOTHIE.JPG`,
     categories: ['frukost'],
     ingredients: ['2 dl frysta blåbär','2 dl frysta hallon','150 g fryst mango','2 dl mandelmjölk'],
     instructions: [
@@ -66,7 +66,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Äggröra med tomatsallad',
     servings: 1,
-    image: `${IMG}/ÄGGRÖRA_MED_TOMATSALLAD.JPG`,
+    image: `${IMG}/AGGRORA_MED_TOMATSALLAD.JPG`,
     categories: ['frukost'],
     ingredients: ['1 tomat','1/5 rödlök','1/2 tsk olivolja','1 tsk basilika','2 ägg','1 msk mjölk','Salt och svartpeppar','1 tsk smör'],
     instructions: [
@@ -82,7 +82,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Kokt ägg med kaviar',
     servings: 1,
-    image: `${IMG}/KOKT_ÄGG_MED_KAVIAR.JPG`,
+    image: `${IMG}/KOKT_AGG_MED_KAVIAR.JPG`,
     categories: ['frukost'],
     ingredients: ['2 ägg','1 msk kaviar'],
     instructions: [
@@ -114,7 +114,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Kyckling med blomkålsmos',
     servings: 2,
-    image: `${IMG}/KYCKLING_MED_BLOMKÅLSMOS.JPG`,
+    image: `${IMG}/KYCKLING_MED_BLOMKALSMOS.JPG`,
     categories: ['kyckling','middag'],
     ingredients: ['1 tsk olivolja','300 g kycklinglårfilé','Salt och svartpeppar','1/2 blomkålshuvud','2 msk grädde','1/2 dl mjölk','1 dl edamamebönor','25 g bacontärningar','1 salladslök','1 msk gräslök'],
     instructions: [
@@ -134,7 +134,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Kycklingklubbor med kikärtssallad',
     servings: 2,
-    image: `${IMG}/KYCKLINGKLUBBOR_MED_KIKÄRTSSALLAD.JPG`,
+    image: `${IMG}/KYCKLINGKLUBBOR_MED_KIKARTSSALLAD.JPG`,
     categories: ['kyckling','middag'],
     ingredients: ['550 g kycklingklubbor','1/2 msk ketjap manis','1 tsk olivolja','1 vitlöksklyfta','Salt och svartpeppar','1 krm örtagårdskrydda','1 krm paprika','1 krm malen curry','200 g konserverade kikärtor','1 tsk olivolja','1/2 tsk örtagårdskrydda','Salt och svartpeppar','1/2 vitlöksklyfta','2 msk persilja','4 soltorkade tomater i olja','1/4 rödlök','1/4 röd paprika','1/4 gul paprika','6 cocktailtomater','3/4 dl grekisk yoghurt','1 krm sriracha sås','1 msk mango chutney','1/4 vitlöksklyfta'],
     instructions: [
@@ -167,7 +167,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Lax med saffranssås och quinoasallad',
     servings: 2,
-    image: `${IMG}/LAX_MED_SAFFRANSSÅS_OCH_QUINOASALLAD.JPG`,
+    image: `${IMG}/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.JPG`,
     categories: ['fisk','middag'],
     ingredients: ['300 g laxfilé','Salt och vitpeppar','1,5 dl vit quinoa','1/4 rödlök','1 morot','1 dl frysta ärtor','1 tsk olivolja','1/4 citron','2 msk persilja','1/4 gul lök','1/4 vitlöksklyfta','1 tsk smör','0,25 g malen saffran','1 dl havregrädde','2 färska fikon','2 citronskivor'],
     instructions: [
@@ -192,7 +192,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Köttfärssås med glutenfri pasta',
     servings: 2,
-    image: `${IMG}/KÖTTFÄRSÅS_MED_GLUTENFRI_PASTA.JPG`,
+    image: `${IMG}/KOTTFARSAS_MED_GLUTENFRI_PASTA.JPG`,
     categories: ['kött','lunch','middag'],
     ingredients: ['1 tsk olivolja','Salt och svartpeppar','300 g nötfärs','1/2 gul lök','1 vitlöksklyfta','1 morot','1 stjälkselleri','200 ml konserverade krossade tomater','1/2 msk stark chilisås','1 krm torkade örter','Lite färsk basilika','150 g glutenfri spirelli'],
     instructions: [
@@ -213,7 +213,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Mortadella med päron',
     servings: 1,
-    image: `${IMG}/MORTADELLA_MED_PÄRON.JPG`,
+    image: `${IMG}/MORTADELLA_MED_PARON.JPG`,
     categories: ['kallrätt','middag','lunch'],
     ingredients: ['2 skivor mortadella','2 skivor lufttorkad skinka','1/2 päron','50 g getost','25 g ruccolasallad','1 persiljekvist'],
     instructions: [
@@ -226,7 +226,7 @@ const RECIPES: Seed[] = [
   {
     title: 'Köttfärsbiff med champinjonsås',
     servings: 2,
-    image: `${IMG}/KÖTTFÄRSBIFF_MED_CHAMPINJONSÅS.JPG`,
+    image: `${IMG}/KOTTFARSBIFF_MED_CHAMPINJONSAS.JPG`,
     categories: ['kött','middag'],
     ingredients: ['250 g nötfärs','1/2 gul lök','1/2 vitlöksklyfta','Salt och svartpeppar','2 msk persilja','1 tsk smör','1/2 dl vatten','50 g ruccolasallad','1/2 dl inlagda rödbetor','4 skivor inlagd gurka','150 g champinjoner','1/2 gul lök','1 tsk smör','1 1/4 dl havregrädde','1 tsk ketjap manis','2 msk persilja','1/4 vitkål','1 morot','1/4 röd paprika','100 g sockerärtor','2 msk persilja','2 tsk olivolja','1 tsk sötstark senap','1 tsk vitvinsvinäger','2 krm örtagårdskrydda'],
     instructions: [
