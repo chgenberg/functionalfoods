@@ -31,7 +31,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Havregrynsgröt med bär och kokos',
     servings: 1,
-    image: `${IMG_BASE}/HAVREGRYNSGRÖT_MED_BÄR_OCH_KOKOS.JPG`,
+    image: `${IMG_BASE}/HAVREGRYNSGROT_MED_BAR_OCH_KOKOS.JPG`,
     categories: ['frukost'],
     ingredients: ['1 dl havregryn','2 dl vatten','1/2 krm salt','1 dl frysta bär','2 msk kokosflingor','1 dl mjölk'],
     instructions: [
@@ -45,7 +45,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Ägghack med skinka och äpple',
     servings: 1,
-    image: `${IMG_BASE}/ÄGGHACK_MED_SKINKA_OCH_ÄPPLE.JPG`,
+    image: `${IMG_BASE}/AGGHACK_MED_SKINKA_OCH_APPLE.JPG`,
     categories: ['frukost'],
     ingredients: ['2 kokta ägg','30 g skinka','1 msk majonnäs','Salt och svartpeppar','1/2 äpple','10 g rucolasallad'],
     instructions: [
@@ -58,7 +58,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Yoghurt med kokosgranola, frukt och bär',
     servings: 1,
-    image: `${IMG_BASE}/YOGHURT_MED_KOKOSGRANOLA_FRUKT_OCH_BÄR.JPG`,
+    image: `${IMG_BASE}/YOGHURT_MED_KOKOSGRANOLA_FRUKT_OCH_BAR.JPG`,
     categories: ['frukost'],
     ingredients: ['1 dl grekisk yoghurt','3/4 dl kokosgranola (egenbakat)','1/2 dl blåbär','1/2 clementin','1/2 dl mango','1/2 kiwi','1/4 banan'],
     instructions: [
@@ -69,7 +69,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Stekt ägg med majonnäs',
     servings: 1,
-    image: `${IMG_BASE}/STEKT_ÄGG_MED_MAJONÄS.JPG`,
+    image: `${IMG_BASE}/STEKT_AGG_MED_MAJONAS.JPG`,
     categories: ['frukost'],
     ingredients: ['1 tsk smör','2 ägg','Salt och svartpeppar','1/2 msk majonnäs','2 cocktailtomater','1 tsk gräslök'],
     instructions: [
@@ -83,7 +83,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Bondsoppa med vita bönor',
     servings: 4,
-    image: `${IMG_BASE}/BONDSOPPA_MED_VITA_BÖNOR.JPG`,
+    image: `${IMG_BASE}/BONDSOPPA_MED_VITA_BONOR.JPG`,
     categories: ['soppa','lunch','middag'],
     ingredients: ['400 g konserverade vita bönor','1/2 rödlök','2 morötter','1 grönsaksbuljong','6 dl vatten','1 paprika','1 selleristjälk','1 tsk olivolja','1 krm torkad oregano','Salt och svartpeppar','2 lagerblad','1 tsk srirachasås','10 cocktailtomater','1 msk färsk oregano'],
     instructions: [
@@ -176,7 +176,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Köttfärsbiffar med sötpotatis',
     servings: 2,
-    image: `${IMG_BASE}/KÖTTFÄRSBIFFAR_MED_SÖTPOTATIS.JPG`,
+    image: `${IMG_BASE}/KOTTFARSBIFFAR_MED_SOTPOTATIS.JPG`,
     categories: ['kött','middag'],
     ingredients: ['300 g nötfärs','1 vitlöksklyfta','1/4 röd lök','2 msk persilja','1 tsk sambal oelek','Salt och svartpeppar','300 g sötpotatis','1/2 röd lök','2 tsk olivolja','2 msk creme fraiche','1 msk majonnäs','1 tsk sötstark senap','1/2 tsk dijon senap','25 g rucola','2 msk riven parmesan'],
     instructions: [
@@ -202,7 +202,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Wokad lövbiff med nudlar',
     servings: 2,
-    image: `${IMG_BASE}/WOKAD_LÖVBIFF_MED_NUDLAR.JPG`,
+    image: `${IMG_BASE}/WOKAD_LOVBIFF_MED_NUDLAR.JPG`,
     categories: ['kött','middag'],
     ingredients: ['100 g vermicelli nudlar','300 g lövbiff','1/2 gul lök','1/2 chili','1 vitlöksklyfta','2 tsk olivolja','Salt och svartpeppar','1 msk ingefära','120 g blue dragon teriyaki wok sås','1 tsk sesamolja','150 g haricot verts','1/2 broccolistånd','2 msk koriander','1 morot','2 korianderkvistar'],
     instructions: [
@@ -228,7 +228,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Mandarin med kanelkräm',
     servings: 1,
-    image: `${IMG_BASE}/MANDARIN_MED_KANELKRÄM.JPG`,
+    image: `${IMG_BASE}/MANDARIN_MED_KANELKRAM.JPG`,
     categories: ['dessert'],
     ingredients: ['1,5 mandarin','1 msk kokosgrädde','1 krm agavesirap','1/2 krm malen kanel','1 msk mandelspån'],
     instructions: [
