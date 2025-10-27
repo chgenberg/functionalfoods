@@ -10,7 +10,7 @@ import { useCart } from '../../context/CartContext';
 import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
-import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight, Battery, Coffee, Moon } from 'lucide-react';
+import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight, Battery, Coffee, Moon, Gift } from 'lucide-react';
 import { formatPrice } from '@/app/lib/utils';
 import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
@@ -253,6 +253,10 @@ export default function FunctionalEnergyPage() {
               <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full">
                 <Play className="w-5 h-5 text-[#93C560]" />
                 <span className="font-medium">Videolektioner</span>
+              </div>
+              <div className="flex items-center gap-2 bg-[#8B2E2E] text-white px-4 py-2 rounded-full">
+                <Gift className="w-5 h-5" />
+                <span className="font-medium text-sm">Gratis e-bok vid köp</span>
               </div>
             </motion.div>
 
