@@ -39,9 +39,9 @@ const RECIPES: RecipeSeed[] = [
       '1 kopp kaffe/te'
     ],
     instructions: [
-      'Häll upp vatten i ett glas.',
-      'Pressa ner citronjuice och rör om.',
-      'Drick vattnet tillsammans med en kopp kaffe eller te.'
+      'Häll upp ett glas med vatten.',
+      'Pressa ner citronjuice.',
+      'Drick vatten och en kopp med kaffe eller te.'
     ]
   },
   {
@@ -59,16 +59,20 @@ const RECIPES: RecipeSeed[] = [
       '1/2 dl pumpafrön',
       '1 dl russin',
       '1 tsk bikarbonat',
-      'Smör och bovetemjöl till formen',
-      '1 msk pumpafrön + 1 msk solrosfrön + 1 msk sesamfrön (topping)'
+      '1 tsk smör',
+      '1 tsk bovetemjöl',
+      '1 msk pumpafrön',
+      '1 msk solrosfrön',
+      '1 msk sesamfrön'
     ],
     instructions: [
-      'Sätt ugnen på 175°C.',
-      'Blanda filmjölk, brödsirap, bovetemjöl, havremjöl, linfrö, solroskärnor, pumpafrön, russin och bikarbonat i en bunke. Låt svälla några minuter.',
-      'Smöra och mjöla en brödform (1,5–2 liter).',
-      'Fördela smeten i formen och toppa med pumpafrön, solrosfrön och sesamfrön.',
-      'Grädda i nedre delen av ugnen ca 50 minuter.',
-      'Låt svalna på galler innan du skär upp.'
+      'Sätt ugnen på 175 grader.',
+      'Blanda ihop alla ingredienser i en bunke.',
+      'Låt stå och svälla i några minuter.',
+      'Smöra och mjöla en brödform, 1 1/2 – 2 liter.',
+      'Fördela smeten jämnt i formen och strö över frön.',
+      'Grädda i nedre delen av ugnen i cirka 50 minuter.',
+      'Låt svalna på galler.'
     ]
   },
   {
@@ -77,16 +81,15 @@ const RECIPES: RecipeSeed[] = [
     image: `${IMG_BASE}/OSTMACKA_MED_PAPRIKA.JPG`,
     categories: ['frukost'],
     ingredients: [
-      '1 skiva kavring',
+      '1 skiva kavring (egenbakad)',
       '1 tsk smör',
       '1 skiva ost',
       '3 paprikaringar',
       '2 cocktailtomater'
     ],
     instructions: [
-      'Bred smör på kavringen.',
-      'Lägg på ost och paprikaringar.',
-      'Servera med cocktailtomater.'
+      'Bred smör på mackan och lägg på ost och paprika.',
+      'Servera med tomater.'
     ]
   },
   {
@@ -95,16 +98,28 @@ const RECIPES: RecipeSeed[] = [
     image: `${IMG_BASE}/KOKOSGRANOLA.JPG`,
     categories: ['egenbakat','frukost'],
     ingredients: [
-      '1 dl paranötter', '1 dl valnötter', '1 dl hasselnötter', '1 dl mandel', '1 dl pumpafrön', '4 dl mandelmjöl',
-      '1 msk Nikks fiberhonung', '1 msk rapsolja', '1 msk malen kanel', '1 tsk malen kardemumma', '1 krm salt',
-      '2 dl kokosflingor', '2 dl kokosskivor'
+      '1 dl paranötter',
+      '1 dl valnötter',
+      '1 dl hasselnötter',
+      '1 dl mandel',
+      '1 dl pumpafrön',
+      '4 dl mandelmjöl',
+      '1 msk Nikks fiberhonung',
+      '1 msk rapsolja',
+      '1 msk malen kanel',
+      '1 tsk malen kardemumma',
+      '1 krm salt',
+      '2 dl kokosflingor',
+      '2 dl kokosskivor'
     ],
     instructions: [
       'Hacka alla nötter grovt.',
-      'Hetta upp en stekpanna och rosta mandelmjöl med Nikks fiberhonung, rapsolja, kanel, kardemumma och salt ca 5 minuter på låg värme.',
+      'Hetta upp en stekpanna och lägg ner mandelmjöl.',
+      'Tillsätt fiberhonung, olja, kanel, kardemumma och salt.',
+      'Sänk värmen och låt rosta i 5 minuter under omrörning.',
       'Blanda ner kokosflingor och kokosskivor.',
-      'Rosta nötter och pumpafrön i en torr stekpanna och blanda ner i granolan.',
-      'Låt svalna och förvara i burk med lock.'
+      'Rosta nötter och pumpafrön i en torr stekpanna i några minuter.',
+      'Blanda ner i stekpannan med mandelmjöl. Häll upp granolan i en burk med lock.'
     ]
   },
   {
@@ -112,10 +127,13 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/YOGHURT MED_KOKOSGRANOLA.JPG`,
     categories: ['frukost'],
-    ingredients: ['1 dl grekisk yoghurt, 6 %', '3/4 dl kokosgranola (egenbakat)', '3 jordgubbar'],
+    ingredients: [
+      '1 dl grekisk yoghurt, 6 %',
+      '3/4 dl kokosgranola (egenbakat)',
+      '3 jordgubbar'
+    ],
     instructions: [
-      'Lägg yoghurt i en skål.',
-      'Toppa med kokosgranola (egenbakat).',
+      'Lägg yoghurt i en skål och lägg på kokosgranola.',
       'Skiva jordgubbar och lägg över.'
     ]
   },
@@ -124,11 +142,18 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/MANGOSMOOTHIE_MED_SPENAT.JPG`,
     categories: ['frukost'],
-    ingredients: ['1 msk ingefära', '150 g fryst mango', '50 g färsk spenat', '2 dl vatten', '1/2 lime', '1 dl mandelmjölk'],
+    ingredients: [
+      '1 msk ingefära',
+      '150 g fryst mango',
+      '50 g färsk spenat',
+      '2 dl vatten',
+      '1/2 lime',
+      '1 dl mandelmjölk'
+    ],
     instructions: [
-      'Skala och skär ingefäran i små bitar.',
-      'Lägg ingefära, fryst mango, spenat och vatten i en mixer och mixa slätt.',
-      'Pressa i lime och tillsätt mandelmjölk. Mixa kort igen.',
+      'Skala och skär ingefära i små bitar och lägg i en mixer tillsammans med mango, spenat och vatten.',
+      'Mixa till en smoothie.',
+      'Pressa i lime och häll på mandelmjölk och mixa lite till.',
       'Häll upp i glas.'
     ]
   },
@@ -154,13 +179,16 @@ const RECIPES: RecipeSeed[] = [
       '2 msk persilja'
     ],
     instructions: [
-      'Skala och hacka lök och vitlök. Riv ingefära.',
+      'Skala och hacka lök och vitlök.',
+      'Riv ingefära.',
       'Hetta upp en kastrull med olja och bryn lök, vitlök, ingefära och kanel i någon minut.',
-      'Tillsätt krossade tomater, vatten och smula i buljongtärningen. Låt koka upp.',
-      'Smaka av med salt, peppar och chiliflakes och mixa soppan slät.',
-      'Skär halloumi i mindre bitar. Grovhacka mandlar och hacka persilja.',
-      'Stek halloumi och mandlar i lite olja några minuter.',
-      'Häll upp soppan och toppa med persilja.'
+      'Tillsätt tomater, vatten och smula i buljongtärningen.',
+      'Låt koka upp och smaka av med salt, peppar och chiliflakes.',
+      'Lägg soppan i en matberedare och mixa ihop eller använd en stavmixer.',
+      'Skär halloumi i mindre bitar.',
+      'Grovhacka mandlar och hacka persilja.',
+      'Hetta upp en stekpanna och stek osten och mandlar i några minuter tills det får lite färg.',
+      'Häll upp soppan i en skål och toppa med persilja.'
     ]
   },
   {
@@ -187,23 +215,27 @@ const RECIPES: RecipeSeed[] = [
       'Lite vatten',
       '1/2 dl persilja',
       '1 dl grekisk yoghurt',
-      '1/2 riven morot',
+      '1/2 morot',
       '5 cm gurka',
       '1 krm malen spiskummin',
-      'Salt och peppar',
       '2 dl kokt vit quinoa',
       '2 msk rostade solrosfrön',
       '2 msk persilja'
     ],
     instructions: [
-      'Koka quinoan enligt anvisning.',
-      'Skala och skär morot och palsternacka i bitar, strimla lök och skär paprikorna i större bitar.',
-      'Finhacka chili och riv vitlök.',
-      'Hetta upp olja och stek morot, palsternacka, lök, vitlök och chili några minuter.',
-      'Tillsätt paprika, krossade tomater, kryddor och smula ner buljongtärning. Låt puttra tills grönsakerna mjuknat. Späd med lite vatten vid behov.',
-      'Smaka av med salt och peppar och rör ner persilja.',
-      'Raita: Blanda yoghurt, riven morot, finhackad gurka och spiskummin. Smaka av med salt och peppar.',
-      'Servera med kokt vit quinoa, klicka på raita och toppa med persilja och rostade solrosfrön.'
+      'Koka quinoa enligt anvisningarna på förpackningen.',
+      'Skala och skär morötter och palsternacka i bitar, strimla löken och skär paprikorna i större bitar.',
+      'Finhacka chilin och riv vitlöken fint.',
+      'Hacka persilja.',
+      'Hetta upp en stekpanna med olivolja och stek morötter, palsternacka, lök, vitlök och chili i några minuter.',
+      'Tillsätt paprika och häll i krossade tomater, kryddor och smula ner buljongtärningen.',
+      'Låt puttra i några minuter tills grönsakerna har blivit mjuka.',
+      'Tillsätt lite vatten om du vill ha mer sås.',
+      'Smaka av med salt och svartpeppar och rör sist ner persilja.',
+      'Gör såsen genom att finhacka morot och gurka och blanda ihop alla ingredienser i en skål.',
+      'Rosta solrosfrön i en torr stekpanna.',
+      'Lägg kokt quinoa i en skål och häll på ratatouille.',
+      'Klicka på såsen och strö på lite persilja och rostade solrosfrön.'
     ]
   },
   {
@@ -212,19 +244,41 @@ const RECIPES: RecipeSeed[] = [
     image: `${IMG_BASE}/KYCKLINGBIFFAR_MED_MANGOSALSA.JPG`,
     categories: ['kyckling','lunch','middag'],
     ingredients: [
-      '300 g kycklingfärs', '1/2 vitlöksklyfta', '1/4 rödlök', 'salt och svartpeppar', '1 tsk olivolja',
-      '1/2 mango', '5 cm gurka', '1/4 rödlök', '1 chili', '6 cocktailtomater', '2 msk koriander',
-      '1/4 vitlöksklyfta', '1 tsk ingefära', '1 tsk sesamolja', '1/2 lime', 'salt och svartpeppar',
+      '300 g kycklingfärs',
+      '1/2 vitlöksklyfta',
+      '1/4 rödlök',
+      'salt och svartpeppar',
+      '1 tsk olivolja',
+      '1/2 mango',
+      '5 cm gurka',
+      '1/4 rödlök',
+      '1 chili',
+      '6 cocktailtomater',
       '2 msk koriander',
-      '2 limeklyftor'
+      '1/4 vitlöksklyfta',
+      '1 tsk ingefära',
+      '1 tsk sesamolja',
+      '1/2 lime',
+      'salt och svartpeppar',
+      '2 msk koriander',
+      '2 st limeklyftor'
     ],
     instructions: [
       'Lägg kycklingfärsen i en skål.',
-      'Riv vitlök och finhacka rödlök. Blanda med färsen och krydda med salt och peppar.',
-      'Forma två biffar och stek i olja några minuter per sida.',
-      'Skala och tärna mango. Tärna gurka, finhacka rödlök och chili, dela cocktailtomater och hacka koriander.',
-      'Riv vitlök och ingefära och blanda allt till en salsa med sesamolja och limesaft. Smaka av med salt och peppar.',
-      'Servera biffarna med mangosalsan. Dekorera med koriander och limeklyftor.'
+      'Skala och riv vitlök och finhacka rödlök.',
+      'Blanda ner i färsen tillsammans med salt och peppar.',
+      'Forma till två biffar.',
+      'Hetta upp en stekpanna med olivolja.',
+      'Stek biffarna ett par minuter på var sida.',
+      'Skala och skär mango i tärningar.',
+      'Tärna gurka och skala och finhacka rödlök.',
+      'Skiva chili fint och hacka koriander.',
+      'Dela cocktailtomaterna.',
+      'Blanda mango med alla grönsaker i en skål och tillsätt koriander.',
+      'Skala och riv vitlök och ingefära och blanda ner tillsammans med sesamolja och juice från en halv lime.',
+      'Salta och peppra.',
+      'Lägg upp kycklingbiffarna på ett fat tillsammans mangosalsan.',
+      'Dekorera med koriander och limeklyftor.'
     ]
   },
   {
@@ -248,7 +302,20 @@ const RECIPES: RecipeSeed[] = [
       '1 dl mango chutney',
       '1/2 dl persilja'
     ],
-    instructions: 'Skala och hacka lök och riv vitlök. Hetta upp en stekpanna med olja och bryn kycklingklubborna. Lägg ner lök och vitlök och krydda med salt och peppar. Lägg över kycklingen i en gryta. Tillsätt garam masala och kokosmjölk och låt sjuda på svag värme i 40 minuter. Skär blomkål i buketter och dela tomater i klyftor, hacka persilja. Blanda ner i grytan och låt koka i några minuter. Strö på persilja. Servera grytan med fefferoni, grekisk yoghurt, mango chutney och persilja.'
+    instructions: [
+      'Skala och hacka lök och riv vitlök.',
+      'Hetta upp en stekpanna med olja och bryn kycklingklubborna.',
+      'Lägg ner lök och vitlök.',
+      'Strö på salt och peppar.',
+      'Lägg över kycklingen i en gryta.',
+      'Tillsätt garam masala och kokosmjölk.',
+      'Låt sjuda på svag värme i 40 minuter.',
+      'Skär blomkål i buketter och dela tomater i klyftor.',
+      'Hacka persilja.',
+      'Blanda ner i grytan och låt koka i några minuter.',
+      'Strö på persilja.',
+      'Servera grytan tillsammans med fefferoni, grekisk yoghurt, mango chutney och persilja.'
+    ]
   },
   {
     title: 'Laxsallad med ägg',
@@ -266,7 +333,16 @@ const RECIPES: RecipeSeed[] = [
       '2 cocktailtomater',
       '1 tsk gräslök'
     ],
-    instructions: 'Skala ägg och hacka fint i en skål. Blanda i majonnäs, salt och peppar. Lägg ruccolasallad i en skål. Rulla ihop laxen till rosetter och lägg på ruccolan. Skär broccoli i små buketter och pressa citronjuice över. Skär cocktailtomater i klyftor och hacka gräslök. Lägg äggen tillsammans med de övriga ingredienserna i skålen. Strö på gräslök.'
+    instructions: [
+      'Skala ägg och hacka fint i en skål.',
+      'Blanda i majonnäs, salt och peppar.',
+      'Lägg ruccolasallad i en skål.',
+      'Rulla ihop laxen till rosetter och lägg på ruccolasalladen.',
+      'Skär broccoli i små buketter och pressa citronjuice över.',
+      'Skär cocktailtomater i klyftor och hacka gräslök.',
+      'Lägg äggen tillsammans med de övriga ingredienserna i skålen.',
+      'Strö på gräslök.'
+    ]
   },
   {
     title: 'Stekt lax med citronmarinerad broccoli',
@@ -284,7 +360,15 @@ const RECIPES: RecipeSeed[] = [
       '2 msk gräslök',
       '2 msk romsås (Erik Lallerstedt)'
     ],
-    instructions: 'Dela laxen i 2 bitar och strö på salt och peppar. Skär broccoli i buketter och lägg i en skål. Tillsätt citronjuice, olivolja, salt och peppar. Hetta upp en stekpanna med olja och bryn laxen runt om i cirka 8 minuter. Servera laxen med den citronmarinerade broccolin och romsås. Hacka gräslök och strö på. Dekorera med citronskivor.'
+    instructions: [
+      'Dela laxen i 2 bitar och strö på salt och peppar.',
+      'Skär broccoli i buketter och lägg i en skål.',
+      'Tillsätt citronjuice, olivolja, salt och peppar.',
+      'Hetta upp en stekpanna med olja och bryn laxen runt om i cirka 8 minuter.',
+      'Servera laxen med den citronmarinerade broccolin och romsås.',
+      'Hacka gräslök.',
+      'Strö på gräslök och dekorera med citronskivor.'
+    ]
   },
   {
     title: 'Torskgryta med rotfrukter och curry',
@@ -307,25 +391,71 @@ const RECIPES: RecipeSeed[] = [
       '8 cocktailtomater',
       '2 msk gräslök'
     ],
-    instructions: 'Tina torsk och skär i bitar, salta och peppra. Riv vitlök och hacka gräslök. Skär fänkål i mindre bitar, morot och palsternacka i mindre bitar och strimla purjolök. Hetta upp en kastrull med olja och bryn vitlök, fänkål och rotfrukter i någon minut. Tillsätt curry. Smula ner buljongtärning och häll på vatten och havregrädde. Låt koka ihop i 5 minuter och lägg ner torsk, cocktailtomater och purjolök. Låt sjuda några minuter och häll upp soppan i skålar. Strö på gräslök.'
+    instructions: [
+      'Tina torsk och skär i bitar.',
+      'Strö på salt och peppar.',
+      'Skala och riv vitlöksklyftan.',
+      'Hacka gräslök.',
+      'Skär fänkål i mindre bitar.',
+      'Skala och skär morot och palsternacka i mindre bitar.',
+      'Strimla purjolök.',
+      'Hetta upp en kastrull med olja och bryn vitlök, fänkål och rotfrukter i någon minut.',
+      'Tillsätt curry.',
+      'Smula ner buljongtärningen och häll på vatten och grädde.',
+      'Låt koka ihop i 5 minuter och lägg ner torsk, tomater och purjolök.',
+      'Låt sjuda några minuter och häll upp soppan i skålar.',
+      'Strö på gräslök.'
+    ]
   },
   {
     title: 'Lövbiff teriyaki med nudelsallad',
     servings: 2,
     image: `${IMG_BASE}/LÖVBIFF_TERIYAKI_MED_NUDELSALLAD.jpg`,
     categories: ['kött','lunch','middag'],
-    ingredients: ['300 g lövbiff', '1/2 gul lök', '1 vitlöksklyfta', '1/2 dl teriyakisås', '1 msk ingefära', '1 tsk sesamolja', '1 msk sesamfrön', 'Salt', 'Peppar', '80 g glasnudlar', '1 morot', '1 salladslök', '100 g sockerärtor', '1/2 röd chili', '1 tsk sesamolja', '1/2 msk ketjap manis', '2 msk koriander', '1/2 dl yoghurt', '1 krm sriracha', '1/4 vitlök', 'Salt', 'Peppar'],
+    ingredients: [
+      '300 g lövbiff',
+      '1/2 gul lök',
+      '1 vitlöksklyfta',
+      '1/2 dl teriyakisås',
+      '1 msk ingefära',
+      '1 tsk sesamolja',
+      '1 msk sesamfrön',
+      'Salt och svartpeppar',
+      '80 g glasnudlar',
+      '1 morot',
+      '1 salladslök',
+      '100 g sockerärtor',
+      '1/2 röd chili',
+      '1 tsk sesamolja',
+      '1/2 msk ketjap manis',
+      '2 msk färsk koriander',
+      '1/2 dl grekisk yoghurt',
+      '1 krm sriracha sås',
+      '1/4 vitlök',
+      'Salt och svartpeppar',
+      'Färsk koriander',
+      '1/2 dl salladslök'
+    ],
     instructions: [
       'Strimla lövbiffen och lägg i en skål.',
-      'Skala och strimla lök. Riv vitlök och ingefära.',
-      'Blanda ner vitlök, ingefära, teriyakisås, sesamolja och sesamfrön i skålen med lövbiff. Strö på salt och peppar och låt marinera en stund.',
-      'Koka nudlar enligt anvisningen på paketet och häll av vattnet. Lägg nudlarna i en skål.',
-      'Skala och skär morot i strimlor. Strimla salladslök och chili. Skär sockerärtor fint. Hacka koriander. Blanda ner alla grönsaker i nudelsalladen.',
-      'Blanda ner sesamolja, ketjap manis, koriander, salt och peppar i nudelsalladen.',
+      'Skala och strimla lök.',
+      'Riv vitlök och ingefära.',
+      'Blanda ner vitlök, ingefära, teriyakisås, sesamolja och sesamfrön i skålen med lövbiff.',
+      'Strö på salt och peppar.',
+      'Låt marinera en stund.',
+      'Koka nudlar enligt anvisningen på paketet och häll av vattnet.',
+      'Lägg nudlarna i en skål.',
+      'Skala och skär morot i strimlor. Strimla salladslök och chili.',
+      'Skär sockerärtor fint.',
+      'Hacka koriander.',
+      'Blanda ner alla grönsaker i nudelsalladen.',
+      'Blanda ner sesamolja, ketjap manis, koriander, salt och peppar.',
       'Gör chiliyoghurten genom att riva vitlök och blanda ihop alla ingredienser i en skål.',
       'Hetta upp en stekpanna och stek lövbiffen i ett par minuter.',
       'Lägg upp nudlarna i en skål och lägg på lövbiffen.',
-      'Hacka koriander och strimla salladslök. Dekorera med färsk koriander och salladslök. Servera med chiliyoghurt.'
+      'Hacka koriander och strimpla salladslök.',
+      'Dekorera med färsk koriander och salladslök.',
+      'Servera med chiliyoghurt.'
     ]
   },
   {
@@ -333,14 +463,44 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/KÖTTFÄRSB IFFAR_MED_CHAMPINJONHATTAR.JPG`,
     categories: ['kött','middag'],
-    ingredients: ['1 vitlöksklyfta', '1/4 gul lök', '300 g nötfärs', '2 msk persilja', '1 krm örtagårdskrydda', 'Salt', 'Peppar', '4 champinjoner', '100 g ädelost', '1/2 dl pekannötter', '2 fikon', '1 tsk olivolja', '2 msk creme fraiche', '1 msk majonnäs', '1 tsk grön pesto', 'Salt', 'Peppar', '25 g rucola'],
+    ingredients: [
+      '1 vitlöksklyfta',
+      '1/4 gul lök',
+      '300 g nötfärs',
+      '2 msk persilja',
+      '1 krm örtagårdskrydda',
+      'salt och svartpeppar',
+      '4 champinjoner',
+      '100 g ädelost',
+      '1/2 dl pekannötter',
+      '2 fikon',
+      '1 tsk olivolja',
+      '2 msk creme fraiche',
+      '1 msk majonnäs',
+      '1 tsk grön pesto',
+      'salt och svartpeppar',
+      '25 g rucolasallad'
+    ],
     instructions: [
-      'Skala och riv vitlök. Finhacka gul lök.',
-      'Blanda nötfärs med vitlök, lök, persilja, örtagårdskrydda, salt och peppar. Forma biffar.',
-      'Fyll champinjonhattar med ädelost och pekannötter. Lägg fikon ovanpå.',
-      'Tillaga biffar och fyllda champinjoner i ugn 200°C ca 20 minuter.',
-      'Rör ihop pestoröran: creme fraiche, majonnäs och grön pesto.',
-      'Servera biffarna med rucola och pestoröran.'
+      'Sätt ugnen på 200 grader.',
+      'Skala och riv vitlök fint och finhacka lök och persilja.',
+      'Blanda ner färs, vitlök, lök, persilja, örtagårdskrydda, salt och peppar i en skål.',
+      'Forma färsen till biffar.',
+      'Gröp ur champinjonerna.',
+      'Fyll champinjonerna med ädelost.',
+      'Rosta pekannötterna hastigt i en torr stekpanna.',
+      'Tryck fast två pekannötter i varje champinjon.',
+      'Skär varje fikon i fyra delar.',
+      'Lägg en klyfta fikon på varje champinjon.',
+      'Häll olivolja på en plåt.',
+      'Lägg biffarna och de fyllda champinjonerna på plåten.',
+      'Sätt in i ugnen i 20 minuter.',
+      'Blanda creme fraiche med majonnäs i en bunke.',
+      'Tillsätt pesto.',
+      'Salta och peppra.',
+      'Placera biffarna och de fyllda champinjonerna tillsammans med rucolasallad på ett fat.',
+      'Dekorera med resterande rostade pekannötter och fikon.',
+      'Klicka på pestoröra.'
     ]
   },
   {
@@ -348,14 +508,30 @@ const RECIPES: RecipeSeed[] = [
     servings: 20,
     image: `${IMG_BASE}/SNICKERSKAKA.jpg`,
     categories: ['dessert'],
-    ingredients: ['150 g smör', '1 dl agavesirap', '1/2 dl kakao', '2 krm vaniljpulver', '2 dl mandelmjöl', '1 msk fiberhusk', '3 ägg', '1 dl saltade jordnötter', '150 g mörk choklad', '2 dl saltade jordnötter', '1 dl jordnötssmör'],
+    ingredients: [
+      '150 g smör',
+      '1 dl agavesirap',
+      '1/2 dl kakao',
+      '2 krm vaniljpulver',
+      '2 dl mandelmjöl',
+      '1 msk fiberhusk',
+      '3 ägg',
+      '1 dl saltade jordnötter',
+      '150 g mörk choklad',
+      '2 dl saltade jordnötter',
+      '1 dl jordnötssmör'
+    ],
     instructions: [
-      'Sätt ugnen på 175°C.',
-      'Blanda smält smör, agavesirap, kakao, vaniljpulver, mandelmjöl, fiberhusk och ägg till en smet.',
-      'Häll smeten i en form (ca 20×25 cm) och grädda ca 20 minuter. Låt svalna.',
-      'Täck kakan med jordnötssmör.',
-      'Smält mörk choklad och blanda med saltade jordnötter. Bred över kakan.',
-      'Kyl 3–4 timmar och skär i rutor.'
+      'Sätt ugnen på 175 grader.',
+      'Smält smör i en kastrull och blanda ner agave, kakao, vaniljpulver, mandelmjöl, fiberhusk och ägg.',
+      'Häll blandningen i en bakplåtsklädd form cirka 20 x 25 cm.',
+      'Strö på jordnötter och grädda i 20 minuter i ugnen.',
+      'Ta ut och låt svalna.',
+      'Smält choklad över vattenbad och blanda ner jordnötter.',
+      'Bred på jordnötssmör på kakan och häll över chokladblandningen.',
+      'Ställ in i kylen i 3-4 timmar.',
+      'Skär upp i rutor.',
+      'Förvara i kylen eller i frysen.'
     ]
   }
 ];
