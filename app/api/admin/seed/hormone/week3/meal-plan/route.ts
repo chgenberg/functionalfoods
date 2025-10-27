@@ -30,38 +30,38 @@ export async function POST(req: NextRequest) {
       'Måndag': {
         breakfast: { name: 'Bärsmoothie (rester)', recipeLink: link('Bärsmoothie') },
         lunch: { name: 'Kyckling med blomkålsmos (rester)', recipeLink: link('Kyckling med blomkålsmos') },
-        dinner: { name: 'Högrevsburgare med mango' }
+        dinner: { name: 'Högrevsburgare med mango', recipeLink: link('Högrevsburgare med mango') }
       },
       'Tisdag': {
         breakfast: { name: 'Citronvatten och svart kaffe/te', recipeLink: link('Citronvatten och svart kaffe/te') },
         lunch: { name: 'Tomatsoppa med kanel och ingefära (rester från frysen)', recipeLink: link('Tomatsoppa med kanel och ingefära') },
-        dinner: { name: 'Torskgratäng med champinjoner' }
+        dinner: { name: 'Torskgratäng med champinjoner', recipeLink: link('Torskgratäng med champinjoner') }
       },
       'Onsdag': {
         breakfast: { name: 'Omelett med skinka', recipeLink: link('Omelett med skinka') },
-        lunch: { name: 'Högrevsburgare med mango (rester)' },
+        lunch: { name: 'Högrevsburgare med mango (rester)', recipeLink: link('Högrevsburgare med mango') },
         dinner: { name: 'Kycklinggryta med garam masala (rester från frysen)', recipeLink: link('Kycklinggryta med garam masala') }
       },
       'Torsdag': {
         breakfast: { name: 'Citronvatten och svart kaffe/te', recipeLink: link('Citronvatten och svart kaffe/te') },
-        lunch: { name: 'Torskgratäng med champinjoner (rester)' },
-        dinner: { name: 'Falafel med grönsaker' }
+        lunch: { name: 'Torskgratäng med champinjoner (rester)', recipeLink: link('Torskgratäng med champinjoner') },
+        dinner: { name: 'Falafel med grönsaker', recipeLink: link('Falafel med grönsaker') }
       },
       'Fredag': {
         breakfast: { name: 'Ost och skinkmacka med gurka', recipeLink: link('Ost och skinkmacka med gurka') },
-        lunch: { name: 'Falafel med grönsaker (rester)' },
-        dinner: { name: 'Italiensk pizza med skinka' }
+        lunch: { name: 'Falafel med grönsaker (rester)', recipeLink: link('Falafel med grönsaker') },
+        dinner: { name: 'Italiensk pizza med skinka', recipeLink: link('Italiensk pizza med skinka') }
       },
       'Lördag': {
         breakfast: { name: 'Citronvatten och svart kaffe/te', recipeLink: link('Citronvatten och svart kaffe/te') },
-        lunch: { name: 'Italiensk pizza med skinka (rester)' },
-        dinner: { name: 'Scampi med mangosallad' },
-        dessert: { name: 'Fruktsallad med chokladkräm' }
+        lunch: { name: 'Italiensk pizza med skinka (rester)', recipeLink: link('Italiensk pizza med skinka') },
+        dinner: { name: 'Scampi med mangosallad', recipeLink: link('Scampi med mangosallad') },
+        dessert: { name: 'Fruktsallad med chokladkräm', recipeLink: link('Fruktsallad med chokladkräm') }
       },
       'Söndag': {
         breakfast: { name: 'Bananpannkaka med frukt och bär', recipeLink: link('Bananpannkaka med frukt och bär') },
-        lunch: { name: 'Scampi med mangosallad (rester)' },
-        dinner: { name: 'Kyckling med grön curry' }
+        lunch: { name: 'Scampi med mangosallad (rester)', recipeLink: link('Scampi med mangosallad') },
+        dinner: { name: 'Kyckling med grön curry', recipeLink: link('Kyckling med grön curry') }
       }
     } as any;
 
