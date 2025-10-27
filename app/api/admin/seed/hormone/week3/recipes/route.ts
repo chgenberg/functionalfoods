@@ -181,6 +181,43 @@ const RECIPES: RecipeSeed[] = [
       'Fördela lök, tomat och lufttorkad skinka på pizzan/pizzorna.',
       'Dekorera med basilikablad.'
     ]
+  },
+  {
+    title: 'Högrevsburgare med mango',
+    servings: 2,
+    image: `${IMG_BASE}/HÖGREVSBURGARE_MED_MANGO.JPG`,
+    categories: ['kött','middag'],
+    ingredients: ['1 tsk olivolja','2 högrevsburgare','Salt och svartpeppar','30 g spenat','1 mango','1/4 rödlök','10 cocktailtomater','2 msk mynta','40 g fetaost','1 msk myntablad'],
+    instructions: [
+      'Hetta upp en stekpanna med olivolja.',
+      'Stek högrevsburgarna ett par minuter på varje sida.',
+      'Salta och peppra.',
+      'Lägg spenat på ett fat.',
+      'Skala och skär mango i skivor och lägg på spenatbädden.',
+      'Skala och finhacka lök.',
+      'Skär cocktailtomater i klyftor.',
+      'Finhacka mynta.',
+      'Blanda ihop i en skål och smula ner fetaost.',
+      'Placera burgaren på bädden med spenat och mango.',
+      'Toppa med tomat- och fetaostsallad samt dekorera med myntablad.'
+    ]
+  },
+  {
+    title: 'Fruktsallad med chokladkräm',
+    servings: 2,
+    image: `${IMG_BASE}/FRUKTSALLAD_MED_CHOKLADKRÄM.JPG`,
+    categories: ['dessert'],
+    ingredients: ['5 jordgubbar','1/2 mango','1 kiwi','40 g mörk choklad','1/2 dl kokosgrädde','1 ruta vit choklad'],
+    instructions: [
+      'Skär jordgubbar i tärningar.',
+      'Skala och skär mango och kiwi i tärningar.',
+      'Lägg i en skål och blanda runt.',
+      'Smält mörk choklad i mikro eller i ett vattenbad.',
+      'Låt chokladen svalna något och bland med kokosgrädde.',
+      'Lägg fruktsalladen i glas.',
+      'Toppa med chokladkräm.',
+      'Hyvla eller hacka den vita chokladen och lägg över chokladkrämen.'
+    ]
   }
 ];
 
