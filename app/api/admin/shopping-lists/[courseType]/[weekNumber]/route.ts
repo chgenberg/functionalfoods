@@ -60,6 +60,38 @@ export async function GET(
       return NextResponse.json({ error: 'Shopping list not found' }, { status: 404 });
     }
     
+    // Categorize ingredient based on name
+    const categorizeIngredient = (ingredientName: string): string => {
+      const lower = ingredientName.toLowerCase();
+      
+      // Frukt & Grönt
+      if (/tomat|gurka|paprika|lök|vitlök|morot|broccoli|spenat|sallad|ingefära|citron|lime|mango|avokado|äpple|banan|jordgubb|blåbär|hallon|fänkål|palsternacka|purjolök|blomkål|squash|rädis|selleri|kål|champinjon|svamp|chili|persilja|basilika|dill|koriander|mynta|gräslök|rödbeta|sockerärtor|fikon|clementin|kiwi|persika|granatäppel|brysselkål/.test(lower)) {
+        return 'Frukt & Grönt';
+      }
+      
+      // Kött & Fisk
+      if (/kyckling|lax|torsk|nötfärs|köttfärs|högrev|lövbiff|skinka|bacon|korv|scampi|tonfisk|mortadella|falukorv/.test(lower)) {
+        return 'Kött & Fisk';
+      }
+      
+      // Mejeri & Ägg
+      if (/ägg|yoghurt|mjölk|grädde|smör|ost|fetaost|mozzarella|halloumi|parmesan|cheddar|gorgonzola|getost|keso|creme fraiche|filmjölk/.test(lower)) {
+        return 'Mejeri & Ägg';
+      }
+      
+      // Torrvaror (pasta, mjöl, ris, nötter, etc)
+      if (/mjöl|ris|quinoa|nudlar|pasta|spirelli|linser|kikärtor|bönor|nötter|mandel|valnöt|cashew|jordnöt|pumpafrö|solrosfrö|sesamfrö|linfrö|havregryn|kokos|choklad|agave|honung|sirap|bakpulver|bikarbonat|fiberhusk|ströbröd|granola|tofu/.test(lower)) {
+        return 'Torrvaror';
+      }
+      
+      // Kryddor & Såser
+      if (/curry|chili|paprika|kanel|kardemumma|kummin|oregano|timjan|rosmarin|vanilj|saffran|krydda|buljon|soja|teriyaki|pesto|majonnäs|senap|vinäger|tabasco|sriracha|sambal|ketjap|sweet chili|mango chutney/.test(lower)) {
+        return 'Kryddor & Såser';
+      }
+      
+      return 'Övrigt';
+    };
+    
     // Transform to admin format
     const items = list.items.map(item => {
       const parts = item.ingredient.split(' ');
@@ -68,10 +100,12 @@ export async function GET(
       const name = parts.slice(2).join(' ') || item.ingredient;
       
       return {
+        id: item.id,
+        ingredient: item.ingredient, 
         name,
         amount,
         unit,
-        category: 'Övrigt' // Default category, could be enhanced
+        category: categorizeIngredient(item.ingredient)
       };
     });
     

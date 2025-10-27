@@ -19,10 +19,11 @@ interface ShoppingListProps {
 }
 
 const categoryIcons: { [key: string]: React.ElementType } = {
-  'Grönsaker & Frukt': FaCarrot,
-  'Protein': FaFish,
+  'Frukt & Grönt': FaCarrot,
+  'Kött & Fisk': FaFish,
   'Mejeri & Ägg': FaCheese,
-  'Skafferi': FaBreadSlice,
+  'Torrvaror': FaBreadSlice,
+  'Kryddor & Såser': FaSeedling,
   'Övrigt': FaSeedling,
 };
 
