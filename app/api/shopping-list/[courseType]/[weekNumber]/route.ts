@@ -179,6 +179,41 @@ export async function GET(
     const servingsParam = parseInt(url.searchParams.get('servings') || '4');
     const targetServings = isNaN(servingsParam) || servingsParam <= 0 ? 4 : servingsParam;
     
+    // For hormone course, fetch from database
+    if (courseType === 'hormone') {
+      try {
+        const list = await prisma.weeklyShoppingList.findUnique({
+          where: {
+            courseType_weekNumber: {
+              courseType: 'hormonell-balans',
+              weekNumber: weekNum
+            }
+          }
+        });
+
+        if (list && list.items) {
+          const ingredients = (list.items as any[]).map((item: any) => ({
+            name: item.name || item.ingredient || '',
+            amount: item.amount || '1',
+            unit: item.unit || 'st',
+            category: item.category || 'Övrigt',
+            checked: false
+          }));
+
+          return NextResponse.json({
+            week: weekNum,
+            courseType,
+            recipeCount: 0,
+            ingredients,
+            generatedAt: new Date().toISOString(),
+            source: 'database'
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching hormone shopping list from DB:', err);
+      }
+    }
+    
     // Try curated list first
     try {
       const curatedPath = path.join(process.cwd(), 'app', 'data', 'shoppingLists', `curated-${courseType}-week${weekNum}.json`);
