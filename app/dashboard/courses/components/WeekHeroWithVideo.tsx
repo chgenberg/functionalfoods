@@ -49,6 +49,12 @@ export default function WeekHeroWithVideo({
         key: 'energy',
         label: 'Energy',
         path: '/dashboard/courses/functional-energy/oversikt'
+      },
+      {
+        names: ['Hormonell Balans'],
+        key: 'hormone',
+        label: 'Hormonell Balans',
+        path: '/dashboard/courses/functional-hormone/oversikt'
       }
     ];
     for (const m of mappings) {

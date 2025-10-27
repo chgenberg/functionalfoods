@@ -85,6 +85,34 @@ export default function CoursesPage() {
             gradient: 'from-green-800 to-green-900',
             link: '/dashboard/courses/functional-flow',
             isPurchased: purchasedCourseNames.includes('Functional Gut Health/Flow')
+          },
+          {
+            id: 'functional-energy',
+            title: 'Functional Energy',
+            description: 'Program för optimal energi och blodsockerkontroll',
+            duration: '6 veckor',
+            modules: 6,
+            progress: 0,
+            status: purchasedCourseNames.includes('Functional Energy') && accessByName['Functional Energy'] ? 'active' : purchasedCourseNames.includes('Functional Energy') ? 'locked' : 'locked',
+            icon: TrendingUp,
+            color: 'primary',
+            gradient: 'from-orange-500 to-red-600',
+            link: '/dashboard/courses/functional-energy',
+            isPurchased: purchasedCourseNames.includes('Functional Energy')
+          },
+          {
+            id: 'functional-hormone',
+            title: 'Hormonell Balans',
+            description: '6 veckors program för hormonell balans',
+            duration: '6 veckor',
+            modules: 6,
+            progress: 0,
+            status: purchasedCourseNames.includes('Hormonell Balans') && accessByName['Hormonell Balans'] ? 'active' : purchasedCourseNames.includes('Hormonell Balans') ? 'locked' : 'locked',
+            icon: GiHealthNormal,
+            color: 'primary',
+            gradient: 'from-pink-500 to-purple-600',
+            link: '/dashboard/courses/functional-hormone',
+            isPurchased: purchasedCourseNames.includes('Hormonell Balans')
           }
         ];
         
