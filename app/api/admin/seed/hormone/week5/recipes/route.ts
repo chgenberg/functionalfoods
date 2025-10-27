@@ -42,9 +42,10 @@ const RECIPES: RecipeSeed[] = [
       '1 dl mjölk'
     ],
     instructions: [
-      'Lägg havregryn i en kastrull och tillsätt vatten och salt.',
-      'Låt koka i cirka 2 minuter.',
-      'Skiva bananen och blanda ner i gröten tillsammans med pumpafrön.',
+      'Lägg havregryn i en kastrull.',
+      'Tillsätt vatten och salt.',
+      'Låt koka i 2 minuter.',
+      'Skiva banan och blanda ner i gröten tillsammans med pumpafrön.',
       'Servera gröten i en skål med mjölk.'
     ]
   },
@@ -64,9 +65,10 @@ const RECIPES: RecipeSeed[] = [
     ],
     instructions: [
       'Vispa ihop ägg, grädde, salt och peppar i en skål.',
-      'Hetta upp en stekpanna med smör och häll i äggsmeten.',
-      'Rör om i cirka 30 sekunder tills krämig och lägg upp på tallrik.',
-      'Servera med rökt lax och toppa med hackad gräslök och citronklyfta.'
+      'Hetta upp en stekpanna med smör och häll ner äggsmeten.',
+      'Rör om med en trägaffel i cirka 30 sekunder och lägg upp äggröran på en tallrik och servera med rökt lax.',
+      'Hacka gräslök.',
+      'Toppa med gräslök och citronklyfta.'
     ]
   },
   {
@@ -81,7 +83,7 @@ const RECIPES: RecipeSeed[] = [
     ],
     instructions: [
       'Tina bären över natten.',
-      'Lägg yoghurt i en skål och toppa med kokosgranola och bär.'
+      'Lägg yoghurt i en skål och lägg på kokosgranola och bär.'
     ]
   },
   {
@@ -98,7 +100,7 @@ const RECIPES: RecipeSeed[] = [
     ],
     instructions: [
       'Skär paprika i ringar.',
-      'Bred smör på brödet och lägg på ost, skinka och paprika.'
+      'Bred smör på mackan och lägg på ost, skinka och paprika.'
     ]
   },
   {
@@ -122,14 +124,23 @@ const RECIPES: RecipeSeed[] = [
       '2 persiljekvistar'
     ],
     instructions: [
-      'Sätt ugnen på 200°C. Skala och tärna rödbetor och lägg i en skål.',
-      'Tillsätt honung, salt, peppar, örtagårdskrydda och olivolja. Blanda och lägg på plåt.',
-      'Skär fänkål i klyftor och dela rödlök i halvor. Lägg på plåten med rödbetorna.',
-      'Ugnsbaka i 15 minuter. Höj värmen till 225°C.',
-      'Skiva getost i två skivor och lägg på lökhalvorna.',
-      'Blanda pumpafrön med lite honung och salt och fördela över getosten.',
-      'Ugnsbaka ytterligare 2–3 minuter.',
-      'Ta ut plåten och dekorera med granatäppelkärnor och persiljekvistar.'
+      'Sätt ugnen på 200 grader.',
+      'Skala och skär rödbetor i tärningar.',
+      'Lägg i en skål.',
+      'Tillsätt honung, salt, peppar, örtagårdskrydda samt olivolja.',
+      'Blanda om.',
+      'Lägg på en plåt.',
+      'Skär fänkål i klyftor.',
+      'Skala och skär lök på mitten i två delar.',
+      'Lägg fänkål och lök tillsammans med rödbetorna på plåten.',
+      'Ugnsbaka i 15 minuter.',
+      'Ta ut plåten.',
+      'Höj värmen till 225 grader.',
+      'Skiva getost i två skivor.',
+      'Placera getost på lökhalvorna.',
+      'Blanda ihop pumpafrön, flytande honung och salt i en skål och fördela blandningen på vardera getostskiva.',
+      'Ugnsbaka ytterligare i 2-3 minuter.',
+      'Tag ut plåten och dekorera med granatäppelkärnor och persiljekvistar.'
     ]
   },
   {
@@ -137,33 +148,26 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/PANERAD_KYCKLING_MED_WALDORFSALLAD.JPG`,
     categories: ['kyckling','middag'],
-    ingredients: [
-      '300 g kycklingfiléer',
-      '2 tsk röd pesto',
-      '30 g fetaost',
-      'Salt och svartpeppar',
-      '1 krm örtagårdskrydda',
-      '1 ägg',
-      '3/4 dl glutenfritt ströbröd (Crumbs)',
-      '100 g rättika',
-      '1 morot',
-      '1/4 röd lök',
-      '1 stjälk selleri',
-      '1 msk majonnäs',
-      '3 msk gräddfil',
-      '1 msk röd pesto',
-      '2 msk persilja',
-      '6 cocktailtomater',
-      '2 persiljekvistar'
-    ],
+    ingredients: ['300 g kycklingfiléer','2 tsk röd pesto','30 g fetaost','Salt och svartpeppar','1 krm örtagårdskrydda','1 ägg','3/4 dl Crumbs glutenfritt ströbröd','100 g rättika','1 morot','1/4 röd lök','1 stjälk selleri','1 msk majonnäs','3 msk gräddfil','1 msk röd pesto','2 msk persilja','6 cocktailtomater','2 persiljekvistar'],
     instructions: [
-      'Sätt ugnen på 200°C. Dela kycklingfiléerna till fyra tunna filéer.',
-      'Krydda med salt, peppar och örtagårdskrydda. Bred på röd pesto och smulad fetaost på två filéer, lägg de andra som lock.',
-      'Vispa upp ägg. Vänd de fyllda filéerna i ägg och sedan i ströbröd.',
-      'Lägg i ugnsform och gratinera ca 15 minuter.',
-      'Strimla rättika, morot och röd lök. Skiva selleri. Hacka persilja.',
-      'Blanda grönsakerna med majonnäs, gräddfil och röd pesto. Salta och peppra.',
-      'Servera kycklingen med waldorfsallad. Dekorera med cocktailtomater och persilja.'
+      'Sätt ugnen på 200 grader.',
+      'Lägg kycklingfiléerna på en skärbräda och dela dem till fyra tunna fileer.',
+      'Krydda med salt, peppar och örtagårdskrydda.',
+      'Bred på röd pesto samt fetaost på två av filéerna.',
+      'Lägg de två andra filéerna som lock på de fyllda filéerna.',
+      'Vispa upp ett ägg i en skål.',
+      'Vänd filéerna i ägget och därefter i en skål med ströbröd.',
+      'Lägg de panerade kycklingfiléerna i en ugnsfast form.',
+      'Gratinera i ugn i 15 minuter.',
+      'Skala och strimla rättika och morot fint.',
+      'Skala och strimla en rödlök.',
+      'Skär selleri tunt.',
+      'Hacka persilja.',
+      'Blanda alltsammans i en skål.',
+      'Tillsätt majonnäs, gräddfil och röd pesto.',
+      'Salta och peppra.',
+      'Lägg upp kycklingen på en tallrik tillsammans med waldorfsallad.',
+      'Dekorera med cocktailtomater och en persiljekvist.'
     ]
   },
   {
@@ -171,29 +175,25 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/KYCKLINGBURGARE_MED_CITRONKRÄM.JPG`,
     categories: ['kyckling','middag'],
-    ingredients: [
-      '125 g kycklingfärs',
-      '1 citronklyfta (zest + juice)',
-      'Salt och svartpeppar',
-      '1 tsk dill',
-      '75 g sparris',
-      '75 g sockerärtor',
-      '1,5 tsk olivolja',
-      '1 msk dill',
-      '3 rädisor',
-      '2 msk grekisk yoghurt',
-      '1 citronklyfta',
-      '1 msk dill',
-      '1 citronklyfta (servering)',
-      '1 dillkvist (dekoration)'
-    ],
+    ingredients: ['125 g kycklingfärs','1 citronklyfta','Salt och svartpeppar','1 tsk dill','75 g sparris','75 g sockerärtor','1,5 tsk olivolja','1 msk dill','3 st rädisor','2 msk grekisk yoghurt','1 citronklyfta','1 msk dill','1 citronklyfta','1 dillkvist'],
     instructions: [
-      'Blanda kycklingfärs med citronzest, salt, peppar och hackad dill. Forma en biff.',
-      'Hetta upp 1/2 tsk olivolja och stek sparris och sockerärtor i ett par minuter. Salta, peppra och strö över dill.',
-      'Stek burgaren i resterande olivolja, ett par minuter per sida.',
-      'Lägg burgaren på grönsaksbädden.',
-      'Riv citronzest och blanda med yoghurt. Salta och peppra. Hacka dill och rör ner. Toppa burgaren med citronkrämen.',
-      'Strimla rädisor och lägg över. Dekorera med citronklyfta och dillkvist.'
+      'Lägg kycklingfärs i en skål.',
+      'Riv citronzest och tillsätt.',
+      'Krydda med salt och svartpeppar.',
+      'Hacka dill och blanda ner.',
+      'Forma till en biff.',
+      'Hetta upp en stekpanna med en halv tesked olivolja.',
+      'Stek sparris och sockerärtor i ett par minuter.',
+      'Salta och peppra.',
+      'Lägg upp på ett fat och strö över dill.',
+      'Hetta upp en stekpanna med resterande olivoljan och bryn kycklingburgaren ett par minuter på varje sida.',
+      'Lägg burgaren på bädden av sparris och sockerärtor.',
+      'Gör såsen genom att riva citronzest och blanda med yoghurt.',
+      'Salta och peppra.',
+      'Hacka dill och blanda ner i såsen.',
+      'Lägg citronkräm på kycklingburgaren.',
+      'Strimla rädisor och lägg över.',
+      'Dekorera med en citronklyfta och en dillkvist.'
     ]
   },
   {
@@ -201,26 +201,21 @@ const RECIPES: RecipeSeed[] = [
     servings: 3,
     image: `${IMG_BASE}/KESOTORSK_MED_MANGO_CHUTNEY.JPG`,
     categories: ['fisk','middag'],
-    ingredients: [
-      '250 g broccolibuketter',
-      '250 g blomkålsbuketter',
-      '1 rödlök',
-      '2 tomater',
-      '1 tsk olivolja',
-      'Salt och svartpeppar',
-      '600 g torskryggfilé',
-      'Salt och svartpeppar',
-      '1,5 dl keso',
-      '3 msk mango chutney',
-      '3 msk persilja',
-      '2 persiljekvistar (dekoration)'
-    ],
+    ingredients: ['250 g broccolibuketter','250 g blomkålsbuketter','1 rödlök','2 tomater','1 tsk olivolja','Salt och svartpeppar','600 g torskryggfilé','1,5 dl keso','3 msk mango chutney','3 msk persilja','2 persiljekvistar'],
     instructions: [
-      'Sätt ugnen på 175°C. Skär broccoli och blomkål i mindre buketter.',
-      'Strimla rödlök och skär tomater i klyftor. Lägg allt i en ugnsform, ringla olivolja och salta/peppra.',
-      'Salta och peppra torsken och lägg ovanpå grönsakerna.',
-      'Blanda keso med mango chutney och hackad persilja. Smaka av med salt och peppar och bre över fisken.',
-      'Ugnsbaka i ca 20 minuter. Dekorera med persiljekvistar vid servering.'
+      'Sätt ugnen på 175 grader.',
+      'Skär broccoli och blomkål i mindre buketter.',
+      'Skala och skär rödlök i strimlor.',
+      'Skär tomat i klyftor.',
+      'Lägg i en ugnsfast form.',
+      'Tillsätt olivolja salt och peppar.',
+      'Salta och peppra torskryggfilé.',
+      'Placera torsken överst i ugnsformen med grönsakerna.',
+      'Blanda keso i en skål tillsammans med mango chutney.',
+      'Hacka persilja och blanda ner tillsammans med salt och peppar.',
+      'Lägg över fisken.',
+      'Ugnsbaka i 20 minuter.',
+      'Lägg upp på en tallrik och dekorera med persiljekvistar.'
     ]
   },
   {
@@ -228,25 +223,19 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/LAXWOK_TERIYAKI.JPG`,
     categories: ['fisk','middag'],
-    ingredients: [
-      '300 g laxfilé',
-      '2 morötter',
-      '1/2 rödlök',
-      '1/4 fänkål',
-      '100 g sockerärtor',
-      '10 färska brysselkål',
-      '1/2 vitlöksklyfta',
-      '1 cm ingefära',
-      '1 tsk olivolja',
-      '120 g teriyaki woksås (Blue Dragon)',
-      'Salt och svartpeppar',
-      '1 msk gräslök'
-    ],
+    ingredients: ['300 g laxfilé','2 morötter','1/2 rödlök','1/4 fänkål','100 g sockerärtor','10 färsk brysselkål','1/2 vitlöksklyfta','1 cm ingefära','1 tsk olivolja','120 g Blue dragon teriyaki woksås','Salt och svartpeppar','1 msk gräslök'],
     instructions: [
-      'Skär lax i tärningar. Skär morot i stavar, hacka lök, strimla fänkål och dela sockerärtorna. Klyfta brysselkål.',
-      'Riv vitlök och ingefära. Hetta upp olja och lägg i alla ingredienser samtidigt.',
-      'Tillsätt teriyakisås och woka i några minuter. Salta och peppra.',
-      'Klipp gräslök och strö över vid servering.'
+      'Skär lax i tärningar.',
+      'Skala och skär morot i stavar.',
+      'Skala och hacka lök.',
+      'Skär fänkål i strimlor.',
+      'Dela sockerärtorna.',
+      'Skär brysselkål i klyftor.',
+      'Skala och riv vitlök och ingefära.',
+      'Hetta upp en stekpanna med olivolja och lägg i alla ingredienser på samma gång.',
+      'Tillsätt teriyaki wok sås och woka några minuter.',
+      'Salta och peppra.',
+      'Klipp gräslök och strö över laxwoken.'
     ]
   },
   {
@@ -254,28 +243,29 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/BIFF_MED_BLOMKÅLSMOS.JPG`,
     categories: ['kött','middag'],
-    ingredients: [
-      '400 g blomkål',
-      '1/2 tsk olivolja',
-      '1/2 krm spiskummin',
-      'Salt och svartpeppar',
-      '1/2 dl creme fraiche',
-      '1/4 citron',
-      '300 g nötfärs',
-      '1/4 rödlök',
-      '1/2 vitlöksklyfta',
-      '1 msk persilja',
-      '1 tsk olivolja',
-      '25 g bacon',
-      '1/2 bifftomat',
-      '1 msk färsk rosmarin'
-    ],
+    ingredients: ['400 g blomkål','1/2 tsk olivolja','1/2 krm spiskummin','Salt och svartpeppar','1/2 dl creme fraiche','1/4 citron','300 g nötfärs','1/4 rödlök','1/2 vitlöksklyfta','1 msk persilja','1 tsk olivolja','25 g bacon','1/2 bifftomat','1 msk färsk rosmarin'],
     instructions: [
-      'Skär ut små buketter av blomkål för garnityr. Stek dem i 1/2 tsk olivolja med spiskummin, salt och peppar. Låt rinna av.',
-      'Koka resterande blomkål i lättsaltat vatten ca 10 minuter. Häll av och mixa med creme fraiche, citronzest och saft. Smaka av med salt och peppar.',
-      'Blanda nötfärs med finhackad rödlök, riven vitlök, hackad persilja, salt och peppar. Forma två biffar och stek i olivolja.',
-      'Stek bacon tärnat till knaprigt. Skiva bifftomat.',
-      'Servera biff med blomkålsmos, toppa med de små stekta buketterna och bacon. Dekorera med rosmarin.'
+      'Skär ut några små mini blomkålsbuketter till dekoration.',
+      'Stek minibuketterna i en halv tesked olivolja ett par minuter.',
+      'Tillsätt spiskummin, salt och svartpeppar.',
+      'Låt rinna av på hushållspapper.',
+      'Skär resten av blomkålen grovt.',
+      'Lägg i kastrull och koka i lättsaltat vatten i 10 minuter.',
+      'Häll av vattnet och mixa blomkålen med crème fraiche, riv ner citronzest och pressa ned citronjuice.',
+      'Salta och peppra.',
+      'Lägg tillbaka i kastrullen och håll varmt.',
+      'Lägg nötfärs i en bunke. Skala och finhacka rödlök och riv vitlök.',
+      'Hacka persilja och blanda ner lök, vitlök, persilja, salt och svartpeppar i färsen.',
+      'Forma till två biffar.',
+      'Hetta upp en stekpanna med olivolja.',
+      'Stek biffarna ett par minuter på varje sida.',
+      'Skär bacon i små tärningar.',
+      'Hetta upp en stekpanna.',
+      'Stek bacon knaprigt ett par minuter.',
+      'Skär tomat i skivor och lägg upp på tallrikar.',
+      'Lägg upp blomkålsmoset och biffen.',
+      'Toppa med de små stekta blomkålsbuketterna och bacon.',
+      'Dekorera med rosmarin.'
     ]
   },
   {
@@ -283,27 +273,25 @@ const RECIPES: RecipeSeed[] = [
     servings: 2,
     image: `${IMG_BASE}/MINIHAMBURGARE_MED_GORGONZOLA.JPG`,
     categories: ['kött','middag'],
-    ingredients: [
-      '300 g nötfärs',
-      '1/2 vitlöksklyfta',
-      'Salt och svartpeppar',
-      '1 tsk olivolja',
-      '1 squash',
-      '2 msk sweet chili',
-      '1/2 krm örtagårdskrydda',
-      '2 msk mandelspån',
-      '50 g gorgonzola',
-      '1/4 rödlök',
-      '10 cocktailtomater',
-      '2 persiljekvistar (dekoration)'
-    ],
+    ingredients: ['300 g nötfärs','1/2 vitlöksklyfta','Salt och svartpeppar','1 tsk olivolja','1 squash','2 msk sweet chili','0,5 krm örtagårdskrydda','2 msk mandelspån','50 g gorgonzola','1/4 rödlök','10 cocktailtomater','2 persiljekvistar'],
     instructions: [
-      'Sätt ugnen på 200°C. Blanda nötfärs med riven vitlök, salt och peppar och forma 8 små hamburgare.',
-      'Bryn minihamburgarna i olivolja ett par minuter per sida.',
-      'Skär squash i tunna längder och lägg på en plåt. Placera två minihamburgare på varje squashskiva.',
-      'Ringla över sweet chilisås och strö på örtagårdskrydda. Lägg en klick gorgonzola på varje burgare och strö över mandelspån.',
-      'Dela tomater och strimla rödlök och lägg på plåten. Ugnsbaka ca 10 minuter.',
-      'Dekorera med persiljekvistar vid servering.'
+      'Sätt ugnen på 200 grader.',
+      'Lägg nötfärs i en skål.',
+      'Skala och riv vitlök och blanda ner i färsen tillsammans med salt och peppar.',
+      'Forma till 8 små hamburgare.',
+      'Hetta upp en stekpanna med olivolja.',
+      'Bryn minihamburgarna ett par minuter på varje sida.',
+      'Skär squash på längden i tunna skivor.',
+      'Lägg squashskivorna på en plåt.',
+      'Lägg två minihamburgare på varje skiva squash.',
+      'Häll på sweet chilisås och strö på örtagårdskrydda.',
+      'Lägg en klick gorgonzola på varje burgare.',
+      'Strö över mandelspån.',
+      'Dela tomaterna.',
+      'Skala och strimla rödlök.',
+      'Lägg tomat och lök på plåten.',
+      'Ugnsbaka i 10 minuter.',
+      'Dekorera med persiljekvistar.'
     ]
   },
   {
@@ -311,18 +299,14 @@ const RECIPES: RecipeSeed[] = [
     servings: 1,
     image: `${IMG_BASE}/ÄPPLE_MED_JORDNÖTSKRÄM.JPG`,
     categories: ['dessert','snack'],
-    ingredients: [
-      '1 äpple',
-      '1 msk jordnötssmör',
-      '2 msk kokosgrädde',
-      '1/2 tsk agavesirap',
-      '1 msk jordnötter'
-    ],
+    ingredients: ['1 äpple','1 msk jordnötssmör','2 msk kokosgrädde','1/2 tsk agavesirap','1 msk jordnötter'],
     instructions: [
       'Skär äpplet i skivor.',
-      'Blanda jordnötssmör med kokosgrädde och agavesirap till en kräm.',
-      'Lägg äppelskivorna på en tallrik och toppa med jordnötskrämen.',
-      'Hacka jordnötter och strö över.'
+      'Blanda jordnötssmör med kokosgrädde i en skål.',
+      'Tillsätt agavesirap.',
+      'Lägg äppelskivorna på en tallrik.',
+      'Placera jordnötskrämen ovanpå.',
+      'Hacka jordnötterna och strö över.'
     ]
   }
 ];
