@@ -13,9 +13,18 @@ export async function GET() {
     });
 
     if (!course) {
+      // List all courses to help debug
+      const allCourses = await prisma.courseProduct.findMany({
+        select: {
+          id: true,
+          name: true
+        }
+      });
+
       return NextResponse.json({ 
-        error: 'Hormone course not found in CourseProduct',
-        info: 'Make sure a CourseProduct with name containing "hormonell-balans" exists'
+        error: 'Hormone course not found',
+        info: 'Make sure a CourseProduct with name containing "hormonell-balans" exists',
+        allCourses: allCourses
       }, { status: 404 });
     }
 
