@@ -89,7 +89,7 @@ export default function RecipePage() {
         'hormone': 'Hormonell Balans'
       };
       const url = fromCourse === 'hormone'
-        ? `/dashboard/courses/hormone/week/${fromWeek}`
+        ? `/dashboard/courses/functional-hormone/week/${fromWeek}`
         : `/dashboard/courses/functional-${fromCourse}/week/${fromWeek}`;
       return {
         url,
