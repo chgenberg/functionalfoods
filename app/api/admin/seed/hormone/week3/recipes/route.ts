@@ -31,7 +31,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Bananpannkaka med frukt och bär',
     servings: 1,
-    image: `${IMG_BASE}/BANANPANNKAKA_MED_FRUKT_OCH_BÄR.JPG`,
+    image: `${IMG_BASE}/BANANPANNKAKA_MED_FRUKT_OCH_BAR.JPG`,
     categories: ['frukost'],
     ingredients: ['1/2 banan','1 ägg','1/2 krm vaniljpulver','1 tsk smör','2 msk grekisk yoghurt','1/2 dl blåbär','1 msk granatäppelkärnor','1/2 banan'],
     instructions: [
@@ -70,7 +70,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Falafel med grönsaker',
     servings: 2,
-    image: `${IMG_BASE}/FALAFEL_MED_GRÖNSAKER.JPG`,
+    image: `${IMG_BASE}/FALAFEL_MED_GRONSAKER.JPG`,
     categories: ['vego','lunch','middag'],
     ingredients: ['115 g konserverade kikärtor','1/2 gul lök','1/2 vitlöksklyfta','1/2 tsk malen spiskummin','1 krm salt','2 msk persilja','1 krm sambal oelek','1 msk majsstärkelse','1 tsk olivolja','2 morötter','1/2 paprika','1/2 rödlök','10 cm gurka','10 cocktailtomater','50 g spenat','1/2 dl grekisk yoghurt','1/2 msk sweet chili sås','1/2 vitlögsklyfta'],
     instructions: [
@@ -96,7 +96,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Kyckling med grön curry',
     servings: 2,
-    image: `${IMG_BASE}/KYCKLING_MED_GRÖN_CURRY.JPG`,
+    image: `${IMG_BASE}/KYCKLING_MED_GRON_CURRY.JPG`,
     categories: ['kyckling','middag'],
     ingredients: ['300 g kycklinglårfilé','1/2 vitlöksklyfta','1/2 msk ingefära','1 tsk ketjap manis','Salt och svartpeppar','1/2 vitlögsklyfta','1/2 msk ingefära','1 morot','1 salladslök','200 ml kokosmjölk','20 g green curry kryddmix','1 tsk smör','100 g sockerärtor','1/2 dl cashewnötter','1/2 dl salladslök','1 msk färsk koriander'],
     instructions: [
@@ -145,7 +145,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Torskgratäng med champinjoner',
     servings: 4,
-    image: `${IMG_BASE}/TORSKGRATÄNG_MED_CHAMPINJONER.JPG`,
+    image: `${IMG_BASE}/TORSKGRATANG_MED_CHAMPINJONER.JPG`,
     categories: ['fisk','middag'],
     ingredients: ['300 g champinjoner','250 g cocktailtomater','2 tomater','10 cm squash','3/4 rödlök','1 vitlöksklyfta','1 msk olivolja','Salt och svartpeppar','1 tsk örtagårdskrydda','700 g torskrygg','2 msk sweet chilisås','1/2 dl jalapeños','1 dl riven ost','4 persiljekvistar'],
     instructions: [
@@ -185,7 +185,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Högrevsburgare med mango',
     servings: 2,
-    image: `${IMG_BASE}/HÖGREVSBURGARE_MED_MANGO.JPG`,
+    image: `${IMG_BASE}/HOGREVSBURGARE_MED_MANGO.JPG`,
     categories: ['kött','middag'],
     ingredients: ['1 tsk olivolja','2 högrevsburgare','Salt och svartpeppar','30 g spenat','1 mango','1/4 rödlök','10 cocktailtomater','2 msk mynta','40 g fetaost','1 msk myntablad'],
     instructions: [
@@ -205,7 +205,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Fruktsallad med chokladkräm',
     servings: 2,
-    image: `${IMG_BASE}/FRUKTSALLAD_MED_CHOKLADKRÄM.JPG`,
+    image: `${IMG_BASE}/FRUKTSALLAD_MED_CHOKLADKRAM.JPG`,
     categories: ['dessert'],
     ingredients: ['5 jordgubbar','1/2 mango','1 kiwi','40 g mörk choklad','1/2 dl kokosgrädde','1 ruta vit choklad'],
     instructions: [
