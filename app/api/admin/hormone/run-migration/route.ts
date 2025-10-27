@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // 1) Seed meal plans (weeks 1-6)
     const mealPlanPaths = [
-      '/api/admin/seed/hormone/week1',
+      '/api/admin/seed/hormone/week1/recipes',
       '/api/admin/seed/hormone/week2/meal-plan',
       '/api/admin/seed/hormone/week3/meal-plan',
       '/api/admin/seed/hormone/week4/meal-plan',

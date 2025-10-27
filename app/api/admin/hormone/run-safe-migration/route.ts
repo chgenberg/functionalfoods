@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       if (!mp) {
         // Pick seed route per week
         const path = week === 1
-          ? '/api/admin/seed/hormone/week1'
+          ? '/api/admin/seed/hormone/week1/recipes'
           : `/api/admin/seed/hormone/week${week}/meal-plan`;
         const r = await postInternal(path, req);
         results.mealPlans.push({ week, seeded: true, ...r });
