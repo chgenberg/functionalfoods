@@ -255,28 +255,19 @@ const RECIPES: Seed[] = [
     servings: 15,
     image: `${IMG}/GLUTENFRI_BANANKAKA.JPG`,
     categories: ['dessert'],
-    ingredients: [
-      '150 g smör',
-      '2 dl kokossocker',
-      '3 ägg',
-      '4 dl mandelmjöl',
-      '2 dl kokosmjöl',
-      '2 tsk bakpulver',
-      '1/2 tsk malen kardemumma',
-      '1 tsk vaniljpulver',
-      '4 bananer',
-      '100 g valnötter',
-      '50 g mörk choklad',
-      'Form: 1 tsk olja, 2 msk glutenfritt ströbröd, 10 valnötter'
-    ],
+    ingredients: ['150 g smör','2 dl kokossocker','3 ägg','4 dl mandelmjöl','2 dl kokosmjöl','2 tsk bakpulver','1/2 tsk malen kardemumma','1 tsk vaniljpulver','4 bananer','100 g valnötter','50 g mörk choklad','1 tsk olja','2 msk glutenfritt ströbröd','10 valnötter'],
     instructions: [
-      'Sätt ugnen på 175°C.',
-      'Vispa smör och kokossocker fluffigt med elvisp. Tillsätt ett ägg i taget och vispa luftigt.',
-      'Blanda mandelmjöl, kokosmjöl, bakpulver, kardemumma och vaniljpulver i en skål.',
-      'Mosa bananerna lätt och vänd ner i smeten tillsammans med de torra ingredienserna.',
-      'Hacka valnötter och mörk choklad grovt och blanda ner i smeten.',
-      'Pensla en brödform med olja och strö i glutenfritt ströbröd. Häll i smeten och dekorera med valnötter.',
-      'Grädda i ca 60 minuter. Låt kakan svalna och kyl den gärna. Skär i bitar. Förvara i kyl (upp till 1 vecka) eller frys in i portionsbitar.'
+      'Sätt ugnen på 175 grader.',
+      'Vispa smör och kokossocker med en elvisp, tillsätt ett ägg i taget och vispa fluffigt.',
+      'Blanda ner mandelmjöl, kokosmjöl, bakpulver, kardemumma och vaniljpulver.',
+      'Mosa bananerna lätt och vänd ner i smeten tillsammans med valnötter.',
+      'Hacka chokladen grovt och blanda ner.',
+      'Häll olja i en brödform och strö på ströbröd.',
+      'Häll ner smeten och dekorera med valnötter.',
+      'Grädda i ugnen i 60 minuter.',
+      'Låt kakan svalna och sätt in i kylen.',
+      'Skär i bitar.',
+      'Håller en vecka i kylen eller frys in i bitar och ta upp vid behov.'
     ]
   }
 ];
