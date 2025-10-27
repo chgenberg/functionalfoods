@@ -182,10 +182,10 @@ export async function GET(
     // For hormone course, fetch from database
     if (courseType === 'hormone') {
       try {
-        // Find the course product by name
+        // Find the course product by name - must match exactly what's in database
         const course = await prisma.courseProduct.findFirst({
           where: {
-            name: { contains: 'hormonell-balans', mode: 'insensitive' }
+            name: 'Hormonell Balans'
           }
         });
 
