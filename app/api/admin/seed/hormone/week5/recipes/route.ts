@@ -31,7 +31,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Havregrynsgröt med banan',
     servings: 1,
-    image: `${IMG_BASE}/HAVREGRYNSGRÖT_MED_BANAN.JPG`,
+    image: `${IMG_BASE}/HAVREGRYNSGROT_MED_BANAN.JPG`,
     categories: ['frukost'],
     ingredients: [
       '1 dl havregryn',
@@ -52,7 +52,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Äggröra med lax',
     servings: 1,
-    image: `${IMG_BASE}/ÄGGRÖRA_MED_LAX.JPG`,
+    image: `${IMG_BASE}/AGGRÖRA_MED_LAX.JPG`,
     categories: ['frukost'],
     ingredients: [
       '2 ägg',
@@ -74,7 +74,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Yoghurt med kokosgranola och bär',
     servings: 1,
-    image: `${IMG_BASE}/YOGHURT_MED_KOKOSGRANOLA_OCH_BÄR.JPG`,
+    image: `${IMG_BASE}/YOGHURT_MED_KOKOSGRANOLA_OCH_BAR.JPG`,
     categories: ['frukost'],
     ingredients: [
       '1 dl frysta bär',
@@ -106,7 +106,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Rostad fänkål och rödbeta med getost',
     servings: 2,
-    image: `${IMG_BASE}/ROSTAD_FÄNKÅL_OCH_RÖDBETA_MED_GETOST.JPG`,
+    image: `${IMG_BASE}/ROSTAD_FANKÅL_OCH_RODBETA_MED_GETOST.JPG`,
     categories: ['vego','lunch','middag'],
     ingredients: [
       '3 rödbetor',
@@ -173,7 +173,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Kycklingburgare med citronkräm',
     servings: 1,
-    image: `${IMG_BASE}/KYCKLINGBURGARE_MED_CITRONKRÄM.JPG`,
+    image: `${IMG_BASE}/KYCKLINGBURGARE_MED_CITRONKRAM.JPG`,
     categories: ['kyckling','middag'],
     ingredients: ['125 g kycklingfärs','1 citronklyfta','Salt och svartpeppar','1 tsk dill','75 g sparris','75 g sockerärtor','1,5 tsk olivolja','1 msk dill','3 st rädisor','2 msk grekisk yoghurt','1 citronklyfta','1 msk dill','1 citronklyfta','1 dillkvist'],
     instructions: [
@@ -241,7 +241,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Biff med blomkålsmos',
     servings: 2,
-    image: `${IMG_BASE}/BIFF_MED_BLOMKÅLSMOS.JPG`,
+    image: `${IMG_BASE}/BIFF_MED_BLOMKALSMOS.JPG`,
     categories: ['kött','middag'],
     ingredients: ['400 g blomkål','1/2 tsk olivolja','1/2 krm spiskummin','Salt och svartpeppar','1/2 dl creme fraiche','1/4 citron','300 g nötfärs','1/4 rödlök','1/2 vitlöksklyfta','1 msk persilja','1 tsk olivolja','25 g bacon','1/2 bifftomat','1 msk färsk rosmarin'],
     instructions: [
@@ -297,7 +297,7 @@ const RECIPES: RecipeSeed[] = [
   {
     title: 'Äpple med jordnötskräm',
     servings: 1,
-    image: `${IMG_BASE}/ÄPPLE_MED_JORDNÖTSKRÄM.JPG`,
+    image: `${IMG_BASE}/APPLE_MED_JORDNOTSKRAM.JPG`,
     categories: ['dessert','snack'],
     ingredients: ['1 äpple','1 msk jordnötssmör','2 msk kokosgrädde','1/2 tsk agavesirap','1 msk jordnötter'],
     instructions: [
