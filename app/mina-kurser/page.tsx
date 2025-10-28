@@ -98,10 +98,10 @@ const courseMetadata: Record<string, {
     color: '#8B5CF6',
     bgColor: 'bg-[#8B5CF6]/10',
     icon: '✨',
-    dashboardPath: '/dashboard/courses/hormone',
+    dashboardPath: '/dashboard/courses/functional-hormone',
     duration: '6 veckor',
     level: 'Avancerad',
-    image: '/Hormonell_balans/Bilder_v1/KAVRING_MED_FRÖN.JPG',
+    image: '/Hormonell_balans/hormonell_balans_kurssida.JPG',
     progress: 0,
     nextLesson: 'Vecka 1'
   },
