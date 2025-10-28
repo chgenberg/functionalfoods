@@ -688,7 +688,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
     <div className="min-h-screen bg-gray-50">
       {/* Course Navigation */}
       <div className="bg-white shadow-sm border-b print:hidden sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-2 md:px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 md:px-4 py-4">
           <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
         </div>
       </div>
@@ -712,41 +712,41 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
             </div>
             
             {/* Action buttons */}
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap w-full lg:w-auto">
               {/* Servings selector */}
-              <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-2 border border-gray-200 shadow-sm">
-                <span className="text-sm font-medium text-gray-700">Portioner:</span>
-                <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 sm:gap-3 bg-white rounded-xl px-3 sm:px-4 py-2 border border-gray-200 shadow-sm">
+                <span className="text-xs sm:text-sm font-medium text-gray-700">Portioner:</span>
+                <div className="flex items-center gap-1 sm:gap-2">
                   <button
                     onClick={() => setServings(prev => Math.max(1, prev - 1))}
-                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
                     aria-label="Minska portioner"
                   >
-                    <Minus className="w-4 h-4 text-[#014421]" />
+                    <Minus className="w-3 h-3 sm:w-4 sm:h-4 text-[#014421]" />
                   </button>
-                  <span className="min-w-[3ch] text-center font-bold text-[#014421] text-lg">{servings}</span>
+                  <span className="min-w-[3ch] text-center font-bold text-[#014421] text-base sm:text-lg">{servings}</span>
                   <button
                     onClick={() => setServings(prev => prev + 1)}
-                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
                     aria-label="Öka portioner"
                   >
-                    <Plus className="w-4 h-4 text-[#014421]" />
+                    <Plus className="w-3 h-3 sm:w-4 sm:h-4 text-[#014421]" />
                   </button>
                 </div>
               </div>
               
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-1 lg:flex-initial">
                 <button
                   onClick={handlePrint}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-sm font-medium"
+                  className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-xs sm:text-sm font-medium flex-1 sm:flex-initial"
                   title="Skriv ut"
                 >
                   <Printer className="w-4 h-4" />
-                  <span className="hidden sm:inline">Skriv ut</span>
+                  <span className="sm:inline">Skriv ut</span>
                 </button>
                 <button
                   onClick={handleExport}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors text-sm font-medium"
+                  className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg bg-[#014421] text-white hover:bg-[#112A12] transition-colors text-xs sm:text-sm font-medium flex-1 sm:flex-initial"
                   title="Ladda ner"
                 >
                   <Download className="w-4 h-4" />
@@ -760,24 +760,24 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
 
       {/* Progress Bar */}
       <div className="bg-white border-b print:hidden sticky top-[73px] z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="bg-gray-50 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="bg-[#014421] rounded-full p-2">
-                  <ShoppingCart className="w-5 h-5 text-white" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="bg-[#014421] rounded-full p-1.5 sm:p-2">
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-900 text-lg">
+                  <span className="font-semibold text-gray-900 text-sm sm:text-lg">
                     {checkedCount} av {totalCount} ingredienser
                   </span>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600">
                     {totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0}% av listan avklarad
                   </p>
                 </div>
               </div>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-[#014421] to-[#93C560] h-full rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${totalCount > 0 ? (checkedCount / totalCount) * 100 : 0}%` }}
@@ -854,24 +854,24 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
                   {/* Category Header */}
                   <button
                     onClick={() => toggleCategory(category)}
-                    className="w-full bg-gradient-to-r from-[#F3EFE3] to-[#F7F1E8] hover:from-[#E8E0D4] hover:to-[#EDE4D8] transition-all duration-300 px-6 py-5 flex items-center justify-between group border-l-4 border-[#014421] hover:border-l-6 hover:shadow-lg"
+                    className="w-full bg-gradient-to-r from-[#F3EFE3] to-[#F7F1E8] hover:from-[#E8E0D4] hover:to-[#EDE4D8] transition-all duration-300 px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between group border-l-4 border-[#014421] hover:border-l-6 hover:shadow-lg"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className={`transition-all duration-300 transform ${isCollapsed ? 'rotate-0' : 'rotate-90'} bg-[#014421] rounded-full p-2 group-hover:scale-110`}>
-                        <ChevronDown className="w-4 h-4 text-white" />
+                    <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+                      <div className={`transition-all duration-300 transform ${isCollapsed ? 'rotate-0' : 'rotate-90'} bg-[#014421] rounded-full p-1.5 sm:p-2 group-hover:scale-110 flex-shrink-0`}>
+                        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                       </div>
-                      <h3 className="font-bold text-[#014421] text-xl group-hover:text-[#112A12] transition-colors">{category}</h3>
+                      <h3 className="font-bold text-[#014421] text-base sm:text-xl group-hover:text-[#112A12] transition-colors truncate">{category}</h3>
                       {allChecked && items.length > 0 && (
-                        <span className="bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-3 py-1.5 rounded-full font-semibold shadow-md animate-pulse">
+                        <span className="hidden sm:inline-flex bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-3 py-1.5 rounded-full font-semibold shadow-md animate-pulse flex-shrink-0">
                           ✓ Klart!
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm font-semibold text-[#014421] bg-white px-3 py-1 rounded-full shadow-sm">
+                    <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                      <div className="text-xs sm:text-sm font-semibold text-[#014421] bg-white px-2 sm:px-3 py-1 rounded-full shadow-sm">
                         {categoryCheckedCount}/{items.length}
                       </div>
-                      <div className="w-24 bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
+                      <div className="w-16 sm:w-24 bg-gray-200 rounded-full h-2 sm:h-3 overflow-hidden shadow-inner">
                         <div
                           className="bg-gradient-to-r from-[#014421] to-[#93C560] h-full rounded-full transition-all duration-500 ease-out shadow-sm"
                           style={{ width: `${items.length > 0 ? (categoryCheckedCount / items.length) * 100 : 0}%` }}
@@ -888,7 +888,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
                         return (
                           <label
                             key={`${category}-${index}`}
-                            className="flex items-center px-6 py-4 hover:bg-gray-50 cursor-pointer transition-all group"
+                            className="flex items-center px-3 sm:px-6 py-3 sm:py-4 hover:bg-gray-50 cursor-pointer transition-all group"
                           >
                             <input
                               type="checkbox"
@@ -896,21 +896,21 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
                               onChange={() => toggleIngredient(globalIndex)}
                               className="sr-only"
                             />
-                            <div className={`w-6 h-6 rounded-md border-2 mr-4 flex items-center justify-center transition-all ${
+                            <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md border-2 mr-3 sm:mr-4 flex items-center justify-center transition-all flex-shrink-0 ${
                               ingredient.checked 
                                 ? 'bg-[#014421] border-[#014421] scale-110' 
                                 : 'border-gray-300 group-hover:border-[#014421]'
                             }`}>
-                              {ingredient.checked && <Check className="w-4 h-4 text-white" />}
+                              {ingredient.checked && <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white" />}
                             </div>
-                            <span className={`flex-1 transition-all ${
+                            <span className={`flex-1 transition-all text-sm sm:text-base min-w-0 ${
                               ingredient.checked 
                                 ? 'line-through text-gray-400' 
                                 : 'text-gray-900 group-hover:text-[#014421]'
                             }`}>
                               {ingredient.name}
                             </span>
-                            <span className={`text-sm px-3 py-1 rounded-lg ${
+                            <span className={`text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-lg ml-2 whitespace-nowrap flex-shrink-0 ${
                               ingredient.checked 
                                 ? 'text-gray-400 bg-gray-50' 
                                 : 'text-gray-600 bg-gray-100'
