@@ -21,7 +21,7 @@ export default function Week3Page() {
     const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
     
     if (savedStartDate) {
-      setCourseStartDate(new Date(savedStartDate as string));
+      setCourseStartDate(new Date(savedStartDate));
     } else if (typeof window !== 'undefined') {
       const today = new Date();
       const day = today.getDay();
@@ -53,10 +53,10 @@ export default function Week3Page() {
     <WeekTemplate
       courseType="hormone"
       weekNumber={3}
-      weekTitle="Vecka 3"
-      weekSubtitle="Vecka 3 - Fördjupning"
+      weekTitle="Motion och Styrketräning"
+      weekSubtitle="Vecka 3 - Aktivera din kropp för bättre hormonell balans"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl=""
+      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

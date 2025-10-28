@@ -21,7 +21,7 @@ export default function Week1Page() {
     const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
     
     if (savedStartDate) {
-      setCourseStartDate(new Date(savedStartDate as string));
+      setCourseStartDate(new Date(savedStartDate));
     } else if (typeof window !== 'undefined') {
       const today = new Date();
       const day = today.getDay();
@@ -53,10 +53,10 @@ export default function Week1Page() {
     <WeekTemplate
       courseType="hormone"
       weekNumber={1}
-      weekTitle="Hormonell Balans"
-      weekSubtitle="Vecka 1 - Introduktion till hormonell balans och functional foods"
+      weekTitle="Introduktion till Hormonell Balans"
+      weekSubtitle="Vecka 1 - Börja din resa mot bättre hormonell balans"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl=""
+      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

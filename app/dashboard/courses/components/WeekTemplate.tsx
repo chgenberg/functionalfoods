@@ -248,6 +248,17 @@ Den här veckan vill vi rekommendera att du läser dokumentet "Förstå insulinr
 Den här veckan vill vi att du fördjupar dig i fler faktorer som påverkar ditt blodsocker, förutom kosten. Läs gärna dokumentet "En hälsosam livsstil för stabilt blodsocker" för att få en bättre förståelse för hur även andra livsstilsfaktorer som motion, sömn och stress påverkar din blodsockernivå och kan hjälpa dig att skapa en hållbar och balanserad livsstil.`,
     6: `Nu har du nått sista veckan av kursen, och du har lärt dig att laga mat som stödjer både din maghälsa och blodsockerkontroll. Du har fått massor av nya recept och kunskap som du kan använda för att fortsätta ta hand om din hälsa i framtiden. Förhoppningsvis märker du positiva förändringar – jämför gärna hur du upplevde din kropp och blodsockernivå när du startade kursen och reflektera över de framsteg du har gjort. 
 Nu är det dags att fortsätta ditt intresse för en hälsosam kost och göra det till en långsiktig livsstil. Genom att göra kostval som stödjer stabilt blodsocker och en balanserad kropp kommer du att må bra både nu och i framtiden.`
+  },
+  hormone: {
+    1: `Välkommen till vecka 1
+Kostschemat i den här kursen är sammansatt för att främja den hormonella balansen och dessutom få fart på förbränningen. Du varierar kalorimängden mellan cirka 500 och 1500 kalorier per dag. Vissa dagar äter du alltså mindre och andra mer. Är du inte ute efter att tappa i vikt kan du göra portionerna lite större och kanske lägga till ett nyttigt mellanmål. Yoghurt med bär/granola, en grön smoothie, kokt ägg, keso med bär, en avokado, ett äpple eller en morot är bra mellanmål.
+
+Starta dina dagar med att mäta upp cirka 3 dl vatten, pressa i saften från 1/4 citron och riv i lite färsk ingefära. Kom också ihåg att alltid dricka ordentligt med vatten under dagen. Kaffe och te utan mjölk kan du dricka när du vill. Nu kör vi igång!`,
+    2: ``,
+    3: ``,
+    4: ``,
+    5: ``,
+    6: ``
   }
 };
 

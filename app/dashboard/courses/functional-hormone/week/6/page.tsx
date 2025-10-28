@@ -21,7 +21,7 @@ export default function Week6Page() {
     const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
     
     if (savedStartDate) {
-      setCourseStartDate(new Date(savedStartDate as string));
+      setCourseStartDate(new Date(savedStartDate));
     } else if (typeof window !== 'undefined') {
       const today = new Date();
       const day = today.getDay();
@@ -53,10 +53,10 @@ export default function Week6Page() {
     <WeekTemplate
       courseType="hormone"
       weekNumber={6}
-      weekTitle="Vecka 6"
-      weekSubtitle="Vecka 6 - Avslutning och integration"
+      weekTitle="Avslutning och Framtid"
+      weekSubtitle="Vecka 6 - Din nya hormonella balans börjar här"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl=""
+      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

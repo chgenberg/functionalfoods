@@ -21,7 +21,7 @@ export default function Week2Page() {
     const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
     
     if (savedStartDate) {
-      setCourseStartDate(new Date(savedStartDate as string));
+      setCourseStartDate(new Date(savedStartDate));
     } else if (typeof window !== 'undefined') {
       const today = new Date();
       const day = today.getDay();
@@ -53,10 +53,10 @@ export default function Week2Page() {
     <WeekTemplate
       courseType="hormone"
       weekNumber={2}
-      weekTitle="Vecka 2"
-      weekSubtitle="Vecka 2 - Fortsättning på hormonell balans"
+      weekTitle="Näringsrik och Naturlig Kost"
+      weekSubtitle="Vecka 2 - Lägg grunden för hormonell balans genom rätt näring"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl=""
+      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

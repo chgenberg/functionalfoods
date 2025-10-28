@@ -101,17 +101,36 @@ export default function HormoneOverview() {
               </h1>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  Nu har du en spännande resa framför dig under 6 veckor med näringsrika recept och du får lära dig hur mat påverkar din hormonella balans. Du får praktiska kostscheman, recept för alla måltider och inköpslistor varje vecka.
+                  Det här är kursen fylld med matglädje, planerade kostscheman och ett träningsprogram med Charlotte, detta framtaget specifikt för att lindra hormonella besvär. Hormonella besvär är vanligt bland kvinnor i olika perioder i livet. Men det finns mycket man kan göra för att påverka detta själv och här är kursen för just det.
                 </p>
+                
                 <p>
-                  Efter dessa veckor kommer du ha lärt dig om matlagning och de fördelar som kommer med en näringsrik kost: bättre hormonbalans, ökad energi, minskad inflammation och ett starkare immunförsvar.
+                  För att komma i hormonell balans så är nedan nycklar viktiga:
                 </p>
+                
+                <ul className="list-disc list-inside space-y-2 ml-2">
+                  <li>Näringsrik och naturlig kost utan snabba kolhydrater, gluten och socker</li>
+                  <li>Motion, frisk luft och styrketräning</li>
+                  <li>Återhämtning och tillräckligt med sömn</li>
+                  <li>Stresshantering</li>
+                </ul>
+                
                 <p>
-                  Mitt bästa tips är planering – laga flera maträtter samtidigt för att vara väl förberedd.
+                  Planering är A och O och det ska vi hjälpa dig med. För att spara både tid och pengar gör du oftast mer än en portion och det som blir över använder du kommande måltider, i kostschemat benämnd som rester. Gör du mat för hela familjen kan du enkelt lägga till potatis, ris eller pasta om det behövs.
                 </p>
+                
+                <p>
+                  När du kommit igång med din träning kan ett mellanmål behövas. Du hittar bra förslag bland annat i texten till vecka 1.
+                </p>
+                
+                <p>
+                  Läs igenom alla kunskapsdokument för viktig information som kommer att hjälpa dig under kursen.
+                </p>
+                
                 <p className="font-semibold">
-                  Varmt välkommen till framtidens kost för bättre hälsa och ett friskare liv!
+                  Varmt välkommen till sex veckor av matglädje, rörelseglädje och hormonell balans!
                 </p>
+                
                 <p className="text-[#014421] font-signature text-xl">
                   /Ulrika
                 </p>
@@ -120,7 +139,7 @@ export default function HormoneOverview() {
             
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
               <iframe
-                src="https://player.vimeo.com/video/1084931582?h=79f8062094"
+                src="https://player.vimeo.com/video/1131199521"
                 className="absolute inset-0 w-full h-full"
                 frameBorder="0"
                 allow="autoplay; fullscreen; picture-in-picture"
