@@ -260,7 +260,8 @@ Första veckan avklarad! Visst känns det bra att ha allt planerat. Vet du att d
 Då var två veckor avklarade och du bör känna skillnad i ditt mående och din hormonella balans. Du har undvikit alkohol såväl som snabba kolhydrater i form av vitt mjöl, pasta, vitt ris, bakverk och socker. Detta märks på ditt välbefinnande och du känner dig förhoppningsvis både piggare och slankare. Veckan som kommer blir kalorisnål, du kommer att ligga mellan 500 och 1200 kalorier per dag. Vill du inte tappa i vikt så öka på mängden protein i recepten. Redo för vecka 3!`,
     4: `Välkommen till vecka 4
 Halva kursen avklarad - bra jobbat! Stanna gärna upp och reflektera över hur du mår. Hur har kosten och träningen påverkat dig? Hur känns din vardag när allt är planerat och klart och du vet precis vad du ska äta. Har fastan en positiv effekt på dig? Många som provar 16:8 och tidigare trott sig vara så kallade frukostmänniskor märker av att just det målet är inga som helt problem att hoppa över. Välkommen till vecka 4!`,
-    5: ``,
+    5: `Välkommen till vecka 5
+I recepten hittar du olika sorters grönsaker som både mättar och sätter färg på tallriken och vem tilltalas inte av det! Är det något du inte gillar eller inte har hemma kan du alltid byta ut, likaså om du hittar något till extrapris. Vill du vara noga med kaloriberäkningen kan du använda dig av www.kostbevakningen.se. Grönsaker innehåller mycket fibrer och relativt liten kolhydratsmängd och det gör att du inte behöver vara så noga med att mäta och väga. Rotfrukter är mer kolhydratrika men av den långsamma sorten som mättar bra. Det är också skillnad på att äta råa eller lätt wokade grönsaker jämfört med att äta de som kokat länge. I råa grönsaker finns matsmältningsenzymer som är gynnsamma för både tarm och matsmältning. Nu laddar vi för vecka 5, vår näst sista!`,
     6: ``
   }
 };
