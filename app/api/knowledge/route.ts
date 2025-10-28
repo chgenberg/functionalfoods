@@ -83,6 +83,15 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ documents: [energyDoc] }, { headers: { 'Cache-Control': 'no-store' } });
           }
         }
+        
+        const hormonePath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-hormone.json');
+        if (fs.existsSync(hormonePath)) {
+          const hormoneDocs = JSON.parse(fs.readFileSync(hormonePath, 'utf8'));
+          const hormoneDoc = hormoneDocs.find((d: any) => d.slug === slug);
+          if (hormoneDoc) {
+            return NextResponse.json({ documents: [hormoneDoc] }, { headers: { 'Cache-Control': 'no-store' } });
+          }
+        }
       }
       // As last resort return empty
       return NextResponse.json({ documents: [] }, { headers: { 'Cache-Control': 'no-store' } });
@@ -104,6 +113,12 @@ export async function GET(req: NextRequest) {
       if (fs.existsSync(energyPath)) {
         const energyDocs = JSON.parse(fs.readFileSync(energyPath, 'utf8'));
         jsonDocs = [...jsonDocs, ...energyDocs];
+      }
+      // And Hormone docs
+      const hormonePath = path.join(process.cwd(), 'public', 'data', 'knowledge-documents-hormone.json');
+      if (fs.existsSync(hormonePath)) {
+        const hormoneDocs = JSON.parse(fs.readFileSync(hormonePath, 'utf8'));
+        jsonDocs = [...jsonDocs, ...hormoneDocs];
       }
     }
     const jsonFiltered = (slug ? jsonDocs.filter((d: any) => d.slug === slug) : jsonDocs)

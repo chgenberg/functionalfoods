@@ -12,7 +12,7 @@ interface Document {
   excerpt?: string;
   headerImage: string;
   readTime: number;
-  course: 'basic' | 'flow' | 'energy';
+  course: 'basic' | 'flow' | 'energy' | 'hormone';
   order: number;
   weekNumber?: number;
 }
@@ -61,7 +61,7 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
     const fetchDocuments = async () => {
       try {
         // Map courseType to API course param
-        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : 'energy';
+        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : courseType === 'hormone' ? 'hormone' : 'energy';
         const res = await fetch(`/api/knowledge?course=${course}`);
         const data = await res.json();
         

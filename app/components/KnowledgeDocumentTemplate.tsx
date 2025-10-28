@@ -20,7 +20,7 @@ interface Document {
 interface KnowledgeDocumentTemplateProps {
   documentSlug: string;
   courseId: string;
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
   nextDocument?: { title: string; slug: string };
   previousDocument?: { title: string; slug: string };
 }
@@ -157,7 +157,7 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
                   </span>
                   <span className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
                     <BookOpen className="w-4 h-4" />
-                    Functional {courseType === 'basics' ? 'Basics' : courseType === 'flow' ? 'Flow' : 'Energy'}
+                    {courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Flow' : courseType === 'energy' ? 'Functional Energy' : 'Hormonell Balans'}
                   </span>
                 </div>
               </div>

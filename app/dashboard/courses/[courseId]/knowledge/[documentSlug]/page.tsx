@@ -8,7 +8,7 @@ export default function KnowledgeDocumentPage() {
   const { courseId, documentSlug } = params as { courseId: string; documentSlug: string };
   
   // Determine course type from courseId
-  const courseType = courseId === 'functional-basics' ? 'basics' : 'flow';
+  const courseType = courseId === 'functional-basics' ? 'basics' : courseId === 'functional-flow' ? 'flow' : courseId === 'functional-energy' ? 'energy' : courseId === 'hormonell-balans' || courseId === 'functional-hormone' ? 'hormone' : 'basics';
 
   return (
     <KnowledgeDocumentTemplate
