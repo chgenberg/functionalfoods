@@ -258,7 +258,8 @@ Starta dina dagar med att mäta upp cirka 3 dl vatten, pressa i saften från 1/4
 Första veckan avklarad! Visst känns det bra att ha allt planerat. Vet du att du kommer att ha en fullspäckad vecka så lägg någon timma på att göra matlådor och förvara i kyl och frys. Det kommer att underlätta och du slipper känna stress. Maten du äter är baserad på en lågkolhydrat- och antiinflammatorisk kost, flertalet råvaror är dessutom fyllda med vitaminer, mineraler, fibrer och antioxidanter. Du äter minimalt med gluten och komjölksprodukter och det i sin tur gör att har du en orolig mage kommer du att märka stor skillnad. Vill du byta ut ost, gräddfil eller yoghurt mot havre-, soja- och getostprodukter så går det utmärkt. Då kör vi igång vecka 2!`,
     3: `Välkommen till vecka 3
 Då var två veckor avklarade och du bör känna skillnad i ditt mående och din hormonella balans. Du har undvikit alkohol såväl som snabba kolhydrater i form av vitt mjöl, pasta, vitt ris, bakverk och socker. Detta märks på ditt välbefinnande och du känner dig förhoppningsvis både piggare och slankare. Veckan som kommer blir kalorisnål, du kommer att ligga mellan 500 och 1200 kalorier per dag. Vill du inte tappa i vikt så öka på mängden protein i recepten. Redo för vecka 3!`,
-    4: ``,
+    4: `Välkommen till vecka 4
+Halva kursen avklarad - bra jobbat! Stanna gärna upp och reflektera över hur du mår. Hur har kosten och träningen påverkat dig? Hur känns din vardag när allt är planerat och klart och du vet precis vad du ska äta. Har fastan en positiv effekt på dig? Många som provar 16:8 och tidigare trott sig vara så kallade frukostmänniskor märker av att just det målet är inga som helt problem att hoppa över. Välkommen till vecka 4!`,
     5: ``,
     6: ``
   }
