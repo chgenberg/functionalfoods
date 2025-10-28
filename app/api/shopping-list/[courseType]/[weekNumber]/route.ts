@@ -318,11 +318,37 @@ export async function GET(
 
     // Get meal plan for the week
     const weekKey = `week${weekNum}`;
-    const weekMeals: WeekMealPlan | undefined = courseType === 'basics' 
-      ? mealPlans[weekKey]
-      : courseType === 'flow' 
-      ? flowMealPlans[weekKey]
-      : energyMealPlans[weekKey];
+    let weekMeals: WeekMealPlan | undefined;
+    
+    // For hormone course, fetch from database
+    if (courseType === 'hormone') {
+      try {
+        const dbMealPlan = await (prisma as any).mealPlanWeek?.findUnique({
+          where: {
+            course_weekNumber: {
+              course: 'hormone',
+              weekNumber: weekNum
+            }
+          }
+        });
+        
+        if (dbMealPlan && dbMealPlan.days) {
+          weekMeals = { days: dbMealPlan.days } as WeekMealPlan;
+          console.log(`✅ Found hormone meal plan for week ${weekNum} in database`);
+        } else {
+          console.log(`❌ No hormone meal plan found for week ${weekNum}`);
+        }
+      } catch (err) {
+        console.error('Error fetching hormone meal plan:', err);
+      }
+    } else {
+      // For other courses, use static data
+      weekMeals = courseType === 'basics' 
+        ? mealPlans[weekKey]
+        : courseType === 'flow' 
+        ? flowMealPlans[weekKey]
+        : energyMealPlans[weekKey];
+    }
       
     if (!weekMeals || !weekMeals.days) {
       return NextResponse.json({ error: 'Week not found' }, { status: 404 });
