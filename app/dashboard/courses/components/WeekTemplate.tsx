@@ -254,7 +254,8 @@ Nu är det dags att fortsätta ditt intresse för en hälsosam kost och göra de
 Kostschemat i den här kursen är sammansatt för att främja den hormonella balansen och dessutom få fart på förbränningen. Du varierar kalorimängden mellan cirka 500 och 1500 kalorier per dag. Vissa dagar äter du alltså mindre och andra mer. Är du inte ute efter att tappa i vikt kan du göra portionerna lite större och kanske lägga till ett nyttigt mellanmål. Yoghurt med bär/granola, en grön smoothie, kokt ägg, keso med bär, en avokado, ett äpple eller en morot är bra mellanmål.
 
 Starta dina dagar med att mäta upp cirka 3 dl vatten, pressa i saften från 1/4 citron och riv i lite färsk ingefära. Kom också ihåg att alltid dricka ordentligt med vatten under dagen. Kaffe och te utan mjölk kan du dricka när du vill. Nu kör vi igång!`,
-    2: ``,
+    2: `Välkommen till vecka 2
+Första veckan avklarad! Visst känns det bra att ha allt planerat. Vet du att du kommer att ha en fullspäckad vecka så lägg någon timma på att göra matlådor och förvara i kyl och frys. Det kommer att underlätta och du slipper känna stress. Maten du äter är baserad på en lågkolhydrat- och antiinflammatorisk kost, flertalet råvaror är dessutom fyllda med vitaminer, mineraler, fibrer och antioxidanter. Du äter minimalt med gluten och komjölksprodukter och det i sin tur gör att har du en orolig mage kommer du att märka stor skillnad. Vill du byta ut ost, gräddfil eller yoghurt mot havre-, soja- och getostprodukter så går det utmärkt. Då kör vi igång vecka 2!`,
     3: ``,
     4: ``,
     5: ``,
