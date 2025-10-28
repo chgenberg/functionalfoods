@@ -250,50 +250,38 @@ Den här veckan vill vi att du fördjupar dig i fler faktorer som påverkar ditt
 Nu är det dags att fortsätta ditt intresse för en hälsosam kost och göra det till en långsiktig livsstil. Genom att göra kostval som stödjer stabilt blodsocker och en balanserad kropp kommer du att må bra både nu och i framtiden.`
   },
   hormone: {
-    1: `Välkommen till vecka 1
-
-Kostschemat i den här kursen är sammansatt för att främja den hormonella balansen och dessutom få fart på förbränningen. Du varierar kalorimängden mellan cirka 500 och 1500 kalorier per dag. Vissa dagar äter du alltså mindre och andra mer. 
+    1: `Kostschemat i den här kursen är sammansatt för att främja den hormonella balansen och dessutom få fart på förbränningen. Du varierar kalorimängden mellan cirka 500 och 1500 kalorier per dag. Vissa dagar äter du alltså mindre och andra mer. 
 
 Är du inte ute efter att tappa i vikt kan du göra portionerna lite större och kanske lägga till ett nyttigt mellanmål. Yoghurt med bär/granola, en grön smoothie, kokt ägg, keso med bär, en avokado, ett äpple eller en morot är bra mellanmål.
 
 Starta dina dagar med att mäta upp cirka 3 dl vatten, pressa i saften från 1/4 citron och riv i lite färsk ingefära. Kom också ihåg att alltid dricka ordentligt med vatten under dagen. Kaffe och te utan mjölk kan du dricka när du vill. 
 
 Nu kör vi igång!`,
-    2: `Välkommen till vecka 2
-
-Första veckan avklarad! Visst känns det bra att ha allt planerat. Vet du att du kommer att ha en fullspäckad vecka så lägg någon timma på att göra matlådor och förvara i kyl och frys. Det kommer att underlätta och du slipper känna stress. 
+    2: `Första veckan avklarad! Visst känns det bra att ha allt planerat. Vet du att du kommer att ha en fullspäckad vecka så lägg någon timma på att göra matlådor och förvara i kyl och frys. Det kommer att underlätta och du slipper känna stress. 
 
 Maten du äter är baserad på en lågkolhydrat- och antiinflammatorisk kost, flertalet råvaror är dessutom fyllda med vitaminer, mineraler, fibrer och antioxidanter. Du äter minimalt med gluten och komjölksprodukter och det i sin tur gör att har du en orolig mage kommer du att märka stor skillnad. 
 
 Vill du byta ut ost, gräddfil eller yoghurt mot havre-, soja- och getostprodukter så går det utmärkt. 
 
 Då kör vi igång vecka 2!`,
-    3: `Välkommen till vecka 3
-
-Då var två veckor avklarade och du bör känna skillnad i ditt mående och din hormonella balans. Du har undvikit alkohol såväl som snabba kolhydrater i form av vitt mjöl, pasta, vitt ris, bakverk och socker. Detta märks på ditt välbefinnande och du känner dig förhoppningsvis både piggare och slankare. 
+    3: `Då var två veckor avklarade och du bör känna skillnad i ditt mående och din hormonella balans. Du har undvikit alkohol såväl som snabba kolhydrater i form av vitt mjöl, pasta, vitt ris, bakverk och socker. Detta märks på ditt välbefinnande och du känner dig förhoppningsvis både piggare och slankare. 
 
 Veckan som kommer blir kalorisnål, du kommer att ligga mellan 500 och 1200 kalorier per dag. Vill du inte tappa i vikt så öka på mängden protein i recepten. 
 
 Redo för vecka 3!`,
-    4: `Välkommen till vecka 4
-
-Halva kursen avklarad - bra jobbat! Stanna gärna upp och reflektera över hur du mår. Hur har kosten och träningen påverkat dig? Hur känns din vardag när allt är planerat och klart och du vet precis vad du ska äta. 
+    4: `Halva kursen avklarad - bra jobbat! Stanna gärna upp och reflektera över hur du mår. Hur har kosten och träningen påverkat dig? Hur känns din vardag när allt är planerat och klart och du vet precis vad du ska äta. 
 
 Har fastan en positiv effekt på dig? Många som provar 16:8 och tidigare trott sig vara så kallade frukostmänniskor märker av att just det målet är inga som helt problem att hoppa över. 
 
 Välkommen till vecka 4!`,
-    5: `Välkommen till vecka 5
-
-I recepten hittar du olika sorters grönsaker som både mättar och sätter färg på tallriken och vem tilltalas inte av det! Är det något du inte gillar eller inte har hemma kan du alltid byta ut, likaså om du hittar något till extrapris. 
+    5: `I recepten hittar du olika sorters grönsaker som både mättar och sätter färg på tallriken och vem tilltalas inte av det! Är det något du inte gillar eller inte har hemma kan du alltid byta ut, likaså om du hittar något till extrapris. 
 
 Vill du vara noga med kaloriberäkningen kan du använda dig av www.kostbevakningen.se. Grönsaker innehåller mycket fibrer och relativt liten kolhydratsmängd och det gör att du inte behöver vara så noga med att mäta och väga. Rotfrukter är mer kolhydratrika men av den långsamma sorten som mättar bra. 
 
 Det är också skillnad på att äta råa eller lätt wokade grönsaker jämfört med att äta de som kokat länge. I råa grönsaker finns matsmältningsenzymer som är gynnsamma för både tarm och matsmältning. 
 
 Nu laddar vi för vecka 5, vår näst sista!`,
-    6: `Välkommen till vecka 6
-
-Under de fem veckor som passerat har du ätit socker- och glutenfritt. Recepten är baserade på en lågkolhydratkost och det gör att ditt blodsocker hålls jämnt och stabilt. Du har också varierat ditt kaloriintag över veckans dagar och ibland ätit mindre och ibland ätit mer. Det här för att främja din förbränning. 
+    6: `Under de fem veckor som passerat har du ätit socker- och glutenfritt. Recepten är baserade på en lågkolhydratkost och det gör att ditt blodsocker hålls jämnt och stabilt. Du har också varierat ditt kaloriintag över veckans dagar och ibland ätit mindre och ibland ätit mer. Det här för att främja din förbränning. 
 
 Vad kommer du att plocka med dig från kursen? Kanske göra en veckoplanering så du vet exakt vad du ska äta och vad du ska köpa hem. Göra flera portioner så att du vissa dagar kan äta rester och ha färdiga matlådor hemma. 
 
