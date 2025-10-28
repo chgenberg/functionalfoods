@@ -56,7 +56,6 @@ export default function Week5Page() {
       weekTitle="Stresshantering och Balance"
       weekSubtitle="Vecka 5 - Implementera allt du lärt dig för långsiktig hormonell hälsa"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

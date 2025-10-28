@@ -56,7 +56,6 @@ export default function Week6Page() {
       weekTitle="Avslutning och Framtid"
       weekSubtitle="Vecka 6 - Din nya hormonella balans börjar här"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

@@ -56,7 +56,6 @@ export default function Week2Page() {
       weekTitle="Näringsrik och Naturlig Kost"
       weekSubtitle="Vecka 2 - Lägg grunden för hormonell balans genom rätt näring"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

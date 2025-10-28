@@ -56,7 +56,6 @@ export default function Week4Page() {
       weekTitle="Återhämtning och Sömn"
       weekSubtitle="Vecka 4 - Låt din kropp återhämta sig för optimal hormonell funktion"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

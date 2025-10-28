@@ -56,7 +56,6 @@ export default function Week3Page() {
       weekTitle="Motion och Styrketräning"
       weekSubtitle="Vecka 3 - Aktivera din kropp för bättre hormonell balans"
       heroImage="/Ulrika_portratt/udavidssondesktop.png"
-      videoUrl="https://player.vimeo.com/video/1131199521"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />
