@@ -101,7 +101,7 @@ const courseMetadata: Record<string, {
     dashboardPath: '/dashboard/courses/functional-hormone',
     duration: '6 veckor',
     level: 'Avancerad',
-    image: '/Hormonell_balans/hormonell_balans_kurssida.JPG',
+    image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
     progress: 0,
     nextLesson: 'Vecka 1'
   },
