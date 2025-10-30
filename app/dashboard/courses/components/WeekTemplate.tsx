@@ -71,16 +71,12 @@ const RecipeNutrition = ({ recipeLink }: { recipeLink?: string }) => {
   const fat = Math.round(
     nutrition.fat || nutrition.perServing?.fat || 0
   );
-  const fiber = Math.round(
-    (nutrition as any).fiber || (nutrition as any).fibre || (nutrition.perServing as any)?.fiber || (nutrition.perServing as any)?.fibre || 0
-  );
 
   const values = [
     { label: 'kcal', value: kcal },
     { label: 'P', value: protein, unit: 'g' },
     { label: 'K', value: carbs, unit: 'g' },
-    { label: 'F', value: fat, unit: 'g' },
-    { label: 'Fi', value: fiber, unit: 'g' }
+    { label: 'F', value: fat, unit: 'g' }
   ];
   
   return (
@@ -105,6 +101,8 @@ const getMealLabel = (type: string, name?: string): string => {
     'morot- och kesolimpa',
     'kesolimpa',
     'bovetegranola',
+    'kokosgranola',
+    'granola',
     'bananmuffins',
     'jordgubbssylt',
     'kesofralla',
@@ -382,8 +380,7 @@ export default function WeekTemplate({
   const [metaWeekSubtitle, setMetaWeekSubtitle] = useState<string>(weekSubtitle);
   const [metaHeroImage, setMetaHeroImage] = useState<string>(heroImage);
   // Preserve SSR markup: initial video matches existing logic (weeklyVideos[weekNumber])
-  // For hormone course, only show video on week 1
-  const initialVideoForWeek = (courseType === 'hormone' && weekNumber >= 2) ? '' : (weeklyVideos[weekNumber] || '');
+  const initialVideoForWeek = (weeklyVideos[weekNumber] || '');
   const [effectiveVideoUrl, setEffectiveVideoUrl] = useState<string>(initialVideoForWeek);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
@@ -668,9 +665,6 @@ export default function WeekTemplate({
                 <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-2">
                   Välkommen till vecka {weekNumber}!
                 </h1>
-                <p className="text-lg text-gray-600">
-                  {metaWeekTitle}
-                </p>
               </div>
               
               {/* Video section - only show if video exists for this week */}

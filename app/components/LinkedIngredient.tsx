@@ -19,6 +19,13 @@ export default function LinkedIngredient({
 }: LinkedIngredientProps) {
   const [showPopup, setShowPopup] = useState(false);
   
+  // Ensure proper spacing between numbers and text (e.g., "1paprika" -> "1 paprika")
+  const formatIngredient = (text: string): string => {
+    return text.replace(/(\d)([a-zäöå])/gi, '$1 $2');
+  };
+  
+  const displayText = formatIngredient(ingredient);
+  
   if (rawMaterial) {
     return (
       <div className="relative inline-block">
@@ -27,7 +34,7 @@ export default function LinkedIngredient({
           className={`text-[#014421] hover:text-[#116530] transition-colors underline decoration-[#014421]/30 hover:decoration-[#116530] underline-offset-2 font-medium cursor-pointer ${className}`}
           title={`Klicka för mer info om ${rawMaterial.name}`}
         >
-          {ingredient}
+          {displayText}
           {showIcon && <Info className="inline w-3 h-3 ml-1" />}
         </button>
 
@@ -90,7 +97,7 @@ export default function LinkedIngredient({
   // No raw material match - display as regular text
   return (
     <span className={className}>
-      {ingredient}
+      {displayText}
     </span>
   );
 } 

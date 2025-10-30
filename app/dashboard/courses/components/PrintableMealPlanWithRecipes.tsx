@@ -539,8 +539,7 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
                 (recipe.nutritionPerServing.kcal && recipe.nutritionPerServing.kcal > 0) ||
                 (recipe.nutritionPerServing.protein && recipe.nutritionPerServing.protein > 0) ||
                 (recipe.nutritionPerServing.carbs && recipe.nutritionPerServing.carbs > 0) ||
-                (recipe.nutritionPerServing.fat && recipe.nutritionPerServing.fat > 0) ||
-                (recipe.nutritionPerServing.fiber && recipe.nutritionPerServing.fiber > 0)
+                (recipe.nutritionPerServing.fat && recipe.nutritionPerServing.fat > 0)
               ) ? `
                 <div class="nutrition-info">
                   ${recipe.nutritionPerServing.kcal ? `
@@ -563,12 +562,6 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
                     <span class="nutrition-label">Fett:</span>
                     <span>${recipe.nutritionPerServing.fat}g</span>
                   </div>` : ''}
-                  ${recipe.nutritionPerServing.fiber ? `
-                    <div class="nutrition-item">
-                      <span class="nutrition-label">Fiber:</span>
-                      <span>${recipe.nutritionPerServing.fiber}g</span>
-                    </div>
-                  ` : ''}
                 </div>
               ` : ''}
             </div>
