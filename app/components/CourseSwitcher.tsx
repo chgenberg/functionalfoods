@@ -32,6 +32,14 @@ const availableCourses: Course[] = [
     color: 'text-secondary',
     gradient: 'from-green-800 to-green-900',
     icon: '🌊'
+  },
+  {
+    id: 'functional-hormone',
+    name: 'Hormonell Balans',
+    displayName: 'Hormonell Balans',
+    color: 'text-purple-600',
+    gradient: 'from-purple-500 to-pink-600',
+    icon: '🌸'
   }
 ];
 
@@ -83,6 +91,7 @@ export default function CourseSwitcher() {
         const courseNames = purchases.map((p: any) => {
           if (p.course.name === 'Functional Basics') return 'functional-basics';
           if (p.course.name === 'Functional Gut Health/Flow') return 'functional-flow';
+          if (p.course.name === 'Hormonell Balans') return 'functional-hormone';
           return null;
         }).filter(Boolean);
         

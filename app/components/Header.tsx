@@ -59,6 +59,7 @@ export default function Header() {
       { label: "Functional Basics", href: "/utbildning/functional-basics" },
       { label: "Functional Gut Health/Flow", href: "/utbildning/functional-flow" },
       { label: "Functional Insulin balance/Energy", href: "/utbildning/functional-energy" },
+      { label: "Hormonell Balans", href: "/utbildning/hormonell-balans" },
     ] },
     { label: t('nav.recipes','RECEPT'), href: "/kunskapsbank/recept" },
     { label: t('nav.knowledge','KUNSKAPSBANK'), href: "/kunskapsbank", submenu: [
