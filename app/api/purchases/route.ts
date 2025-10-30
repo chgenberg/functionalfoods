@@ -139,9 +139,12 @@ export async function POST(request: Request) {
         );
       }
 
+      // Normalize email to lowercase
+      const normalizedEmail = customerInfo.email.toLowerCase().trim();
+
       // Check if user already exists
       const existingUser = await prisma.user.findUnique({
-        where: { email: customerInfo.email }
+        where: { email: normalizedEmail }
       });
 
       if (existingUser) {
@@ -156,7 +159,7 @@ export async function POST(request: Request) {
           
           user = await prisma.user.create({
             data: {
-              email: customerInfo.email,
+              email: normalizedEmail,
               name: customerInfo.name,
               password: hashedPassword,
               role: 'customer',

@@ -15,7 +15,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    // Normalize email to lowercase
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (existingUser) {
       return NextResponse.json(
         { error: 'En användare med denna email finns redan' },
@@ -34,7 +37,7 @@ export async function POST(request: Request) {
 
     const user = await prisma.user.create({
       data: {
-        email,
+        email: normalizedEmail,
         name,
         password: hashedPassword,
         role: 'customer',

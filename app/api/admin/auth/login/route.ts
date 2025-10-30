@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Find user in database
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
 
     if (!user || user.role !== 'admin' || !(await bcrypt.compare(password, user.password))) {
       await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500)); // Delay to prevent timing attacks

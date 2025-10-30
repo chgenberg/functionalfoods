@@ -333,7 +333,7 @@ async function handleCheckoutSessionCompleted(session: any) {
       return;
     }
 
-    const customerEmail = (session.customer_details?.email || session.customer_email || '').trim();
+    const customerEmail = (session.customer_details?.email || session.customer_email || '').trim().toLowerCase();
     const customerName = session.customer_details?.name || customerEmail.split('@')[0] || 'Kund';
     const totalIncl = (session.amount_total || 0) / 100;
 
