@@ -34,6 +34,16 @@ export default function UtbildningPage() {
       duration: '6 veckor',
       level: 'Alla nivåer',
       highlights: ['Stabilt blodsocker', 'Jämn energi hela dagen', 'Minska sötsug och trötthet']
+    },
+    {
+      id: 'hormone',
+      title: 'Hormonell Balans',
+      description: 'För dig som vill få koll på dina hormoner. Kombinera rätt kost, styrketräning och coachning för hormonell balans.',
+      href: '/utbildning/hormonell-balans',
+      image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
+      duration: '6 veckor',
+      level: 'Alla nivåer',
+      highlights: ['Hormonell balans', 'Antiinflammatorisk kost', 'Styrketräning & coaching']
     }
   ];
 
