@@ -110,8 +110,9 @@ export async function GET(req: NextRequest) {
                 const course = await tx.courseProduct.findFirst({
                   where: {
                     OR: [
-                      { name: it.name },
-                      { name: { contains: it.name.split('Functional ')[1] || '', mode: 'insensitive' } }
+                      { name: { equals: it.name, mode: 'insensitive' } },
+                      { name: { contains: it.name.split('Functional ')[1] || '', mode: 'insensitive' } },
+                      { name: { contains: it.name, mode: 'insensitive' } }
                     ]
                   }
                 });

@@ -40,14 +40,22 @@ export async function POST(req: NextRequest) {
       productMap.set(key1, p);
       productMap.set(key2, p);
       productMap.set(p.id, p); // allow using DB id directly
+      productMap.set(p.name.toLowerCase(), p); // exact name match (case-insensitive)
+      productMap.set(p.name, p); // exact name match (case-sensitive)
     }
 
     // Validate and enrich items with server-side data
     const now = new Date();
     const validatedItems = items.map(item => {
-      const product = productMap.get(item.id);
+      let product = productMap.get(item.id);
+      // Fallback: try to match by name if ID didn't match
+      if (!product && item.name) {
+        product = productMap.get(item.name.toLowerCase()) || 
+                  productMap.get(item.name) ||
+                  courseProducts.find(p => p.name.toLowerCase() === item.name.toLowerCase());
+      }
       if (!product) {
-        throw new Error(`Produkten med id "${item.id}" hittades inte.`);
+        throw new Error(`Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`);
       }
       // Determine effective price (excl. VAT) using campaign if active
       const basePrice = typeof product.basePrice === 'number' ? product.basePrice : product.price;

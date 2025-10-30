@@ -184,7 +184,12 @@ export async function POST(request: Request) {
       .map(item => item.name);
 
     const courses = await prisma.courseProduct.findMany({
-      where: { name: { in: courseIds } },
+      where: {
+        OR: [
+          { name: { in: courseIds } },
+          ...courseIds.map(name => ({ name: { equals: name, mode: 'insensitive' as const } }))
+        ]
+      },
       select: {
         id: true,
         name: true,
