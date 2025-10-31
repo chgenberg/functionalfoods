@@ -101,7 +101,7 @@ export default function HormoneOverview() {
               </h1>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  Det här är kursen fylld med matglädje, planerade kostscheman och ett träningsprogram med Charlotte, detta framtaget specifikt för att lindra hormonella besvär. Hormonella besvär är vanligt bland kvinnor i olika perioder i livet. Men det finns mycket man kan göra för att påverka detta själv och här är kursen för just det.
+                  Det här är kursen fylld med matglädje och planerade kostscheman, framtaget specifikt för att lindra hormonella besvär. Hormonella besvär är vanligt bland kvinnor i olika perioder i livet. Men det finns mycket man kan göra för att påverka detta själv och här är kursen för just det.
                 </p>
                 
                 <p>
@@ -110,7 +110,7 @@ export default function HormoneOverview() {
                 
                 <ul className="list-disc list-inside space-y-2 ml-2">
                   <li>Näringsrik och naturlig kost utan snabba kolhydrater, gluten och socker</li>
-                  <li>Motion, frisk luft och styrketräning</li>
+                  <li>Motion och frisk luft</li>
                   <li>Återhämtning och tillräckligt med sömn</li>
                   <li>Stresshantering</li>
                 </ul>
@@ -120,15 +120,11 @@ export default function HormoneOverview() {
                 </p>
                 
                 <p>
-                  När du kommit igång med din träning kan ett mellanmål behövas. Du hittar bra förslag bland annat i texten till vecka 1.
-                </p>
-                
-                <p>
                   Läs igenom alla kunskapsdokument för viktig information som kommer att hjälpa dig under kursen.
                 </p>
                 
                 <p className="font-semibold">
-                  Varmt välkommen till sex veckor av matglädje, rörelseglädje och hormonell balans!
+                  Varmt välkommen till sex veckor av matglädje och hormonell balans!
                 </p>
                 
                 <p className="text-[#014421] font-signature text-xl">

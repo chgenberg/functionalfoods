@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { GiBrain, GiStomach, GiWheat, GiHeartBeats, GiMuscleUp } from 'react-icons/gi';
+import { GiBrain, GiStomach, GiWheat, GiHeartBeats } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import AddToCart from '@/app/components/AddToCart';
@@ -146,12 +146,6 @@ export default function HormonellBalansPage() {
       color: "text-red-600"
     },
     {
-      icon: GiMuscleUp,
-      title: "Styrketräning för hormonhälsa",
-      description: "Träningsprogram baserat på forskning för att minska hormonella besvär.",
-      color: "text-orange-600"
-    },
-    {
       icon: Users,
       title: "Gruppstöd och coaching",
       description: "Få stöd och vägledning från Functional Foods teamet under hela kursen.",
@@ -187,8 +181,8 @@ export default function HormonellBalansPage() {
     },
     {
       icon: Users,
-      title: "Styrketräning & coaching",
-      description: "Träningsprogram med Charlotte Aav + personlig coaching med Ulrika"
+      title: "Coaching & stöd",
+      description: "Personlig coaching med Ulrika och teamet under hela kursen"
     }
   ];
 
@@ -196,8 +190,7 @@ export default function HormonellBalansPage() {
     "Känner dig ofta trött, nedstämd och att känslorna snurrar runt inombords",
     "Upplever hormonella besvär vid PMS, förklimakteriet eller klimakteriet", 
     "Vill lära dig vilken mat som stödjer din hormonproduktion naturligt",
-    "Vill förebygga och påverka din hormonella balans positivt",
-    "Vill kombinera rätt kost med styrketräning för bättre hormonhälsa"
+    "Vill förebygga och påverka din hormonella balans positivt"
   ];
 
   const functionalFoodsBenefits = [
@@ -312,10 +305,6 @@ export default function HormonellBalansPage() {
                 <Target className="w-5 h-5 text-primary" />
                 <span className="font-medium">Hormonkurs</span>
               </div>
-              <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full">
-                <GiMuscleUp className="w-5 h-5 text-primary" />
-                <span className="font-medium">Styrketräning</span>
-              </div>
               <div className="flex items-center gap-2 bg-[#8B2E2E] text-white px-4 py-2 rounded-full">
                 <Gift className="w-5 h-5" />
                 <span className="font-medium text-sm">Gratis e-bok vid köp</span>
@@ -328,7 +317,7 @@ export default function HormonellBalansPage() {
               transition={{ delay: 0.5 }}
               className="text-lg lg:text-xl text-text-secondary mb-8 leading-relaxed"
             >
-              För dig som vill få koll på dina hormoner! Känner du dig ofta trött, nedstämd och att känslorna snurrar runt inombords? Du är inte ensam! Ungefär 8 av 10 kvinnor upplever olika typer av hormonella besvär vid PMS, i förklimakteriet eller i klimakteriet. Men det finns lösningar för att må bättre – med rätt kost, träning och coachning kan symptomen minskas!
+              För dig som vill få koll på dina hormoner! Känner du dig ofta trött, nedstämd och att känslorna snurrar runt inombords? Du är inte ensam! Ungefär 8 av 10 kvinnor upplever olika typer av hormonella besvär vid PMS, i förklimakteriet eller i klimakteriet. Men det finns lösningar för att må bättre – med rätt kost och coachning kan symptomen minskas!
             </motion.p>
 
             {/* Price Box */}
@@ -360,10 +349,6 @@ export default function HormonellBalansPage() {
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <User className="w-4 h-4 text-primary" />
                   Coaching med Ulrika + team
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <GiMuscleUp className="w-4 h-4 text-primary" />
-                  Styrketräning med Charlotte
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <Clock className="w-4 h-4 text-primary" />
@@ -445,7 +430,7 @@ export default function HormonellBalansPage() {
                 </h2>
                 <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
                   <p className="mb-4">
-                    Känner du dig ofta trött, nedstämd och att känslorna snurrar runt inombords? Du är inte ensam! Ungefär 8 av 10 kvinnor upplever olika typer av hormonella besvär vid PMS, i förklimakteriet eller i klimakteriet. Men det finns lösningar för att må bättre – med rätt kost, träning och coachning kan symptomen minskas! Ulrika har skapat en unik kurs som inte bara adresserar dina bekymmer, utan också ger dig verktygen för att återta kontrollen över ditt liv och komma i hormonell balans!
+                    Känner du dig ofta trött, nedstämd och att känslorna snurrar runt inombords? Du är inte ensam! Ungefär 8 av 10 kvinnor upplever olika typer av hormonella besvär vid PMS, i förklimakteriet eller i klimakteriet. Men det finns lösningar för att må bättre – med rätt kost och coachning kan symptomen minskas! Ulrika har skapat en unik kurs som inte bara adresserar dina bekymmer, utan också ger dig verktygen för att återta kontrollen över ditt liv och komma i hormonell balans!
                   </p>
                   
                   <h3 className="text-xl font-medium mb-4 mt-6">Förebygga och påverka</h3>
@@ -508,18 +493,6 @@ export default function HormonellBalansPage() {
                   </div>
                   <p className="mb-4 mt-6">
                     I kursen får du lära dig vilken mat som blockerar och rubbar din hormonella balans, så du vet vad du bör undvika. Du får även lära dig mer om hormoner och deras funktioner samt vad de 6 viktigaste faktorerna är för att komma i hormonell balans.
-                  </p>
-                </div>
-              </div>
-
-              {/* Styrketräning Section */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
-                <h3 className="text-2xl font-light mb-6 text-center">
-                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Styrketräning</span>
-                </h3>
-                <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
-                  <p className="mb-4">
-                    Även träning är en viktig del under denna tid. Många kvinnor i den här åldern slutar helt att träna eller nöjer sig med promenader. Det kan också bidra till ökade besvär och problem. Det finns massor av spännande forskning inom området hormoner, PMS-besvär, klimakteriet och träning. I den här kursen har vår träningscoach Charlotte Aav skapat ett träningsprogram med olika pass som är baserat på den forskning som finns inom området och studierna visar tydligt på att träningsformen för att lindra hormonella besvär är styrketräning. Alla övningar går att genomföra hemma med sin egen kropp eller med fria vikter. Studier visar att 2-3 pass i veckan, då man belastar sin muskulatur, är tillräckligt för att göra stor påverkan och minska hormonella besvär.
                   </p>
                 </div>
               </div>
