@@ -267,7 +267,7 @@ Då kör vi igång vecka 2!`,
 Veckan som kommer blir kalorisnål, du kommer att ligga mellan 500 och 1200 kalorier per dag. Vill du inte tappa i vikt så öka på mängden protein i recepten. 
 
 Redo för vecka 3!`,
-    4: `Halva kursen avklarad - bra jobbat! Stanna gärna upp och reflektera över hur du mår. Hur har kosten och träningen påverkat dig? Hur känns din vardag när allt är planerat och klart och du vet precis vad du ska äta. 
+    4: `Halva kursen avklarad - bra jobbat! Stanna gärna upp och reflektera över hur du mår. Hur har kosten påverkat dig? Hur känns din vardag när allt är planerat och klart och du vet precis vad du ska äta. 
 
 Har fastan en positiv effekt på dig? Många som provar 16:8 och tidigare trott sig vara så kallade frukostmänniskor märker av att just det målet är inga som helt problem att hoppa över. 
 
