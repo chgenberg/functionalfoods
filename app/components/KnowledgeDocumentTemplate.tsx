@@ -34,6 +34,7 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
 }) => {
   const [document, setDocument] = useState<Document | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -74,29 +75,34 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
   };
 
   const handleDownloadPDF = async () => {
-    // First open print view
-    handlePrint();
-    
-    // Then trigger server-side PDF download
-    setTimeout(async () => {
-      try {
-        const response = await fetch(`/api/knowledge/pdf?courseId=${courseId}&slug=${documentSlug}`);
-        
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = window.document.createElement('a');
-          a.href = url;
-          a.download = `${documentSlug}.pdf`;
-          window.document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          window.document.body.removeChild(a);
-        }
-      } catch (error) {
-        console.error('PDF download error:', error);
+    setDownloadingPDF(true);
+    try {
+      const response = await fetch(`/api/knowledge/pdf?courseId=${courseId}&slug=${documentSlug}`);
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = window.document.createElement('a');
+        a.href = url;
+        // Use document title for filename if available, otherwise use slug
+        const filename = document?.title 
+          ? `${document.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.pdf`
+          : `${documentSlug}.pdf`;
+        a.download = filename;
+        window.document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        window.document.body.removeChild(a);
+      } else {
+        console.error('PDF download failed:', response.status, response.statusText);
+        alert('Kunde inte ladda ner PDF. Försök igen senare.');
       }
-    }, 1000);
+    } catch (error) {
+      console.error('PDF download error:', error);
+      alert('Ett fel uppstod vid nedladdning av PDF. Försök igen senare.');
+    } finally {
+      setDownloadingPDF(false);
+    }
   };
 
   if (loading) {
@@ -177,10 +183,20 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
         </button>
         <button
           onClick={handleDownloadPDF}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          disabled={downloadingPDF}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Download className="w-4 h-4" />
-          <span>Ladda ner PDF</span>
+          {downloadingPDF ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Laddar ner...</span>
+            </>
+          ) : (
+            <>
+              <Download className="w-4 h-4" />
+              <span>Ladda ner PDF</span>
+            </>
+          )}
         </button>
       </div>
 
