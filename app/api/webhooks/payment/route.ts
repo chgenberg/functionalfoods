@@ -496,7 +496,7 @@ async function handleCheckoutSessionCompleted(session: any) {
 
     // --- Mailchimp E-commerce purchase tracking ---
     try {
-      const { getMailchimpEcommerce } = await import('../../../lib/mailchimp-ecommerce');
+      const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
       const mailchimpEcommerce = getMailchimpEcommerce();
       
       // Get order details for Mailchimp tracking

@@ -378,7 +378,7 @@ export async function POST(request: Request) {
 
       // --- Mailchimp E-commerce purchase tracking ---
       try {
-        const { getMailchimpEcommerce } = await import('../../../lib/mailchimp-ecommerce');
+        const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
         const mailchimpEcommerce = getMailchimpEcommerce();
         
         const vatRate = 0.25;

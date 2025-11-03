@@ -274,7 +274,7 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
 
     // --- Mailchimp E-commerce purchase tracking ---
     try {
-      const { getMailchimpEcommerce } = await import('../../../lib/mailchimp-ecommerce');
+      const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
       const mailchimpEcommerce = getMailchimpEcommerce();
       
       // Get updated order with user
