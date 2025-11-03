@@ -114,12 +114,35 @@ export async function GET(req: NextRequest) {
 
     console.log('✅ PDF: Found document:', doc.title);
 
-    // Prepare PDF stream
-    const stream = new PassThrough();
-    const pdf = new PDFDocument({ size: 'A4', margin: 50, info: { Title: doc.title } });
-    pdf.pipe(stream);
+    // Use buffer-based approach for better error handling
+    const chunks: Buffer[] = [];
+    const pdf = new PDFDocument({ 
+      size: 'A4', 
+      margin: 50, 
+      info: { Title: doc.title }
+    });
 
-    // Title - ensure it's a string
+    // Collect PDF chunks
+    pdf.on('data', (chunk: Buffer) => chunks.push(chunk));
+    
+    // Handle PDF errors
+    pdf.on('error', (err: Error) => {
+      console.error('❌ PDF: PDFDocument error:', err);
+      throw err;
+    });
+
+    // Create promise to wait for PDF to finish
+    const pdfPromise = new Promise<Buffer>((resolve, reject) => {
+      pdf.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        resolve(buffer);
+      });
+      pdf.on('error', reject);
+      // Timeout after 30 seconds
+      setTimeout(() => reject(new Error('PDF generation timeout')), 30000);
+    });
+
+    // Title - ensure it's a string and handle special characters
     const title = String(doc.title || 'Okänt dokument');
     pdf.fontSize(20).font('Helvetica-Bold').text(title, { align: 'left' });
     pdf.moveDown(0.5);
@@ -153,7 +176,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Body text (HTML stripped)
+    // Body text (HTML stripped) - handle long text properly
     const text = stripHtmlPreserveNewlines(doc.content || '');
     if (text && text.trim()) {
       try {
@@ -163,8 +186,9 @@ export async function GET(req: NextRequest) {
         });
       } catch (textError: any) {
         console.error('❌ PDF: Error adding text:', textError?.message);
-        // Fallback: try with safe text
-        const safeText = text.replace(/[^\x00-\x7F]/g, ''); // Remove non-ASCII as fallback
+        console.error('❌ PDF: Text length:', text.length);
+        // Fallback: try with truncated text
+        const safeText = text.substring(0, 5000); // Limit length
         pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(safeText || 'Innehåll kunde inte visas.', { 
           align: 'left'
         });
@@ -175,9 +199,12 @@ export async function GET(req: NextRequest) {
     }
 
     pdf.end();
+    
+    // Wait for PDF to finish generating
+    const pdfBuffer = await pdfPromise;
 
     const filename = `${slug}.pdf`;
-    return new Response(stream as any, {
+    return new Response(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
