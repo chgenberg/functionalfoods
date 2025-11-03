@@ -170,6 +170,7 @@ export class SveaCheckoutService {
     
     // Create hash: SHA512(requestBody + secret + timestamp)
     // IMPORTANT: No whitespace changes between hash calculation and sending
+    // The requestBody must be exactly as it will be sent (no extra formatting)
     const hashInput = requestBody + this.config.secretWord + timestamp;
     const sha512Hash = createHash('sha512').update(hashInput, 'utf8').digest('hex');
     
@@ -187,7 +188,9 @@ export class SveaCheckoutService {
       requestBodyLength: requestBody.length,
       hashInputLength: hashInput.length,
       sha512HashFirst20: sha512Hash.substring(0, 20),
-      authHeaderFirst50: authHeader.substring(0, 50) + '...'
+      authHeaderFirst50: authHeader.substring(0, 50) + '...',
+      baseUrl: this.baseUrl,
+      testMode: this.config.testMode
     });
     
     return { auth: authHeader, timestamp };
@@ -213,8 +216,12 @@ export class SveaCheckoutService {
     console.log('📤 SVEA createOrder:', { 
       endpoint, 
       timestamp, 
-      baseUrl: this.baseUrl, 
-      authHeader: auth.substring(0, 50) + '...' 
+      baseUrl: this.baseUrl,
+      testMode: this.config.testMode,
+      merchantId: this.config.merchantId,
+      secretWordLength: this.config.secretWord.length,
+      authHeader: auth.substring(0, 50) + '...',
+      requestBodyPreview: requestBody.substring(0, 200) + '...'
     });
     
     const response = await fetch(endpoint, {
@@ -234,13 +241,31 @@ export class SveaCheckoutService {
     
     if (!response.ok) {
       const errorDetail = this.parseErrorResponse(responseText);
+      
+      // Provide more helpful error messages
+      let errorMessage = `Svea API Error (${response.status}): ${errorDetail}`;
+      
+      if (response.status === 401) {
+        errorMessage += '\n\nFelsökning:';
+        errorMessage += `\n- Använder ${this.config.testMode ? 'TEST' : 'PRODUKTION'} miljö (${this.baseUrl})`;
+        errorMessage += `\n- Kontrollera att SVEA_SECRET_WORD matchar miljön`;
+        errorMessage += `\n- Kontrollera att SVEA_TEST_MODE är korrekt satt (${this.config.testMode ? 'true' : 'false'})`;
+        errorMessage += `\n- Timestamp: ${timestamp}`;
+        errorMessage += `\n- Merchant ID: ${this.config.merchantId}`;
+      }
+      
       console.error('❌ SVEA createOrder Error:', {
         status: response.status,
         statusText: response.statusText,
         responseBody: responseText,
-        parsedError: errorDetail
+        parsedError: errorDetail,
+        baseUrl: this.baseUrl,
+        testMode: this.config.testMode,
+        timestamp,
+        merchantId: this.config.merchantId
       });
-      throw new Error(`Svea API Error (${response.status}): ${errorDetail}`);
+      
+      throw new Error(errorMessage);
     }
     
     const result = JSON.parse(responseText) as any;
