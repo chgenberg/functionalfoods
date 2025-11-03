@@ -117,7 +117,7 @@ export default function CartPage() {
             {items.map((item) => (
               <div 
                 key={item.id} 
-                className={`bg-white rounded-2xl shadow-sm p-6 transition-all duration-300 ${
+                className={`bg-white rounded-2xl shadow-sm p-6 transition-all duration-300 border border-gray-100 hover:border-[#93C560] hover:shadow-md ${
                   removingItem === item.id ? 'opacity-50 scale-95' : ''
                 }`}
               >
@@ -174,12 +174,12 @@ export default function CartPage() {
 
                       {/* Price */}
                       <div className="text-right">
-                      <div className="text-xl font-bold text-[#014421]">
-                        {Math.round(item.price * item.quantity * 1.25).toLocaleString('sv-SE')} kr
-                      </div>
+                        <div className="text-2xl font-bold text-[#014421]">
+                          {Math.round(item.price * item.quantity * 1.25).toLocaleString('sv-SE')} kr
+                        </div>
                         {item.quantity > 1 && (
                           <div className="text-sm text-gray-500">
-                          {Math.round(item.price * 1.25).toLocaleString('sv-SE')} kr/st (inkl. moms)
+                            {Math.round(item.price * 1.25).toLocaleString('sv-SE')} kr/st (inkl. moms)
                           </div>
                         )}
                       </div>
@@ -192,20 +192,29 @@ export default function CartPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-8">
+            <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-8 border-2 border-[#93C560]">
               <h2 className="text-xl font-semibold text-[#014421] mb-6">Ordersammanfattning</h2>
               
               {/* Trust Indicators */}
-              <div className="space-y-3 mb-6 p-4 bg-[#93C560]/10 rounded-xl">
+              <div className="space-y-3 mb-6 p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-xl border border-[#93C560]/20">
                 <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <Zap className="w-6 h-6 inline text-accent" />
-                  <span>Omedelbar åtkomst efter köp</span>
+                  <div className="p-1 bg-[#93C560] rounded-full">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-medium">Omedelbar åtkomst efter köp</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-700">
-                  <Sparkles className="w-6 h-6 inline text-accent" />
-                  <span>1 års åtkomst till material</span>
+                  <div className="p-1 bg-[#93C560] rounded-full">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-medium">12 månaders tillgång till allt material</span>
                 </div>
-                {/* Removed money-back guarantee row per request */}
+                <div className="flex items-center gap-3 text-sm text-gray-700">
+                  <div className="p-1 bg-[#93C560] rounded-full">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-medium">Personlig support via community</span>
+                </div>
               </div>
 
               {/* Coupon */}
@@ -270,26 +279,42 @@ export default function CartPage() {
                   <span className="text-gray-600">Moms (25%)</span>
                   <span className="text-gray-900">{Math.round(finalTotal * 0.25).toLocaleString('sv-SE')} kr</span>
                 </div>
-                <div className="flex justify-between text-xl font-bold pt-3">
-                  <span className="text-[#014421]">Totalt (inkl. moms)</span>
-                  <span className="text-[#014421]">{Math.round(finalTotal * 1.25).toLocaleString('sv-SE')} kr</span>
+                <div className="flex justify-between text-xl font-bold pt-3 p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-lg">
+                  <span className="text-[#014421]">Totalt att betala</span>
+                  <span className="text-[#014421] text-2xl">{Math.round(finalTotal * 1.25).toLocaleString('sv-SE')} kr</span>
                 </div>
               </div>
 
               {/* Checkout Button */}
               <Link
                 href="/checkout"
-                className="w-full bg-[#014421] text-white font-medium py-4 px-6 rounded-lg hover:bg-[#116530] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-[#014421] to-[#116530] text-white font-bold py-4 px-6 rounded-lg hover:from-[#116530] hover:to-[#014421] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-lg"
               >
-                <span>🔒</span>
-                Säker betalning
+                <Shield className="w-5 h-5" />
+                Gå till kassan
+                <ArrowLeft className="w-5 h-5 rotate-180" />
               </Link>
+
+              {/* Urgency Indicator */}
+              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="flex items-center gap-2 text-sm text-amber-800">
+                  <Clock className="w-4 h-4" />
+                  <span className="font-medium">Dina kurser väntar på dig!</span>
+                </div>
+              </div>
 
               {/* Payment Methods */}
               <div className="mt-6 text-center">
-                <p className="text-xs text-gray-500 mb-3">Vi accepterar</p>
-                <div className="flex justify-center items-center gap-3 text-sm text-gray-600">
-                  <span><CreditCard className="w-5 h-5 inline" /> Kort</span>
+                <p className="text-xs text-gray-500 mb-3">Säker betalning med</p>
+                <div className="flex justify-center items-center gap-4">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg">
+                    <CreditCard className="w-5 h-5 text-gray-600" />
+                    <span className="text-sm font-medium text-gray-700">Kort</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg">
+                    <Shield className="w-5 h-5 text-gray-600" />
+                    <span className="text-sm font-medium text-gray-700">SSL-krypterat</span>
+                  </div>
                 </div>
               </div>
             </div>
