@@ -272,6 +272,45 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
 
     console.log(`✅ Order ${order.id} completed successfully`);
 
+    // --- Mailchimp E-commerce purchase tracking ---
+    try {
+      const { getMailchimpEcommerce } = await import('../../../lib/mailchimp-ecommerce');
+      const mailchimpEcommerce = getMailchimpEcommerce();
+      
+      // Get updated order with user
+      const updatedOrder = await prisma.order.findUnique({
+        where: { id: order.id },
+        include: { user: true, items: true }
+      });
+
+      if (updatedOrder && updatedOrder.user) {
+        const totalAmount = updatedOrder.totalAmount;
+        const vatRate = 0.25;
+        const taxTotal = totalAmount * vatRate / (1 + vatRate);
+
+        await mailchimpEcommerce.trackPurchase({
+          orderId: updatedOrder.orderNumber,
+          customerEmail: updatedOrder.user.email,
+          customerName: updatedOrder.user.name || undefined,
+          items: updatedOrder.items.map(item => ({
+            id: item.courseId || item.productId || item.id,
+            name: item.productName,
+            price: item.price,
+            quantity: item.quantity,
+            type: item.productType || 'course'
+          })),
+          totalAmount: totalAmount,
+          currency: updatedOrder.currency || 'SEK',
+          orderDate: updatedOrder.createdAt,
+          discountTotal: 0,
+          shippingTotal: 0,
+          taxTotal: taxTotal
+        });
+      }
+    } catch (e) {
+      console.warn('⚠️ Mailchimp E-commerce tracking failed:', e);
+    }
+
     // TODO: Send order confirmation email
     // TODO: Send course access email
     // TODO: Update inventory if applicable

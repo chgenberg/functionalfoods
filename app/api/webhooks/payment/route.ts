@@ -493,6 +493,47 @@ async function handleCheckoutSessionCompleted(session: any) {
     } catch (e) {
       console.warn('⚠️ GA4 purchase tracking failed:', e);
     }
+
+    // --- Mailchimp E-commerce purchase tracking ---
+    try {
+      const { getMailchimpEcommerce } = await import('../../../lib/mailchimp-ecommerce');
+      const mailchimpEcommerce = getMailchimpEcommerce();
+      
+      // Get order details for Mailchimp tracking
+      const order = await prisma.order.findFirst({
+        where: { orderNumber: `STRIPE-${session.id}` },
+        include: { user: true, items: true }
+      });
+
+      if (order && order.user) {
+        const totalAmount = (session.amount_total || 0) / 100;
+        const vatRate = 0.25;
+        const taxTotal = totalAmount * vatRate / (1 + vatRate);
+        const discountTotal = session.total_details?.amount_discount ? session.total_details.amount_discount / 100 : 0;
+        const shippingTotal = session.total_details?.amount_shipping ? session.total_details.amount_shipping / 100 : 0;
+
+        await mailchimpEcommerce.trackPurchase({
+          orderId: order.orderNumber,
+          customerEmail: order.user.email,
+          customerName: order.user.name || undefined,
+          items: order.items.map(item => ({
+            id: item.courseId || item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            type: item.type || 'course'
+          })),
+          totalAmount: totalAmount,
+          currency: String(session.currency || 'SEK').toUpperCase(),
+          orderDate: order.createdAt,
+          discountTotal: discountTotal,
+          shippingTotal: shippingTotal,
+          taxTotal: taxTotal
+        });
+      }
+    } catch (e) {
+      console.warn('⚠️ Mailchimp E-commerce tracking failed:', e);
+    }
   } catch (error) {
     console.error('Failed to handle checkout.session.completed:', error);
   }

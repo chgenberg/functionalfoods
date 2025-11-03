@@ -123,7 +123,7 @@ export default function EnhancedAdminSalesPage() {
 
   useEffect(() => {
     fetchPayments();
-    const interval = setInterval(fetchPayments, 30000); // Auto-refresh every 30s
+    const interval = setInterval(fetchPayments, 600000); // Auto-refresh every 10 minutes
     return () => clearInterval(interval);
   }, []);
 
@@ -466,7 +466,7 @@ export default function EnhancedAdminSalesPage() {
           <p className="text-[var(--text-secondary)] font-light">Hantera och analysera alla transaktioner</p>
           <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
             <Info className="w-4 h-4 text-blue-500" />
-            <span><strong>Tips:</strong> Data uppdateras automatiskt var 30:e sekund. Exportera till Excel för rapporter.</span>
+            <span><strong>Tips:</strong> Data uppdateras automatiskt var 10:e minut. Exportera till Excel för rapporter.</span>
           </p>
           </div>
         <div className="flex gap-3">

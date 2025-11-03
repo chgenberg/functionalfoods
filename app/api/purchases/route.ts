@@ -376,6 +376,36 @@ export async function POST(request: Request) {
         // Don't fail the order if email fails
       }
 
+      // --- Mailchimp E-commerce purchase tracking ---
+      try {
+        const { getMailchimpEcommerce } = await import('../../../lib/mailchimp-ecommerce');
+        const mailchimpEcommerce = getMailchimpEcommerce();
+        
+        const vatRate = 0.25;
+        const taxTotal = totalAmount * vatRate / (1 + vatRate);
+
+        await mailchimpEcommerce.trackPurchase({
+          orderId: order.orderNumber,
+          customerEmail: user.email,
+          customerName: user.name || undefined,
+          items: courses.map(course => ({
+            id: course.id || course.name,
+            name: course.name,
+            price: getEffectivePrice(course),
+            quantity: items.find(i => i.name === course.name)?.quantity || 1,
+            type: 'course'
+          })),
+          totalAmount: totalAmount,
+          currency: order.currency || 'SEK',
+          orderDate: order.createdAt,
+          discountTotal: 0,
+          shippingTotal: 0,
+          taxTotal: taxTotal
+        });
+      } catch (e) {
+        console.warn('⚠️ Mailchimp E-commerce tracking failed:', e);
+      }
+
       // Generate JWT token for automatic login (for new users)
       let token = null;
       if (isNewUser) {
