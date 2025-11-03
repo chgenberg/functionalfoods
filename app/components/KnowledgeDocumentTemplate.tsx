@@ -94,8 +94,19 @@ const KnowledgeDocumentTemplate: React.FC<KnowledgeDocumentTemplateProps> = ({
         window.URL.revokeObjectURL(url);
         window.document.body.removeChild(a);
       } else {
+        // Try to get error message from response
+        let errorMessage = 'Kunde inte ladda ner PDF. Försök igen senare.';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+          if (errorData.details) {
+            console.error('PDF error details:', errorData.details);
+          }
+        } catch {
+          // If response is not JSON, use default message
+        }
         console.error('PDF download failed:', response.status, response.statusText);
-        alert('Kunde inte ladda ner PDF. Försök igen senare.');
+        alert(errorMessage);
       }
     } catch (error) {
       console.error('PDF download error:', error);
