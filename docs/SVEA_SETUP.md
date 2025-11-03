@@ -1,36 +1,131 @@
 # Svea Checkout Integration Guide
 
-## Environment Variables
+## Vad du behöver göra
 
-Set these in Railway or your `.env.production`:
+### 1. Sätt upp Environment Variables i Railway
 
+Du behöver konfigurera **3 environment variables** i Railway:
+
+#### För TESTMILJÖ (development/staging):
 ```env
-# Svea Configuration
-SVEA_MERCHANT_ID=your_merchant_id_here
-SVEA_SECRET_WORD=your_secret_word_here
-SVEA_TEST_MODE=false  # Set to 'true' for test environment
+SVEA_MERCHANT_ID=din_merchant_id_här
+SVEA_SECRET_WORD=din_stage_secret_nyckel_här
+SVEA_TEST_MODE=true
 ```
 
-### Getting Your Credentials
+#### För PRODUKTIONSMILJÖ:
+```env
+SVEA_MERCHANT_ID=din_merchant_id_här          # SAMMA som test
+SVEA_SECRET_WORD=din_prod_secret_nyckel_här   # ANNAN än test
+SVEA_TEST_MODE=false                          # eller låt vara osatt
+```
 
-1. Log in to Svea Payment Admin: https://paymentadmin.svea.com
-2. Navigate to **Integration > API Keys**
-3. Copy your **Merchant ID** and **Secret Word**
-4. Paste them into Railway as `SVEA_MERCHANT_ID` and `SVEA_SECRET_WORD`
+### 2. Vad betyder varje variabel?
 
-## Registered Domains
+- **`SVEA_MERCHANT_ID`**: Din merchant ID från Svea (samma för både test och produktion)
+- **`SVEA_SECRET_WORD`**: Din secret API-nyckel från Svea
+  - **Test**: Använd stage-nyckeln (för `checkoutapistage.svea.com`)
+  - **Produktion**: Använd prod-nyckeln (för `checkoutapi.svea.com`)
+- **`SVEA_TEST_MODE`**: 
+  - `true` = Använder testmiljö (`checkoutapistage.svea.com`)
+  - `false` eller osatt = Använder produktion (`checkoutapi.svea.com`)
 
-**Important:** You must register your callback domains with Svea support:
+### 3. Var hittar du dina credentials?
 
-- Production: `functionalfoods.se`
-- Production: `www.functionalfoods.se`
-- Test (if applicable): Your test domain
+1. Logga in på **Svea Payment Admin**: https://paymentadmin.svea.com
+2. Gå till **Integration > API Keys**
+3. Du kommer se:
+   - **Merchant ID**: En siffra (samma för test och produktion)
+   - **Secret Word (Stage/Test)**: En lång sträng för testmiljö
+   - **Secret Word (Production)**: En annan lång sträng för produktion
 
-Contact: support@svea.com
+### 4. Så här konfigurerar du i Railway
+
+#### Steg-för-steg:
+
+1. **Logga in på Railway** och öppna ditt projekt
+2. Gå till **Variables** (i vänstermenyn)
+3. Lägg till variablerna en i taget:
+
+   **För TESTMILJÖ:**
+   ```
+   Name: SVEA_MERCHANT_ID
+   Value: [din merchant ID]
+   
+   Name: SVEA_SECRET_WORD
+   Value: [din STAGE secret nyckel]
+   
+   Name: SVEA_TEST_MODE
+   Value: true
+   ```
+
+   **För PRODUKTION:**
+   ```
+   Name: SVEA_MERCHANT_ID
+   Value: [din merchant ID]
+   
+   Name: SVEA_SECRET_WORD
+   Value: [din PRODUCTION secret nyckel]
+   
+   Name: SVEA_TEST_MODE
+   Value: false
+   ```
+
+4. **Deploya om** efter att du lagt till variablerna (Railway gör detta automatiskt när du ändrar variables)
+
+### 5. Verifiera att det fungerar
+
+Efter att du har konfigurerat variablerna och deployat:
+
+1. **Besök**: `https://din-domain.se/api/debug/svea-config`
+2. Du bör se:
+   ```json
+   {
+     "configured": true,
+     "environment": {
+       "SVEA_MERCHANT_ID": "SET (X chars)",
+       "SVEA_SECRET_WORD": "SET (X chars)",
+       "SVEA_TEST_MODE": "true" eller "false"
+     },
+     "baseUrl": "https://checkoutapistage.svea.com" eller "https://checkoutapi.svea.com"
+   }
+   ```
+
+### 6. Brandvägg/IP-whitelisting
+
+**Du behöver INTE göra något** med IP-whitelisting. Svea kräver ingen särskild IP-whitelistning.
+
+**Men**: Om din brandvägg (eller Railway) blockerar utgående HTTPS-trafik, måste du säkerställa att:
+- Utgående HTTPS-trafik till `checkoutapistage.svea.com` och `checkoutapi.svea.com` är tillåten
+- Om din brandvägg kräver IP-intervall, tillåt dessa:
+  - `193.13.207.0/24`
+  - `193.105.138.0/24`
+
+(Detta är normalt inte ett problem på Railway, men kan vara relevant om du kör på egen infrastruktur)
+
+## Sammanfattning
+
+**Vad du behöver göra:**
+1. ✅ Hämta dina credentials från Svea Payment Admin
+2. ✅ Lägg till `SVEA_MERCHANT_ID`, `SVEA_SECRET_WORD` och `SVEA_TEST_MODE` i Railway
+3. ✅ Använd **stage-nyckel** när `SVEA_TEST_MODE=true`
+4. ✅ Använd **prod-nyckel** när `SVEA_TEST_MODE=false`
+5. ✅ Verifiera att det fungerar via `/api/debug/svea-config`
+
+**Vad du INTE behöver göra:**
+- ❌ Konfigurera IP-whitelisting (behövs inte)
+- ❌ Konfigurera något i Sveas adminpanel för API-åtkomst (hanteras automatiskt)
+
+## Test Cards (när SVEA_TEST_MODE=true)
+
+| Resultat | Korttyp    | Kortnummer           | CVV  | Utgångsdatum |
+|----------|------------|----------------------|------|--------------|
+| Godkänd  | Visa       | 4916-4232-3977-8102 | Valfritt | Valfritt framtida |
+| Godkänd  | Mastercard | 5392-1273-3201-0533 | Valfritt | Valfritt framtida |
 
 ## API Endpoints
 
-### Checkout Creation
+### Skapa checkout
 - **Endpoint:** `POST /api/checkout/svea-v2`
 - **Request:**
 ```json
@@ -52,86 +147,32 @@ Contact: support@svea.com
 }
 ```
 
-### Verify Configuration
-- **Endpoint:** `GET /api/debug/svea-config`
-- **Response:** Shows if Svea is properly configured
+### Webhook
+Svea kommer POST:a till: `https://din-domain.se/api/webhooks/svea-v2`
 
-## Test Cards (Svea Test Environment)
+## Artikelnummer
 
-When `SVEA_TEST_MODE=true`, use these test cards:
+Mappade till Sveas system:
 
-| Result   | Card Type   | Card Number         | CVV  | Expiry Date |
-|----------|-------------|---------------------|------|-------------|
-| Approved | Visa        | 4916-4232-3977-8102 | Any  | Any future  |
-| Approved | Mastercard  | 5392-1273-3201-0533 | Any  | Any future  |
-
-## Webhook Configuration
-
-Svea will POST to: `https://functionalfoods.se/api/webhooks/svea-v2`
-
-Webhook headers include:
-- `x-svea-signature`: SHA512 validation
-
-Response should be `{ received: true }` with HTTP 200.
-
-## Article Numbers
-
-Mapped to Svea's system:
-
-| Course                | Article Number |
-|-----------------------|-----------------|
-| Functional Basics     | 21122           |
-| Functional Flow       | 21127           |
-| Functional Energy     | 21128           |
-| Hormonell Balans      | (Not set yet)   |
-
-## Pricing
-
-All prices are in **öre** (minor units):
-- 1 kr = 100 öre
-- 499 kr = 49900 öre
-- Conversion: `priceInOre = priceInKronor * 100`
-
-## VAT
-
-Courses are configured with 25% VAT (2500 basis points in Svea API).
+| Kurs                    | Artikelnummer |
+|-------------------------|---------------|
+| Functional Basics       | 21122        |
+| Functional Flow         | 21127        |
+| Functional Energy       | 21128        |
 
 ## Troubleshooting
 
-### 401 Unauthorized
-- Check `SVEA_MERCHANT_ID` and `SVEA_SECRET_WORD` are set correctly
-- Verify timestamp format (should be `YYYY-MM-DD HH:mm`)
-- Ensure domain is registered with Svea
+### "Missing Svea credentials"
+- Kontrollera att alla tre variabler är satta i Railway
+- Verifiera att du har deployat efter att ha lagt till variablerna
+- Kontrollera `/api/debug/svea-config` för detaljerad status
 
-### 400 Bad Request
-- Check all required fields in request
-- Verify prices are in öre (100x normal price)
-- Ensure items have valid `articleNumber`
+### "Svea API Error (401)"
+- Kontrollera att du använder rätt secret nyckel för rätt miljö
+- Verifiera att `SVEA_TEST_MODE` matchar vilken nyckel du använder
+- Stage nyckel = `SVEA_TEST_MODE=true`
+- Prod nyckel = `SVEA_TEST_MODE=false`
 
-### Webhook Not Received
-- Check that `pushUri` is registered with Svea
-- Verify domain is publicly accessible
-- Check firewall isn't blocking incoming webhooks
-- Enable webhook validation: Set `SVEA_WEBHOOK_VALIDATION=true`
-
-## Testing Flow
-
-1. Check configuration: `curl https://functionalfoods.se/api/debug/svea-config`
-2. Create test order:
-```bash
-curl -X POST https://functionalfoods.se/api/checkout/svea-v2 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "items": [{"id": "functional-basics", "name": "Functional Basics", "price": 499, "quantity": 1, "type": "course"}],
-    "customer": {"email": "test@example.com", "name": "Test User"}
-  }'
-```
-3. Complete payment with test card
-4. Verify webhook received in logs
-
-## Useful Links
-
-- [Svea Checkout Docs](https://docs.payments.svea.com/docs/getting-started/authentication)
-- [Test Data](https://docs.payments.svea.com/docs/getting-started/testdata)
-- [Go Live Checklist](https://docs.payments.svea.com/docs/getting-started/golive)
-- [Order Management API](https://docs.payments.svea.com/docs/checkout/get-a-order)
+### "Invalid response from Svea"
+- Kontrollera att dina callback URLs är korrekta
+- Verifiera att domänen är registrerad hos Svea support
