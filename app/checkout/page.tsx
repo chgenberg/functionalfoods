@@ -104,8 +104,11 @@ export default function Checkout() {
       // Store checkout data temporarily (used by both Stripe and Svea flows)
       sessionStorage.setItem('checkout_data', JSON.stringify(checkoutData));
 
-      // Branch by payment method (temporarily only Stripe)
-      {
+      // Branch by payment method
+      if (selectedPayment === 'svea') {
+        // Redirect to Svea checkout page
+        window.location.href = '/checkout/svea';
+      } else {
         // Create Stripe Checkout Session (default)
         const res = await fetch('/api/checkout', {
           method: 'POST',
@@ -254,6 +257,13 @@ export default function Checkout() {
                     desc: 'Betala med Visa, Mastercard, Apple Pay, Google Pay',
                     icon: CreditCard,
                     recommended: true
+                  },
+                  {
+                    id: 'svea',
+                    name: 'Svea Ekonomi',
+                    desc: 'Betala med kort, faktura eller delbetalning',
+                    icon: CreditCard,
+                    recommended: false
                   }
                 ].map((method) => (
                   <label 
