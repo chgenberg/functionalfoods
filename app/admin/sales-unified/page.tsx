@@ -10,6 +10,7 @@ import {
   Info, ShoppingBag, CreditCard as CardIcon, FileText, Import
 } from "lucide-react";
 import * as XLSX from 'xlsx';
+import { formatPrice } from '@/app/lib/utils';
 
 interface UnifiedCustomer {
   id: string;
@@ -58,6 +59,7 @@ interface FilterOptions {
 }
 
 export default function UnifiedSalesPage() {
+  const [activeTab, setActiveTab] = useState<'overview' | 'customers' | 'analytics'>('overview');
   const [customers, setCustomers] = useState<UnifiedCustomer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<UnifiedCustomer[]>([]);
   const [summary, setSummary] = useState<Summary>({
@@ -175,7 +177,7 @@ export default function UnifiedSalesPage() {
       'Land': customer.country || '-',
       'Kurser': customer.courses.join(', ') || '-',
       'Antal ordrar': customer.orderCount,
-      'Total spenderat': `${customer.totalSpent.toFixed(2)} SEK`,
+      'Total spenderat': `${formatPrice(customer.totalSpent)} kr`,
       'Senaste köp': customer.lastPurchase ? new Date(customer.lastPurchase).toLocaleDateString('sv-SE') : '-',
       'Källa': getSourceText(customer.source),
       'Status': getStatusText(customer.status),
@@ -187,10 +189,10 @@ export default function UnifiedSalesPage() {
       'Värde': summary.totalCustomers
     }, {
       'Sammanfattning': 'Total försäljning',
-      'Värde': `${summary.totalRevenue.toFixed(2)} SEK`
+      'Värde': `${formatPrice(summary.totalRevenue)} kr`
     }, {
       'Sammanfattning': 'Genomsnittligt ordervärde',
-      'Värde': `${summary.averageOrderValue.toFixed(2)} SEK`
+      'Värde': `${formatPrice(summary.averageOrderValue)} kr`
     }, {
       'Sammanfattning': 'Kunder från Stripe',
       'Värde': summary.sourceBreakdown.stripe
@@ -216,7 +218,7 @@ export default function UnifiedSalesPage() {
     const courseData = Object.entries(summary.courseBreakdown).map(([course, data]) => ({
       'Kurs': course,
       'Antal kunder': data.count,
-      'Total försäljning': `${data.revenue.toFixed(2)} SEK`
+      'Total försäljning': `${formatPrice(data.revenue)} kr`
     }));
     const wsCourses = XLSX.utils.json_to_sheet(courseData);
     XLSX.utils.book_append_sheet(wb, wsCourses, 'Kurser');
@@ -510,8 +512,63 @@ export default function UnifiedSalesPage() {
         )}
       </AnimatePresence>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* Tabs */}
+      <div className="border-b border-gray-200">
+        <nav className="flex space-x-8" aria-label="Tabs">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'overview'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              Översikt
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('customers')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'customers'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              Kunder ({filteredCustomers.length})
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'analytics'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              Analys
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      {/* Tab Content */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'overview' && (
+          <motion.div
+            key="overview"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -542,7 +599,7 @@ export default function UnifiedSalesPage() {
             <DollarSign className="w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {summary.totalRevenue.toFixed(0)} kr
+            {formatPrice(summary.totalRevenue)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Från alla källor
@@ -560,39 +617,46 @@ export default function UnifiedSalesPage() {
             <BarChart3 className="w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {summary.averageOrderValue.toFixed(0)} kr
+            {formatPrice(summary.averageOrderValue)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Per kund med ordrar
           </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="admin-stat-card col-span-2"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-sm">Kursfördelning</span>
-            <Package className="w-5 h-5 text-gray-400" />
+            </motion.div>
           </div>
-          <div className="space-y-2">
-            {Object.entries(summary.courseBreakdown)
-              .sort((a, b) => b[1].count - a[1].count)
-              .slice(0, 3)
-              .map(([course, data]) => (
-                <div key={course} className="flex justify-between text-sm">
-                  <span className="text-gray-700">{course}</span>
-                  <span className="font-medium">{data.count} kunder</span>
-                </div>
-              ))}
-          </div>
-        </motion.div>
-      </div>
 
-      {/* Customers Table */}
-      <div className="admin-table">
+            {/* Course Breakdown Summary */}
+            <div className="mt-8 admin-card">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Kursfördelning</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Object.entries(summary.courseBreakdown)
+                  .sort((a, b) => b[1].count - a[1].count)
+                  .slice(0, 3)
+                  .map(([course, data]) => (
+                    <div key={course} className="bg-gray-50 rounded-lg p-4">
+                      <p className="text-sm font-medium text-gray-700 mb-1">{course}</p>
+                      <p className="text-xl font-bold text-gray-900">{data.count}</p>
+                      <p className="text-xs text-gray-500">{formatPrice(data.revenue)} kr</p>
+                    </div>
+                  ))}
+                {Object.keys(summary.courseBreakdown).length === 0 && (
+                  <p className="text-sm text-gray-500 col-span-3 text-center py-4">Ingen kursdata tillgänglig</p>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'customers' && (
+          <motion.div
+            key="customers"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Customers Table */}
+            <div className="admin-table">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -671,7 +735,7 @@ export default function UnifiedSalesPage() {
                     </td>
                     <td className="whitespace-nowrap">
                       <p className="text-sm font-medium text-gray-900">
-                        {customer.totalSpent.toFixed(0)} kr
+                        {formatPrice(customer.totalSpent)} kr
                       </p>
                     </td>
                     <td className="whitespace-nowrap">
@@ -697,6 +761,154 @@ export default function UnifiedSalesPage() {
           </table>
         </div>
       </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <motion.div
+            key="analytics"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Analytics Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Revenue Chart */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="admin-card"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                  <DollarSign className="w-6 h-6 text-[#014421]" />
+                  Total försäljning per kurs
+                </h3>
+                <div className="space-y-4">
+                  {Object.entries(summary.courseBreakdown)
+                    .sort((a, b) => b[1].revenue - a[1].revenue)
+                    .map(([course, data], idx) => {
+                      const maxRevenue = Math.max(...Object.values(summary.courseBreakdown).map(d => d.revenue));
+                      const percentage = maxRevenue > 0 ? (data.revenue / maxRevenue) * 100 : 0;
+                      const colors = ['bg-gradient-to-r from-blue-500 to-blue-600', 'bg-gradient-to-r from-purple-500 to-purple-600', 'bg-gradient-to-r from-green-500 to-green-600', 'bg-gradient-to-r from-orange-500 to-orange-600'];
+                      
+                      return (
+                        <div key={course}>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-gray-700">{course}</span>
+                            <div className="text-right">
+                              <p className="text-lg font-bold text-gray-900">{formatPrice(data.revenue)} kr</p>
+                              <p className="text-xs text-gray-500">{data.count} kunder</p>
+                            </div>
+                          </div>
+                          <div className="bg-gray-100 rounded-full h-4 overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${percentage}%` }}
+                              transition={{ delay: idx * 0.1, duration: 0.6 }}
+                              className={`h-full ${colors[idx % colors.length]}`}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  {Object.keys(summary.courseBreakdown).length === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-8">Ingen kursdata tillgänglig</p>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Source Breakdown */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="admin-card"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                  <Users className="w-6 h-6 text-[#014421]" />
+                  Kunder per källa
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    { label: 'Stripe', value: summary.sourceBreakdown.stripe, color: 'from-blue-500 to-blue-600', icon: CreditCard },
+                    { label: 'Manuell', value: summary.sourceBreakdown.manual, color: 'from-green-500 to-green-600', icon: UserPlus },
+                    { label: 'Import', value: summary.sourceBreakdown.import, color: 'from-purple-500 to-purple-600', icon: Upload }
+                  ].map((source, idx) => {
+                    const total = summary.sourceBreakdown.stripe + summary.sourceBreakdown.manual + summary.sourceBreakdown.import;
+                    const percentage = total > 0 ? (source.value / total) * 100 : 0;
+                    const Icon = source.icon;
+                    
+                    return (
+                      <div key={source.label}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Icon className="w-5 h-5 text-gray-600" />
+                            <span className="text-sm font-medium text-gray-700">{source.label}</span>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-lg font-bold text-gray-900">{source.value}</p>
+                            <p className="text-xs text-gray-500">{percentage.toFixed(1)}%</p>
+                          </div>
+                        </div>
+                        <div className="bg-gray-100 rounded-full h-4 overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${percentage}%` }}
+                            transition={{ delay: idx * 0.1, duration: 0.6 }}
+                            className={`h-full bg-gradient-to-r ${source.color}`}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Additional Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="admin-stat-card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-700 text-sm font-medium">Totalt antal kunder</span>
+                  <Users className="w-6 h-6 text-blue-600" />
+                </div>
+                <p className="text-3xl font-bold text-blue-900">{summary.totalCustomers}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="admin-stat-card bg-gradient-to-br from-green-50 to-green-100 border-green-200"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-700 text-sm font-medium">Total försäljning</span>
+                  <DollarSign className="w-6 h-6 text-green-600" />
+                </div>
+                <p className="text-3xl font-bold text-green-900">{formatPrice(summary.totalRevenue)} kr</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="admin-stat-card bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-700 text-sm font-medium">Snitt ordervärde</span>
+                  <BarChart3 className="w-6 h-6 text-purple-600" />
+                </div>
+                <p className="text-3xl font-bold text-purple-900">{formatPrice(summary.averageOrderValue)} kr</p>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Customer Details Modal */}
       <AnimatePresence>
@@ -770,7 +982,7 @@ export default function UnifiedSalesPage() {
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-600">Total spenderat</span>
                         <span className="text-sm font-medium text-gray-900">
-                          {selectedCustomer.totalSpent.toFixed(2)} SEK
+                          {formatPrice(selectedCustomer.totalSpent)} kr
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -783,9 +995,9 @@ export default function UnifiedSalesPage() {
                         <span className="text-sm text-gray-600">Genomsnitt per order</span>
                         <span className="text-sm font-medium text-gray-900">
                           {selectedCustomer.orderCount > 0 
-                            ? (selectedCustomer.totalSpent / selectedCustomer.orderCount).toFixed(2)
-                            : '0.00'
-                          } SEK
+                            ? formatPrice(selectedCustomer.totalSpent / selectedCustomer.orderCount)
+                            : '0'
+                          } kr
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -845,7 +1057,7 @@ export default function UnifiedSalesPage() {
                             </div>
                             <div className="text-right">
                               <p className="text-sm font-medium text-gray-900">
-                                {order.amount.toFixed(2)} SEK
+                                {formatPrice(order.amount)} kr
                               </p>
                               <p className="text-xs text-gray-600">
                                 {order.paymentMethod || 'Okänd metod'}

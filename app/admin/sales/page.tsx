@@ -10,6 +10,7 @@ import {
   Mail, Phone, Globe, Hash, Zap, Info
 } from "lucide-react";
 import * as XLSX from 'xlsx';
+import { formatPrice } from '@/app/lib/utils';
 
 interface StripePayment {
   id: string;
@@ -78,6 +79,7 @@ interface FilterOptions {
 }
 
 export default function EnhancedAdminSalesPage() {
+  const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'analytics'>('overview');
   const [payments, setPayments] = useState<StripePayment[]>([]);
   const [filteredPayments, setFilteredPayments] = useState<StripePayment[]>([]);
   const [summary, setSummary] = useState<PaymentSummary>({
@@ -246,25 +248,25 @@ export default function EnhancedAdminSalesPage() {
        'Produkt': payment.description,
        'Produktdetaljer': payment.orderInfo?.items.map((item: any) => `${item.quantity}x ${item.name} (${item.price} kr)`).join('; ') || '-',
        'Kurs': payment.customer.metadata?.course || extractCourseFromDescription(payment.description),
-       'Belopp': `${(payment.amount / 100).toFixed(2)} ${payment.currency.toUpperCase()}`,
+       'Belopp': `${formatPrice(payment.amount / 100)} ${payment.currency.toUpperCase()}`,
        'Status': getStatusText(payment.status),
        'Betalningsmetod': payment.paymentMethod?.type || '-',
        'Kortmärke': payment.paymentMethod?.card?.brand || '-',
        'Sista 4': payment.paymentMethod?.card?.last4 || '-',
        'Återbetalad': payment.refunded ? 'Ja' : 'Nej',
-       'Återbetalat belopp': payment.refundAmount > 0 ? `${(payment.refundAmount / 100).toFixed(2)} ${payment.currency.toUpperCase()}` : '-',
+       'Återbetalat belopp': payment.refundAmount > 0 ? `${formatPrice(payment.refundAmount / 100)} ${payment.currency.toUpperCase()}` : '-',
        'Kvitto URL': payment.receiptUrl || '-'
      }));
 
     const summaryData = [{
       'Sammanfattning': 'Total försäljning',
-      'Värde': `${(summary.totalAmount / 100).toFixed(2)} SEK`
+      'Värde': `${formatPrice(summary.totalAmount / 100)} kr`
     }, {
       'Sammanfattning': 'Antal transaktioner',
       'Värde': summary.total
     }, {
       'Sammanfattning': 'Genomsnittligt ordervärde',
-      'Värde': `${(summary.avgOrderValue / 100).toFixed(2)} SEK`
+      'Värde': `${formatPrice(summary.avgOrderValue / 100)} kr`
     }, {
       'Sammanfattning': 'Lyckade transaktioner',
       'Värde': summary.successful
@@ -276,7 +278,7 @@ export default function EnhancedAdminSalesPage() {
       'Värde': summary.failed
     }, {
       'Sammanfattning': 'Återbetalat totalt',
-      'Värde': `${(summary.refundedAmount / 100).toFixed(2)} SEK`
+      'Värde': `${formatPrice(summary.refundedAmount / 100)} kr`
     }, {
       'Sammanfattning': 'Konverteringsgrad',
       'Värde': `${summary.conversionRate}%`
@@ -694,7 +696,7 @@ export default function EnhancedAdminSalesPage() {
                       className="h-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-end pr-2"
                     >
                       {revenue > 0 && (
-                        <span className="text-xs text-white font-medium">{revenue.toFixed(0)} kr</span>
+                        <span className="text-xs text-white font-medium">{formatPrice(revenue)} kr</span>
                       )}
                     </motion.div>
                   </div>
@@ -726,7 +728,7 @@ export default function EnhancedAdminSalesPage() {
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700">{stat.course}</span>
                     <div className="text-right">
-                      <p className="text-sm font-bold text-gray-900">{(stat.revenue / 100).toFixed(0)} kr</p>
+                      <p className="text-sm font-bold text-gray-900">{formatPrice(stat.revenue / 100)} kr</p>
                       <p className="text-xs text-gray-500">{stat.count} st</p>
                     </div>
                   </div>
@@ -748,8 +750,63 @@ export default function EnhancedAdminSalesPage() {
         </motion.div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* Tabs */}
+      <div className="border-b border-gray-200">
+        <nav className="flex space-x-8" aria-label="Tabs">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'overview'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              Översikt
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('transactions')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'transactions'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5" />
+              Transaktioner ({filteredPayments.length})
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'analytics'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              Analys
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      {/* Tab Content */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'overview' && (
+          <motion.div
+            key="overview"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -760,7 +817,7 @@ export default function EnhancedAdminSalesPage() {
             <DollarSign className="w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {(summary.totalAmount / 100).toFixed(0)} kr
+            {formatPrice(summary.totalAmount / 100)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             {summary.total} transaktioner
@@ -778,7 +835,7 @@ export default function EnhancedAdminSalesPage() {
             <BarChart3 className="w-5 h-5 text-gray-400" />
               </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {(summary.avgOrderValue / 100).toFixed(0)} kr
+            {formatPrice(summary.avgOrderValue / 100)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Per transaktion
@@ -832,7 +889,7 @@ export default function EnhancedAdminSalesPage() {
             <RotateCcw className="w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {(summary.refundedAmount / 100).toFixed(0)} kr
+            {formatPrice(summary.refundedAmount / 100)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Totalt återbetalat
@@ -900,11 +957,11 @@ export default function EnhancedAdminSalesPage() {
                      </td>
                     <td className="whitespace-nowrap">
                       <p className="text-sm font-medium text-gray-900">
-                        {(payment.amount / 100).toFixed(2)} {payment.currency.toUpperCase()}
+                        {formatPrice(payment.amount / 100)} {payment.currency.toUpperCase()}
                       </p>
                       {payment.refunded && (
                         <p className="text-xs text-red-600">
-                          Återbetalad: {(payment.refundAmount / 100).toFixed(2)} {payment.currency.toUpperCase()}
+                          Återbetalad: {formatPrice(payment.refundAmount / 100)} {payment.currency.toUpperCase()}
                         </p>
                       )}
                     </td>
@@ -949,8 +1006,148 @@ export default function EnhancedAdminSalesPage() {
               )}
               </tbody>
             </table>
-          </div>
         </div>
+      </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <motion.div
+            key="analytics"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Revenue Over Time Chart */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="admin-card"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6 text-[#014421]" />
+                  Försäljning över tid (senaste 30 dagarna)
+                </h3>
+                <div className="space-y-3">
+                  {getDailyRevenue().map(([date, revenue], idx) => {
+                    const maxRevenue = Math.max(...getDailyRevenue().map(([, r]) => r));
+                    const percentage = maxRevenue > 0 ? (revenue / maxRevenue) * 100 : 0;
+                    
+                    return (
+                      <div key={date} className="flex items-center gap-4">
+                        <span className="text-xs text-gray-600 w-24 font-medium">{new Date(date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}</span>
+                        <div className="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${percentage}%` }}
+                            transition={{ delay: idx * 0.02, duration: 0.6 }}
+                            className="h-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-end pr-2"
+                          >
+                            {revenue > 0 && (
+                              <span className="text-xs text-white font-medium">{formatPrice(revenue)} kr</span>
+                            )}
+                          </motion.div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {getDailyRevenue().length === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-8">Ingen försäljningsdata tillgänglig</p>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Course Sales Breakdown */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="admin-card"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                  <Package className="w-6 h-6 text-[#014421]" />
+                  Försäljning per kurs
+                </h3>
+                <div className="space-y-4">
+                  {getCourseStats().map((stat, idx) => {
+                    const totalRevenue = getCourseStats().reduce((sum, s) => sum + s.revenue, 0);
+                    const percentage = totalRevenue > 0 ? (stat.revenue / totalRevenue) * 100 : 0;
+                    const colors = ['bg-gradient-to-r from-blue-500 to-blue-600', 'bg-gradient-to-r from-purple-500 to-purple-600', 'bg-gradient-to-r from-orange-500 to-orange-600'];
+                    
+                    return (
+                      <div key={stat.course}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-gray-700">{stat.course}</span>
+                          <div className="text-right">
+                            <p className="text-lg font-bold text-gray-900">{formatPrice(stat.revenue / 100)} kr</p>
+                            <p className="text-xs text-gray-500">{stat.count} transaktioner</p>
+                          </div>
+                        </div>
+                        <div className="bg-gray-100 rounded-full h-4 overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${percentage}%` }}
+                            transition={{ delay: idx * 0.1, duration: 0.6 }}
+                            className={`h-full ${colors[idx % colors.length]}`}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {getCourseStats().length === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-8">Ingen kursdata tillgänglig</p>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Additional Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="admin-stat-card bg-gradient-to-br from-green-50 to-green-100 border-green-200"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-700 text-sm font-medium">Total försäljning</span>
+                  <DollarSign className="w-6 h-6 text-green-600" />
+                </div>
+                <p className="text-3xl font-bold text-green-900">{formatPrice(summary.totalAmount / 100)} kr</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="admin-stat-card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-700 text-sm font-medium">Snitt ordervärde</span>
+                  <BarChart3 className="w-6 h-6 text-blue-600" />
+                </div>
+                <p className="text-3xl font-bold text-blue-900">{formatPrice(summary.avgOrderValue / 100)} kr</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="admin-stat-card bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-700 text-sm font-medium">Lyckade transaktioner</span>
+                  <CheckCircle className="w-6 h-6 text-purple-600" />
+                </div>
+                <p className="text-3xl font-bold text-purple-900">{summary.successful}</p>
+                <p className="text-xs text-gray-600 mt-1">{summary.total > 0 ? Math.round((summary.successful / summary.total) * 100) : 0}% av totalt</p>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Payment Details Modal */}
       <AnimatePresence>
@@ -1039,14 +1236,14 @@ export default function EnhancedAdminSalesPage() {
                         <div className="flex justify-between">
                       <span className="text-sm text-gray-600">Belopp</span>
                       <span className="text-sm font-medium text-gray-900">
-                        {(selectedPayment.amount / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
-                          </span>
+                        {formatPrice(selectedPayment.amount / 100)} {selectedPayment.currency.toUpperCase()}
+                      </span>
                         </div>
                     {selectedPayment.refundAmount > 0 && (
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-600">Återbetalat</span>
                         <span className="text-sm font-medium text-red-600">
-                          -{(selectedPayment.refundAmount / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
+                          -{formatPrice(selectedPayment.refundAmount / 100)} {selectedPayment.currency.toUpperCase()}
                         </span>
                       </div>
                     )}
@@ -1054,7 +1251,7 @@ export default function EnhancedAdminSalesPage() {
                       <div className="flex justify-between">
                         <span className="text-sm font-medium text-gray-700">Netto</span>
                         <span className="text-sm font-bold text-gray-900">
-                          {((selectedPayment.amount - selectedPayment.refundAmount) / 100).toFixed(2)} {selectedPayment.currency.toUpperCase()}
+                          {formatPrice((selectedPayment.amount - selectedPayment.refundAmount) / 100)} {selectedPayment.currency.toUpperCase()}
                         </span>
                       </div>
                       </div>
