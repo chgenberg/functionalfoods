@@ -93,25 +93,35 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-
+    console.log('📄 PDF: Starting generation for', { courseId, slug, course });
+    
     const filePath = path.join(process.cwd(), 'public', 'data', `knowledge-documents-${course}.json`);
     if (!fs.existsSync(filePath)) {
+      console.error('❌ PDF: File not found:', filePath);
       return new Response(JSON.stringify({ error: 'Dokumentdatabas saknas' }), { status: 404 });
     }
+    
     const raw = fs.readFileSync(filePath, 'utf8');
     const docs: KnowledgeDocument[] = JSON.parse(raw);
+    console.log('📄 PDF: Loaded', docs.length, 'documents from', course);
+    
     const doc = docs.find(d => d.slug === slug);
     if (!doc) {
-      return new Response(JSON.stringify({ error: 'Dokument hittades inte' }), { status: 404 });
+      console.error('❌ PDF: Document not found with slug:', slug);
+      console.log('📄 PDF: Available slugs (first 10):', docs.slice(0, 10).map(d => d.slug));
+      return new Response(JSON.stringify({ error: `Dokument "${slug}" hittades inte i ${course} kursen` }), { status: 404 });
     }
+
+    console.log('✅ PDF: Found document:', doc.title);
 
     // Prepare PDF stream
     const stream = new PassThrough();
     const pdf = new PDFDocument({ size: 'A4', margin: 50, info: { Title: doc.title } });
     pdf.pipe(stream);
 
-    // Title
-    pdf.fontSize(20).font('Helvetica-Bold').text(doc.title, { align: 'left' });
+    // Title - ensure it's a string
+    const title = String(doc.title || 'Okänt dokument');
+    pdf.fontSize(20).font('Helvetica-Bold').text(title, { align: 'left' });
     pdf.moveDown(0.5);
     
     // Course name mapping
@@ -122,23 +132,47 @@ export async function GET(req: NextRequest) {
       'hormone': 'Hormonell Balans'
     };
     const courseName = courseNames[doc.course] || courseNames[course] || 'Functional Foods';
+    const readTime = doc.readTime || 5;
     
-    pdf.fontSize(10).font('Helvetica').fillColor('#555555').text(`${courseName} · ${doc.readTime} min läsning`);
+    pdf.fontSize(10).font('Helvetica').fillColor('#555555').text(`${courseName} · ${readTime} min läsning`);
     pdf.moveDown(1);
 
     // Header image
-    try {
-      const headerPath = getPublicPath(doc.headerImage);
-      if (headerPath) {
-        const pageWidth = pdf.page.width - pdf.page.margins.left - pdf.page.margins.right;
-        pdf.image(headerPath, { fit: [pageWidth, 240], align: 'center' });
-        pdf.moveDown(1);
+    if (doc.headerImage) {
+      try {
+        const headerPath = getPublicPath(doc.headerImage);
+        if (headerPath && fs.existsSync(headerPath)) {
+          const pageWidth = pdf.page.width - pdf.page.margins.left - pdf.page.margins.right;
+          pdf.image(headerPath, { fit: [pageWidth, 240], align: 'center' });
+          pdf.moveDown(1);
+        } else {
+          console.warn('⚠️ PDF: Header image not found:', doc.headerImage);
+        }
+      } catch (imgError: any) {
+        console.warn('⚠️ PDF: Could not add header image:', imgError?.message);
       }
-    } catch {}
+    }
 
     // Body text (HTML stripped)
-    const text = stripHtmlPreserveNewlines(doc.content);
-    pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(text, { align: 'left' });
+    const text = stripHtmlPreserveNewlines(doc.content || '');
+    if (text && text.trim()) {
+      try {
+        pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(text, { 
+          align: 'left',
+          lineGap: 2
+        });
+      } catch (textError: any) {
+        console.error('❌ PDF: Error adding text:', textError?.message);
+        // Fallback: try with safe text
+        const safeText = text.replace(/[^\x00-\x7F]/g, ''); // Remove non-ASCII as fallback
+        pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(safeText || 'Innehåll kunde inte visas.', { 
+          align: 'left'
+        });
+      }
+    } else {
+      console.warn('⚠️ PDF: No content found for document');
+      pdf.fontSize(12).font('Helvetica').fillColor('#666666').text('Inget innehåll tillgängligt.');
+    }
 
     pdf.end();
 
