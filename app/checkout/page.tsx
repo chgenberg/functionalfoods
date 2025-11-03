@@ -101,26 +101,20 @@ export default function Checkout() {
         });
       } catch {}
 
-      // Store checkout data temporarily (used by both Stripe and Svea flows)
+      // Store checkout data temporarily
       sessionStorage.setItem('checkout_data', JSON.stringify(checkoutData));
 
-      // Branch by payment method
-      if (selectedPayment === 'svea') {
-        // Redirect to Svea checkout page
-        window.location.href = '/checkout/svea';
-      } else {
-        // Create Stripe Checkout Session (default)
-        const res = await fetch('/api/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(checkoutData)
-        });
-        const data = await res.json();
-        if (!res.ok || !data?.url) {
-          throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
-        }
-        window.location.href = data.url;
+      // Create Stripe Checkout Session (Svea temporarily disabled)
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(checkoutData)
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.url) {
+        throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
       }
+      window.location.href = data.url;
     } catch (err: any) {
       setError(err.message || 'Något gick fel');
       setIsProcessing(false);
@@ -257,14 +251,15 @@ export default function Checkout() {
                     desc: 'Betala med Visa, Mastercard, Apple Pay, Google Pay',
                     icon: CreditCard,
                     recommended: true
-                  },
-                  {
-                    id: 'svea',
-                    name: 'Svea Ekonomi',
-                    desc: 'Betala med kort, faktura eller delbetalning',
-                    icon: CreditCard,
-                    recommended: false
                   }
+                  // Svea temporarily disabled
+                  // {
+                  //   id: 'svea',
+                  //   name: 'Svea Ekonomi',
+                  //   desc: 'Betala med kort, faktura eller delbetalning',
+                  //   icon: CreditCard,
+                  //   recommended: false
+                  // }
                 ].map((method) => (
                   <label 
                     key={method.id} 
