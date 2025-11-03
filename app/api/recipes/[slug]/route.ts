@@ -34,6 +34,7 @@ export async function GET(
       'stekt-torsk-med-bearnaisesas-och-haricot-verts': 'stekt-torsk-med-bearnaisesas-och-haricots-verts',
       // New: slugs missing in meal plan mapped to existing ones
       'smoothiebowl-med-mango-och-jordgubbar': 'smoothiebowl',
+      'smoothie-smoothiebowl': 'tropisk-smoothiebowl', // Map smoothie-smoothiebowl to tropisk-smoothiebowl
       'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
       // Basic week 1: ensure Egenbakat recipe slug resolves
       'havrefrallor-morotter-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
