@@ -16,7 +16,7 @@ interface KnowledgeDocument {
   content: string;
   headerImage: string;
   readTime: number;
-  course: 'basic' | 'flow';
+  course: 'basic' | 'flow' | 'energy' | 'hormone';
 }
 
 function stripHtmlPreserveNewlines(html: string): string {
@@ -78,7 +78,21 @@ export async function GET(req: NextRequest) {
       return new Response(JSON.stringify({ error: 'courseId och slug krävs' }), { status: 400 });
     }
 
-    const course = courseId === 'functional-basics' ? 'basic' : 'flow';
+    // Map courseId to course file name
+    let course: 'basic' | 'flow' | 'energy' | 'hormone';
+    if (courseId === 'functional-basics') {
+      course = 'basic';
+    } else if (courseId === 'functional-flow') {
+      course = 'flow';
+    } else if (courseId === 'functional-energy') {
+      course = 'energy';
+    } else if (courseId === 'functional-hormone' || courseId === 'hormonell-balans') {
+      course = 'hormone';
+    } else {
+      // Fallback to basic if unknown courseId
+      course = 'basic';
+    }
+
     const filePath = path.join(process.cwd(), 'public', 'data', `knowledge-documents-${course}.json`);
     if (!fs.existsSync(filePath)) {
       return new Response(JSON.stringify({ error: 'Dokumentdatabas saknas' }), { status: 404 });
@@ -98,7 +112,17 @@ export async function GET(req: NextRequest) {
     // Title
     pdf.fontSize(20).font('Helvetica-Bold').text(doc.title, { align: 'left' });
     pdf.moveDown(0.5);
-    pdf.fontSize(10).font('Helvetica').fillColor('#555555').text(`Functional ${doc.course === 'basic' ? 'Basics' : 'Flow'} · ${doc.readTime} min läsning`);
+    
+    // Course name mapping
+    const courseNames: Record<string, string> = {
+      'basic': 'Functional Basics',
+      'flow': 'Functional Flow',
+      'energy': 'Functional Energy',
+      'hormone': 'Hormonell Balans'
+    };
+    const courseName = courseNames[doc.course] || courseNames[course] || 'Functional Foods';
+    
+    pdf.fontSize(10).font('Helvetica').fillColor('#555555').text(`${courseName} · ${doc.readTime} min läsning`);
     pdf.moveDown(1);
 
     // Header image
@@ -127,6 +151,21 @@ export async function GET(req: NextRequest) {
     });
   } catch (e: any) {
     console.error('PDF generation error:', e);
-    return new Response(JSON.stringify({ error: 'Kunde inte generera PDF' }), { status: 500 });
+    console.error('Error details:', {
+      message: e?.message,
+      stack: e?.stack,
+      courseId,
+      slug,
+      course
+    });
+    return new Response(JSON.stringify({ 
+      error: 'Kunde inte generera PDF',
+      details: process.env.NODE_ENV === 'development' ? e?.message : undefined
+    }), { 
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 } 
