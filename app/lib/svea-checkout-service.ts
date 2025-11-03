@@ -271,7 +271,7 @@ export class SveaCheckoutService {
         errorMessage += '\nMöjliga orsaker:';
         errorMessage += `\n1. ✅ Du använder ${this.config.testMode ? 'TEST' : 'PRODUKTION'} miljö (${this.baseUrl})`;
         errorMessage += `\n2. ❓ SVEA_SECRET_WORD är ${this.config.secretWord.length} tecken lång`;
-        errorMessage += `\n3. ❓ SVEA_TEST_MODE är satt till: ${this.config.testMode ? 'true' : 'false' || 'saknas'}`;
+        errorMessage += `\n3. ❓ SVEA_TEST_MODE är satt till: ${this.config.testMode ? 'true' : 'false'}`;
         errorMessage += `\n4. ❓ Merchant ID: ${this.config.merchantId}`;
         errorMessage += '\n\n🔧 Lösning:';
         if (!this.config.testMode) {
