@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, Award, BookOpen, ChevronRight, Clock, LogOut, Sparkles, Sprout, TrendingUp, User, Waves, Zap } from "lucide-react";;
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { optimizeImageUrl, getResponsiveSizes } from '@/app/lib/imageOptimization';
 
 interface CourseContent {
   videos?: Array<{
@@ -183,13 +184,6 @@ export default function MyCoursesPage() {
     router.push('/');
   };
 
-  const handleCourseAccess = (courseName: string) => {
-    const metadata = courseMetadata[courseName];
-    if (metadata) {
-      router.push(metadata.dashboardPath);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F7F5F0]">
@@ -293,10 +287,13 @@ export default function MyCoursesPage() {
                 <div key={purchase.id} className="bg-white rounded-2xl shadow-xl overflow-hidden">
                   <div className="relative h-64">
                     <Image
-                      src={metadata.image}
+                      src={optimizeImageUrl(metadata.image, 'large', 'landscape')}
                       alt={purchase.course.name}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+                      priority
+                      loading="eager"
                     />
                     <div className="absolute inset-0 bg-black/40" />
                     <div className="absolute bottom-6 left-6 right-6 text-white">
@@ -306,13 +303,13 @@ export default function MyCoursesPage() {
                   </div>
                   
                   <div className="p-8">
-                    <button
-                      onClick={() => handleCourseAccess(purchase.course.name)}
+                    <Link
+                      href={metadata.dashboardPath}
                       className="w-full bg-[#014421] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#112A12] transition-colors flex items-center justify-center gap-3"
                     >
                       Fortsätt kursen
                       <ArrowRight className="w-6 h-6" />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               );
@@ -350,21 +347,24 @@ export default function MyCoursesPage() {
                     transition={{ delay: index * 0.1 }}
                     onHoverStart={() => setHoveredCourse(purchase.course.name)}
                     onHoverEnd={() => setHoveredCourse(null)}
-                    onClick={() => handleCourseAccess(purchase.course.name)}
                     className="cursor-pointer"
                   >
-                    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
-                      {/* Course image */}
-                      <div className="relative h-48 overflow-hidden">
-                        <Image
-                          src={metadata.image}
-                          alt={purchase.course.name}
-                          fill
-                          className="object-cover transition-transform duration-300"
-                          style={{ 
-                            transform: hoveredCourse === purchase.course.name ? 'scale(1.05)' : 'scale(1)' 
-                          }}
-                        />
+                    <Link href={metadata.dashboardPath} className="block h-full">
+                      <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
+                        {/* Course image */}
+                        <div className="relative h-48 overflow-hidden">
+                          <Image
+                            src={optimizeImageUrl(metadata.image, 'large', 'landscape')}
+                            alt={purchase.course.name}
+                            fill
+                            className="object-cover transition-transform duration-300"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            priority={index < 3}
+                            loading={index < 3 ? "eager" : "lazy"}
+                            style={{ 
+                              transform: hoveredCourse === purchase.course.name ? 'scale(1.05)' : 'scale(1)' 
+                            }}
+                          />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                         
                         {/* Course icon overlay removed per request */}
@@ -376,7 +376,8 @@ export default function MyCoursesPage() {
                       </div>
                       
                       {/* No progress/metadata content as requested */}
-                    </div>
+                      </div>
+                    </Link>
                   </motion.div>
                 );
               })}
