@@ -69,29 +69,30 @@ function getPublicPath(relPath: string): string | null {
 }
 
 export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const courseId = searchParams.get('courseId');
+  const slug = searchParams.get('slug');
+
+  if (!courseId || !slug) {
+    return new Response(JSON.stringify({ error: 'courseId och slug krävs' }), { status: 400 });
+  }
+
+  // Map courseId to course file name
+  let course: 'basic' | 'flow' | 'energy' | 'hormone';
+  if (courseId === 'functional-basics') {
+    course = 'basic';
+  } else if (courseId === 'functional-flow') {
+    course = 'flow';
+  } else if (courseId === 'functional-energy') {
+    course = 'energy';
+  } else if (courseId === 'functional-hormone' || courseId === 'hormonell-balans') {
+    course = 'hormone';
+  } else {
+    // Fallback to basic if unknown courseId
+    course = 'basic';
+  }
+
   try {
-    const { searchParams } = new URL(req.url);
-    const courseId = searchParams.get('courseId');
-    const slug = searchParams.get('slug');
-
-    if (!courseId || !slug) {
-      return new Response(JSON.stringify({ error: 'courseId och slug krävs' }), { status: 400 });
-    }
-
-    // Map courseId to course file name
-    let course: 'basic' | 'flow' | 'energy' | 'hormone';
-    if (courseId === 'functional-basics') {
-      course = 'basic';
-    } else if (courseId === 'functional-flow') {
-      course = 'flow';
-    } else if (courseId === 'functional-energy') {
-      course = 'energy';
-    } else if (courseId === 'functional-hormone' || courseId === 'hormonell-balans') {
-      course = 'hormone';
-    } else {
-      // Fallback to basic if unknown courseId
-      course = 'basic';
-    }
 
     const filePath = path.join(process.cwd(), 'public', 'data', `knowledge-documents-${course}.json`);
     if (!fs.existsSync(filePath)) {
