@@ -267,14 +267,26 @@ export class SveaCheckoutService {
       let errorMessage = `Svea API Error (${response.status}): ${errorDetail}`;
       
       if (response.status === 401) {
-        errorMessage += '\n\nFelsökning:';
-        errorMessage += `\n- Använder ${this.config.testMode ? 'TEST' : 'PRODUKTION'} miljö (${this.baseUrl})`;
-        errorMessage += `\n- Kontrollera att SVEA_SECRET_WORD matchar miljön`;
-        errorMessage += `\n- Kontrollera att SVEA_TEST_MODE är korrekt satt (${this.config.testMode ? 'true' : 'false'})`;
-        errorMessage += `\n- Timestamp: ${timestamp}`;
-        errorMessage += `\n- Merchant ID: ${this.config.merchantId}`;
-        errorMessage += `\n- Om du använder PRODUKTION, kontrollera att du har produktions-nyckeln`;
-        errorMessage += `\n- Om du använder TEST, sätt SVEA_TEST_MODE=true och använd test-nyckeln`;
+        errorMessage += '\n\n❌ 401 Unauthorized - Detta betyder att autentiseringen misslyckades.\n';
+        errorMessage += '\nMöjliga orsaker:';
+        errorMessage += `\n1. ✅ Du använder ${this.config.testMode ? 'TEST' : 'PRODUKTION'} miljö (${this.baseUrl})`;
+        errorMessage += `\n2. ❓ SVEA_SECRET_WORD är ${this.config.secretWord.length} tecken lång`;
+        errorMessage += `\n3. ❓ SVEA_TEST_MODE är satt till: ${this.config.testMode ? 'true' : 'false' || 'saknas'}`;
+        errorMessage += `\n4. ❓ Merchant ID: ${this.config.merchantId}`;
+        errorMessage += '\n\n🔧 Lösning:';
+        if (!this.config.testMode) {
+          errorMessage += '\n- Du använder PRODUKTION miljö';
+          errorMessage += '\n- Kontrollera att SVEA_SECRET_WORD är din PRODUKTIONS-nyckel (inte test-nyckel)';
+          errorMessage += '\n- Kontrollera att produktions-nyckeln är aktiverad hos Svea';
+          errorMessage += '\n- Kontakta Svea support om produktions-nyckeln inte fungerar';
+          errorMessage += '\n\n💡 TIP: Testa först med SVEA_TEST_MODE=true och test-nyckeln';
+        } else {
+          errorMessage += '\n- Du använder TEST miljö';
+          errorMessage += '\n- Kontrollera att SVEA_SECRET_WORD är din TEST/STAGE-nyckel';
+          errorMessage += '\n- Kontrollera att SVEA_TEST_MODE är satt till "true"';
+        }
+        errorMessage += `\n- Timestamp (första försöket): ${timestamp}`;
+        errorMessage += '\n- Om både padded och unpadded timestamp gav 401, är problemet förmodligen credentials';
       }
       
       console.error('❌ SVEA createOrder Error:', {
