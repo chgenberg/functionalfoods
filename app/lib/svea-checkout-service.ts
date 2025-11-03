@@ -143,27 +143,31 @@ export class SveaCheckoutService {
   }
 
   /**
-   * Format timestamp exactly as Svea requires: UTC, YYYY-MM-DD HH:mm (no padding, single digits allowed)
+   * Format timestamp exactly as Svea requires: UTC, YYYY-MM-DD HH:mm
+   * Note: Svea spec says single digits allowed, but some environments may require padding
    */
-  private formatSveaTimestamp(date: Date = new Date()): string {
+  private formatSveaTimestamp(date: Date = new Date(), padded: boolean = false): string {
     const y = date.getUTCFullYear();
-    const m = date.getUTCMonth() + 1; // No padding
-    const d = date.getUTCDate(); // No padding
-    const hh = date.getUTCHours(); // No padding
-    const mm = date.getUTCMinutes(); // No padding
+    const m = padded ? String(date.getUTCMonth() + 1).padStart(2, '0') : (date.getUTCMonth() + 1);
+    const d = padded ? String(date.getUTCDate()).padStart(2, '0') : date.getUTCDate();
+    const hh = padded ? String(date.getUTCHours()).padStart(2, '0') : date.getUTCHours();
+    const mm = padded ? String(date.getUTCMinutes()).padStart(2, '0') : date.getUTCMinutes();
     return `${y}-${m}-${d} ${hh}:${mm}`;
   }
 
 
   /**
    * Build Authorization & Timestamp using exact Svea specification:
-   * - Timestamp: UTC, YYYY-MM-DD HH:mm (no padding, single digits allowed)
+   * - Timestamp: UTC, YYYY-MM-DD HH:mm
    * - Authorization: Svea <base64(merchantId:sha512(requestBody + secret + timestamp))>
    * - Timestamp header must exactly match the one used in hash calculation
+   * 
+   * Note: Some Svea environments may require padding despite spec saying single digits allowed
    */
-  private buildAuth(method: string, body: string = ''): { auth: string; timestamp: string } {
-    // Generate timestamp ONCE - UTC format without padding
-    const timestamp = this.formatSveaTimestamp();
+  private buildAuth(method: string, body: string = '', usePaddedTimestamp: boolean = true): { auth: string; timestamp: string } {
+    // Generate timestamp ONCE - UTC format
+    // Try padded first (most common requirement), can fallback to unpadded if needed
+    const timestamp = this.formatSveaTimestamp(new Date(), usePaddedTimestamp);
     
     // For GET requests, requestBody should be empty string
     const requestBody = method === 'GET' ? '' : (body || '');
@@ -184,6 +188,7 @@ export class SveaCheckoutService {
     console.log('🔐 SVEA Auth (Exact Spec):', {
       merchantId: this.config.merchantId,
       timestamp,
+      padded: usePaddedTimestamp,
       method,
       requestBodyLength: requestBody.length,
       hashInputLength: hashInput.length,
@@ -203,8 +208,9 @@ export class SveaCheckoutService {
     const endpoint = `${this.baseUrl}/api/orders`;
     const requestBody = JSON.stringify(request);
 
-    // Build auth and timestamp using exact specification
-    const { auth, timestamp } = this.buildAuth('POST', requestBody);
+    // Try with padded timestamp first (most common requirement)
+    // If that fails with 401, we can retry with unpadded
+    let { auth, timestamp } = this.buildAuth('POST', requestBody, true);
     
     const headers = {
       'Content-Type': 'application/json',
@@ -224,13 +230,28 @@ export class SveaCheckoutService {
       requestBodyPreview: requestBody.substring(0, 200) + '...'
     });
     
-    const response = await fetch(endpoint, {
+    let response = await fetch(endpoint, {
       method: 'POST',
       headers,
       body: requestBody
     });
     
-    const responseText = await response.text();
+    let responseText = await response.text();
+    
+    // If 401 with padded timestamp, try unpadded as fallback
+    if (!response.ok && response.status === 401) {
+      console.warn('⚠️ SVEA 401 with padded timestamp, trying unpadded format...');
+      ({ auth, timestamp } = this.buildAuth('POST', requestBody, false));
+      headers['Authorization'] = auth;
+      headers['Timestamp'] = timestamp;
+      
+      response = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: requestBody
+      });
+      responseText = await response.text();
+    }
     
     console.log('📥 SVEA createOrder Response:', {
       status: response.status,
@@ -252,6 +273,8 @@ export class SveaCheckoutService {
         errorMessage += `\n- Kontrollera att SVEA_TEST_MODE är korrekt satt (${this.config.testMode ? 'true' : 'false'})`;
         errorMessage += `\n- Timestamp: ${timestamp}`;
         errorMessage += `\n- Merchant ID: ${this.config.merchantId}`;
+        errorMessage += `\n- Om du använder PRODUKTION, kontrollera att du har produktions-nyckeln`;
+        errorMessage += `\n- Om du använder TEST, sätt SVEA_TEST_MODE=true och använd test-nyckeln`;
       }
       
       console.error('❌ SVEA createOrder Error:', {
@@ -296,8 +319,8 @@ export class SveaCheckoutService {
   async getOrder(orderId: number): Promise<GetOrderResponse> {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     
-    // Build auth and timestamp using exact specification
-    const { auth, timestamp } = this.buildAuth('GET', '');
+    // Build auth and timestamp using exact specification (try padded first)
+    const { auth, timestamp } = this.buildAuth('GET', '', true);
     
     try {
       const response = await fetch(endpoint, {
@@ -332,8 +355,8 @@ export class SveaCheckoutService {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     const requestBody = JSON.stringify(request);
     
-    // Build auth and timestamp using exact specification
-    const { auth, timestamp } = this.buildAuth('PUT', requestBody);
+    // Build auth and timestamp using exact specification (try padded first)
+    const { auth, timestamp } = this.buildAuth('PUT', requestBody, true);
     
     try {
       const response = await fetch(endpoint, {
