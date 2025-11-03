@@ -204,7 +204,7 @@ export async function GET(req: NextRequest) {
     const pdfBuffer = await pdfPromise;
 
     const filename = `${slug}.pdf`;
-    return new Response(pdfBuffer, {
+    return new Response(pdfBuffer.buffer.slice(pdfBuffer.byteOffset, pdfBuffer.byteOffset + pdfBuffer.byteLength), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
