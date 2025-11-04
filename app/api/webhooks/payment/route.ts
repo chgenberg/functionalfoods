@@ -404,17 +404,58 @@ async function handleCheckoutSessionCompleted(session: any) {
 
       // Create purchases for courses
       const purchasedCourses: any[] = [];
+      
+      // Course name mapping for exact matching
+      const courseNameMap: Record<string, string> = {
+        'hormonell balans': 'Hormonell Balans',
+        'functional flow': 'Functional Flow',
+        'functional gut health/flow': 'Functional Flow',
+        'functional basics': 'Functional Basics',
+        'functional energy': 'Functional Energy',
+        'functional insulin balance/energy': 'Functional Energy'
+      };
+      
       for (const it of items.filter(i => i.type === 'course')) {
-        const course = await tx.courseProduct.findFirst({
+        const normalizedName = it.name.toLowerCase().trim();
+        const mappedName = courseNameMap[normalizedName] || it.name;
+        
+        // Try exact match first (case-insensitive)
+        let course = await tx.courseProduct.findFirst({
           where: {
-            OR: [
-              { name: { equals: it.name, mode: 'insensitive' } },
-              { name: { contains: it.name.split('Functional ')[1] || '', mode: 'insensitive' } },
-              { name: { contains: it.name, mode: 'insensitive' } }
-            ]
+            name: { equals: mappedName, mode: 'insensitive' }
           }
         });
-        if (!course) continue;
+        
+        // If no exact match, try original name
+        if (!course) {
+          course = await tx.courseProduct.findFirst({
+            where: {
+              name: { equals: it.name, mode: 'insensitive' }
+            }
+          });
+        }
+        
+        // Only use contains as last resort, and be more specific
+        if (!course && it.name.toLowerCase().includes('functional')) {
+          const functionalPart = it.name.split('Functional ')[1]?.trim();
+          if (functionalPart) {
+            course = await tx.courseProduct.findFirst({
+              where: {
+                AND: [
+                  { name: { contains: 'Functional', mode: 'insensitive' } },
+                  { name: { contains: functionalPart, mode: 'insensitive' } }
+                ]
+              }
+            });
+          }
+        }
+        
+        if (!course) {
+          console.error(`❌ Course not found for: "${it.name}" (normalized: "${normalizedName}", mapped: "${mappedName}")`);
+          continue;
+        }
+        
+        console.log(`✅ Matched course: "${it.name}" → "${course.name}"`);
         const existingPurchase = await tx.purchase.findUnique({ where: { userId_courseId: { userId: user.id, courseId: course.id } } });
         if (!existingPurchase) {
           const purchase = await tx.purchase.create({
