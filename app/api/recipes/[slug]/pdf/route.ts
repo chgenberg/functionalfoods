@@ -34,8 +34,27 @@ function getPublicPath(relPath: string): string | null {
   let p = relPath;
   if (p.startsWith('/public/')) p = p.replace('/public', '');
   if (!p.startsWith('/')) p = '/' + p;
+  
   const filePath = path.join(process.cwd(), 'public', p);
-  return fs.existsSync(filePath) ? filePath : null;
+  if (fs.existsSync(filePath)) return filePath;
+  
+  // Try common image formats if original not found
+  const ext = path.extname(filePath).toLowerCase();
+  if (!ext || ext === '') {
+    // No extension, try common formats
+    for (const tryExt of ['.webp', '.jpg', '.jpeg', '.png']) {
+      const candidate = filePath + tryExt;
+      if (fs.existsSync(candidate)) return candidate;
+    }
+  }
+  
+  // Try alternative extensions
+  for (const tryExt of ['.webp', '.jpg', '.jpeg', '.png']) {
+    const candidate = filePath.replace(/\.[^.]*$/, tryExt);
+    if (candidate !== filePath && fs.existsSync(candidate)) return candidate;
+  }
+  
+  return null;
 }
 
 export async function GET(
@@ -49,7 +68,19 @@ export async function GET(
     // Get recipe from database
     const recipe = await prisma.recipe.findUnique({
       where: { slug },
-      include: { author: { select: { name: true, email: true } } }
+      select: {
+        title: true,
+        excerpt: true,
+        imageUrl: true,
+        ingredients: true,
+        instructions: true,
+        prepTime: true,
+        cookTime: true,
+        difficulty: true,
+        servings: true,
+        nutrition: true,
+        tips: true
+      }
     });
 
     if (!recipe) {
@@ -59,7 +90,17 @@ export async function GET(
     console.log('✅ Recipe PDF: Found recipe:', recipe.title);
 
     // Use buffer-based approach matching knowledge PDF route pattern
-    const PDFDocument = (await import('pdfkit/js/pdfkit.standalone.js') as any).default as any;
+    let PDFDocument: any;
+    try {
+      const pdfkitModule = await import('pdfkit/js/pdfkit.standalone.js');
+      PDFDocument = (pdfkitModule as any).default || pdfkitModule;
+      if (!PDFDocument) {
+        throw new Error('PDFDocument not found in pdfkit module');
+      }
+    } catch (importError: any) {
+      console.error('❌ Recipe PDF: Failed to import pdfkit:', importError);
+      throw new Error(`Failed to load PDF library: ${importError?.message || 'Unknown error'}`);
+    }
     
     const pdf = new PDFDocument({ 
       size: 'A4', 
@@ -231,21 +272,35 @@ export async function GET(
         }
       });
     } catch (pdfGenError: any) {
+      console.error('❌ Recipe PDF: Error during PDF generation:', pdfGenError);
+      console.error('❌ Recipe PDF: Error details:', {
+        message: pdfGenError?.message,
+        stack: pdfGenError?.stack,
+        name: pdfGenError?.name
+      });
       try {
         pdf.end();
       } catch {}
       throw pdfGenError;
     }
   } catch (e: any) {
-    console.error('Recipe PDF generation error:', e);
-    console.error('Error details:', {
+    console.error('❌ Recipe PDF: Fatal error:', e);
+    console.error('❌ Recipe PDF: Error details:', {
       message: e?.message,
       stack: e?.stack,
-      slug: params.slug
+      slug: params.slug,
+      name: e?.name,
+      cause: e?.cause
     });
+    
+    // Return user-friendly error message
+    const errorMessage = e?.message || 'Unknown error';
+    const isImportError = errorMessage.includes('Failed to load PDF library') || errorMessage.includes('pdfkit');
+    
     return NextResponse.json({ 
       error: 'Kunde inte generera PDF',
-      details: process.env.NODE_ENV === 'development' ? e?.message : undefined
+      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+      ...(isImportError && { hint: 'PDF library not available' })
     }, { status: 500 });
   }
 }

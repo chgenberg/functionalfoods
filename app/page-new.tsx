@@ -98,7 +98,11 @@ export default function Home() {
   useEffect(() => {
     if (heroInView && videoRef.current && videoRef.current.paused) {
       videoRef.current.play().catch(error => {
-        console.error("Hero video autoplay failed:", error);
+        // Silently handle autoplay failures - browsers often block autoplay
+        // This is expected behavior and not a critical error
+        if (process.env.NODE_ENV === 'development') {
+          console.debug("Hero video autoplay blocked by browser policy:", error.name);
+        }
       });
     }
   }, [heroInView]);

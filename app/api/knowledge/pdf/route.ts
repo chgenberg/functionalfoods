@@ -15,24 +15,80 @@ interface KnowledgeDocument {
   course: 'basic' | 'flow' | 'energy' | 'hormone';
 }
 
+function stripHtmlPreserveStructure(html: string): Array<{ type: 'heading' | 'paragraph' | 'list'; content: string }> {
+  try {
+    const result: Array<{ type: 'heading' | 'paragraph' | 'list'; content: string }> = [];
+    
+    // Split by major block elements
+    let content = html;
+    
+    // Handle headings
+    const headingRegex = /<h[1-3][^>]*>(.*?)<\/h[1-3]>/gi;
+    let lastIndex = 0;
+    let match;
+    
+    const headings: Array<{ index: number; content: string }> = [];
+    while ((match = headingRegex.exec(content)) !== null) {
+      headings.push({ index: match.index, content: match[1] });
+    }
+    
+    // Process content in order
+    let workingContent = content;
+    
+    // Remove script and style tags
+    workingContent = workingContent.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    workingContent = workingContent.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+    
+    // Split by paragraph tags
+    const paragraphs = workingContent.split(/<\/?p[^>]*>/gi).filter(p => p.trim());
+    
+    paragraphs.forEach(para => {
+      let text = para
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&auml;/g, 'ä')
+        .replace(/&aring;/g, 'å')
+        .replace(/&ouml;/g, 'ö')
+        .replace(/&Auml;/g, 'Ä')
+        .replace(/&Aring;/g, 'Å')
+        .replace(/&Ouml;/g, 'Ö')
+        .trim();
+      
+      if (text.length > 0) {
+        result.push({ type: 'paragraph', content: text });
+      }
+    });
+    
+    return result;
+  } catch {
+    return [{ type: 'paragraph', content: html }];
+  }
+}
+
 function stripHtmlPreserveNewlines(html: string): string {
   try {
     let txt = html;
-    // Headings -> line breaks
     txt = txt.replace(/<\/(h1|h2|h3)>/gi, '\n\n');
-    // Paragraphs and list items -> line breaks
     txt = txt.replace(/<\/(p|li)>/gi, '\n');
-    // Remove all remaining tags
     txt = txt.replace(/<[^>]*>/g, '');
-    // Decode minimal entities
     txt = txt
       .replace(/&nbsp;/g, ' ')
       .replace(/&amp;/g, '&')
       .replace(/&quot;/g, '"')
       .replace(/&#39;/g, "'")
       .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>');
-    // Collapse extra blank lines
+      .replace(/&gt;/g, '>')
+      .replace(/&auml;/g, 'ä')
+      .replace(/&aring;/g, 'å')
+      .replace(/&ouml;/g, 'ö')
+      .replace(/&Auml;/g, 'Ä')
+      .replace(/&Aring;/g, 'Å')
+      .replace(/&Ouml;/g, 'Ö');
     txt = txt.replace(/\n{3,}/g, '\n\n');
     return txt.trim();
   } catch {
@@ -47,6 +103,23 @@ function getPublicPath(relPath: string): string | null {
   if (!p.startsWith('/')) p = '/' + p;
   const filePath = path.join(process.cwd(), 'public', p);
   if (fs.existsSync(filePath)) return filePath;
+  
+  // Try common image formats if original not found
+  const ext = path.extname(filePath).toLowerCase();
+  if (!ext || ext === '') {
+    // No extension, try common formats
+    for (const tryExt of ['.webp', '.jpg', '.jpeg', '.png']) {
+      const candidate = filePath + tryExt;
+      if (fs.existsSync(candidate)) return candidate;
+    }
+  }
+  
+  // Try alternative extensions
+  for (const tryExt of ['.webp', '.jpg', '.jpeg', '.png']) {
+    const candidate = filePath.replace(/\.[^.]*$/, tryExt);
+    if (candidate !== filePath && fs.existsSync(candidate)) return candidate;
+  }
+  
   // try slugified .webp fallback
   const base = path.basename(filePath);
   const dir = path.dirname(filePath);
@@ -84,7 +157,6 @@ export async function GET(req: NextRequest) {
   } else if (courseId === 'functional-hormone' || courseId === 'hormonell-balans') {
     course = 'hormone';
   } else {
-    // Fallback to basic if unknown courseId
     course = 'basic';
   }
 
@@ -110,17 +182,26 @@ export async function GET(req: NextRequest) {
 
     console.log('✅ PDF: Found document:', doc.title);
 
-    // Use buffer-based approach matching receipt route pattern
-    // Dynamically import pdfkit standalone version which includes fonts
-    const PDFDocument = (await import('pdfkit/js/pdfkit.standalone.js') as any).default as any;
+    // Dynamically import pdfkit
+    let PDFDocument: any;
+    try {
+      const pdfkitModule = await import('pdfkit/js/pdfkit.standalone.js');
+      PDFDocument = (pdfkitModule as any).default || pdfkitModule;
+      if (!PDFDocument) {
+        throw new Error('PDFDocument not found in pdfkit module');
+      }
+    } catch (importError: any) {
+      console.error('❌ PDF: Failed to import pdfkit:', importError);
+      throw new Error(`Failed to load PDF library: ${importError?.message || 'Unknown error'}`);
+    }
     
     const pdf = new PDFDocument({ 
       size: 'A4', 
-      margin: 50, 
+      margin: 60,
       info: { Title: doc.title }
     });
 
-    // Collect PDF chunks - set up BEFORE generating content
+    // Collect PDF chunks
     const chunks: Buffer[] = [];
     pdf.on('data', (chunk: Buffer) => chunks.push(chunk));
     
@@ -138,17 +219,43 @@ export async function GET(req: NextRequest) {
         console.error('❌ PDF: PDFDocument error event:', err);
         reject(err);
       });
-      // Timeout after 30 seconds
       setTimeout(() => reject(new Error('PDF generation timeout after 30 seconds')), 30000);
     });
 
     try {
-      // Title - ensure it's a string and handle special characters
+      // Define colors for professional look
+      const primaryColor = '#1a5f3f'; // Dark green matching brand
+      const secondaryColor = '#666666';
+      const lightGray = '#f5f5f5';
+      const pageWidth = pdf.page.width - pdf.page.margins.left - pdf.page.margins.right;
+
+      // Header image - full width banner
+      if (doc.headerImage) {
+        try {
+          const headerPath = getPublicPath(doc.headerImage);
+          if (headerPath && fs.existsSync(headerPath)) {
+            pdf.image(headerPath, pdf.page.margins.left, pdf.page.margins.top, { 
+              width: pageWidth, 
+              height: 200 
+            });
+            pdf.moveDown(5);
+          }
+        } catch (imgError: any) {
+          console.warn('⚠️ PDF: Could not add header image:', imgError?.message);
+        }
+      }
+
+      // Title with professional styling
       const title = String(doc.title || 'Okänt dokument');
-      pdf.fontSize(20).font('Helvetica-Bold').text(title, { align: 'left' });
-      pdf.moveDown(0.5);
+      pdf
+        .fontSize(28)
+        .font('Helvetica-Bold')
+        .fillColor(primaryColor)
+        .text(title, { align: 'left', lineGap: 5 });
       
-      // Course name mapping
+      pdf.moveDown(0.5);
+
+      // Course info and metadata
       const courseNames: Record<string, string> = {
         'basic': 'Functional Basics',
         'flow': 'Functional Flow',
@@ -158,46 +265,108 @@ export async function GET(req: NextRequest) {
       const courseName = courseNames[doc.course] || courseNames[course] || 'Functional Foods';
       const readTime = doc.readTime || 5;
       
-      pdf.fontSize(10).font('Helvetica').fillColor('#555555').text(`${courseName} · ${readTime} min läsning`);
-      pdf.moveDown(1);
+      // Metadata bar
+      pdf
+        .fontSize(10)
+        .font('Helvetica')
+        .fillColor(secondaryColor)
+        .text(`${courseName} • ${readTime} min läsning`, { align: 'left' });
+      
+      // Horizontal line separator
+      const lineY = pdf.y;
+      pdf
+        .strokeColor('#e0e0e0')
+        .lineWidth(1)
+        .moveTo(pdf.page.margins.left, lineY + 5)
+        .lineTo(pdf.page.width - pdf.page.margins.right, lineY + 5)
+        .stroke();
+      
+      pdf.moveDown(1.5);
 
-      // Header image
-      if (doc.headerImage) {
-        try {
-          const headerPath = getPublicPath(doc.headerImage);
-          if (headerPath && fs.existsSync(headerPath)) {
-            const pageWidth = pdf.page.width - pdf.page.margins.left - pdf.page.margins.right;
-            pdf.image(headerPath, { fit: [pageWidth, 240], align: 'center' });
-            pdf.moveDown(1);
-          } else {
-            console.warn('⚠️ PDF: Header image not found:', doc.headerImage);
-          }
-        } catch (imgError: any) {
-          console.warn('⚠️ PDF: Could not add header image:', imgError?.message);
-        }
-      }
-
-      // Body text (HTML stripped) - handle long text properly
+      // Body content with better formatting
       const text = stripHtmlPreserveNewlines(doc.content || '');
       if (text && text.trim()) {
         try {
-          pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(text, { 
-            align: 'left',
-            lineGap: 2
+          // Split into paragraphs for better formatting
+          const paragraphs = text.split('\n\n').filter(p => p.trim());
+          
+          paragraphs.forEach((para, index) => {
+            if (para.trim().length === 0) return;
+            
+            // Main text
+            pdf
+              .fontSize(11)
+              .font('Helvetica')
+              .fillColor('#000000')
+              .text(para.trim(), {
+                align: 'left',
+                lineGap: 3,
+                width: pageWidth,
+                continued: false
+              });
+            
+            // Add spacing between paragraphs
+            if (index < paragraphs.length - 1) {
+              pdf.moveDown(0.5);
+            }
           });
         } catch (textError: any) {
           console.error('❌ PDF: Error adding text:', textError?.message);
-          console.error('❌ PDF: Text length:', text.length);
-          // Fallback: try with truncated text
-          const safeText = text.substring(0, 5000); // Limit length
-          pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(safeText || 'Innehåll kunde inte visas.', { 
-            align: 'left'
-          });
+          const safeText = text.substring(0, 5000);
+          pdf
+            .fontSize(11)
+            .font('Helvetica')
+            .fillColor('#000000')
+            .text(safeText || 'Innehåll kunde inte visas.', { 
+              align: 'left',
+              lineGap: 3,
+              width: pageWidth
+            });
         }
       } else {
         console.warn('⚠️ PDF: No content found for document');
-        pdf.fontSize(12).font('Helvetica').fillColor('#666666').text('Inget innehåll tillgängligt.');
+        pdf
+          .fontSize(11)
+          .font('Helvetica')
+          .fillColor('#999999')
+          .text('Inget innehåll tillgängligt.');
       }
+
+      // Footer
+      pdf.moveDown(2);
+      const footerY = pdf.page.height - pdf.page.margins.bottom - 30;
+      
+      // Footer line
+      pdf
+        .strokeColor('#e0e0e0')
+        .lineWidth(0.5)
+        .moveTo(pdf.page.margins.left, footerY)
+        .lineTo(pdf.page.width - pdf.page.margins.right, footerY)
+        .stroke();
+      
+      // Footer text
+      pdf
+        .fontSize(9)
+        .font('Helvetica')
+        .fillColor('#999999')
+        .text(
+          `Functional Foods med Ulrika Davidsson • functionalfoods.se • ${new Date().getFullYear()}`,
+          pdf.page.margins.left,
+          footerY + 10,
+          { align: 'center', width: pageWidth }
+        );
+      
+      // Page number
+      pdf
+        .fontSize(9)
+        .font('Helvetica')
+        .fillColor('#cccccc')
+        .text(
+          `Sida 1`,
+          pdf.page.margins.left,
+          pdf.page.height - pdf.page.margins.bottom + 5,
+          { align: 'right', width: pageWidth }
+        );
 
       pdf.end();
       
@@ -213,15 +382,15 @@ export async function GET(req: NextRequest) {
         }
       });
     } catch (pdfGenError: any) {
-      // Clean up PDF if still active
+      console.error('❌ PDF: Error during PDF generation:', pdfGenError);
       try {
         pdf.end();
       } catch {}
       throw pdfGenError;
     }
   } catch (e: any) {
-    console.error('PDF generation error:', e);
-    console.error('Error details:', {
+    console.error('❌ PDF: Fatal error:', e);
+    console.error('❌ PDF: Error details:', {
       message: e?.message,
       stack: e?.stack,
       courseId,
