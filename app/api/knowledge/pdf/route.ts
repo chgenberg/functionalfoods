@@ -1,11 +1,10 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import fs from 'fs';
 import path from 'path';
-import { PassThrough } from 'stream';
 
 // Lazy require to avoid issues if pdfkit is tree-shaken
 const PDFDocument = require('pdfkit');
@@ -74,7 +73,7 @@ export async function GET(req: NextRequest) {
   const slug = searchParams.get('slug');
 
   if (!courseId || !slug) {
-    return new Response(JSON.stringify({ error: 'courseId och slug krävs' }), { status: 400 });
+    return NextResponse.json({ error: 'courseId och slug krävs' }, { status: 400 });
   }
 
   // Map courseId to course file name
@@ -98,7 +97,7 @@ export async function GET(req: NextRequest) {
     const filePath = path.join(process.cwd(), 'public', 'data', `knowledge-documents-${course}.json`);
     if (!fs.existsSync(filePath)) {
       console.error('❌ PDF: File not found:', filePath);
-      return new Response(JSON.stringify({ error: 'Dokumentdatabas saknas' }), { status: 404 });
+      return NextResponse.json({ error: 'Dokumentdatabas saknas' }, { status: 404 });
     }
     
     const raw = fs.readFileSync(filePath, 'utf8');
@@ -109,34 +108,24 @@ export async function GET(req: NextRequest) {
     if (!doc) {
       console.error('❌ PDF: Document not found with slug:', slug);
       console.log('📄 PDF: Available slugs (first 10):', docs.slice(0, 10).map(d => d.slug));
-      return new Response(JSON.stringify({ error: `Dokument "${slug}" hittades inte i ${course} kursen` }), { status: 404 });
+      return NextResponse.json({ error: `Dokument "${slug}" hittades inte i ${course} kursen` }, { status: 404 });
     }
 
     console.log('✅ PDF: Found document:', doc.title);
 
-    // Use buffer-based approach for better error handling
-    const chunks: Buffer[] = [];
+    // Use buffer-based approach matching receipt route pattern
+    const PDFDocument = (await import('pdfkit') as any).default as any;
     const pdf = new PDFDocument({ 
       size: 'A4', 
       margin: 50, 
       info: { Title: doc.title }
     });
 
-    // Collect PDF chunks
+    // Collect PDF chunks - set up BEFORE generating content
+    const chunks: Buffer[] = [];
     pdf.on('data', (chunk: Buffer) => chunks.push(chunk));
-    
-    // Handle PDF errors
-    pdf.on('error', (err: Error) => {
-      console.error('❌ PDF: PDFDocument error:', err);
-      throw err;
-    });
-
-    // Create promise to wait for PDF to finish
-    const pdfPromise = new Promise<Buffer>((resolve, reject) => {
-      pdf.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        resolve(buffer);
-      });
+    const pdfReady = new Promise<Buffer>((resolve, reject) => {
+      pdf.on('end', () => resolve(Buffer.concat(chunks)));
       pdf.on('error', reject);
       // Timeout after 30 seconds
       setTimeout(() => reject(new Error('PDF generation timeout')), 30000);
@@ -201,10 +190,10 @@ export async function GET(req: NextRequest) {
     pdf.end();
     
     // Wait for PDF to finish generating
-    const pdfBuffer = await pdfPromise;
+    const pdfBuffer = await pdfReady;
 
     const filename = `${slug}.pdf`;
-    return new Response(new Uint8Array(pdfBuffer), {
+    return new NextResponse(pdfBuffer as any, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
@@ -220,14 +209,9 @@ export async function GET(req: NextRequest) {
       slug,
       course
     });
-    return new Response(JSON.stringify({ 
+    return NextResponse.json({ 
       error: 'Kunde inte generera PDF',
       details: process.env.NODE_ENV === 'development' ? e?.message : undefined
-    }), { 
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    }, { status: 500 });
   }
 } 
