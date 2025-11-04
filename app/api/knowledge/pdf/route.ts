@@ -169,6 +169,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Dokumentdatabas saknas' }, { status: 404 });
     }
     
+    // Read JSON file with explicit UTF-8 encoding
     const raw = fs.readFileSync(filePath, 'utf8');
     const docs: KnowledgeDocument[] = JSON.parse(raw);
     console.log('📄 PDF: Loaded', docs.length, 'documents from', course);
@@ -181,6 +182,12 @@ export async function GET(req: NextRequest) {
     }
 
     console.log('✅ PDF: Found document:', doc.title);
+    console.log('📄 PDF: Title encoding check:', {
+      title: doc.title,
+      titleLength: doc.title?.length,
+      titleBytes: Buffer.from(doc.title || '', 'utf8').length,
+      hasSwedishChars: /[åäöÅÄÖ]/.test(doc.title || '')
+    });
 
     // Dynamically import pdfkit
     let PDFDocument: any;
@@ -245,13 +252,31 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Title with professional styling
-      const title = String(doc.title || 'Okänt dokument');
+      // Title with professional styling - ensure proper encoding for Swedish characters
+      let title = String(doc.title || 'Okänt dokument');
+      // Ensure title is properly decoded if it contains HTML entities
+      title = title
+        .replace(/&auml;/g, 'ä')
+        .replace(/&aring;/g, 'å')
+        .replace(/&ouml;/g, 'ö')
+        .replace(/&Auml;/g, 'Ä')
+        .replace(/&Aring;/g, 'Å')
+        .replace(/&Ouml;/g, 'Ö')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      // Use Helvetica which supports basic Latin characters including Swedish
+      // PDFKit handles UTF-8 encoding automatically, but we need to ensure clean text
       pdf
         .fontSize(28)
         .font('Helvetica-Bold')
         .fillColor(primaryColor)
-        .text(title, { align: 'left', lineGap: 5 });
+        .text(title, { 
+          align: 'left', 
+          lineGap: 5
+        });
       
       pdf.moveDown(0.5);
 
@@ -265,12 +290,14 @@ export async function GET(req: NextRequest) {
       const courseName = courseNames[doc.course] || courseNames[course] || 'Functional Foods';
       const readTime = doc.readTime || 5;
       
-      // Metadata bar
+      // Metadata bar - ensure Swedish characters are properly encoded
       pdf
         .fontSize(10)
         .font('Helvetica')
         .fillColor(secondaryColor)
-        .text(`${courseName} • ${readTime} min läsning`, { align: 'left' });
+        .text(`${courseName} • ${readTime} min läsning`, { 
+          align: 'left'
+        });
       
       // Horizontal line separator
       const lineY = pdf.y;
@@ -293,12 +320,21 @@ export async function GET(req: NextRequest) {
           paragraphs.forEach((para, index) => {
             if (para.trim().length === 0) return;
             
-            // Main text
+            // Clean paragraph text
+            let cleanPara = para.trim()
+              .replace(/&auml;/g, 'ä')
+              .replace(/&aring;/g, 'å')
+              .replace(/&ouml;/g, 'ö')
+              .replace(/&Auml;/g, 'Ä')
+              .replace(/&Aring;/g, 'Å')
+              .replace(/&Ouml;/g, 'Ö');
+            
+            // Main text with proper encoding
             pdf
               .fontSize(11)
               .font('Helvetica')
               .fillColor('#000000')
-              .text(para.trim(), {
+              .text(cleanPara, {
                 align: 'left',
                 lineGap: 3,
                 width: pageWidth,
@@ -344,7 +380,7 @@ export async function GET(req: NextRequest) {
         .lineTo(pdf.page.width - pdf.page.margins.right, footerY)
         .stroke();
       
-      // Footer text
+      // Footer text - ensure Swedish characters are properly encoded
       pdf
         .fontSize(9)
         .font('Helvetica')
