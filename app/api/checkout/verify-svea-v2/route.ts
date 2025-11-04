@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
           totalAmount: order.totalAmount,
           customerEmail: order.customerEmail,
           customerName: order.customerName,
-          items: order.items.map(i => ({ productId: i.productId, productName: i.productName, productType: i.productType, quantity: i.quantity, price: i.price }))
+          items: order.items.map(i => ({ productId: i.courseId || i.id, productName: i.name, productType: i.type, quantity: i.quantity, price: i.price }))
         }
       });
     }
@@ -90,9 +90,9 @@ export async function POST(req: NextRequest) {
         customerEmail: sveaOrder.customer?.email || order.customerEmail,
         customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
         items: order.items.map(item => ({
-          productId: item.productId,
-          productName: item.productName,
-          productType: item.productType,
+          productId: item.courseId || item.id,
+          productName: item.name,
+          productType: item.type,
           quantity: item.quantity,
           price: item.price
         }))
@@ -122,13 +122,80 @@ export async function POST(req: NextRequest) {
 
       // Create purchases for courses if user exists
       if (order.userId) {
-        const courseItems = order.items.filter(item => item.productType === 'course');
+        const courseItems = order.items.filter(item => item.type === 'course');
+        
+        // Course name mapping for exact matching
+        const courseNameMap: Record<string, string> = {
+          'hormonell balans': 'Hormonell Balans',
+          'functional flow': 'Functional Flow',
+          'functional gut health/flow': 'Functional Flow',
+          'functional basics': 'Functional Basics',
+          'functional energy': 'Functional Energy',
+          'functional insulin balance/energy': 'Functional Energy'
+        };
         
         for (const item of courseItems) {
-          const existingPurchase = await prisma.purchase.findFirst({
+          // Use courseId if available, otherwise match by name
+          let courseId = item.courseId;
+          
+          if (!courseId) {
+            // Match course by name using same logic as other webhooks
+            const normalizedName = item.name.toLowerCase().trim();
+            const mappedName = courseNameMap[normalizedName] || item.name;
+            
+            // Try exact match first (case-insensitive)
+            let course = await prisma.courseProduct.findFirst({
+              where: {
+                name: { equals: mappedName, mode: 'insensitive' }
+              }
+            });
+            
+            // If no exact match, try original name
+            if (!course) {
+              course = await prisma.courseProduct.findFirst({
+                where: {
+                  name: { equals: item.name, mode: 'insensitive' }
+                }
+              });
+            }
+            
+            // Only use contains as last resort, and be more specific
+            if (!course && item.name.toLowerCase().includes('functional')) {
+              const functionalPart = item.name.split('Functional ')[1]?.trim();
+              if (functionalPart) {
+                course = await prisma.courseProduct.findFirst({
+                  where: {
+                    AND: [
+                      { name: { contains: 'Functional', mode: 'insensitive' } },
+                      { name: { contains: functionalPart, mode: 'insensitive' } }
+                    ]
+                  }
+                });
+              }
+            }
+            
+            if (!course) {
+              console.error(`❌ Course not found for: "${item.name}"`);
+              continue;
+            }
+            
+            courseId = course.id;
+            console.log(`✅ Matched course: "${item.name}" → "${course.name}"`);
+            
+            // Update order item with courseId for future reference
+            await prisma.orderItem.update({
+              where: { id: item.id },
+              data: { courseId: course.id }
+            });
+          }
+          
+          // Check if purchase already exists
+          const existingPurchase = await prisma.purchase.findUnique({
             where: {
-              userId: order.userId,
-              courseSlug: item.productId
+              userId_courseId: {
+                userId: order.userId,
+                courseId: courseId
+              }
             }
           });
 
@@ -136,13 +203,14 @@ export async function POST(req: NextRequest) {
             await prisma.purchase.create({
               data: {
                 userId: order.userId,
-                courseSlug: item.productId,
-                courseName: item.productName,
-                purchasedAt: new Date(),
-                amount: item.price,
-                orderId: order.id
+                courseId: courseId,
+                amount: item.price * (item.quantity || 1),
+                status: 'completed',
+                orderId: order.id,
+                accessExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
               }
             });
+            console.log(`✅ Created purchase for course: ${courseId}`);
           }
         }
       }

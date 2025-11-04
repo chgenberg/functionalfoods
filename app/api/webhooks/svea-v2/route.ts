@@ -237,14 +237,80 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
       }
 
       // Create purchases for courses
-      const courseItems = order.items.filter(item => item.productType === 'course');
+      const courseItems = order.items.filter(item => item.type === 'course');
+      
+      // Course name mapping for exact matching
+      const courseNameMap: Record<string, string> = {
+        'hormonell balans': 'Hormonell Balans',
+        'functional flow': 'Functional Flow',
+        'functional gut health/flow': 'Functional Flow',
+        'functional basics': 'Functional Basics',
+        'functional energy': 'Functional Energy',
+        'functional insulin balance/energy': 'Functional Energy'
+      };
       
       for (const item of courseItems) {
+        // Use courseId if available, otherwise match by name
+        let courseId = item.courseId;
+        
+        if (!courseId) {
+          // Match course by name using same logic as other webhooks
+          const normalizedName = item.name.toLowerCase().trim();
+          const mappedName = courseNameMap[normalizedName] || item.name;
+          
+          // Try exact match first (case-insensitive)
+          let course = await tx.courseProduct.findFirst({
+            where: {
+              name: { equals: mappedName, mode: 'insensitive' }
+            }
+          });
+          
+          // If no exact match, try original name
+          if (!course) {
+            course = await tx.courseProduct.findFirst({
+              where: {
+                name: { equals: item.name, mode: 'insensitive' }
+              }
+            });
+          }
+          
+          // Only use contains as last resort, and be more specific
+          if (!course && item.name.toLowerCase().includes('functional')) {
+            const functionalPart = item.name.split('Functional ')[1]?.trim();
+            if (functionalPart) {
+              course = await tx.courseProduct.findFirst({
+                where: {
+                  AND: [
+                    { name: { contains: 'Functional', mode: 'insensitive' } },
+                    { name: { contains: functionalPart, mode: 'insensitive' } }
+                  ]
+                }
+              });
+            }
+          }
+          
+          if (!course) {
+            console.error(`❌ Course not found for: "${item.name}"`);
+            continue;
+          }
+          
+          courseId = course.id;
+          console.log(`✅ Matched course: "${item.name}" → "${course.name}"`);
+          
+          // Update order item with courseId for future reference
+          await tx.orderItem.update({
+            where: { id: item.id },
+            data: { courseId: course.id }
+          });
+        }
+        
         // Check if purchase already exists
-        const existingPurchase = await tx.purchase.findFirst({
+        const existingPurchase = await tx.purchase.findUnique({
           where: {
-            userId: user!.id,
-            courseSlug: item.productId
+            userId_courseId: {
+              userId: user!.id,
+              courseId: courseId
+            }
           }
         });
 
@@ -252,21 +318,23 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
           await tx.purchase.create({
             data: {
               userId: user!.id,
-              courseSlug: item.productId,
-              courseName: item.productName,
-              purchasedAt: new Date(),
-              amount: item.price,
-              orderId: order.id
+              courseId: courseId,
+              amount: item.price * (item.quantity || 1),
+              status: 'completed',
+              orderId: order.id,
+              accessExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
             }
           });
-          console.log(`✅ Created purchase for course: ${item.productId}`);
+          console.log(`✅ Created purchase for course: ${courseId}`);
+        } else {
+          console.log(`ℹ️ Purchase already exists for course: ${courseId}`);
         }
       }
 
       // TODO: Handle book orders - send download links
-      const bookItems = order.items.filter(item => item.productType === 'book');
+      const bookItems = order.items.filter(item => item.type === 'book');
       if (bookItems.length > 0) {
-        console.log(`📚 Process book orders:`, bookItems.map(b => b.productName));
+        console.log(`📚 Process book orders:`, bookItems.map(b => b.name));
       }
     });
 
@@ -293,11 +361,11 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
           customerEmail: updatedOrder.user.email,
           customerName: updatedOrder.user.name || undefined,
           items: updatedOrder.items.map(item => ({
-            id: item.courseId || item.productId || item.id,
-            name: item.productName,
+            id: item.courseId || item.id,
+            name: item.name,
             price: item.price,
             quantity: item.quantity,
-            type: item.productType || 'course'
+            type: item.type || 'course'
           })),
           totalAmount: totalAmount,
           currency: updatedOrder.currency || 'SEK',
