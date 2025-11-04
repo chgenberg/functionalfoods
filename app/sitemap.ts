@@ -1,7 +1,21 @@
 import { MetadataRoute } from 'next';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// Use a singleton pattern for PrismaClient to avoid connection issues
+let prisma: PrismaClient;
+
+function getPrismaClient(): PrismaClient {
+  if (!prisma) {
+    prisma = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    });
+  }
+  return prisma;
+}
+
+// Force dynamic rendering to ensure fresh data on each request
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://functionalfoods.se';
@@ -35,58 +49,91 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority 
   }));
 
+  let recipePaths: MetadataRoute.Sitemap = [];
+  let blogPaths: MetadataRoute.Sitemap = [];
+
+  // Try to fetch dynamic content, but don't fail completely if database is unavailable
   try {
-    // Fetch published recipes
-    const recipes = await prisma.recipe.findMany({
-      where: {
-        status: 'PUBLISHED',
-        // Exclude admin-only recipes
-        NOT: {
-          tags: {
-            has: 'ADMIN_ONLY'
-          }
-        }
-      },
-      select: {
-        slug: true,
-        updatedAt: true,
-        createdAt: true
-      },
-      take: 10000 // Adjust based on your needs
-    });
+    const prismaClient = getPrismaClient();
+    
+    // Fetch published recipes with timeout
+    try {
+      const recipes = await Promise.race([
+        prismaClient.recipe.findMany({
+          where: {
+            status: 'PUBLISHED',
+            // Exclude admin-only recipes
+            NOT: {
+              tags: {
+                has: 'ADMIN_ONLY'
+              }
+            }
+          },
+          select: {
+            slug: true,
+            updatedAt: true,
+            createdAt: true
+          },
+          take: 10000
+        }),
+        new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error('Recipe query timeout')), 10000)
+        )
+      ]) as Awaited<ReturnType<typeof prismaClient.recipe.findMany>>;
 
-    const recipePaths: MetadataRoute.Sitemap = recipes.map(recipe => ({
-      url: `${site}/kunskapsbank/recept/${recipe.slug}`,
-      lastModified: recipe.updatedAt || recipe.createdAt || now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.7
-    }));
+      recipePaths = recipes.map(recipe => ({
+        url: `${site}/kunskapsbank/recept/${recipe.slug}`,
+        lastModified: recipe.updatedAt || recipe.createdAt || now,
+        changeFrequency: 'weekly' as const,
+        priority: 0.7
+      }));
 
-    // Fetch published blog posts
-    const blogPosts = await prisma.blogPost.findMany({
-      where: {
-        published: true
-      },
-      select: {
-        slug: true,
-        updatedAt: true,
-        publishedAt: true
-      },
-      take: 10000
-    });
+      console.log(`✅ Sitemap: Added ${recipes.length} recipes`);
+    } catch (recipeError) {
+      console.error('⚠️ Sitemap: Failed to fetch recipes:', recipeError);
+      // Continue without recipes
+    }
 
-    const blogPaths: MetadataRoute.Sitemap = blogPosts.map(post => ({
-      url: `${site}/kunskapsbank/blogg/${post.slug}`,
-      lastModified: post.updatedAt || post.publishedAt || now,
-      changeFrequency: 'monthly' as const,
-      priority: 0.6
-    }));
+    // Fetch published blog posts with timeout
+    try {
+      const blogPosts = await Promise.race([
+        prismaClient.blogPost.findMany({
+          where: {
+            published: true
+          },
+          select: {
+            slug: true,
+            updatedAt: true,
+            publishedAt: true
+          },
+          take: 10000
+        }),
+        new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error('Blog query timeout')), 10000)
+        )
+      ]) as Awaited<ReturnType<typeof prismaClient.blogPost.findMany>>;
 
-    // Combine all paths
-    return [...staticPaths, ...recipePaths, ...blogPaths];
+      blogPaths = blogPosts.map(post => ({
+        url: `${site}/kunskapsbank/blogg/${post.slug}`,
+        lastModified: post.updatedAt || post.publishedAt || now,
+        changeFrequency: 'monthly' as const,
+        priority: 0.6
+      }));
+
+      console.log(`✅ Sitemap: Added ${blogPosts.length} blog posts`);
+    } catch (blogError) {
+      console.error('⚠️ Sitemap: Failed to fetch blog posts:', blogError);
+      // Continue without blog posts
+    }
+
   } catch (error) {
-    console.error('Error generating sitemap:', error);
-    // Return static paths only if database query fails
-    return staticPaths;
+    console.error('⚠️ Sitemap: Database connection error:', error);
+    // Continue with static paths only
   }
+
+  // Combine all paths
+  const allPaths = [...staticPaths, ...recipePaths, ...blogPaths];
+  console.log(`✅ Sitemap generated with ${allPaths.length} total URLs (${staticPaths.length} static + ${recipePaths.length} recipes + ${blogPaths.length} blog posts)`);
+  
+  return allPaths;
 } 
