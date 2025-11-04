@@ -69,19 +69,6 @@ export default function PodcastsPage() {
 
   const dateLocale = locale === 'sv' ? 'sv-SE' : locale === 'en' ? 'en-GB' : locale === 'es' ? 'es-ES' : locale === 'de' ? 'de-DE' : 'fr-FR';
 
-  if (process.env.NODE_ENV === 'production') {
-    return (
-      <div className="min-h-screen bg-[#F7F5F0]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <h1 className="text-3xl font-bold text-[#014421] mb-2">Poddar</h1>
-            <p className="text-gray-600">Kommer snart.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#fffdf3" }}>
       <div className="container-custom section-padding">
