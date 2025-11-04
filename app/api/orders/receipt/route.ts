@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: M[lang].notFound }, { status: 404 });
     }
 
-    const PDFDocument = (await import('pdfkit') as any).default as any;
+    const PDFDocument = (await import('pdfkit/js/pdfkit.standalone.js') as any).default as any;
     const doc = new PDFDocument({ margin: 50 });
 
     const chunks: Buffer[] = [];

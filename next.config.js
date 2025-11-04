@@ -44,6 +44,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
+  // Ensure PDFKit is handled correctly in production
+  serverExternalPackages: ['pdfkit'],
+  
   // Stable build ID for production
   generateBuildId: async () => {
     return process.env.RAILWAY_GIT_COMMIT_SHA || `build-${Date.now()}`;

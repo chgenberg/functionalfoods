@@ -111,8 +111,8 @@ export async function GET(req: NextRequest) {
     console.log('✅ PDF: Found document:', doc.title);
 
     // Use buffer-based approach matching receipt route pattern
-    // Dynamically import pdfkit to avoid issues
-    const PDFDocument = (await import('pdfkit') as any).default as any;
+    // Dynamically import pdfkit standalone version which includes fonts
+    const PDFDocument = (await import('pdfkit/js/pdfkit.standalone.js') as any).default as any;
     
     const pdf = new PDFDocument({ 
       size: 'A4', 
