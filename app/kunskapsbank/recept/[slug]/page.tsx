@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Bookmark, Camera, Check, ChefHat, Clock, Flame, Heart, Lightbulb, Minus, Plus, Printer, Star, Users, Utensils, X, Eye } from "lucide-react";;
+import { ArrowLeft, Bookmark, Camera, Check, ChefHat, Clock, Download, Flame, Heart, Lightbulb, Minus, Plus, Printer, Star, Users, Utensils, X, Eye } from "lucide-react";;
 
 import { useAuth } from '../../../hooks/useAuth';
 import { useT } from '@/app/lib/i18n/LanguageProvider';
@@ -73,6 +73,7 @@ export default function RecipePage() {
   const [imageLoading, setImageLoading] = useState(true);
   const [smartIngredients, setSmartIngredients] = useState<string[]>([]);
   const [resterNote, setResterNote] = useState<string | null>(null);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   // Get course context from URL params
   const fromCourse = searchParams.get('from');
@@ -603,6 +604,48 @@ export default function RecipePage() {
     };
   };
 
+  const handleDownloadPDF = async () => {
+    if (!recipe) return;
+    
+    setDownloadingPDF(true);
+    try {
+      const response = await fetch(`/api/recipes/${recipe.slug}/pdf`);
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = window.document.createElement('a');
+        a.href = url;
+        const filename = recipe.title 
+          ? `${recipe.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.pdf`
+          : `${recipe.slug}.pdf`;
+        a.download = filename;
+        window.document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        window.document.body.removeChild(a);
+      } else {
+        let errorMessage = 'Kunde inte ladda ner PDF. Försök igen senare.';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+          if (errorData.details) {
+            console.error('PDF error details:', errorData.details);
+          }
+        } catch {
+          // If response is not JSON, use default message
+        }
+        console.error('PDF download failed:', response.status, response.statusText);
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('PDF download error:', error);
+      alert('Ett fel uppstod vid nedladdning av PDF. Försök igen senare.');
+    } finally {
+      setDownloadingPDF(false);
+    }
+  };
+
   const handleToggleFavorite = () => {
     if (!recipe) return;
     
@@ -942,6 +985,25 @@ export default function RecipePage() {
               >
                 <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isFavorited ? 'fill-current' : ''}`} />
                 <span className="hidden sm:inline">{isFavorited ? 'Sparad' : 'Spara recept'}</span>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDownloadPDF}
+                disabled={downloadingPDF}
+                className="flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 rounded-xl bg-white shadow-md text-gray-700 hover:bg-gray-50 transition-colors text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {downloadingPDF ? (
+                  <>
+                    <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-gray-700 border-t-transparent rounded-full animate-spin" />
+                    <span className="hidden sm:inline">Laddar ner...</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="hidden sm:inline">Ladda ner PDF</span>
+                  </>
+                )}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
