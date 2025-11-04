@@ -6,9 +6,6 @@ export const dynamic = 'force-dynamic';
 import fs from 'fs';
 import path from 'path';
 
-// Lazy require to avoid issues if pdfkit is tree-shaken
-const PDFDocument = require('pdfkit');
-
 interface KnowledgeDocument {
   title: string;
   slug: string;
@@ -114,7 +111,9 @@ export async function GET(req: NextRequest) {
     console.log('✅ PDF: Found document:', doc.title);
 
     // Use buffer-based approach matching receipt route pattern
+    // Dynamically import pdfkit to avoid issues
     const PDFDocument = (await import('pdfkit') as any).default as any;
+    
     const pdf = new PDFDocument({ 
       size: 'A4', 
       margin: 50, 
@@ -124,82 +123,102 @@ export async function GET(req: NextRequest) {
     // Collect PDF chunks - set up BEFORE generating content
     const chunks: Buffer[] = [];
     pdf.on('data', (chunk: Buffer) => chunks.push(chunk));
+    
+    // Create promise to wait for PDF completion
     const pdfReady = new Promise<Buffer>((resolve, reject) => {
-      pdf.on('end', () => resolve(Buffer.concat(chunks)));
-      pdf.on('error', reject);
-      // Timeout after 30 seconds
-      setTimeout(() => reject(new Error('PDF generation timeout')), 30000);
-    });
-
-    // Title - ensure it's a string and handle special characters
-    const title = String(doc.title || 'Okänt dokument');
-    pdf.fontSize(20).font('Helvetica-Bold').text(title, { align: 'left' });
-    pdf.moveDown(0.5);
-    
-    // Course name mapping
-    const courseNames: Record<string, string> = {
-      'basic': 'Functional Basics',
-      'flow': 'Functional Flow',
-      'energy': 'Functional Energy',
-      'hormone': 'Hormonell Balans'
-    };
-    const courseName = courseNames[doc.course] || courseNames[course] || 'Functional Foods';
-    const readTime = doc.readTime || 5;
-    
-    pdf.fontSize(10).font('Helvetica').fillColor('#555555').text(`${courseName} · ${readTime} min läsning`);
-    pdf.moveDown(1);
-
-    // Header image
-    if (doc.headerImage) {
-      try {
-        const headerPath = getPublicPath(doc.headerImage);
-        if (headerPath && fs.existsSync(headerPath)) {
-          const pageWidth = pdf.page.width - pdf.page.margins.left - pdf.page.margins.right;
-          pdf.image(headerPath, { fit: [pageWidth, 240], align: 'center' });
-          pdf.moveDown(1);
-        } else {
-          console.warn('⚠️ PDF: Header image not found:', doc.headerImage);
+      pdf.on('end', () => {
+        try {
+          const buffer = Buffer.concat(chunks);
+          resolve(buffer);
+        } catch (err: any) {
+          reject(new Error(`Failed to concat PDF chunks: ${err?.message}`));
         }
-      } catch (imgError: any) {
-        console.warn('⚠️ PDF: Could not add header image:', imgError?.message);
-      }
-    }
-
-    // Body text (HTML stripped) - handle long text properly
-    const text = stripHtmlPreserveNewlines(doc.content || '');
-    if (text && text.trim()) {
-      try {
-        pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(text, { 
-          align: 'left',
-          lineGap: 2
-        });
-      } catch (textError: any) {
-        console.error('❌ PDF: Error adding text:', textError?.message);
-        console.error('❌ PDF: Text length:', text.length);
-        // Fallback: try with truncated text
-        const safeText = text.substring(0, 5000); // Limit length
-        pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(safeText || 'Innehåll kunde inte visas.', { 
-          align: 'left'
-        });
-      }
-    } else {
-      console.warn('⚠️ PDF: No content found for document');
-      pdf.fontSize(12).font('Helvetica').fillColor('#666666').text('Inget innehåll tillgängligt.');
-    }
-
-    pdf.end();
-    
-    // Wait for PDF to finish generating
-    const pdfBuffer = await pdfReady;
-
-    const filename = `${slug}.pdf`;
-    return new NextResponse(pdfBuffer as any, {
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${filename}"`,
-        'Cache-Control': 'no-store'
-      }
+      });
+      pdf.on('error', (err: Error) => {
+        console.error('❌ PDF: PDFDocument error event:', err);
+        reject(err);
+      });
+      // Timeout after 30 seconds
+      setTimeout(() => reject(new Error('PDF generation timeout after 30 seconds')), 30000);
     });
+
+    try {
+      // Title - ensure it's a string and handle special characters
+      const title = String(doc.title || 'Okänt dokument');
+      pdf.fontSize(20).font('Helvetica-Bold').text(title, { align: 'left' });
+      pdf.moveDown(0.5);
+      
+      // Course name mapping
+      const courseNames: Record<string, string> = {
+        'basic': 'Functional Basics',
+        'flow': 'Functional Flow',
+        'energy': 'Functional Energy',
+        'hormone': 'Hormonell Balans'
+      };
+      const courseName = courseNames[doc.course] || courseNames[course] || 'Functional Foods';
+      const readTime = doc.readTime || 5;
+      
+      pdf.fontSize(10).font('Helvetica').fillColor('#555555').text(`${courseName} · ${readTime} min läsning`);
+      pdf.moveDown(1);
+
+      // Header image
+      if (doc.headerImage) {
+        try {
+          const headerPath = getPublicPath(doc.headerImage);
+          if (headerPath && fs.existsSync(headerPath)) {
+            const pageWidth = pdf.page.width - pdf.page.margins.left - pdf.page.margins.right;
+            pdf.image(headerPath, { fit: [pageWidth, 240], align: 'center' });
+            pdf.moveDown(1);
+          } else {
+            console.warn('⚠️ PDF: Header image not found:', doc.headerImage);
+          }
+        } catch (imgError: any) {
+          console.warn('⚠️ PDF: Could not add header image:', imgError?.message);
+        }
+      }
+
+      // Body text (HTML stripped) - handle long text properly
+      const text = stripHtmlPreserveNewlines(doc.content || '');
+      if (text && text.trim()) {
+        try {
+          pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(text, { 
+            align: 'left',
+            lineGap: 2
+          });
+        } catch (textError: any) {
+          console.error('❌ PDF: Error adding text:', textError?.message);
+          console.error('❌ PDF: Text length:', text.length);
+          // Fallback: try with truncated text
+          const safeText = text.substring(0, 5000); // Limit length
+          pdf.fillColor('#000000').fontSize(12).font('Helvetica').text(safeText || 'Innehåll kunde inte visas.', { 
+            align: 'left'
+          });
+        }
+      } else {
+        console.warn('⚠️ PDF: No content found for document');
+        pdf.fontSize(12).font('Helvetica').fillColor('#666666').text('Inget innehåll tillgängligt.');
+      }
+
+      pdf.end();
+      
+      // Wait for PDF to finish generating
+      const pdfBuffer = await pdfReady;
+
+      const filename = `${slug}.pdf`;
+      return new NextResponse(pdfBuffer as any, {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+          'Cache-Control': 'no-store'
+        }
+      });
+    } catch (pdfGenError: any) {
+      // Clean up PDF if still active
+      try {
+        pdf.end();
+      } catch {}
+      throw pdfGenError;
+    }
   } catch (e: any) {
     console.error('PDF generation error:', e);
     console.error('Error details:', {
