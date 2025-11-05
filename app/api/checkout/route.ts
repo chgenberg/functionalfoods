@@ -155,9 +155,15 @@ export async function POST(req: NextRequest) {
     const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     // Configure allowed payment methods explicitly (Stripe Checkout does not support automatic_payment_methods)
+    // Swish is available via Stripe for Swedish customers when currency is SEK
+    // Enable it in Stripe Dashboard: Settings > Payment methods > Swish
     const paymentMethodTypes: string[] = ['card'];
-    if (process.env.ENABLE_SWISH === 'true') {
+    
+    // Enable Swish for Swedish customers (SEK currency required)
+    // Swish will automatically appear for Swedish customers in Stripe Checkout
+    if (process.env.ENABLE_SWISH === 'true' || process.env.STRIPE_ENABLE_SWISH === 'true') {
       paymentMethodTypes.push('swish');
+      console.log('✅ Swish payment method enabled for checkout');
     }
 
     const baseSessionParams: any = {

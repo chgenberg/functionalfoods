@@ -247,8 +247,8 @@ export default function Checkout() {
                 {[
                   {
                     id: 'stripe',
-                    name: 'Kort (Stripe)',
-                    desc: 'Betala med Visa, Mastercard, Apple Pay, Google Pay',
+                    name: 'Kort & Swish (Stripe)',
+                    desc: 'Betala med Visa, Mastercard, Apple Pay, Google Pay eller Swish',
                     icon: CreditCard,
                     recommended: true
                   }
