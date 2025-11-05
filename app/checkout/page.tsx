@@ -330,18 +330,20 @@ export default function Checkout() {
 
                   {/* Apple Pay */}
                   <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <svg className="h-full w-auto" viewBox="0 0 48 20" fill="none">
-                      <path d="M9.5 4.5c.6-.7 1-1.7.9-2.7-.9 0-2 .6-2.6 1.3-.6.7-1.1 1.7-1 2.7 1 .1 2-.5 2.7-1.3zm1 1.6c-1.5-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.2-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.2 1.1 0 1.6-.7 3-.7s1.8.7 3 .7c1.2 0 2-1 2.8-2.2.9-1.3 1.3-2.6 1.3-2.7 0 0-2.5-1-2.6-3.8-.1-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.9z" fill="currentColor"/>
-                      <text x="20" y="14" fontSize="10" fontWeight="600" fill="currentColor">Pay</text>
-                    </svg>
+                    <img
+                      src="/payment_icons/apple.png"
+                      alt="Apple Pay"
+                      className="h-full w-auto object-contain"
+                    />
                   </div>
 
                   {/* Google Pay */}
                   <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <svg className="h-full w-auto" viewBox="0 0 50 20" fill="none">
-                      <path d="M20 10h4v4h-4v-4zm0-4h4v3h-4V6zm5 4h4v4h-4v-4zm0-4h4v3h-4V6z" fill="#4285F4"/>
-                      <text x="32" y="14" fontSize="9" fontWeight="600" fill="#5F6368">Pay</text>
-                    </svg>
+                    <img
+                      src="/payment_icons/google.png"
+                      alt="Google Pay"
+                      className="h-full w-auto object-contain"
+                    />
                   </div>
 
                   {/* Swish - only when enabled */}
