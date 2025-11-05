@@ -301,25 +301,38 @@ export default function Checkout() {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-600 mb-3">Accepterade betalningsmetoder:</p>
                 <div className="flex flex-wrap items-center gap-3">
-                  {/* Visa */}
-                  <div className="h-8 w-12 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
-                    <svg viewBox="0 0 48 32" className="h-full">
-                      <path fill="#1A1F71" d="M24.5 19.3l-1.6-7.5h-2.7l2.5 11.7h3.6l3.6-11.7h-2.6l-2.8 7.5zm-7.5-7.5l-2.1 8-1.2-6.3c-.1-.6-.6-1.7-1.8-1.7H7.6l-.1.5c.9.2 1.9.5 2.5.8.4.2.5.3.6.8l2 9.6h2.7l4.1-11.7h-2.4zm20.6 7.6c0-.2.1-.3.2-.4.1-.1.3-.2.5-.2.5 0 1.2.2 1.9.6l.4-2.2c-.6-.2-1.3-.4-2.1-.4-2.3 0-3.9 1.2-3.9 2.9 0 1.3 1.1 2 2 2.3.9.4 1.2.6 1.2.9 0 .5-.7.7-1.4.7-.9 0-1.4-.2-2.1-.5l-.4 2.2c.7.3 1.9.5 3.2.5 2.4 0 4-1.2 4-3 0-2.3-3.5-2.4-3.5-3.4zm-4.5-5.5c-1.5 0-2.5.4-3.2 1.9l-4.5 9.8h2.7l.6-1.7h3.3l.4 1.7h2.4l-2.1-11.7h-2zm-1.2 7.8l1.4-3.8.8 3.8h-2.2z"/>
+                  {/* Visa - Official Logo */}
+                  <div className="h-8 w-14 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
+                    <svg viewBox="0 0 141.732 141.732" className="h-full w-full">
+                      <g fill="#1434CB">
+                        <path d="M62.943 91.214l-8.7-52.7h-13.4l8.7 52.7h13.4zm40.8 0l-7.5-52.7h-12.5l-5.7 39.5-6.2-39.5h-13.4l-7.5 52.7h10.1l5.9-40.4 6.1 40.4h10.1zm54.3-52.7h-11.1c-3.4 0-5.7 1.8-6.8 5.1l-20.1 47.6h13.4l2.8-7.8h17.5l1.6 7.8h11.8l-17.1-52.7zm-16.1 33.5l7-18.8 4 18.8h-11z"/>
+                      </g>
                     </svg>
                   </div>
-                  {/* Mastercard */}
-                  <div className="h-8 w-12 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
-                    <svg viewBox="0 0 48 32" className="h-full">
-                      <circle fill="#EB001B" cx="16" cy="16" r="13"/>
-                      <circle fill="#F79E1B" cx="32" cy="16" r="13"/>
-                      <path fill="#FF5F00" d="M24 5.5c3.3 2.5 5.5 6.4 5.5 10.5s-2.2 8-5.5 10.5c-3.3-2.5-5.5-6.4-5.5-10.5s2.2-8 5.5-10.5z"/>
+                  {/* Mastercard - Official Logo */}
+                  <div className="h-8 w-14 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
+                    <svg viewBox="0 0 152.407 96" className="h-full w-full">
+                      <g fill="none">
+                        <rect width="152.407" height="96" rx="3" fill="#fff"/>
+                        <path fill="#EB001B" d="M60.412 29.694h31.577a48.109 48.109 0 00-15.773-10.643 47.904 47.904 0 00-15.804-2.589z"/>
+                        <path fill="#F79E1B" d="M92.027 29.694H60.412a48.109 48.109 0 0115.773-10.643A47.904 47.904 0 0192.027 29.694z"/>
+                        <path fill="#FF5F00" d="M92.027 29.694a48.109 48.109 0 00-15.773-10.643 47.904 47.904 0 00-15.804-2.589 47.904 47.904 0 00-15.804 2.589A48.109 48.109 0 0060.412 29.694h31.615z"/>
+                        <circle fill="#EB001B" cx="76.203" cy="48" r="24"/>
+                        <circle fill="#F79E1B" cx="76.203" cy="48" r="24" transform="rotate(180 76.203 48)"/>
+                      </g>
                     </svg>
                   </div>
-                  {/* Amex */}
-                  <div className="h-8 w-12 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
-                    <svg viewBox="0 0 48 32" className="h-full">
-                      <path fill="#2E77BB" d="M0 0h48v32H0z"/>
-                      <path fill="#FFF" d="M10.7 13.5L8.9 9.3 7.1 13.5h3.6zm13.5 0l-1.8-4.2-1.8 4.2h3.6zm-7.5 6.1h-2.3l-1.1-2.7H9.5l-1.1 2.7H6.1L9.9 11h2.5l3.8 8.6h-2.5zm7.5 0l-3.8-8.6h2.5l2.2 5.3 2.2-5.3h2.5l-3.8 8.6h-1.8zm15.5-5.3l-1.7 2.1 1.7 3.2h-2.6l-1.6-3.2-1.6 3.2h-2.6l1.7-3.2-1.7-2.1h2.6l1.6 2.1 1.6-2.1h2.6z"/>
+                  {/* American Express - Official Logo */}
+                  <div className="h-8 w-14 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
+                    <svg viewBox="0 0 216 72" className="h-full w-full">
+                      <path fill="#006FCF" d="M0 0h216v72H0z"/>
+                      <path fill="#FFF" d="M50.4 36l-5.1-3.6 5.1-3.6v7.2zm14.4-7.2h-2.7l-1.8 4.3-1.8-4.3h-2.7v7.2h1.8v-4.3l1.8 4.3h1.3l1.8-4.3v4.3h1.8v-7.2zm11.7 0h-2.7v7.2h2.7v-7.2zm9.9 0h-2.7l-2.7 4.3v-4.3h-1.8v7.2h1.8l2.7-4.3v4.3h1.8v-7.2zm11.7 5.4c0 1-.9 1.8-1.8 1.8s-1.8-.8-1.8-1.8.9-1.8 1.8-1.8 1.8.8 1.8 1.8zm-12.6-5.4h-2.7c-1.5 0-2.7 1.2-2.7 2.7v1.8c0 1.5 1.2 2.7 2.7 2.7h2.7v-1.8h-2.7v-1.8h2.7v-1.8zm19.8 0h-6.3v1.8h4.5v1.2h-4.5v1.8h4.5v1.2h-4.5v1.8h6.3v-7.2zm8.1 0h-2.7v7.2h2.7v-2.7h2.7c1.5 0 2.7-1.2 2.7-2.7v-1.8c0-1.5-1.2-2.7-2.7-2.7zm0 4.5h-2.7v-1.8h2.7v1.8zm9.9-4.5h-2.7l-2.7 4.3v-4.3h-1.8v7.2h1.8l2.7-4.3v4.3h1.8v-7.2zm11.7 0h-2.7v7.2h2.7v-2.7h2.7c1.5 0 2.7-1.2 2.7-2.7v-1.8c0-1.5-1.2-2.7-2.7-2.7zm0 4.5h-2.7v-1.8h2.7v1.8z"/>
+                    </svg>
+                  </div>
+                  {/* Stripe - Official Logo */}
+                  <div className="h-8 px-3 bg-white border border-gray-200 rounded flex items-center justify-center">
+                    <svg viewBox="0 0 468 222.5" className="h-4 w-auto">
+                      <path fill="#635BFF" d="M414 113.4c0-25.6-12.4-45.8-36.1-45.8-23.8 0-38.2 20.2-38.2 45.6 0 30.1 17 45.3 41.4 45.3 11.9 0 20.9-2.7 27.7-6.5l-3.8-11.3c-5.6 2.9-14.1 4.9-23.2 4.9-9.3 0-17.3-3.5-18.4-14.8h53.7c0-1.3.2-6.5.2-7.9zm-53.8-10.6c.2-9.3 5.6-15.3 14.2-15.3 8.9 0 14.3 6 14.1 15.3h-28.3zm-89.3 10.3c0-25.6-12.4-45.8-36.1-45.8-23.8 0-38.2 20.2-38.2 45.6 0 30.1 17 45.3 41.4 45.3 11.9 0 20.9-2.7 27.7-6.5l-3.8-11.3c-5.6 2.9-14.1 4.9-23.2 4.9-9.3 0-17.3-3.5-18.4-14.8h53.7c0-1.3.2-6.5.2-7.9zm-53.8-10.6c.2-9.3 5.6-15.3 14.2-15.3 8.9 0 14.3 6 14.1 15.3h-28.3zm-83.1 4.8c-3.3-3.3-8.9-7.8-18.5-7.8-12.5 0-23.3 8.3-23.3 24.2 0 15.9 10.5 24.4 23.3 24.4 9.3 0 15.4-4.8 18.8-8.2l8.7 7.4c-6.2 7.5-15.6 13.6-27.6 13.6-18.8 0-35.1-11.4-35.1-37.8 0-26.1 16.5-38.2 35.1-38.2 12.3 0 21.8 5.8 27.9 13.3l-8.7 7.5zm-65.3-7.2c-13.6 0-24.1 8.4-24.1 24.2 0 15.9 10.5 24.4 24.1 24.4 13.6 0 24.1-8.5 24.1-24.4 0-15.8-10.5-24.2-24.1-24.2zm-12.5 40.1c-2.9 0-5.2-2.3-5.2-5.5 0-3.2 2.3-5.5 5.2-5.5 2.9 0 5.2 2.3 5.2 5.5 0 3.2-2.3 5.5-5.2 5.5zm133.5-40.1c-17.2 0-30.5 13.3-30.5 30.6 0 17.2 13.3 30.5 30.5 30.5 17.2 0 30.5-13.3 30.5-30.5 0-17.3-13.3-30.6-30.5-30.6zm0 48.1c-9.8 0-17.5-7.7-17.5-17.5s7.7-17.5 17.5-17.5 17.5 7.7 17.5 17.5-7.7 17.5-17.5 17.5zm90.1-48.1c-13.6 0-24.1 8.4-24.1 24.2 0 15.9 10.5 24.4 24.1 24.4 13.6 0 24.1-8.5 24.1-24.4 0-15.8-10.5-24.2-24.1-24.2zm-12.5 40.1c-2.9 0-5.2-2.3-5.2-5.5 0-3.2 2.3-5.5 5.2-5.5 2.9 0 5.2 2.3 5.2 5.5 0 3.2-2.3 5.5-5.2 5.5zm74.3-40.1c-9.3 0-17.1 5.8-20.1 14.2l-13.3-6.1c5.2-10.5 16.4-17.8 33.4-17.8 19.4 0 32.5 11.4 32.5 27.3v47.5h-15.2v-11.8c-2.1 7.8-9.9 12.8-20.1 12.8-11.3 0-20.6-7.2-20.6-19.8 0-13.3 9.8-20.1 20.6-20.1 9.8 0 17.3 5.3 19.8 11.8v-11.8h15.2v37.6zm-183.1-7.2h-14.9v-11.8h14.9v11.8zm0 28.6h-14.9v-40.1h-15.2v51.9h30.1v-11.8z"/>
                     </svg>
                   </div>
                   {/* Apple Pay */}
@@ -339,9 +352,20 @@ export default function Checkout() {
                     </svg>
                     <span className="text-xs font-medium text-gray-700">Pay</span>
                   </div>
+                  {/* Swish - Show if enabled */}
+                  {(process.env.ENABLE_SWISH === 'true' || process.env.STRIPE_ENABLE_SWISH === 'true') && (
+                    <div className="h-8 px-3 bg-white border border-gray-200 rounded flex items-center justify-center">
+                      <svg viewBox="0 0 200 60" className="h-5 w-auto">
+                        <path fill="#006EC9" d="M10 10h180v40H10z" rx="3"/>
+                        <path fill="#FFF" d="M30 25h35v10H30zm50 0h40v10H80zm70 0h40v10H150z"/>
+                        <path fill="#006EC9" d="M30 40h130v5H30z"/>
+                      </svg>
+                    </div>
+                  )}
                 </div>
                 <p className="text-xs text-gray-500 mt-3">
                   Apple Pay och Google Pay visas automatiskt vid betalning om de är tillgängliga på din enhet
+                  {process.env.ENABLE_SWISH === 'true' || process.env.STRIPE_ENABLE_SWISH === 'true' ? '. Swish visas automatiskt för svenska kunder.' : ''}
                 </p>
               </div>
             </div>
