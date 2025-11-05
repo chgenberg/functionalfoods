@@ -301,65 +301,56 @@ export default function Checkout() {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-600 mb-3">Accepterade betalningsmetoder:</p>
                 <div className="flex flex-wrap items-center gap-2">
-                  {/* Visa (official) */}
-                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  {/* Visa */}
+                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
                     <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
+                      src="/payment_icons/visa.png"
                       alt="Visa"
-                      className="h-full w-auto"
-                      loading="lazy"
+                      className="h-full w-auto object-contain"
                     />
                   </div>
 
-                  {/* Mastercard (official) */}
-                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  {/* Mastercard */}
+                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
                     <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg"
+                      src="/payment_icons/mastercard.png"
                       alt="Mastercard"
-                      className="h-full w-auto"
-                      loading="lazy"
+                      className="h-full w-auto object-contain"
                     />
                   </div>
 
-                  {/* American Express (official) */}
-                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  {/* American Express */}
+                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
                     <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg"
+                      src="/payment_icons/amex.png"
                       alt="American Express"
-                      className="h-full w-auto"
-                      loading="lazy"
+                      className="h-full w-auto object-contain"
                     />
                   </div>
 
-                  {/* Apple Pay (official) */}
-                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Apple_Pay_logo.svg"
-                      alt="Apple Pay"
-                      className="h-full w-auto"
-                      loading="lazy"
-                    />
+                  {/* Apple Pay */}
+                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <svg className="h-full w-auto" viewBox="0 0 48 20" fill="none">
+                      <path d="M9.5 4.5c.6-.7 1-1.7.9-2.7-.9 0-2 .6-2.6 1.3-.6.7-1.1 1.7-1 2.7 1 .1 2-.5 2.7-1.3zm1 1.6c-1.5-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.2-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.2 1.1 0 1.6-.7 3-.7s1.8.7 3 .7c1.2 0 2-1 2.8-2.2.9-1.3 1.3-2.6 1.3-2.7 0 0-2.5-1-2.6-3.8-.1-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.9z" fill="currentColor"/>
+                      <text x="20" y="14" fontSize="10" fontWeight="600" fill="currentColor">Pay</text>
+                    </svg>
                   </div>
 
-                  {/* Google Pay (official) */}
-                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Google_Pay_Logo.svg"
-                      alt="Google Pay"
-                      className="h-full w-auto"
-                      loading="lazy"
-                    />
+                  {/* Google Pay */}
+                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <svg className="h-full w-auto" viewBox="0 0 50 20" fill="none">
+                      <path d="M20 10h4v4h-4v-4zm0-4h4v3h-4V6zm5 4h4v4h-4v-4zm0-4h4v3h-4V6z" fill="#4285F4"/>
+                      <text x="32" y="14" fontSize="9" fontWeight="600" fill="#5F6368">Pay</text>
+                    </svg>
                   </div>
 
                   {/* Swish - only when enabled */}
                   {(process.env.ENABLE_SWISH === 'true' || process.env.STRIPE_ENABLE_SWISH === 'true') && (
-                    <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
                       <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Swish_logo.svg"
+                        src="/payment_icons/Swish.png"
                         alt="Swish"
-                        className="h-full w-auto"
-                        loading="lazy"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                        className="h-full w-auto object-contain"
                       />
                     </div>
                   )}
