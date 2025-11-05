@@ -300,65 +300,60 @@ export default function Checkout() {
               {/* Payment method logos */}
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-600 mb-3">Accepterade betalningsmetoder:</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  {/* Visa - Official Logo */}
-                  <div className="h-8 w-14 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
-                    <svg viewBox="0 0 141.732 141.732" className="h-full w-full">
-                      <g fill="#1434CB">
-                        <path d="M62.943 91.214l-8.7-52.7h-13.4l8.7 52.7h13.4zm40.8 0l-7.5-52.7h-12.5l-5.7 39.5-6.2-39.5h-13.4l-7.5 52.7h10.1l5.9-40.4 6.1 40.4h10.1zm54.3-52.7h-11.1c-3.4 0-5.7 1.8-6.8 5.1l-20.1 47.6h13.4l2.8-7.8h17.5l1.6 7.8h11.8l-17.1-52.7zm-16.1 33.5l7-18.8 4 18.8h-11z"/>
-                      </g>
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Visa */}
+                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <svg viewBox="0 0 48 32" className="h-full" preserveAspectRatio="xMidYMid meet">
+                      <path fill="#1A1F71" d="M16 20h4l2-8h-4m13 8h3.5l2-8h-3.5M10 20h4l3-12h-4M35 20h7l-6-12h-7"/>
                     </svg>
                   </div>
-                  {/* Mastercard - Official Logo */}
-                  <div className="h-8 w-14 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
-                    <svg viewBox="0 0 152.407 96" className="h-full w-full">
-                      <g fill="none">
-                        <rect width="152.407" height="96" rx="3" fill="#fff"/>
-                        <path fill="#EB001B" d="M60.412 29.694h31.577a48.109 48.109 0 00-15.773-10.643 47.904 47.904 0 00-15.804-2.589z"/>
-                        <path fill="#F79E1B" d="M92.027 29.694H60.412a48.109 48.109 0 0115.773-10.643A47.904 47.904 0 0192.027 29.694z"/>
-                        <path fill="#FF5F00" d="M92.027 29.694a48.109 48.109 0 00-15.773-10.643 47.904 47.904 0 00-15.804-2.589 47.904 47.904 0 00-15.804 2.589A48.109 48.109 0 0060.412 29.694h31.615z"/>
-                        <circle fill="#EB001B" cx="76.203" cy="48" r="24"/>
-                        <circle fill="#F79E1B" cx="76.203" cy="48" r="24" transform="rotate(180 76.203 48)"/>
-                      </g>
+                  
+                  {/* Mastercard */}
+                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <svg viewBox="0 0 48 32" className="h-full" preserveAspectRatio="xMidYMid meet">
+                      <circle cx="18" cy="16" r="10" fill="#EB001B"/>
+                      <circle cx="30" cy="16" r="10" fill="#F79E1B"/>
                     </svg>
                   </div>
-                  {/* American Express - Official Logo */}
-                  <div className="h-8 w-14 bg-white border border-gray-200 rounded p-1 flex items-center justify-center">
-                    <svg viewBox="0 0 216 72" className="h-full w-full">
-                      <path fill="#006FCF" d="M0 0h216v72H0z"/>
-                      <path fill="#FFF" d="M50.4 36l-5.1-3.6 5.1-3.6v7.2zm14.4-7.2h-2.7l-1.8 4.3-1.8-4.3h-2.7v7.2h1.8v-4.3l1.8 4.3h1.3l1.8-4.3v4.3h1.8v-7.2zm11.7 0h-2.7v7.2h2.7v-7.2zm9.9 0h-2.7l-2.7 4.3v-4.3h-1.8v7.2h1.8l2.7-4.3v4.3h1.8v-7.2zm11.7 5.4c0 1-.9 1.8-1.8 1.8s-1.8-.8-1.8-1.8.9-1.8 1.8-1.8 1.8.8 1.8 1.8zm-12.6-5.4h-2.7c-1.5 0-2.7 1.2-2.7 2.7v1.8c0 1.5 1.2 2.7 2.7 2.7h2.7v-1.8h-2.7v-1.8h2.7v-1.8zm19.8 0h-6.3v1.8h4.5v1.2h-4.5v1.8h4.5v1.2h-4.5v1.8h6.3v-7.2zm8.1 0h-2.7v7.2h2.7v-2.7h2.7c1.5 0 2.7-1.2 2.7-2.7v-1.8c0-1.5-1.2-2.7-2.7-2.7zm0 4.5h-2.7v-1.8h2.7v1.8zm9.9-4.5h-2.7l-2.7 4.3v-4.3h-1.8v7.2h1.8l2.7-4.3v4.3h1.8v-7.2zm11.7 0h-2.7v7.2h2.7v-2.7h2.7c1.5 0 2.7-1.2 2.7-2.7v-1.8c0-1.5-1.2-2.7-2.7-2.7zm0 4.5h-2.7v-1.8h2.7v1.8z"/>
+                  
+                  {/* American Express */}
+                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <svg viewBox="0 0 48 32" className="h-full" preserveAspectRatio="xMidYMid meet">
+                      <rect width="48" height="32" fill="#006FCF" rx="2"/>
+                      <text x="24" y="22" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">AXP</text>
                     </svg>
                   </div>
-                  {/* Stripe - Official Logo */}
-                  <div className="h-8 px-3 bg-white border border-gray-200 rounded flex items-center justify-center">
-                    <svg viewBox="0 0 468 222.5" className="h-4 w-auto">
-                      <path fill="#635BFF" d="M414 113.4c0-25.6-12.4-45.8-36.1-45.8-23.8 0-38.2 20.2-38.2 45.6 0 30.1 17 45.3 41.4 45.3 11.9 0 20.9-2.7 27.7-6.5l-3.8-11.3c-5.6 2.9-14.1 4.9-23.2 4.9-9.3 0-17.3-3.5-18.4-14.8h53.7c0-1.3.2-6.5.2-7.9zm-53.8-10.6c.2-9.3 5.6-15.3 14.2-15.3 8.9 0 14.3 6 14.1 15.3h-28.3zm-89.3 10.3c0-25.6-12.4-45.8-36.1-45.8-23.8 0-38.2 20.2-38.2 45.6 0 30.1 17 45.3 41.4 45.3 11.9 0 20.9-2.7 27.7-6.5l-3.8-11.3c-5.6 2.9-14.1 4.9-23.2 4.9-9.3 0-17.3-3.5-18.4-14.8h53.7c0-1.3.2-6.5.2-7.9zm-53.8-10.6c.2-9.3 5.6-15.3 14.2-15.3 8.9 0 14.3 6 14.1 15.3h-28.3zm-83.1 4.8c-3.3-3.3-8.9-7.8-18.5-7.8-12.5 0-23.3 8.3-23.3 24.2 0 15.9 10.5 24.4 23.3 24.4 9.3 0 15.4-4.8 18.8-8.2l8.7 7.4c-6.2 7.5-15.6 13.6-27.6 13.6-18.8 0-35.1-11.4-35.1-37.8 0-26.1 16.5-38.2 35.1-38.2 12.3 0 21.8 5.8 27.9 13.3l-8.7 7.5zm-65.3-7.2c-13.6 0-24.1 8.4-24.1 24.2 0 15.9 10.5 24.4 24.1 24.4 13.6 0 24.1-8.5 24.1-24.4 0-15.8-10.5-24.2-24.1-24.2zm-12.5 40.1c-2.9 0-5.2-2.3-5.2-5.5 0-3.2 2.3-5.5 5.2-5.5 2.9 0 5.2 2.3 5.2 5.5 0 3.2-2.3 5.5-5.2 5.5zm133.5-40.1c-17.2 0-30.5 13.3-30.5 30.6 0 17.2 13.3 30.5 30.5 30.5 17.2 0 30.5-13.3 30.5-30.5 0-17.3-13.3-30.6-30.5-30.6zm0 48.1c-9.8 0-17.5-7.7-17.5-17.5s7.7-17.5 17.5-17.5 17.5 7.7 17.5 17.5-7.7 17.5-17.5 17.5zm90.1-48.1c-13.6 0-24.1 8.4-24.1 24.2 0 15.9 10.5 24.4 24.1 24.4 13.6 0 24.1-8.5 24.1-24.4 0-15.8-10.5-24.2-24.1-24.2zm-12.5 40.1c-2.9 0-5.2-2.3-5.2-5.5 0-3.2 2.3-5.5 5.2-5.5 2.9 0 5.2 2.3 5.2 5.5 0 3.2-2.3 5.5-5.2 5.5zm74.3-40.1c-9.3 0-17.1 5.8-20.1 14.2l-13.3-6.1c5.2-10.5 16.4-17.8 33.4-17.8 19.4 0 32.5 11.4 32.5 27.3v47.5h-15.2v-11.8c-2.1 7.8-9.9 12.8-20.1 12.8-11.3 0-20.6-7.2-20.6-19.8 0-13.3 9.8-20.1 20.6-20.1 9.8 0 17.3 5.3 19.8 11.8v-11.8h15.2v37.6zm-183.1-7.2h-14.9v-11.8h14.9v11.8zm0 28.6h-14.9v-40.1h-15.2v51.9h30.1v-11.8z"/>
+
+                  {/* Stripe */}
+                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="h-full" preserveAspectRatio="xMidYMid meet">
+                      <path fill="#635BFF" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-2-10h4v4h-4z"/>
                     </svg>
                   </div>
+
                   {/* Apple Pay */}
-                  <div className="h-8 px-3 bg-black text-white rounded flex items-center gap-1">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <div className="h-8 bg-black text-white rounded px-2 py-1 flex items-center gap-1">
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
                     </svg>
-                    <span className="text-xs font-medium">Pay</span>
+                    <span className="text-xs font-semibold">Pay</span>
                   </div>
+
                   {/* Google Pay */}
-                  <div className="h-8 px-3 bg-white border border-gray-200 rounded flex items-center gap-1">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center gap-1">
+                    <span className="text-xs font-bold text-gray-800">Google</span>
+                    <svg className="w-3 h-3" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"/>
-                      <path fill="#34A853" d="M5.27 14.31c-.456-1.337-.717-2.764-.717-4.31s.261-2.973.717-4.31l-3.826-2.978C.489 4.898 0 7.379 0 10s.489 5.102 1.444 7.29l3.826-2.98z"/>
-                      <path fill="#FBBC05" d="M12.24 24c3.24 0 5.956-1.075 7.94-2.912l-3.771-3.009c-1.075.72-2.449 1.146-4.169 1.146-3.214 0-5.938-2.162-6.911-5.068l-3.826 2.98C3.515 20.569 7.586 24 12.24 24z"/>
-                      <path fill="#EA4335" d="M19.18 21.088c1.984-1.837 3.34-4.459 3.34-7.814 0-.788-.085-1.39-.189-1.989H12.24V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-1.72 0-3.279-.574-4.399-1.417l-3.826 2.98c1.974 1.986 4.747 3.173 7.401 3.173 3.24 0 5.956-1.075 7.94-2.912l-3.771-3.009z"/>
                     </svg>
-                    <span className="text-xs font-medium text-gray-700">Pay</span>
+                    <span className="text-xs font-semibold text-gray-800">Pay</span>
                   </div>
+
                   {/* Swish - Show if enabled */}
                   {(process.env.ENABLE_SWISH === 'true' || process.env.STRIPE_ENABLE_SWISH === 'true') && (
-                    <div className="h-8 px-3 bg-white border border-gray-200 rounded flex items-center justify-center">
-                      <svg viewBox="0 0 200 60" className="h-5 w-auto">
-                        <path fill="#006EC9" d="M10 10h180v40H10z" rx="3"/>
-                        <path fill="#FFF" d="M30 25h35v10H30zm50 0h40v10H80zm70 0h40v10H150z"/>
-                        <path fill="#006EC9" d="M30 40h130v5H30z"/>
+                    <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                      <svg viewBox="0 0 80 32" className="h-full" preserveAspectRatio="xMidYMid meet">
+                        <rect width="80" height="32" rx="2" fill="#006EC9"/>
+                        <text x="40" y="22" fontSize="14" fontWeight="bold" fill="white" textAnchor="middle">Swish</text>
                       </svg>
                     </div>
                   )}
