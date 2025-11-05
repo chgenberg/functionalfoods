@@ -301,60 +301,66 @@ export default function Checkout() {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-600 mb-3">Accepterade betalningsmetoder:</p>
                 <div className="flex flex-wrap items-center gap-2">
-                  {/* Visa */}
-                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <svg viewBox="0 0 48 32" className="h-full" preserveAspectRatio="xMidYMid meet">
-                      <path fill="#1A1F71" d="M16 20h4l2-8h-4m13 8h3.5l2-8h-3.5M10 20h4l3-12h-4M35 20h7l-6-12h-7"/>
-                    </svg>
-                  </div>
-                  
-                  {/* Mastercard */}
-                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <svg viewBox="0 0 48 32" className="h-full" preserveAspectRatio="xMidYMid meet">
-                      <circle cx="18" cy="16" r="10" fill="#EB001B"/>
-                      <circle cx="30" cy="16" r="10" fill="#F79E1B"/>
-                    </svg>
-                  </div>
-                  
-                  {/* American Express */}
-                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <svg viewBox="0 0 48 32" className="h-full" preserveAspectRatio="xMidYMid meet">
-                      <rect width="48" height="32" fill="#006FCF" rx="2"/>
-                      <text x="24" y="22" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">AXP</text>
-                    </svg>
+                  {/* Visa (official) */}
+                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
+                      alt="Visa"
+                      className="h-full w-auto"
+                      loading="lazy"
+                    />
                   </div>
 
-                  {/* Stripe */}
-                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="h-full" preserveAspectRatio="xMidYMid meet">
-                      <path fill="#635BFF" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-2-10h4v4h-4z"/>
-                    </svg>
+                  {/* Mastercard (official) */}
+                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg"
+                      alt="Mastercard"
+                      className="h-full w-auto"
+                      loading="lazy"
+                    />
                   </div>
 
-                  {/* Apple Pay */}
-                  <div className="h-8 bg-black text-white rounded px-2 py-1 flex items-center gap-1">
-                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                    </svg>
-                    <span className="text-xs font-semibold">Pay</span>
+                  {/* American Express (official) */}
+                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg"
+                      alt="American Express"
+                      className="h-full w-auto"
+                      loading="lazy"
+                    />
                   </div>
 
-                  {/* Google Pay */}
-                  <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center gap-1">
-                    <span className="text-xs font-bold text-gray-800">Google</span>
-                    <svg className="w-3 h-3" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"/>
-                    </svg>
-                    <span className="text-xs font-semibold text-gray-800">Pay</span>
+                  {/* Apple Pay (official) */}
+                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Apple_Pay_logo.svg"
+                      alt="Apple Pay"
+                      className="h-full w-auto"
+                      loading="lazy"
+                    />
                   </div>
 
-                  {/* Swish - Show if enabled */}
+                  {/* Google Pay (official) */}
+                  <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Google_Pay_Logo.svg"
+                      alt="Google Pay"
+                      className="h-full w-auto"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  {/* Swish - only when enabled */}
                   {(process.env.ENABLE_SWISH === 'true' || process.env.STRIPE_ENABLE_SWISH === 'true') && (
-                    <div className="h-8 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
-                      <svg viewBox="0 0 80 32" className="h-full" preserveAspectRatio="xMidYMid meet">
-                        <rect width="80" height="32" rx="2" fill="#006EC9"/>
-                        <text x="40" y="22" fontSize="14" fontWeight="bold" fill="white" textAnchor="middle">Swish</text>
-                      </svg>
+                    <div className="h-9 md:h-10 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Swish_logo.svg"
+                        alt="Swish"
+                        className="h-full w-auto"
+                        loading="lazy"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                      />
                     </div>
                   )}
                 </div>
