@@ -491,10 +491,63 @@ export async function POST(req: NextRequest) {
       orderId,
       totalAmount,
       itemCount: validatedItems.length,
-      hasCustomer: !!customer
+      hasCustomer: !!customer,
+      customerEmail: customer?.email
     });
     
     try {
+      // Get or create user - userId is required in Order model
+      let userId: string;
+      
+      if (customer?.id) {
+        // User is logged in, use their ID
+        userId = customer.id;
+        console.log('✅ Using existing logged-in user:', userId);
+      } else if (customer?.email) {
+        // User provided email but not logged in - find or create user
+        const normalizedEmail = customer.email.toLowerCase().trim();
+        let user = await prisma.user.findUnique({
+          where: { email: normalizedEmail }
+        });
+        
+        if (!user) {
+          // Create new user with temporary password
+          const temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-4).toUpperCase();
+          const hashed = await bcrypt.hash(temporaryPassword, 12);
+          user = await prisma.user.create({
+            data: {
+              email: normalizedEmail,
+              name: customer.name || customer.email.split('@')[0] || 'Kund',
+              password: hashed,
+              role: 'customer',
+              isActive: true,
+              mustChangePassword: true
+            }
+          });
+          console.log(`✅ Created new user for order: ${user.email}`);
+        } else {
+          console.log(`✅ Found existing user: ${user.email}`);
+        }
+        userId = user.id;
+      } else {
+        // No customer info - create a temporary guest user
+        const tempEmail = `guest-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@functionalfoods.se`;
+        const hashed = await bcrypt.hash(Math.random().toString(36), 10);
+        const guestUser = await prisma.user.create({
+          data: {
+            email: tempEmail,
+            name: 'Gäst',
+            password: hashed,
+            role: 'customer',
+            isActive: true,
+            mustChangePassword: false
+          }
+        });
+        userId = guestUser.id;
+        console.log(`✅ Created guest user for order: ${guestUser.id}`);
+      }
+      
+      // Now create the order with a valid userId
       await prisma.order.create({
         data: {
           id: orderId,
@@ -503,7 +556,7 @@ export async function POST(req: NextRequest) {
           totalAmount,
           currency: 'SEK',
           checkoutOrderId: sveaResponse.orderId.toString(),
-          userId: customer?.id || null,
+          userId: userId, // Now guaranteed to be a valid string
           customerEmail: customer?.email || null,
           customerName: customer?.name || null,
           metadata: {
@@ -513,11 +566,12 @@ export async function POST(req: NextRequest) {
           },
           items: {
             create: validatedItems.map(item => ({
-              productId: item.id,
-              productName: item.name,
+              courseId: null, // Will be resolved later if needed
+              name: item.name,
               productType: item.type,
               quantity: item.quantity,
-              price: item.price
+              price: item.price,
+              type: item.type
             }))
           }
         }
@@ -529,7 +583,8 @@ export async function POST(req: NextRequest) {
         message: dbError?.message,
         stack: dbError?.stack,
         orderId,
-        code: dbError?.code
+        code: dbError?.code,
+        name: dbError?.name
       });
       throw new Error(`Kunde inte spara order i databasen: ${dbError?.message || 'Okänt fel'}`);
     }
