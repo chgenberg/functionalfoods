@@ -341,8 +341,8 @@ export default function UnifiedSalesPage() {
         }
       }
 
-      // Course breakdown - only count completed orders
-      if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+      // Course breakdown - only count completed orders with actual revenue
+      if ((order.status === 'succeeded' || order.status === 'COMPLETED') && order.amount > 0) {
         order.courses.forEach(course => {
           if (!summary.courseBreakdown[course]) {
             summary.courseBreakdown[course] = { count: 0, revenue: 0 };
@@ -354,9 +354,10 @@ export default function UnifiedSalesPage() {
           console.log(`✅ Course: ${course}, Amount: ${order.amount}, Status: ${order.status}, Provider: ${order.paymentProvider}`);
         });
       } else {
-        // Log non-completed orders for debugging
+        // Log skipped orders for debugging
         if (order.courses.length > 0) {
-          console.log(`❌ Skipped order - Status: ${order.status}, Courses: ${order.courses.join(', ')}, Amount: ${order.amount}, Provider: ${order.paymentProvider}`);
+          const reason = order.amount === 0 ? 'Amount is 0 kr' : `Status: ${order.status}`;
+          console.log(`❌ Skipped order - ${reason}, Courses: ${order.courses.join(', ')}, Amount: ${order.amount}, Provider: ${order.paymentProvider}`);
         }
       }
 
