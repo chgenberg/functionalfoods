@@ -155,16 +155,7 @@ export async function POST(req: NextRequest) {
     const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     // Configure allowed payment methods explicitly (Stripe Checkout does not support automatic_payment_methods)
-    // Swish is available via Stripe for Swedish customers when currency is SEK
-    // Enable it in Stripe Dashboard: Settings > Payment methods > Swish
     const paymentMethodTypes: string[] = ['card'];
-    
-    // Enable Swish for Swedish customers (SEK currency required)
-    // Swish will automatically appear for Swedish customers in Stripe Checkout
-    if (process.env.ENABLE_SWISH === 'true' || process.env.STRIPE_ENABLE_SWISH === 'true') {
-      paymentMethodTypes.push('swish');
-      console.log('✅ Swish payment method enabled for checkout');
-    }
 
     const baseSessionParams: any = {
       mode: 'payment',
@@ -197,26 +188,12 @@ export async function POST(req: NextRequest) {
       baseSessionParams.discounts = [stripeDiscount];
     }
 
-    // Try with configured methods first
-    try {
-      const session = await stripe.checkout.sessions.create({
-        ...baseSessionParams,
-        payment_method_types: paymentMethodTypes
-      });
-      return NextResponse.json({ url: session.url });
-    } catch (err: any) {
-      const msg = String(err?.message || '').toLowerCase();
-      const isSwishInvalid = msg.includes('payment method type') && msg.includes('swish');
-      if (isSwishInvalid && paymentMethodTypes.includes('swish')) {
-        console.warn('Swish not available. Retrying Checkout Session with card only.');
-        const session = await stripe.checkout.sessions.create({
-          ...baseSessionParams,
-          payment_method_types: ['card']
-        });
-        return NextResponse.json({ url: session.url });
-      }
-      throw err;
-    }
+    // Create checkout session with card payment only
+    const session = await stripe.checkout.sessions.create({
+      ...baseSessionParams,
+      payment_method_types: paymentMethodTypes
+    });
+    return NextResponse.json({ url: session.url });
   } catch (err: any) {
     console.error('Create Checkout Session error:', err);
     return NextResponse.json({ error: err?.message || 'Kunde inte skapa betalning' }, { status: 500 });

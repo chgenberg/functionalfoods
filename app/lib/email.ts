@@ -203,9 +203,9 @@ export class EmailService {
                 Orderdetaljer
               </h3>
               
-              <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
-                <span style="color: #666;">Ordernummer:</span>
-                <span style="color: #1a4324; font-weight: 600;">${data.orderNumber}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
+                <span style="color: #666; flex-shrink: 0;">Ordernummer:</span>
+                <span style="color: #1a4324; font-weight: 600; word-break: break-all; overflow-wrap: break-word; flex: 1; min-width: 0;">${data.orderNumber}</span>
               </div>
               
               <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">

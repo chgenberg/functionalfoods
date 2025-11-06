@@ -97,7 +97,7 @@ export default function FAQ() {
         },
         {
           q: "Vilka betalningssätt accepterar ni?",
-          a: "Kort (Visa/Mastercard), Swish och Klarna. Vid faktura – kontakta support."
+          a: "Kort (Visa/Mastercard) via Stripe, eller faktura via Svea Ekonomi. Vid faktura – kontakta support."
         },
         {
           q: "Har ni öppet köp?",

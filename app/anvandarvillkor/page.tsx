@@ -16,9 +16,9 @@ export default function AnvandarvillkorPage() {
                 Hur betalar jag för min kurs?
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                När du köper en kurs från vår hemsida kan du välja att betala med Swish eller kortbetalning. 
-                All betalning förutom Swish hanteras via vår externa betallösning Stripe. När ditt köp har 
-                gått igenom hos Stripe får du en bekräftelse på detta i din mailkorg.
+                När du köper en kurs från vår hemsida kan du välja att betala med kortbetalning via Stripe 
+                eller faktura via Svea Ekonomi. All betalning hanteras via vår externa betallösning Stripe eller Svea. 
+                När ditt köp har gått igenom får du en bekräftelse på detta i din mailkorg.
               </p>
             </section>
 
