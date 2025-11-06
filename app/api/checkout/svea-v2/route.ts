@@ -28,36 +28,83 @@ interface CheckoutRequest {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json() as CheckoutRequest;
+    console.log('🛒 Svea checkout request received');
+    
+    let body: CheckoutRequest;
+    try {
+      body = await req.json() as CheckoutRequest;
+    } catch (parseError) {
+      console.error('❌ Failed to parse request body:', parseError);
+      return NextResponse.json(
+        { error: 'Ogiltig begäran. Kontrollera att data är korrekt formaterad.' },
+        { status: 400 }
+      );
+    }
+    
     const { items, customer, couponCode } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
+      console.error('❌ No items in request');
       return NextResponse.json(
         { error: 'Inga produkter i varukorgen' },
         { status: 400 }
       );
     }
 
+    console.log('📦 Processing checkout:', {
+      itemCount: items.length,
+      itemIds: items.map(i => i.id),
+      hasCustomer: !!customer,
+      customerEmail: customer?.email,
+      hasCoupon: !!couponCode
+    });
+
     // --- SECURITY FIX: Fetch product data from database ---
-    const courseProducts = await prisma.courseProduct.findMany();
+    let courseProducts;
+    try {
+      courseProducts = await prisma.courseProduct.findMany();
+      console.log(`✅ Found ${courseProducts.length} course products in database`);
+    } catch (dbError) {
+      console.error('❌ Failed to fetch course products:', dbError);
+      return NextResponse.json(
+        { error: 'Kunde inte ladda produktdata. Försök igen.' },
+        { status: 500 }
+      );
+    }
+    
     const productMap = new Map(courseProducts.map(p => {
       const key = p.name.toLowerCase().replace(/\s+/g, '-');
       return [key, p];
     }));
 
     // Validate and enrich items with server-side data
-    const validatedItems = items.map(item => {
-      const product = productMap.get(item.id);
-      if (!product) {
-        throw new Error(`Produkten med id "${item.id}" hittades inte.`);
+    const validatedItems = [];
+    for (const item of items) {
+      try {
+        const product = productMap.get(item.id);
+        if (!product) {
+          console.error(`❌ Product not found: "${item.id}"`);
+          console.error('Available products:', Array.from(productMap.keys()));
+          return NextResponse.json(
+            { error: `Produkten med id "${item.id}" hittades inte.` },
+            { status: 400 }
+          );
+        }
+        validatedItems.push({
+          ...item,
+          price: product.price, // Use price from database
+          name: product.name,   // Use name from database
+        });
+      } catch (itemError) {
+        console.error(`❌ Error validating item "${item.id}":`, itemError);
+        return NextResponse.json(
+          { error: `Fel vid validering av produkt "${item.id}".` },
+          { status: 400 }
+        );
       }
-      return {
-        ...item,
-        price: product.price, // Use price from database
-        name: product.name,   // Use name from database
-      };
-    });
+    }
+    console.log(`✅ Validated ${validatedItems.length} items`);
     // --- END SECURITY FIX ---
 
     // If payments are simulated/disabled, short-circuit and create a completed order locally
@@ -433,40 +480,65 @@ export async function POST(req: NextRequest) {
     // Store order in database
     const totalAmount = SveaCheckoutService.formatPriceFromMinorUnits(subtotal - discountAmount);
     
-    await prisma.order.create({
-      data: {
-        id: orderId,
-        orderNumber: orderId,
-        status: 'PENDING',
-        totalAmount,
-        currency: 'SEK',
-        checkoutOrderId: sveaResponse.orderId.toString(),
-        userId: customer?.id || null,
-        customerEmail: customer?.email || null,
-        customerName: customer?.name || null,
-        metadata: {
-          items: validatedItems, // Use validated items
-          couponCode: appliedCoupon?.code || null,
-          discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
-        },
-        items: {
-          create: validatedItems.map(item => ({
-            productId: item.id,
-            productName: item.name,
-            productType: item.type,
-            quantity: item.quantity,
-            price: item.price
-          }))
-        }
-      }
+    console.log('💾 Storing order in database:', {
+      orderId,
+      totalAmount,
+      itemCount: validatedItems.length,
+      hasCustomer: !!customer
     });
+    
+    try {
+      await prisma.order.create({
+        data: {
+          id: orderId,
+          orderNumber: orderId,
+          status: 'PENDING',
+          totalAmount,
+          currency: 'SEK',
+          checkoutOrderId: sveaResponse.orderId.toString(),
+          userId: customer?.id || null,
+          customerEmail: customer?.email || null,
+          customerName: customer?.name || null,
+          metadata: {
+            items: validatedItems, // Use validated items
+            couponCode: appliedCoupon?.code || null,
+            discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
+          },
+          items: {
+            create: validatedItems.map(item => ({
+              productId: item.id,
+              productName: item.name,
+              productType: item.type,
+              quantity: item.quantity,
+              price: item.price
+            }))
+          }
+        }
+      });
+      console.log('✅ Order stored in database successfully');
+    } catch (dbError: any) {
+      console.error('❌ Failed to store order in database:', {
+        error: dbError,
+        message: dbError?.message,
+        stack: dbError?.stack,
+        orderId,
+        code: dbError?.code
+      });
+      throw new Error(`Kunde inte spara order i databasen: ${dbError?.message || 'Okänt fel'}`);
+    }
 
     // Update coupon usage
     if (appliedCoupon) {
-      await prisma.coupon.update({
-        where: { id: appliedCoupon.id },
-        data: { timesUsed: { increment: 1 } }
-      });
+      try {
+        await prisma.coupon.update({
+          where: { id: appliedCoupon.id },
+          data: { timesUsed: { increment: 1 } }
+        });
+        console.log('✅ Coupon usage updated');
+      } catch (couponError) {
+        console.warn('⚠️ Failed to update coupon usage (non-critical):', couponError);
+        // Non-critical error, continue
+      }
     }
 
     return NextResponse.json({
