@@ -15,6 +15,7 @@ import LinkedIngredient from '../../../components/LinkedIngredient';
 import { useSearchParams } from 'next/navigation';
 import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 import { mealPlans, flowMealPlans, energyMealPlans } from '../../../data/mealPlans';
+import { generateStructuredData, injectStructuredData } from '../../../lib/seo';
 import { generateRecipePrintHTML } from '../../../lib/recipePrint';
 
 interface Recipe {
@@ -812,6 +813,73 @@ export default function RecipePage() {
       }
     })();
   }, [recipe?.title, recipe?.slug]); // Watch both title and slug for changes
+
+  // Inject structured data for SEO and LLM support
+  useEffect(() => {
+    if (!recipe || !recipe.title || !recipe.slug) return;
+
+    try {
+      // Handle instructions - could be string or array from API
+      let instructionSteps: string[] = [];
+      if (recipe.instructions) {
+        if (Array.isArray(recipe.instructions)) {
+          instructionSteps = recipe.instructions;
+        } else if (typeof recipe.instructions === 'string') {
+          const numberedSteps = recipe.instructions.split(/\d+\./).filter(step => step.trim()).map(step => step.trim());
+          if (numberedSteps.length > 1) {
+            instructionSteps = numberedSteps;
+          } else {
+            instructionSteps = recipe.instructions
+              .split(/(?<=[.!?])\s+(?=[A-ZÅÄÖ])/)
+              .filter(step => step.trim().length > 10)
+              .map(step => step.trim());
+            if (instructionSteps.length <= 1) {
+              instructionSteps = recipe.instructions
+                .split(/\s*(?=(Blanda|Forma|Hetta|Stek|Dela|Krydda|Servera|Tillsätt|Värm|Koka|Rör|Hacka|Skiva|Lägg|Placera|Skär|Finhacka|Grädda|Toppa|Strö|Fyll|Smula)\b)/i)
+                .filter(step => step && step.trim().length > 5)
+                .map(step => step.trim().replace(/\.$/, '') + '.');
+            }
+          }
+        }
+      }
+
+      const nutritionPerServing = nutrition?.perServing;
+      const instructions = instructionSteps.length > 0 ? instructionSteps : 
+        (recipe.instructions ? (Array.isArray(recipe.instructions) ? recipe.instructions : [recipe.instructions]) : []);
+
+      const structuredData = generateStructuredData({
+        recipeInfo: {
+          name: recipe.title,
+          description: recipe.excerpt || recipe.title,
+          ingredients: recipe.ingredients || [],
+          instructions: instructions,
+          prepTime: recipe.prepTime ? `PT${recipe.prepTime}` : undefined,
+          cookTime: recipe.cookTime ? `PT${recipe.cookTime}` : undefined,
+          servings: recipe.servings || servings,
+          calories: nutritionPerServing ? Math.round(nutritionPerServing.energy || nutritionPerServing.calories || 0) : undefined,
+          nutrition: nutritionPerServing ? {
+            protein: `${nutritionPerServing.protein || 0}g`,
+            carbohydrates: `${nutritionPerServing.carbohydrates || nutritionPerServing.carbs || 0}g`,
+            fat: `${nutritionPerServing.fat || 0}g`,
+            fiber: `${nutritionPerServing.fiber || 0}g`,
+            sugar: `${nutritionPerServing.sugar || 0}g`
+          } : undefined,
+          image: recipe.imageUrl,
+          author: recipe.author?.name
+        },
+        breadcrumbs: [
+          { name: 'Hem', url: '/' },
+          { name: 'Kunskapsbank', url: '/kunskapsbank' },
+          { name: 'Recept', url: '/kunskapsbank/recept' },
+          { name: recipe.title, url: `/kunskapsbank/recept/${recipe.slug}` }
+        ]
+      });
+
+      injectStructuredData(structuredData);
+    } catch (error) {
+      console.error('Error generating structured data:', error);
+    }
+  }, [recipe, nutrition, servings]);
 
   if (loading) {
     return (

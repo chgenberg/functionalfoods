@@ -221,7 +221,7 @@ export default function AdminDashboard() {
           </Link>
           
           <Link 
-            href="/admin/sales"
+            href="/admin/sales-complete"
             className="group flex items-center gap-3 p-4 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
           >
             <BarChart3 className="w-5 h-5 text-[var(--primary-green)]" />

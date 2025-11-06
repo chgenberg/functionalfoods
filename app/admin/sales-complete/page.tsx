@@ -1,0 +1,1202 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  AlertCircle, CheckCircle, Clock, CreditCard, DollarSign, Download, 
+  Eye, RefreshCw, TrendingUp, XCircle, Search, Filter, Calendar, 
+  BarChart3, Users, Package, ArrowUpDown, ChevronDown, ChevronUp,
+  FileSpreadsheet, Mail, Phone, Globe, Hash, UserPlus, Upload,
+  Info, ShoppingBag, CreditCard as CardIcon, FileText, ShoppingCart,
+  Building2, RotateCcw
+} from "lucide-react";
+import * as XLSX from 'xlsx';
+import { formatPrice } from '@/app/lib/utils';
+
+interface UnifiedOrder {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  customerCountry?: string;
+  amount: number;
+  currency: string;
+  status: string;
+  paymentMethod: string;
+  paymentProvider: 'stripe' | 'svea' | 'manual';
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    type: string;
+  }>;
+  courses: string[];
+  createdAt: string;
+  refunded: boolean;
+  refundAmount?: number;
+  receiptUrl?: string;
+  metadata?: any;
+}
+
+interface OrderSummary {
+  totalOrders: number;
+  totalRevenue: number;
+  averageOrderValue: number;
+  successfulOrders: number;
+  pendingOrders: number;
+  failedOrders: number;
+  refundedAmount: number;
+  providerBreakdown: {
+    stripe: { count: number; revenue: number };
+    svea: { count: number; revenue: number };
+    manual: { count: number; revenue: number };
+  };
+  courseBreakdown: Record<string, { count: number; revenue: number }>;
+  monthlyRevenue: Array<{ date: string; amount: number }>;
+}
+
+interface FilterOptions {
+  provider: string;
+  status: string;
+  dateRange: string;
+  course: string;
+  paymentMethod: string;
+  minAmount: string;
+  maxAmount: string;
+  customer: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
+export default function UnifiedSalesPage() {
+  const [activeTab, setActiveTab] = useState<'all' | 'stripe' | 'svea' | 'manual'>('all');
+  const [orders, setOrders] = useState<UnifiedOrder[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<UnifiedOrder[]>([]);
+  const [summary, setSummary] = useState<OrderSummary>({
+    totalOrders: 0,
+    totalRevenue: 0,
+    averageOrderValue: 0,
+    successfulOrders: 0,
+    pendingOrders: 0,
+    failedOrders: 0,
+    refundedAmount: 0,
+    providerBreakdown: {
+      stripe: { count: 0, revenue: 0 },
+      svea: { count: 0, revenue: 0 },
+      manual: { count: 0, revenue: 0 }
+    },
+    courseBreakdown: {},
+    monthlyRevenue: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<UnifiedOrder | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    provider: 'all',
+    status: 'all',
+    dateRange: 'all',
+    course: 'all',
+    paymentMethod: 'all',
+    minAmount: '',
+    maxAmount: '',
+    customer: '',
+    sortBy: 'created',
+    sortOrder: 'desc'
+  });
+
+  const dateRangePresets = {
+    today: { label: 'Idag', days: 0 },
+    yesterday: { label: 'Igår', days: 1 },
+    week: { label: 'Senaste 7 dagarna', days: 7 },
+    month: { label: 'Senaste 30 dagarna', days: 30 },
+    quarter: { label: 'Senaste 90 dagarna', days: 90 },
+    year: { label: 'Senaste året', days: 365 },
+    all: { label: 'Alla transaktioner', days: null }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 300000); // Refresh every 5 minutes
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [orders, filters, activeTab]);
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Fetch from all sources in parallel
+      const [stripeRes, ordersRes] = await Promise.all([
+        fetch('/api/admin/stripe-payments', { credentials: 'include' }),
+        fetch('/api/admin/orders', { credentials: 'include' })
+      ]);
+
+      if (!stripeRes.ok || !ordersRes.ok) {
+        throw new Error('Failed to fetch order data');
+      }
+
+      const stripeData = await stripeRes.json();
+      const ordersData = await ordersRes.json();
+
+      // Combine and format all orders
+      const combinedOrders: UnifiedOrder[] = [];
+
+      // Process Stripe payments
+      if (stripeData.payments) {
+        stripeData.payments.forEach((payment: any) => {
+          combinedOrders.push({
+            id: payment.id,
+            orderNumber: payment.orderInfo?.orderNumber || payment.id,
+            customerName: payment.customer.name || 'Okänd',
+            customerEmail: payment.customer.email,
+            customerPhone: payment.customer.metadata?.phone,
+            customerCountry: payment.customer.metadata?.country || 'SE',
+            amount: payment.amount / 100,
+            currency: payment.currency.toUpperCase(),
+            status: payment.status,
+            paymentMethod: payment.paymentMethod?.type || 'card',
+            paymentProvider: 'stripe',
+            items: payment.orderInfo?.items || [],
+            courses: extractCoursesFromDescription(payment.description),
+            createdAt: payment.created,
+            refunded: payment.refunded,
+            refundAmount: payment.refundAmount / 100,
+            receiptUrl: payment.receiptUrl,
+            metadata: payment
+          });
+        });
+      }
+
+      // Process orders from database (Svea and manual)
+      ordersData.forEach((order: any) => {
+        // Skip if already processed as Stripe order
+        if (combinedOrders.some(o => o.orderNumber === order.orderNumber)) {
+          return;
+        }
+
+        const paymentProvider = order.checkoutOrderId?.includes('svea') ? 'svea' : 
+                              order.payment?.paymentMethod?.includes('manual') ? 'manual' : 
+                              'svea'; // Default to svea for non-stripe orders
+
+        combinedOrders.push({
+          id: order.id,
+          orderNumber: order.orderNumber,
+          customerName: order.customerName || order.user?.name || 'Okänd',
+          customerEmail: order.customerEmail || order.user?.email || '',
+          customerPhone: order.metadata?.phone,
+          customerCountry: order.metadata?.country || 'SE',
+          amount: order.totalAmount,
+          currency: order.currency || 'SEK',
+          status: order.status,
+          paymentMethod: order.payment?.paymentMethod || 'unknown',
+          paymentProvider: paymentProvider,
+          items: order.items || [],
+          courses: order.items?.filter((i: any) => i.type === 'course').map((i: any) => i.name) || [],
+          createdAt: order.createdAt,
+          refunded: false,
+          refundAmount: 0,
+          metadata: order.metadata
+        });
+      });
+
+      // Calculate summary
+      const summary = calculateSummary(combinedOrders);
+
+      setOrders(combinedOrders);
+      setSummary(summary);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateSummary = (orders: UnifiedOrder[]): OrderSummary => {
+    const summary: OrderSummary = {
+      totalOrders: orders.length,
+      totalRevenue: 0,
+      averageOrderValue: 0,
+      successfulOrders: 0,
+      pendingOrders: 0,
+      failedOrders: 0,
+      refundedAmount: 0,
+      providerBreakdown: {
+        stripe: { count: 0, revenue: 0 },
+        svea: { count: 0, revenue: 0 },
+        manual: { count: 0, revenue: 0 }
+      },
+      courseBreakdown: {},
+      monthlyRevenue: []
+    };
+
+    const monthlyMap: Record<string, number> = {};
+
+    orders.forEach(order => {
+      // Count by status
+      if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+        summary.successfulOrders++;
+        summary.totalRevenue += order.amount - (order.refundAmount || 0);
+      } else if (order.status === 'processing' || order.status === 'PENDING') {
+        summary.pendingOrders++;
+      } else if (order.status === 'failed' || order.status === 'CANCELLED') {
+        summary.failedOrders++;
+      }
+
+      // Provider breakdown
+      if (summary.providerBreakdown[order.paymentProvider]) {
+        summary.providerBreakdown[order.paymentProvider].count++;
+        if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+          summary.providerBreakdown[order.paymentProvider].revenue += order.amount - (order.refundAmount || 0);
+        }
+      }
+
+      // Course breakdown
+      order.courses.forEach(course => {
+        if (!summary.courseBreakdown[course]) {
+          summary.courseBreakdown[course] = { count: 0, revenue: 0 };
+        }
+        summary.courseBreakdown[course].count++;
+        if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+          summary.courseBreakdown[course].revenue += order.amount - (order.refundAmount || 0);
+        }
+      });
+
+      // Monthly revenue
+      const month = new Date(order.createdAt).toISOString().slice(0, 7);
+      if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+        monthlyMap[month] = (monthlyMap[month] || 0) + order.amount - (order.refundAmount || 0);
+      }
+
+      // Refunds
+      if (order.refunded && order.refundAmount) {
+        summary.refundedAmount += order.refundAmount;
+      }
+    });
+
+    // Calculate average
+    summary.averageOrderValue = summary.successfulOrders > 0 ? 
+      summary.totalRevenue / summary.successfulOrders : 0;
+
+    // Convert monthly map to array
+    summary.monthlyRevenue = Object.entries(monthlyMap)
+      .map(([date, amount]) => ({ date, amount }))
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-12); // Last 12 months
+
+    return summary;
+  };
+
+  const extractCoursesFromDescription = (description: string): string[] => {
+    if (!description) return [];
+    const courses: string[] = [];
+    
+    if (description.includes('Functional Basics')) courses.push('Functional Basics');
+    if (description.includes('Functional Flow') || description.includes('Functional Gut Health/Flow')) courses.push('Functional Flow');
+    if (description.includes('Functional Energy') || description.includes('Functional Insulin balance/Energy')) courses.push('Functional Energy');
+    if (description.includes('Hormonell Balans')) courses.push('Hormonell Balans');
+    
+    return courses;
+  };
+
+  const applyFilters = () => {
+    let filtered = [...orders];
+
+    // Tab filter
+    if (activeTab !== 'all') {
+      filtered = filtered.filter(o => o.paymentProvider === activeTab);
+    }
+
+    // Provider filter
+    if (filters.provider !== 'all') {
+      filtered = filtered.filter(o => o.paymentProvider === filters.provider);
+    }
+
+    // Status filter
+    if (filters.status !== 'all') {
+      filtered = filtered.filter(o => o.status === filters.status);
+    }
+
+    // Date range filter
+    if (filters.dateRange !== 'all') {
+      const preset = dateRangePresets[filters.dateRange as keyof typeof dateRangePresets];
+      if (preset.days !== null) {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - preset.days);
+        filtered = filtered.filter(o => new Date(o.createdAt) >= cutoffDate);
+      }
+    }
+
+    // Course filter
+    if (filters.course !== 'all') {
+      filtered = filtered.filter(o => o.courses.includes(filters.course));
+    }
+
+    // Payment method filter
+    if (filters.paymentMethod !== 'all') {
+      filtered = filtered.filter(o => o.paymentMethod === filters.paymentMethod);
+    }
+
+    // Amount range filter
+    if (filters.minAmount) {
+      const min = parseFloat(filters.minAmount);
+      filtered = filtered.filter(o => o.amount >= min);
+    }
+    if (filters.maxAmount) {
+      const max = parseFloat(filters.maxAmount);
+      filtered = filtered.filter(o => o.amount <= max);
+    }
+
+    // Customer search
+    if (filters.customer) {
+      const search = filters.customer.toLowerCase();
+      filtered = filtered.filter(o => 
+        o.customerEmail.toLowerCase().includes(search) ||
+        o.customerName.toLowerCase().includes(search) ||
+        o.orderNumber.toLowerCase().includes(search)
+      );
+    }
+
+    // Sorting
+    filtered.sort((a, b) => {
+      let compareValue = 0;
+      
+      switch (filters.sortBy) {
+        case 'amount':
+          compareValue = a.amount - b.amount;
+          break;
+        case 'customer':
+          compareValue = a.customerName.localeCompare(b.customerName);
+          break;
+        case 'status':
+          compareValue = a.status.localeCompare(b.status);
+          break;
+        case 'created':
+        default:
+          compareValue = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+
+      return filters.sortOrder === 'asc' ? compareValue : -compareValue;
+    });
+
+    setFilteredOrders(filtered);
+  };
+
+  const exportToExcel = () => {
+    const exportData = filteredOrders.map(order => ({
+      'Order ID': order.id,
+      'Ordernummer': order.orderNumber,
+      'Datum': new Date(order.createdAt).toLocaleString('sv-SE'),
+      'Kund': order.customerName,
+      'E-post': order.customerEmail,
+      'Telefon': order.customerPhone || '-',
+      'Land': order.customerCountry || '-',
+      'Produkter': order.items.map(i => `${i.quantity}x ${i.name}`).join('; '),
+      'Kurser': order.courses.join(', ') || '-',
+      'Belopp': `${formatPrice(order.amount)} ${order.currency}`,
+      'Status': getStatusText(order.status),
+      'Betalningsmetod': order.paymentMethod,
+      'Leverantör': getProviderText(order.paymentProvider),
+      'Återbetalad': order.refunded ? 'Ja' : 'Nej',
+      'Återbetalat belopp': order.refundAmount ? `${formatPrice(order.refundAmount)} ${order.currency}` : '-'
+    }));
+
+    const summaryData = [
+      { 'Sammanfattning': 'Total försäljning', 'Värde': `${formatPrice(summary.totalRevenue)} kr` },
+      { 'Sammanfattning': 'Antal transaktioner', 'Värde': summary.totalOrders },
+      { 'Sammanfattning': 'Genomsnittligt ordervärde', 'Värde': `${formatPrice(summary.averageOrderValue)} kr` },
+      { 'Sammanfattning': 'Lyckade transaktioner', 'Värde': summary.successfulOrders },
+      { 'Sammanfattning': 'Väntande transaktioner', 'Värde': summary.pendingOrders },
+      { 'Sammanfattning': 'Misslyckade transaktioner', 'Värde': summary.failedOrders },
+      { 'Sammanfattning': 'Återbetalat totalt', 'Värde': `${formatPrice(summary.refundedAmount)} kr` },
+      '',
+      { 'Sammanfattning': 'Stripe-transaktioner', 'Värde': summary.providerBreakdown.stripe.count },
+      { 'Sammanfattning': 'Stripe-intäkter', 'Värde': `${formatPrice(summary.providerBreakdown.stripe.revenue)} kr` },
+      { 'Sammanfattning': 'Svea-transaktioner', 'Värde': summary.providerBreakdown.svea.count },
+      { 'Sammanfattning': 'Svea-intäkter', 'Värde': `${formatPrice(summary.providerBreakdown.svea.revenue)} kr` },
+      { 'Sammanfattning': 'Manuella ordrar', 'Värde': summary.providerBreakdown.manual.count },
+      { 'Sammanfattning': 'Manuella intäkter', 'Värde': `${formatPrice(summary.providerBreakdown.manual.revenue)} kr` }
+    ];
+
+    const wb = XLSX.utils.book_new();
+    
+    const wsTransactions = XLSX.utils.json_to_sheet(exportData);
+    XLSX.utils.book_append_sheet(wb, wsTransactions, 'Transaktioner');
+    
+    const wsSummary = XLSX.utils.json_to_sheet(summaryData);
+    XLSX.utils.book_append_sheet(wb, wsSummary, 'Sammanfattning');
+
+    const date = new Date().toISOString().split('T')[0];
+    const filename = `forsaljning_alla_${date}.xlsx`;
+    
+    XLSX.writeFile(wb, filename);
+  };
+
+  const getProviderIcon = (provider: string) => {
+    switch (provider) {
+      case 'stripe':
+        return <CreditCard className="w-5 h-5 text-blue-600" />;
+      case 'svea':
+        return <Building2 className="w-5 h-5 text-green-600" />;
+      case 'manual':
+        return <UserPlus className="w-5 h-5 text-purple-600" />;
+      default:
+        return <ShoppingCart className="w-5 h-5 text-gray-600" />;
+    }
+  };
+
+  const getProviderText = (provider: string) => {
+    const providerMap: { [key: string]: string } = {
+      'stripe': 'Stripe',
+      'svea': 'Svea Ekonomi',
+      'manual': 'Manuell'
+    };
+    return providerMap[provider] || provider;
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'succeeded':
+      case 'COMPLETED':
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case 'processing':
+      case 'PENDING':
+        return <Clock className="w-5 h-5 text-yellow-600" />;
+      case 'requires_payment_method':
+      case 'requires_confirmation':
+      case 'requires_action':
+        return <AlertCircle className="w-5 h-5 text-orange-600" />;
+      case 'canceled':
+      case 'CANCELLED':
+      case 'failed':
+        return <XCircle className="w-5 h-5 text-red-600" />;
+      default:
+        return <Clock className="w-5 h-5 text-gray-600" />;
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      'succeeded': 'Lyckad',
+      'COMPLETED': 'Slutförd',
+      'processing': 'Behandlas',
+      'PENDING': 'Väntar',
+      'requires_payment_method': 'Kräver betalningsmetod',
+      'requires_confirmation': 'Kräver bekräftelse',
+      'requires_action': 'Kräver åtgärd',
+      'canceled': 'Avbruten',
+      'CANCELLED': 'Avbruten',
+      'failed': 'Misslyckad'
+    };
+    return statusMap[status] || status;
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      provider: 'all',
+      status: 'all',
+      dateRange: 'all',
+      course: 'all',
+      paymentMethod: 'all',
+      minAmount: '',
+      maxAmount: '',
+      customer: '',
+      sortBy: 'created',
+      sortOrder: 'desc'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="relative mx-auto w-16 h-16">
+            <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
+          </div>
+          <p className="mt-4 text-[var(--text-secondary)]">Laddar försäljningsdata...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <AlertCircle className="w-16 h-16 text-[var(--coral-accent)] mx-auto mb-4" />
+        <h2 className="text-xl font-medium text-[var(--text-primary)] mb-2">Ett fel uppstod</h2>
+        <p className="text-[var(--text-secondary)] mb-4">{error}</p>
+        <button
+          onClick={fetchOrders}
+          className="admin-btn admin-btn-primary"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Försök igen
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Försäljning & Kunder</h1>
+          <p className="text-[var(--text-secondary)] font-light">Alla ordrar från Stripe, Svea och manuella registreringar</p>
+          <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
+            <Info className="w-4 h-4 text-blue-500" />
+            <span><strong>Tips:</strong> Använd flikarna för att filtrera per betalningsleverantör. Data uppdateras automatiskt var 5:e minut.</span>
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`admin-btn ${
+              showFilters ? 'admin-btn-primary' : 'admin-btn-secondary'
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            Filter
+            {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={exportToExcel}
+            className="admin-btn admin-btn-secondary"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Exportera Excel
+          </button>
+          <button
+            onClick={fetchOrders}
+            className="admin-btn admin-btn-primary"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Uppdatera
+          </button>
+        </div>
+      </div>
+
+      {/* Summary Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="admin-stat-card"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Total försäljning</span>
+            <DollarSign className="w-5 h-5 text-gray-400" />
+          </div>
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
+            {formatPrice(summary.totalRevenue)} kr
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {summary.totalOrders} ordrar totalt
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="admin-stat-card"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Snitt ordervärde</span>
+            <BarChart3 className="w-5 h-5 text-gray-400" />
+          </div>
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
+            {formatPrice(summary.averageOrderValue)} kr
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Per order
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="admin-stat-card"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Stripe</span>
+            <CreditCard className="w-5 h-5 text-blue-600" />
+          </div>
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
+            {summary.providerBreakdown.stripe.count}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {formatPrice(summary.providerBreakdown.stripe.revenue)} kr
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="admin-stat-card"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Svea</span>
+            <Building2 className="w-5 h-5 text-green-600" />
+          </div>
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
+            {summary.providerBreakdown.svea.count}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {formatPrice(summary.providerBreakdown.svea.revenue)} kr
+          </p>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="admin-stat-card"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">Återbetalningar</span>
+            <RotateCcw className="w-5 h-5 text-gray-400" />
+          </div>
+          <p className="text-xl font-semibold text-[var(--text-primary)]">
+            {formatPrice(summary.refundedAmount)} kr
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Totalt återbetalat
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Advanced Filters */}
+      <AnimatePresence>
+        {showFilters && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="admin-card">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium text-[var(--primary-green)]">Avancerade filter</h3>
+                <button
+                  onClick={resetFilters}
+                  className="text-sm text-[var(--primary-light-green)] hover:text-[var(--primary-green)] transition-colors"
+                >
+                  Återställ filter
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Provider */}
+                <div>
+                  <label className="admin-label">Leverantör</label>
+                  <select
+                    value={filters.provider}
+                    onChange={(e) => setFilters(prev => ({ ...prev, provider: e.target.value }))}
+                    className="admin-select"
+                  >
+                    <option value="all">Alla leverantörer</option>
+                    <option value="stripe">Stripe</option>
+                    <option value="svea">Svea Ekonomi</option>
+                    <option value="manual">Manuell</option>
+                  </select>
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label className="admin-label">Status</label>
+                  <select
+                    value={filters.status}
+                    onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                    className="admin-select"
+                  >
+                    <option value="all">Alla statusar</option>
+                    <option value="succeeded">Lyckad</option>
+                    <option value="COMPLETED">Slutförd</option>
+                    <option value="processing">Behandlas</option>
+                    <option value="PENDING">Väntar</option>
+                    <option value="failed">Misslyckad</option>
+                    <option value="canceled">Avbruten</option>
+                  </select>
+                </div>
+
+                {/* Date Range */}
+                <div>
+                  <label className="admin-label">Tidsperiod</label>
+                  <select
+                    value={filters.dateRange}
+                    onChange={(e) => setFilters(prev => ({ ...prev, dateRange: e.target.value }))}
+                    className="admin-select"
+                  >
+                    {Object.entries(dateRangePresets).map(([key, preset]) => (
+                      <option key={key} value={key}>{preset.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Course */}
+                <div>
+                  <label className="admin-label">Kurs</label>
+                  <select
+                    value={filters.course}
+                    onChange={(e) => setFilters(prev => ({ ...prev, course: e.target.value }))}
+                    className="admin-select"
+                  >
+                    <option value="all">Alla kurser</option>
+                    <option value="Functional Basics">Functional Basics</option>
+                    <option value="Functional Flow">Functional Flow</option>
+                    <option value="Functional Energy">Functional Energy</option>
+                    <option value="Hormonell Balans">Hormonell Balans</option>
+                  </select>
+                </div>
+
+                {/* Customer Search */}
+                <div className="lg:col-span-2">
+                  <label className="admin-label">Sök kund/order</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={filters.customer}
+                      onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
+                      placeholder="Namn, e-post eller ordernummer..."
+                      className="admin-input pl-10"
+                    />
+                  </div>
+                </div>
+
+                {/* Sort Options */}
+                <div className="lg:col-span-2">
+                  <label className="admin-label">Sortera efter</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={filters.sortBy}
+                      onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                    >
+                      <option value="created">Datum</option>
+                      <option value="amount">Belopp</option>
+                      <option value="customer">Kund</option>
+                      <option value="status">Status</option>
+                    </select>
+                    <button
+                      onClick={() => setFilters(prev => ({ ...prev, sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc' }))}
+                      className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <ArrowUpDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-600">
+                  Visar {filteredOrders.length} av {orders.length} ordrar
+                  {filters.provider !== 'all' && ` • ${getProviderText(filters.provider)}`}
+                  {filters.status !== 'all' && ` • ${getStatusText(filters.status)}`}
+                  {filters.course !== 'all' && ` • ${filters.course}`}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Tabs */}
+      <div className="border-b border-gray-200">
+        <nav className="flex space-x-8" aria-label="Tabs">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'all'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5" />
+              Alla ({orders.length})
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('stripe')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'stripe'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5" />
+              Stripe ({summary.providerBreakdown.stripe.count})
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('svea')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'svea'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Building2 className="w-5 h-5" />
+              Svea ({summary.providerBreakdown.svea.count})
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('manual')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'manual'
+                ? 'border-[#014421] text-[#014421]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <UserPlus className="w-5 h-5" />
+              Manuella ({summary.providerBreakdown.manual.count})
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      {/* Revenue Chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="admin-card"
+        >
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Månadsvis försäljning</h3>
+          <div className="space-y-2">
+            {summary.monthlyRevenue.map((month, idx) => {
+              const maxRevenue = Math.max(...summary.monthlyRevenue.map(m => m.amount));
+              const percentage = maxRevenue > 0 ? (month.amount / maxRevenue) * 100 : 0;
+              
+              return (
+                <div key={month.date} className="flex items-center gap-3">
+                  <span className="text-xs text-gray-500 w-20">
+                    {new Date(month.date + '-01').toLocaleDateString('sv-SE', { year: 'numeric', month: 'short' })}
+                  </span>
+                  <div className="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${percentage}%` }}
+                      transition={{ delay: idx * 0.02, duration: 0.5 }}
+                      className="h-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-end pr-2"
+                    >
+                      {month.amount > 0 && (
+                        <span className="text-xs text-white font-medium">{formatPrice(month.amount)} kr</span>
+                      )}
+                    </motion.div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="admin-card"
+        >
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Försäljning per kurs</h3>
+          <div className="space-y-4">
+            {Object.entries(summary.courseBreakdown)
+              .sort((a, b) => b[1].revenue - a[1].revenue)
+              .map(([course, data], idx) => {
+                const totalRevenue = Object.values(summary.courseBreakdown).reduce((sum, c) => sum + c.revenue, 0);
+                const percentage = totalRevenue > 0 ? (data.revenue / totalRevenue) * 100 : 0;
+                const colors = ['from-blue-500 to-blue-600', 'from-purple-500 to-purple-600', 'from-orange-500 to-orange-600', 'from-pink-500 to-pink-600'];
+                
+                return (
+                  <div key={course}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">{course}</span>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-gray-900">{formatPrice(data.revenue)} kr</p>
+                        <p className="text-xs text-gray-500">{data.count} st</p>
+                      </div>
+                    </div>
+                    <div className="bg-gray-100 rounded-full h-3 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${percentage}%` }}
+                        transition={{ delay: idx * 0.1, duration: 0.6 }}
+                        className={`h-full bg-gradient-to-r ${colors[idx % colors.length]}`}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Orders Table */}
+      <div className="admin-table">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr>
+                <th className="text-left">Leverantör</th>
+                <th className="text-left">Status</th>
+                <th className="text-left">Order</th>
+                <th className="text-left">Kund</th>
+                <th className="text-left">Produkter</th>
+                <th className="text-left">Belopp</th>
+                <th className="text-left">Datum</th>
+                <th className="text-right">Åtgärder</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-[var(--text-secondary)]">
+                    Inga transaktioner hittades med valda filter
+                  </td>
+                </tr>
+              ) : (
+                filteredOrders.map((order) => (
+                  <tr key={order.id}>
+                    <td className="whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        {getProviderIcon(order.paymentProvider)}
+                        <span className="text-sm text-gray-900">
+                          {getProviderText(order.paymentProvider)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        {getStatusIcon(order.status)}
+                        <span className="text-sm text-gray-900">
+                          {getStatusText(order.status)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <p className="text-sm font-medium text-gray-900">
+                        #{order.orderNumber}
+                      </p>
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {order.customerName}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {order.customerEmail}
+                        </p>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <p className="text-sm text-gray-900">
+                          {order.items.length > 0 ? 
+                            order.items.map(i => `${i.quantity}x ${i.name}`).join(', ') :
+                            order.courses.join(', ')
+                          }
+                        </p>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <p className="text-sm font-medium text-gray-900">
+                        {formatPrice(order.amount)} {order.currency}
+                      </p>
+                      {order.refunded && (
+                        <p className="text-xs text-red-600">
+                          Återbetalad: {formatPrice(order.refundAmount || 0)} {order.currency}
+                        </p>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <p className="text-sm text-gray-900">
+                        {new Date(order.createdAt).toLocaleDateString('sv-SE')}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(order.createdAt).toLocaleTimeString('sv-SE', { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => setSelectedOrder(order)}
+                        className="text-[#014421] hover:text-[#012A14]"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Order Details Modal */}
+      <AnimatePresence>
+        {selectedOrder && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setSelectedOrder(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-gray-900">Orderdetaljer</h2>
+                  <button
+                    onClick={() => setSelectedOrder(null)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <XCircle className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Status</h3>
+                  <div className="flex items-center gap-3">
+                    {getStatusIcon(selectedOrder.status)}
+                    <span className="text-lg font-medium text-gray-900">
+                      {getStatusText(selectedOrder.status)}
+                    </span>
+                    {selectedOrder.refunded && (
+                      <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                        Återbetalad
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Kundinformation</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900">{selectedOrder.customerEmail}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900">{selectedOrder.customerName}</span>
+                    </div>
+                    {selectedOrder.customerPhone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-900">{selectedOrder.customerPhone}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900">{selectedOrder.customerCountry || 'SE'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Betalningsdetaljer</h3>
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Belopp</span>
+                      <span className="text-sm font-medium text-gray-900">
+                        {formatPrice(selectedOrder.amount)} {selectedOrder.currency}
+                      </span>
+                    </div>
+                    {selectedOrder.refundAmount && (
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Återbetalat</span>
+                        <span className="text-sm font-medium text-red-600">
+                          -{formatPrice(selectedOrder.refundAmount)} {selectedOrder.currency}
+                        </span>
+                      </div>
+                    )}
+                    <div className="pt-3 border-t border-gray-200">
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-700">Netto</span>
+                        <span className="text-sm font-bold text-gray-900">
+                          {formatPrice(selectedOrder.amount - (selectedOrder.refundAmount || 0))} {selectedOrder.currency}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Orderdetaljer</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-2">
+                      <Package className="w-4 h-4 text-gray-400 mt-0.5" />
+                      <div>
+                        {selectedOrder.items.map((item, idx) => (
+                          <div key={idx} className="bg-gray-50 rounded p-2 mb-2">
+                            <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                            <p className="text-xs text-gray-600">
+                              Antal: {item.quantity} • Pris: {formatPrice(item.price)} kr • Typ: {item.type}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Hash className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900 font-mono">{selectedOrder.orderNumber}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-900">
+                        {new Date(selectedOrder.createdAt).toLocaleString('sv-SE')}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {getProviderIcon(selectedOrder.paymentProvider)}
+                      <span className="text-sm text-gray-900">
+                        {getProviderText(selectedOrder.paymentProvider)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedOrder.receiptUrl && (
+                  <div className="flex gap-3 pt-4 border-t border-gray-200">
+                    <a
+                      href={selectedOrder.receiptUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      Visa kvitto
+                    </a>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

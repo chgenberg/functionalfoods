@@ -72,8 +72,7 @@ export default function AdminLayout({
     { icon: Star, label: 'Recensioner', href: '/admin/reviews' },
     { icon: MessageSquare, label: 'Community', href: '/admin/community' },
     { icon: Tag, label: 'Kuponger', href: '/admin/coupons' },
-    { icon: BarChart3, label: 'Försäljning (Stripe)', href: '/admin/sales' },
-    { icon: ShoppingBag, label: 'Kunder & Försäljning', href: '/admin/sales-unified' },
+    { icon: ShoppingBag, label: 'Försäljning & Kunder', href: '/admin/sales-complete' },
     { icon: FileText, label: 'Kunskapsdokument', href: '/admin/knowledge' },
     { icon: Settings, label: 'Inställningar', href: '/admin/settings' }
   ];
