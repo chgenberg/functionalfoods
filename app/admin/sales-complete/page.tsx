@@ -116,6 +116,55 @@ export default function UnifiedSalesPage() {
     all: { label: 'Alla transaktioner', days: null }
   };
 
+  // Helper function to normalize course names
+  const normalizeCourseNames = (courses: string[]): string[] => {
+    return courses.map(course => {
+      const normalized = course.trim();
+      
+      // Normalize Flow variants
+      if (normalized.includes('Flow') || normalized.includes('Gut Health')) {
+        return 'Functional Flow';
+      }
+      
+      // Normalize Energy variants
+      if (normalized.includes('Energy') || normalized.includes('Insulin balance')) {
+        return 'Functional Energy';
+      }
+      
+      // Normalize Basics
+      if (normalized.includes('Basics')) {
+        return 'Functional Basics';
+      }
+      
+      // Hormonell Balans stays the same
+      if (normalized.includes('Hormonell') || normalized.includes('Hormon')) {
+        return 'Hormonell Balans';
+      }
+      
+      return normalized;
+    });
+  };
+
+  const extractCoursesFromDescription = (description: string): string[] => {
+    if (!description) return [];
+    const courses: string[] = [];
+    
+    if (description.includes('Functional Basics') || description.includes('Basics')) {
+      courses.push('Functional Basics');
+    }
+    if (description.includes('Functional Flow') || description.includes('Functional Gut Health/Flow') || description.includes('Gut Health') || description.includes('Flow')) {
+      courses.push('Functional Flow');
+    }
+    if (description.includes('Functional Energy') || description.includes('Functional Insulin balance/Energy') || description.includes('Insulin balance') || description.includes('Energy')) {
+      courses.push('Functional Energy');
+    }
+    if (description.includes('Hormonell Balans') || description.includes('Hormon')) {
+      courses.push('Hormonell Balans');
+    }
+    
+    return courses;
+  };
+
   useEffect(() => {
     fetchOrders();
     const interval = setInterval(fetchOrders, 300000); // Refresh every 5 minutes
@@ -184,6 +233,9 @@ export default function UnifiedSalesPage() {
                               order.payment?.paymentMethod?.includes('manual') ? 'manual' : 
                               'svea'; // Default to svea for non-stripe orders
 
+        const rawCourses = order.items?.filter((i: any) => i.type === 'course').map((i: any) => i.name) || [];
+        const normalizedCourses = normalizeCourseNames(rawCourses);
+
         combinedOrders.push({
           id: order.id,
           orderNumber: order.orderNumber,
@@ -197,7 +249,7 @@ export default function UnifiedSalesPage() {
           paymentMethod: order.payment?.paymentMethod || 'unknown',
           paymentProvider: paymentProvider,
           items: order.items || [],
-          courses: order.items?.filter((i: any) => i.type === 'course').map((i: any) => i.name) || [],
+          courses: normalizedCourses,
           createdAt: order.createdAt,
           refunded: false,
           refundAmount: 0,
@@ -256,16 +308,16 @@ export default function UnifiedSalesPage() {
         }
       }
 
-      // Course breakdown
-      order.courses.forEach(course => {
-        if (!summary.courseBreakdown[course]) {
-          summary.courseBreakdown[course] = { count: 0, revenue: 0 };
-        }
-        summary.courseBreakdown[course].count++;
-        if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+      // Course breakdown - only count completed orders
+      if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+        order.courses.forEach(course => {
+          if (!summary.courseBreakdown[course]) {
+            summary.courseBreakdown[course] = { count: 0, revenue: 0 };
+          }
+          summary.courseBreakdown[course].count++;
           summary.courseBreakdown[course].revenue += order.amount - (order.refundAmount || 0);
-        }
-      });
+        });
+      }
 
       // Monthly revenue
       const month = new Date(order.createdAt).toISOString().slice(0, 7);
@@ -290,18 +342,6 @@ export default function UnifiedSalesPage() {
       .slice(-12); // Last 12 months
 
     return summary;
-  };
-
-  const extractCoursesFromDescription = (description: string): string[] => {
-    if (!description) return [];
-    const courses: string[] = [];
-    
-    if (description.includes('Functional Basics')) courses.push('Functional Basics');
-    if (description.includes('Functional Flow') || description.includes('Functional Gut Health/Flow')) courses.push('Functional Flow');
-    if (description.includes('Functional Energy') || description.includes('Functional Insulin balance/Energy')) courses.push('Functional Energy');
-    if (description.includes('Hormonell Balans')) courses.push('Hormonell Balans');
-    
-    return courses;
   };
 
   const applyFilters = () => {
