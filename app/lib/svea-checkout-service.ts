@@ -269,24 +269,25 @@ export class SveaCheckoutService {
       if (response.status === 401) {
         errorMessage += '\n\n❌ 401 Unauthorized - Detta betyder att autentiseringen misslyckades.\n';
         errorMessage += '\nMöjliga orsaker:';
-        errorMessage += `\n1. ✅ Du använder ${this.config.testMode ? 'TEST' : 'PRODUKTION'} miljö (${this.baseUrl})`;
+        errorMessage += `\n1. ⚠️ Du använder ${this.config.testMode ? 'TEST' : 'PRODUKTION'} miljö (${this.baseUrl})`;
         errorMessage += `\n2. ❓ SVEA_SECRET_WORD är ${this.config.secretWord.length} tecken lång`;
         errorMessage += `\n3. ❓ SVEA_TEST_MODE är satt till: ${this.config.testMode ? 'true' : 'false'}`;
         errorMessage += `\n4. ❓ Merchant ID: ${this.config.merchantId}`;
         errorMessage += '\n\n🔧 Lösning:';
         if (!this.config.testMode) {
-          errorMessage += '\n- Du använder PRODUKTION miljö';
-          errorMessage += '\n- Kontrollera att SVEA_SECRET_WORD är din PRODUKTIONS-nyckel (inte test-nyckel)';
-          errorMessage += '\n- Kontrollera att produktions-nyckeln är aktiverad hos Svea';
-          errorMessage += '\n- Kontakta Svea support om produktions-nyckeln inte fungerar';
-          errorMessage += '\n\n💡 TIP: Testa först med SVEA_TEST_MODE=true och test-nyckeln';
+          errorMessage += '\n- Du använder PRODUKTION miljö (https://checkoutapi.svea.com)';
+          errorMessage += '\n- ✅ Kontrollera att SVEA_SECRET_WORD är din PRODUKTIONS-nyckel (inte test-nyckel)';
+          errorMessage += '\n- ✅ Kontrollera att SVEA_TEST_MODE är satt till "false" eller är osatt i Railway';
+          errorMessage += '\n- ✅ Kontrollera att produktions-nyckeln är aktiverad hos Svea';
+          errorMessage += '\n- ✅ Kontakta Svea support om produktions-nyckeln inte fungerar';
         } else {
-          errorMessage += '\n- Du använder TEST miljö';
-          errorMessage += '\n- Kontrollera att SVEA_SECRET_WORD är din TEST/STAGE-nyckel';
-          errorMessage += '\n- Kontrollera att SVEA_TEST_MODE är satt till "true"';
+          errorMessage += '\n- ⚠️ Du använder TEST miljö (https://checkoutapistage.svea.com)';
+          errorMessage += '\n- ✅ Kontrollera att SVEA_SECRET_WORD är din TEST/STAGE-nyckel';
+          errorMessage += '\n- ✅ Kontrollera att SVEA_TEST_MODE är satt till "true"';
+          errorMessage += '\n\n💡 För PRODUKTION: Sätt SVEA_TEST_MODE=false eller ta bort variabeln i Railway';
         }
         errorMessage += `\n- Timestamp (första försöket): ${timestamp}`;
-        errorMessage += '\n- Om både padded och unpadded timestamp gav 401, är problemet förmodligen credentials';
+        errorMessage += '\n- Om både padded och unpadded timestamp gav 401, är problemet förmodligen fel nyckel för miljön';
       }
       
       console.error('❌ SVEA createOrder Error:', {
@@ -502,13 +503,25 @@ export class SveaCheckoutService {
 export function getSveaCheckout(): SveaCheckoutService {
   const merchantId = process.env.SVEA_MERCHANT_ID;
   const secretWord = process.env.SVEA_SECRET_WORD;
-  const testMode = (process.env.SVEA_TEST_MODE || '').toLowerCase() === 'true';
+  
+  // Default to production (false) if not explicitly set to 'true'
+  // This is safer - production is the default, test must be explicitly enabled
+  const testModeEnv = (process.env.SVEA_TEST_MODE || '').toLowerCase().trim();
+  const testMode = testModeEnv === 'true';
 
   if (!merchantId || !secretWord) {
     throw new Error(
       'Svea configuration missing. Please set SVEA_MERCHANT_ID and SVEA_SECRET_WORD environment variables.'
     );
   }
+
+  console.log('🔧 SVEA Configuration:', {
+    merchantId,
+    secretWordLength: secretWord?.length,
+    testModeEnv,
+    testMode,
+    baseUrl: testMode ? 'https://checkoutapistage.svea.com' : 'https://checkoutapi.svea.com'
+  });
 
   return new SveaCheckoutService({
     merchantId,

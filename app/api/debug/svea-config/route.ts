@@ -17,19 +17,22 @@ export async function GET(req: NextRequest) {
 
     const merchantId = process.env.SVEA_MERCHANT_ID;
     const secretWord = process.env.SVEA_SECRET_WORD;
-    const testMode = process.env.SVEA_TEST_MODE;
+    const testModeEnv = (process.env.SVEA_TEST_MODE || '').toLowerCase().trim();
+    const testMode = testModeEnv === 'true';
 
     const debugInfo = {
       timestamp: new Date().toISOString(),
       nodeEnv: process.env.NODE_ENV,
       environment: {
-        SVEA_MERCHANT_ID: merchantId ? `SET (${merchantId.length} chars)` : 'NOT SET',
+        SVEA_MERCHANT_ID: merchantId ? `SET (${merchantId})` : 'NOT SET',
         SVEA_SECRET_WORD: secretWord ? `SET (${secretWord.length} chars)` : 'NOT SET',
-        SVEA_TEST_MODE: testMode ? `SET (${testMode})` : 'NOT SET',
+        SVEA_TEST_MODE: testModeEnv ? `SET (${testModeEnv})` : 'NOT SET (defaults to production)',
+        ACTUAL_MODE: testMode ? 'TEST' : 'PRODUCTION',
+        BASE_URL: testMode ? 'https://checkoutapistage.svea.com' : 'https://checkoutapi.svea.com'
       },
       allSveaRelatedVars: allEnvVars.length > 0 ? allEnvVars : 'NONE FOUND',
       configured: !!merchantId && !!secretWord,
-      baseUrl: testMode === 'true' ? 'https://checkoutapistage.svea.com' : 'https://checkoutapi.svea.com'
+      warning: testMode ? '⚠️ Using TEST environment. Set SVEA_TEST_MODE=false for production!' : '✅ Using PRODUCTION environment'
     };
 
     if (!merchantId || !secretWord) {
