@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 /**
- * Debug endpoint to verify Svea configuration
+ * Debug endpoint to verify Svea configuration and test order creation
  */
 export async function GET(req: NextRequest) {
   try {
@@ -52,18 +53,67 @@ export async function GET(req: NextRequest) {
     // Try to initialize
     try {
       const svea = getSveaCheckout();
+      
+      // Optionally test order creation with a minimal test order
+      const testOrder = req.nextUrl.searchParams.get('test') === 'true';
+      let testResult = null;
+      
+      if (testOrder) {
+        try {
+          const testRequest = {
+            countryCode: 'SE' as const,
+            currency: 'SEK' as const,
+            locale: 'sv-SE' as const,
+            clientOrderNumber: `TEST-${Date.now()}`,
+            merchantSettings: {
+              termsUri: 'https://www.functionalfoods.se/anvandarvillkor',
+              checkoutUri: 'https://www.functionalfoods.se/checkout',
+              confirmationUri: 'https://www.functionalfoods.se/checkout/success/svea-v2',
+              pushUri: 'https://www.functionalfoods.se/api/webhooks/svea-v2'
+            },
+            cart: {
+              items: [{
+                articleNumber: 'TEST-001',
+                name: 'Test Product',
+                quantity: 1,
+                unitPrice: 10000, // 100 SEK in öre
+                vatPercent: 2500, // 25%
+                unit: 'st'
+              }]
+            }
+          };
+          
+          const result = await svea.createOrder(testRequest);
+          testResult = {
+            success: true,
+            orderId: result.orderId,
+            status: result.status,
+            hasGui: !!result.gui
+          };
+        } catch (testError: any) {
+          testResult = {
+            success: false,
+            error: testError?.message || 'Unknown error',
+            details: testError?.stack || String(testError)
+          };
+        }
+      }
+      
       return NextResponse.json({
         ...debugInfo,
         status: 'OK',
         message: 'Svea is properly configured and initialized',
-        testUrl: 'POST /api/checkout/svea-v2'
+        testUrl: 'POST /api/checkout/svea-v2',
+        testOrderResult: testResult,
+        testOrderNote: testOrder ? 'Test order was attempted' : 'Add ?test=true to URL to test order creation'
       });
     } catch (error) {
       return NextResponse.json({
         ...debugInfo,
         status: 'ERROR',
         message: 'Failed to initialize Svea',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
       });
     }
   } catch (error) {

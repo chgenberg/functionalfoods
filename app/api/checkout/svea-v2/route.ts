@@ -394,13 +394,41 @@ export async function POST(req: NextRequest) {
     });
 
     // Create order in Svea
-    console.log('📤 Sending request to Svea with items:', sveaItems);
-    const sveaResponse = await sveaCheckout.createOrder(checkoutRequest);
-
-    console.log('✅ Svea order created successfully:', {
-      checkoutOrderId: sveaResponse.orderId,
-      status: sveaResponse.status
-    });
+    console.log('📤 Sending request to Svea with items:', JSON.stringify(sveaItems, null, 2));
+    console.log('📤 Svea checkout request payload:', JSON.stringify({
+      countryCode: checkoutRequest.countryCode,
+      currency: checkoutRequest.currency,
+      locale: checkoutRequest.locale,
+      clientOrderNumber: checkoutRequest.clientOrderNumber,
+      itemCount: checkoutRequest.cart.items.length,
+      totalItems: checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0),
+      merchantSettings: checkoutRequest.merchantSettings,
+      hasPresetValues: !!checkoutRequest.presetValues
+    }, null, 2));
+    
+    let sveaResponse;
+    try {
+      sveaResponse = await sveaCheckout.createOrder(checkoutRequest);
+      console.log('✅ Svea order created successfully:', {
+        checkoutOrderId: sveaResponse.orderId,
+        status: sveaResponse.status,
+        hasGui: !!sveaResponse.gui
+      });
+    } catch (sveaError: any) {
+      console.error('❌ Svea createOrder failed:', {
+        error: sveaError,
+        message: sveaError?.message,
+        stack: sveaError?.stack,
+        name: sveaError?.name,
+        response: sveaError?.response,
+        checkoutRequest: {
+          orderId: checkoutRequest.clientOrderNumber,
+          itemCount: checkoutRequest.cart.items.length,
+          totalAmount: checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0)
+        }
+      });
+      throw sveaError; // Re-throw to be caught by outer catch
+    }
 
     // Store order in database
     const totalAmount = SveaCheckoutService.formatPriceFromMinorUnits(subtotal - discountAmount);
@@ -449,28 +477,66 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error) {
+    const errorObj = error instanceof Error ? error : new Error(String(error));
+    const errorMessage = errorObj.message;
+    const errorStack = errorObj.stack;
+    
     console.error('💥 Checkout error details:', {
-      error,
-      message: error instanceof Error ? error.message : 'Okänt fel',
-      stack: error instanceof Error ? error.stack : undefined,
-      type: typeof error
+      error: errorObj,
+      message: errorMessage,
+      stack: errorStack,
+      type: typeof error,
+      name: errorObj.name,
+      // Log request context
+      requestBody: {
+        itemCount: (error as any)?.requestBody?.items?.length,
+        hasCustomer: !!(error as any)?.requestBody?.customer,
+        hasCoupon: !!(error as any)?.requestBody?.couponCode
+      }
     });
     
-    const errorMessage = error instanceof Error ? error.message : 'Okänt fel';
-    const isConfigError = errorMessage.includes('credentials not configured');
-    const isSveaError = errorMessage.includes('Svea API Error');
+    // Check for specific error types
+    const isConfigError = errorMessage.includes('configuration missing') || 
+                         errorMessage.includes('credentials not configured') ||
+                         errorMessage.includes('inte konfigurerat');
+    const isSveaError = errorMessage.includes('Svea API Error') || 
+                       errorMessage.includes('SVEA') ||
+                       errorMessage.includes('401') ||
+                       errorMessage.includes('Unauthorized');
+    const isValidationError = errorMessage.includes('hittades inte') ||
+                              errorMessage.includes('Inga produkter');
+    
+    // Determine status code
+    let statusCode = 500;
+    if (isConfigError) statusCode = 503;
+    else if (isValidationError) statusCode = 400;
+    else if (isSveaError) statusCode = 502; // Bad Gateway for external API errors
+    
+    // Build user-friendly error message
+    let userMessage = 'Ett fel uppstod vid skapande av beställning. Försök igen.';
+    if (isConfigError) {
+      userMessage = 'Betalningssystemet är inte konfigurerat. Kontakta support.';
+    } else if (isSveaError) {
+      userMessage = `SVEA fel: ${errorMessage}`;
+    } else if (isValidationError) {
+      userMessage = errorMessage;
+    }
     
     return NextResponse.json(
       { 
-        error: isConfigError 
-          ? 'Betalningssystemet är inte konfigurerat. Kontakta support.'
-          : isSveaError
-            ? `SVEA fel: ${errorMessage}`
-            : 'Ett fel uppstod vid skapande av beställning. Försök igen.',
+        error: userMessage,
         details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
-        fullError: process.env.NODE_ENV === 'development' ? error : undefined
+        errorType: isConfigError ? 'CONFIG_ERROR' : 
+                   isSveaError ? 'SVEA_API_ERROR' : 
+                   isValidationError ? 'VALIDATION_ERROR' : 
+                   'UNKNOWN_ERROR',
+        fullError: process.env.NODE_ENV === 'development' ? {
+          message: errorMessage,
+          stack: errorStack,
+          name: errorObj.name
+        } : undefined
       },
-      { status: isConfigError ? 503 : 500 }
+      { status: statusCode }
     );
   } finally {
     await prisma.$disconnect();
