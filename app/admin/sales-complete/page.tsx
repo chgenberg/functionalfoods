@@ -229,12 +229,29 @@ export default function UnifiedSalesPage() {
           return;
         }
 
-        const paymentProvider = order.checkoutOrderId?.includes('svea') ? 'svea' : 
-                              order.payment?.paymentMethod?.includes('manual') ? 'manual' : 
-                              'svea'; // Default to svea for non-stripe orders
+        // Determine payment provider more accurately
+        let paymentProvider: 'stripe' | 'svea' | 'manual' = 'manual'; // Default to manual for old orders
+        
+        if (order.checkoutOrderId) {
+          // If there's a checkoutOrderId, it's from Svea
+          paymentProvider = 'svea';
+        } else if (order.payment?.paymentMethod) {
+          // Check payment method
+          const method = order.payment.paymentMethod.toLowerCase();
+          if (method.includes('manual')) {
+            paymentProvider = 'manual';
+          } else if (method.includes('stripe')) {
+            paymentProvider = 'stripe';
+          }
+        }
 
         const rawCourses = order.items?.filter((i: any) => i.type === 'course').map((i: any) => i.name) || [];
         const normalizedCourses = normalizeCourseNames(rawCourses);
+        
+        // Debug logging for order classification
+        if (normalizedCourses.length > 0) {
+          console.log(`📦 Database Order: ${order.orderNumber}, Provider: ${paymentProvider}, Status: ${order.status}, Courses: ${normalizedCourses.join(', ')}, Has checkoutOrderId: ${!!order.checkoutOrderId}`);
+        }
 
         combinedOrders.push({
           id: order.id,
