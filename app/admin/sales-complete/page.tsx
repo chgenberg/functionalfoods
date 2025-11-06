@@ -876,27 +876,30 @@ export default function UnifiedSalesPage() {
           className="admin-card"
         >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Månadsvis försäljning</h3>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {summary.monthlyRevenue.map((month, idx) => {
               const maxRevenue = Math.max(...summary.monthlyRevenue.map(m => m.amount));
               const percentage = maxRevenue > 0 ? (month.amount / maxRevenue) * 100 : 0;
               
               return (
-                <div key={month.date} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 w-20">
-                    {new Date(month.date + '-01').toLocaleDateString('sv-SE', { year: 'numeric', month: 'short' })}
-                  </span>
-                  <div className="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${percentage}%` }}
-                      transition={{ delay: idx * 0.02, duration: 0.5 }}
-                      className="h-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-end pr-2"
-                    >
-                      {month.amount > 0 && (
-                        <span className="text-xs text-white font-medium">{formatPrice(month.amount)} kr</span>
-                      )}
-                    </motion.div>
+                <div key={month.date} className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-600">
+                      {new Date(month.date + '-01').toLocaleDateString('sv-SE', { year: 'numeric', month: 'short' })}
+                    </span>
+                    <span className="text-sm font-bold text-green-700">
+                      {formatPrice(month.amount)} kr
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <div className="bg-gray-100 rounded-full h-8 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${percentage}%` }}
+                        transition={{ delay: idx * 0.02, duration: 0.5 }}
+                        className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full"
+                      />
+                    </div>
                   </div>
                 </div>
               );
@@ -917,24 +920,32 @@ export default function UnifiedSalesPage() {
               .map(([course, data], idx) => {
                 const totalRevenue = Object.values(summary.courseBreakdown).reduce((sum, c) => sum + c.revenue, 0);
                 const percentage = totalRevenue > 0 ? (data.revenue / totalRevenue) * 100 : 0;
-                const colors = ['from-blue-500 to-blue-600', 'from-purple-500 to-purple-600', 'from-orange-500 to-orange-600', 'from-pink-500 to-pink-600'];
+                const colors = [
+                  { gradient: 'from-blue-500 to-blue-600', text: 'text-blue-700' },
+                  { gradient: 'from-purple-500 to-purple-600', text: 'text-purple-700' },
+                  { gradient: 'from-orange-500 to-orange-600', text: 'text-orange-700' },
+                  { gradient: 'from-pink-500 to-pink-600', text: 'text-pink-700' }
+                ];
+                const colorSet = colors[idx % colors.length];
                 
                 return (
-                  <div key={course}>
-                    <div className="flex items-center justify-between mb-2">
+                  <div key={course} className="space-y-1">
+                    <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-700">{course}</span>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-gray-900">{formatPrice(data.revenue)} kr</p>
-                        <p className="text-xs text-gray-500">{data.count} st</p>
+                        <p className={`text-sm font-bold ${colorSet.text}`}>{formatPrice(data.revenue)} kr</p>
+                        <p className="text-xs text-gray-500">{data.count} ordrar</p>
                       </div>
                     </div>
-                    <div className="bg-gray-100 rounded-full h-3 overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${percentage}%` }}
-                        transition={{ delay: idx * 0.1, duration: 0.6 }}
-                        className={`h-full bg-gradient-to-r ${colors[idx % colors.length]}`}
-                      />
+                    <div className="relative">
+                      <div className="bg-gray-100 rounded-full h-8 overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ delay: idx * 0.1, duration: 0.6 }}
+                          className={`h-full bg-gradient-to-r ${colorSet.gradient} rounded-full`}
+                        />
+                      </div>
                     </div>
                   </div>
                 );
