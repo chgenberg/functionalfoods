@@ -37,12 +37,15 @@ export default function DashboardPage() {
             const hasFlow = ownedCourses.includes('Functional Gut Health/Flow') || ownedCourses.includes('Functional Flow');
             const hasBasics = ownedCourses.includes('Functional Basics');
             const hasEnergy = ownedCourses.includes('Functional Insulin balance/Energy') || ownedCourses.includes('Functional Energy');
+            const hasHormone = ownedCourses.includes('Hormonell Balans');
             
-            if (hasEnergy && !hasFlow && !hasBasics) {
+            if (hasHormone && !hasFlow && !hasBasics && !hasEnergy) {
+              router.replace('/dashboard/courses/functional-hormone');
+            } else if (hasEnergy && !hasFlow && !hasBasics && !hasHormone) {
               router.replace('/dashboard/courses/functional-energy');
-            } else if (hasFlow && !hasBasics && !hasEnergy) {
+            } else if (hasFlow && !hasBasics && !hasEnergy && !hasHormone) {
               router.replace('/dashboard/courses/functional-flow');
-            } else if (hasBasics && !hasFlow && !hasEnergy) {
+            } else if (hasBasics && !hasFlow && !hasEnergy && !hasHormone) {
               router.replace('/dashboard/courses/functional-basics');
             } else if (ownedCourses.length > 1) {
               router.replace('/mina-kurser');

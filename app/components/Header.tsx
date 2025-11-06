@@ -109,17 +109,20 @@ export default function Header() {
               const hasFlow = ownedCourses.some((name: string) => name.includes('Flow') || name.includes('Gut Health'));
               const hasBasics = ownedCourses.some((name: string) => name.includes('Basics'));
               const hasEnergy = ownedCourses.some((name: string) => name.includes('Energy') || name.includes('Insulin'));
+              const hasHormone = ownedCourses.some((name: string) => name.includes('Hormonell') || name.includes('Balans'));
               
-              if (hasEnergy && !hasFlow && !hasBasics) {
+              if (hasHormone && !hasFlow && !hasBasics && !hasEnergy) {
+                window.location.href = '/dashboard/courses/functional-hormone';
+              } else if (hasEnergy && !hasFlow && !hasBasics && !hasHormone) {
                 window.location.href = '/dashboard/courses/functional-energy';
-              } else if (hasFlow && !hasBasics && !hasEnergy) {
+              } else if (hasFlow && !hasBasics && !hasEnergy && !hasHormone) {
                 window.location.href = '/dashboard/courses/functional-flow';
-              } else if (hasBasics && !hasFlow && !hasEnergy) {
+              } else if (hasBasics && !hasFlow && !hasEnergy && !hasHormone) {
                 window.location.href = '/dashboard/courses/functional-basics';
               } else if (purchases.length > 1) {
                 window.location.href = '/mina-kurser';
               } else {
-                window.location.href = '/dashboard/courses/functional-basics';
+                window.location.href = '/mina-kurser';
               }
             } else {
               window.location.href = '/mina-kurser';

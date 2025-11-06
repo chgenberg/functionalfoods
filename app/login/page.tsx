@@ -82,14 +82,18 @@ function LoginForm() {
                 const hasFlow = ownedCourses.includes('Functional Gut Health/Flow') || ownedCourses.includes('Functional Flow');
                 const hasBasics = ownedCourses.includes('Functional Basics');
                 const hasEnergy = ownedCourses.includes('Functional Insulin balance/Energy') || ownedCourses.includes('Functional Energy');
+                const hasHormone = ownedCourses.includes('Hormonell Balans');
                 
-                if (hasFlow && !hasBasics && !hasEnergy) {
+                if (hasHormone && !hasFlow && !hasBasics && !hasEnergy) {
+                  // Only Hormone course
+                  router.replace('/dashboard/courses/functional-hormone');
+                } else if (hasFlow && !hasBasics && !hasEnergy && !hasHormone) {
                   // Only Flow course
                   router.replace('/dashboard/courses/functional-flow');
-                } else if (hasBasics && !hasFlow && !hasEnergy) {
+                } else if (hasBasics && !hasFlow && !hasEnergy && !hasHormone) {
                   // Only Basic course
                   router.replace('/dashboard/courses/functional-basics');
-                } else if (hasEnergy && !hasFlow && !hasBasics) {
+                } else if (hasEnergy && !hasFlow && !hasBasics && !hasHormone) {
                   // Only Energy course
                   router.replace('/dashboard/courses/functional-energy');
                 } else if (ownedCourses.length > 1) {
