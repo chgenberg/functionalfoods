@@ -180,20 +180,55 @@ export default function UnifiedSalesPage() {
       setLoading(true);
       setError(null);
 
-      // Fetch ONLY from database - it's the source of truth
-      const ordersRes = await fetch('/api/admin/orders', { credentials: 'include' });
+      // Fetch from all sources in parallel
+      // Note: We need Stripe API because many payments never became orders in DB (webhook issues)
+      const [stripeRes, ordersRes] = await Promise.all([
+        fetch('/api/admin/stripe-payments', { credentials: 'include' }),
+        fetch('/api/admin/orders', { credentials: 'include' })
+      ]);
 
-      if (!ordersRes.ok) {
+      if (!stripeRes.ok || !ordersRes.ok) {
         throw new Error('Failed to fetch order data');
       }
 
+      const stripeData = await stripeRes.json();
       const ordersData = await ordersRes.json();
 
-      // Format all orders from database
+      // Combine and format all orders
       const combinedOrders: UnifiedOrder[] = [];
 
-      // Process all orders from database
+      // Process Stripe payments FIRST (they are the source of truth for payments)
+      if (stripeData.payments) {
+        stripeData.payments.forEach((payment: any) => {
+          combinedOrders.push({
+            id: payment.id,
+            orderNumber: payment.orderInfo?.orderNumber || payment.id,
+            customerName: payment.customer.name || 'Okänd',
+            customerEmail: payment.customer.email,
+            customerPhone: payment.customer.metadata?.phone,
+            customerCountry: payment.customer.metadata?.country || 'SE',
+            amount: payment.amount / 100,
+            currency: payment.currency.toUpperCase(),
+            status: payment.status,
+            paymentMethod: payment.paymentMethod?.type || 'card',
+            paymentProvider: 'stripe',
+            items: payment.orderInfo?.items || [],
+            courses: extractCoursesFromDescription(payment.description),
+            createdAt: payment.created,
+            refunded: payment.refunded,
+            refundAmount: payment.refundAmount / 100,
+            receiptUrl: payment.receiptUrl,
+            metadata: payment
+          });
+        });
+      }
+
+      // Process orders from database (Svea and manual) - skip if already from Stripe
       ordersData.forEach((order: any) => {
+        // Skip if already processed as Stripe payment
+        if (combinedOrders.some(o => o.orderNumber === order.orderNumber)) {
+          return;
+        }
 
         // Determine payment provider more accurately
         let paymentProvider: 'stripe' | 'svea' | 'manual' = 'manual'; // Default to manual for old orders
@@ -287,8 +322,9 @@ export default function UnifiedSalesPage() {
         }
       }
 
-      // Course breakdown - only count completed orders with actual revenue
-      if ((order.status === 'succeeded' || order.status === 'COMPLETED') && order.amount > 0) {
+      // Course breakdown - count succeeded/completed/pending orders with actual revenue
+      const isSuccessful = order.status === 'succeeded' || order.status === 'COMPLETED' || order.status === 'PENDING';
+      if (isSuccessful && order.amount > 0) {
         order.courses.forEach(course => {
           if (!summary.courseBreakdown[course]) {
             summary.courseBreakdown[course] = { count: 0, revenue: 0 };
