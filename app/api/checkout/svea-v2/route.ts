@@ -568,7 +568,6 @@ export async function POST(req: NextRequest) {
             create: validatedItems.map(item => ({
               courseId: null, // Will be resolved later if needed
               name: item.name,
-              productType: item.type,
               quantity: item.quantity,
               price: item.price,
               type: item.type
