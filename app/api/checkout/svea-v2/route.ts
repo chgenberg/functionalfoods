@@ -334,22 +334,29 @@ export async function POST(req: NextRequest) {
     };
 
     // Calculate order totals from validated items
+    console.log('💰 Calculating order totals...');
     let subtotal = 0;
     const sveaItems: SveaCartItem[] = [];
 
-    for (const item of validatedItems) {
-      const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(item.price);
-      subtotal += priceInOre * item.quantity;
+    try {
+      for (const item of validatedItems) {
+        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(item.price);
+        subtotal += priceInOre * item.quantity;
 
-      sveaItems.push({
-        articleNumber: getArticleNumber(item),
-        name: item.name,
-        quantity: item.quantity,
-        unitPrice: priceInOre,
-        vatPercent: 2500, // adjust if courses should be 0%
-        unit: 'st',
-        discountPercent: 0
-      });
+        sveaItems.push({
+          articleNumber: getArticleNumber(item),
+          name: item.name,
+          quantity: item.quantity,
+          unitPrice: priceInOre,
+          vatPercent: 2500, // adjust if courses should be 0%
+          unit: 'st',
+          discountPercent: 0
+        });
+      }
+      console.log(`✅ Calculated totals: ${sveaItems.length} items, subtotal: ${subtotal} öre`);
+    } catch (calcError) {
+      console.error('❌ Error calculating order totals:', calcError);
+      throw new Error(`Fel vid beräkning av orderbelopp: ${calcError instanceof Error ? calcError.message : 'Okänt fel'}`);
     }
 
     // Handle coupon if provided
@@ -553,19 +560,17 @@ export async function POST(req: NextRequest) {
     const errorMessage = errorObj.message;
     const errorStack = errorObj.stack;
     
-    console.error('💥 Checkout error details:', {
-      error: errorObj,
-      message: errorMessage,
-      stack: errorStack,
-      type: typeof error,
-      name: errorObj.name,
-      // Log request context
-      requestBody: {
-        itemCount: (error as any)?.requestBody?.items?.length,
-        hasCustomer: !!(error as any)?.requestBody?.customer,
-        hasCoupon: !!(error as any)?.requestBody?.couponCode
-      }
-    });
+    // Log full error details
+    console.error('💥💥💥 CHECKOUT ERROR 💥💥💥');
+    console.error('Error object:', errorObj);
+    console.error('Error message:', errorMessage);
+    console.error('Error stack:', errorStack);
+    console.error('Error name:', errorObj.name);
+    console.error('Error type:', typeof error);
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error('Error code:', (error as any).code);
+    }
+    console.error('💥💥💥 END ERROR 💥💥💥');
     
     // Check for specific error types
     const isConfigError = errorMessage.includes('configuration missing') || 
@@ -576,13 +581,20 @@ export async function POST(req: NextRequest) {
                        errorMessage.includes('401') ||
                        errorMessage.includes('Unauthorized');
     const isValidationError = errorMessage.includes('hittades inte') ||
-                              errorMessage.includes('Inga produkter');
+                              errorMessage.includes('Inga produkter') ||
+                              errorMessage.includes('validering');
+    const isDbError = errorMessage.includes('databasen') ||
+                      errorMessage.includes('database') ||
+                      errorMessage.includes('Prisma') ||
+                      errorMessage.includes('Unique constraint') ||
+                      errorMessage.includes('Foreign key');
     
     // Determine status code
     let statusCode = 500;
     if (isConfigError) statusCode = 503;
     else if (isValidationError) statusCode = 400;
     else if (isSveaError) statusCode = 502; // Bad Gateway for external API errors
+    else if (isDbError) statusCode = 500;
     
     // Build user-friendly error message
     let userMessage = 'Ett fel uppstod vid skapande av beställning. Försök igen.';
@@ -592,6 +604,8 @@ export async function POST(req: NextRequest) {
       userMessage = `SVEA fel: ${errorMessage}`;
     } else if (isValidationError) {
       userMessage = errorMessage;
+    } else if (isDbError) {
+      userMessage = 'Ett fel uppstod vid sparande av order. Kontakta support om problemet kvarstår.';
     }
     
     return NextResponse.json(
@@ -601,16 +615,22 @@ export async function POST(req: NextRequest) {
         errorType: isConfigError ? 'CONFIG_ERROR' : 
                    isSveaError ? 'SVEA_API_ERROR' : 
                    isValidationError ? 'VALIDATION_ERROR' : 
+                   isDbError ? 'DATABASE_ERROR' :
                    'UNKNOWN_ERROR',
         fullError: process.env.NODE_ENV === 'development' ? {
           message: errorMessage,
           stack: errorStack,
-          name: errorObj.name
+          name: errorObj.name,
+          code: (error as any)?.code
         } : undefined
       },
       { status: statusCode }
     );
   } finally {
-    await prisma.$disconnect();
+    try {
+      await prisma.$disconnect();
+    } catch (disconnectError) {
+      console.error('⚠️ Failed to disconnect Prisma:', disconnectError);
+    }
   }
 }
