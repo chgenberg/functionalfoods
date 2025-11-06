@@ -180,54 +180,20 @@ export default function UnifiedSalesPage() {
       setLoading(true);
       setError(null);
 
-      // Fetch from all sources in parallel
-      const [stripeRes, ordersRes] = await Promise.all([
-        fetch('/api/admin/stripe-payments', { credentials: 'include' }),
-        fetch('/api/admin/orders', { credentials: 'include' })
-      ]);
+      // Fetch ONLY from database - it's the source of truth
+      const ordersRes = await fetch('/api/admin/orders', { credentials: 'include' });
 
-      if (!stripeRes.ok || !ordersRes.ok) {
+      if (!ordersRes.ok) {
         throw new Error('Failed to fetch order data');
       }
 
-      const stripeData = await stripeRes.json();
       const ordersData = await ordersRes.json();
 
-      // Combine and format all orders
+      // Format all orders from database
       const combinedOrders: UnifiedOrder[] = [];
 
-      // Process Stripe payments
-      if (stripeData.payments) {
-        stripeData.payments.forEach((payment: any) => {
-          combinedOrders.push({
-            id: payment.id,
-            orderNumber: payment.orderInfo?.orderNumber || payment.id,
-            customerName: payment.customer.name || 'Okänd',
-            customerEmail: payment.customer.email,
-            customerPhone: payment.customer.metadata?.phone,
-            customerCountry: payment.customer.metadata?.country || 'SE',
-            amount: payment.amount / 100,
-            currency: payment.currency.toUpperCase(),
-            status: payment.status,
-            paymentMethod: payment.paymentMethod?.type || 'card',
-            paymentProvider: 'stripe',
-            items: payment.orderInfo?.items || [],
-            courses: extractCoursesFromDescription(payment.description),
-            createdAt: payment.created,
-            refunded: payment.refunded,
-            refundAmount: payment.refundAmount / 100,
-            receiptUrl: payment.receiptUrl,
-            metadata: payment
-          });
-        });
-      }
-
-      // Process orders from database (Svea and manual)
+      // Process all orders from database
       ordersData.forEach((order: any) => {
-        // Skip if already processed as Stripe order
-        if (combinedOrders.some(o => o.orderNumber === order.orderNumber)) {
-          return;
-        }
 
         // Determine payment provider more accurately
         let paymentProvider: 'stripe' | 'svea' | 'manual' = 'manual'; // Default to manual for old orders
@@ -247,11 +213,6 @@ export default function UnifiedSalesPage() {
 
         const rawCourses = order.items?.filter((i: any) => i.type === 'course').map((i: any) => i.name) || [];
         const normalizedCourses = normalizeCourseNames(rawCourses);
-        
-        // Debug logging for order classification
-        if (normalizedCourses.length > 0) {
-          console.log(`📦 Database Order: ${order.orderNumber}, Provider: ${paymentProvider}, Status: ${order.status}, Courses: ${normalizedCourses.join(', ')}, Has checkoutOrderId: ${!!order.checkoutOrderId}`);
-        }
 
         combinedOrders.push({
           id: order.id,
@@ -287,21 +248,6 @@ export default function UnifiedSalesPage() {
   };
 
   const calculateSummary = (orders: UnifiedOrder[]): OrderSummary => {
-    console.log('🔍 Calculating summary for', orders.length, 'orders');
-    
-    // Log all unique statuses
-    const statuses = [...new Set(orders.map(o => o.status))];
-    console.log('📊 Unique statuses found:', statuses);
-    
-    // Log sample of orders with courses
-    const ordersWithCourses = orders.filter(o => o.courses.length > 0);
-    console.log('📚 Orders with courses:', ordersWithCourses.length);
-    console.log('Sample orders:', ordersWithCourses.slice(0, 5).map(o => ({
-      status: o.status,
-      courses: o.courses,
-      amount: o.amount,
-      provider: o.paymentProvider
-    })));
 
     const summary: OrderSummary = {
       totalOrders: orders.length,
@@ -349,16 +295,7 @@ export default function UnifiedSalesPage() {
           }
           summary.courseBreakdown[course].count++;
           summary.courseBreakdown[course].revenue += order.amount - (order.refundAmount || 0);
-          
-          // Debug logging
-          console.log(`✅ Course: ${course}, Amount: ${order.amount}, Status: ${order.status}, Provider: ${order.paymentProvider}`);
         });
-      } else {
-        // Log skipped orders for debugging
-        if (order.courses.length > 0) {
-          const reason = order.amount === 0 ? 'Amount is 0 kr' : `Status: ${order.status}`;
-          console.log(`❌ Skipped order - ${reason}, Courses: ${order.courses.join(', ')}, Amount: ${order.amount}, Provider: ${order.paymentProvider}`);
-        }
       }
 
       // Monthly revenue
