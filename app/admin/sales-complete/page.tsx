@@ -270,6 +270,22 @@ export default function UnifiedSalesPage() {
   };
 
   const calculateSummary = (orders: UnifiedOrder[]): OrderSummary => {
+    console.log('🔍 Calculating summary for', orders.length, 'orders');
+    
+    // Log all unique statuses
+    const statuses = [...new Set(orders.map(o => o.status))];
+    console.log('📊 Unique statuses found:', statuses);
+    
+    // Log sample of orders with courses
+    const ordersWithCourses = orders.filter(o => o.courses.length > 0);
+    console.log('📚 Orders with courses:', ordersWithCourses.length);
+    console.log('Sample orders:', ordersWithCourses.slice(0, 5).map(o => ({
+      status: o.status,
+      courses: o.courses,
+      amount: o.amount,
+      provider: o.paymentProvider
+    })));
+
     const summary: OrderSummary = {
       totalOrders: orders.length,
       totalRevenue: 0,
@@ -316,7 +332,15 @@ export default function UnifiedSalesPage() {
           }
           summary.courseBreakdown[course].count++;
           summary.courseBreakdown[course].revenue += order.amount - (order.refundAmount || 0);
+          
+          // Debug logging
+          console.log(`✅ Course: ${course}, Amount: ${order.amount}, Status: ${order.status}, Provider: ${order.paymentProvider}`);
         });
+      } else {
+        // Log non-completed orders for debugging
+        if (order.courses.length > 0) {
+          console.log(`❌ Skipped order - Status: ${order.status}, Courses: ${order.courses.join(', ')}, Amount: ${order.amount}, Provider: ${order.paymentProvider}`);
+        }
       }
 
       // Monthly revenue
