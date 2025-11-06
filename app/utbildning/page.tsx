@@ -67,12 +67,13 @@ export default function UtbildningPage() {
                   src={course.image}
                   alt={course.title}
                   fill
-                  priority={idx < 2}
-                  loading={idx < 2 ? 'eager' : 'lazy'}
+                  priority
+                  loading="eager"
                   decoding="async"
-                  quality={70}
+                  quality={60}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  unoptimized={false}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
                 <div className="absolute left-4 bottom-4 flex items-center gap-3 text-white">
