@@ -155,10 +155,12 @@ export async function POST(req: NextRequest) {
       }
 
       // Calculate order totals (öre) from validated items
-      // VIKTIGT: Svea förväntar sig pris EXKLUSIVE moms (de lägger till moms själva)
+      // VIKTIGT: Svea förväntar sig pris INKLUSIVE moms (samma som riktiga betalningar)
+      const VAT_RATE = 0.25;
       let subtotal = 0;
       for (const item of validatedItems) {
-        subtotal += SveaCheckoutService.formatPriceToMinorUnits(item.price) * item.quantity;
+        const priceInclVAT = item.price * (1 + VAT_RATE);
+        subtotal += SveaCheckoutService.formatPriceToMinorUnits(priceInclVAT) * item.quantity;
       }
 
       // Handle coupon (optional)
@@ -340,31 +342,34 @@ export async function POST(req: NextRequest) {
     const sveaItems: SveaCartItem[] = [];
 
     try {
+      const VAT_RATE = 0.25; // 25% moms
+      
       for (const item of validatedItems) {
-        // VIKTIGT: Svea förväntar sig pris EXKLUSIVE moms i unitPrice
-        // Svea lägger TILL momsen baserat på vatPercent automatiskt
-        // item.price är redan exkl. moms från databasen - använd som den är!
-        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(item.price);
+        // Enligt Svea dokumentation: unitPrice ska vara INKLUSIVE moms
+        // item.price från DB är exkl. moms (1836 kr)
+        // Konsumentpris inkl. moms: 1836 * 1.25 = 2295 kr
+        const priceInclVAT = item.price * (1 + VAT_RATE);
+        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(priceInclVAT);
         subtotal += priceInOre * item.quantity;
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
           name: item.name,
           quantity: item.quantity,
-          unitPrice: priceInOre, // Pris EXKL. moms i öre (Svea lägger till moms själva)
-          vatPercent: 2500, // 25% moms (Svea lägger automatiskt till 25% på unitPrice)
+          unitPrice: priceInOre, // Pris INKL. moms i öre (Svea Checkout API krav)
+          vatPercent: 2500, // 25% moms (används för att visa momsandel)
           unit: 'st',
           discountPercent: 0
         });
       }
-      console.log(`✅ Calculated totals: ${sveaItems.length} items, subtotal EXKL. moms: ${subtotal} öre (${subtotal/100} kr), INKL. moms: ${subtotal * 1.25 / 100} kr`);
+      console.log(`✅ Calculated totals: ${sveaItems.length} items, subtotal INKL. moms: ${subtotal} öre (${subtotal/100} kr)`);
     } catch (calcError) {
       console.error('❌ Error calculating order totals:', calcError);
       throw new Error(`Fel vid beräkning av orderbelopp: ${calcError instanceof Error ? calcError.message : 'Okänt fel'}`);
     }
 
     // Handle coupon if provided
-    // VIKTIGT: För konsumenter ska rabatt appliceras på pris INKLUSIVE moms
+    // Rabatt appliceras direkt på subtotal (som nu är inkl. moms)
     let discountAmount = 0;
     let appliedCoupon = null;
 
@@ -384,13 +389,11 @@ export async function POST(req: NextRequest) {
         if (coupon) {
           // Check usage limit
           if (!coupon.usageLimit || coupon.timesUsed < coupon.usageLimit) {
-            // Beräkna rabatt på pris INKLUSIVE moms (konsumentpris)
-            const subtotalInclVAT = subtotal * 1.25; // Lägg till 25% moms
-            
+            // subtotal är nu redan inkl. moms, så vi applicerar rabatt direkt
             if (coupon.type === 'PERCENTAGE') {
-              discountAmount = Math.round(subtotalInclVAT * (coupon.amount / 100));
+              discountAmount = Math.round(subtotal * (coupon.amount / 100));
             } else if (coupon.type === 'FIXED') {
-              // Fixed rabatt ska också vara inkl. moms
+              // Fixed rabatt - konvertera till inkl. moms
               discountAmount = SveaCheckoutService.formatPriceToMinorUnits(coupon.amount * 1.25);
             }
             appliedCoupon = coupon;
