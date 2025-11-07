@@ -12,6 +12,8 @@ function SveaSuccessContent() {
   const [orderDetails, setOrderDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 20; // Max 1 minute (20 * 3 seconds)
 
   useEffect(() => {
     const orderId = searchParams?.get('orderId');
@@ -81,6 +83,7 @@ function SveaSuccessContent() {
       
       if (data.success && data.paymentCompleted) {
         setOrderDetails(data.order);
+        setRetryCount(0);
         // Clear session storage
         sessionStorage.removeItem('svea_order_id');
         sessionStorage.removeItem('svea_checkout_id');
@@ -101,11 +104,19 @@ function SveaSuccessContent() {
         } catch {}
       } else if (data.success && !data.paymentCompleted) {
         // Payment is still pending
-        setError('Betalningen behandlas fortfarande. Vänligen vänta...');
-        // Retry after a delay
-        setTimeout(() => verifyPayment(checkoutOrderId, orderId), 3000);
+        if (retryCount < maxRetries) {
+          setError(`Betalningen behandlas fortfarande. Vänligen vänta... (${retryCount + 1}/${maxRetries})`);
+          setRetryCount(retryCount + 1);
+          // Retry after a delay
+          setTimeout(() => verifyPayment(checkoutOrderId, orderId), 3000);
+        } else {
+          // After max retries, show manual instruction
+          setError('Betalningen tar längre tid än förväntat. Din order är registrerad och du får ett bekräftelsemail när betalningen är slutförd.');
+          setLoading(false);
+        }
       } else {
         setError(data.error || 'Kunde inte verifiera betalningen');
+        setLoading(false);
       }
     } catch (err) {
       setError('Ett fel uppstod vid verifiering av betalningen');
