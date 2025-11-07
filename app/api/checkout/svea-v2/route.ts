@@ -73,19 +73,68 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    const productMap = new Map(courseProducts.map(p => {
-      const key = p.name.toLowerCase().replace(/\s+/g, '-');
-      return [key, p];
-    }));
+    // Create comprehensive product map with multiple key variations
+    const slugify = (s: string) => s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9\-]+/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    
+    const productMap = new Map<string, any>();
+    for (const p of courseProducts) {
+      const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
+      const key2 = slugify(p.name);
+      productMap.set(key1, p);
+      productMap.set(key2, p);
+      productMap.set(p.id, p); // allow using DB id directly
+      productMap.set(p.name.toLowerCase(), p); // exact name match (case-insensitive)
+      productMap.set(p.name, p); // exact name match (case-sensitive)
+    }
+    
+    // Add specific ID mappings for common variations
+    const idMappings: Record<string, string> = {
+      'functional-hormone': 'hormonell-balans',
+      'hormonell-balans': 'hormonell-balans',
+      'hormonell-balans-kurs': 'hormonell-balans',
+      'functional-energy': 'functional-energy',
+      'functional-insulin': 'functional-energy',
+      'functional-insulin-balance': 'functional-energy',
+      'functional-basics': 'functional-basics',
+      'functional-flow': 'functional-flow',
+      'functional-gut': 'functional-flow',
+      'functional-gut-health': 'functional-flow',
+    };
+    
+    // Add mapped IDs to productMap
+    for (const [mappedId, targetId] of Object.entries(idMappings)) {
+      const product = courseProducts.find(p => {
+        const key = p.name.toLowerCase().replace(/\s+/g, '-');
+        return key === targetId || slugify(p.name) === targetId;
+      });
+      if (product) {
+        productMap.set(mappedId, product);
+      }
+    }
 
     // Validate and enrich items with server-side data
     const validatedItems = [];
     for (const item of items) {
       try {
-        const product = productMap.get(item.id);
+        let product = productMap.get(item.id);
+        
+        // Fallback: try to match by name if ID didn't match
+        if (!product && item.name) {
+          product = productMap.get(item.name.toLowerCase()) || 
+                    productMap.get(item.name) ||
+                    courseProducts.find(p => p.name.toLowerCase() === item.name.toLowerCase());
+        }
+        
         if (!product) {
           console.error(`❌ Product not found: "${item.id}"`);
-          console.error('Available products:', Array.from(productMap.keys()));
+          console.error('Available products:', Array.from(productMap.keys()).slice(0, 20)); // Limit output
           return NextResponse.json(
             { error: `Produkten med id "${item.id}" hittades inte.` },
             { status: 400 }
