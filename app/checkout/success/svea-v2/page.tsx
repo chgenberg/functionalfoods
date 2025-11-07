@@ -73,6 +73,8 @@ function SveaSuccessContent() {
 
   const verifyPayment = async (checkoutOrderId: string, orderId: string) => {
     try {
+      console.log('🔍 Verifying payment:', { checkoutOrderId, orderId });
+      
       const response = await fetch('/api/checkout/verify-svea-v2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,6 +82,7 @@ function SveaSuccessContent() {
       });
 
       const data = await response.json();
+      console.log('📥 Verify response:', data);
       
       if (data.success && data.paymentCompleted) {
         setOrderDetails(data.order);
@@ -115,12 +118,14 @@ function SveaSuccessContent() {
           setLoading(false);
         }
       } else {
-        setError(data.error || 'Kunde inte verifiera betalningen');
+        const errorMsg = data.error || data.details || 'Kunde inte verifiera betalningen';
+        console.error('❌ Verify failed:', data);
+        setError(errorMsg);
         setLoading(false);
       }
     } catch (err) {
-      setError('Ett fel uppstod vid verifiering av betalningen');
-    } finally {
+      console.error('❌ Verify exception:', err);
+      setError(`Ett fel uppstod vid verifiering av betalningen: ${err instanceof Error ? err.message : 'Unknown error'}`);
       setLoading(false);
     }
   };
