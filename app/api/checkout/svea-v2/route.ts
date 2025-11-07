@@ -340,9 +340,9 @@ export async function POST(req: NextRequest) {
     console.log('💰 Calculating order totals...');
     let subtotal = 0;
     const sveaItems: SveaCartItem[] = [];
+    const VAT_RATE = 0.25; // 25% moms - defined here so it's available for discount calculation later
 
     try {
-      const VAT_RATE = 0.25; // 25% moms
       
       for (const item of validatedItems) {
         // Enligt Svea dokumentation: unitPrice ska vara INKLUSIVE moms
@@ -494,11 +494,22 @@ export async function POST(req: NextRequest) {
     }
 
     // Store order in database
-    const totalAmount = SveaCheckoutService.formatPriceFromMinorUnits(subtotal - discountAmount);
+    // Calculate total amount AFTER discount (in öre, then convert to SEK)
+    const totalAmountInOre = subtotal - discountAmount;
+    const totalAmount = SveaCheckoutService.formatPriceFromMinorUnits(totalAmountInOre);
+    
+    // Calculate discounted price per item (proportionally)
+    // If discount is applied, distribute it proportionally across items
+    const subtotalBeforeDiscount = subtotal;
+    const discountRatio = discountAmount > 0 ? (totalAmountInOre / subtotalBeforeDiscount) : 1;
     
     console.log('💾 Storing order in database:', {
       orderId,
       totalAmount,
+      totalAmountInOre,
+      subtotalBeforeDiscount,
+      discountAmount,
+      discountRatio,
       itemCount: validatedItems.length,
       hasCustomer: !!customer,
       customerEmail: customer?.email
@@ -556,6 +567,23 @@ export async function POST(req: NextRequest) {
         console.log(`✅ Created guest user for order: ${guestUser.id}`);
       }
       
+      // Calculate discounted price per item
+      // Each item's price should reflect the discount proportionally
+      const itemsWithDiscountedPrice = validatedItems.map(item => {
+        // Item price is exkl. VAT, but we need to calculate the discounted price
+        // Original item total in öre (inkl. VAT): item.price * 1.25 * 100 * quantity
+        const itemTotalInOreInclVAT = SveaCheckoutService.formatPriceToMinorUnits(item.price * (1 + VAT_RATE)) * item.quantity;
+        // Apply discount ratio to get discounted total
+        const discountedItemTotalInOre = Math.round(itemTotalInOreInclVAT * discountRatio);
+        // Convert back to SEK per unit (exkl. VAT for storage)
+        const discountedPricePerUnit = SveaCheckoutService.formatPriceFromMinorUnits(discountedItemTotalInOre / item.quantity) / (1 + VAT_RATE);
+        
+        return {
+          ...item,
+          discountedPrice: Math.round(discountedPricePerUnit * 100) / 100 // Round to 2 decimals
+        };
+      });
+      
       // Now create the order with a valid userId
       await prisma.order.create({
         data: {
@@ -574,11 +602,11 @@ export async function POST(req: NextRequest) {
             discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
           },
           items: {
-            create: validatedItems.map(item => ({
+            create: itemsWithDiscountedPrice.map(item => ({
               courseId: null, // Will be resolved later if needed
               name: item.name,
               quantity: item.quantity,
-              price: item.price,
+              price: item.discountedPrice, // Use discounted price instead of original
               type: item.type
             }))
           }
