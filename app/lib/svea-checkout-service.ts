@@ -333,10 +333,18 @@ export class SveaCheckoutService {
     const endpoint = `${this.baseUrl}/api/orders/${orderId}`;
     
     // Build auth and timestamp using exact specification (try padded first)
-    const { auth, timestamp } = this.buildAuth('GET', '', true);
+    let { auth, timestamp } = this.buildAuth('GET', '', true);
+    
+    console.log('📤 SVEA getOrder:', { 
+      endpoint, 
+      orderId,
+      timestamp, 
+      baseUrl: this.baseUrl,
+      authHeader: auth.substring(0, 50) + '...'
+    });
     
     try {
-      const response = await fetch(endpoint, {
+      let response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -345,15 +353,57 @@ export class SveaCheckoutService {
         }
       });
 
-      const responseText = await response.text();
+      let responseText = await response.text();
+      
+      // If 401 with padded timestamp, try unpadded as fallback
+      if (!response.ok && response.status === 401) {
+        console.warn('⚠️ SVEA 401 with padded timestamp, trying unpadded format...');
+        ({ auth, timestamp } = this.buildAuth('GET', '', false));
+        
+        response = await fetch(endpoint, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': auth,
+            'Timestamp': timestamp
+          }
+        });
+        responseText = await response.text();
+      }
+      
+      console.log('📥 SVEA getOrder Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: responseText.substring(0, 200) + (responseText.length > 200 ? '...' : '')
+      });
       
       if (!response.ok) {
         const errorDetail = this.parseErrorResponse(responseText);
+        console.error('❌ SVEA getOrder failed:', {
+          status: response.status,
+          error: errorDetail,
+          orderId,
+          baseUrl: this.baseUrl
+        });
         throw new Error(`Svea API Error (${response.status}): ${errorDetail}`);
       }
 
-      return JSON.parse(responseText) as GetOrderResponse;
+      const result = JSON.parse(responseText);
+      console.log('✅ SVEA getOrder success:', {
+        orderId: result.id,
+        status: result.status,
+        hasCustomer: !!result.customer
+      });
+      
+      return result as GetOrderResponse;
     } catch (error) {
+      console.error('❌ SVEA getOrder exception:', {
+        error,
+        message: error instanceof Error ? error.message : 'Unknown',
+        orderId,
+        endpoint
+      });
+      
       if (error instanceof Error) {
         throw error;
       }
