@@ -83,10 +83,18 @@ function SveaSuccessContent() {
 
       const data = await response.json();
       console.log('📥 Verify response:', data);
+      console.log('🔍 Response check:', {
+        success: data.success,
+        paymentCompleted: data.paymentCompleted,
+        hasOrder: !!data.order,
+        orderStatus: data.order?.status
+      });
       
       if (data.success && data.paymentCompleted) {
+        console.log('✅ Payment completed! Setting order details and stopping loader');
         setOrderDetails(data.order);
         setRetryCount(0);
+        setLoading(false); // IMPORTANT: Stop loading when payment is completed
         // Clear session storage
         sessionStorage.removeItem('svea_order_id');
         sessionStorage.removeItem('svea_checkout_id');
