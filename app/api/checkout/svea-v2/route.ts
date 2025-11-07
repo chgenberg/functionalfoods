@@ -155,9 +155,12 @@ export async function POST(req: NextRequest) {
       }
 
       // Calculate order totals (öre) from validated items
+      // VIKTIGT: Lägg till moms på priset (samma som för riktiga Svea-betalningar)
+      const VAT_RATE = 0.25;
       let subtotal = 0;
       for (const item of validatedItems) {
-        subtotal += SveaCheckoutService.formatPriceToMinorUnits(item.price) * item.quantity;
+        const priceInclVAT = item.price * (1 + VAT_RATE);
+        subtotal += SveaCheckoutService.formatPriceToMinorUnits(priceInclVAT) * item.quantity;
       }
 
       // Handle coupon (optional)
