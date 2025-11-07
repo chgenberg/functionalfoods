@@ -458,16 +458,11 @@ export async function POST(req: NextRequest) {
 
     // Create order in Svea
     console.log('📤 Sending request to Svea with items:', JSON.stringify(sveaItems, null, 2));
-    console.log('📤 Svea checkout request payload:', JSON.stringify({
-      countryCode: checkoutRequest.countryCode,
-      currency: checkoutRequest.currency,
-      locale: checkoutRequest.locale,
-      clientOrderNumber: checkoutRequest.clientOrderNumber,
-      itemCount: checkoutRequest.cart.items.length,
-      totalItems: checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0),
-      merchantSettings: checkoutRequest.merchantSettings,
-      hasPresetValues: !!checkoutRequest.presetValues
-    }, null, 2));
+    console.log('📤 FULL Svea checkout request:', JSON.stringify(checkoutRequest, null, 2));
+    
+    // Calculate expected total
+    const expectedTotal = checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+    console.log(`💰 Expected total to charge: ${expectedTotal} öre (${expectedTotal/100} kr)`);
     
     let sveaResponse;
     try {
