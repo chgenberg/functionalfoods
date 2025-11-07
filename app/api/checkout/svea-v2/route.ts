@@ -339,21 +339,27 @@ export async function POST(req: NextRequest) {
     const sveaItems: SveaCartItem[] = [];
 
     try {
+      const VAT_RATE = 0.25; // 25% moms
+      
       for (const item of validatedItems) {
-        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(item.price);
+        // VIKTIGT: Konsumentpriset måste vara inklusive moms!
+        // item.price är exkl. moms (från databasen)
+        // Vi måste lägga till moms för att få rätt pris
+        const priceInclVAT = item.price * (1 + VAT_RATE);
+        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(priceInclVAT);
         subtotal += priceInOre * item.quantity;
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
           name: item.name,
           quantity: item.quantity,
-          unitPrice: priceInOre,
-          vatPercent: 2500, // adjust if courses should be 0%
+          unitPrice: priceInOre, // Pris inkl. moms i öre
+          vatPercent: 2500, // 25% moms (betyder att 25% av unitPrice är moms)
           unit: 'st',
           discountPercent: 0
         });
       }
-      console.log(`✅ Calculated totals: ${sveaItems.length} items, subtotal: ${subtotal} öre`);
+      console.log(`✅ Calculated totals: ${sveaItems.length} items, subtotal inkl. moms: ${subtotal} öre (${subtotal/100} kr)`);
     } catch (calcError) {
       console.error('❌ Error calculating order totals:', calcError);
       throw new Error(`Fel vid beräkning av orderbelopp: ${calcError instanceof Error ? calcError.message : 'Okänt fel'}`);
