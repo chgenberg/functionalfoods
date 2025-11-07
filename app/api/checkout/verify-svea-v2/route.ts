@@ -216,7 +216,15 @@ export async function POST(req: NextRequest) {
       }
 
       response.order.status = 'COMPLETED';
+      response.paymentCompleted = true; // Force to true after fast-tracking
     }
+
+    console.log('✅ Returning verification response:', {
+      success: response.success,
+      paymentCompleted: response.paymentCompleted,
+      orderStatus: response.orderStatus,
+      orderDbStatus: response.order.status
+    });
 
     return NextResponse.json(response);
 
