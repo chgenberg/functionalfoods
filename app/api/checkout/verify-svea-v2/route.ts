@@ -78,7 +78,66 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Prepare response
+    // Calculate actual paid amount from SVEA order (includes discounts)
+    // SVEA cart.items contains all items including discount items (negative unitPrice)
+    let actualPaidAmount = 0;
+    const sveaItemsMap = new Map<string, any>();
+    
+    if (sveaOrder.cart?.items) {
+      for (const sveaItem of sveaOrder.cart.items) {
+        // Skip discount items for item mapping, but include in total
+        if (sveaItem.articleNumber !== 'DISCOUNT') {
+          sveaItemsMap.set(sveaItem.articleNumber, sveaItem);
+        }
+        // All items (including negative discount) contribute to total
+        actualPaidAmount += (sveaItem.unitPrice || 0) * (sveaItem.quantity || 1);
+      }
+    }
+    
+    // Convert from öre to SEK
+    const actualPaidAmountSEK = actualPaidAmount / 100;
+    
+    console.log('💰 Calculated actual paid amount from SVEA:', {
+      actualPaidAmountOre: actualPaidAmount,
+      actualPaidAmountSEK,
+      dbTotalAmount: order.totalAmount,
+      itemCount: sveaOrder.cart?.items?.length || 0
+    });
+
+    // Prepare response - use actual paid amount from SVEA if available
+    const displayTotalAmount = actualPaidAmountSEK > 0 ? actualPaidAmountSEK : order.totalAmount;
+    
+    // Map items with actual prices from SVEA if available
+    const displayItems = order.items.map(item => {
+      // Try to find matching SVEA item
+      let displayPrice = item.price;
+      
+      // Try to match by article number or name
+      for (const [articleNumber, sveaItem] of sveaItemsMap.entries()) {
+        const itemIdLower = item.id?.toLowerCase() || '';
+        const articleLower = articleNumber.toLowerCase();
+        
+        if (itemIdLower.includes(articleLower) || 
+            articleLower.includes(itemIdLower) ||
+            item.name.toLowerCase().includes(articleLower) ||
+            articleLower.includes(item.name.toLowerCase())) {
+          // Found matching SVEA item - use its price
+          // SVEA price is in öre, inkl. moms - convert to SEK, then to exkl. moms for display
+          const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
+          displayPrice = priceInclVAT / 1.25; // Convert to exkl. moms
+          break;
+        }
+      }
+      
+      return {
+        productId: item.courseId || item.id,
+        productName: item.name,
+        productType: item.type,
+        quantity: item.quantity,
+        price: Math.round(displayPrice * 100) / 100 // Round to 2 decimals
+      };
+    });
+    
     const response = {
       success: true,
       paymentCompleted: isCompleted,
@@ -86,16 +145,10 @@ export async function POST(req: NextRequest) {
       order: {
         id: order.id,
         status: order.status,
-        totalAmount: order.totalAmount,
+        totalAmount: displayTotalAmount,
         customerEmail: sveaOrder.customer?.email || order.customerEmail,
         customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
-        items: order.items.map(item => ({
-          productId: item.courseId || item.id,
-          productName: item.name,
-          productType: item.type,
-          quantity: item.quantity,
-          price: item.price
-        }))
+        items: displayItems
       }
     };
 
@@ -103,10 +156,12 @@ export async function POST(req: NextRequest) {
     if (isCompleted && order.status === 'PENDING') {
       console.log('⚡ Fast-tracking order completion from verification');
       
+      // Update order with actual paid amount from SVEA
       await prisma.order.update({
         where: { id: order.id },
         data: {
           status: 'COMPLETED',
+          totalAmount: actualPaidAmountSEK > 0 ? actualPaidAmountSEK : order.totalAmount, // Use SVEA amount if available
           customerEmail: sveaOrder.customer?.email || order.customerEmail,
           customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
           metadata: {
@@ -115,10 +170,41 @@ export async function POST(req: NextRequest) {
             sveaStatus: sveaOrder.status,
             sveaPaymentType: sveaOrder.paymentType,
             verifiedAt: new Date().toISOString(),
-            processedAt: new Date().toISOString()
+            processedAt: new Date().toISOString(),
+            actualPaidAmount: actualPaidAmountSEK // Store for reference
           }
         }
       });
+      
+      // Update item prices if they differ from SVEA
+      if (actualPaidAmountSEK > 0 && sveaOrder.cart?.items) {
+        for (const orderItem of order.items) {
+          // Find matching SVEA item
+          for (const sveaItem of sveaOrder.cart.items) {
+            if (sveaItem.articleNumber === 'DISCOUNT') continue;
+            
+            const itemIdLower = orderItem.id?.toLowerCase() || '';
+            const articleLower = sveaItem.articleNumber.toLowerCase();
+            
+            if (itemIdLower.includes(articleLower) || 
+                articleLower.includes(itemIdLower) ||
+                orderItem.name.toLowerCase().includes(articleLower)) {
+              // Update item price to match SVEA (convert from öre to SEK, then to exkl. VAT)
+              const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
+              const priceExclVAT = priceInclVAT / 1.25; // Remove VAT
+              
+              if (Math.abs(orderItem.price - priceExclVAT) > 0.01) {
+                await prisma.orderItem.update({
+                  where: { id: orderItem.id },
+                  data: { price: Math.round(priceExclVAT * 100) / 100 }
+                });
+                console.log(`✅ Updated item price: ${orderItem.name} from ${orderItem.price} to ${priceExclVAT}`);
+              }
+              break;
+            }
+          }
+        }
+      }
 
       // Create purchases for courses if user exists
       if (order.userId) {
@@ -216,6 +302,7 @@ export async function POST(req: NextRequest) {
       }
 
       response.order.status = 'COMPLETED';
+      response.order.totalAmount = actualPaidAmountSEK > 0 ? actualPaidAmountSEK : order.totalAmount;
       response.paymentCompleted = true; // Force to true after fast-tracking
     }
 
