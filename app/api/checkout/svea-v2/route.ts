@@ -364,6 +364,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Handle coupon if provided
+    // VIKTIGT: För konsumenter ska rabatt appliceras på pris INKLUSIVE moms
     let discountAmount = 0;
     let appliedCoupon = null;
 
@@ -383,12 +384,18 @@ export async function POST(req: NextRequest) {
         if (coupon) {
           // Check usage limit
           if (!coupon.usageLimit || coupon.timesUsed < coupon.usageLimit) {
+            // Beräkna rabatt på pris INKLUSIVE moms (konsumentpris)
+            const subtotalInclVAT = subtotal * 1.25; // Lägg till 25% moms
+            
             if (coupon.type === 'PERCENTAGE') {
-              discountAmount = Math.round(subtotal * (coupon.amount / 100));
+              discountAmount = Math.round(subtotalInclVAT * (coupon.amount / 100));
             } else if (coupon.type === 'FIXED') {
-              discountAmount = SveaCheckoutService.formatPriceToMinorUnits(coupon.amount);
+              // Fixed rabatt ska också vara inkl. moms
+              discountAmount = SveaCheckoutService.formatPriceToMinorUnits(coupon.amount * 1.25);
             }
             appliedCoupon = coupon;
+            
+            console.log(`💰 Coupon applied: ${coupon.code}, Type: ${coupon.type}, Amount: ${coupon.amount}%, Discount: ${discountAmount} öre (${discountAmount/100} kr)`);
           }
         }
       } catch (error) {
