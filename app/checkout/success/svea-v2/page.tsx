@@ -14,11 +14,24 @@ function SveaSuccessContent() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkoutOrderId = searchParams?.get('checkoutOrderId');
     const orderId = searchParams?.get('orderId');
+    const checkoutOrderId = searchParams?.get('checkoutOrderId');
     
-    if (checkoutOrderId && orderId) {
-      verifyPayment(checkoutOrderId, orderId);
+    if (orderId) {
+      // If we have orderId, fetch checkoutOrderId from database if needed
+      if (checkoutOrderId && checkoutOrderId !== '{checkout.order.id}') {
+        verifyPayment(checkoutOrderId, orderId);
+      } else {
+        // Fetch checkoutOrderId from session storage or database
+        const storedCheckoutId = sessionStorage.getItem('svea_checkout_id');
+        
+        if (storedCheckoutId) {
+          verifyPayment(storedCheckoutId, orderId);
+        } else {
+          // Fetch from database using orderId
+          fetchCheckoutOrderId(orderId);
+        }
+      }
     } else {
       // Try to get from session storage as fallback
       const storedOrderId = sessionStorage.getItem('svea_order_id');
@@ -32,6 +45,29 @@ function SveaSuccessContent() {
       }
     }
   }, [searchParams]);
+
+  const fetchCheckoutOrderId = async (orderId: string) => {
+    try {
+      // Fetch order from database to get checkoutOrderId
+      const response = await fetch(`/api/orders/lookup?orderId=${orderId}`);
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.checkoutOrderId) {
+          verifyPayment(data.checkoutOrderId, orderId);
+        } else {
+          setError('Kunde inte hitta Svea order ID');
+          setLoading(false);
+        }
+      } else {
+        setError('Kunde inte hämta orderinformation');
+        setLoading(false);
+      }
+    } catch (err) {
+      setError('Ett fel uppstod vid hämtning av orderinformation');
+      setLoading(false);
+    }
+  };
 
   const verifyPayment = async (checkoutOrderId: string, orderId: string) => {
     try {
