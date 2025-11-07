@@ -389,13 +389,39 @@ export class SveaCheckoutService {
       }
 
       const result = JSON.parse(responseText);
+      
+      // Svea returns different responses based on order state:
+      // - Active checkout: { "Gui": {...}, "Status": "Created", etc. }
+      // - Completed order: { "Id": ..., "Status": "Final", "Customer": {...}, etc. }
+      
+      // Handle both formats
+      const orderData: GetOrderResponse = {
+        id: result.Id || result.id || result.OrderId || orderId,
+        status: result.Status || result.status || 'Created',
+        cart: result.Cart || result.cart || { items: [] },
+        currency: result.Currency || result.currency || 'SEK',
+        customer: result.Customer || result.customer || {},
+        shippingAddress: result.ShippingAddress || result.shippingAddress,
+        billingAddress: result.BillingAddress || result.billingAddress,
+        emailAddress: result.EmailAddress || result.emailAddress,
+        phoneNumber: result.PhoneNumber || result.phoneNumber,
+        paymentType: result.PaymentType || result.paymentType,
+        payment: result.Payment || result.payment,
+        sveaWillBuyOrder: result.SveaWillBuyOrder || result.sveaWillBuyOrder,
+        customerReference: result.CustomerReference || result.customerReference,
+        creationDate: result.CreationDate || result.creationDate,
+        merchantData: result.MerchantData || result.merchantData,
+        clientOrderNumber: result.ClientOrderNumber || result.clientOrderNumber
+      };
+      
       console.log('✅ SVEA getOrder success:', {
-        orderId: result.id,
-        status: result.status,
-        hasCustomer: !!result.customer
+        orderId: orderData.id,
+        status: orderData.status,
+        hasCustomer: !!orderData.customer?.email,
+        hasGui: !!result.Gui || !!result.gui
       });
       
-      return result as GetOrderResponse;
+      return orderData;
     } catch (error) {
       console.error('❌ SVEA getOrder exception:', {
         error,
