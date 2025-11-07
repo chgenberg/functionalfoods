@@ -289,12 +289,12 @@ export default function AdminDashboard() {
                     {order.user?.name || 'Gäst'}
                   </p>
                   <p className="text-xs text-[var(--text-secondary)]">
-                    {order.items?.[0]?.product?.name || 'Produkt'}
+                    {order.items?.[0]?.product?.name || order.items?.[0]?.name || 'Produkt'}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium text-[var(--primary-green)]">
-                    {formatCurrency(order.totalAmount)}
+                    {formatCurrency(order.totalAmount || 0)}
                   </p>
                   <p className="text-xs text-[var(--text-secondary)]">
                     {new Date(order.createdAt).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}

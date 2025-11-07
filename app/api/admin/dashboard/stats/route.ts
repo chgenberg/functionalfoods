@@ -48,19 +48,47 @@ export async function GET(request: NextRequest) {
       take: 5,
       orderBy: { createdAt: 'desc' },
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
         items: {
           include: {
-            course: true
+            course: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
           }
         }
       }
     }).then(orders => orders.map(order => ({
       id: order.id,
-      customerName: order.user?.name || 'Okänd kund',
-      productName: order.items[0]?.course?.name || order.items[0]?.name || 'Okänd produkt',
-      amount: order.totalAmount,
-      createdAt: order.createdAt
+      orderNumber: order.orderNumber,
+      status: order.status,
+      totalAmount: order.totalAmount || 0, // Ensure it's always a number
+      currency: order.currency || 'SEK',
+      createdAt: order.createdAt,
+      user: order.user ? {
+        id: order.user.id,
+        name: order.user.name,
+        email: order.user.email
+      } : null,
+      items: order.items.map(item => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        type: item.type,
+        product: item.course ? {
+          id: item.course.id,
+          name: item.course.name
+        } : null
+      }))
     })));
     
     // Get recent users
