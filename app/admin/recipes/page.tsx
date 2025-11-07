@@ -377,6 +377,9 @@ export default function AdminRecipesPage() {
                   alt={recipe.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading={index < 8 ? "eager" : "lazy"} // Ladda första 8 bilderna direkt, resten lazy
+                  quality={60} // Sänk kvalitet för snabbare laddning i admin
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                   onError={() => setImageError(prev => ({ ...prev, [recipe.id]: true }))}
                 />
               ) : (
