@@ -107,15 +107,15 @@ export async function POST(req: NextRequest) {
         where: { id: order.id },
         data: {
           status: 'COMPLETED',
-          processedAt: new Date(),
-          paymentMethod: sveaOrder.paymentType || 'svea',
           customerEmail: sveaOrder.customer?.email || order.customerEmail,
           customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
           metadata: {
             ...order.metadata as any,
             sveaOrderId: sveaOrder.id,
             sveaStatus: sveaOrder.status,
-            verifiedAt: new Date().toISOString()
+            sveaPaymentType: sveaOrder.paymentType,
+            verifiedAt: new Date().toISOString(),
+            processedAt: new Date().toISOString()
           }
         }
       });
