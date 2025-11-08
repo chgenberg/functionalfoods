@@ -162,29 +162,41 @@ export async function POST(req: NextRequest) {
       }
     };
 
-    // If payment is completed but order isn't updated yet, update it now
-    if (isCompleted && order.status === 'PENDING') {
-      console.log('⚡ Fast-tracking order completion from verification');
-      
-      // Update order with actual paid amount from SVEA
+    // If payment is completed, update order with actual paid amount from SVEA
+    // This ensures the order always has the correct amount, even if it was already COMPLETED
+    if (isCompleted && sveaOrder.cart?.items && sveaOrder.cart.items.length > 0) {
+      // Update order with actual paid amount from SVEA (even if already COMPLETED)
       await prisma.order.update({
         where: { id: order.id },
         data: {
-          status: 'COMPLETED',
           totalAmount: displayTotalAmount, // Use calculated display amount (from SVEA)
-          customerEmail: sveaOrder.customer?.email || order.customerEmail,
-          customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
           metadata: {
             ...order.metadata as any,
             sveaOrderId: sveaOrder.id,
             sveaStatus: sveaOrder.status,
             sveaPaymentType: sveaOrder.paymentType,
             verifiedAt: new Date().toISOString(),
-            processedAt: new Date().toISOString(),
             actualPaidAmount: actualPaidAmountSEK // Store for reference
           }
         }
       });
+      
+      // Also update status if it was PENDING
+      if (order.status === 'PENDING') {
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            status: 'COMPLETED',
+            customerEmail: sveaOrder.customer?.email || order.customerEmail,
+            customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
+            metadata: {
+              ...order.metadata as any,
+              processedAt: new Date().toISOString()
+            }
+          }
+        });
+        console.log('⚡ Fast-tracking order completion from verification');
+      }
       
       // Update item prices if they differ from SVEA
       if (actualPaidAmountSEK > 0 && sveaOrder.cart?.items) {
