@@ -101,11 +101,21 @@ export async function POST(req: NextRequest) {
       actualPaidAmountOre: actualPaidAmount,
       actualPaidAmountSEK,
       dbTotalAmount: order.totalAmount,
-      itemCount: sveaOrder.cart?.items?.length || 0
+      itemCount: sveaOrder.cart?.items?.length || 0,
+      sveaItems: sveaOrder.cart?.items?.map((item: any) => ({
+        articleNumber: item.articleNumber,
+        name: item.name,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+        total: (item.unitPrice || 0) * (item.quantity || 1)
+      }))
     });
 
-    // Prepare response - use actual paid amount from SVEA if available
-    const displayTotalAmount = actualPaidAmountSEK > 0 ? actualPaidAmountSEK : order.totalAmount;
+    // ALWAYS use actual paid amount from SVEA if available (it's the source of truth)
+    // Only fallback to DB if SVEA doesn't return cart items
+    const displayTotalAmount = sveaOrder.cart?.items && sveaOrder.cart.items.length > 0 
+      ? actualPaidAmountSEK 
+      : order.totalAmount;
     
     // Map items with actual prices from SVEA if available
     const displayItems = order.items.map(item => {
@@ -161,7 +171,7 @@ export async function POST(req: NextRequest) {
         where: { id: order.id },
         data: {
           status: 'COMPLETED',
-          totalAmount: actualPaidAmountSEK > 0 ? actualPaidAmountSEK : order.totalAmount, // Use SVEA amount if available
+          totalAmount: displayTotalAmount, // Use calculated display amount (from SVEA)
           customerEmail: sveaOrder.customer?.email || order.customerEmail,
           customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
           metadata: {
@@ -302,7 +312,7 @@ export async function POST(req: NextRequest) {
       }
 
       response.order.status = 'COMPLETED';
-      response.order.totalAmount = actualPaidAmountSEK > 0 ? actualPaidAmountSEK : order.totalAmount;
+      response.order.totalAmount = displayTotalAmount; // Use calculated display amount
       response.paymentCompleted = true; // Force to true after fast-tracking
     }
 
