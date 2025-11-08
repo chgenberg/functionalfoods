@@ -248,24 +248,25 @@ export default function UnifiedSalesPage() {
 
         const rawCourses = order.items?.filter((i: any) => i.type === 'course').map((i: any) => i.name) || [];
         const normalizedCourses = normalizeCourseNames(rawCourses);
+        const metadata = order.metadata as any || {};
 
         combinedOrders.push({
           id: order.id,
           orderNumber: order.orderNumber,
           customerName: order.customerName || order.user?.name || 'Okänd',
           customerEmail: order.customerEmail || order.user?.email || '',
-          customerPhone: order.metadata?.phone,
-          customerCountry: order.metadata?.country || 'SE',
+          customerPhone: metadata.phone,
+          customerCountry: metadata.country || 'SE',
           amount: order.totalAmount,
           currency: order.currency || 'SEK',
           status: order.status,
-          paymentMethod: order.payment?.paymentMethod || 'unknown',
+          paymentMethod: order.payment?.paymentMethod || metadata.sveaPaymentType || 'unknown',
           paymentProvider: paymentProvider,
           items: order.items || [],
           courses: normalizedCourses,
           createdAt: order.createdAt,
-          refunded: false,
-          refundAmount: 0,
+          refunded: metadata.refunded || false,
+          refundAmount: metadata.refundAmount || 0,
           metadata: order.metadata
         });
       });
