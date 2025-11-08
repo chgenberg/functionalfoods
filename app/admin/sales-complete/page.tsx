@@ -1258,6 +1258,54 @@ export default function UnifiedSalesPage() {
                     </a>
                   </div>
                 )}
+
+                {/* Refund button for SVEA orders */}
+                {selectedOrder.paymentProvider === 'svea' && 
+                 selectedOrder.status === 'COMPLETED' && 
+                 !selectedOrder.refunded && (
+                  <div className="pt-4 border-t border-gray-200">
+                    <button
+                      onClick={async () => {
+                        if (!confirm(`Är du säker på att du vill återbetala ${formatPrice(selectedOrder.amount)} ${selectedOrder.currency} för denna order?`)) {
+                          return;
+                        }
+
+                        try {
+                          const response = await fetch('/api/admin/svea-refunds', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify({
+                              orderId: selectedOrder.id,
+                              reason: 'requested_by_customer'
+                            })
+                          });
+
+                          const data = await response.json();
+
+                          if (!response.ok) {
+                            throw new Error(data.error || 'Failed to process refund');
+                          }
+
+                          alert(data.message || 'Återbetalning har registrerats');
+                          setSelectedOrder(null);
+                          fetchOrders(); // Refresh orders
+                        } catch (err) {
+                          alert(err instanceof Error ? err.message : 'Ett fel uppstod vid återbetalning');
+                        }
+                      }}
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors border border-red-200"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      Återbetala order
+                    </button>
+                    <p className="text-xs text-gray-500 mt-2 text-center">
+                      Observera: Återbetalningen måste också genomföras i SVEA:s admin-panel
+                    </p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>
