@@ -74,7 +74,8 @@ export default function AdminLayout({
     { icon: Tag, label: 'Kuponger', href: '/admin/coupons' },
     { icon: ShoppingBag, label: 'Försäljning & Kunder', href: '/admin/sales-complete' },
     { icon: FileText, label: 'Kunskapsdokument', href: '/admin/knowledge' },
-    { icon: Settings, label: 'Inställningar', href: '/admin/settings' }
+    { icon: Settings, label: 'Inställningar', href: '/admin/settings' },
+    { icon: ShoppingBag, label: '🧪 Test Svea', href: '/checkout/svea' }
   ];
 
   if (pathname === '/admin/login') {
