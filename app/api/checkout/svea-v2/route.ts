@@ -416,7 +416,7 @@ export async function POST(req: NextRequest) {
           name: item.name,
           quantity: item.quantity,
           unitPrice: priceInOre, // Pris EXKL moms i ÖRE - Svea lägger till moms automatiskt!
-          vatPercent: 25, // 25% moms (INTE basis points - bara 25, inte 2500!)
+          vatPercent: 2500, // 25% moms - Svea använder detta för att lägga till moms
           unit: 'st',
           discountPercent: 0
         });
@@ -498,7 +498,7 @@ export async function POST(req: NextRequest) {
         name: `Rabatt (${appliedCoupon.code})`,
         quantity: 1,
         unitPrice: -discountExclVAT, // Negativt belopp EXKL moms i ÖRE - Svea lägger till moms
-        vatPercent: 25, // 25% moms (INTE 2500!)
+        vatPercent: 2500, // Svea lägger till moms på rabatten också
         unit: 'st'
       });
     }
