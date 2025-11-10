@@ -26,10 +26,13 @@ export default class ErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({ error, errorInfo });
     
-    // Log error in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
-    }
+    // Always log error details for debugging
+    console.error('ErrorBoundary caught an error:', {
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      errorName: error.name
+    });
     
     // In production, you might want to send this to an error reporting service
     // Example: Sentry.captureException(error, { extra: errorInfo });
@@ -65,14 +68,20 @@ export default class ErrorBoundary extends Component<Props, State> {
               Försök ladda om sidan eller gå tillbaka till startsidan.
             </p>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {this.state.error && (
               <details className="text-left mb-6 p-4 bg-gray-50 rounded-lg text-sm">
                 <summary className="cursor-pointer font-medium text-gray-700 mb-2">
-                  Teknisk information (utvecklingsläge)
+                  Teknisk information
                 </summary>
-                <pre className="text-xs text-red-600 overflow-auto">
+                <pre className="text-xs text-red-600 overflow-auto max-h-64">
+                  <div className="font-bold mb-2">Felmeddelande:</div>
                   {this.state.error.toString()}
-                  {this.state.errorInfo?.componentStack}
+                  {this.state.errorInfo?.componentStack && (
+                    <>
+                      <div className="font-bold mt-4 mb-2">Komponentstack:</div>
+                      {this.state.errorInfo.componentStack}
+                    </>
+                  )}
                 </pre>
               </details>
             )}

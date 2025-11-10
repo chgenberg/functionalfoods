@@ -1,10 +1,13 @@
 import { Star } from "lucide-react";
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 export default function LocalExpertsList({ location }: { location: {lat: number, lng: number} }) {
   const [experts, setExperts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // Memoize location values to prevent infinite loops
+  const locationKey = useMemo(() => `${location.lat},${location.lng}`, [location.lat, location.lng]);
 
   useEffect(() => {
     setLoading(true);
@@ -16,7 +19,7 @@ export default function LocalExpertsList({ location }: { location: {lat: number,
       .then(res => res.json())
       .then(data => setExperts(data.results || []))
       .finally(() => setLoading(false));
-  }, [location]);
+  }, [locationKey, location.lat, location.lng]);
 
   if (loading) return <div>Loading local experts...</div>;
   if (!experts.length) return <div>No clinics found nearby.</div>;

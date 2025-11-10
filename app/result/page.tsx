@@ -748,6 +748,10 @@ function ChatBlockContent({ blockKey, value }: { blockKey: string; value: any })
   }
 
   // Default: plain text, preserve line breaks
+  // Safety check: if value is an object, stringify it instead of rendering directly
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return <div className="whitespace-pre-line">{JSON.stringify(value, null, 2)}</div>;
+  }
   return <div className="whitespace-pre-line">{value ? String(value) : ''}</div>;
 }
 
