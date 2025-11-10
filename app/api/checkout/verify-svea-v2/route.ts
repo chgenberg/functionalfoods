@@ -480,54 +480,76 @@ export async function POST(req: NextRequest) {
       response.paymentCompleted = true; // Force to true after fast-tracking
       
       // Send order confirmation email if order was just completed (webhook might not have fired yet)
-      if (orderJustCompleted && order.user) {
+      if (orderJustCompleted) {
         try {
           const updatedOrder = await prisma.order.findUnique({
             where: { id: order.id },
             include: { items: true, user: true }
           });
 
-          if (updatedOrder && updatedOrder.user) {
-            const VAT_RATE = 0.25;
-            const courseItems = updatedOrder.items.filter(item => item.type === 'course');
-            const emailCourses = courseItems.map(item => ({
-              name: item.name,
-              price: Math.round(item.price * (1 + VAT_RATE) * 100) / 100 * (item.quantity || 1)
-            }));
-
-            // Check if email was already sent (via metadata flag)
-            const metadata = updatedOrder.metadata as any;
-            if (!metadata?.confirmationEmailSent) {
-              await emailService.sendOrderConfirmation({
-                customerEmail: updatedOrder.user.email,
-                customerName: updatedOrder.user.name || updatedOrder.customerName || updatedOrder.user.email,
-                orderNumber: updatedOrder.orderNumber,
-                totalAmount: displayTotalAmount,
-                courses: emailCourses,
-                loginCredentials: (isNewUser && temporaryPassword) ? {
-                  email: updatedOrder.user.email,
-                  password: temporaryPassword,
-                  loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/login`
-                } : undefined
-              });
-              
-              // Mark email as sent in metadata
-              await prisma.order.update({
-                where: { id: order.id },
-                data: {
-                  metadata: {
-                    ...metadata,
-                    confirmationEmailSent: true,
-                    confirmationEmailSentAt: new Date().toISOString()
-                  }
-                }
-              });
-              
-              console.log(`✅ Order confirmation email sent via verify to ${updatedOrder.user.email}${isNewUser ? ' (new user with login credentials)' : ''}`);
-            } else {
-              console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
-            }
+          if (!updatedOrder) {
+            console.warn(`⚠️ Order not found for email sending: ${order.id}`);
+            return;
           }
+
+          // Determine email address to use - prioritize customerEmail from order or Svea
+          const emailToUse = updatedOrder.customerEmail || 
+                            (updatedOrder.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
+                            (sveaOrder.customer?.email || null);
+          
+          const nameToUse = updatedOrder.customerName || 
+                            (updatedOrder.user?.name || null) ||
+                            `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() ||
+                            emailToUse?.split('@')[0] ||
+                            'Kund';
+
+          if (!emailToUse || isGuestEmail(emailToUse)) {
+            console.warn(`⚠️ No valid email address found for order ${order.id}. customerEmail: ${updatedOrder.customerEmail}, user.email: ${updatedOrder.user?.email}`);
+            return;
+          }
+
+          const VAT_RATE = 0.25;
+          const courseItems = updatedOrder.items.filter(item => item.type === 'course');
+          const emailCourses = courseItems.map(item => ({
+            name: item.name,
+            price: Math.round(item.price * (1 + VAT_RATE) * 100) / 100 * (item.quantity || 1)
+          }));
+
+          // Check if email was already sent (via metadata flag)
+          const metadata = updatedOrder.metadata as any;
+          if (metadata?.confirmationEmailSent) {
+            console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
+            return;
+          }
+
+          console.log(`📧 Preparing to send order confirmation email via verify to: ${emailToUse}, isNewUser: ${isNewUser}`);
+
+          await emailService.sendOrderConfirmation({
+            customerEmail: emailToUse,
+            customerName: nameToUse,
+            orderNumber: updatedOrder.orderNumber,
+            totalAmount: displayTotalAmount,
+            courses: emailCourses,
+            loginCredentials: (isNewUser && temporaryPassword) ? {
+              email: emailToUse,
+              password: temporaryPassword,
+              loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/login`
+            } : undefined
+          });
+          
+          // Mark email as sent in metadata
+          await prisma.order.update({
+            where: { id: order.id },
+            data: {
+              metadata: {
+                ...metadata,
+                confirmationEmailSent: true,
+                confirmationEmailSentAt: new Date().toISOString()
+              }
+            }
+          });
+          
+          console.log(`✅ Order confirmation email sent via verify to ${emailToUse}${isNewUser ? ' (new user with login credentials)' : ''}`);
         } catch (emailError) {
           console.error('❌ Failed to send order confirmation email via verify:', emailError);
           // Don't throw - email failure shouldn't fail verification
