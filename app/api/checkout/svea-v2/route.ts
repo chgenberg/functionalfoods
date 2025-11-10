@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
     // Add mapped IDs to productMap
     for (const [mappedId, targetId] of Object.entries(idMappings)) {
       const product = courseProducts.find(p => {
-        const key = p.name.toLowerCase().replace(/\s+/g, '-');
+      const key = p.name.toLowerCase().replace(/\s+/g, '-');
         return key === targetId || slugify(p.name) === targetId;
       });
       if (product) {
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
                     courseProducts.find(p => p.name.toLowerCase() === item.name.toLowerCase());
         }
         
-        if (!product) {
+      if (!product) {
           console.error(`❌ Product not found: "${item.id}"`);
           console.error('Available products:', Array.from(productMap.keys()).slice(0, 20)); // Limit output
           return NextResponse.json(
@@ -141,9 +141,9 @@ export async function POST(req: NextRequest) {
           );
         }
         validatedItems.push({
-          ...item,
-          price: product.price, // Use price from database
-          name: product.name,   // Use name from database
+        ...item,
+        price: product.price, // Use price from database
+        name: product.name,   // Use name from database
         });
       } catch (itemError) {
         console.error(`❌ Error validating item "${item.id}":`, itemError);
@@ -397,30 +397,29 @@ export async function POST(req: NextRequest) {
     const VAT_RATE = 0.25; // 25% moms - defined here so it's available for discount calculation later
 
     try {
-      
-      for (const item of validatedItems) {
+
+    for (const item of validatedItems) {
         // Enligt Svea dokumentation: unitPrice ska vara INKLUSIVE moms
         // item.price från DB är exkl. moms (1836 kr)
         // Konsumentpris inkl. moms: 1836 * 1.25 = 2295 kr
-        // VIKTIGT: Svea Checkout API förväntar sig KRONOR (med decimaler), INTE öre!
+        // VIKTIGT: Svea Checkout API förväntar sig ÖRE (heltal) i fältet unitPrice
         const priceInclVAT = item.price * (1 + VAT_RATE);
-        // Runda upp till närmsta krona
-        const priceInclVATRounded = Math.ceil(priceInclVAT);
-        // Store in öre for internal calculations
-        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(priceInclVATRounded);
-        subtotal += priceInOre * item.quantity;
+        // Runda upp till närmsta krona (2300 öre = 23 kr) innan konvertering till öre
+        const priceInclVATRoundedKrona = Math.ceil(priceInclVAT);
+        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(priceInclVATRoundedKrona);
+      subtotal += priceInOre * item.quantity;
         
-        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Incl VAT: ${priceInclVAT} kr, Rounded up: ${priceInclVATRounded} kr, In öre: ${priceInOre}, Sending to Svea: ${priceInclVATRounded} kr`);
+        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Incl VAT: ${priceInclVAT} kr, Rounded up: ${priceInclVATRoundedKrona} kr, In öre: ${priceInOre}, Sending to Svea: ${priceInclVATRoundedKrona} kr (${priceInOre} öre)`);
 
-        sveaItems.push({
-          articleNumber: getArticleNumber(item),
-          name: item.name,
-          quantity: item.quantity,
-          unitPrice: priceInclVATRounded, // Pris INKL. moms i KRONOR, rundat upp till närmsta krona
+      sveaItems.push({
+        articleNumber: getArticleNumber(item),
+        name: item.name,
+        quantity: item.quantity,
+          unitPrice: priceInOre, // Pris INKL. moms i ÖRE (heltal), rundat upp till närmsta krona
           vatPercent: 2500, // 25% moms (används för att visa momsandel)
-          unit: 'st',
-          discountPercent: 0
-        });
+        unit: 'st',
+        discountPercent: 0
+      });
       }
       console.log(`✅ Calculated totals: ${sveaItems.length} items, subtotal INKL. moms: ${subtotal} öre (${subtotal/100} kr)`);
     } catch (calcError) {
@@ -430,7 +429,7 @@ export async function POST(req: NextRequest) {
 
     // Handle coupon if provided
     // Rabatt appliceras direkt på subtotal (som nu är inkl. moms)
-    let discountAmount = 0;
+    let calculatedDiscountAmount = 0; // I öre, innan avrundningsjustering
     let appliedCoupon = null;
 
     if (couponCode) {
@@ -456,29 +455,23 @@ export async function POST(req: NextRequest) {
 
             if (isPercentage) {
               // subtotal är i öre, så vi räknar rabatt i öre först
-              discountAmount = Math.round(subtotal * (coupon.amount / 100));
-              // Konvertera till kronor och runda upp till närmsta krona
-              const discountInKr = Math.ceil(discountAmount / 100);
-              discountAmount = discountInKr * 100; // Konvertera tillbaka till öre för intern beräkning
+              calculatedDiscountAmount = Math.round(subtotal * (coupon.amount / 100));
             } else if (isFixed) {
               // Fixed rabatt - konvertera till inkl. moms och runda upp
               const fixedDiscountInKr = coupon.amount * 1.25;
-              const roundedDiscountInKr = Math.ceil(fixedDiscountInKr);
-              discountAmount = SveaCheckoutService.formatPriceToMinorUnits(roundedDiscountInKr);
+              calculatedDiscountAmount = SveaCheckoutService.formatPriceToMinorUnits(fixedDiscountInKr);
             }
             appliedCoupon = coupon;
             
-            console.log(`💰 Coupon applied: ${coupon.code}, Type: ${coupon.type}, Amount: ${coupon.amount}${isPercentage ? '%' : ' kr'}, Discount: ${discountAmount} öre (${discountAmount/100} kr)`);
+            console.log(`💰 Coupon applied: ${coupon.code}, Type: ${coupon.type}, Amount: ${coupon.amount}${isPercentage ? '%' : ' kr'}, Raw discount: ${calculatedDiscountAmount} öre (${calculatedDiscountAmount/100} kr)`);
             
             // CRITICAL: Debug the actual calculation
             console.log('🚨 DISCOUNT CALCULATION:', {
               subtotalInOre: subtotal,
               subtotalInKr: subtotal/100,
               couponAmount: coupon.amount,
-              discountInOre: discountAmount,
-              discountInKr: discountAmount/100,
-              finalTotalInOre: subtotal - discountAmount,
-              finalTotalInKr: (subtotal - discountAmount)/100
+              rawDiscountInOre: calculatedDiscountAmount,
+              rawDiscountInKr: calculatedDiscountAmount/100
             });
           }
         }
@@ -488,16 +481,32 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Apply rounding so that total efter rabatt avrundas uppåt till närmsta krona
+    calculatedDiscountAmount = Math.min(calculatedDiscountAmount, subtotal);
+    const totalAfterDiscountRaw = Math.max(0, subtotal - calculatedDiscountAmount);
+    const totalRoundedInOre = Math.ceil(totalAfterDiscountRaw / 100) * 100; // alltid uppåt till närmsta krona
+    let discountAmount = subtotal - totalRoundedInOre; // slutlig rabatt vi skickar till Svea
+    if (discountAmount < 0) discountAmount = 0;
+    const roundingAdjustmentInOre = totalRoundedInOre - totalAfterDiscountRaw; // 0-99 öre
+
+    console.log('🧮 Discount rounding summary:', {
+      subtotalInOre: subtotal,
+      calculatedDiscountAmount,
+      totalAfterDiscountRaw,
+      totalRoundedInOre,
+      roundingAdjustmentInOre,
+      roundingAdjustmentInKr: roundingAdjustmentInOre / 100,
+      finalDiscountAmount: discountAmount,
+      finalTotalInOre: totalRoundedInOre
+    });
+
     // Add discount as negative item if applicable
     if (discountAmount > 0 && appliedCoupon) {
-      // Konvertera rabatt från öre till kronor och runda upp
-      const discountInKr = Math.ceil(discountAmount / 100);
-      
       sveaItems.push({
         articleNumber: 'DISCOUNT',
         name: `Rabatt (${appliedCoupon.code})`,
         quantity: 1,
-        unitPrice: -discountInKr, // Negativt belopp i KRONOR (Svea förväntar sig kronor)
+        unitPrice: -discountAmount, // Negativt belopp i ÖRE
         vatPercent: 2500,
         unit: 'st'
       });
@@ -561,7 +570,7 @@ export async function POST(req: NextRequest) {
     console.log('📤 Creating Svea checkout order:', {
       orderId,
       itemCount: sveaItems.length,
-      totalAmount: SveaCheckoutService.formatPriceFromMinorUnits(subtotal - discountAmount),
+      totalAmount: SveaCheckoutService.formatPriceFromMinorUnits(totalRoundedInOre),
       hasCustomer: !!customer?.email
     });
 
@@ -576,13 +585,13 @@ export async function POST(req: NextRequest) {
     
     // Calculate expected total
     const expectedTotal = checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-    console.log(`💰 Expected total to charge: ${expectedTotal} kr (rundat upp till närmsta krona)`);
+    console.log(`💰 Expected total to charge: ${expectedTotal} öre (${expectedTotal/100} kr, rundat upp till närmsta krona)`);
     
     let sveaResponse;
     try {
       sveaResponse = await sveaCheckout.createOrder(checkoutRequest);
-      console.log('✅ Svea order created successfully:', {
-        checkoutOrderId: sveaResponse.orderId,
+    console.log('✅ Svea order created successfully:', {
+      checkoutOrderId: sveaResponse.orderId,
         status: sveaResponse.status,
         hasGui: !!sveaResponse.gui
       });
@@ -604,7 +613,7 @@ export async function POST(req: NextRequest) {
 
     // Store order in database
     // Calculate total amount AFTER discount (in öre, then convert to SEK)
-    const totalAmountInOre = subtotal - discountAmount;
+    const totalAmountInOre = totalRoundedInOre;
     // Runda upp till närmsta krona
     const totalAmount = Math.ceil(SveaCheckoutService.formatPriceFromMinorUnits(totalAmountInOre));
     
@@ -618,7 +627,9 @@ export async function POST(req: NextRequest) {
       totalAmount,
       totalAmountInOre,
       subtotalBeforeDiscount,
+      calculatedDiscountAmount,
       discountAmount,
+      roundingAdjustmentInOre,
       discountRatio,
       itemCount: validatedItems.length,
       hasCustomer: !!customer,
@@ -628,10 +639,12 @@ export async function POST(req: NextRequest) {
     // CRITICAL: Let's check if we're somehow converting the items incorrectly
     console.log('🚨🚨🚨 CRITICAL AMOUNT CHECK:');
     console.log('Subtotal in ÖRE:', subtotal);
-    console.log('Discount in ÖRE:', discountAmount);
-    console.log('Total in ÖRE:', totalAmountInOre);
-    console.log('Total in KRONOR (for DB):', totalAmount);
-    console.log('If this shows 22.95, but Svea shows 0.25, then we are sending KRONOR to Svea instead of ÖRE!');
+    console.log('Raw discount in ÖRE (before rounding):', calculatedDiscountAmount);
+    console.log('Final discount in ÖRE (after rounding):', discountAmount);
+    console.log('Rounding adjustment in ÖRE:', roundingAdjustmentInOre);
+    console.log('Total in ÖRE (after rounding):', totalAmountInOre);
+    console.log('Total in KRONOR (for DB & email):', totalAmount);
+    console.log('If this shows 23 (avrundat uppåt) men Svea visar 0.25 kr, då skickar vi fel enhet!');
     
     try {
       // Get or create user - userId is required in Order model
@@ -703,33 +716,35 @@ export async function POST(req: NextRequest) {
       });
       
       // Now create the order with a valid userId
-      await prisma.order.create({
-        data: {
-          id: orderId,
-          orderNumber: orderId,
-          status: 'PENDING',
-          totalAmount,
-          currency: 'SEK',
-          checkoutOrderId: sveaResponse.orderId.toString(),
+    await prisma.order.create({
+      data: {
+        id: orderId,
+        orderNumber: orderId,
+        status: 'PENDING',
+        totalAmount,
+        currency: 'SEK',
+        checkoutOrderId: sveaResponse.orderId.toString(),
           userId: userId, // Now guaranteed to be a valid string
-          customerEmail: customer?.email || null,
-          customerName: customer?.name || null,
-          metadata: {
+        customerEmail: customer?.email || null,
+        customerName: customer?.name || null,
+        metadata: {
             items: validatedItems, // Use validated items
-            couponCode: appliedCoupon?.code || null,
-            discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
-          },
-          items: {
+          couponCode: appliedCoupon?.code || null,
+            discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
+            rawDiscountAmount: calculatedDiscountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(calculatedDiscountAmount) : null,
+            roundingAdjustment: roundingAdjustmentInOre > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(roundingAdjustmentInOre) : 0
+        },
+        items: {
             create: itemsWithDiscountedPrice.map(item => ({
               courseId: null, // Will be resolved later if needed
               name: item.name,
-              quantity: item.quantity,
+            quantity: item.quantity,
               price: item.discountedPrice, // Use discounted price instead of original
               type: item.type
-            }))
-          }
+          }))
         }
-      });
+      }
+    });
       console.log('✅ Order stored in database successfully');
     } catch (dbError: any) {
       console.error('❌ Failed to store order in database:', {
@@ -746,10 +761,10 @@ export async function POST(req: NextRequest) {
     // Update coupon usage
     if (appliedCoupon) {
       try {
-        await prisma.coupon.update({
-          where: { id: appliedCoupon.id },
-          data: { timesUsed: { increment: 1 } }
-        });
+      await prisma.coupon.update({
+        where: { id: appliedCoupon.id },
+        data: { timesUsed: { increment: 1 } }
+      });
         console.log('✅ Coupon usage updated');
       } catch (couponError) {
         console.warn('⚠️ Failed to update coupon usage (non-critical):', couponError);
@@ -837,7 +852,7 @@ export async function POST(req: NextRequest) {
     );
   } finally {
     try {
-      await prisma.$disconnect();
+    await prisma.$disconnect();
     } catch (disconnectError) {
       console.error('⚠️ Failed to disconnect Prisma:', disconnectError);
     }
