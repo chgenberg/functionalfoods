@@ -13,7 +13,6 @@ import { generateMetadata as generateSEOMetadata } from './lib/seo';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import MetaPixel from './components/MetaPixel';
 import { getAttributionFromUrl, saveAttribution } from './lib/attribution';
-import PromoPopup from './components/PromoPopup';
 
 // Force dynamic rendering across the app to avoid prerender CSR bailouts when using useSearchParams
 export const dynamic = 'force-dynamic';
@@ -150,7 +149,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
                 <ChatBot />
                 <CookieConsentBanner />
-                <PromoPopup />
               </CartProvider>
             </LanguageProvider>
           </ToastProvider>
