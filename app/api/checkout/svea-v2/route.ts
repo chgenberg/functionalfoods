@@ -399,24 +399,24 @@ export async function POST(req: NextRequest) {
     try {
       
       for (const item of validatedItems) {
-        // Enligt Svea dokumentation: unitPrice ska vara INKLUSIVE moms
+        // Enligt Svea dokumentation OCH fungerande legacy-kod: unitPrice ska vara i ÖRE (minor units)
         // item.price från DB är exkl. moms (1836 kr)
         // Konsumentpris inkl. moms: 1836 * 1.25 = 2295 kr
-        // VIKTIGT: Trots kommentarer om "öre", förväntar sig Svea faktiskt KRONOR med decimaler
+        // Konvertera till öre: 2295 * 100 = 229500 öre
         const priceInclVAT = item.price * (1 + VAT_RATE);
-        // Runda upp till närmsta krona
+        // Runda upp till närmsta krona INNAN vi konverterar till öre
         const priceInclVATRounded = Math.ceil(priceInclVAT);
-        // Store in öre for internal calculations (subtotal tracking)
-        const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(priceInclVATRounded);
+        // Konvertera till öre (minor units) - detta är vad Svea förväntar sig!
+        const priceInOre = Math.round(priceInclVATRounded * 100);
         subtotal += priceInOre * item.quantity;
         
-        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Incl VAT: ${priceInclVAT} kr, Rounded up: ${priceInclVATRounded} kr, Sending to Svea: ${priceInclVATRounded} kr`);
+        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Incl VAT: ${priceInclVAT} kr, Rounded up: ${priceInclVATRounded} kr, In öre: ${priceInOre}, Sending to Svea: ${priceInOre} öre`);
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
           name: item.name,
           quantity: item.quantity,
-          unitPrice: priceInclVATRounded, // Pris INKL. moms i KRONOR (Svea förväntar sig kronor, inte öre!)
+          unitPrice: priceInOre, // Pris INKL. moms i ÖRE (Svea Checkout API kräver öre!)
           vatPercent: 2500, // 25% moms (används för att visa momsandel)
           unit: 'st',
           discountPercent: 0
@@ -490,14 +490,11 @@ export async function POST(req: NextRequest) {
 
     // Add discount as negative item if applicable
     if (discountAmount > 0 && appliedCoupon) {
-      // Konvertera rabatt från öre till kronor (Svea förväntar sig kronor)
-      const discountInKr = discountAmount / 100;
-      
       sveaItems.push({
         articleNumber: 'DISCOUNT',
         name: `Rabatt (${appliedCoupon.code})`,
         quantity: 1,
-        unitPrice: -discountInKr, // Negativt belopp i KRONOR (Svea förväntar sig kronor!)
+        unitPrice: -discountAmount, // Negativt belopp i ÖRE (precis som produktpriser)
         vatPercent: 2500,
         unit: 'st'
       });
@@ -546,8 +543,8 @@ export async function POST(req: NextRequest) {
     // CRITICAL DEBUG LOGGING
     console.log('🚨 SVEA CHECKOUT REQUEST DEBUG:');
     console.log('Items being sent to Svea:', JSON.stringify(sveaItems, null, 2));
-    const totalInKr = sveaItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-    console.log(`Total to charge: ${totalInKr} kr (${totalInKr * 100} öre)`);
+    const totalInOre = sveaItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+    console.log(`Total to charge: ${totalInOre} öre (${totalInOre / 100} kr)`);
 
     // Add customer email if available
     if (customer?.email) {
@@ -576,7 +573,7 @@ export async function POST(req: NextRequest) {
     
     // Calculate expected total
     const expectedTotal = checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-    console.log(`💰 Expected total to charge: ${expectedTotal} kr (rundat upp till närmsta krona)`);
+    console.log(`💰 Expected total to charge: ${expectedTotal} öre (${expectedTotal / 100} kr, rundat upp till närmsta krona)`);
     
     let sveaResponse;
     try {
