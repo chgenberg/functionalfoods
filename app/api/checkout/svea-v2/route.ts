@@ -592,6 +592,14 @@ export async function POST(req: NextRequest) {
       customerEmail: customer?.email
     });
     
+    // CRITICAL: Let's check if we're somehow converting the items incorrectly
+    console.log('🚨🚨🚨 CRITICAL AMOUNT CHECK:');
+    console.log('Subtotal in ÖRE:', subtotal);
+    console.log('Discount in ÖRE:', discountAmount);
+    console.log('Total in ÖRE:', totalAmountInOre);
+    console.log('Total in KRONOR (for DB):', totalAmount);
+    console.log('If this shows 22.95, but Svea shows 0.25, then we are sending KRONOR to Svea instead of ÖRE!');
+    
     try {
       // Get or create user - userId is required in Order model
       let userId: string;
