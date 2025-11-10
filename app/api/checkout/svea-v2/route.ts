@@ -511,10 +511,24 @@ export async function POST(req: NextRequest) {
         pushUri: `${origin}/api/webhooks/svea-v2`
       },
       cart: {
-        items: sveaItems
+        items: [...sveaItems] // Explicit copy to ensure it's set
       },
       merchantData: orderId
     };
+    
+    // CRITICAL: Double-check that items are set
+    if (!checkoutRequest.cart.items || checkoutRequest.cart.items.length === 0) {
+      console.error('❌❌❌ CRITICAL ERROR: cart.items is empty!');
+      console.error('sveaItems:', sveaItems);
+      console.error('checkoutRequest.cart:', checkoutRequest.cart);
+      throw new Error('Cart items are empty - cannot create Svea order');
+    }
+    
+    // CRITICAL: Verify cart.items is set correctly
+    console.log('🚨🚨🚨 CRITICAL CART VERIFICATION:');
+    console.log('sveaItems length:', sveaItems.length);
+    console.log('checkoutRequest.cart.items length:', checkoutRequest.cart.items.length);
+    console.log('checkoutRequest.cart.items:', JSON.stringify(checkoutRequest.cart.items, null, 2));
     
     // CRITICAL DEBUG LOGGING
     console.log('🚨 SVEA CHECKOUT REQUEST DEBUG:');
@@ -540,7 +554,12 @@ export async function POST(req: NextRequest) {
 
     // Create order in Svea
     console.log('📤 Sending request to Svea with items:', JSON.stringify(sveaItems, null, 2));
+    
+    // CRITICAL: Ensure cart.items is set before sending
+    checkoutRequest.cart.items = [...sveaItems]; // Force set again just before sending
+    
     console.log('📤 FULL Svea checkout request:', JSON.stringify(checkoutRequest, null, 2));
+    console.log('📤 VERIFICATION - cart.items.length:', checkoutRequest.cart.items.length);
     
     // Calculate expected total
     const expectedTotal = checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
