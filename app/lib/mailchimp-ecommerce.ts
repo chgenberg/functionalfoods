@@ -145,6 +145,7 @@ class MailchimpEcommerceService {
 
   /**
    * Track a purchase/conversion
+   * Automatically syncs products if they don't exist in Mailchimp
    */
   async trackPurchase(params: {
     orderId: string;
@@ -182,6 +183,29 @@ class MailchimpEcommerceService {
         shippingTotal = 0,
         taxTotal = 0
       } = params;
+
+      // Sync products first (if they don't exist, Mailchimp will create them automatically)
+      // This ensures products exist before creating orders
+      for (const item of items) {
+        try {
+          await this.syncProduct({
+            id: item.id,
+            title: item.name,
+            description: `${item.type || 'course'} - ${item.name}`,
+            type: item.type || 'course',
+            vendor: 'Functional Foods',
+            variants: [{
+              id: `${item.id}-default`,
+              title: item.name,
+              price: item.price,
+              inventory_quantity: 999
+            }]
+          });
+        } catch (error) {
+          // Product sync failure shouldn't block order tracking
+          console.warn(`⚠️ Failed to sync product ${item.id} before order tracking:`, error);
+        }
+      }
 
       // Parse customer name
       const nameParts = customerName?.split(' ') || [];

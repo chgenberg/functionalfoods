@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     const isCompleted = SveaCheckoutService.isOrderCompleted(sveaOrder.status);
 
     // Get our order from database
-    const order = await prisma.order.findUnique({
+    let order = await prisma.order.findUnique({
       where: { id: clientOrderId },
       include: {
         items: true,
@@ -95,7 +95,45 @@ export async function POST(req: NextRequest) {
     }
     
     // Convert from öre to SEK
-    const actualPaidAmountSEK = actualPaidAmount / 100;
+    // Svea API should return unitPrice in öre (minor units), but let's be safe
+    let actualPaidAmountSEK = actualPaidAmount / 100;
+    
+    // Safety check: if calculated amount is way larger than DB amount (more than 10x),
+    // it might be that the amount is already in SEK or there's a calculation error
+    // In that case, use the original DB amount or recalculate
+    if (order.totalAmount > 0) {
+      const ratio = actualPaidAmountSEK / order.totalAmount;
+      if (ratio > 10) {
+        // Amount is likely already in SEK (not öre), or there's an error
+        // Try using the amount as-is (assuming it's already in SEK)
+        actualPaidAmountSEK = actualPaidAmount;
+        console.warn('⚠️ Detected amount might already be in SEK. Using as-is:', {
+          original: actualPaidAmount,
+          divided: actualPaidAmount / 100,
+          dbAmount: order.totalAmount,
+          ratio,
+          using: actualPaidAmountSEK
+        });
+        
+        // If still way off, use DB amount as fallback
+        if (Math.abs(actualPaidAmountSEK - order.totalAmount) > order.totalAmount * 0.5) {
+          console.warn('⚠️ Calculated amount still seems wrong, using DB amount as fallback');
+          actualPaidAmountSEK = order.totalAmount;
+        }
+      } else if (ratio < 0.1 && actualPaidAmountSEK > 0) {
+        // Amount is way too small, might be double-divided
+        console.warn('⚠️ Amount seems too small, might be double-divided');
+      }
+    }
+    
+    // Final sanity check: ensure amount is reasonable (between 0 and 100000 SEK)
+    if (actualPaidAmountSEK < 0 || actualPaidAmountSEK > 100000) {
+      console.warn('⚠️ Calculated amount is outside reasonable range, using DB amount:', {
+        calculated: actualPaidAmountSEK,
+        dbAmount: order.totalAmount
+      });
+      actualPaidAmountSEK = order.totalAmount;
+    }
     
     console.log('💰 Calculated actual paid amount from SVEA:', {
       actualPaidAmountOre: actualPaidAmount,
@@ -182,7 +220,121 @@ export async function POST(req: NextRequest) {
       });
       
       // Also update status if it was PENDING
+      let orderJustCompleted = false;
+      let isNewUser = false;
+      let temporaryPassword: string | undefined;
+      
+      const isGuestEmail = (email?: string | null) =>
+        !!email && email.startsWith('guest-');
+
       if (order.status === 'PENDING') {
+        orderJustCompleted = true;
+        
+        // Handle user creation/linking if needed
+        const customerEmail = sveaOrder.customer?.email || order.customerEmail;
+        const customerName = `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName;
+        
+        const hasGuestUser = isGuestEmail(order.user?.email);
+
+        if (( !order.userId || hasGuestUser) && customerEmail) {
+          // Check if user exists
+          const normalizedEmail = customerEmail.toLowerCase().trim();
+          const existingUser = await prisma.user.findUnique({
+            where: { email: normalizedEmail }
+          });
+
+          if (existingUser) {
+            // Link order to existing user
+            await prisma.order.update({
+              where: { id: order.id },
+              data: { 
+                userId: existingUser.id,
+                customerEmail: normalizedEmail,
+                customerName
+              }
+            });
+            
+            // Reload order to get updated user relation
+            const updatedOrder = await prisma.order.findUnique({
+              where: { id: order.id },
+              include: { items: true, user: true }
+            });
+            if (updatedOrder) {
+              order = updatedOrder;
+            }
+          } else {
+            // Create new user
+            temporaryPassword = generateSecurePassword();
+            const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
+            
+            if (order.userId && hasGuestUser) {
+              // Upgrade guest user to real customer
+              const updatedUser = await prisma.user.update({
+                where: { id: order.userId },
+                data: {
+                  email: normalizedEmail,
+                  name: customerName || 'Ny kund',
+                  password: hashedPassword,
+                  mustChangePassword: true,
+                  isActive: true,
+                  role: 'customer'
+                }
+              });
+
+              isNewUser = true;
+
+              await prisma.order.update({
+                where: { id: order.id },
+                data: { 
+                  customerEmail: normalizedEmail,
+                  customerName: updatedUser.name || customerName
+                }
+              });
+
+              const refreshedOrder = await prisma.order.findUnique({
+                where: { id: order.id },
+                include: { items: true, user: true }
+              });
+              if (refreshedOrder) {
+                order = refreshedOrder;
+              }
+
+              console.log(`📧 Guest user upgraded via verify: ${updatedUser.email}`);
+            } else {
+              const newUser = await prisma.user.create({
+                data: {
+                  email: normalizedEmail,
+                  name: customerName || 'Ny kund',
+                  password: hashedPassword,
+                  role: 'customer',
+                  emailVerified: null
+                }
+              });
+
+              isNewUser = true;
+
+              // Link order to new user
+              await prisma.order.update({
+                where: { id: order.id },
+                data: { 
+                  userId: newUser.id,
+                  customerEmail: normalizedEmail,
+                  customerName
+                }
+              });
+              
+              // Reload order to get user
+              const updatedOrder = await prisma.order.findUnique({
+                where: { id: order.id },
+                include: { items: true, user: true }
+              });
+              if (updatedOrder) order = updatedOrder;
+              
+              console.log(`📧 New user created via verify: ${newUser.email}`);
+            }
+          }
+        }
+        
         await prisma.order.update({
           where: { id: order.id },
           data: {
@@ -326,6 +478,61 @@ export async function POST(req: NextRequest) {
       response.order.status = 'COMPLETED';
       response.order.totalAmount = displayTotalAmount; // Use calculated display amount
       response.paymentCompleted = true; // Force to true after fast-tracking
+      
+      // Send order confirmation email if order was just completed (webhook might not have fired yet)
+      if (orderJustCompleted && order.user) {
+        try {
+          const updatedOrder = await prisma.order.findUnique({
+            where: { id: order.id },
+            include: { items: true, user: true }
+          });
+
+          if (updatedOrder && updatedOrder.user) {
+            const VAT_RATE = 0.25;
+            const courseItems = updatedOrder.items.filter(item => item.type === 'course');
+            const emailCourses = courseItems.map(item => ({
+              name: item.name,
+              price: Math.round(item.price * (1 + VAT_RATE) * 100) / 100 * (item.quantity || 1)
+            }));
+
+            // Check if email was already sent (via metadata flag)
+            const metadata = updatedOrder.metadata as any;
+            if (!metadata?.confirmationEmailSent) {
+              await emailService.sendOrderConfirmation({
+                customerEmail: updatedOrder.user.email,
+                customerName: updatedOrder.user.name || updatedOrder.customerName || updatedOrder.user.email,
+                orderNumber: updatedOrder.orderNumber,
+                totalAmount: displayTotalAmount,
+                courses: emailCourses,
+                loginCredentials: (isNewUser && temporaryPassword) ? {
+                  email: updatedOrder.user.email,
+                  password: temporaryPassword,
+                  loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/login`
+                } : undefined
+              });
+              
+              // Mark email as sent in metadata
+              await prisma.order.update({
+                where: { id: order.id },
+                data: {
+                  metadata: {
+                    ...metadata,
+                    confirmationEmailSent: true,
+                    confirmationEmailSentAt: new Date().toISOString()
+                  }
+                }
+              });
+              
+              console.log(`✅ Order confirmation email sent via verify to ${updatedOrder.user.email}${isNewUser ? ' (new user with login credentials)' : ''}`);
+            } else {
+              console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
+            }
+          }
+        } catch (emailError) {
+          console.error('❌ Failed to send order confirmation email via verify:', emailError);
+          // Don't throw - email failure shouldn't fail verification
+        }
+      }
     }
 
     console.log('✅ Returning verification response:', {
@@ -350,4 +557,16 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+function generateSecurePassword(): string {
+  const length = 16;
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+  let password = '';
+  
+  for (let i = 0; i < length; i++) {
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  
+  return password;
 }

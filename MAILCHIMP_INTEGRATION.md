@@ -41,13 +41,31 @@ MAILCHIMP_STORE_ID=your-store-id-here
 - `MAILCHIMP_SERVER_PREFIX` är samma som du redan använder (t.ex. `us1`, `us2`, etc.)
 - `MAILCHIMP_STORE_ID` är det unika ID som Mailchimp tilldelar din store
 
-### 4. Verifiera Konfiguration
+### 4. Synka Produkter till Mailchimp
+
+För att produkter ska visas korrekt i Mailchimp E-commerce dashboard behöver de synkas. Det finns två sätt:
+
+#### Alternativ A: Automatisk synkning (rekommenderas)
+Produkter synkas automatiskt när en order skapas. Detta betyder att första gången någon köper en produkt synkas den automatiskt till Mailchimp.
+
+#### Alternativ B: Manuell synkning (för att synka alla produkter direkt)
+Kör följande kommando för att synka alla produkter direkt:
+
+```bash
+npx tsx scripts/sync-mailchimp-products.ts
+```
+
+Detta synkar alla kursprodukter (`CourseProduct`) till Mailchimp Store.
+
+### 5. Verifiera Konfiguration
 
 Integrationen kommer automatiskt att börja spåra köp när alla environment variables är konfigurerade. Du kan verifiera att det fungerar genom att:
 
-1. Göra ett testköp
-2. Kontrollera Mailchimp dashboard → **Audience** → **E-commerce** → **Orders**
-3. Köpet bör visas inom några sekunder
+1. Synka produkter (se steg 4 ovan)
+2. Göra ett testköp
+3. Kontrollera Mailchimp dashboard → **Audience** → **E-commerce** → **Orders**
+4. Köpet bör visas inom några sekunder
+5. Kontrollera att produkter finns under **Products**
 
 ## Hur det fungerar
 
@@ -67,6 +85,10 @@ Varje köp spåras med:
 
 ## Funktioner
 
+### Automatisk Produktsynkning
+
+När en order skapas synkas produkter automatiskt till Mailchimp om de inte redan finns. Detta säkerställer att produkter alltid finns innan orders skapas.
+
 ### Automatisk Kundskapning
 
 Integrationen skapar automatiskt kunder i Mailchimp baserat på email-adresser. Om en kund redan finns uppdateras den istället.
@@ -79,6 +101,7 @@ Varje köp skickas till Mailchimp med fullständig information:
 - Produktinformation
 - Priser och kvantiteter
 - Skatt och rabatter
+- Orderdatum
 
 ### Felhantering
 

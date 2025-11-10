@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
+import { emailService } from '@/app/lib/email';
 import bcrypt from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
@@ -162,6 +163,13 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
       return;
     }
 
+    // Variables to track user creation (needed outside transaction for email)
+    const isGuestEmail = (email?: string | null) =>
+      !!email && email.startsWith('guest-');
+
+    let isNewUser = false;
+    let temporaryPassword: string | undefined;
+
     await prisma.$transaction(async (tx) => {
       // Update order status
       await tx.order.update({
@@ -189,10 +197,14 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
       const customerEmail = sveaOrder.customer?.email || order.customerEmail;
       const customerName = `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName;
 
-      if (!user && customerEmail) {
+      const guestUser = user && isGuestEmail(user.email) ? user : null;
+
+      if (( !user || guestUser) && customerEmail) {
+        const normalizedEmail = customerEmail.toLowerCase().trim();
+
         // Check if user exists
         const existingUser = await tx.user.findUnique({
-          where: { email: customerEmail }
+          where: { email: normalizedEmail }
         });
 
         if (existingUser) {
@@ -202,18 +214,45 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
             where: { id: order.id },
             data: { 
               userId: user.id,
-              customerEmail,
+              customerEmail: normalizedEmail,
               customerName
+            }
+          });
+        } else if (guestUser) {
+          // Upgrade guest user to real customer
+          temporaryPassword = generateSecurePassword();
+          const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
+
+          user = await tx.user.update({
+            where: { id: guestUser.id },
+            data: {
+              email: normalizedEmail,
+              name: customerName || 'Ny kund',
+              password: hashedPassword,
+              mustChangePassword: true,
+              isActive: true,
+              role: 'customer'
+            }
+          });
+
+          isNewUser = true;
+
+          await tx.order.update({
+            where: { id: order.id },
+            data: { 
+              userId: user.id,
+              customerEmail: normalizedEmail,
+              customerName: user.name || customerName
             }
           });
         } else {
           // Create new user
-          const temporaryPassword = generateSecurePassword();
+          temporaryPassword = generateSecurePassword();
           const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
           
           user = await tx.user.create({
             data: {
-              email: customerEmail,
+              email: normalizedEmail,
               name: customerName || 'Ny kund',
               password: hashedPassword,
               role: 'customer',
@@ -221,18 +260,19 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
             }
           });
 
+          isNewUser = true;
+
           // Link order to new user
           await tx.order.update({
             where: { id: order.id },
             data: { 
               userId: user.id,
-              customerEmail,
+              customerEmail: normalizedEmail,
               customerName
             }
           });
 
-          // TODO: Queue welcome email with password reset link
-          console.log(`📧 New user created: ${user.email} - Send welcome email`);
+          console.log(`📧 New user created: ${user.email}`);
         }
       }
 
@@ -355,6 +395,29 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
         const totalAmount = updatedOrder.totalAmount;
         const vatRate = 0.25;
         const taxTotal = totalAmount * vatRate / (1 + vatRate);
+        
+        // Calculate discount total from metadata or by comparing item prices
+        let discountTotal = 0;
+        const metadata = updatedOrder.metadata as any;
+        
+        if (metadata?.discountAmount) {
+          // Discount amount stored in metadata (in SEK)
+          discountTotal = metadata.discountAmount;
+        } else {
+          // Calculate discount by comparing original prices with discounted prices
+          // Sum up original prices (if available) vs actual paid prices
+          const originalTotal = updatedOrder.items.reduce((sum, item) => {
+            // Try to get original price from course product or metadata
+            const originalPrice = (item as any).originalPrice || 
+                                 (metadata?.items?.[0]?.price) || 
+                                 item.price;
+            return sum + (originalPrice * item.quantity);
+          }, 0);
+          
+          if (originalTotal > totalAmount) {
+            discountTotal = originalTotal - totalAmount;
+          }
+        }
 
         await mailchimpEcommerce.trackPurchase({
           orderId: updatedOrder.orderNumber,
@@ -370,7 +433,7 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
           totalAmount: totalAmount,
           currency: updatedOrder.currency || 'SEK',
           orderDate: updatedOrder.createdAt,
-          discountTotal: 0,
+          discountTotal: discountTotal,
           shippingTotal: 0,
           taxTotal: taxTotal
         });
@@ -379,9 +442,61 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
       console.warn('⚠️ Mailchimp E-commerce tracking failed:', e);
     }
 
-    // TODO: Send order confirmation email
-    // TODO: Send course access email
-    // TODO: Update inventory if applicable
+    // Send order confirmation email with login credentials for new users
+    try {
+      const updatedOrder = await prisma.order.findUnique({
+        where: { id: order.id },
+        include: { 
+          items: true,
+          user: true 
+        }
+      });
+
+      if (updatedOrder && updatedOrder.user) {
+        // Check if email was already sent (via metadata flag)
+        const metadata = updatedOrder.metadata as any;
+        if (!metadata?.confirmationEmailSent) {
+          const VAT_RATE = 0.25;
+          const courseItems = updatedOrder.items.filter(item => item.type === 'course');
+          const emailCourses = courseItems.map(item => ({
+            name: item.name,
+            price: Math.round(item.price * (1 + VAT_RATE) * 100) / 100 * (item.quantity || 1)
+          }));
+
+          await emailService.sendOrderConfirmation({
+            customerEmail: updatedOrder.user.email,
+            customerName: updatedOrder.user.name || updatedOrder.customerName || updatedOrder.user.email,
+            orderNumber: updatedOrder.orderNumber,
+            totalAmount: updatedOrder.totalAmount || 0,
+            courses: emailCourses,
+            loginCredentials: (isNewUser && temporaryPassword) ? {
+              email: updatedOrder.user.email,
+              password: temporaryPassword,
+              loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/login`
+            } : undefined
+          });
+          
+          // Mark email as sent in metadata
+          await prisma.order.update({
+            where: { id: order.id },
+            data: {
+              metadata: {
+                ...metadata,
+                confirmationEmailSent: true,
+                confirmationEmailSentAt: new Date().toISOString()
+              }
+            }
+          });
+          
+          console.log(`✅ Order confirmation email sent to ${updatedOrder.user.email}${isNewUser ? ' (new user with login credentials)' : ''}`);
+        } else {
+          console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
+        }
+      }
+    } catch (emailError) {
+      console.error('❌ Failed to send order confirmation email:', emailError);
+      // Don't throw - email failure shouldn't fail the order processing
+    }
 
   } catch (error) {
     console.error('❌ Error processing completed order:', error);
