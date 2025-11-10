@@ -501,6 +501,12 @@ export async function POST(req: NextRequest) {
       },
       merchantData: orderId
     };
+    
+    // CRITICAL DEBUG LOGGING
+    console.log('🚨 SVEA CHECKOUT REQUEST DEBUG:');
+    console.log('Items being sent to Svea:', JSON.stringify(sveaItems, null, 2));
+    const totalInOre = sveaItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+    console.log(`Total to charge (öre): ${totalInOre}, (kr): ${totalInOre/100}`);
 
     // Add customer email if available
     if (customer?.email) {
