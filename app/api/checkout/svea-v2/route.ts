@@ -154,6 +154,7 @@ export async function POST(req: NextRequest) {
       }
     }
     console.log(`✅ Validated ${validatedItems.length} items`);
+    console.log('🔍 VALIDATED ITEMS DEBUG:', JSON.stringify(validatedItems, null, 2));
     // --- END SECURITY FIX ---
 
     // If payments are simulated/disabled, short-circuit and create a completed order locally
@@ -404,6 +405,8 @@ export async function POST(req: NextRequest) {
         const priceInclVAT = item.price * (1 + VAT_RATE);
         const priceInOre = SveaCheckoutService.formatPriceToMinorUnits(priceInclVAT);
         subtotal += priceInOre * item.quantity;
+        
+        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Incl VAT: ${priceInclVAT} kr, In öre: ${priceInOre}`);
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
@@ -455,7 +458,18 @@ export async function POST(req: NextRequest) {
             }
             appliedCoupon = coupon;
             
-            console.log(`💰 Coupon applied: ${coupon.code}, Type: ${coupon.type}, Amount: ${coupon.amount}%, Discount: ${discountAmount} öre (${discountAmount/100} kr)`);
+            console.log(`💰 Coupon applied: ${coupon.code}, Type: ${coupon.type}, Amount: ${coupon.amount}${isPercentage ? '%' : ' kr'}, Discount: ${discountAmount} öre (${discountAmount/100} kr)`);
+            
+            // CRITICAL: Debug the actual calculation
+            console.log('🚨 DISCOUNT CALCULATION:', {
+              subtotalInOre: subtotal,
+              subtotalInKr: subtotal/100,
+              couponAmount: coupon.amount,
+              discountInOre: discountAmount,
+              discountInKr: discountAmount/100,
+              finalTotalInOre: subtotal - discountAmount,
+              finalTotalInKr: (subtotal - discountAmount)/100
+            });
           }
         }
       } catch (error) {
