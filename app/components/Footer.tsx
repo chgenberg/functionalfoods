@@ -35,7 +35,10 @@ export default function Footer() {
       { label: t('footer.links.cookie','Cookie-policy'), href: '/cookie-policy' },
       { label: t('footer.links.aiPolicy','AI Policy'), href: '/ai-policy' },
       // Add admin link if user is admin
-      ...(user?.role === 'admin' ? [{ label: '🔐 Admin', href: '/admin/login' }] : []),
+      ...(user?.role === 'admin' ? [
+        { label: '🔐 Admin', href: '/admin/login' },
+        { label: '🧪 Test Svea', href: '/checkout/svea-v2' }
+      ] : []),
     ],
   };
 

@@ -257,14 +257,15 @@ export default function Checkout() {
                     desc: 'Betala med Visa, Mastercard, Apple Pay eller Google Pay',
                     icon: CreditCard,
                     recommended: true
-                  },
-                  {
-                    id: 'svea',
-                    name: 'Svea Ekonomi',
-                    desc: 'Betala med kort, faktura eller delbetalning',
-                    icon: CreditCard,
-                    recommended: false
                   }
+                  // TEMPORARILY HIDDEN: Svea payment method
+                  // {
+                  //   id: 'svea',
+                  //   name: 'Svea Ekonomi',
+                  //   desc: 'Betala med kort, faktura eller delbetalning',
+                  //   icon: CreditCard,
+                  //   recommended: false
+                  // }
                 ].map((method) => (
                   <label 
                     key={method.id} 
