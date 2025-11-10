@@ -42,7 +42,44 @@ export async function GET(request: NextRequest) {
       take: 50
     });
 
-    return NextResponse.json(orders);
+    const formattedOrders = orders.map((order) => {
+      const metadata = (order.metadata as any) || {};
+      const actualPaidAmount =
+        typeof metadata?.actualPaidAmount === 'number'
+          ? metadata.actualPaidAmount
+          : typeof metadata?.displayTotalAmount === 'number'
+            ? metadata.displayTotalAmount
+            : null;
+
+      const displayTotalAmount =
+        actualPaidAmount && actualPaidAmount > 0
+          ? actualPaidAmount
+          : order.totalAmount;
+
+      const VAT_RATE = 0.25;
+
+      const items = order.items.map((item) => {
+        const priceInclVAT =
+          Math.round(item.price * (1 + VAT_RATE) * 100) / 100;
+
+        return {
+          ...item,
+          priceInclVAT,
+        };
+      });
+
+      return {
+        ...order,
+        totalAmount: displayTotalAmount,
+        metadata: {
+          ...metadata,
+          actualPaidAmount: displayTotalAmount,
+        },
+        items,
+      };
+    });
+
+    return NextResponse.json(formattedOrders);
 
   } catch (error) {
     console.error('Error fetching orders:', error);
