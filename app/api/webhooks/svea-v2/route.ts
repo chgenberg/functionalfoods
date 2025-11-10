@@ -171,13 +171,19 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
     let temporaryPassword: string | undefined;
 
     await prisma.$transaction(async (tx) => {
-      // Update order status
+      // Get customer info from Svea
+      const customerEmail = sveaOrder.customer?.email || order.customerEmail;
+      const customerName = `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName;
+
+      // Update order status AND customer info
       await tx.order.update({
         where: { id: order.id },
         data: {
           status: 'COMPLETED',
           processedAt: new Date(),
           paymentMethod: sveaOrder.paymentType || 'svea',
+          customerEmail: customerEmail || order.customerEmail,
+          customerName: customerName || order.customerName,
           metadata: {
             ...order.metadata as any,
             sveaOrderId: orderId,
@@ -186,7 +192,7 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
             customerInfo: {
               email: sveaOrder.customer?.email,
               phone: sveaOrder.customer?.phoneNumber,
-              name: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim()
+              name: customerName
             }
           }
         }
@@ -194,8 +200,6 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
 
       // Handle user creation/linking
       let user = order.user;
-      const customerEmail = sveaOrder.customer?.email || order.customerEmail;
-      const customerName = `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName;
 
       const guestUser = user && isGuestEmail(user.email) ? user : null;
 
