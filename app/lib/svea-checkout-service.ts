@@ -16,7 +16,7 @@ export interface SveaCartItem {
   articleNumber: string;
   name: string;
   quantity: number;
-  unitPrice: number; // In minor units (öre)
+  unitPrice: number; // In SEK (kronor with decimals), NOT öre - despite what docs might say
   discountPercent?: number;
   vatPercent: number;
   unit: string;
