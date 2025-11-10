@@ -57,9 +57,13 @@ export async function POST(req: NextRequest) {
         if (coupon && coupon.usageLimit && coupon.timesUsed >= coupon.usageLimit) {
           // Coupon usage limit reached
         } else if (coupon) {
-          if (coupon.type === 'PERCENTAGE') {
+          const couponType = String(coupon.type || '').toUpperCase();
+          const isPercentage = couponType === 'PERCENTAGE' || couponType === 'PERCENT';
+          const isFixed = couponType === 'FIXED' || couponType === 'AMOUNT';
+
+          if (isPercentage) {
             discountAmount = Math.round(subtotal * (coupon.amount / 100));
-          } else if (coupon.type === 'FIXED') {
+          } else if (isFixed) {
             discountAmount = Math.round(coupon.amount * 100); // Convert to öre
           }
         }
