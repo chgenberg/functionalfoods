@@ -26,6 +26,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
+  const [lastCourseType, setLastCourseType] = useState<'basics' | 'flow' | 'energy' | 'hormone'>('basics');
   
   // Form fields
   const [name, setName] = useState('');
@@ -36,6 +37,12 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetchUserData();
+    
+    // Get last visited course from localStorage
+    const lastCourse = localStorage.getItem('lastVisitedCourse') as 'basics' | 'flow' | 'energy' | 'hormone' | null;
+    if (lastCourse) {
+      setLastCourseType(lastCourse);
+    }
   }, []);
 
   // Listen for help button clicks
@@ -170,7 +177,7 @@ export default function SettingsPage() {
       <div className="h-16 md:h-0" />
       
       {/* Course Navigation - At the very top like overview page */}
-      <CourseNavigation courseType="basics" currentWeek={1} />
+      <CourseNavigation courseType={lastCourseType} currentWeek={1} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-[#014421] mb-8">Kontoinställningar</h1>

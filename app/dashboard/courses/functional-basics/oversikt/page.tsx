@@ -19,6 +19,11 @@ export default function FunctionalBasicsOverview() {
   const [currentDay, setCurrentDay] = useState(1);
   
   useEffect(() => {
+    // Save this course as the last visited for navigation persistence
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lastVisitedCourse', 'basics');
+    }
+    
     // Get user email from auth to make localStorage key user-specific
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     let userEmail = '';
