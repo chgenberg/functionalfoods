@@ -252,28 +252,34 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
               {/* Campaign pricing */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div>
-                  <label className="admin-label">Ordinarie pris (inkl. moms)</label>
+                  <label className="admin-label">Ordinarie pris (exkl. moms)</label>
                   <input
                     type="number"
-                    value={toIncl((course as any).basePrice ?? null) as any}
+                    step="0.01"
+                    value={(course as any).basePrice ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim() === '' ? 0 : parseFloat(e.target.value);
-                      setCourse(prev => prev ? ({ ...prev, basePrice: isNaN(v) ? null : fromIncl(v) } as any) : null);
+                      const v = e.target.value.trim() === '' ? null : parseFloat(e.target.value);
+                      setCourse(prev => prev ? ({ ...prev, basePrice: (v === null || isNaN(v)) ? null : v } as any) : null);
                     }}
                     className="admin-input"
+                    placeholder="1836"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Inkl. moms: {toIncl((course as any).basePrice ?? null) || '—'} kr</p>
                 </div>
                 <div>
-                  <label className="admin-label">Kampanjpris (inkl. moms)</label>
+                  <label className="admin-label">Kampanjpris (exkl. moms)</label>
                   <input
                     type="number"
-                    value={toIncl((course as any).salePrice ?? null) as any}
+                    step="0.01"
+                    value={(course as any).salePrice ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim() === '' ? 0 : parseFloat(e.target.value);
-                      setCourse(prev => prev ? ({ ...prev, salePrice: isNaN(v) ? null : fromIncl(v) } as any) : null);
+                      const v = e.target.value.trim() === '' ? null : parseFloat(e.target.value);
+                      setCourse(prev => prev ? ({ ...prev, salePrice: (v === null || isNaN(v)) ? null : v } as any) : null);
                     }}
                     className="admin-input"
+                    placeholder="1468"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Inkl. moms: {toIncl((course as any).salePrice ?? null) || '—'} kr</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-1">
                   <div>
