@@ -74,6 +74,10 @@ export async function GET(req: NextRequest) {
         name: cp.name,
         description: cp.description,
         price: cp.price,
+        basePrice: cp.basePrice,
+        salePrice: cp.salePrice,
+        saleStartsAt: cp.saleStartsAt,
+        saleEndsAt: cp.saleEndsAt,
         enrollments: cp.purchases.length,
         weeks: weeksByCourse[courseNameToCourse[cp.name]] || []
       }));
@@ -98,7 +102,9 @@ export async function PUT(req: NextRequest) {
     const courseNameMap: Record<string, string> = {
       'functional-basics': 'Functional Basics',
       'functional-flow': 'Functional Flow',
-      'functional-energy': 'Functional Energy'
+      'functional-energy': 'Functional Energy',
+      'hormonell-balans': 'Hormonell Balans',
+      'functional-hormone': 'Hormonell Balans'
     };
 
     const courseName = courseNameMap[courseId];
@@ -109,9 +115,13 @@ export async function PUT(req: NextRequest) {
     // Update price in CourseProduct table
     const data: any = { price };
     if (typeof basePrice === 'number') data.basePrice = basePrice;
+    if (basePrice === null) data.basePrice = null;
     if (typeof salePrice === 'number') data.salePrice = salePrice;
+    if (salePrice === null) data.salePrice = null;
     if (saleStartsAt) data.saleStartsAt = new Date(saleStartsAt);
+    if (saleStartsAt === null) data.saleStartsAt = null;
     if (saleEndsAt) data.saleEndsAt = new Date(saleEndsAt);
+    if (saleEndsAt === null) data.saleEndsAt = null;
 
     const updated = await prisma.courseProduct.updateMany({
       where: { name: courseName },
