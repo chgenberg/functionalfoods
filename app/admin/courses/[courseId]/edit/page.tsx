@@ -92,6 +92,18 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         description: 'Avancerad kurs för energioptimering',
         level: 'Avancerad',
         enrollments: 634
+      },
+      'hormonell-balans': {
+        name: 'Hormonell Balans',
+        description: 'Kurs för hormonell balans',
+        level: 'Medel',
+        enrollments: 0
+      },
+      'functional-hormone': {
+        name: 'Hormonell Balans',
+        description: 'Kurs för hormonell balans',
+        level: 'Medel',
+        enrollments: 0
       }
     };
     return courses[courseId as keyof typeof courses] || courses['functional-basics'];
