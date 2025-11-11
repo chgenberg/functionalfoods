@@ -16,6 +16,8 @@ import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 export default function FunctionalEnergyPage() {
   const router = useRouter();
+  const [coursePrice, setCoursePrice] = useState<number | null>(null);
+  const [priceLoading, setPriceLoading] = useState(true);
   
   // Add CSS for gradient animation
   if (typeof document !== 'undefined') {
@@ -51,14 +53,44 @@ export default function FunctionalEnergyPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const { addItem } = useCart();
 
+  // Fetch actual course price from database
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch('/api/admin/functional-courses', {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const courses = await response.json();
+          const energy = courses.find((c: any) => c.id === 'functional-energy');
+          if (energy) {
+            // Use salePrice if active, otherwise use basePrice or price
+            const priceExcl = energy.salePrice ?? energy.basePrice ?? energy.price;
+            setCoursePrice(Math.round(priceExcl * 1.25)); // Convert to incl. VAT
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch course price:', error);
+        // Fallback to hardcoded price
+        setCoursePrice(2295);
+      } finally {
+        setPriceLoading(false);
+      }
+    };
+    fetchPrice();
+  }, []);
+
   const course = {
     id: 'functional-energy',
     name: 'Functional Insulin balance/Energy',
-    price: 1836, // Pris exkl. moms (2295 kr inkl. moms)
+    price: 1836, // Pris exkl. moms (2295 kr inkl. moms) - fallback
     type: 'course' as const,
     image: '/Kurser_bilder/Functional_insulin balance.jpg',
     quantity: 1
   };
+
+  // Display price (use fetched or fallback)
+  const displayPriceIncl = coursePrice || 2295;
 
   const handleAddToCart = () => {
     addItem(course);
@@ -68,6 +100,7 @@ export default function FunctionalEnergyPage() {
 
   // Fire ViewContent once after fbq is available and consent granted
   useEffect(() => {
+    if (!coursePrice) return; // Wait for price to load
     let attempts = 0;
     const maxAttempts = 25;
     const id = window.setInterval(() => {
@@ -76,14 +109,14 @@ export default function FunctionalEnergyPage() {
         const consent = localStorage.getItem('cookie-consent');
         const marketingOk = !!consent && JSON.parse(consent)?.preferences?.marketing;
         if (marketingOk) {
-          trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: 2295 });
+          trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: coursePrice });
           window.clearInterval(id);
         }
       } catch {}
       if (attempts >= maxAttempts) window.clearInterval(id);
     }, 200);
     return () => window.clearInterval(id);
-  }, []);
+  }, [coursePrice]);
 
   const benefits = [
     {
@@ -273,7 +306,7 @@ export default function FunctionalEnergyPage() {
               transition={{ delay: 0.4 }}
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-[#93C560]/20 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
-              <div className="text-3xl font-bold text-primary">{formatPrice(2295)} kr</div>
+              <div className="text-3xl font-bold text-primary">{formatPrice(displayPriceIncl)} kr</div>
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
@@ -514,7 +547,7 @@ export default function FunctionalEnergyPage() {
             <AddToCart 
               id="functional-energy"
               name="Functional Insulin balance/Energy"
-              price={2295}
+              price={displayPriceIncl}
               type="course"
               image={course.image}
             />
