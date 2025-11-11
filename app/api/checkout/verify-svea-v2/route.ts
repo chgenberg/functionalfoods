@@ -200,9 +200,9 @@ export async function POST(req: NextRequest) {
       }
     };
 
-    // If payment is completed, update order with actual paid amount from SVEA
-    // This ensures the order always has the correct amount, even if it was already COMPLETED
-    if (isCompleted && sveaOrder.cart?.items && sveaOrder.cart.items.length > 0) {
+    // If payment is completed, process the order (create purchases, send email, etc.)
+    // Process even if cart.items is missing (Svea may not return it after payment is final)
+    if (isCompleted) {
       // Update order with actual paid amount from SVEA (even if already COMPLETED)
       await prisma.order.update({
         where: { id: order.id },
@@ -350,8 +350,8 @@ export async function POST(req: NextRequest) {
         console.log('⚡ Fast-tracking order completion from verification');
       }
       
-      // Update item prices if they differ from SVEA
-      if (actualPaidAmountSEK > 0 && sveaOrder.cart?.items) {
+      // Update item prices if they differ from SVEA (only if cart.items is available)
+      if (actualPaidAmountSEK > 0 && sveaOrder.cart?.items && sveaOrder.cart.items.length > 0) {
         for (const orderItem of order.items) {
           // Find matching SVEA item
           for (const sveaItem of sveaOrder.cart.items) {
