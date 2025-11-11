@@ -16,9 +16,9 @@ export interface SveaCartItem {
   articleNumber: string;
   name: string;
   quantity: number; // In minor units (100 = 1 unit)
-  unitPrice: number; // In minor units (öre) EXCLUDING VAT - Svea adds VAT based on vatPercent
+  unitPrice: number; // In minor units (öre) INCLUDING VAT - vatPercent indicates how much of this is VAT
   discountPercent?: number;
-  vatPercent: number; // In basis points (2500 = 25%) - Svea adds this to unitPrice
+  vatPercent: number; // In basis points (2500 = 25%) - indicates VAT portion of unitPrice for reporting
   unit: string;
   temporaryReference?: string;
 }

@@ -399,24 +399,25 @@ export async function POST(req: NextRequest) {
     try {
       
       for (const item of validatedItems) {
-        // VIKTIGT: Svea förväntar sig pris EXKL moms i öre, och lägger sedan till moms baserat på vatPercent
-        // item.price från DB är redan exkl. moms (1836 kr)
-        // Runda upp till närmsta krona
+        // VIKTIGT: Svea förväntar sig pris INKLUSIVE moms i öre
+        // vatPercent anger hur mycket av priset som är moms (för momsrapportering)
+        // item.price från DB är exkl. moms (1836 kr) -> vi behöver lägga till moms
         const priceExclVATRounded = Math.ceil(item.price);
-        // Konvertera till öre (minor units)
-        const priceInOre = Math.round(priceExclVATRounded * 100);
-        // För subtotal-tracking, räkna inkl moms
+        // Lägg till moms för att få inkl-pris
         const priceInclVAT = priceExclVATRounded * (1 + VAT_RATE);
-        subtotal += Math.round(priceInclVAT * 100) * item.quantity;
+        // Konvertera till öre (minor units)
+        const priceInOre = Math.round(priceInclVAT * 100);
+        // För subtotal-tracking
+        subtotal += priceInOre * item.quantity;
         
-        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Rounded: ${priceExclVATRounded} kr, In öre (exkl VAT): ${priceInOre}, Sending to Svea: ${priceInOre} öre (Svea adds VAT automatically)`);
+        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Rounded: ${priceExclVATRounded} kr, With VAT: ${priceInclVAT} kr, In öre (INKL VAT): ${priceInOre}, Sending to Svea: ${priceInOre} öre`);
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
           name: item.name,
           quantity: item.quantity * 100, // Quantity in minor units: 100 = 1 unit
-          unitPrice: priceInOre, // Pris EXKL moms i ÖRE - Svea lägger till moms automatiskt!
-          vatPercent: 2500, // 25% moms - Svea använder detta för att lägga till moms
+          unitPrice: priceInOre, // Pris INKLUSIVE moms i ÖRE (vatPercent används bara för momsrapportering)
+          vatPercent: 2500, // 25% moms - anger hur mycket av unitPrice som är moms (för rapportering)
           unit: 'st',
           discountPercent: 0
         });
@@ -489,16 +490,13 @@ export async function POST(req: NextRequest) {
 
     // Add discount as negative item if applicable
     if (discountAmount > 0 && appliedCoupon) {
-      // discountAmount är inkl moms, men Svea förväntar sig exkl moms (lägger till moms automatiskt)
-      // Konvertera från inkl moms till exkl moms: discountAmount / 1.25
-      const discountExclVAT = Math.round(discountAmount / (1 + VAT_RATE));
-      
+      // discountAmount är redan inkl moms i öre - använd direkt som negativt belopp
       sveaItems.push({
         articleNumber: 'DISCOUNT',
         name: `Rabatt (${appliedCoupon.code})`,
         quantity: 100, // Quantity in minor units: 100 = 1 unit
-        unitPrice: -discountExclVAT, // Negativt belopp EXKL moms i ÖRE - Svea lägger till moms
-        vatPercent: 2500, // Svea lägger till moms på rabatten också
+        unitPrice: -discountAmount, // Negativt belopp INKLUSIVE moms i ÖRE
+        vatPercent: 2500, // 25% moms - anger hur mycket av rabatten som är moms
         unit: 'st'
       });
     }
