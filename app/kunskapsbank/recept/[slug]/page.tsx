@@ -45,7 +45,8 @@ interface Recipe {
     name: string;
     email: string;
   };
-  ingredientsStructured?: any[]; // Added for structured ingredients
+  ingredientsStructured?: any; // Added for structured ingredients with groups
+  instructionsStructured?: any; // Added for structured instructions
   requiresPremium?: boolean; // Added for premium access check
   isAdminOnly?: boolean; // Added for admin-only access check
 }
@@ -819,9 +820,13 @@ export default function RecipePage() {
     if (!recipe || !recipe.title || !recipe.slug) return;
 
     try {
-      // Handle instructions - could be string or array from API
+      // Handle instructions - check for new structured format first
       let instructionSteps: string[] = [];
-      if (recipe.instructions) {
+      if ((recipe as any).instructionsStructured?.steps) {
+        // NEW: Use structured instructions if available
+        instructionSteps = (recipe as any).instructionsStructured.steps;
+      } else if (recipe.instructions) {
+        // FALLBACK: Parse old format
         if (Array.isArray(recipe.instructions)) {
           instructionSteps = recipe.instructions;
         } else if (typeof recipe.instructions === 'string') {
@@ -952,9 +957,13 @@ export default function RecipePage() {
     scaleIngredient(ing, recipe.servings)
   );
 
-  // Handle instructions - could be string or array from API
+  // Handle instructions - check for new structured format first
   let instructionSteps: string[] = [];
-  if (recipe.instructions) {
+  if ((recipe as any).instructionsStructured?.steps) {
+    // NEW: Use structured instructions if available
+    instructionSteps = (recipe as any).instructionsStructured.steps;
+  } else if (recipe.instructions) {
+    // FALLBACK: Parse old format
     if (Array.isArray(recipe.instructions)) {
       instructionSteps = recipe.instructions;
     } else if (typeof recipe.instructions === 'string') {
@@ -1227,39 +1236,93 @@ export default function RecipePage() {
                 )}
 
                 {/* Ingredients Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+                <div className="space-y-4">
                   {smartIngredients.length > 0 ? (
-                    smartIngredients
-                      .filter(shouldDisplayIngredient)
-                      .map((ingredient, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.03 }}
-                        onClick={() => toggleIngredient(index)}
-                        className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
-                          checkedIngredients.includes(index) 
-                            ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
-                            : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
-                        }`}
-                      >
-                        <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
-                          checkedIngredients.includes(index) 
-                            ? 'bg-[#93C560] border-[#93C560]' 
-                            : 'border-gray-300 bg-white'
-                        }`}>
-                          {checkedIngredients.includes(index) && (
-                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+                      {smartIngredients
+                        .filter(shouldDisplayIngredient)
+                        .map((ingredient, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.03 }}
+                          onClick={() => toggleIngredient(index)}
+                          className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
+                            checkedIngredients.includes(index) 
+                              ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
+                              : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                            checkedIngredients.includes(index) 
+                              ? 'bg-[#93C560] border-[#93C560]' 
+                              : 'border-gray-300 bg-white'
+                          }`}>
+                            {checkedIngredients.includes(index) && (
+                              <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                            )}
+                          </div>
+                          <LinkedIngredient
+                            ingredient={ingredient}
+                            rawMaterial={findRawMaterial(ingredient, rawMaterials)}
+                            className={`text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (recipe as any).ingredientsStructured?.groups ? (
+                    // NEW: Grouped ingredients
+                    (recipe as any).ingredientsStructured.groups.map((group: any, groupIndex: number) => {
+                      let itemIndexOffset = 0;
+                      for (let i = 0; i < groupIndex; i++) {
+                        itemIndexOffset += (recipe as any).ingredientsStructured.groups[i].items.length;
+                      }
+                      
+                      return (
+                        <div key={groupIndex} className="space-y-2">
+                          {group.title && (
+                            <h4 className="font-semibold text-[#014421] text-sm uppercase tracking-wide mt-4 first:mt-0">
+                              {group.title}
+                            </h4>
                           )}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+                            {group.items.map((ingredient: string, itemIndex: number) => {
+                              const globalIndex = itemIndexOffset + itemIndex;
+                              return (
+                                <motion.div
+                                  key={globalIndex}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: globalIndex * 0.03 }}
+                                  onClick={() => toggleIngredient(globalIndex)}
+                                  className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
+                                    checkedIngredients.includes(globalIndex) 
+                                      ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
+                                      : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
+                                  }`}
+                                >
+                                  <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                                    checkedIngredients.includes(globalIndex) 
+                                      ? 'bg-[#93C560] border-[#93C560]' 
+                                      : 'border-gray-300 bg-white'
+                                  }`}>
+                                    {checkedIngredients.includes(globalIndex) && (
+                                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                    )}
+                                  </div>
+                                  <LinkedIngredient
+                                    ingredient={ingredient}
+                                    rawMaterial={findRawMaterial(ingredient, rawMaterials)}
+                                    className={`text-sm md:text-base ${checkedIngredients.includes(globalIndex) ? 'line-through opacity-60' : ''}`}
+                                  />
+                                </motion.div>
+                              );
+                            })}
+                          </div>
                         </div>
-                        <LinkedIngredient
-                          ingredient={ingredient}
-                          rawMaterial={findRawMaterial(ingredient, rawMaterials)}
-                          className={`text-sm md:text-base ${checkedIngredients.includes(index) ? 'line-through opacity-60' : ''}`}
-                        />
-                      </motion.div>
-                    ))
+                      );
+                    })
                   ) : (recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
                     (recipe as any).ingredientsStructured.map((item: any, index: number) => {
                       // Scale amounts from recipe base servings -> current servings
