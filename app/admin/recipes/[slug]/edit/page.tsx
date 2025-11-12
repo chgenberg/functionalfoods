@@ -162,7 +162,7 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         ? foundRecipe.instructionsStructured.steps 
         : (foundRecipe.instructions ? 
             (typeof foundRecipe.instructions === 'string' ? 
-              foundRecipe.instructions.split('\n').filter((line: string) => line.trim()) : 
+              foundRecipe.instructions.split(/\d+\.\s*/).filter((line: string) => line.trim()) : 
               Array.isArray(foundRecipe.instructions) ? foundRecipe.instructions : []) : []);
       
       // Load content paragraphs if structured
