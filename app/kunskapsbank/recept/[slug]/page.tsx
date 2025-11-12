@@ -1455,8 +1455,10 @@ export default function RecipePage() {
                       </motion.div>
                     ))
                   ) : recipe.content ? (
-                    <div className="prose prose-sm md:prose max-w-none">
-                      <p className="text-[#014421] leading-relaxed text-sm md:text-base">{recipe.content}</p>
+                    <div className="prose prose-sm md:prose max-w-none space-y-4">
+                      {recipe.content.split('\n\n').map((paragraph, index) => (
+                        <p key={index} className="text-[#014421] leading-relaxed text-sm md:text-base">{paragraph.trim()}</p>
+                      ))}
                     </div>
                   ) : null}
                 </div>
