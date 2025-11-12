@@ -40,6 +40,11 @@ interface Recipe {
   tags?: string[];
 }
 
+interface IngredientGroup {
+  title: string;
+  items: string[];
+}
+
 interface EditRecipeForm {
   title: string;
   excerpt: string;
@@ -51,6 +56,8 @@ interface EditRecipeForm {
   cookTime: string;
   servings: number;
   ingredients: string[];
+  ingredientGroups: IngredientGroup[]; // NEW: Grouped ingredients
+  useGroupedIngredients: boolean; // Toggle between simple list and groups
   instructions: string[];
   tips: string;
   tags: string[];
@@ -90,6 +97,8 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
     cookTime: '',
     servings: 4,
     ingredients: [],
+    ingredientGroups: [],
+    useGroupedIngredients: false,
     instructions: [],
     tips: '',
     tags: [],
@@ -139,6 +148,19 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
       const foundRecipe = await response.json();
       setRecipe(foundRecipe);
       
+      // Load structured ingredients if available
+      const hasStructuredIngredients = foundRecipe.ingredientsStructured?.groups;
+      const ingredientGroups = hasStructuredIngredients ? foundRecipe.ingredientsStructured.groups : [];
+      
+      // Load structured instructions if available
+      const hasStructuredInstructions = foundRecipe.instructionsStructured?.steps;
+      const instructionSteps = hasStructuredInstructions 
+        ? foundRecipe.instructionsStructured.steps 
+        : (foundRecipe.instructions ? 
+            (typeof foundRecipe.instructions === 'string' ? 
+              foundRecipe.instructions.split('\n').filter((line: string) => line.trim()) : 
+              Array.isArray(foundRecipe.instructions) ? foundRecipe.instructions : []) : []);
+      
       // Populera formuläret med befintlig data
       setFormData({
         title: foundRecipe.title,
@@ -151,10 +173,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         cookTime: foundRecipe.cookTime || '',
         servings: foundRecipe.servings || 4,
         ingredients: Array.isArray(foundRecipe.ingredients) ? foundRecipe.ingredients : [],
-        instructions: foundRecipe.instructions ? 
-          (typeof foundRecipe.instructions === 'string' ? 
-            foundRecipe.instructions.split('\n').filter((line: string) => line.trim()) : 
-            Array.isArray(foundRecipe.instructions) ? foundRecipe.instructions : []) : [],
+        ingredientGroups: ingredientGroups,
+        useGroupedIngredients: hasStructuredIngredients,
+        instructions: instructionSteps,
         tips: foundRecipe.tips || '',
         tags: Array.isArray(foundRecipe.tags) ? foundRecipe.tags : [],
         status: foundRecipe.status || 'PUBLISHED',
@@ -191,6 +212,15 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         ...formData.courseTags
       ])];
 
+      // Build structured data if using grouped ingredients
+      const ingredientsStructured = formData.useGroupedIngredients && formData.ingredientGroups.length > 0
+        ? { groups: formData.ingredientGroups.filter(g => g.items.length > 0) }
+        : null;
+      
+      const instructionsStructured = formData.instructions.length > 0
+        ? { steps: formData.instructions.filter(inst => inst.trim() !== '') }
+        : null;
+      
       // Skicka uppdateringsdata till API
       const updateData = {
         title: formData.title,
@@ -203,7 +233,9 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         cookTime: formData.cookTime,
         servings: formData.servings,
         ingredients: formData.ingredients.filter(ing => ing.trim() !== ''),
+        ingredientsStructured, // NEW: Structured ingredients
         instructions: formData.instructions.filter(inst => inst.trim() !== '').join('\n'),
+        instructionsStructured, // NEW: Structured instructions
         tips: formData.tips,
         tags: allTags,
         status: formData.status,
@@ -668,44 +700,144 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
 
           {/* Ingredients */}
           <div className="admin-card">
-            <h2 className="text-lg font-medium text-[var(--primary-green)] mb-4">Ingredienser</h2>
-            <p className="text-sm text-[var(--text-secondary)] mb-4">
-              🥗 Lista alla ingredienser med mängd. T.ex. "2 dl mjölk", "200 g lax", "1 msk olivolja"
-            </p>
-            
-            <div className="space-y-2">
-              {formData.ingredients.map((ingredient, index) => (
-                <div key={index} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={ingredient}
-                    onChange={(e) => {
-                      const newIngredients = [...formData.ingredients];
-                      newIngredients[index] = e.target.value;
-                      setFormData(prev => ({ ...prev, ingredients: newIngredients }));
-                    }}
-                    className="admin-input"
-                    placeholder="T.ex. 2 dl mjölk"
-                  />
-                  <button
-                    onClick={() => {
-                      const newIngredients = formData.ingredients.filter((_, i) => i !== index);
-                      setFormData(prev => ({ ...prev, ingredients: newIngredients }));
-                    }}
-                    className="admin-btn admin-btn-secondary"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-              
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-medium text-[var(--primary-green)]">Ingredienser</h2>
               <button
-                onClick={() => setFormData(prev => ({ ...prev, ingredients: [...prev.ingredients, ''] }))}
-                className="admin-btn admin-btn-secondary"
+                onClick={() => setFormData(prev => ({ ...prev, useGroupedIngredients: !prev.useGroupedIngredients }))}
+                className="text-sm px-3 py-1 rounded-lg border border-[var(--primary-green)] text-[var(--primary-green)] hover:bg-[var(--primary-green)] hover:text-white transition-colors"
               >
-                Lägg till ingrediens
+                {formData.useGroupedIngredients ? '📋 Enkel lista' : '📁 Grupperade'}
               </button>
             </div>
+            
+            {!formData.useGroupedIngredients ? (
+              // Simple list mode
+              <>
+                <p className="text-sm text-[var(--text-secondary)] mb-4">
+                  🥗 Lista alla ingredienser med mängd. T.ex. "2 dl mjölk", "200 g lax"
+                </p>
+                <div className="space-y-2">
+                  {formData.ingredients.map((ingredient, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={ingredient}
+                        onChange={(e) => {
+                          const newIngredients = [...formData.ingredients];
+                          newIngredients[index] = e.target.value;
+                          setFormData(prev => ({ ...prev, ingredients: newIngredients }));
+                        }}
+                        className="admin-input"
+                        placeholder="T.ex. 2 dl mjölk"
+                      />
+                      <button
+                        onClick={() => {
+                          const newIngredients = formData.ingredients.filter((_, i) => i !== index);
+                          setFormData(prev => ({ ...prev, ingredients: newIngredients }));
+                        }}
+                        className="admin-btn admin-btn-secondary"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setFormData(prev => ({ ...prev, ingredients: [...prev.ingredients, ''] }))}
+                    className="admin-btn admin-btn-secondary"
+                  >
+                    Lägg till ingrediens
+                  </button>
+                </div>
+              </>
+            ) : (
+              // Grouped mode
+              <>
+                <p className="text-sm text-[var(--text-secondary)] mb-4">
+                  📁 Organisera ingredienser i grupper (t.ex. "Sås", "Tillbehör", "Garnering")
+                </p>
+                <div className="space-y-6">
+                  {formData.ingredientGroups.map((group, groupIndex) => (
+                    <div key={groupIndex} className="border-2 border-[var(--border-light)] rounded-xl p-4 bg-[var(--primary-beige)]/30">
+                      {/* Group header */}
+                      <div className="flex gap-2 mb-3">
+                        <input
+                          type="text"
+                          value={group.title}
+                          onChange={(e) => {
+                            const newGroups = [...formData.ingredientGroups];
+                            newGroups[groupIndex].title = e.target.value;
+                            setFormData(prev => ({ ...prev, ingredientGroups: newGroups }));
+                          }}
+                          className="flex-1 px-3 py-2 border-2 border-[var(--primary-green)] rounded-lg font-semibold bg-white"
+                          placeholder="Gruppnamn (t.ex. Sås, Tillbehör)"
+                        />
+                        <button
+                          onClick={() => {
+                            const newGroups = formData.ingredientGroups.filter((_, i) => i !== groupIndex);
+                            setFormData(prev => ({ ...prev, ingredientGroups: newGroups }));
+                          }}
+                          className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                          title="Ta bort grupp"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                      
+                      {/* Group items */}
+                      <div className="space-y-2">
+                        {group.items.map((item, itemIndex) => (
+                          <div key={itemIndex} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={item}
+                              onChange={(e) => {
+                                const newGroups = [...formData.ingredientGroups];
+                                newGroups[groupIndex].items[itemIndex] = e.target.value;
+                                setFormData(prev => ({ ...prev, ingredientGroups: newGroups }));
+                              }}
+                              className="admin-input"
+                              placeholder="T.ex. 2 dl mjölk"
+                            />
+                            <button
+                              onClick={() => {
+                                const newGroups = [...formData.ingredientGroups];
+                                newGroups[groupIndex].items = newGroups[groupIndex].items.filter((_, i) => i !== itemIndex);
+                                setFormData(prev => ({ ...prev, ingredientGroups: newGroups }));
+                              }}
+                              className="admin-btn admin-btn-secondary"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const newGroups = [...formData.ingredientGroups];
+                            newGroups[groupIndex].items.push('');
+                            setFormData(prev => ({ ...prev, ingredientGroups: newGroups }));
+                          }}
+                          className="text-sm px-3 py-1 text-[var(--primary-green)] hover:bg-[var(--primary-green)]/10 rounded-lg transition-colors"
+                        >
+                          + Lägg till ingrediens
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <button
+                    onClick={() => {
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        ingredientGroups: [...prev.ingredientGroups, { title: '', items: [''] }] 
+                      }));
+                    }}
+                    className="admin-btn admin-btn-primary w-full"
+                  >
+                    + Lägg till ny grupp
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Instructions */}

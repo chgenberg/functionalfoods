@@ -191,9 +191,11 @@ export async function PUT(
         imageUrl: body.imageUrl ?? body.image ?? null,
         categories: body.category ? [body.category] : body.categories,
         ingredients: body.ingredients,
+        ingredientsStructured: body.ingredientsStructured || null,
         instructions: Array.isArray(body.instructions) 
           ? body.instructions.join('\n') 
           : body.instructions,
+        instructionsStructured: body.instructionsStructured || null,
         difficulty: body.difficulty,
         prepTime: body.prepTime,
         cookTime: body.cookTime,
