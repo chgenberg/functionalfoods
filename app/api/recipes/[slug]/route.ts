@@ -187,8 +187,9 @@ export async function PUT(
         title: body.title,
         slug: newSlug,
         excerpt: body.excerpt,
-        content: body.description,
+        content: body.description || body.content,
         imageUrl: body.imageUrl ?? body.image ?? null,
+        imageAlt: body.imageAlt || null,
         categories: body.category ? [body.category] : body.categories,
         ingredients: body.ingredients,
         ingredientsStructured: body.ingredientsStructured || null,
@@ -204,7 +205,9 @@ export async function PUT(
         nutrition: body.nutritionInfo || body.nutrition,
         tips: body.tips,
         tags: body.tags || [],
-        status: body.published !== false ? 'PUBLISHED' : 'DRAFT',
+        status: body.status || (body.published !== false ? 'PUBLISHED' : 'DRAFT'),
+        isPremium: typeof body.isPremium === 'boolean' ? body.isPremium : undefined,
+        isFree: typeof body.isPremium === 'boolean' ? !body.isPremium : undefined,
       },
     });
 
