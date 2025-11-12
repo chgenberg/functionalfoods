@@ -17,6 +17,7 @@ import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 export default function FunctionalBasicsPage() {
   const router = useRouter();
   const [coursePrice, setCoursePrice] = useState<number | null>(null);
+  const [originalPrice, setOriginalPrice] = useState<number | null>(null);
   const [priceLoading, setPriceLoading] = useState(true);
 
   // Fetch actual course price from database
@@ -30,15 +31,23 @@ export default function FunctionalBasicsPage() {
           const courses = await response.json();
           const basics = courses.find((c: any) => c.id === 'functional-basics');
           if (basics) {
-            // Use salePrice if active, otherwise use basePrice or price
-            const priceExcl = basics.salePrice ?? basics.basePrice ?? basics.price;
-            setCoursePrice(Math.round(priceExcl * 1.25)); // Convert to incl. VAT
+            // Calculate prices with VAT
+            const basePriceIncl = basics.basePrice ? Math.round(basics.basePrice * 1.25) : null;
+            const salePriceIncl = basics.salePrice ? Math.round(basics.salePrice * 1.25) : null;
+            
+            // Set original price (basePrice)
+            setOriginalPrice(basePriceIncl);
+            
+            // Use salePrice if available, otherwise basePrice or price
+            const activePriceIncl = salePriceIncl ?? basePriceIncl ?? Math.round(basics.price * 1.25);
+            setCoursePrice(activePriceIncl);
           }
         }
       } catch (error) {
         console.error('Failed to fetch course price:', error);
-        // Fallback to hardcoded price
-        setCoursePrice(2295);
+        // Fallback to hardcoded prices
+        setCoursePrice(995);
+        setOriginalPrice(2295);
       } finally {
         setPriceLoading(false);
       }
@@ -102,8 +111,10 @@ export default function FunctionalBasicsPage() {
 
   // Use fetched price or fallback
   const VAT_RATE = 0.25;
-  const displayPriceIncl = coursePrice ?? 2295; // Fallback to normal price
+  const displayPriceIncl = coursePrice ?? 995; // Campaign price
+  const displayOriginalPriceIncl = originalPrice ?? 2295; // Original price
   const displayPriceExcl = Math.round((displayPriceIncl / (1 + VAT_RATE)) * 100) / 100;
+  const hasDiscount = originalPrice && coursePrice && originalPrice > coursePrice;
 
   const course = {
     id: 'functional-basics',
@@ -337,6 +348,9 @@ export default function FunctionalBasicsPage() {
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
               <div className="text-3xl font-bold text-primary">{formatPrice(displayPriceIncl)} kr</div>
+              {hasDiscount && (
+                <div className="text-sm text-gray-500 line-through">Ord. pris {formatPrice(displayOriginalPriceIncl)} kr</div>
+              )}
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 

@@ -17,6 +17,7 @@ import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 export default function FunctionalEnergyPage() {
   const router = useRouter();
   const [coursePrice, setCoursePrice] = useState<number | null>(null);
+  const [originalPrice, setOriginalPrice] = useState<number | null>(null);
   const [priceLoading, setPriceLoading] = useState(true);
   
   // Add CSS for gradient animation
@@ -64,15 +65,23 @@ export default function FunctionalEnergyPage() {
           const courses = await response.json();
           const energy = courses.find((c: any) => c.id === 'functional-energy');
           if (energy) {
-            // Use salePrice if active, otherwise use basePrice or price
-            const priceExcl = energy.salePrice ?? energy.basePrice ?? energy.price;
-            setCoursePrice(Math.round(priceExcl * 1.25)); // Convert to incl. VAT
+            // Calculate prices with VAT
+            const basePriceIncl = energy.basePrice ? Math.round(energy.basePrice * 1.25) : null;
+            const salePriceIncl = energy.salePrice ? Math.round(energy.salePrice * 1.25) : null;
+            
+            // Set original price (basePrice)
+            setOriginalPrice(basePriceIncl);
+            
+            // Use salePrice if available, otherwise basePrice or price
+            const activePriceIncl = salePriceIncl ?? basePriceIncl ?? Math.round(energy.price * 1.25);
+            setCoursePrice(activePriceIncl);
           }
         }
       } catch (error) {
         console.error('Failed to fetch course price:', error);
-        // Fallback to hardcoded price
-        setCoursePrice(2295);
+        // Fallback to hardcoded prices
+        setCoursePrice(995);
+        setOriginalPrice(2295);
       } finally {
         setPriceLoading(false);
       }
@@ -80,17 +89,21 @@ export default function FunctionalEnergyPage() {
     fetchPrice();
   }, []);
 
+  // Display price (use fetched or fallback)
+  const VAT_RATE = 0.25;
+  const displayPriceIncl = coursePrice ?? 995; // Campaign price
+  const displayOriginalPriceIncl = originalPrice ?? 2295; // Original price
+  const displayPriceExcl = Math.round((displayPriceIncl / (1 + VAT_RATE)) * 100) / 100;
+  const hasDiscount = originalPrice && coursePrice && originalPrice > coursePrice;
+
   const course = {
     id: 'functional-energy',
     name: 'Functional Insulin balance/Energy',
-    price: 1836, // Pris exkl. moms (2295 kr inkl. moms) - fallback
+    price: displayPriceExcl, // Pris exkl. moms
     type: 'course' as const,
     image: '/Kurser_bilder/Functional_insulin balance.jpg',
     quantity: 1
   };
-
-  // Display price (use fetched or fallback)
-  const displayPriceIncl = coursePrice || 2295;
 
   const handleAddToCart = () => {
     addItem(course);
@@ -307,6 +320,9 @@ export default function FunctionalEnergyPage() {
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-[#93C560]/20 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
               <div className="text-3xl font-bold text-primary">{formatPrice(displayPriceIncl)} kr</div>
+              {hasDiscount && (
+                <div className="text-sm text-gray-500 line-through">Ord. pris {formatPrice(displayOriginalPriceIncl)} kr</div>
+              )}
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 

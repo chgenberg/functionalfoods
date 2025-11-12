@@ -20,6 +20,7 @@ export default function FunctionalFlowPage() {
   const { addItem } = useCart();
   const router = useRouter();
   const [coursePrice, setCoursePrice] = useState<number | null>(null);
+  const [originalPrice, setOriginalPrice] = useState<number | null>(null);
   const [priceLoading, setPriceLoading] = useState(true);
 
   // Fetch actual course price from database
@@ -33,15 +34,23 @@ export default function FunctionalFlowPage() {
           const courses = await response.json();
           const flow = courses.find((c: any) => c.id === 'functional-flow');
           if (flow) {
-            // Use salePrice if active, otherwise use basePrice or price
-            const priceExcl = flow.salePrice ?? flow.basePrice ?? flow.price;
-            setCoursePrice(Math.round(priceExcl * 1.25)); // Convert to incl. VAT
+            // Calculate prices with VAT
+            const basePriceIncl = flow.basePrice ? Math.round(flow.basePrice * 1.25) : null;
+            const salePriceIncl = flow.salePrice ? Math.round(flow.salePrice * 1.25) : null;
+            
+            // Set original price (basePrice)
+            setOriginalPrice(basePriceIncl);
+            
+            // Use salePrice if available, otherwise basePrice or price
+            const activePriceIncl = salePriceIncl ?? basePriceIncl ?? Math.round(flow.price * 1.25);
+            setCoursePrice(activePriceIncl);
           }
         }
       } catch (error) {
         console.error('Failed to fetch course price:', error);
-        // Fallback to hardcoded price
-        setCoursePrice(2295);
+        // Fallback to hardcoded prices
+        setCoursePrice(995);
+        setOriginalPrice(2295);
       } finally {
         setPriceLoading(false);
       }
@@ -69,18 +78,22 @@ export default function FunctionalFlowPage() {
     return () => window.clearInterval(id);
   }, [coursePrice]);
 
+  // Display price (use fetched or fallback)
+  const VAT_RATE = 0.25;
+  const displayPriceIncl = coursePrice ?? 995; // Campaign price
+  const displayOriginalPriceIncl = originalPrice ?? 2295; // Original price
+  const displayPriceExcl = Math.round((displayPriceIncl / (1 + VAT_RATE)) * 100) / 100;
+  const hasDiscount = originalPrice && coursePrice && originalPrice > coursePrice;
+
   const course = {
     id: 'functional-flow',
     name: 'Functional Gut Health/Flow',
-    price: 1836, // Pris exkl. moms - fallback
+    price: displayPriceExcl, // Pris exkl. moms
     originalPrice: undefined as any,
     type: 'course' as const,
     image: '/Kurser_bilder/Functional_Gut Health.jpg',
     quantity: 1
   };
-
-  // Display price (use fetched or fallback)
-  const displayPriceIncl = coursePrice || 2295;
 
   const handleAddToCart = () => {
     addItem(course);
@@ -273,6 +286,9 @@ export default function FunctionalFlowPage() {
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-primary/10 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
               <div className="text-3xl font-bold text-primary">{formatPrice(displayPriceIncl)} kr</div>
+              {hasDiscount && (
+                <div className="text-sm text-gray-500 line-through">Ord. pris {formatPrice(displayOriginalPriceIncl)} kr</div>
+              )}
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
