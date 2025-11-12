@@ -6,9 +6,9 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const admin = await requireAdminAuth(req);
-  if ((admin as any)?.status === 401) return admin as any;
-
+  // NOTE: GET is public (no auth required) so customers can see current prices
+  // Only PUT requires admin auth to change prices
+  
   try {
     // Hämta alla kursprodukter från databasen
     const courseProducts = await prisma.courseProduct.findMany({
