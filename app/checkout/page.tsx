@@ -24,7 +24,8 @@ export default function Checkout() {
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPayment, setSelectedPayment] = useState('stripe');
+  const [selectedPayment, setSelectedPayment] = useState('svea');
+  const [showOtherPayments, setShowOtherPayments] = useState(false);
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
@@ -250,26 +251,49 @@ export default function Checkout() {
               </h2>
 
               <div className="space-y-3">
-                {[
-                  {
-                    id: 'stripe',
-                    name: 'Kort (Stripe)',
-                    desc: 'Betala med Visa, Mastercard, Apple Pay eller Google Pay',
-                    icon: CreditCard,
-                    recommended: true
-                  },
-                  {
-                    id: 'svea',
-                    name: 'Svea Ekonomi',
-                    desc: 'Betala med kort, faktura eller delbetalning',
-                    icon: CreditCard,
-                    recommended: false
-                  }
-                ].map((method) => (
+                {/* Svea - Primary payment method */}
+                <label 
+                  className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedPayment === 'svea'
+                      ? 'border-[#014421] bg-green-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="svea"
+                    checked={selectedPayment === 'svea'}
+                    onChange={(e) => setSelectedPayment(e.target.value)}
+                    className="sr-only"
+                  />
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      selectedPayment === 'svea' ? 'bg-[#014421] text-white' : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      <CreditCard className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">Svea Ekonomi</p>
+                      <p className="text-sm text-gray-500">Betala med kort, faktura eller delbetalning</p>
+                    </div>
+                  </div>
+                </label>
+
+                {/* Show other payment methods link */}
+                <button
+                  type="button"
+                  onClick={() => setShowOtherPayments(!showOtherPayments)}
+                  className="text-sm text-gray-600 hover:text-[#014421] underline transition-colors pl-2"
+                >
+                  {showOtherPayments ? '▼ Dölj övriga betalningsvillkor' : '▶ Övriga betalningsvillkor'}
+                </button>
+
+                {/* Stripe - Hidden by default */}
+                {showOtherPayments && (
                   <label 
-                    key={method.id} 
                     className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      selectedPayment === method.id
+                      selectedPayment === 'stripe'
                         ? 'border-[#014421] bg-green-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
@@ -277,29 +301,24 @@ export default function Checkout() {
                     <input
                       type="radio"
                       name="payment"
-                      value={method.id}
-                      checked={selectedPayment === method.id}
+                      value="stripe"
+                      checked={selectedPayment === 'stripe'}
                       onChange={(e) => setSelectedPayment(e.target.value)}
                       className="sr-only"
                     />
                     <div className="flex items-center gap-3 flex-1">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        selectedPayment === method.id ? 'bg-[#014421] text-white' : 'bg-gray-100 text-gray-600'
+                        selectedPayment === 'stripe' ? 'bg-[#014421] text-white' : 'bg-gray-100 text-gray-600'
                       }`}>
-                        <method.icon className="w-5 h-5" />
+                        <CreditCard className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">{method.name}</p>
-                        <p className="text-sm text-gray-500">{method.desc}</p>
+                        <p className="font-medium text-gray-900">Kort (Stripe)</p>
+                        <p className="text-sm text-gray-500">Betala med Visa, Mastercard, Apple Pay eller Google Pay</p>
                       </div>
-                      {method.recommended && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                          Rekommenderas
-                        </span>
-                      )}
                     </div>
                   </label>
-                ))}
+                )}
               </div>
 
               {/* Payment method logos */}
