@@ -137,18 +137,23 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Remove purchases if full refund
+    // Remove purchases to revoke course access
+    const removedCourses: string[] = [];
     if (!amount || refundAmount >= order.totalAmount) {
       const courseItems = order.items.filter(item => item.type === 'course' && item.courseId);
       for (const item of courseItems) {
         if (item.courseId && order.userId) {
-          await prisma.purchase.deleteMany({
+          const deleted = await prisma.purchase.deleteMany({
             where: {
               userId: order.userId,
-              courseId: item.courseId
+              courseId: item.courseId,
+              orderId: order.id // Only delete purchase from THIS order
             }
           });
-          console.log(`✅ Removed purchase for course: ${item.courseId}`);
+          if (deleted.count > 0) {
+            removedCourses.push(item.name);
+            console.log(`✅ Removed purchase for course: ${item.name}`);
+          }
         }
       }
     }
@@ -156,7 +161,8 @@ export async function POST(request: NextRequest) {
     console.log('✅ SVEA refund processed:', {
       orderId,
       refundAmount,
-      fullRefund: !amount || refundAmount >= order.totalAmount
+      fullRefund: !amount || refundAmount >= order.totalAmount,
+      coursesRemoved: removedCourses
     });
 
     return NextResponse.json({
@@ -165,12 +171,22 @@ export async function POST(request: NextRequest) {
         orderId,
         amount: refundAmount,
         currency: 'SEK',
-        status: 'pending', // SVEA refunds may need manual processing
+        status: 'registered', // Registered in our system
         created: new Date().toISOString(),
-        reason
+        reason,
+        coursesRemoved: removedCourses
       },
-      message: `Återbetalning på ${refundAmount} SEK har registrerats. Observera: Den faktiska återbetalningen måste genomföras i SVEA:s admin-panel eller via deras kredit-API.`,
-      note: 'Credit order data has been stored. Please process the refund in SVEA admin panel or contact SVEA support.'
+      message: removedCourses.length > 0 
+        ? `✅ Återbetalning registrerad (${refundAmount} SEK). Kurs-tillgång borttagen: ${removedCourses.join(', ')}. ⚠️ Slutför återbetalningen i SVEA:s admin-panel.`
+        : `✅ Återbetalning registrerad (${refundAmount} SEK). ⚠️ Slutför återbetalningen i SVEA:s admin-panel.`,
+      note: 'Kunden har nu förlorat tillgång till köpta kurser. Genomför återbetalningen i SVEA Payment Admin: https://paymentadmin.svea.com',
+      nextSteps: [
+        '1. Logga in på SVEA Payment Admin (https://paymentadmin.svea.com)',
+        `2. Hitta order med Checkout Order ID: ${checkoutOrderId}`,
+        '3. Klicka på "Credit/Refund"',
+        `4. Ange belopp: ${refundAmount} SEK`,
+        '5. Bekräfta återbetalningen'
+      ]
     });
 
   } catch (error) {
