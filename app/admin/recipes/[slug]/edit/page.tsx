@@ -48,9 +48,6 @@ interface IngredientGroup {
 interface EditRecipeForm {
   title: string;
   excerpt: string;
-  content: string;
-  contentParagraphs: string[]; // NEW: Structured content in paragraphs
-  useStructuredContent: boolean; // Toggle between single text and paragraphs
   imageAlt: string;
   category: string;
   difficulty: string;
@@ -91,9 +88,6 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   const [formData, setFormData] = useState<EditRecipeForm>({
     title: '',
     excerpt: '',
-    content: '',
-    contentParagraphs: [],
-    useStructuredContent: false,
     imageAlt: '',
     category: 'Middag',
     difficulty: 'Medel',
@@ -165,18 +159,10 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
               foundRecipe.instructions.split(/\d+\.\s*/).filter((line: string) => line.trim()) : 
               Array.isArray(foundRecipe.instructions) ? foundRecipe.instructions : []) : []);
       
-      // Load content paragraphs if structured
-      const contentParagraphs = foundRecipe.content && foundRecipe.content.includes('\n\n')
-        ? foundRecipe.content.split('\n\n').filter((p: string) => p.trim())
-        : [];
-      
       // Populera formuläret med befintlig data
       setFormData({
         title: foundRecipe.title,
         excerpt: foundRecipe.excerpt || '',
-        content: foundRecipe.content || '',
-        contentParagraphs: contentParagraphs,
-        useStructuredContent: contentParagraphs.length > 0,
         imageAlt: foundRecipe.imageAlt || '',
         category: foundRecipe.categories?.[0] || 'Middag',
         difficulty: foundRecipe.difficulty || 'Medel',
@@ -232,16 +218,10 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         ? { steps: formData.instructions.filter(inst => inst.trim() !== '') }
         : null;
       
-      // Build content from paragraphs if using structured content
-      const contentToSave = formData.useStructuredContent && formData.contentParagraphs.length > 0
-        ? formData.contentParagraphs.filter(p => p.trim()).join('\n\n')
-        : formData.content;
-      
       // Skicka uppdateringsdata till API
       const updateData = {
         title: formData.title,
         excerpt: formData.excerpt,
-        content: contentToSave,
         imageAlt: formData.imageAlt,
         categories: [formData.category],
         difficulty: formData.difficulty,
@@ -429,65 +409,6 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
                   rows={3}
                   placeholder="En kort beskrivning som visas i receptlistor"
                 />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="admin-label mb-0">Detaljerad beskrivning (content)</label>
-                  <button
-                    type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, useStructuredContent: !prev.useStructuredContent }))}
-                    className="text-xs px-2 py-1 rounded border border-[var(--primary-green)] text-[var(--primary-green)] hover:bg-[var(--primary-green)] hover:text-white transition-colors"
-                  >
-                    {formData.useStructuredContent ? '📝 Löpande text' : '📋 Stycken'}
-                  </button>
-                </div>
-                
-                {!formData.useStructuredContent ? (
-                  <textarea
-                    value={formData.content}
-                    onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                    className="admin-textarea"
-                    rows={4}
-                    placeholder="Längre beskrivning som visas på receptsidan (valfritt)"
-                  />
-                ) : (
-                  <div className="space-y-3">
-                    <p className="text-sm text-gray-500">Dela upp beskrivningen i separata stycken/textblock</p>
-                    {formData.contentParagraphs.map((paragraph, index) => (
-                      <div key={index} className="flex gap-2">
-                        <textarea
-                          value={paragraph}
-                          onChange={(e) => {
-                            const newParagraphs = [...formData.contentParagraphs];
-                            newParagraphs[index] = e.target.value;
-                            setFormData(prev => ({ ...prev, contentParagraphs: newParagraphs }));
-                          }}
-                          className="admin-textarea"
-                          rows={3}
-                          placeholder={`Stycke ${index + 1}...`}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newParagraphs = formData.contentParagraphs.filter((_, i) => i !== index);
-                            setFormData(prev => ({ ...prev, contentParagraphs: newParagraphs }));
-                          }}
-                          className="admin-btn admin-btn-secondary h-fit"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, contentParagraphs: [...prev.contentParagraphs, ''] }))}
-                      className="admin-btn admin-btn-secondary"
-                    >
-                      + Lägg till stycke
-                    </button>
-                  </div>
-                )}
               </div>
 
               <div>
