@@ -19,9 +19,39 @@ export default function FunctionalFlowPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const { addItem } = useCart();
   const router = useRouter();
+  const [coursePrice, setCoursePrice] = useState<number | null>(null);
+  const [priceLoading, setPriceLoading] = useState(true);
+
+  // Fetch actual course price from database
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch('/api/admin/functional-courses', {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const courses = await response.json();
+          const flow = courses.find((c: any) => c.id === 'functional-flow');
+          if (flow) {
+            // Use salePrice if active, otherwise use basePrice or price
+            const priceExcl = flow.salePrice ?? flow.basePrice ?? flow.price;
+            setCoursePrice(Math.round(priceExcl * 1.25)); // Convert to incl. VAT
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch course price:', error);
+        // Fallback to hardcoded price
+        setCoursePrice(2295);
+      } finally {
+        setPriceLoading(false);
+      }
+    };
+    fetchPrice();
+  }, []);
 
   // Fire ViewContent once after fbq is available and consent granted
   useEffect(() => {
+    if (!coursePrice) return; // Wait for price to load
     let attempts = 0;
     const maxAttempts = 25;
     const id = window.setInterval(() => {
@@ -30,24 +60,27 @@ export default function FunctionalFlowPage() {
         const consent = localStorage.getItem('cookie-consent');
         const marketingOk = !!consent && JSON.parse(consent)?.preferences?.marketing;
         if (marketingOk) {
-          trackViewContent({ id: 'functional-flow', name: 'Functional Gut Health/Flow', price: 2295 });
+          trackViewContent({ id: 'functional-flow', name: 'Functional Gut Health/Flow', price: coursePrice });
           window.clearInterval(id);
         }
       } catch {}
       if (attempts >= maxAttempts) window.clearInterval(id);
     }, 200);
     return () => window.clearInterval(id);
-  }, []);
+  }, [coursePrice]);
 
   const course = {
     id: 'functional-flow',
     name: 'Functional Gut Health/Flow',
-    price: 1836, // Pris exkl. moms (2295 kr inkl. moms)
+    price: 1836, // Pris exkl. moms - fallback
     originalPrice: undefined as any,
     type: 'course' as const,
     image: '/Kurser_bilder/Functional_Gut Health.jpg',
     quantity: 1
   };
+
+  // Display price (use fetched or fallback)
+  const displayPriceIncl = coursePrice || 2295;
 
   const handleAddToCart = () => {
     addItem(course);
@@ -239,7 +272,7 @@ export default function FunctionalFlowPage() {
               transition={{ delay: 0.4 }}
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-primary/10 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
-              <div className="text-3xl font-bold text-primary">{formatPrice(2295)} kr</div>
+              <div className="text-3xl font-bold text-primary">{formatPrice(displayPriceIncl)} kr</div>
               <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
               <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
               <button 
@@ -481,7 +514,7 @@ export default function FunctionalFlowPage() {
             <AddToCart 
               id="functional-flow"
               name="Functional Gut Health/Flow"
-              price={1497}
+              price={displayPriceIncl}
               type="course"
               image={course.image}
             />
