@@ -137,7 +137,7 @@ export class EmailService {
       <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ed 100%); border: 2px solid #9dc46d; border-radius: 12px; padding: 24px; margin: 30px 0; position: relative; overflow: hidden;">
         <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: #9dc46d; border-radius: 50%; opacity: 0.1;"></div>
         <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 20px; display: flex; align-items: center;">
-          <span style="font-size: 28px; margin-right: 12px;">🔐</span>
+          <span style="display: inline-block; width: 32px; height: 32px; background: #9dc46d; border-radius: 50%; text-align: center; line-height: 36px; color: white; font-size: 18px; margin-right: 12px;">🔒</span>
           Dina inloggningsuppgifter
         </h3>
         <div style="background: white; border-radius: 8px; padding: 16px; margin-top: 12px;">
@@ -145,7 +145,8 @@ export class EmailService {
           <p style="margin: 8px 0; color: #1a4324;"><strong>Lösenord:</strong> <span style="font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; color: #1a4324;">${data.loginCredentials.password}</span></p>
         </div>
         <p style="color: #666; font-size: 14px; margin: 16px 0 0 0; font-style: italic;">
-          💡 Tips: Ändra ditt lösenord efter första inloggningen för ökad säkerhet.
+          <span style="display: inline-block; width: 16px; height: 16px; background: #9dc46d; border-radius: 50%; text-align: center; line-height: 16px; color: white; font-size: 10px; margin-right: 6px;">i</span>
+          Tips: Ändra ditt lösenord efter första inloggningen för ökad säkerhet.
         </p>
       </div>
     ` : '';
@@ -185,13 +186,16 @@ export class EmailService {
           <div style="padding: 40px 30px;">
             <!-- Personlig hälsning -->
             <div style="text-align: center; margin-bottom: 30px;">
+              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #9dc46d 0%, #7fb05a 100%); border-radius: 50%; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center;">
+                <span style="color: white; font-size: 28px; font-weight: bold;">✓</span>
+              </div>
               <h2 style="color: #1a4324; margin: 0 0 16px 0; font-size: 28px; font-weight: 600;">
-                ${data.loginCredentials ? 'Välkommen till Functional Foods! 🎉' : 'Tack för ditt förtroende! 💚'}
+                ${data.loginCredentials ? 'Välkommen till Functional Foods!' : 'Tack för ditt förtroende!'}
               </h2>
               <p style="color: #555; line-height: 1.8; font-size: 16px; margin: 0;">
                 ${data.loginCredentials 
-                  ? `Hej ${data.customerName}! 👋<br>Din beställning är bekräftad och du har nu tillgång till dina kurser.<br>Vi är så glada att du är med på denna hälsoresa! 🌱`
-                  : `Hej ${data.customerName}! 👋<br>Tack för ditt återkommande förtroende! Din nya beställning är bekräftad.<br>Vi är glada att du fortsätter din hälsoresa tillsammans med oss! 🌱`
+                  ? `Hej ${data.customerName}!<br>Din beställning är bekräftad och du har nu tillgång till dina kurser.<br>Vi är så glada att du är med på denna hälsoresa!`
+                  : `Hej ${data.customerName}!<br>Tack för ditt återkommande förtroende! Din nya beställning är bekräftad.<br>Vi är glada att du fortsätter din hälsoresa tillsammans med oss!`
                 }
               </p>
             </div>
@@ -199,7 +203,7 @@ export class EmailService {
             <!-- Order Details med snygg box -->
             <div style="background: #fafafa; border: 1px solid #e0e0e0; border-radius: 12px; padding: 24px; margin: 30px 0;">
               <h3 style="color: #1a4324; margin: 0 0 20px 0; font-size: 20px; display: flex; align-items: center;">
-                <span style="display: inline-block; width: 32px; height: 32px; background: #9dc46d; border-radius: 50%; text-align: center; line-height: 32px; color: white; font-size: 16px; margin-right: 12px;">📦</span>
+                <span style="display: inline-block; width: 32px; height: 32px; background: #9dc46d; border-radius: 8px; text-align: center; line-height: 32px; color: white; font-size: 18px; margin-right: 12px;">□</span>
                 Orderdetaljer
               </h3>
               
@@ -231,14 +235,17 @@ export class EmailService {
             <!-- CTA Buttons -->
             <div style="text-align: center; margin: 40px 0;">
               <a href="https://functionalfoods.se" 
-                 style="display: inline-block; background: linear-gradient(135deg, #8b3a3a 0%, #6b2e2e 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(139, 58, 58, 0.3); transition: all 0.3s;">
-                ✨ Kom igång med dina kurser
+                 style="display: inline-block; background: linear-gradient(135deg, #1a4324 0%, #2a5434 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(26, 67, 36, 0.3); transition: all 0.3s;">
+                → Kom igång med dina kurser
               </a>
             </div>
 
             <!-- Nästa steg -->
             <div style="background: linear-gradient(135deg, #f8fffe 0%, #f0f7f5 100%); border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #d4e8df;">
-              <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 18px;">📚 Dina nästa steg:</h3>
+              <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 18px;">
+                <span style="display: inline-block; width: 24px; height: 24px; background: #9dc46d; border-radius: 6px; text-align: center; line-height: 24px; color: white; font-size: 14px; margin-right: 8px;">→</span>
+                Dina nästa steg:
+              </h3>
               ${data.loginCredentials ? `
                 <ol style="color: #555; line-height: 2; margin: 0; padding-left: 20px;">
                   <li>Logga in med dina nya uppgifter</li>
@@ -258,18 +265,22 @@ export class EmailService {
 
             <!-- Help Section med ikoner -->
             <div style="border-top: 2px solid #f0f0f0; padding-top: 30px; margin-top: 40px;">
-              <h3 style="color: #1a4324; margin: 0 0 20px 0; text-align: center;">Behöver du hjälp? Vi finns här! 💚</h3>
+              <h3 style="color: #1a4324; margin: 0 0 20px 0; text-align: center;">Behöver du hjälp? Vi finns här!</h3>
               
               <div style="display: table; width: 100%; text-align: center;">
                 <div style="display: table-cell; padding: 0 10px;">
                   <div style="background: #f8fffe; border-radius: 8px; padding: 16px;">
-                    <div style="font-size: 24px; margin-bottom: 8px;">📧</div>
+                    <div style="width: 40px; height: 40px; background: #9dc46d; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: white; font-size: 20px;">@</span>
+                    </div>
                     <a href="mailto:info@functionalfoods.se" style="color: #1a4324; text-decoration: none; font-weight: 500;">info@functionalfoods.se</a>
                   </div>
                 </div>
                 <div style="display: table-cell; padding: 0 10px;">
                   <div style="background: #f8fffe; border-radius: 8px; padding: 16px;">
-                    <div style="font-size: 24px; margin-bottom: 8px;">💬</div>
+                    <div style="width: 40px; height: 40px; background: #9dc46d; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center;">
+                      <span style="color: white; font-size: 20px;">?</span>
+                    </div>
                     <span style="color: #1a4324; font-weight: 500;">Chatt på hemsidan</span>
                   </div>
                 </div>
@@ -297,7 +308,7 @@ export class EmailService {
     return this.sendEmail({
       to: data.customerEmail,
       toName: data.customerName,
-      subject: `✅ Orderbekräftelse #${data.orderNumber} - Välkommen till Functional Foods!`,
+      subject: `Orderbekräftelse #${data.orderNumber} - Välkommen till Functional Foods`,
       html,
       tags: ['order-confirmation', 'transactional']
     });
