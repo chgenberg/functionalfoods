@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { PaymentService } from '../../../lib/payment';
 import { emailService } from '../../../lib/email';
+import { getMailchimpMarketing } from '../../../lib/mailchimp-marketing';
 import { trackPurchaseServer } from '@/app/lib/server-analytics';
 
 export const dynamic = 'force-dynamic';
@@ -498,6 +499,35 @@ async function handleCheckoutSessionCompleted(session: any) {
       }
     });
 
+    // --- Add new customers to Mailchimp Marketing with "kund" tag ---
+    try {
+      const user = await prisma.user.findUnique({ where: { email: customerEmail } });
+      if (user) {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const isNewUser = user.createdAt > oneHourAgo;
+        
+        if (isNewUser) {
+          const mailchimpMarketing = getMailchimpMarketing();
+          if (mailchimpMarketing.isConfigured()) {
+            const nameParts = customerName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            
+            await mailchimpMarketing.addSubscriber({
+              email: customerEmail,
+              firstName,
+              lastName,
+              tags: ['kund'],
+              status: 'subscribed'
+            });
+            console.log(`✅ New customer added to Mailchimp Marketing: ${customerEmail}`);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+    }
+
     // --- GA4 server-side purchase tracking (outside transaction) ---
     try {
       const { trackPurchaseServer } = await import('../../../lib/server-analytics');
@@ -533,6 +563,35 @@ async function handleCheckoutSessionCompleted(session: any) {
       console.log('✅ GA4 purchase sent via Measurement Protocol');
     } catch (e) {
       console.warn('⚠️ GA4 purchase tracking failed:', e);
+    }
+
+    // --- Add new customers to Mailchimp Marketing with "kund" tag ---
+    try {
+      const user = await prisma.user.findUnique({ where: { email: customerEmail } });
+      if (user) {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const isNewUser = user.createdAt > oneHourAgo;
+        
+        if (isNewUser) {
+          const mailchimpMarketing = getMailchimpMarketing();
+          if (mailchimpMarketing.isConfigured()) {
+            const nameParts = customerName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            
+            await mailchimpMarketing.addSubscriber({
+              email: customerEmail,
+              firstName,
+              lastName,
+              tags: ['kund'],
+              status: 'subscribed'
+            });
+            console.log(`✅ New customer added to Mailchimp Marketing: ${customerEmail}`);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
     }
 
     // --- Mailchimp E-commerce purchase tracking ---
@@ -755,6 +814,35 @@ async function handleFreeOrder(session: any) {
         console.error('❌ Failed to send order confirmation email:', emailError);
       }
     });
+
+    // --- Add new customers to Mailchimp Marketing with "kund" tag ---
+    try {
+      const user = await prisma.user.findUnique({ where: { email: customerEmail } });
+      if (user) {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const isNewUser = user.createdAt > oneHourAgo;
+        
+        if (isNewUser) {
+          const mailchimpMarketing = getMailchimpMarketing();
+          if (mailchimpMarketing.isConfigured()) {
+            const nameParts = customerName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            
+            await mailchimpMarketing.addSubscriber({
+              email: customerEmail,
+              firstName,
+              lastName,
+              tags: ['kund'],
+              status: 'subscribed'
+            });
+            console.log(`✅ New customer added to Mailchimp Marketing (free order): ${customerEmail}`);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+    }
 
     console.log('✅ Free order processed successfully');
   } catch (error) {

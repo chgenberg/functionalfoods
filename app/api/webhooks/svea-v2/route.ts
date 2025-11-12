@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
 import { emailService } from '@/app/lib/email';
+import { getMailchimpMarketing } from '@/app/lib/mailchimp-marketing';
 import bcrypt from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
@@ -277,6 +278,17 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
           });
 
           console.log(`📧 New user created: ${user.email}`);
+          
+          // Add new customer to Mailchimp Marketing with "kund" tag
+          try {
+            const mailchimpMarketing = getMailchimpMarketing();
+            if (mailchimpMarketing.isConfigured()) {
+              await mailchimpMarketing.addCustomerTag(normalizedEmail);
+              console.log(`✅ New customer added to Mailchimp with "kund" tag: ${normalizedEmail}`);
+            }
+          } catch (mailchimpError) {
+            console.warn('⚠️ Failed to add customer to Mailchimp (non-critical):', mailchimpError);
+          }
         }
       }
 

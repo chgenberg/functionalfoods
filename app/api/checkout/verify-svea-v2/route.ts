@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
 import { emailService } from '@/app/lib/email';
+import { getMailchimpMarketing } from '@/app/lib/mailchimp-marketing';
 import bcrypt from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
@@ -300,6 +301,17 @@ export async function POST(req: NextRequest) {
               }
 
               console.log(`📧 Guest user upgraded via verify: ${updatedUser.email}`);
+              
+              // Add to Mailchimp Marketing with "kund" tag
+              try {
+                const mailchimpMarketing = getMailchimpMarketing();
+                if (mailchimpMarketing.isConfigured()) {
+                  await mailchimpMarketing.addCustomerTag(normalizedEmail);
+                  console.log(`✅ Customer added to Mailchimp: ${normalizedEmail}`);
+                }
+              } catch (mailchimpError) {
+                console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);
+              }
             } else {
               const newUser = await prisma.user.create({
                 data: {
@@ -331,6 +343,17 @@ export async function POST(req: NextRequest) {
               if (updatedOrder) order = updatedOrder;
               
               console.log(`📧 New user created via verify: ${newUser.email}`);
+              
+              // Add to Mailchimp Marketing with "kund" tag
+              try {
+                const mailchimpMarketing = getMailchimpMarketing();
+                if (mailchimpMarketing.isConfigured()) {
+                  await mailchimpMarketing.addCustomerTag(normalizedEmail);
+                  console.log(`✅ Customer added to Mailchimp: ${normalizedEmail}`);
+                }
+              } catch (mailchimpError) {
+                console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);
+              }
             }
           }
         }
