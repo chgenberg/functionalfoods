@@ -7,10 +7,15 @@ export const dynamic = 'force-dynamic';
 // Funktion för att hämta användarens kursåtkomst
 async function getUserCourseAccess(userId: string): Promise<string[]> {
   try {
+    const now = new Date();
     const purchases = await prisma.purchase.findMany({
       where: {
         userId,
-        status: 'completed'
+        status: 'completed',
+        OR: [
+          { accessExpiresAt: null },
+          { accessExpiresAt: { gt: now } }
+        ]
       },
       include: {
         course: true
