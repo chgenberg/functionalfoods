@@ -116,9 +116,15 @@ export default function RecipePage() {
     }
   };
 
-  // Load smart ingredients with rester logic
+  // Load smart ingredients with rester logic (ONLY if no structured ingredients)
   useEffect(() => {
     if (!recipe) return;
+    
+    // Skip smart ingredients if recipe has structured ingredients
+    if ((recipe as any).ingredientsStructured?.groups) {
+      console.log(`ℹ️ Recipe has structured ingredients, skipping smart ingredients`);
+      return;
+    }
     
     (async () => {
       try {
@@ -1237,7 +1243,60 @@ export default function RecipePage() {
 
                 {/* Ingredients Grid */}
                 <div className="space-y-4">
-                  {smartIngredients.length > 0 ? (
+                  {(recipe as any).ingredientsStructured?.groups ? (
+                    // PRIORITY 1: Grouped ingredients (NEW format)
+                    (recipe as any).ingredientsStructured.groups.map((group: any, groupIndex: number) => {
+                      let itemIndexOffset = 0;
+                      for (let i = 0; i < groupIndex; i++) {
+                        itemIndexOffset += (recipe as any).ingredientsStructured.groups[i].items.length;
+                      }
+                      
+                      return (
+                        <div key={groupIndex} className="space-y-2">
+                          {group.title && (
+                            <h4 className="font-semibold text-[#014421] text-sm uppercase tracking-wide mt-4 first:mt-0">
+                              {group.title}
+                            </h4>
+                          )}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+                            {group.items.map((ingredient: string, itemIndex: number) => {
+                              const globalIndex = itemIndexOffset + itemIndex;
+                              return (
+                                <motion.div
+                                  key={globalIndex}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: globalIndex * 0.03 }}
+                                  onClick={() => toggleIngredient(globalIndex)}
+                                  className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
+                                    checkedIngredients.includes(globalIndex) 
+                                      ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
+                                      : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
+                                  }`}
+                                >
+                                  <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
+                                    checkedIngredients.includes(globalIndex) 
+                                      ? 'bg-[#93C560] border-[#93C560]' 
+                                      : 'border-gray-300 bg-white'
+                                  }`}>
+                                    {checkedIngredients.includes(globalIndex) && (
+                                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                    )}
+                                  </div>
+                                  <LinkedIngredient
+                                    ingredient={ingredient}
+                                    rawMaterial={findRawMaterial(ingredient, rawMaterials)}
+                                    className={`text-sm md:text-base ${checkedIngredients.includes(globalIndex) ? 'line-through opacity-60' : ''}`}
+                                  />
+                                </motion.div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : smartIngredients.length > 0 ? (
+                    // PRIORITY 2: Smart ingredients (rester logic)
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                       {smartIngredients
                         .filter(shouldDisplayIngredient)
