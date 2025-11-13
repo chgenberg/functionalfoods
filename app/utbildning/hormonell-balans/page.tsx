@@ -334,7 +334,7 @@ export default function HormonellBalansPage() {
               transition={{ delay: 0.4 }}
               className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[280px] mx-auto flex flex-col items-center gap-3"
             >
-              <div className="text-3xl font-bold text-primary">{formatPrice(displayPriceIncl)} kr</div>
+              <div className="text-3xl font-bold" style={{ color: '#E7345D' }}>{formatPrice(displayPriceIncl)} kr</div>
               {hasDiscount && (
                 <div className="text-sm text-gray-500 line-through">Ord. pris {formatPrice(displayOriginalPriceIncl)} kr</div>
               )}
