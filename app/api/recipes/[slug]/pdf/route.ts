@@ -61,6 +61,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
+  const debugMode = req.nextUrl.searchParams.get('debug') === '1';
   try {
     const slug = params.slug;
     console.log('📄 Recipe PDF: Starting generation for', { slug });
@@ -299,7 +300,7 @@ export async function GET(
     
     return NextResponse.json({ 
       error: 'Kunde inte generera PDF',
-      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+      details: (debugMode || process.env.NODE_ENV === 'development') ? errorMessage : undefined,
       ...(isImportError && { hint: 'PDF library not available' })
     }, { status: 500 });
   }
