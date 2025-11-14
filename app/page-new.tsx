@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,17 +26,11 @@ export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizResults, setQuizResults] = useState<{ answers: Record<number, string | string[]>; context?: any } | null>(null);
 
-  const [videosLoaded, setVideosLoaded] = useState(0);
-  const [videoError, setVideoError] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const router = useRouter();
   const [showGeoSuggest, setShowGeoSuggest] = useState(false);
   const [suggestedLocale, setSuggestedLocale] = useState<'sv'|'en'|'es'|null>(null);
   const searchParams = useSearchParams();
-  const heroRef = useRef<HTMLDivElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [heroInView, setHeroInView] = useState(false);
 
   useEffect(() => {
     try {
@@ -47,65 +41,10 @@ export default function Home() {
     } catch {}
   }, [searchParams]);
 
-  // Ensure mobile video autoplays even if iOS blocks initial autoplay
-  useEffect(() => {
-    const video = mobileVideoRef.current;
-    if (!video) return;
-
-    const attemptPlay = () => {
-      try {
-        video.muted = true;
-        if (video.paused) {
-          void video.play();
-        }
-      } catch {}
-    };
-
-    // Try immediately, on first touch, and when tab becomes visible
-    attemptPlay();
-    const onFirstTouch = () => attemptPlay();
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') attemptPlay();
-    };
-
-    window.addEventListener('touchstart', onFirstTouch, { once: true });
-    document.addEventListener('visibilitychange', onVisibility);
-
-    return () => {
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, []);
-
   // Disable geo language prompt – we focus on Swedish only for now
   useEffect(() => {
     setShowGeoSuggest(false);
   }, [locale]);
-
-  // Lazy-load the hero video only when in view
-  useEffect(() => {
-    if (!heroRef.current) return;
-    const el = heroRef.current;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setHeroInView(true);
-        obs.unobserve(el);
-      }
-    }, { root: null, threshold: 0.2 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (heroInView && videoRef.current && videoRef.current.paused) {
-      videoRef.current.play().catch(error => {
-        // Silently handle autoplay failures - browsers often block autoplay
-        // This is expected behavior and not a critical error
-        if (process.env.NODE_ENV === 'development') {
-          console.debug("Hero video autoplay blocked by browser policy:", error.name);
-        }
-      });
-    }
-  }, [heroInView]);
 
   const handleQuizComplete = (answers: Record<number, string | string[]>, context?: any) => {
     setQuizResults({ answers, context });
@@ -140,56 +79,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Desktop: Vimeo background video with Safari-friendly autoplay */}
-          <iframe
-            className="absolute inset-0 w-full h-full hidden md:block"
-            style={{ zIndex: 12, opacity: 1 }}
-            src="https://player.vimeo.com/video/1120885431?background=1&autoplay=1&muted=1&loop=1&byline=0&title=0&controls=0&autopause=0&playsinline=1&transparent=0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            loading="eager"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-          {/* Mobile: Local video optimized for portrait */}
-          <video
-            ref={mobileVideoRef}
-            className="absolute inset-0 w-full h-full object-cover md:hidden"
-            style={{ zIndex: 12, objectPosition: 'center center' }}
-            poster="/hero_poster.jpg"
-            src="/introvideo_mobile.mp4"
-            playsInline
-            muted
-            loop
-            autoPlay
-            preload="auto"
-          />
-          {/* Desktop fallback video */}
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover hidden md:block"
-            style={{ zIndex: 10, opacity: 0, transition: 'opacity .25s ease' }}
-            poster="/hero_poster.jpg"
-            src="/introvideo_compressed.mp4"
-            playsInline
-            muted
-            loop
-            autoPlay
-            preload="auto"
-            onCanPlay={(e) => e.currentTarget.style.opacity = '1'}
-            onError={() => { /* ignore: Vimeo will be visible */ }}
-          />
-          <div className="absolute inset-0 bg-black/50 pointer-events-none" style={{ zIndex: 15 }} />
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: 'url(/Hem/Bild_till_startsidan.jpg)',
+              backgroundImage: 'url(/Hem/UD.png)',
               backgroundColor: '#F3EFE3',
-              zIndex: 1
+              zIndex: 1,
             }}
-          >
-            <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-          </div>
+          />
+          <div className="absolute inset-0 bg-black/45 pointer-events-none" style={{ zIndex: 2 }} />
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
