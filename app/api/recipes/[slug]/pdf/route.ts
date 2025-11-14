@@ -61,7 +61,14 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const debugMode = req.nextUrl.searchParams.get('debug') === '1';
+  const debugMode = (() => {
+    try {
+      const url = new URL(req.url);
+      return url.searchParams.get('debug') === '1';
+    } catch {
+      return false;
+    }
+  })();
   try {
     const slug = params.slug;
     console.log('📄 Recipe PDF: Starting generation for', { slug });
