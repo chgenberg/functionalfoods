@@ -1,13 +1,19 @@
 #!/usr/bin/env node
 /**
- * Convert free recipes (via public API) to structured ingredient/instruction format.
+ * Convert recipes (via public API) to structured ingredient/instruction format.
  * Usage:
  *   node scripts/bulk-structure-recipes.js [limit=10]
+ *
+ * Environment variables:
+ *   RECIPE_TAG=hormonell-balans   // Optional: only process recipes containing this tag
+ *   RECIPE_STATUS=premium         // Optional: status filter to apply when RECIPE_TAG is set
  */
 
 const BASE_URL = process.env.FF_BASE_URL || 'https://www.functionalfoods.se';
 const LIMIT = Number(process.argv[2]) || 10;
 const FETCH = globalThis.fetch;
+const TARGET_TAG = process.env.RECIPE_TAG?.trim().toLowerCase() || null;
+const TARGET_STATUS = process.env.RECIPE_STATUS?.trim() || null;
 
 function titleCase(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -72,7 +78,7 @@ async function fetchJson(url) {
   return res.json();
 }
 
-async function getCandidateSlugs(limit) {
+async function getFreeSlugs(limit) {
   const slugs = [];
   let page = 1;
   const target = limit * 15;
@@ -96,10 +102,48 @@ async function getCandidateSlugs(limit) {
   return slugs;
 }
 
+async function getTagSlugs(limit, tag) {
+  const slugs = [];
+  let page = 1;
+  const target = limit * 15;
+  const statusParam = TARGET_STATUS ? `status=${encodeURIComponent(TARGET_STATUS)}&` : '';
+  while (slugs.length < target && page <= 100) {
+    const data = await fetchJson(
+      `${BASE_URL}/api/recipes?${statusParam}limit=50&page=${page}`
+    );
+    const matched =
+      data.recipes?.filter((recipe) =>
+        (recipe.tags || []).some(
+          (t) => typeof t === 'string' && t.toLowerCase() === tag
+        )
+      ) || [];
+    matched.forEach((recipe) => {
+      if (!recipe.slug) return;
+      if (!slugs.includes(recipe.slug)) {
+        slugs.push(recipe.slug);
+      }
+    });
+    console.log(
+      `Page ${page}: matched ${matched.length} recipes for tag "${tag}" (total collected ${slugs.length})`
+    );
+    if (!data.pagination?.hasMore) break;
+    page += 1;
+  }
+  return slugs;
+}
+
+async function getCandidateSlugs(limit) {
+  if (TARGET_TAG) {
+    console.log(`Filtering recipes by tag "${TARGET_TAG}"${TARGET_STATUS ? ` with status "${TARGET_STATUS}"` : ''}`);
+    return getTagSlugs(limit, TARGET_TAG);
+  }
+  return getFreeSlugs(limit);
+}
+
 async function main() {
   const slugs = await getCandidateSlugs(LIMIT * 2);
   if (!slugs.length) {
-    console.log('No free recipes found.');
+    console.log('No recipes found for the current criteria.');
     return;
   }
 

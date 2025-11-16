@@ -64,7 +64,14 @@ export async function GET(req: NextRequest) {
       byCourse: {
         'Basic': allRecipes.filter(r => r.tags?.includes('Basic')).length,
         'Flow': allRecipes.filter(r => r.tags?.includes('Flow')).length,
-        'Energy': allRecipes.filter(r => r.tags?.includes('Energy')).length
+        'Energy': allRecipes.filter(r => r.tags?.includes('Energy')).length,
+        'Hormone': allRecipes.filter(r => 
+          r.tags?.some(tag => 
+            tag === 'hormonell-balans' || 
+            tag === 'functional-hormone' || 
+            tag === 'Hormonell Balans'
+          )
+        ).length
       }
     };
 
@@ -73,7 +80,14 @@ export async function GET(req: NextRequest) {
       ...recipe,
       date: recipe.createdAt.toISOString(),
       courseTags: recipe.tags?.filter(tag => 
-        ['functional-basics', 'functional-flow', 'functional-energy'].includes(tag)
+        [
+          'functional-basics',
+          'functional-flow',
+          'functional-energy',
+          'functional-hormone',
+          'hormonell-balans',
+          'Hormonell Balans'
+        ].includes(tag)
       ) || []
     }));
 

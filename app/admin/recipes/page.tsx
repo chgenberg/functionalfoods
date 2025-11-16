@@ -34,6 +34,7 @@ interface RecipeStats {
     Basic: number;
     Flow: number;
     Energy: number;
+    Hormone: number;
   };
 }
 
@@ -43,7 +44,7 @@ export default function AdminRecipesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'free' | 'premium'>('all');
-  const [courseFilter, setCourseFilter] = useState<'all' | 'functional-basics' | 'functional-flow' | 'functional-energy'>('all');
+  const [courseFilter, setCourseFilter] = useState<'all' | 'functional-basics' | 'functional-flow' | 'functional-energy' | 'functional-hormone'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [imageError, setImageError] = useState<Record<string, boolean>>({});
 
@@ -74,7 +75,8 @@ export default function AdminRecipesPage() {
         const courseTagMap: Record<string, string> = {
           'functional-basics': 'Basic',
           'functional-flow': 'Flow',
-          'functional-energy': 'Energy'
+          'functional-energy': 'Energy',
+          'functional-hormone': 'hormonell-balans'
         };
         params.append('courseFilter', courseTagMap[courseFilter] || courseFilter);
       }
@@ -342,6 +344,17 @@ export default function AdminRecipesPage() {
                 >
                   <Zap className="w-3.5 h-3.5" />
                   Energy ({stats.byCourse?.Energy || 0})
+                </button>
+                <button
+                  onClick={() => setCourseFilter('functional-hormone')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all ${
+                    courseFilter === 'functional-hormone' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'bg-white border border-purple-200 text-purple-700 hover:border-purple-600'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Hormonell Balans ({stats.byCourse?.Hormone || 0})
                 </button>
               </div>
             </div>
