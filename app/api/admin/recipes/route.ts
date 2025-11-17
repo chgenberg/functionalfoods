@@ -111,7 +111,10 @@ export async function POST(req: NextRequest) {
   if ((admin as any)?.status === 401) return admin as any;
   try {
     const body = await req.json();
-    
+    const allowedStatuses = new Set(['DRAFT', 'PUBLISHED', 'ARCHIVED']);
+    const normalizedStatus = typeof body.status === 'string' ? body.status.toUpperCase() : undefined;
+    const status = normalizedStatus && allowedStatuses.has(normalizedStatus) ? normalizedStatus : 'PUBLISHED';
+
     // Skapa nytt recept
     const recipe = await prisma.recipe.create({
       data: {
@@ -136,7 +139,7 @@ export async function POST(req: NextRequest) {
         nutrition: body.nutrition,
         tips: body.tips,
         tags: body.tags || [],
-        status: body.status || 'PUBLISHED',
+        status,
         isPremium: body.isPremium || false,
         isFree: body.isFree !== false
       }

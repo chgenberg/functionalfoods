@@ -103,7 +103,7 @@ export default function NewRecipePage() {
             fiber: recipeData.nutritionInfo.fiber ? parseFloat(recipeData.nutritionInfo.fiber) : null
           }
         },
-        status: 'published'
+        status: 'PUBLISHED'
       };
 
       const response = await fetch('/api/admin/recipes', {

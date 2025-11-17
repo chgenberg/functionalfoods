@@ -597,7 +597,7 @@ export default function WeekTemplate({
             const byName = images[meal.name];
             const url = bySlug || byName;
             if (url) {
-              imageMap[meal.key] = url; // Use raw URL from API (already optimized)
+              imageMap[meal.key] = optimizeImageUrl(url, 'small', 'square');
             }
           });
         }
