@@ -240,19 +240,10 @@ export async function POST(request: Request) {
     console.log('🧹 Cleaned names:', cleanedNames);
     console.log('🔤 Normalized names:', normalizedNames);
 
-    // Build normalized slug list that preserves array positions (avoid reindexing)
-    const slugList: (string | null)[] = Array.isArray(recipeSlugs)
-      ? recipeSlugs.map((slug: any) => {
-          if (typeof slug !== 'string') return null;
-          const trimmed = slug.trim();
-          return trimmed.length > 0 ? trimmed : null;
-        })
-      : [];
-
-    // Fetch DB data for unique non-null slugs
-    const uniqueSlugs = Array.from(new Set(slugList.filter((slug): slug is string => Boolean(slug))));
-    const dbRecipes = uniqueSlugs.length > 0 ? await prisma.recipe.findMany({
-      where: { slug: { in: uniqueSlugs } },
+    // Build DB map by slugs (authoritative)
+    const validSlugs: string[] = Array.isArray(recipeSlugs) ? recipeSlugs.filter(Boolean) : [];
+    const dbRecipes = validSlugs.length > 0 ? await prisma.recipe.findMany({
+      where: { slug: { in: validSlugs } },
       select: { slug: true, imageUrl: true }
     }) : [];
     const slugToImage: Record<string, string | null> = {};
@@ -279,7 +270,7 @@ export async function POST(request: Request) {
     const imageMap: Record<string, string> = {};
     for (let i = 0; i < recipeNames.length; i++) {
       const originalName = recipeNames[i];
-      const slug = slugList[i] ?? null;
+      const slug = validSlugs[i];
 
       // 1) ALWAYS prefer DB imageUrl by slug (no filesystem fallback if DB has imageUrl)
       if (slug && slugToImage[slug]) {
