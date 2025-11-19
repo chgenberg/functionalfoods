@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, X, Search, Check, Coffee, Loader2, Edit2 } from 'lucide-react';
 
@@ -22,6 +23,7 @@ interface Recipe {
 }
 
 export default function ManageRecipesPage({ params }: { params: { courseId: string } }) {
+  const router = useRouter();
   const [courseRecipes, setCourseRecipes] = useState<Recipe[]>([]);
   const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
@@ -191,7 +193,7 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-xl overflow-hidden border border-[var(--border-light)] hover:shadow-lg transition-all cursor-pointer"
-              onClick={() => window.location.href = `/admin/courses/${params.courseId}/recipes/${recipe.id}`}
+              onClick={() => router.push(`/admin/recipes/${recipe.slug || recipe.id}/edit?course=${params.courseId}`)}
             >
               {/* Image */}
               <div className="h-48 bg-gray-100 relative">
@@ -223,7 +225,7 @@ export default function ManageRecipesPage({ params }: { params: { courseId: stri
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.location.href = `/admin/courses/${params.courseId}/recipes/${recipe.id}`;
+                    router.push(`/admin/recipes/${recipe.slug || recipe.id}/edit?course=${params.courseId}`);
                   }}
                   className="absolute bottom-2 right-2 bg-[var(--primary-green)] text-white p-2 rounded-full hover:bg-[#012a14] transition-colors"
                   title="Redigera recept"

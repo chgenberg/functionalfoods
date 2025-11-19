@@ -30,7 +30,9 @@ export default function ManageCoursePage({ params }: { params: { courseId: strin
       const res = await fetch('/api/admin/functional-courses', { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
-        const found = data.courses?.find((c: Course) => c.productId === params.courseId);
+        const found = data.courses?.find(
+          (c: Course) => c.id === params.courseId || c.productId === params.courseId
+        );
         setCourse(found || null);
       }
     } catch (error) {
