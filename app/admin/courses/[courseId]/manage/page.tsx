@@ -30,7 +30,12 @@ export default function ManageCoursePage({ params }: { params: { courseId: strin
       const res = await fetch('/api/admin/functional-courses', { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
-        const found = data.courses?.find(
+        const list: Course[] = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.courses)
+          ? data.courses
+          : [];
+        const found = list.find(
           (c: Course) => c.id === params.courseId || c.productId === params.courseId
         );
         setCourse(found || null);

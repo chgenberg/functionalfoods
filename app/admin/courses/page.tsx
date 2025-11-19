@@ -77,11 +77,16 @@ export default function AdminCoursesPage() {
       }
 
       const data = await response.json();
-      setCourses(data);
+      const list: Course[] = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.courses)
+        ? data.courses
+        : [];
+      setCourses(list);
       
       // Auto-select first course
-      if (data.length > 0 && !selectedCourse) {
-        setSelectedCourse(data[0].id);
+      if (list.length > 0 && !selectedCourse) {
+        setSelectedCourse(list[0].id);
       }
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -98,7 +103,8 @@ export default function AdminCoursesPage() {
         'functional-basics': 'basic',
         'functional-flow': 'flow',
         'functional-energy': 'energy',
-        'hormonell-balans': 'hormone'
+        'hormonell-balans': 'hormone',
+        'functional-hormone': 'hormone'
       };
       const courseType = courseMap[selectedCourse] || 'basic';
       
@@ -121,7 +127,8 @@ export default function AdminCoursesPage() {
         'functional-basics': 'basic',
         'functional-flow': 'flow',
         'functional-energy': 'energy',
-        'hormonell-balans': 'hormone'
+        'hormonell-balans': 'hormone',
+        'functional-hormone': 'hormone'
       };
       const courseType = courseMap[selectedCourse] || 'basic';
       
@@ -299,7 +306,7 @@ export default function AdminCoursesPage() {
                     </Link>
                     
                     <Link
-                      href={`/admin/shopping-lists`}
+                      href={`/admin/shopping-lists${selectedCourse ? `?course=${selectedCourse}` : ''}`}
                       className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-all"
                     >
                       <Database className="w-5 h-5 text-[var(--primary-green)]" />

@@ -67,10 +67,14 @@ export default function RecipeCarousel() {
             });
             if (mapRes.ok) {
               const { images } = await mapRes.json();
-              recipesToShow = recipesToShow.map((r: Recipe) => ({
-                ...r,
-                imageUrl: images && images[r.title] ? images[r.title] : r.imageUrl
-              }));
+              recipesToShow = recipesToShow.map((r: Recipe) => {
+                const mapped =
+                  (images && (images[r.slug] || images[r.title])) || r.imageUrl;
+                return {
+                  ...r,
+                  imageUrl: mapped
+                };
+              });
               console.log('🎠 Carousel: Mapped', Object.keys(images || {}).length, 'recipe images via fuzzy matching');
             }
           } catch (e) {

@@ -779,8 +779,8 @@ export default function RecipePage() {
           const responseData = await mapRes.json();
           console.log(`🖼️ Recipe detail: Full batch response:`, responseData);
           
-          const { images } = responseData;
-          const mapped = images && images[recipe.title];
+            const { images } = responseData;
+            const mapped = images && ((recipe.slug && images[recipe.slug]) || images[recipe.title]);
           
           if (mapped && mapped !== '/api/images/recept_images_vision_optimized/het-ratatouille-detail.webp') {
             console.log(`✅ Recipe detail: Found optimized image: "${recipe.title}" -> ${mapped}`);
