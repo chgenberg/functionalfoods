@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { optimizeImageUrl } from '@/app/lib/imageOptimization';
+import { applyLeftoverLabel, getMealDuplicateKey, normalizeMealName } from '@/app/lib/mealPlanUtils';
+import type { LeftoverFlag } from '@/app/lib/mealPlanUtils';
 import HelpGuide from '@/app/components/HelpGuide';
 import CourseNavigation from '@/app/dashboard/courses/components/CourseNavigation';
 import DayModal from '@/app/dashboard/courses/components/DayModal';
@@ -512,7 +514,8 @@ export default function WeekTemplate({
         const mt = types[t] as keyof typeof dayKey;
         const m: any = (dayKey as any)[mt];
         if (!m) continue;
-        const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
+        const key = getMealDuplicateKey(m);
+        if (!key) continue;
         const position = (d+1) * 10 + t; // order within current week
         if (!(key in map)) map[key] = position;
       }
@@ -522,15 +525,21 @@ export default function WeekTemplate({
 
   const withResterName = (wNum: number, dNum: number, typeIdx: number, m: any): string => {
     if (!m || !m.name) return '';
-    const base = m.name.replace(/\s*\(\d+\s*kcal\)/, '');
-    if (/\brester\b/i.test(base)) return base; // already marked
-    const key = (m.recipeLink && typeof m.recipeLink === 'string') ? `link:${m.recipeLink}` : `name:${(m.name || '').toLowerCase()}`;
-    const currentPos = dNum * 10 + typeIdx; // position within current week
-    const firstPos = firstOccurrence[key];
-    if (firstPos !== undefined && currentPos > firstPos) {
-      return `${base} (rester)`;
+    const withoutKcal = m.name.replace(/\s*\(\d+\s*kcal\)/, '').trim();
+
+    if (m.leftovers) {
+      return applyLeftoverLabel(withoutKcal, m.leftovers as LeftoverFlag);
     }
-    return base;
+
+    if (/\brester\b/i.test(withoutKcal)) return withoutKcal; // already marked
+
+    const key = getMealDuplicateKey(m);
+    const currentPos = dNum * 10 + typeIdx; // position within current week
+    const firstPos = key ? firstOccurrence[key] : undefined;
+    if (firstPos !== undefined && currentPos > firstPos) {
+      return `${normalizeMealName(withoutKcal)} (rester)`;
+    }
+    return normalizeMealName(withoutKcal);
   };
 
   // Load meal images for all meals in the week
@@ -929,9 +938,9 @@ export default function WeekTemplate({
             
             // Extract meals with calorie parsing
             if (dayData.breakfast) {
-              const match = dayData.breakfast.name.match(/\((\d+\s*kcal)\)/);
+              const match = dayData.breakfast.name?.match(/\((\d+\s*kcal)\)/);
               const calories = match ? match[1] : '';
-              const mealName = dayData.breakfast.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              const mealName = applyLeftoverLabel(dayData.breakfast.name || '', dayData.breakfast.leftovers as LeftoverFlag);
               
               meals.push({
                 mealType: getMealLabel('breakfast', mealName),
@@ -943,9 +952,9 @@ export default function WeekTemplate({
             }
             
             if (dayData.lunch) {
-              const match = dayData.lunch.name.match(/\((\d+\s*kcal)\)/);
+              const match = dayData.lunch.name?.match(/\((\d+\s*kcal)\)/);
               const calories = match ? match[1] : '';
-              const mealName = dayData.lunch.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              const mealName = applyLeftoverLabel(dayData.lunch.name || '', dayData.lunch.leftovers as LeftoverFlag);
               
               meals.push({
                 mealType: getMealLabel('lunch', mealName),
@@ -957,9 +966,9 @@ export default function WeekTemplate({
             }
             
             if (dayData.dinner) {
-              const match = dayData.dinner.name.match(/\((\d+\s*kcal)\)/);
+              const match = dayData.dinner.name?.match(/\((\d+\s*kcal)\)/);
               const calories = match ? match[1] : '';
-              const mealName = dayData.dinner.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              const mealName = applyLeftoverLabel(dayData.dinner.name || '', dayData.dinner.leftovers as LeftoverFlag);
               
               meals.push({
                 mealType: getMealLabel('dinner', mealName),
@@ -971,9 +980,9 @@ export default function WeekTemplate({
             }
             
             if (dayData.snack) {
-              const match = dayData.snack.name.match(/\((\d+\s*kcal)\)/);
+              const match = dayData.snack.name?.match(/\((\d+\s*kcal)\)/);
               const calories = match ? match[1] : '';
-              const mealName = dayData.snack.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              const mealName = applyLeftoverLabel(dayData.snack.name || '', dayData.snack.leftovers as LeftoverFlag);
               
               meals.push({
                 mealType: getMealLabel('snack', mealName),
@@ -985,9 +994,9 @@ export default function WeekTemplate({
             }
             
             if (dayData.dessert) {
-              const match = dayData.dessert.name.match(/\((\d+\s*kcal)\)/);
+              const match = dayData.dessert.name?.match(/\((\d+\s*kcal)\)/);
               const calories = match ? match[1] : '';
-              const mealName = dayData.dessert.name.replace(/\s*\(\d+\s*kcal\)/, '');
+              const mealName = applyLeftoverLabel(dayData.dessert.name || '', dayData.dessert.leftovers as LeftoverFlag);
               
               meals.push({
                 mealType: getMealLabel('dessert', mealName),

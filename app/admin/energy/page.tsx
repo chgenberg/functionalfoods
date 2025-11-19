@@ -132,16 +132,57 @@ export default function EnergyPage() {
     }
   };
 
+  const stripResterSuffix = (value?: string) => {
+    if (!value) return '';
+    return value.replace(/\s*\(rester(?:\s+från\s+frysen)?\)\s*$/i, '').trim();
+  };
+
   // Uppdatera ett recept i kostschemat
   const updateMealRecipe = (weekPlan: any, dayKey: string, mealType: string, recipeSlug: string) => {
     const updatedDays = { ...weekPlan.days };
-    if (!updatedDays[dayKey][mealType]) {
-      updatedDays[dayKey][mealType] = {};
-    }
-    updatedDays[dayKey][mealType] = {
+    const dayEntry = { ...(updatedDays[dayKey] || {}) };
+    const existingMeal = dayEntry[mealType] || {};
+    const recipe = recipes.find(r => r.slug === recipeSlug);
+    const fallbackName =
+      recipe?.title ||
+      stripResterSuffix(existingMeal.name) ||
+      recipeSlug.replace(/-/g, ' ');
+
+    dayEntry[mealType] = {
+      ...existingMeal,
       recipeLink: `/kunskapsbank/recept/${recipeSlug}`,
-      portions: updatedDays[dayKey][mealType]?.portions || 1
+      name: stripResterSuffix(fallbackName) || fallbackName,
+      portions: existingMeal.portions || 1
     };
+
+    updatedDays[dayKey] = dayEntry;
+    saveMealPlan(weekPlan.weekNumber, updatedDays);
+  };
+
+  const updateMealLeftovers = (
+    weekPlan: any,
+    dayKey: string,
+    mealType: string,
+    leftoverType: 'rester' | 'rester_freezer' | null
+  ) => {
+    const updatedDays = { ...weekPlan.days };
+    const dayEntry = { ...(updatedDays[dayKey] || {}) };
+    const existingMeal = dayEntry[mealType];
+    if (!existingMeal) return;
+
+    const nextMeal = {
+      ...existingMeal,
+      name: stripResterSuffix(existingMeal.name) || existingMeal.name
+    };
+
+    if (leftoverType) {
+      nextMeal.leftovers = leftoverType;
+    } else {
+      delete nextMeal.leftovers;
+    }
+
+    dayEntry[mealType] = nextMeal;
+    updatedDays[dayKey] = dayEntry;
     saveMealPlan(weekPlan.weekNumber, updatedDays);
   };
 
@@ -194,12 +235,47 @@ export default function EnergyPage() {
                     const meal = days[dayKey]?.[mealType];
                     const recipeSlug = meal?.recipeLink?.split('/').pop();
                     const recipe = recipes.find(r => r.slug === recipeSlug);
+                    const leftovers = meal?.leftovers || null;
 
                     return (
                       <td key={dayKey} className="py-3 px-4">
                         {recipe ? (
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col gap-2">
                             <span className="text-sm font-medium text-gray-900">{recipe.title}</span>
+                            <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                              <label className="inline-flex items-center gap-1 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  className="w-3.5 h-3.5"
+                                  checked={leftovers === 'rester'}
+                                  onChange={() =>
+                                    updateMealLeftovers(
+                                      weekPlan,
+                                      dayKey,
+                                      mealType,
+                                      leftovers === 'rester' ? null : 'rester'
+                                    )
+                                  }
+                                />
+                                Rester
+                              </label>
+                              <label className="inline-flex items-center gap-1 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  className="w-3.5 h-3.5"
+                                  checked={leftovers === 'rester_freezer'}
+                                  onChange={() =>
+                                    updateMealLeftovers(
+                                      weekPlan,
+                                      dayKey,
+                                      mealType,
+                                      leftovers === 'rester_freezer' ? null : 'rester_freezer'
+                                    )
+                                  }
+                                />
+                                Rester från frysen
+                              </label>
+                            </div>
                             <div className="flex gap-1">
                               <button
                                 onClick={() => removeMealRecipe(weekPlan, dayKey, mealType)}
