@@ -251,7 +251,6 @@ export async function POST(request: Request) {
       'smoothie-smoothiebowl': 'tropisk-smoothiebowl',
       'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
       'havrefrallor-morotter-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
-      'havrefralla-med-morotter-och-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
       'lax-broccolipaj': 'lax-och-broccolipaj'
     };
 
