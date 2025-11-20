@@ -240,14 +240,34 @@ export async function POST(request: Request) {
     console.log('🧹 Cleaned names:', cleanedNames);
     console.log('🔤 Normalized names:', normalizedNames);
 
+    const SLUG_ALIASES: Record<string, string> = {
+      'tonfisksallad-apple-sallad': 'tonfisksallad-med-apple',
+      'squashspagetti-kottfarssas': 'squashspagetti-med-kottfarssas',
+      'omelett-bar': 'omelett-med-bar',
+      'agghack-kalkon': 'agghack-med-kalkon',
+      'stekt-agg-lax-2': 'stekt-agg-med-champinjoner-2',
+      'stek-torsk-med-bearnaisesas-och-haricot-verts': 'stekt-torsk-med-bearnaisesas-och-haricots-verts',
+      'smoothiebowl-med-mango-och-jordgubbar': 'smoothiebowl',
+      'smoothie-smoothiebowl': 'tropisk-smoothiebowl',
+      'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
+      'havrefrallor-morotter-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
+      'havrefralla-med-morotter-och-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
+      'lax-broccolipaj': 'lax-och-broccolipaj'
+    };
+
     // Preserve array alignment between names and slugs (do not filter out nulls)
-    const slugList: (string | null)[] = Array.isArray(recipeSlugs)
+    const originalSlugList: (string | null)[] = Array.isArray(recipeSlugs)
       ? recipeSlugs.map((slug: any) => {
           if (typeof slug !== 'string') return null;
           const trimmed = slug.trim();
           return trimmed.length > 0 ? trimmed : null;
         })
       : [];
+
+    const slugList: (string | null)[] = originalSlugList.map(slug => {
+      if (!slug) return null;
+      return SLUG_ALIASES[slug] || slug;
+    });
 
     // Build DB map by unique non-null slugs (authoritative)
     const uniqueSlugs: string[] = Array.from(
@@ -282,12 +302,16 @@ export async function POST(request: Request) {
     for (let i = 0; i < recipeNames.length; i++) {
       const originalName = recipeNames[i];
       const slug = slugList[i] ?? null;
+      const originalSlug = originalSlugList[i] ?? null;
 
       // 1) ALWAYS prefer DB imageUrl by slug (no filesystem fallback if DB has imageUrl)
       if (slug && slugToImage[slug]) {
         const url = slugToImage[slug] as string;
         imageMap[originalName] = url;
         imageMap[slug] = url; // expose by slug too
+        if (originalSlug && originalSlug !== slug) {
+          imageMap[originalSlug] = url;
+        }
         continue;
       }
 
@@ -296,6 +320,9 @@ export async function POST(request: Request) {
         const placeholder = getFallbackImage(size as 'small' | 'medium' | 'large');
         imageMap[originalName] = placeholder;
         imageMap[slug] = placeholder;
+        if (originalSlug && originalSlug !== slug) {
+          imageMap[originalSlug] = placeholder;
+        }
         continue;
       }
 
@@ -305,6 +332,9 @@ export async function POST(request: Request) {
         if (bySlug) {
           imageMap[originalName] = bySlug;
           imageMap[slug] = bySlug;
+          if (originalSlug && originalSlug !== slug) {
+            imageMap[originalSlug] = bySlug;
+          }
           continue;
         }
       }
@@ -315,10 +345,16 @@ export async function POST(request: Request) {
       if (fsMatch) {
         imageMap[originalName] = fsMatch;
         if (slug) imageMap[slug] = fsMatch;
+        if (originalSlug && originalSlug !== slug) {
+          imageMap[originalSlug] = fsMatch;
+        }
       } else {
         const fallback = getFallbackImage(size as 'small' | 'medium' | 'large');
         imageMap[originalName] = fallback;
         if (slug) imageMap[slug] = fallback;
+        if (originalSlug && originalSlug !== slug) {
+          imageMap[originalSlug] = fallback;
+        }
       }
     }
 
