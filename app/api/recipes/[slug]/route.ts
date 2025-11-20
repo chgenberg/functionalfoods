@@ -38,7 +38,6 @@ export async function GET(
       'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
       // Basic week 1: ensure Egenbakat recipe slug resolves
       'havrefrallor-morotter-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
-      'havrefralla-med-morotter-och-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
       'lax-broccolipaj': 'lax-och-broccolipaj'
     };
     const requestedSlug = params.slug;
