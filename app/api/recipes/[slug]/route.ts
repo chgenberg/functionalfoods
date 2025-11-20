@@ -38,6 +38,7 @@ export async function GET(
       'laxsallad-med-druvor': 'laxsallad-med-vindruvor',
       // Basic week 1: ensure Egenbakat recipe slug resolves
       'havrefrallor-morotter-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
+      'havrefralla-med-morotter-och-aprikoser': 'havrefralla-med-morotter-och-torkade-aprikoser',
       'lax-broccolipaj': 'lax-och-broccolipaj'
     };
     const requestedSlug = params.slug;
@@ -62,6 +63,8 @@ export async function GET(
     localized.excerpt = pick(recipe as any, 'excerpt', lang);
     const instr = pick(recipe as any, 'instructions', lang) as string | null;
     if (instr) localized.instructions = instr;
+    localized.ingredientsStructured = recipe.ingredientsStructured || null;
+    localized.instructionsStructured = recipe.instructionsStructured || null;
 
     // Add access requirements info (two-category model)
     // Premium == course recipes; free == for everyone
