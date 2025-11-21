@@ -54,6 +54,9 @@ interface Recipe {
 export default function RecipePage() {
   const params = useParams();
   const slug = params.slug as string;
+  const portraitOverrides = new Set([
+    'hallon-och-kiwi-med-vit-chokladcreme'
+  ]);
   const { user } = useAuth();
   const t = useT();
   const searchParams = useSearchParams();
@@ -73,7 +76,7 @@ export default function RecipePage() {
   const [userHasAccess, setUserHasAccess] = useState(false);
   const [userCourses, setUserCourses] = useState<string[]>([]);
   const [imageLoading, setImageLoading] = useState(true);
-  const [imageIsPortrait, setImageIsPortrait] = useState(false);
+  const [imageIsPortrait, setImageIsPortrait] = useState(portraitOverrides.has(slug));
   const [smartIngredients, setSmartIngredients] = useState<string[]>([]);
   const [resterNote, setResterNote] = useState<string | null>(null);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
