@@ -1136,7 +1136,11 @@ export default function RecipePage() {
                       </div>
                     ) : recipe.imageUrl && !imageError ? (
                       <Image
-                        src={optimizeImageUrl(recipe.imageUrl || recipe.imageMobileUrl, 'large', 'square')}
+                        src={optimizeImageUrl(
+                          recipe.imageUrl || recipe.imageMobileUrl,
+                          'large',
+                          imageIsPortrait ? undefined : 'square'
+                        )}
                         alt={recipe.imageAlt || recipe.title}
                         fill
                         className="object-cover transition-transform duration-300 hover:scale-105"
