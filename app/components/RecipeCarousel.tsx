@@ -23,6 +23,7 @@ export default function RecipeCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [portraitMap, setPortraitMap] = useState<Record<string, boolean>>({});
   
   // Fetch recipes
   useEffect(() => {
@@ -247,16 +248,22 @@ export default function RecipeCarousel() {
                         index === 1 ? 'scale-100' : 'scale-95 opacity-80'
                       }`}>
                         {/* Image Container */}
-                        <div className="relative h-[280px] md:h-[300px] overflow-hidden">
+                        <div className="relative overflow-hidden transition-all duration-300" style={{ height: portraitMap[recipe.slug] ? '420px' : '300px' }}>
                           {recipe.imageUrl ? (
                             <>
                               <Image 
-                                src={optimizeImageUrl(recipe.imageUrl, 'large', 'landscape')} 
+                                src={optimizeImageUrl(recipe.imageUrl, 'large', portraitMap[recipe.slug] ? 'portrait' : 'landscape')} 
                                 alt={recipe.imageAlt || recipe.title} 
                                 fill 
                                 className="object-cover group-hover:scale-110 transition-transform duration-700"
                                 sizes="(max-width: 768px) 320px, 380px"
                                 priority={index === 1}
+                                onLoadingComplete={(img) => {
+                                  setPortraitMap(prev => ({
+                                    ...prev,
+                                    [recipe.slug]: img.naturalHeight > img.naturalWidth
+                                  }));
+                                }}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             </>
