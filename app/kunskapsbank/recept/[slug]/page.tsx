@@ -73,6 +73,7 @@ export default function RecipePage() {
   const [userHasAccess, setUserHasAccess] = useState(false);
   const [userCourses, setUserCourses] = useState<string[]>([]);
   const [imageLoading, setImageLoading] = useState(true);
+  const [imageIsPortrait, setImageIsPortrait] = useState(false);
   const [smartIngredients, setSmartIngredients] = useState<string[]>([]);
   const [resterNote, setResterNote] = useState<string | null>(null);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
@@ -1115,7 +1116,8 @@ export default function RecipePage() {
                   transition={{ duration: 0.5 }}
                 >
                   <motion.div 
-                    className="relative aspect-square"
+                    className="relative w-full"
+                    style={{ aspectRatio: imageIsPortrait ? '3 / 4' : '1 / 1' }}
                     animate={{ 
                       scale: [1, 1.02, 1],
                     }}
@@ -1145,7 +1147,8 @@ export default function RecipePage() {
                           console.log(`❌ Image load error for: ${recipe.imageUrl}`);
                           setImageError(true);
                         }}
-                        onLoad={() => {
+                        onLoadingComplete={(img) => {
+                          setImageIsPortrait(img.naturalHeight > img.naturalWidth);
                           console.log(`✅ Image loaded successfully: ${recipe.imageUrl}`);
                         }}
                         loading="eager"
