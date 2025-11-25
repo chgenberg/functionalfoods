@@ -105,191 +105,148 @@ export default function Client() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F1E8] to-white">
+      <div className="min-h-screen flex items-center justify-center bg-[#F7F1E8]">
         <div className="text-center">
-          <div className="relative w-16 h-16 mx-auto mb-6">
-            <div className="absolute inset-0 rounded-full border-4 border-[#014421]/20"></div>
-            <div className="absolute inset-0 rounded-full border-4 border-[#014421] border-t-transparent animate-spin"></div>
-          </div>
-          <p className="text-[#014421] font-medium text-lg">Förbereder dina recept...</p>
-          <p className="text-gray-500 text-sm mt-2">Detta kan ta några sekunder</p>
+          <div className="w-12 h-12 border-4 border-[#014421] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#014421] font-medium">Förbereder recept...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white print-document">
-      {/* Screen-only header */}
-      <div className="no-print sticky top-0 z-50 bg-gradient-to-r from-[#014421] to-[#116530] text-white shadow-lg">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
+    <div className="print-wrapper">
+      {/* Screen header - hidden when printing */}
+      <div className="screen-header no-print">
+        <div className="header-content">
+          <button onClick={() => router.back()} className="back-btn">
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Tillbaka</span>
+            <span>Tillbaka</span>
           </button>
-          <div className="text-center">
-            <h1 className="font-bold text-lg">{courseName}</h1>
-            <p className="text-white/80 text-sm">Vecka {week} • {recipes.length} recept</p>
+          <div className="header-title">
+            <strong>{courseName}</strong>
+            <span>Vecka {week} • {recipes.length} recept</span>
           </div>
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors"
-          >
+          <button onClick={() => window.print()} className="print-btn">
             <Printer className="w-4 h-4" />
-            <span className="font-medium">Skriv ut</span>
+            <span>Skriv ut</span>
           </button>
         </div>
       </div>
 
-      {/* Print content */}
-      <div className="print-content">
+      {/* Printable recipes - one per page */}
+      <div className="recipes-container">
         {recipes.length > 0 ? (
-          <>
-            {/* Cover page */}
-            <div className="cover-page">
-              <div className="cover-content">
-                <div className="cover-decoration"></div>
-                <div className="cover-logo">
-                  <div className="logo-icon">🌿</div>
-                  <h1>Functional Foods</h1>
+          recipes.map((recipe, index) => (
+            <div key={index} className="recipe-page">
+              {/* Page header */}
+              <div className="page-header">
+                <div className="brand">
+                  <span className="brand-icon">🌿</span>
+                  <span className="brand-name">Functional Foods</span>
                 </div>
-                <div className="cover-title">
-                  <h2>{courseName}</h2>
-                  <div className="cover-divider"></div>
-                  <h3>Vecka {week} • Receptsamling</h3>
+                <div className="page-info">
+                  <span className="course-name">{courseName}</span>
+                  <span className="separator">•</span>
+                  <span>Vecka {week}</span>
                 </div>
-                <div className="cover-info">
-                  <p>{recipes.length} recept för hela veckan</p>
-                  <p className="cover-date">{new Date().toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              </div>
+
+              {/* Recipe title section */}
+              <div className="recipe-title-section">
+                <div className="meal-badge">
+                  <span className="badge-day">{recipe.dayName}</span>
+                  <span className="badge-dot">•</span>
+                  <span className="badge-meal">{recipe.mealType}</span>
                 </div>
-                <div className="cover-footer">
-                  <p>www.functionalfoods.se</p>
+                <h1 className="recipe-name">{recipe.recipeName || recipe.title}</h1>
+                <div className="recipe-meta">
+                  {recipe.servings && (
+                    <span className="meta-item">👥 {recipe.servings} portioner</span>
+                  )}
+                  {recipe.cookingTime && (
+                    <span className="meta-item">⏱️ {recipe.cookingTime}</span>
+                  )}
                 </div>
+              </div>
+
+              {/* Two column layout */}
+              <div className="recipe-content">
+                {/* Left column - Ingredients */}
+                <div className="ingredients-box">
+                  <h2 className="section-title">
+                    <span className="title-icon">🥗</span>
+                    Ingredienser
+                  </h2>
+                  <ul className="ingredients-list">
+                    {recipe.ingredients && recipe.ingredients.length > 0 ? (
+                      recipe.ingredients.map((ing, i) => (
+                        <li key={i}>{ing}</li>
+                      ))
+                    ) : (
+                      <li className="empty">Inga ingredienser</li>
+                    )}
+                  </ul>
+                </div>
+
+                {/* Right column - Instructions */}
+                <div className="instructions-box">
+                  <h2 className="section-title">
+                    <span className="title-icon">👨‍🍳</span>
+                    Gör så här
+                  </h2>
+                  <ol className="instructions-list">
+                    {recipe.instructions && recipe.instructions.length > 0 ? (
+                      recipe.instructions.map((inst, i) => (
+                        <li key={i}>
+                          <span className="step-num">{i + 1}</span>
+                          <span className="step-text">{inst}</span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="empty">Inga instruktioner</li>
+                    )}
+                  </ol>
+                </div>
+              </div>
+
+              {/* Nutrition (if available) */}
+              {recipe.nutritionalInfo && (
+                <div className="nutrition-bar">
+                  {recipe.nutritionalInfo.calories && (
+                    <div className="nut-item">
+                      <span className="nut-val">{recipe.nutritionalInfo.calories}</span>
+                      <span className="nut-label">kcal</span>
+                    </div>
+                  )}
+                  {recipe.nutritionalInfo.protein && (
+                    <div className="nut-item">
+                      <span className="nut-val">{recipe.nutritionalInfo.protein}g</span>
+                      <span className="nut-label">protein</span>
+                    </div>
+                  )}
+                  {recipe.nutritionalInfo.carbs && (
+                    <div className="nut-item">
+                      <span className="nut-val">{recipe.nutritionalInfo.carbs}g</span>
+                      <span className="nut-label">kolhydrater</span>
+                    </div>
+                  )}
+                  {recipe.nutritionalInfo.fat && (
+                    <div className="nut-item">
+                      <span className="nut-val">{recipe.nutritionalInfo.fat}g</span>
+                      <span className="nut-label">fett</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Page footer */}
+              <div className="page-footer">
+                <span>www.functionalfoods.se</span>
+                <span>Recept {index + 1} av {recipes.length}</span>
               </div>
             </div>
-
-            {/* Recipe pages */}
-            {recipes.map((recipe, index) => (
-              <div key={index} className="recipe-page">
-                <div className="recipe-header">
-                  <div className="recipe-badge">
-                    <span className="badge-day">{recipe.dayName}</span>
-                    <span className="badge-separator">•</span>
-                    <span className="badge-meal">{recipe.mealType}</span>
-                  </div>
-                  <h1 className="recipe-title">{recipe.recipeName || recipe.title}</h1>
-                  {recipe.description && (
-                    <p className="recipe-description">{recipe.description}</p>
-                  )}
-                  <div className="recipe-meta">
-                    {recipe.servings && (
-                      <div className="meta-item">
-                        <span className="meta-icon">👥</span>
-                        <span>{recipe.servings} portioner</span>
-                      </div>
-                    )}
-                    {recipe.cookingTime && (
-                      <div className="meta-item">
-                        <span className="meta-icon">⏱️</span>
-                        <span>{recipe.cookingTime}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="recipe-body">
-                  <div className="recipe-columns">
-                    {/* Ingredients column */}
-                    <div className="ingredients-column">
-                      <div className="section-header">
-                        <span className="section-icon">🥗</span>
-                        <h2>Ingredienser</h2>
-                      </div>
-                      {recipe.ingredients && recipe.ingredients.length > 0 ? (
-                        <ul className="ingredients-list">
-                          {recipe.ingredients.map((ingredient, i) => (
-                            <li key={i}>
-                              <span className="ingredient-bullet"></span>
-                              <span>{ingredient}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="no-content">Inga ingredienser tillgängliga</p>
-                      )}
-                    </div>
-
-                    {/* Instructions column */}
-                    <div className="instructions-column">
-                      <div className="section-header">
-                        <span className="section-icon">👨‍🍳</span>
-                        <h2>Gör så här</h2>
-                      </div>
-                      {recipe.instructions && recipe.instructions.length > 0 ? (
-                        <ol className="instructions-list">
-                          {recipe.instructions.map((instruction, i) => (
-                            <li key={i}>
-                              <span className="step-number">{i + 1}</span>
-                              <span className="step-text">{instruction}</span>
-                            </li>
-                          ))}
-                        </ol>
-                      ) : (
-                        <p className="no-content">Inga instruktioner tillgängliga</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Nutrition info */}
-                  {recipe.nutritionalInfo && (
-                    <div className="nutrition-section">
-                      <h3>Näringsvärde per portion</h3>
-                      <div className="nutrition-grid">
-                        {recipe.nutritionalInfo.calories && (
-                          <div className="nutrition-item">
-                            <span className="nutrition-value">{recipe.nutritionalInfo.calories}</span>
-                            <span className="nutrition-label">kcal</span>
-                          </div>
-                        )}
-                        {recipe.nutritionalInfo.protein && (
-                          <div className="nutrition-item">
-                            <span className="nutrition-value">{recipe.nutritionalInfo.protein}g</span>
-                            <span className="nutrition-label">Protein</span>
-                          </div>
-                        )}
-                        {recipe.nutritionalInfo.carbs && (
-                          <div className="nutrition-item">
-                            <span className="nutrition-value">{recipe.nutritionalInfo.carbs}g</span>
-                            <span className="nutrition-label">Kolhydrater</span>
-                          </div>
-                        )}
-                        {recipe.nutritionalInfo.fat && (
-                          <div className="nutrition-item">
-                            <span className="nutrition-value">{recipe.nutritionalInfo.fat}g</span>
-                            <span className="nutrition-label">Fett</span>
-                          </div>
-                        )}
-                        {recipe.nutritionalInfo.fiber && (
-                          <div className="nutrition-item">
-                            <span className="nutrition-value">{recipe.nutritionalInfo.fiber}g</span>
-                            <span className="nutrition-label">Fiber</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="recipe-footer">
-                  <span>{courseName} • Vecka {week}</span>
-                  <span>Recept {index + 1} av {recipes.length}</span>
-                </div>
-              </div>
-            ))}
-          </>
+          ))
         ) : (
           <div className="no-recipes">
             <p>Inga recept tillgängliga för denna vecka.</p>
@@ -298,72 +255,153 @@ export default function Client() {
       </div>
 
       <style jsx>{`
-        .print-document {
-          font-family: 'Georgia', 'Times New Roman', serif;
-        }
-
-        /* Screen styles */
-        .print-content {
-          max-width: 900px;
-          margin: 0 auto;
-          padding: 2rem;
-        }
-
-        .cover-page {
-          display: none;
-        }
-
-        .recipe-page {
+        .print-wrapper {
           background: white;
-          border-radius: 16px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-          margin-bottom: 2rem;
-          overflow: hidden;
         }
 
-        .recipe-header {
+        /* Screen-only header */
+        .screen-header {
           background: linear-gradient(135deg, #014421 0%, #116530 100%);
           color: white;
-          padding: 2rem;
-          text-align: center;
+          padding: 1rem 1.5rem;
+          position: sticky;
+          top: 0;
+          z-index: 100;
         }
 
-        .recipe-badge {
-          display: inline-flex;
+        .header-content {
+          max-width: 900px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .back-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: none;
+          border: none;
+          color: white;
+          cursor: pointer;
+          font-size: 0.95rem;
+        }
+
+        .header-title {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        .header-title strong {
+          font-size: 1.1rem;
+        }
+
+        .header-title span {
+          font-size: 0.85rem;
+          opacity: 0.85;
+        }
+
+        .print-btn {
+          display: flex;
           align-items: center;
           gap: 0.5rem;
           background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
           padding: 0.5rem 1rem;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 0.95rem;
+        }
+
+        .print-btn:hover {
+          background: rgba(255,255,255,0.3);
+        }
+
+        /* Recipe container */
+        .recipes-container {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 1.5rem;
+        }
+
+        /* Recipe page */
+        .recipe-page {
+          background: white;
+          border: 1px solid #e5e5e5;
+          border-radius: 12px;
+          margin-bottom: 2rem;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .page-header {
+          background: #014421;
+          color: white;
+          padding: 0.75rem 1.25rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .brand {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .brand-icon {
+          font-size: 1.25rem;
+        }
+
+        .brand-name {
+          font-size: 0.9rem;
+          font-weight: 500;
+          letter-spacing: 1px;
+        }
+
+        .page-info {
+          font-size: 0.85rem;
+          opacity: 0.9;
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .recipe-title-section {
+          padding: 1.5rem;
+          text-align: center;
+          border-bottom: 2px solid #93C560;
+        }
+
+        .meal-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: #F7F1E8;
+          padding: 0.4rem 1rem;
           border-radius: 100px;
-          font-size: 0.875rem;
-          margin-bottom: 1rem;
+          font-size: 0.85rem;
+          color: #014421;
+          margin-bottom: 0.75rem;
         }
 
         .badge-day {
           font-weight: 600;
         }
 
-        .badge-separator {
-          opacity: 0.6;
+        .badge-dot {
+          opacity: 0.5;
         }
 
-        .badge-meal {
-          opacity: 0.9;
-        }
-
-        .recipe-title {
-          font-size: 1.75rem;
+        .recipe-name {
+          font-size: 1.5rem;
           font-weight: 700;
+          color: #014421;
           margin: 0 0 0.75rem;
           line-height: 1.3;
-        }
-
-        .recipe-description {
-          opacity: 0.9;
-          font-style: italic;
-          max-width: 600px;
-          margin: 0 auto 1rem;
-          line-height: 1.5;
         }
 
         .recipe-meta {
@@ -371,52 +409,39 @@ export default function Client() {
           justify-content: center;
           gap: 1.5rem;
           font-size: 0.9rem;
+          color: #666;
         }
 
-        .meta-item {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .meta-icon {
-          font-size: 1.1rem;
-        }
-
-        .recipe-body {
-          padding: 2rem;
-        }
-
-        .recipe-columns {
+        .recipe-content {
           display: grid;
-          grid-template-columns: 1fr 1.5fr;
-          gap: 2rem;
+          grid-template-columns: 1fr 1.4fr;
+          gap: 0;
         }
 
-        .section-header {
+        .ingredients-box {
+          background: #F7F1E8;
+          padding: 1.25rem;
+          border-right: 1px solid #e5ddd0;
+        }
+
+        .instructions-box {
+          padding: 1.25rem;
+        }
+
+        .section-title {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          margin-bottom: 1rem;
-          padding-bottom: 0.75rem;
+          font-size: 1rem;
+          font-weight: 700;
+          color: #014421;
+          margin: 0 0 1rem;
+          padding-bottom: 0.5rem;
           border-bottom: 2px solid #93C560;
         }
 
-        .section-header h2 {
+        .title-icon {
           font-size: 1.1rem;
-          font-weight: 700;
-          color: #014421;
-          margin: 0;
-        }
-
-        .section-icon {
-          font-size: 1.25rem;
-        }
-
-        .ingredients-column {
-          background: #F7F1E8;
-          padding: 1.5rem;
-          border-radius: 12px;
         }
 
         .ingredients-list {
@@ -426,121 +451,103 @@ export default function Client() {
         }
 
         .ingredients-list li {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.75rem;
-          padding: 0.5rem 0;
-          border-bottom: 1px dashed #ddd;
-          font-size: 0.95rem;
+          padding: 0.4rem 0;
+          border-bottom: 1px dashed #d5cdc0;
+          font-size: 0.9rem;
           color: #333;
+          position: relative;
+          padding-left: 1rem;
+        }
+
+        .ingredients-list li:before {
+          content: "•";
+          position: absolute;
+          left: 0;
+          color: #93C560;
+          font-weight: bold;
         }
 
         .ingredients-list li:last-child {
           border-bottom: none;
         }
 
-        .ingredient-bullet {
-          width: 6px;
-          height: 6px;
-          background: #93C560;
-          border-radius: 50%;
-          margin-top: 0.5rem;
-          flex-shrink: 0;
-        }
-
         .instructions-list {
           list-style: none;
           padding: 0;
           margin: 0;
-          counter-reset: step;
         }
 
         .instructions-list li {
           display: flex;
-          gap: 1rem;
-          margin-bottom: 1rem;
-          font-size: 0.95rem;
-          line-height: 1.6;
+          gap: 0.75rem;
+          margin-bottom: 0.75rem;
+          font-size: 0.9rem;
           color: #333;
+          line-height: 1.5;
         }
 
-        .step-number {
-          width: 28px;
-          height: 28px;
-          background: linear-gradient(135deg, #014421, #116530);
+        .step-num {
+          width: 24px;
+          height: 24px;
+          background: #014421;
           color: white;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          font-size: 0.8rem;
           font-weight: 700;
-          font-size: 0.85rem;
           flex-shrink: 0;
         }
 
         .step-text {
           flex: 1;
-          padding-top: 0.25rem;
+          padding-top: 2px;
         }
 
-        .nutrition-section {
-          margin-top: 2rem;
-          padding-top: 1.5rem;
-          border-top: 2px solid #eee;
-        }
-
-        .nutrition-section h3 {
-          font-size: 1rem;
-          color: #014421;
-          margin: 0 0 1rem;
-          text-align: center;
-        }
-
-        .nutrition-grid {
+        .nutrition-bar {
           display: flex;
           justify-content: center;
           gap: 2rem;
-          flex-wrap: wrap;
+          padding: 1rem;
+          background: #f8f8f8;
+          border-top: 1px solid #eee;
         }
 
-        .nutrition-item {
+        .nut-item {
           text-align: center;
-          background: #F7F1E8;
-          padding: 0.75rem 1.25rem;
-          border-radius: 8px;
         }
 
-        .nutrition-value {
+        .nut-val {
           display: block;
-          font-size: 1.25rem;
+          font-size: 1.1rem;
           font-weight: 700;
           color: #014421;
         }
 
-        .nutrition-label {
-          font-size: 0.75rem;
-          color: #666;
+        .nut-label {
+          font-size: 0.7rem;
+          color: #888;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
         }
 
-        .recipe-footer {
+        .page-footer {
           display: flex;
           justify-content: space-between;
-          padding: 1rem 2rem;
-          background: #f9f9f9;
+          padding: 0.75rem 1.25rem;
+          background: #f5f5f5;
           font-size: 0.8rem;
-          color: #666;
+          color: #888;
         }
 
-        .no-content {
+        .empty {
           color: #999;
           font-style: italic;
         }
 
         .no-recipes {
           text-align: center;
-          padding: 4rem 2rem;
+          padding: 3rem;
           color: #666;
         }
 
@@ -550,196 +557,96 @@ export default function Client() {
             display: none !important;
           }
 
-          body {
-            margin: 0;
-            padding: 0;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+          body, html {
+            margin: 0 !important;
+            padding: 0 !important;
           }
 
-          .print-content {
+          .print-wrapper {
+            background: white;
+          }
+
+          .recipes-container {
             max-width: none;
             padding: 0;
             margin: 0;
           }
 
-          .cover-page {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #014421 0%, #0a5c2f 50%, #116530 100%) !important;
-            page-break-after: always;
-            position: relative;
-            overflow: hidden;
-          }
-
-          .cover-content {
-            text-align: center;
-            color: white;
-            padding: 3rem;
-            position: relative;
-            z-index: 1;
-          }
-
-          .cover-decoration {
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 400px;
-            height: 400px;
-            background: rgba(147, 197, 96, 0.1);
-            border-radius: 50%;
-          }
-
-          .cover-logo {
-            margin-bottom: 3rem;
-          }
-
-          .logo-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-          }
-
-          .cover-logo h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin: 0;
-          }
-
-          .cover-title {
-            margin-bottom: 3rem;
-          }
-
-          .cover-title h2 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin: 0 0 1.5rem;
-          }
-
-          .cover-divider {
-            width: 80px;
-            height: 3px;
-            background: #93C560;
-            margin: 0 auto 1.5rem;
-          }
-
-          .cover-title h3 {
-            font-size: 1.25rem;
-            font-weight: 400;
-            opacity: 0.9;
-            margin: 0;
-          }
-
-          .cover-info {
-            margin-bottom: 3rem;
-            font-size: 1rem;
-            opacity: 0.85;
-          }
-
-          .cover-info p {
-            margin: 0.5rem 0;
-          }
-
-          .cover-date {
-            font-style: italic;
-            margin-top: 1rem !important;
-          }
-
-          .cover-footer {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            letter-spacing: 1px;
-          }
-
           .recipe-page {
-            page-break-before: always;
+            page-break-after: always;
             page-break-inside: avoid;
-            min-height: 100vh;
-            margin: 0;
+            border: none;
             border-radius: 0;
             box-shadow: none;
+            margin: 0;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
           }
 
-          .recipe-page:first-of-type {
-            page-break-before: auto;
+          .recipe-page:last-child {
+            page-break-after: auto;
           }
 
-          .recipe-header {
-            padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, #014421 0%, #116530 100%) !important;
+          .page-header {
+            background: #014421 !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            padding: 0.6rem 1rem;
           }
 
-          .recipe-badge {
-            background: rgba(255,255,255,0.2) !important;
+          .recipe-title-section {
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #93C560 !important;
             -webkit-print-color-adjust: exact !important;
           }
 
-          .recipe-title {
-            font-size: 1.5rem;
+          .meal-badge {
+            background: #F7F1E8 !important;
+            -webkit-print-color-adjust: exact !important;
           }
 
-          .recipe-body {
+          .recipe-content {
             flex: 1;
-            padding: 1.5rem 2rem;
           }
 
-          .recipe-columns {
-            gap: 1.5rem;
-          }
-
-          .ingredients-column {
+          .ingredients-box {
             background: #F7F1E8 !important;
             -webkit-print-color-adjust: exact !important;
             padding: 1rem;
           }
 
-          .section-header {
-            border-bottom-color: #93C560 !important;
+          .instructions-box {
+            padding: 1rem;
           }
 
-          .ingredient-bullet {
-            background: #93C560 !important;
+          .section-title {
+            border-bottom: 2px solid #93C560 !important;
             -webkit-print-color-adjust: exact !important;
           }
 
-          .step-number {
-            background: linear-gradient(135deg, #014421, #116530) !important;
+          .step-num {
+            background: #014421 !important;
             -webkit-print-color-adjust: exact !important;
           }
 
-          .nutrition-section {
-            margin-top: 1rem;
-            padding-top: 1rem;
-          }
-
-          .nutrition-item {
-            background: #F7F1E8 !important;
+          .nutrition-bar {
+            background: #f8f8f8 !important;
             -webkit-print-color-adjust: exact !important;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem;
+            gap: 1.5rem;
           }
 
-          .nutrition-value {
-            color: #014421 !important;
-          }
-
-          .recipe-footer {
+          .page-footer {
             background: #f5f5f5 !important;
             -webkit-print-color-adjust: exact !important;
-            padding: 0.75rem 2rem;
             margin-top: auto;
           }
         }
 
         @page {
           size: A4;
-          margin: 0;
+          margin: 8mm;
         }
       `}</style>
     </div>
