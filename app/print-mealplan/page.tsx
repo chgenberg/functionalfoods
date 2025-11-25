@@ -16,22 +16,34 @@ function PrintMealPlanContent() {
     ? 'Functional Basics' 
     : courseType === 'flow' 
     ? 'Functional Gut Health/Flow' 
+    : courseType === 'hormone'
+    ? 'Hormonell Balans'
     : 'Functional Insulin balance/Energy';
 
   const [mealPlan, setMealPlan] = useState<any>(null);
 
   useEffect(() => {
-    // Dynamically import meal plan data
-    import('@/app/data/mealPlans').then(module => {
-      const getData = courseType === 'basics' 
-        ? module.getWeekData 
-        : courseType === 'flow' 
-        ? module.getFlowWeekData 
-        : module.getEnergyWeekData;
-      
-      const data = getData(weekNumber);
-      setMealPlan(data?.days || {});
-    });
+    // For hormone course, fetch from API (database)
+    if (courseType === 'hormone') {
+      fetch(`/api/meal-plans?course=hormone&week=${weekNumber}`)
+        .then(res => res.json())
+        .then(data => {
+          setMealPlan(data?.days || {});
+        })
+        .catch(() => setMealPlan({}));
+    } else {
+      // Dynamically import static meal plan data for other courses
+      import('@/app/data/mealPlans').then(module => {
+        const getData = courseType === 'basics' 
+          ? module.getWeekData 
+          : courseType === 'flow' 
+          ? module.getFlowWeekData 
+          : module.getEnergyWeekData;
+        
+        const data = getData(weekNumber);
+        setMealPlan(data?.days || {});
+      });
+    }
   }, [weekNumber, courseType]);
 
   useEffect(() => {

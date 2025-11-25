@@ -7,7 +7,7 @@ import { mealPlans, flowMealPlans, energyMealPlans, WeekMealPlan, DayMeals, Meal
 import { Download, Book, Calendar, User, FileText, Package } from 'lucide-react';
 
 interface CompleteCourseDownloadProps {
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
 }
 
 interface Recipe {
@@ -25,7 +25,8 @@ interface Recipe {
 
 export default function CompleteCourseDownloadWithRecipes({ courseType }: CompleteCourseDownloadProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy';
+  const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : courseType === 'hormone' ? 'Hormonell Balans' : 'Functional Insulin balance/Energy';
+  // Note: hormone course uses database meal plans, not static data - this component may not work for hormone
   const courseData: Record<string, WeekMealPlan> = courseType === 'basics' ? mealPlans : courseType === 'flow' ? flowMealPlans : energyMealPlans;
 
   // Count total meals

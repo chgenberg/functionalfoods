@@ -7,14 +7,14 @@ import { Calendar, Download, Heart, Star } from "lucide-react";;
 import { useFavoriteRecipes, FavoriteRecipe } from '@/app/hooks/useFavoriteRecipes';
 
 interface FavoriteRecipesPDFProps {
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
 }
 
 export default function FavoriteRecipesPDF({ courseType }: FavoriteRecipesPDFProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const { getFavoritesByCoursetype, isLoaded, favorites: allFavorites } = useFavoriteRecipes();
   const favorites = getFavoritesByCoursetype(courseType);
-  const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy';
+  const courseName = courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : courseType === 'hormone' ? 'Hormonell Balans' : 'Functional Insulin balance/Energy';
   
   // Debug logging
   console.log('🎯 FavoriteRecipesPDF rendered with courseType:', courseType);

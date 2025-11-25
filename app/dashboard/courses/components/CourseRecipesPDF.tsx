@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Download, FileText, ChefHat } from 'lucide-react';
 
 interface CourseRecipesPDFProps {
-  courseType: 'basics' | 'flow' | 'energy';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
 }
 
 export default function CourseRecipesPDF({ courseType }: CourseRecipesPDFProps) {
@@ -15,6 +15,8 @@ export default function CourseRecipesPDF({ courseType }: CourseRecipesPDFProps) 
     ? 'Functional Basics' 
     : courseType === 'flow' 
     ? 'Functional Flow' 
+    : courseType === 'hormone'
+    ? 'Hormonell Balans'
     : 'Functional Insulin balance/Energy';
 
   const generatePDF = async () => {
