@@ -15,6 +15,8 @@ export default function PrintRecipes({ weekNumber, courseName }: PrintRecipesPro
       ? 'basics' 
       : courseName.includes('Flow') 
       ? 'flow' 
+      : courseName.includes('Hormonell') || courseName.includes('Balans')
+      ? 'hormone'
       : 'energy';
     window.location.href = `/print-recipes?week=${weekNumber}&course=${courseSlug}`;
   };

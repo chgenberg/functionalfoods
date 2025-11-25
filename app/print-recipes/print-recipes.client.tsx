@@ -27,10 +27,11 @@ export default function Client() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   const week = parseInt(searchParams.get('week') || '1');
-  const course = (searchParams.get('course') || 'basics') as 'basics' | 'flow' | 'energy';
+  const course = (searchParams.get('course') || 'basics') as 'basics' | 'flow' | 'energy' | 'hormone';
 
   const courseName = course === 'basics' ? 'Functional Basics'
     : course === 'flow' ? 'Functional Flow'
+    : course === 'hormone' ? 'Hormonell Balans'
     : 'Functional Energy';
 
   useEffect(() => {

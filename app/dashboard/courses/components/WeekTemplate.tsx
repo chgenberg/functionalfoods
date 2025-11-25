@@ -747,11 +747,11 @@ export default function WeekTemplate({
                 <div className="flex flex-wrap gap-3 justify-center">
                   <PrintShoppingList 
                     weekNumber={weekNumber} 
-                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : courseType === 'hormone' ? 'Hormonell Balans' : 'Functional Insulin balance/Energy'}
                   />
                   <PrintRecipes 
                     weekNumber={weekNumber} 
-                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : 'Functional Insulin balance/Energy'}
+                    courseName={courseType === 'basics' ? 'Functional Basics' : courseType === 'flow' ? 'Functional Gut Health/Flow' : courseType === 'hormone' ? 'Hormonell Balans' : 'Functional Insulin balance/Energy'}
                   />
                   <PrintableMealPlanWithRecipes 
                     mealPlan={Object.fromEntries(

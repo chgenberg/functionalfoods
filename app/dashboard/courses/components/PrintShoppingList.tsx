@@ -15,6 +15,8 @@ export default function PrintShoppingList({ weekNumber, courseName }: PrintShopp
       ? 'basics' 
       : courseName.includes('Flow') 
       ? 'flow' 
+      : courseName.includes('Hormonell') || courseName.includes('Balans')
+      ? 'hormone'
       : 'energy';
     window.location.href = `/print-shopping-list?week=${weekNumber}&course=${courseSlug}`;
   };

@@ -119,7 +119,8 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
   const availableCourses = [
     { id: 'functional-basics', name: 'Functional Basics', color: 'bg-blue-100 text-blue-800' },
     { id: 'functional-flow', name: 'Functional Flow', color: 'bg-green-100 text-green-800' },
-    { id: 'functional-energy', name: 'Functional Energy', color: 'bg-orange-100 text-orange-800' }
+    { id: 'functional-energy', name: 'Functional Energy', color: 'bg-orange-100 text-orange-800' },
+    { id: 'functional-hormone', name: 'Hormonell Balans', color: 'bg-purple-100 text-purple-800' }
   ];
 
   useEffect(() => {
@@ -179,7 +180,14 @@ export default function EditRecipePage({ params }: { params: { slug: string } })
         isPremium: foundRecipe.isPremium || false,
         imageUrl: foundRecipe.imageUrl || '',
         courseTags: foundRecipe.tags?.filter((tag: string) => 
-          ['functional-basics', 'functional-flow', 'functional-energy'].includes(tag)
+          [
+            'functional-basics',
+            'functional-flow',
+            'functional-energy',
+            'functional-hormone',
+            'hormonell-balans',
+            'Hormonell Balans'
+          ].includes(tag)
         ) || [],
         nutrition: {
           energy: foundRecipe.nutrition?.perServing?.energy || 0,

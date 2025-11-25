@@ -135,6 +135,8 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
       ? 'basics' 
       : courseName.includes('Flow') 
       ? 'flow' 
+      : courseName.includes('Hormonell') || courseName.includes('Balans')
+      ? 'hormone'
       : 'energy';
     window.location.href = `/print-mealplan?week=${weekNumber}&course=${courseSlug}`;
   };
