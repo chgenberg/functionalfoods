@@ -179,59 +179,93 @@ export async function GET(
     const servingsParam = parseInt(url.searchParams.get('servings') || '4');
     const targetServings = isNaN(servingsParam) || servingsParam <= 0 ? 4 : servingsParam;
     
-    // For hormone course, fetch shopping list AND meal plan from database
-    if (courseType === 'hormone') {
-      try {
-        // Find the course product by name
-        const course = await prisma.courseProduct.findFirst({
-          where: { name: 'Hormonell Balans' }
-        });
-
-        console.log(`🔍 Hormone API: Looking for course "Hormonell Balans"`, { found: !!course, courseId: course?.id });
-
-        // Fetch meal plan to get recipe entries
-        const dbMealPlan = await (prisma as any).mealPlanWeek?.findUnique({
-          where: {
-            course_weekNumber: { course: 'hormone', weekNumber: weekNum }
-          }
-        });
-
-        // Build recipe entries from meal plan
-        const orderedEntries: Array<{ day: string; mealType: string; slug: string }> = [];
-        const dayOrder = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-        const mealOrder = ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'];
-        
-        if (dbMealPlan?.days) {
-          dayOrder.forEach((dayName, idx) => {
-            const day = dbMealPlan.days[dayName] || dbMealPlan.days[`day${idx + 1}`];
-            if (!day) return;
-            mealOrder.forEach((mt) => {
-              const m = day[mt];
-              if (m?.recipeLink) {
-                const slug = String(m.recipeLink).replace(/^\/kunskapsbank\/recept\//, '');
-                orderedEntries.push({ day: dayName, mealType: mt, slug });
-              }
-            });
-          });
-        }
-        console.log(`🔍 Hormone API: Found ${orderedEntries.length} recipe entries for week ${weekNum}`);
-
-        // Fetch shopping list if available
-        if (course) {
-          const list = await prisma.weeklyShoppingList.findUnique({
-            where: {
-              courseId_week: { courseId: course.id, week: weekNum }
+    // Helper to get recipe entries from meal plan
+    const getRecipeEntriesFromMealPlan = (days: any) => {
+      const orderedEntries: Array<{ day: string; mealType: string; slug: string }> = [];
+      const dayOrder = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+      const mealOrder = ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'];
+      
+      if (days) {
+        dayOrder.forEach((dayName, idx) => {
+          const day = days[dayName] || days[`day${idx + 1}`];
+          if (!day) return;
+          mealOrder.forEach((mt) => {
+            const m = day[mt];
+            if (m?.recipeLink) {
+              const slug = String(m.recipeLink).replace(/^\/kunskapsbank\/recept\//, '');
+              orderedEntries.push({ day: dayName, mealType: mt, slug });
             }
           });
+        });
+      }
+      return orderedEntries;
+    };
 
-          if (list?.items) {
-            const ingredients = (list.items as any[]).map((item: any) => ({
-              name: item.ingredient || item.name || '',
-              amount: item.amount || '1',
-              unit: item.unit || 'st',
-              category: item.category || 'Övrigt',
-              checked: false
-            }));
+    // Course name mapping for database lookup
+    const courseNameMap: Record<string, string> = {
+      'basics': 'Basic',
+      'flow': 'Flow',
+      'energy': 'Energy',
+      'hormone': 'Hormonell Balans'
+    };
+
+    // Try to fetch from database FIRST for ALL courses (admin edits go here)
+    try {
+      const courseName = courseNameMap[courseType];
+      if (courseName) {
+        const course = await prisma.courseProduct.findFirst({
+          where: { name: { contains: courseName, mode: 'insensitive' } }
+        });
+
+        if (course) {
+          // Check if shopping list exists in database
+          const dbList = await prisma.weeklyShoppingList.findUnique({
+            where: {
+              courseId_week: { courseId: course.id, week: weekNum }
+            },
+            include: { items: true }
+          });
+
+          if (dbList && dbList.items && dbList.items.length > 0) {
+            console.log(`✅ Found shopping list in database for ${courseType} week ${weekNum}`);
+            
+            // Get recipe entries from meal plan
+            let orderedEntries: Array<{ day: string; mealType: string; slug: string }> = [];
+            
+            if (courseType === 'hormone') {
+              // Hormone uses database meal plan
+              const dbMealPlan = await (prisma as any).mealPlanWeek?.findUnique({
+                where: { course_weekNumber: { course: 'hormone', weekNumber: weekNum } }
+              });
+              orderedEntries = getRecipeEntriesFromMealPlan(dbMealPlan?.days);
+            } else {
+              // Other courses use static meal plans
+              const weekKey = `week${weekNum}`;
+              const staticMealPlans = courseType === 'basics' 
+                ? mealPlans[weekKey]
+                : courseType === 'flow' 
+                ? flowMealPlans[weekKey]
+                : energyMealPlans[weekKey];
+              orderedEntries = getRecipeEntriesFromMealPlan(staticMealPlans?.days);
+            }
+
+            // Parse database items
+            const ingredients = dbList.items.map((item: any) => {
+              // Parse "amount unit name" format from database
+              const ingredientStr = item.ingredient || '';
+              const parts = ingredientStr.split(' ');
+              const amount = parts[0] || '1';
+              const unit = parts[1] || 'st';
+              const name = parts.slice(2).join(' ') || ingredientStr;
+              
+              return {
+                name: name || item.name || ingredientStr,
+                amount: item.amount || amount,
+                unit: item.unit || unit,
+                category: item.category || categorizeIngredient(name || ingredientStr),
+                checked: false
+              };
+            });
 
             return NextResponse.json({
               week: weekNum,
@@ -245,17 +279,12 @@ export async function GET(
             });
           }
         }
-
-        // If no shopping list but we have meal plan, continue to generate from recipes
-        if (orderedEntries.length > 0) {
-          // Fall through to recipe-based generation below
-        }
-      } catch (err) {
-        console.error('❌ Error fetching hormone data from DB:', err);
       }
+    } catch (err) {
+      console.error('❌ Error checking database for shopping list:', err);
     }
-    
-    // Try curated list first
+
+    // FALLBACK: Try curated JSON file (for courses without database entries)
     try {
       const curatedPath = path.join(process.cwd(), 'app', 'data', 'shoppingLists', `curated-${courseType}-week${weekNum}.json`);
       if (fs.existsSync(curatedPath)) {
