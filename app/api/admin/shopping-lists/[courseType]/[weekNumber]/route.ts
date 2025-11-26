@@ -1,15 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { prisma } from '@/app/lib/database';
 import jwt from 'jsonwebtoken';
 
-// Verify admin access
+// Verify admin access - checks both cookie and Authorization header
 async function verifyAdmin(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  let token: string | null = null;
+  
+  // First try to get token from HTTP-only cookie (primary method for admin)
+  const cookieStore = cookies();
+  const adminCookie = cookieStore.get('adminToken');
+  if (adminCookie?.value) {
+    token = adminCookie.value;
+  }
+  
+  // Fallback: try Authorization header
+  if (!token) {
+    const authHeader = request.headers.get('authorization');
+    if (authHeader?.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+    }
+  }
+  
+  if (!token) {
     return false;
   }
 
-  const token = authHeader.split(' ')[1];
   try {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined');
