@@ -60,13 +60,23 @@ export async function POST(req: NextRequest) {
     }
 
     // Map course names to tag labels used on recipes
-    const userCourseTags = userCourseNames.map((name) => {
+    // Returns array of all possible tags for the purchased courses
+    const userCourseTags: string[] = [];
+    userCourseNames.forEach((name) => {
       const n = name.toLowerCase();
-      if (n.includes('basic')) return 'Basic';
-      if (n.includes('flow') || n.includes('gut')) return 'Flow';
-      if (n.includes('energy') || n.includes('insulin')) return 'Energy';
-      return '';
-    }).filter(Boolean);
+      if (n.includes('basic')) {
+        userCourseTags.push('Basic', 'functional-basics');
+      }
+      if (n.includes('flow') || n.includes('gut')) {
+        userCourseTags.push('Flow', 'functional-flow');
+      }
+      if (n.includes('energy') || n.includes('insulin')) {
+        userCourseTags.push('Energy', 'functional-energy');
+      }
+      if (n.includes('hormon')) {
+        userCourseTags.push('Hormone', 'hormonell-balans', 'functional-hormone');
+      }
+    });
 
     // Filter out premium recipes the user doesn't have access to
     const accessibleRecipes = recipes.filter((recipe: any) => {
