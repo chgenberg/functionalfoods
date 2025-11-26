@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Filter, Star, User, Calendar, Info } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -28,138 +27,114 @@ export default function AdminReviewsPage() {
     setLoading(false);
   };
 
-  useEffect(()=>{ fetchItems(); },[]);
-  useEffect(()=>{ const t = setTimeout(fetchItems, 300); return ()=>clearTimeout(t); }, [courseId, status]);
+  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => { const t = setTimeout(fetchItems, 300); return () => clearTimeout(t); }, [courseId, status]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-[var(--primary-green)] rounded-full animate-spin border-t-transparent mx-auto"></div>
+          <p className="text-[var(--text-secondary)] mt-4 text-sm">Laddar recensioner...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Recensioner</h1>
-        <p className="text-[var(--text-secondary)] font-light">Hantera kursrecensioner och feedback från användare</p>
-        <p className="text-sm text-gray-500 mt-2">
-          <span className="flex items-center gap-2">
-            <Info className="w-4 h-4 text-blue-500" />
-            <span><strong>Tips:</strong> Godkända recensioner visas publikt på hemsidan. Granska alltid innehållet innan godkännande.</span>
-          </span>
-        </p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-xl font-medium text-[var(--text-primary)]">Recensioner</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera kursrecensioner</p>
       </div>
       
-      <div className="admin-card mb-6">
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-            <Filter className="w-5 h-5" />
-            <span className="text-sm font-medium">Filtrera</span>
-          </div>
+      {/* Filters */}
+      <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <input 
             value={courseId} 
-            onChange={e=>setCourseId(e.target.value)} 
+            onChange={e => setCourseId(e.target.value)} 
             placeholder="Kurs-ID (t.ex. functional-basics)" 
-            className="admin-input flex-1 max-w-sm" 
+            className="flex-1 px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]" 
           />
           <select 
             value={status} 
-            onChange={e=>setStatus(e.target.value)} 
-            className="admin-select"
+            onChange={e => setStatus(e.target.value)} 
+            className="px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
           >
             <option value="">Alla status</option>
-            <option value="PENDING">Väntar på granskning</option>
+            <option value="PENDING">Väntar</option>
             <option value="APPROVED">Godkända</option>
             <option value="REJECTED">Avvisade</option>
           </select>
         </div>
       </div>
-      {loading ? (
-        <div className="flex items-center justify-center p-12">
-          <div className="text-center">
-            <div className="relative mx-auto w-16 h-16">
-              <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
-              <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
-            </div>
-            <p className="mt-4 text-[var(--text-secondary)]">Laddar recensioner...</p>
-          </div>
+
+      {/* Reviews list */}
+      {items.length === 0 ? (
+        <div className="bg-white border border-[var(--border-light)] rounded-lg p-12 text-center">
+          <p className="text-[var(--text-secondary)]">Inga recensioner</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {items.length === 0 ? (
-            <div className="text-center py-16">
-              <Star className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" />
-              <p className="text-[var(--text-secondary)]">
-                Inga recensioner hittades med valda filter.
-              </p>
-            </div>
-          ) : items.map(r => (
-            <div key={r.id} className="admin-card">
+          {items.map(r => (
+            <div key={r.id} className="bg-white border border-[var(--border-light)] rounded-lg p-5">
               <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-full flex items-center justify-center">
-                    <User className="w-6 h-6 text-[var(--primary-green)]" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-[var(--text-primary)]">{r.courseId}</div>
-                    <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                      <Calendar className="w-4 h-4" />
-                      {new Date(r.createdAt).toLocaleDateString('sv-SE')}
-                    </div>
-                  </div>
+                <div>
+                  <p className="text-sm font-medium text-[var(--text-primary)]">{r.courseId}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">
+                    {new Date(r.createdAt).toLocaleDateString('sv-SE')}
+                  </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`admin-badge ${
-                    r.status==='APPROVED' ? 'admin-badge-success' : 
-                    r.status==='REJECTED'? 'admin-badge-warning':
-                    'admin-badge-info'
-                  }`}>
-                    {r.status === 'PENDING' ? 'Väntar' : 
-                     r.status === 'APPROVED' ? 'Godkänd' : 'Avvisad'}
-                  </span>
-                </div>
+                <span className={`text-xs px-2 py-0.5 rounded ${
+                  r.status === 'APPROVED' ? 'bg-green-100 text-green-700' : 
+                  r.status === 'REJECTED' ? 'bg-red-100 text-red-700' :
+                  'bg-gray-100 text-gray-600'
+                }`}>
+                  {r.status === 'PENDING' ? 'Väntar' : r.status === 'APPROVED' ? 'Godkänd' : 'Avvisad'}
+                </span>
               </div>
               
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-[var(--primary-light-green)]" />
-                  <span className="font-medium text-[var(--text-primary)]">Betyg: {r.rating ?? '-'}/5</span>
-                </div>
-                <div className="text-sm text-[var(--text-secondary)]">
-                  Samtycke: {r.consent ? 'Ja' : 'Nej'}
-                </div>
+              <div className="flex gap-4 mb-4 text-sm">
+                <span>Betyg: {r.rating ?? '-'}/5</span>
+                <span className="text-[var(--text-secondary)]">Samtycke: {r.consent ? 'Ja' : 'Nej'}</span>
               </div>
               
-              <div className="space-y-3 mb-4">
-                {(Array.isArray(r.answers)? r.answers: []).map((p: any, i: number)=> (
-                  <div key={i} className="bg-[var(--primary-beige)] rounded-lg p-3">
-                    <span className="font-medium text-[var(--text-primary)] block mb-1">{p.q}</span>
-                    <span className="text-[var(--text-secondary)] text-sm">{p.a}</span>
+              <div className="space-y-2 mb-4">
+                {(Array.isArray(r.answers) ? r.answers : []).map((p: any, i: number) => (
+                  <div key={i} className="bg-gray-50 rounded-lg p-3">
+                    <p className="text-sm font-medium text-[var(--text-primary)] mb-1">{p.q}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{p.a}</p>
                   </div>
                 ))}
               </div>
               
               <div className="flex gap-2">
                 <button 
-                  onClick={async ()=>{ 
+                  onClick={async () => { 
                     await fetch(`/api/reviews/${r.id}`, { 
                       method: 'PUT', 
-                      headers: { 'Content-Type':'application/json' }, 
+                      headers: { 'Content-Type': 'application/json' }, 
                       body: JSON.stringify({ status: 'APPROVED' }) 
                     }); 
                     fetchItems(); 
                   }} 
-                  className="admin-btn admin-btn-success"
+                  className="px-3 py-1.5 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
                 >
-                  <CheckCircle className="w-4 h-4" />
                   Godkänn
                 </button>
                 <button 
-                  onClick={async ()=>{ 
+                  onClick={async () => { 
                     await fetch(`/api/reviews/${r.id}`, { 
                       method: 'PUT', 
-                      headers: { 'Content-Type':'application/json' }, 
+                      headers: { 'Content-Type': 'application/json' }, 
                       body: JSON.stringify({ status: 'REJECTED' }) 
                     }); 
                     fetchItems(); 
                   }} 
-                  className="admin-btn admin-btn-danger"
+                  className="px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded transition-colors"
                 >
-                  <XCircle className="w-4 h-4" />
                   Avvisa
                 </button>
               </div>
@@ -169,4 +144,4 @@ export default function AdminReviewsPage() {
       )}
     </div>
   );
-} 
+}

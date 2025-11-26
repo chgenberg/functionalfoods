@@ -1,21 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
-import { ShoppingCart, Save, Plus, Trash2, Edit2, Check, X, Download, Upload, Info } from 'lucide-react';
 
 interface ShoppingListItem {
   name: string;
   amount: string;
   unit: string;
   category: string;
-}
-
-interface ShoppingList {
-  week: number;
-  courseType: string;
-  items: ShoppingListItem[];
 }
 
 export default function AdminShoppingListsPage() {
@@ -40,7 +32,6 @@ export default function AdminShoppingListsPage() {
   ];
 
   useEffect(() => {
-    // Initialize course from query (?course=functional-basics|functional-flow|functional-energy|hormonell-balans)
     const q = searchParams?.get('course');
     if (q) {
       const map: Record<string, 'basics' | 'flow' | 'energy' | 'hormone'> = {
@@ -48,7 +39,6 @@ export default function AdminShoppingListsPage() {
         'functional-flow': 'flow',
         'functional-energy': 'energy',
         'hormonell-balans': 'hormone',
-        // direct keys support
         'basics': 'basics',
         'flow': 'flow',
         'energy': 'energy',
@@ -66,22 +56,21 @@ export default function AdminShoppingListsPage() {
   const loadShoppingList = async () => {
     setLoading(true);
     try {
-      // Load from database via admin API
       const response = await fetch(`/api/admin/shopping-lists/${courseType}/${weekNumber}`);
       if (response.ok) {
         const data = await response.json();
         setShoppingList(data.items || []);
         setMessage({ 
           type: 'success', 
-          text: `Inköpslista från databas laddad (${data.items?.length || 0} rader)` 
+          text: `Laddad (${data.items?.length || 0} rader)` 
         });
       } else {
         setShoppingList([]);
-        setMessage({ type: 'error', text: 'Inköpslista saknas i databasen för denna vecka' });
+        setMessage({ type: 'error', text: 'Inköpslista saknas för denna vecka' });
       }
     } catch (error) {
       console.error('Error loading shopping list:', error);
-      setMessage({ type: 'error', text: 'Ett fel uppstod vid laddning från databas' });
+      setMessage({ type: 'error', text: 'Ett fel uppstod vid laddning' });
       setShoppingList([]);
     } finally {
       setLoading(false);
@@ -104,11 +93,11 @@ export default function AdminShoppingListsPage() {
         const data = await response.json();
         setMessage({ 
           type: 'success', 
-          text: `Inköpslista sparad till databas! (${data.itemCount || 0} rader)` 
+          text: `Sparad (${data.itemCount || 0} rader)` 
         });
       } else {
         const errorData = await response.json();
-        setMessage({ type: 'error', text: errorData.error || 'Kunde inte spara inköpslista' });
+        setMessage({ type: 'error', text: errorData.error || 'Kunde inte spara' });
       }
     } catch (error) {
       console.error('Error saving shopping list:', error);
@@ -171,41 +160,38 @@ export default function AdminShoppingListsPage() {
   };
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Hantera Inköpslistor</h1>
-        <p className="text-[var(--text-secondary)] font-light">Redigera ingrediensmängder och namn för varje veckas inköpslista</p>
-        <p className="text-sm text-gray-500 mt-2">
-          <span className="flex items-center gap-2">
-            <Info className="w-4 h-4 text-blue-500" />
-            <span><strong>Tips:</strong> Inköpslistor genereras automatiskt från kostscheman. Du kan justera mängder och kategorier här.</span>
-          </span>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-xl font-medium text-[var(--text-primary)]">Inköpslistor</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
+          Redigera ingredienser för varje veckas inköpslista
         </p>
       </div>
 
-      {/* Course and Week Selector */}
-      <div className="admin-card mb-6">
+      {/* Selectors */}
+      <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="admin-label">Kurs</label>
+            <label className="block text-xs text-[var(--text-secondary)] uppercase tracking-wide mb-1">Kurs</label>
             <select
               value={courseType}
-              onChange={(e) => setCourseType(e.target.value as 'basics' | 'flow' | 'energy' | 'hormone')}
-              className="admin-select"
+              onChange={(e) => setCourseType(e.target.value as any)}
+              className="w-full px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
               disabled={Boolean(searchParams?.get('course'))}
             >
               <option value="basics">Functional Basics</option>
               <option value="flow">Functional Flow</option>
-              <option value="energy">Functional Insulin balance/Energy</option>
+              <option value="energy">Functional Energy</option>
               <option value="hormone">Hormonell Balans</option>
             </select>
           </div>
           <div>
-            <label className="admin-label">Vecka</label>
+            <label className="block text-xs text-[var(--text-secondary)] uppercase tracking-wide mb-1">Vecka</label>
             <select
               value={weekNumber}
               onChange={(e) => setWeekNumber(parseInt(e.target.value))}
-              className="admin-select"
+              className="w-full px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
             >
               {[1, 2, 3, 4, 5, 6].map(week => (
                 <option key={week} value={week}>Vecka {week}</option>
@@ -217,90 +203,80 @@ export default function AdminShoppingListsPage() {
 
       {/* Message */}
       {message && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`mb-6 admin-alert ${
-            message.type === 'success' ? 'admin-alert-success' : 'admin-alert-error'
-          }`}
-        >
+        <div className={`px-4 py-3 rounded-lg text-sm ${
+          message.type === 'success' 
+            ? 'bg-green-50 border border-green-200 text-green-700' 
+            : 'bg-red-50 border border-red-200 text-red-700'
+        }`}>
           {message.text}
-        </motion.div>
+        </div>
       )}
 
       {/* Shopping List Editor */}
-      <div className="admin-card">
-        <div className="pb-6 border-b border-[var(--border-light)] mb-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium text-[var(--primary-green)]">
-              Ingredienser ({shoppingList.length} st)
-            </h2>
-            <div className="flex gap-2">
-              <button
-                onClick={exportList}
-                className="admin-btn admin-btn-secondary"
-              >
-                <Download className="w-4 h-4" />
-                Exportera
-              </button>
-              <button
-                onClick={addItem}
-                className="admin-btn admin-btn-secondary"
-              >
-                <Plus className="w-4 h-4" />
-                Lägg till ingrediens
-              </button>
-              <button
-                onClick={saveShoppingList}
-                disabled={saving}
-                className="admin-btn admin-btn-primary"
-              >
-                <Save className="w-4 h-4" />
-                {saving ? 'Sparar...' : 'Spara lista'}
-              </button>
-            </div>
+      <div className="bg-white border border-[var(--border-light)] rounded-lg">
+        <div className="px-4 py-3 border-b border-[var(--border-light)] flex items-center justify-between">
+          <h2 className="text-sm font-medium text-[var(--text-primary)]">
+            Ingredienser ({shoppingList.length})
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={exportList}
+              className="px-3 py-1.5 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 transition-colors"
+            >
+              Exportera
+            </button>
+            <button
+              onClick={addItem}
+              className="px-3 py-1.5 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 transition-colors"
+            >
+              Lägg till
+            </button>
+            <button
+              onClick={saveShoppingList}
+              disabled={saving}
+              className="px-3 py-1.5 text-xs bg-[var(--primary-green)] text-white rounded hover:bg-[#012a14] transition-colors disabled:opacity-50"
+            >
+              {saving ? 'Sparar...' : 'Spara'}
+            </button>
           </div>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center">
-            <div className="relative mx-auto w-16 h-16">
-              <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
-              <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
-            </div>
-            <p className="mt-4 text-[var(--text-secondary)]">Laddar inköpslista...</p>
+          <div className="p-8 text-center">
+            <div className="w-6 h-6 border-2 border-[var(--primary-green)] rounded-full animate-spin border-t-transparent mx-auto"></div>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">Laddar...</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="divide-y divide-gray-50">
             {shoppingList.map((item, index) => (
-              <div key={index} className="p-4 hover:bg-[var(--primary-beige)] transition-colors rounded-lg">
+              <div key={index} className="px-4 py-3 hover:bg-gray-50">
                 {editingIndex === index && editItem ? (
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                     <input
                       type="text"
                       value={editItem.name}
                       onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
-                      className="admin-input"
+                      className="px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
                       placeholder="Ingrediens"
                     />
                     <input
                       type="text"
                       value={editItem.amount}
                       onChange={(e) => setEditItem({ ...editItem, amount: e.target.value })}
-                      className="admin-input"
+                      className="px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
                       placeholder="Mängd"
                     />
                     <input
                       type="text"
                       value={editItem.unit}
                       onChange={(e) => setEditItem({ ...editItem, unit: e.target.value })}
-                      className="admin-input"
+                      className="px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
                       placeholder="Enhet"
                     />
                     <select
                       value={editItem.category}
                       onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
-                      className="admin-select"
+                      className="px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
                     >
                       {categories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -309,46 +285,49 @@ export default function AdminShoppingListsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={saveEdit}
-                        className="flex-1 admin-btn admin-btn-success justify-center"
+                        className="flex-1 px-3 py-2 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
                       >
-                        <Check className="w-4 h-4" />
                         Spara
                       </button>
                       <button
                         onClick={cancelEdit}
-                        className="flex-1 admin-btn admin-btn-secondary justify-center"
+                        className="flex-1 px-3 py-2 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 transition-colors"
                       >
-                        <X className="w-4 h-4" />
                         Avbryt
                       </button>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center justify-between">
-                    <div className="flex-grow grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="font-medium text-[var(--text-primary)]">{item.name}</div>
-                      <div className="text-[var(--text-secondary)]">{item.amount} {item.unit}</div>
-                      <div className="text-[var(--text-secondary)]">{item.category}</div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1">
+                      <div className="text-sm text-[var(--text-primary)]">{item.name}</div>
+                      <div className="text-sm text-[var(--text-secondary)]">{item.amount} {item.unit}</div>
+                      <div className="text-sm text-[var(--text-secondary)]">{item.category}</div>
                       <div></div>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => startEdit(index)}
-                        className="p-2 text-[var(--primary-light-green)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg transition-all"
+                        className="px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-gray-100 rounded transition-colors"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        Redigera
                       </button>
                       <button
                         onClick={() => deleteItem(index)}
-                        className="p-2 text-[var(--coral-accent)] hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
+                        className="px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded transition-colors"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        Ta bort
                       </button>
                     </div>
                   </div>
                 )}
               </div>
             ))}
+            {shoppingList.length === 0 && (
+              <div className="p-8 text-center text-sm text-[var(--text-secondary)]">
+                Inga ingredienser. Klicka på "Lägg till" för att börja.
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import AddUserModal from './AddUserModal';
-import { UserPlus, Search, Edit3, Trash2, ChevronLeft, ChevronRight, Mail, Calendar, Shield, Users, UserCheck, TrendingUp } from 'lucide-react';
 
 interface User {
   id: string;
@@ -22,7 +21,7 @@ export default function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 10;
+  const usersPerPage = 15;
 
   useEffect(() => {
     fetchUsers();
@@ -45,9 +44,7 @@ export default function AdminUsersPage() {
     try {
       const response = await fetch('/api/users', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newUser),
       });
 
@@ -70,9 +67,7 @@ export default function AdminUsersPage() {
     }
 
     try {
-      const response = await fetch(`/api/users/${id}`, {
-        method: 'DELETE'
-      });
+      const response = await fetch(`/api/users/${id}`, { method: 'DELETE' });
 
       if (response.ok) {
         await fetchUsers();
@@ -99,13 +94,10 @@ export default function AdminUsersPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+      <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="relative">
-            <div className="w-16 h-16 border-2 border-[var(--border-light)] rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-2 border-[var(--primary-light-green)] rounded-full animate-spin border-t-transparent"></div>
-          </div>
-          <p className="text-[var(--text-secondary)] mt-4">Laddar användare...</p>
+          <div className="w-8 h-8 border-2 border-[var(--primary-green)] rounded-full animate-spin border-t-transparent mx-auto"></div>
+          <p className="text-[var(--text-secondary)] mt-4 text-sm">Laddar användare...</p>
         </div>
       </div>
     );
@@ -115,250 +107,171 @@ export default function AdminUsersPage() {
     <>
       {showModal && <AddUserModal onClose={() => setShowModal(false)} onAdd={handleAddUser} />}
       
-      <div>
+      <div className="space-y-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-light text-[var(--primary-green)] mb-2">Användarhantering</h1>
-          <p className="text-[var(--text-secondary)] font-light">Hantera alla användare i systemet</p>
-        </div>
-
-        {/* Actions Bar */}
-        <div className="admin-card mb-6">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Sök användare..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="admin-input pl-10"
-                />
-              </div>
-            </div>
-            
-            <div className="flex gap-3">
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="admin-select"
-              >
-                <option value="all">Alla roller</option>
-                <option value="USER">Användare</option>
-                <option value="ADMIN">Administratör</option>
-              </select>
-              
-              <button 
-                onClick={() => setShowModal(true)} 
-                className="admin-btn admin-btn-primary"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span className="hidden sm:inline">Lägg till användare</span>
-              </button>
-            </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-medium text-[var(--text-primary)]">Användare</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera alla användare</p>
           </div>
+          <button 
+            onClick={() => setShowModal(true)} 
+            className="px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-colors text-sm"
+          >
+            Lägg till användare
+          </button>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="admin-stat-card">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value">{users.length}</div>
-                <div className="admin-stat-label">Totalt antal</div>
-              </div>
-              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-[var(--primary-green)]" />
-              </div>
-            </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
+            <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Totalt</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)] mt-1">{users.length}</p>
           </div>
-
-          <div className="admin-stat-card">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value">
-                  {users.filter(u => u.role === 'ADMIN').length}
-                </div>
-                <div className="admin-stat-label">Administratörer</div>
-              </div>
-              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
-                <Shield className="w-6 h-6 text-[var(--coral-accent)]" />
-              </div>
-            </div>
+          <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
+            <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Administratörer</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)] mt-1">
+              {users.filter(u => u.role === 'ADMIN').length}
+            </p>
           </div>
-
-          <div className="admin-stat-card">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value">
-                  {users.filter(u => u.isActive).length}
-                </div>
-                <div className="admin-stat-label">Aktiva</div>
-              </div>
-              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
-                <UserCheck className="w-6 h-6 text-[var(--primary-light-green)]" />
-              </div>
-            </div>
+          <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
+            <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Aktiva</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)] mt-1">
+              {users.filter(u => u.isActive).length}
+            </p>
           </div>
-
-          <div className="admin-stat-card">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="admin-stat-value">
-                  {users.filter(u => {
-                    const created = new Date(u.createdAt);
-                    const thirtyDaysAgo = new Date();
-                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-                    return created > thirtyDaysAgo;
-                  }).length}
-                </div>
-                <div className="admin-stat-label">Nya (30d)</div>
-              </div>
-              <div className="w-12 h-12 bg-[var(--primary-beige)] rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-[var(--primary-green)]" />
-              </div>
-            </div>
+          <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
+            <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Nya (30d)</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)] mt-1">
+              {users.filter(u => {
+                const created = new Date(u.createdAt);
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                return created > thirtyDaysAgo;
+              }).length}
+            </p>
           </div>
         </div>
 
-        {/* Users Table */}
-        <div className="admin-table">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
+        {/* Filters */}
+        <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <input
+              type="text"
+              placeholder="Sök användare..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1 px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
+            />
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
+            >
+              <option value="all">Alla roller</option>
+              <option value="USER">Användare</option>
+              <option value="ADMIN">Administratör</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Users table */}
+        <div className="bg-white border border-[var(--border-light)] rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-[var(--border-light)]">
+              <tr>
+                <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">Användare</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden md:table-cell">Status</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden lg:table-cell">Roll</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden lg:table-cell">Registrerad</th>
+                <th className="text-right px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">Åtgärder</th>
+              </tr>
+            </thead>
+            <tbody>
+              {displayedUsers.length === 0 ? (
                 <tr>
-                  <th className="text-left">
-                    Användare
-                  </th>
-                  <th className="text-left">
-                    Status
-                  </th>
-                  <th className="text-left hidden md:table-cell">
-                    Roll
-                  </th>
-                  <th className="text-left hidden lg:table-cell">
-                    Registrerad
-                  </th>
-                  <th className="text-right">
-                    Åtgärder
-                  </th>
+                  <td colSpan={5} className="px-4 py-12 text-center text-[var(--text-secondary)]">
+                    {searchTerm ? 'Inga användare hittades' : 'Inga användare'}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {displayedUsers.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-16 text-center">
-                      <Users className="w-16 h-16 text-[var(--text-secondary)] mx-auto mb-4" />
-                      <p className="text-[var(--text-secondary)]">
-                        {searchTerm ? 'Inga användare hittades för din sökning.' : 'Inga användare hittades.'}
-                      </p>
+              ) : (
+                displayedUsers.map((user) => (
+                  <tr key={user.id} className="border-b border-gray-50 hover:bg-gray-50">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[var(--primary-beige)] flex items-center justify-center flex-shrink-0">
+                          <span className="text-sm font-medium text-[var(--primary-green)]">
+                            {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-[var(--text-primary)]">{user.name || 'Ingen namn'}</p>
+                          <p className="text-xs text-[var(--text-secondary)] truncate">{user.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      <span className={`text-xs px-2 py-0.5 rounded ${
+                        user.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {user.isActive ? 'Aktiv' : 'Inaktiv'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      <span className={`text-xs ${user.role === 'ADMIN' ? 'text-orange-600' : 'text-[var(--text-secondary)]'}`}>
+                        {user.role === 'ADMIN' ? 'Administratör' : 'Användare'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      <span className="text-xs text-[var(--text-secondary)]">
+                        {new Date(user.createdAt).toLocaleDateString('sv-SE')}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex gap-2 justify-end">
+                        <Link 
+                          href={`/admin/users/${user.id}/edit`}
+                          className="px-3 py-1.5 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 transition-colors"
+                        >
+                          Redigera
+                        </Link>
+                        <button 
+                          onClick={() => handleDeleteUser(user.id, user.name || user.email)}
+                          className="px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded transition-colors"
+                        >
+                          Ta bort
+                        </button>
+                      </div>
                     </td>
                   </tr>
-                ) : (
-                  displayedUsers.map((user) => (
-                    <tr
-                      key={user.id}
-                    >
-                      <td>
-                        <div className="flex items-center">
-                          <div className={`w-10 h-10 rounded-full ${
-                            user.role === 'ADMIN' ? 'bg-[var(--primary-beige)]' : 'bg-[var(--primary-beige)]'
-                          } flex items-center justify-center font-medium`}>
-                            <span className={user.role === 'ADMIN' ? 'text-[var(--coral-accent)]' : 'text-[var(--primary-green)]'}>
-                              {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-medium text-[var(--text-primary)]">
-                              {user.name || 'Ingen namn'}
-                            </p>
-                            <div className="flex items-center gap-1 text-sm text-[var(--text-secondary)]">
-                              <Mail className="w-3 h-3" />
-                              <span>{user.email}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <span className={`admin-badge ${
-                          user.isActive 
-                            ? 'admin-badge-success' 
-                            : 'admin-badge-info'
-                        }`}>
-                          {user.isActive ? 'Aktiv' : 'Inaktiv'}
-                        </span>
-                      </td>
-                      <td className="hidden md:table-cell">
-                        <div className="flex items-center gap-2">
-                          {user.role === 'ADMIN' ? (
-                            <Shield className="w-4 h-4 text-[var(--coral-accent)]" />
-                          ) : (
-                            <Users className="w-4 h-4 text-[var(--text-secondary)]" />
-                          )}
-                          <span className={`text-sm font-medium ${
-                            user.role === 'ADMIN' ? 'text-[var(--coral-accent)]' : 'text-[var(--text-secondary)]'
-                          }`}>
-                            {user.role === 'ADMIN' ? 'Administratör' : 'Användare'}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="hidden lg:table-cell">
-                        <div className="flex items-center gap-1 text-[var(--text-secondary)]">
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-sm">
-                            {new Date(user.createdAt).toLocaleDateString('sv-SE')}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          <Link 
-                            href={`/admin/users/${user.id}/edit`}
-                            className="p-2 text-[var(--primary-light-green)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg transition-all"
-                            title="Redigera"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </Link>
-                          <button 
-                            onClick={() => handleDeleteUser(user.id, user.name || user.email)}
-                            className="p-2 text-[var(--coral-accent)] hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
-                            title="Ta bort"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
           
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex flex-col sm:flex-row justify-between items-center px-6 py-4 border-t border-[var(--border-light)] gap-4">
-              <p className="text-sm text-[var(--text-secondary)]">
-                Visar {startIndex + 1}-{Math.min(startIndex + usersPerPage, filteredUsers.length)} av {filteredUsers.length} användare
+            <div className="flex flex-col sm:flex-row justify-between items-center px-4 py-3 border-t border-[var(--border-light)] gap-3">
+              <p className="text-xs text-[var(--text-secondary)]">
+                Visar {startIndex + 1}-{Math.min(startIndex + usersPerPage, filteredUsers.length)} av {filteredUsers.length}
               </p>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="px-3 py-1.5 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  Föregående
                 </button>
-                <span className="px-4 py-2 text-sm font-medium text-[var(--text-primary)]">
+                <span className="text-xs text-[var(--text-secondary)]">
                   Sida {currentPage} av {totalPages}
                 </span>
                 <button 
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary-green)] hover:bg-[var(--primary-beige)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="px-3 py-1.5 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  Nästa
                 </button>
               </div>
             </div>
@@ -367,4 +280,4 @@ export default function AdminUsersPage() {
       </div>
     </>
   );
-} 
+}
