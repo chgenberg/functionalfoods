@@ -179,31 +179,52 @@ export async function GET(
     const servingsParam = parseInt(url.searchParams.get('servings') || '4');
     const targetServings = isNaN(servingsParam) || servingsParam <= 0 ? 4 : servingsParam;
     
-    // For hormone course, fetch from database
+    // For hormone course, fetch shopping list AND meal plan from database
     if (courseType === 'hormone') {
       try {
-        // Find the course product by name - must match exactly what's in database
+        // Find the course product by name
         const course = await prisma.courseProduct.findFirst({
-          where: {
-            name: 'Hormonell Balans'
-          }
+          where: { name: 'Hormonell Balans' }
         });
 
         console.log(`🔍 Hormone API: Looking for course "Hormonell Balans"`, { found: !!course, courseId: course?.id });
 
+        // Fetch meal plan to get recipe entries
+        const dbMealPlan = await (prisma as any).mealPlanWeek?.findUnique({
+          where: {
+            course_weekNumber: { course: 'hormone', weekNumber: weekNum }
+          }
+        });
+
+        // Build recipe entries from meal plan
+        const orderedEntries: Array<{ day: string; mealType: string; slug: string }> = [];
+        const dayOrder = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+        const mealOrder = ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'];
+        
+        if (dbMealPlan?.days) {
+          dayOrder.forEach((dayName, idx) => {
+            const day = dbMealPlan.days[dayName] || dbMealPlan.days[`day${idx + 1}`];
+            if (!day) return;
+            mealOrder.forEach((mt) => {
+              const m = day[mt];
+              if (m?.recipeLink) {
+                const slug = String(m.recipeLink).replace(/^\/kunskapsbank\/recept\//, '');
+                orderedEntries.push({ day: dayName, mealType: mt, slug });
+              }
+            });
+          });
+        }
+        console.log(`🔍 Hormone API: Found ${orderedEntries.length} recipe entries for week ${weekNum}`);
+
+        // Fetch shopping list if available
         if (course) {
           const list = await prisma.weeklyShoppingList.findUnique({
             where: {
-              courseId_week: {
-                courseId: course.id,
-                week: weekNum
-              }
+              courseId_week: { courseId: course.id, week: weekNum }
             }
           });
 
-          console.log(`🔍 Hormone API: Looking for week ${weekNum}`, { found: !!list, itemCount: (list?.items as any)?.length });
-
-          if (list && list.items) {
+          if (list?.items) {
             const ingredients = (list.items as any[]).map((item: any) => ({
               name: item.ingredient || item.name || '',
               amount: item.amount || '1',
@@ -215,15 +236,22 @@ export async function GET(
             return NextResponse.json({
               week: weekNum,
               courseType,
-              recipeCount: 0,
+              recipeCount: orderedEntries.length,
               ingredients,
               generatedAt: new Date().toISOString(),
-              source: 'database'
+              source: 'database',
+              recipes: orderedEntries.map(e => e.slug),
+              recipeEntries: orderedEntries
             });
           }
         }
+
+        // If no shopping list but we have meal plan, continue to generate from recipes
+        if (orderedEntries.length > 0) {
+          // Fall through to recipe-based generation below
+        }
       } catch (err) {
-        console.error('❌ Error fetching hormone shopping list from DB:', err);
+        console.error('❌ Error fetching hormone data from DB:', err);
       }
     }
     
