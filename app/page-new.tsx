@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Award, Book, Check, ClipboardCheck, FileText, Heart, Microscope, Play, Rocket, Star, Target, TrendingUp, Users, Zap } from "lucide-react";
+import { ArrowRight, Award, Book, Check, ClipboardCheck, FileText, Gift, Heart, Microscope, Play, Rocket, Star, Target, TrendingUp, Users, Zap } from "lucide-react";
 import { GiMeal, GiHealthNormal } from "react-icons/gi";
 import Image from "next/image";
 import HealthQuiz from "./components/HealthQuiz";
@@ -135,6 +135,78 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Christmas Ebook Promotion - Floating Card */}
+        <motion.div
+          initial={{ opacity: 0, x: 100, y: 20 }}
+          animate={{ opacity: 1, x: 0, y: 0 }}
+          transition={{ delay: 1, duration: 0.6, type: "spring" }}
+          className="absolute bottom-6 right-4 md:bottom-10 md:right-10 z-30 hidden sm:block"
+        >
+          <Link href="/utbildning" className="group block">
+            <div className="relative bg-gradient-to-br from-[#1a472a] via-[#0d3320] to-[#0a2818] rounded-2xl shadow-2xl overflow-hidden border-2 border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(239,68,68,0.3)]">
+              {/* Sparkle decorations */}
+              <div className="absolute top-2 left-2 text-yellow-400/70">
+                <motion.div
+                  animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                >
+                  ✨
+                </motion.div>
+              </div>
+              <div className="absolute top-3 right-3 text-yellow-400/50 text-sm">
+                <motion.div
+                  animate={{ rotate: -360, scale: [1, 1.3, 1] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                >
+                  ⭐
+                </motion.div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 pr-4">
+                {/* Book image */}
+                <div className="relative w-20 h-24 md:w-24 md:h-28 flex-shrink-0 rounded-lg overflow-hidden shadow-lg">
+                  <Image
+                    src="/julbok.png"
+                    alt="Gratis E-bok"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  {/* Shimmer effect */}
+                  <motion.div
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "200%" }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
+                  />
+                </div>
+
+                {/* Text content */}
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Gift className="w-4 h-4 text-red-400" />
+                    <span className="text-red-400 text-xs font-bold uppercase tracking-wide">Julbonus!</span>
+                  </div>
+                  <p className="text-white font-bold text-sm md:text-base leading-tight">
+                    Gratis E-bok
+                  </p>
+                  <p className="text-white/70 text-xs mt-0.5">
+                    vid köp av kurs
+                  </p>
+                  <div className="flex items-center gap-1 mt-2">
+                    <span className="text-white/90 text-xs font-medium group-hover:text-white transition-colors">
+                      Köp nu
+                    </span>
+                    <ArrowRight className="w-3 h-3 text-white/70 group-hover:translate-x-1 group-hover:text-white transition-all" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom accent */}
+              <div className="h-1 bg-gradient-to-r from-red-500 via-green-500 to-red-500" />
+            </div>
+          </Link>
+        </motion.div>
       </section>
 
       {/* Course Boxes Section */}
