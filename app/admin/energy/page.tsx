@@ -338,21 +338,33 @@ export default function EnergyPage() {
     const saveShoppingList = async () => {
       setIsSaving(true);
       try {
-        const res = await fetch(`/api/admin/shopping-lists/${shoppingList.id}`, {
-          method: 'PUT',
+        // Transform items to API format: { amount, unit, name }
+        const apiItems = shoppingList.items.map((item: any) => {
+          const parts = (item.quantity || '').split(' ');
+          return {
+            amount: parts[0] || '1',
+            unit: parts[1] || 'st',
+            name: item.name || ''
+          };
+        });
+
+        const res = await fetch(`/api/admin/shopping-lists/energy/${selectedWeek}`, {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            items: shoppingList.items
+            items: apiItems
           })
         });
 
         if (res.ok) {
           showNotification('success', 'Inköpslista sparad');
         } else {
-          throw new Error('Failed to save');
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Failed to save');
         }
       } catch (error) {
+        console.error('Save error:', error);
         showNotification('error', 'Kunde inte spara inköpslista');
       } finally {
         setIsSaving(false);
