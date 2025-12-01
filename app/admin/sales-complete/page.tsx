@@ -730,7 +730,7 @@ export default function UnifiedSalesPage() {
         </motion.div>
       </div>
 
-      {/* Advanced Filters */}
+      {/* Advanced Filters - Minimalist Design */}
       <AnimatePresence>
         {showFilters && (
           <motion.div
@@ -739,113 +739,124 @@ export default function UnifiedSalesPage() {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="admin-card">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-[var(--primary-green)]">Avancerade filter</h3>
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-100 rounded-2xl p-6 shadow-sm">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-6 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full" />
+                  <h3 className="text-base font-medium text-gray-800">Filter</h3>
+                </div>
                 <button
                   onClick={resetFilters}
-                  className="text-sm text-[var(--primary-light-green)] hover:text-[var(--primary-green)] transition-colors"
+                  className="text-xs font-medium text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1.5"
                 >
-                  Återställ filter
+                  <RotateCcw className="w-3 h-3" />
+                  Återställ
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Quick Date Filters as Pills */}
+              <div className="mb-6">
+                <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium mb-2 block">Tidsperiod</span>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(dateRangePresets).map(([key, preset]) => (
+                    <button
+                      key={key}
+                      onClick={() => setFilters(prev => ({ ...prev, dateRange: key }))}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 ${
+                        filters.dateRange === key
+                          ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-200'
+                          : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Filter Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
                 {/* Provider */}
-                <div>
-                  <label className="admin-label">Leverantör</label>
-                  <select
-                    value={filters.provider}
-                    onChange={(e) => setFilters(prev => ({ ...prev, provider: e.target.value }))}
-                    className="admin-select"
-                  >
-                    <option value="all">Alla leverantörer</option>
-                    <option value="stripe">Stripe</option>
-                    <option value="svea">Svea Ekonomi</option>
-                    <option value="manual">Manuell</option>
-                  </select>
-                </div>
-
-                {/* Status */}
-                <div>
-                  <label className="admin-label">Status</label>
-                  <select
-                    value={filters.status}
-                    onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                    className="admin-select"
-                  >
-                    <option value="all">Alla statusar</option>
-                    <option value="succeeded">Lyckad</option>
-                    <option value="COMPLETED">Slutförd</option>
-                    <option value="processing">Behandlas</option>
-                    <option value="PENDING">Väntar</option>
-                    <option value="failed">Misslyckad</option>
-                    <option value="canceled">Avbruten</option>
-                  </select>
-                </div>
-
-                {/* Date Range */}
-                <div>
-                  <label className="admin-label">Tidsperiod</label>
-                  <select
-                    value={filters.dateRange}
-                    onChange={(e) => setFilters(prev => ({ ...prev, dateRange: e.target.value }))}
-                    className="admin-select"
-                  >
-                    {Object.entries(dateRangePresets).map(([key, preset]) => (
-                      <option key={key} value={key}>{preset.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Course */}
-                <div>
-                  <label className="admin-label">Kurs</label>
-                  <select
-                    value={filters.course}
-                    onChange={(e) => setFilters(prev => ({ ...prev, course: e.target.value }))}
-                    className="admin-select"
-                  >
-                    <option value="all">Alla kurser</option>
-                    <option value="Functional Basics">Functional Basics</option>
-                    <option value="Functional Flow">Functional Flow</option>
-                    <option value="Functional Energy">Functional Energy</option>
-                    <option value="Hormonell Balans">Hormonell Balans</option>
-                  </select>
-                </div>
-
-                {/* Customer Search */}
-                <div className="lg:col-span-2">
-                  <label className="admin-label">Sök kund/order</label>
+                <div className="space-y-2">
+                  <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Leverantör</span>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      value={filters.customer}
-                      onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
-                      placeholder="Namn, e-post eller ordernummer..."
-                      className="admin-input pl-10"
-                    />
+                    <select
+                      value={filters.provider}
+                      onChange={(e) => setFilters(prev => ({ ...prev, provider: e.target.value }))}
+                      className="w-full appearance-none bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white cursor-pointer transition-all"
+                    >
+                      <option value="all">Alla</option>
+                      <option value="stripe">Stripe</option>
+                      <option value="svea">Svea</option>
+                      <option value="manual">Manuell</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
 
-                {/* Sort Options */}
-                <div className="lg:col-span-2">
-                  <label className="admin-label">Sortera efter</label>
-                  <div className="flex gap-2">
+                {/* Status */}
+                <div className="space-y-2">
+                  <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Status</span>
+                  <div className="relative">
                     <select
-                      value={filters.sortBy}
-                      onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#014421] focus:border-transparent"
+                      value={filters.status}
+                      onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                      className="w-full appearance-none bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white cursor-pointer transition-all"
                     >
-                      <option value="created">Datum</option>
-                      <option value="amount">Belopp</option>
-                      <option value="customer">Kund</option>
-                      <option value="status">Status</option>
+                      <option value="all">Alla</option>
+                      <option value="succeeded">Lyckad</option>
+                      <option value="COMPLETED">Slutförd</option>
+                      <option value="PENDING">Väntar</option>
+                      <option value="failed">Misslyckad</option>
                     </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Course */}
+                <div className="space-y-2">
+                  <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Kurs</span>
+                  <div className="relative">
+                    <select
+                      value={filters.course}
+                      onChange={(e) => setFilters(prev => ({ ...prev, course: e.target.value }))}
+                      className="w-full appearance-none bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white cursor-pointer transition-all"
+                    >
+                      <option value="all">Alla kurser</option>
+                      <option value="Functional Basics">Basics</option>
+                      <option value="Functional Flow">Flow</option>
+                      <option value="Functional Energy">Energy</option>
+                      <option value="Hormonell Balans">Hormon</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Sort */}
+                <div className="space-y-2">
+                  <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Sortera</span>
+                  <div className="flex gap-1.5">
+                    <div className="relative flex-1">
+                      <select
+                        value={filters.sortBy}
+                        onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+                        className="w-full appearance-none bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white cursor-pointer transition-all"
+                      >
+                        <option value="created">Datum</option>
+                        <option value="amount">Belopp</option>
+                        <option value="customer">Kund</option>
+                        <option value="status">Status</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                    </div>
                     <button
                       onClick={() => setFilters(prev => ({ ...prev, sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc' }))}
-                      className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className={`p-2 rounded-lg transition-all ${
+                        filters.sortOrder === 'desc' 
+                          ? 'bg-emerald-50 text-emerald-600' 
+                          : 'bg-gray-50/80 text-gray-400 hover:text-gray-600'
+                      }`}
                     >
                       <ArrowUpDown className="w-4 h-4" />
                     </button>
@@ -853,13 +864,64 @@ export default function UnifiedSalesPage() {
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <p className="text-sm text-gray-600">
-                  Visar {filteredOrders.length} av {orders.length} ordrar
-                  {filters.provider !== 'all' && ` • ${getProviderText(filters.provider)}`}
-                  {filters.status !== 'all' && ` • ${getStatusText(filters.status)}`}
-                  {filters.course !== 'all' && ` • ${filters.course}`}
-                </p>
+              {/* Search Bar */}
+              <div className="mt-5 pt-5 border-t border-gray-100">
+                <div className="relative max-w-md">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+                  <input
+                    type="text"
+                    value={filters.customer}
+                    onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
+                    placeholder="Sök på namn, e-post eller ordernummer..."
+                    className="w-full bg-gray-50/50 border-0 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Active Filters Summary */}
+              <div className="mt-4 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <span className="font-medium text-gray-700">{filteredOrders.length}</span>
+                  <span>av</span>
+                  <span>{orders.length}</span>
+                  <span>ordrar</span>
+                </div>
+                
+                {/* Active filter badges */}
+                <div className="flex items-center gap-2">
+                  {filters.provider !== 'all' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-md">
+                      {getProviderText(filters.provider)}
+                      <button onClick={() => setFilters(prev => ({ ...prev, provider: 'all' }))} className="hover:text-blue-800">
+                        <XCircle className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.status !== 'all' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-600 text-xs rounded-md">
+                      {getStatusText(filters.status)}
+                      <button onClick={() => setFilters(prev => ({ ...prev, status: 'all' }))} className="hover:text-amber-800">
+                        <XCircle className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.course !== 'all' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-600 text-xs rounded-md">
+                      {filters.course}
+                      <button onClick={() => setFilters(prev => ({ ...prev, course: 'all' }))} className="hover:text-purple-800">
+                        <XCircle className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.customer && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-md">
+                      "{filters.customer}"
+                      <button onClick={() => setFilters(prev => ({ ...prev, customer: '' }))} className="hover:text-gray-800">
+                        <XCircle className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>
