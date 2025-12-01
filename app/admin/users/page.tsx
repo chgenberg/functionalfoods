@@ -184,13 +184,14 @@ export default function AdminUsersPage() {
                 <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden md:table-cell">Status</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden lg:table-cell">Roll</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden lg:table-cell">Registrerad</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden lg:table-cell">Senast inloggad</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">Åtgärder</th>
               </tr>
             </thead>
             <tbody>
               {displayedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-[var(--text-secondary)]">
+                  <td colSpan={6} className="px-4 py-12 text-center text-[var(--text-secondary)]">
                     {searchTerm ? 'Inga användare hittades' : 'Inga användare'}
                   </td>
                 </tr>
@@ -226,6 +227,23 @@ export default function AdminUsersPage() {
                       <span className="text-xs text-[var(--text-secondary)]">
                         {new Date(user.createdAt).toLocaleDateString('sv-SE')}
                       </span>
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      {user.lastLogin ? (
+                        <span className="text-xs text-green-600">
+                          {new Date(user.lastLogin).toLocaleDateString('sv-SE', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-orange-500">
+                          Aldrig inloggad
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex gap-2 justify-end">

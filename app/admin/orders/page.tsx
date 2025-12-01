@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { CreditCard, Package, User, Calendar, CheckCircle, XCircle, Clock, Filter, Search } from 'lucide-react';
+import { CreditCard, Package, User, Calendar, CheckCircle, XCircle, Clock, Filter, Search, RefreshCw, Download, AlertCircle } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -16,8 +16,10 @@ interface Order {
   customerEmail?: string;
   customerName?: string;
   user?: {
+    id: string;
     name: string;
     email: string;
+    lastLogin?: string | null;
   };
   items: Array<{
     name: string;
@@ -29,6 +31,10 @@ interface Order {
     paymentMethod: string;
     status: string;
   };
+  metadata?: {
+    confirmationEmailSent?: boolean;
+    sveaOrderId?: string;
+  };
 }
 
 export default function AdminOrdersPage() {
@@ -36,6 +42,9 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'COMPLETED' | 'PENDING' | 'FAILED'>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -97,9 +106,110 @@ export default function AdminOrdersPage() {
         order.customerName?.toLowerCase().includes(search) ||
         order.user?.email.toLowerCase().includes(search)
       );
+    })
+    .filter(order => {
+      if (!dateFrom && !dateTo) return true;
+      const orderDate = new Date(order.createdAt);
+      if (dateFrom) {
+        const from = new Date(dateFrom);
+        from.setHours(0, 0, 0, 0);
+        if (orderDate < from) return false;
+      }
+      if (dateTo) {
+        const to = new Date(dateTo);
+        to.setHours(23, 59, 59, 999);
+        if (orderDate > to) return false;
+      }
+      return true;
     });
 
-  const stats = {
+  // Calculate stats for filtered date range
+  const filteredStats = {
+    total: filteredOrders.length,
+    completed: filteredOrders.filter(o => o.status === 'COMPLETED').length,
+    pending: filteredOrders.filter(o => o.status === 'PENDING').length,
+    failed: filteredOrders.filter(o => o.status === 'FAILED' || o.status === 'CANCELLED').length,
+    revenue: filteredOrders
+      .filter(o => o.status === 'COMPLETED')
+      .reduce((sum, o) => sum + o.totalAmount, 0)
+  };
+
+  // Quick date presets
+  const setDatePreset = (preset: 'today' | 'week' | 'month' | 'year' | 'all') => {
+    const today = new Date();
+    if (preset === 'all') {
+      setDateFrom('');
+      setDateTo('');
+      return;
+    }
+    
+    setDateTo(today.toISOString().split('T')[0]);
+    
+    if (preset === 'today') {
+      setDateFrom(today.toISOString().split('T')[0]);
+    } else if (preset === 'week') {
+      const weekAgo = new Date(today);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      setDateFrom(weekAgo.toISOString().split('T')[0]);
+    } else if (preset === 'month') {
+      const monthAgo = new Date(today);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      setDateFrom(monthAgo.toISOString().split('T')[0]);
+    } else if (preset === 'year') {
+      const yearAgo = new Date(today);
+      yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      setDateFrom(yearAgo.toISOString().split('T')[0]);
+    }
+  };
+
+  // Manual sync function for pending Svea orders
+  const syncPendingOrders = async () => {
+    if (syncing) return;
+    setSyncing(true);
+    try {
+      const response = await fetch('/api/admin/orders/sync-svea', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Synkade ${result.synced || 0} ordrar`);
+        fetchOrders();
+      } else {
+        alert('Kunde inte synkronisera ordrar');
+      }
+    } catch (error) {
+      console.error('Sync failed:', error);
+      alert('Ett fel uppstod vid synkronisering');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  // Export orders to CSV
+  const exportToCSV = () => {
+    const headers = ['Ordernummer', 'Datum', 'Kund', 'E-post', 'Status', 'Belopp', 'Betalmetod', 'Produkter'];
+    const rows = filteredOrders.map(order => [
+      order.orderNumber,
+      new Date(order.createdAt).toLocaleString('sv-SE'),
+      order.customerName || order.user?.name || 'N/A',
+      order.customerEmail || order.user?.email || 'N/A',
+      order.status,
+      order.totalAmount,
+      getPaymentMethodLabel(order),
+      order.items.map(i => `${i.quantity}x ${i.name}`).join('; ')
+    ]);
+    
+    const csv = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ordrar-${dateFrom || 'all'}-${dateTo || 'all'}.csv`;
+    link.click();
+  };
+
+  // Use filtered stats when date filter is active
+  const stats = (dateFrom || dateTo) ? filteredStats : {
     total: orders.length,
     completed: orders.filter(o => o.status === 'COMPLETED').length,
     pending: orders.filter(o => o.status === 'PENDING').length,
@@ -151,22 +261,93 @@ export default function AdminOrdersPage() {
 
       {/* Filters */}
       <div className="admin-card">
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <div className="flex flex-col gap-4">
+          {/* Row 1: Search and Actions */}
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Sök efter ordernummer, email eller namn..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="admin-input pl-10"
+                />
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <button
+                onClick={syncPendingOrders}
+                disabled={syncing}
+                className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-all text-sm"
+              >
+                <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+                Synka Svea
+              </button>
+              <button
+                onClick={exportToCSV}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all text-sm"
+              >
+                <Download className="w-4 h-4" />
+                Exportera
+              </button>
+            </div>
+          </div>
+
+          {/* Row 2: Date filters */}
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-gray-400" />
+              <span className="text-sm text-gray-600">Period:</span>
+            </div>
+            
+            {/* Quick presets */}
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: 'today', label: 'Idag' },
+                { id: 'week', label: '7 dagar' },
+                { id: 'month', label: '30 dagar' },
+                { id: 'year', label: 'År' },
+                { id: 'all', label: 'Alla' }
+              ].map(preset => (
+                <button
+                  key={preset.id}
+                  onClick={() => setDatePreset(preset.id as any)}
+                  className={`px-3 py-1.5 rounded text-xs transition-all ${
+                    (!dateFrom && !dateTo && preset.id === 'all') ||
+                    (dateFrom && dateTo && preset.id !== 'all')
+                      ? 'bg-[var(--primary-green)]/10 text-[var(--primary-green)] border border-[var(--primary-green)]'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Custom date range */}
+            <div className="flex items-center gap-2">
               <input
-                type="text"
-                placeholder="Sök efter ordernummer, email eller namn..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="admin-input pl-10"
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary-green)]"
+              />
+              <span className="text-gray-400">→</span>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary-green)]"
               />
             </div>
           </div>
 
-          {/* Status filter */}
+          {/* Row 3: Status filter */}
           <div className="flex gap-2">
             {['all', 'COMPLETED', 'PENDING', 'FAILED'].map((status) => (
               <button
@@ -184,6 +365,21 @@ export default function AdminOrdersPage() {
           </div>
         </div>
       </div>
+
+      {/* Warning for pending orders */}
+      {stats.pending > 0 && (
+        <div className="flex items-center gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-yellow-800">
+              {stats.pending} ordrar väntar på bekräftelse
+            </p>
+            <p className="text-xs text-yellow-700 mt-0.5">
+              Dessa kan vara betalda i Svea men ej synkade. Klicka på &quot;Synka Svea&quot; för att uppdatera.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Orders Table */}
       <div className="admin-card overflow-hidden">
@@ -240,6 +436,18 @@ export default function AdminOrdersPage() {
                           <div className="text-xs text-[var(--text-secondary)]">
                             {order.customerEmail || order.user?.email || 'N/A'}
                           </div>
+                          {order.user?.lastLogin && (
+                            <div className="text-xs text-green-600 flex items-center gap-1 mt-0.5">
+                              <CheckCircle className="w-3 h-3" />
+                              Inloggad {new Date(order.user.lastLogin).toLocaleDateString('sv-SE')}
+                            </div>
+                          )}
+                          {order.user && !order.user.lastLogin && (
+                            <div className="text-xs text-orange-500 flex items-center gap-1 mt-0.5">
+                              <Clock className="w-3 h-3" />
+                              Aldrig inloggad
+                            </div>
+                          )}
                         </div>
                       </div>
                     </td>
@@ -272,9 +480,26 @@ export default function AdminOrdersPage() {
 
                     {/* Status */}
                     <td className="p-4">
-                      <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                        {getStatusIcon(order.status)}
-                        {order.status}
+                      <div className="flex flex-col gap-1">
+                        <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                          {getStatusIcon(order.status)}
+                          {order.status}
+                        </div>
+                        {order.status === 'COMPLETED' && (
+                          <div className={`text-xs flex items-center gap-1 ${order.metadata?.confirmationEmailSent ? 'text-green-600' : 'text-red-500'}`}>
+                            {order.metadata?.confirmationEmailSent ? (
+                              <>
+                                <CheckCircle className="w-3 h-3" />
+                                Mejl skickat
+                              </>
+                            ) : (
+                              <>
+                                <XCircle className="w-3 h-3" />
+                                Mejl ej skickat
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </td>
 

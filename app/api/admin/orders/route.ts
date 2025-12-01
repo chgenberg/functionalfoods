@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
           select: {
             id: true,
             name: true,
-            email: true
+            email: true,
+            lastLogin: true
           }
         },
         items: true,
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: 'desc'
       },
-      take: 50
+      take: 200 // Increased to allow proper date filtering
     });
 
     const formattedOrders = orders.map((order) => {
