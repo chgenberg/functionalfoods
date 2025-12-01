@@ -119,14 +119,26 @@ export default function GoogleAnalytics() {
 
   return (
     <>
-      {/* Default to denied; consent will be updated by banner */}
-      {/* Consent Mode v2 with behavioral modeling for GDPR compliance + data recovery */}
-      <Script id="ga4-consent" strategy="beforeInteractive">
+      {/* 
+        Consent Mode v2 Implementation following Google's documentation:
+        https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced
+        
+        Order is critical:
+        1. Set default consent state BEFORE gtag.js loads
+        2. Load gtag.js
+        3. Configure GA4
+        4. Update consent when user interacts with banner
+      */}
+      
+      {/* Step 1: Set default consent state - MUST come before gtag.js */}
+      <Script id="ga4-consent-default" strategy="beforeInteractive">
         {`
+          // Initialize dataLayer
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           
-          // Consent Mode v2 - defaults to denied but enables modeling
+          // Consent Mode v2 - Set default state to denied
+          // This MUST happen before gtag.js loads
           gtag('consent', 'default', {
             'analytics_storage': 'denied',
             'ad_storage': 'denied',
@@ -135,31 +147,36 @@ export default function GoogleAnalytics() {
             'wait_for_update': 500
           });
           
-          // Enable URL passthrough to preserve gclid/utm params even when denied
+          // URL passthrough: Preserve gclid/utm even when cookies denied
           gtag('set', 'url_passthrough', true);
           
-          // Enable ads data redaction for privacy when ad_storage is denied
+          // Redact ad click identifiers when ad_storage is denied
           gtag('set', 'ads_data_redaction', true);
         `}
       </Script>
+      
+      {/* Step 2: Load Google tag (gtag.js) */}
       <Script
+        id="ga4-gtag"
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
         strategy="afterInteractive"
         onLoad={() => {
           try {
+            // Update consent based on stored preferences
             updateConsentFromStorage();
             ensureInitialPageViewOnce();
           } catch {}
         }}
       />
-      <Script id="ga4-init" strategy="afterInteractive">
+      
+      {/* Step 3: Configure GA4 */}
+      <Script id="ga4-config" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', '${GA_ID}', {
             send_page_view: false,
-            // Enhanced measurement for better data collection
             allow_google_signals: true,
             allow_ad_personalization_signals: false
           });
