@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
-import { getSveaCheckout } from '@/app/lib/svea-checkout';
+import { getSveaCheckout } from '@/app/lib/svea-checkout-service';
 import bcrypt from 'bcryptjs';
 import { emailService } from '@/app/lib/email';
 
