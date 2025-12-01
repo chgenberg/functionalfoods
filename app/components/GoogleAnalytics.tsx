@@ -120,18 +120,26 @@ export default function GoogleAnalytics() {
   return (
     <>
       {/* Default to denied; consent will be updated by banner */}
-      <Script id="ga4-consent" strategy="afterInteractive">
+      {/* Consent Mode v2 with behavioral modeling for GDPR compliance + data recovery */}
+      <Script id="ga4-consent" strategy="beforeInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
+          
+          // Consent Mode v2 - defaults to denied but enables modeling
           gtag('consent', 'default', {
             'analytics_storage': 'denied',
             'ad_storage': 'denied',
             'ad_user_data': 'denied',
-            'ad_personalization': 'denied'
+            'ad_personalization': 'denied',
+            'wait_for_update': 500
           });
-          // URL passthrough to preserve gclid even when ad_storage is denied
+          
+          // Enable URL passthrough to preserve gclid/utm params even when denied
           gtag('set', 'url_passthrough', true);
+          
+          // Enable ads data redaction for privacy when ad_storage is denied
+          gtag('set', 'ads_data_redaction', true);
         `}
       </Script>
       <Script
@@ -150,7 +158,10 @@ export default function GoogleAnalytics() {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', '${GA_ID}', {
-            send_page_view: false
+            send_page_view: false,
+            // Enhanced measurement for better data collection
+            allow_google_signals: true,
+            allow_ad_personalization_signals: false
           });
         `}
       </Script>
