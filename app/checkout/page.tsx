@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 import { GiSparkles } from 'react-icons/gi';
 import { useT } from '../lib/i18n/LanguageProvider';
-import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X, Smartphone, ShoppingCart, ArrowRight, Book } from 'lucide-react';
+import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X, Smartphone, ShoppingCart, ArrowRight, Book, Gift } from 'lucide-react';
 import { trackInitiateCheckout } from '../lib/analytics';
 import { readAttribution } from '../lib/attribution';
 
@@ -412,6 +412,30 @@ export default function Checkout() {
                     </div>
                   </div>
                 ))}
+
+                {/* Free Ebook Bonus */}
+                {items.some(item => item.type === 'course') && (
+                  <div className="flex gap-4 p-3 bg-gradient-to-r from-red-50 to-green-50 rounded-xl border border-red-100">
+                    <div className="w-14 h-16 rounded-lg overflow-hidden flex-shrink-0 shadow-md">
+                      <Image 
+                        src="/julbok.png" 
+                        alt="Gratis E-bok" 
+                        width={56} 
+                        height={64} 
+                        className="w-full h-full object-cover" 
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <Gift className="w-4 h-4 text-red-500" />
+                        <span className="text-xs font-bold text-red-600 uppercase tracking-wide">Julbonus ingår</span>
+                      </div>
+                      <h3 className="font-medium text-gray-900 text-sm">Gratis E-bok</h3>
+                      <p className="text-xs text-gray-500">Recept och tips för din hälsoresa</p>
+                      <p className="font-medium text-green-600 text-sm mt-0.5">0 kr</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Coupon */}
                 <div className="pt-4 border-t border-gray-100">
