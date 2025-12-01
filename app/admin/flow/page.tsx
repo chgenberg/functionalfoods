@@ -566,11 +566,7 @@ export default function FlowPage() {
       setIsSaving(true);
       try {
         const method = doc.id ? 'PUT' : 'POST';
-        const url = doc.id 
-          ? `/api/admin/knowledge/documents/${doc.id}`
-          : '/api/admin/knowledge/documents';
-
-        const res = await fetch(url, {
+        const res = await fetch('/api/admin/knowledge', {
           method,
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -598,7 +594,7 @@ export default function FlowPage() {
       if (!confirm('Är du säker på att du vill ta bort detta dokument?')) return;
       
       try {
-        const res = await fetch(`/api/admin/knowledge/documents/${id}`, {
+        const res = await fetch(`/api/admin/knowledge?id=${id}`, {
           method: 'DELETE',
           credentials: 'include'
         });
