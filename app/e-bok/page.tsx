@@ -251,7 +251,7 @@ export default function EbookPage() {
                   transition={{ delay: 0.2 }}
                   className="text-4xl md:text-5xl font-bold text-white mb-4"
                 >
-                  🎄 Din E-bok är redo!
+                  Din E-bok är redo!
                 </motion.h1>
                 
                 <motion.p
@@ -298,7 +298,7 @@ export default function EbookPage() {
                   transition={{ delay: 0.6 }}
                   className="mt-12 p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 max-w-lg mx-auto"
                 >
-                  <h3 className="text-white font-semibold mb-2">💝 Tack för ditt köp!</h3>
+                  <h3 className="text-white font-semibold mb-2">Tack för ditt köp!</h3>
                   <p className="text-white/70 text-sm">
                     Vi hoppas att du kommer ha stor nytta av denna e-bok på din resa mot bättre hälsa med functional foods.
                   </p>
@@ -381,7 +381,7 @@ export default function EbookPage() {
                   </Link>
                   
                   <p className="mt-4 text-white/60 text-sm">
-                    🎁 Köp valfri kurs och få e-boken på köpet!
+                    Köp valfri kurs och få e-boken på köpet!
                   </p>
                 </motion.div>
               </div>
