@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { ArrowLeft, Book, Check, Clock, CreditCard, Lightbulb, Minus, Plus, Shield, Sparkles, Tag, Trash2, X, Zap } from "lucide-react";;
+import { ArrowLeft, Book, Check, Clock, CreditCard, Gift, Lightbulb, Minus, Plus, Shield, Sparkles, Tag, Trash2, X, Zap } from "lucide-react";
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -188,6 +188,58 @@ export default function CartPage() {
                 </div>
               </div>
             ))}
+
+            {/* Free Ebook Bonus - Show when cart has a course */}
+            {items.some(item => item.type === 'course') && (
+              <div className="bg-gradient-to-r from-red-50 via-white to-green-50 rounded-2xl shadow-sm p-6 border-2 border-dashed border-red-200 relative overflow-hidden">
+                {/* Decorative corner */}
+                <div className="absolute -top-3 -right-3 w-20 h-20 bg-red-100 rounded-full opacity-50" />
+                <div className="absolute -bottom-3 -left-3 w-16 h-16 bg-green-100 rounded-full opacity-50" />
+                
+                <div className="flex items-start gap-4 relative">
+                  {/* Ebook Image */}
+                  <div className="flex-shrink-0 w-24 h-32 rounded-xl overflow-hidden shadow-lg border-2 border-white">
+                    <Image
+                      src="/julbok.png"
+                      alt="Gratis E-bok"
+                      width={96}
+                      height={128}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Bonus Details */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-red-500 text-white rounded-full text-xs font-bold uppercase tracking-wide">
+                        <Gift className="w-3.5 h-3.5" />
+                        Julbonus ingår
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-semibold text-[#014421] mb-1">
+                      Gratis E-bok
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">
+                      Exklusiva recept och tips för din hälsoresa - ett värde av 199 kr
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <Check className="w-4 h-4 text-green-500" />
+                        <span>Skickas till din e-post efter köp</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-green-600">
+                          0 kr
+                        </div>
+                        <div className="text-sm text-gray-400 line-through">
+                          199 kr
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Order Summary */}
