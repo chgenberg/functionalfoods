@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { Download, FileSpreadsheet, TrendingUp, Users, ShoppingBag, BookOpen } from 'lucide-react';
 
 interface DashboardStats {
   totalUsers: number;
@@ -216,6 +217,64 @@ export default function AdminDashboard() {
           <Link href="/admin/meal-plans" className="p-4 bg-white border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors">
             <p className="text-sm text-[var(--text-primary)]">Kostscheman</p>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">Hantera veckomenyer</p>
+          </Link>
+        </div>
+      </div>
+
+      {/* Export & Rapporter */}
+      <div className="bg-gradient-to-r from-[var(--primary-beige)] to-white border border-[var(--border-light)] rounded-lg p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <FileSpreadsheet className="w-5 h-5 text-[var(--primary-green)]" />
+          <h2 className="text-sm font-medium text-[var(--text-primary)]">Exportera data</h2>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Link 
+            href="/admin/orders" 
+            className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-colors group"
+          >
+            <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+              <ShoppingBag className="w-4 h-4 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-[var(--text-primary)]">Ordrar</p>
+              <p className="text-[10px] text-[var(--text-secondary)]">CSV/Excel</p>
+            </div>
+          </Link>
+          <Link 
+            href="/admin/users" 
+            className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-colors group"
+          >
+            <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center group-hover:bg-green-100 transition-colors">
+              <Users className="w-4 h-4 text-green-600" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-[var(--text-primary)]">Användare</p>
+              <p className="text-[10px] text-[var(--text-secondary)]">CSV/Excel</p>
+            </div>
+          </Link>
+          <Link 
+            href="/admin/sales" 
+            className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-colors group"
+          >
+            <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
+              <TrendingUp className="w-4 h-4 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-[var(--text-primary)]">Försäljning</p>
+              <p className="text-[10px] text-[var(--text-secondary)]">Excel</p>
+            </div>
+          </Link>
+          <Link 
+            href="/admin/coupons" 
+            className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-colors group"
+          >
+            <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover:bg-orange-100 transition-colors">
+              <BookOpen className="w-4 h-4 text-orange-600" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-[var(--text-primary)]">Rabattkoder</p>
+              <p className="text-[10px] text-[var(--text-secondary)]">CSV</p>
+            </div>
           </Link>
         </div>
       </div>

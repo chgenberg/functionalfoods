@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import AddUserModal from './AddUserModal';
+import { Download, RefreshCw, Search, Filter } from 'lucide-react';
 
 interface User {
   id: string;
@@ -92,6 +93,25 @@ export default function AdminUsersPage() {
   const startIndex = (currentPage - 1) * usersPerPage;
   const displayedUsers = filteredUsers.slice(startIndex, startIndex + usersPerPage);
 
+  const exportToCSV = () => {
+    const headers = ['Namn', 'E-post', 'Roll', 'Status', 'Registrerad', 'Senast inloggad'];
+    const rows = filteredUsers.map(user => [
+      user.name || 'Ingen namn',
+      user.email,
+      user.role === 'ADMIN' ? 'Administratör' : 'Användare',
+      user.isActive ? 'Aktiv' : 'Inaktiv',
+      new Date(user.createdAt).toLocaleDateString('sv-SE'),
+      user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('sv-SE') : 'Aldrig inloggad'
+    ]);
+    
+    const csv = [headers.join(';'), ...rows.map(row => row.map(cell => `"${cell}"`).join(';'))].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Swedish Excel
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `anvandare-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -112,14 +132,24 @@ export default function AdminUsersPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-xl font-medium text-[var(--text-primary)]">Användare</h1>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera alla användare</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera alla användare ({users.length} totalt)</p>
           </div>
-          <button 
-            onClick={() => setShowModal(true)} 
-            className="px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-colors text-sm"
-          >
-            Lägg till användare
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={exportToCSV}
+              disabled={users.length === 0}
+              className="flex items-center gap-2 px-4 py-2 text-sm border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Download className="w-4 h-4" />
+              Exportera
+            </button>
+            <button 
+              onClick={() => setShowModal(true)} 
+              className="px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-colors text-sm"
+            >
+              Lägg till användare
+            </button>
+          </div>
         </div>
 
         {/* Stats */}

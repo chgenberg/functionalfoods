@@ -19,12 +19,31 @@ export default function CourseStudentsPage({ params }: { params: { courseId: str
   const [loading, setLoading] = useState(true);
 
   const getCourseName = (courseId: string) => {
-    const names = {
+    const names: Record<string, string> = {
       'functional-basics': 'Functional Basics',
       'functional-flow': 'Functional Flow',
       'functional-energy': 'Functional Energy'
     };
-    return names[courseId as keyof typeof names] || 'Kurs';
+    return names[courseId] || 'Kurs';
+  };
+
+  const exportToCSV = () => {
+    const courseName = getCourseName(params.courseId);
+    const headers = ['Namn', 'E-post', 'Registrerad', 'Framsteg (%)', 'Senast aktiv'];
+    const rows = students.map(student => [
+      student.name,
+      student.email,
+      new Date(student.enrolledAt).toLocaleDateString('sv-SE'),
+      student.progress.toString(),
+      student.lastActive ? new Date(student.lastActive).toLocaleDateString('sv-SE') : 'Aldrig'
+    ]);
+    
+    const csv = [headers.join(';'), ...rows.map(row => row.map(cell => `"${cell}"`).join(';'))].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `deltagare-${courseName.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
   };
 
   useEffect(() => {
@@ -99,9 +118,13 @@ export default function CourseStudentsPage({ params }: { params: { courseId: str
           </p>
         </div>
         
-        <button className="admin-btn admin-btn-secondary">
+        <button 
+          onClick={exportToCSV}
+          disabled={students.length === 0}
+          className="flex items-center gap-2 px-4 py-2 text-sm border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <Download className="w-4 h-4" />
-          Exportera lista
+          Exportera
         </button>
       </div>
 

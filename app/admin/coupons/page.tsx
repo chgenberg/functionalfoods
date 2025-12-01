@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { Download, FileSpreadsheet } from 'lucide-react';
 
 interface Coupon {
   id: string;
@@ -127,6 +128,28 @@ export default function AdminCouponsPage() {
 
   const isExpired = (d: string | null | undefined) => d ? new Date(d) < new Date() : false;
 
+  const exportToCSV = () => {
+    const headers = ['Kod', 'Typ', 'Värde', 'Status', 'Startdatum', 'Slutdatum', 'Användningar', 'Max användningar', 'Gäller för'];
+    const rows = coupons.map(coupon => [
+      coupon.code,
+      coupon.type === 'percent' ? 'Procent' : 'Fast belopp',
+      coupon.type === 'percent' ? `${coupon.amount}%` : `${coupon.amount} kr`,
+      coupon.active && !isExpired(coupon.expiresAt) ? 'Aktiv' : isExpired(coupon.expiresAt) ? 'Utgången' : 'Inaktiv',
+      formatDate(coupon.startsAt),
+      formatDate(coupon.expiresAt),
+      coupon.timesUsed.toString(),
+      coupon.usageLimit?.toString() || 'Obegränsat',
+      renderAppliesTo(coupon)
+    ]);
+    
+    const csv = [headers.join(';'), ...rows.map(row => row.map(cell => `"${cell}"`).join(';'))].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `rabattkoder-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
+
   const renderAppliesTo = (c: Coupon) => {
     const ids = Array.isArray(c.applicableCourseIds) ? c.applicableCourseIds : [];
     if (ids.length === 0) return 'Alla kurser';
@@ -152,12 +175,22 @@ export default function AdminCouponsPage() {
           <h1 className="text-xl font-medium text-[var(--text-primary)]">Rabattkoder</h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">Hantera kampanjer</p>
         </div>
-        <button 
-          onClick={openNew}
-          className="px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-colors text-sm"
-        >
-          Ny rabattkod
-        </button>
+        <div className="flex gap-2">
+          <button 
+            onClick={exportToCSV}
+            disabled={coupons.length === 0}
+            className="flex items-center gap-2 px-4 py-2 text-sm border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Download className="w-4 h-4" />
+            Exportera
+          </button>
+          <button 
+            onClick={openNew}
+            className="px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] transition-colors text-sm"
+          >
+            Ny rabattkod
+          </button>
+        </div>
       </div>
 
       {error && (
