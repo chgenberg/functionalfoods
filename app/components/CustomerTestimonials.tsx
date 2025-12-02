@@ -11,6 +11,7 @@ interface Testimonial {
   quote: string;
   image: string;
   imageRotation?: number; // Degrees to rotate the image
+  imagePosition?: string; // CSS object-position value (e.g., "center top")
 }
 
 const testimonials: Testimonial[] = [
@@ -38,6 +39,7 @@ const testimonials: Testimonial[] = [
     name: "Zandra",
     quote: "Min mage har slutat krångla, jag har slutat snarka på nätterna och är väldigt mätt!",
     image: "/Kundcitat/Zandra/Zandra-Ostlin-bild-optimized.webp",
+    imagePosition: "center 30%", // Show face better
   },
 ];
 
@@ -112,7 +114,10 @@ export default function CustomerTestimonials() {
                         alt={testimonial.name}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        style={testimonial.imageRotation ? { transform: `rotate(${testimonial.imageRotation}deg) scale(1.2)` } : undefined}
+                        style={{
+                          ...(testimonial.imageRotation && { transform: `rotate(${testimonial.imageRotation}deg) scale(1.2)` }),
+                          ...(testimonial.imagePosition && { objectPosition: testimonial.imagePosition }),
+                        }}
                         sizes="96px"
                       />
                     </div>
@@ -166,7 +171,10 @@ export default function CustomerTestimonials() {
                         alt={testimonial.name}
                         fill
                         className="object-cover"
-                        style={testimonial.imageRotation ? { transform: `rotate(${testimonial.imageRotation}deg) scale(1.2)` } : undefined}
+                        style={{
+                          ...(testimonial.imageRotation && { transform: `rotate(${testimonial.imageRotation}deg) scale(1.2)` }),
+                          ...(testimonial.imagePosition && { objectPosition: testimonial.imagePosition }),
+                        }}
                         sizes="80px"
                       />
                     </div>
