@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
 
     for (const order of pendingOrders) {
       try {
-        // Check if order has Svea order ID in metadata
+        // Check if order has Svea order ID - can be in metadata OR checkoutOrderId field
         const metadata = order.metadata as any;
-        const sveaOrderId = metadata?.sveaOrderId;
+        const sveaOrderId = metadata?.sveaOrderId || order.checkoutOrderId;
 
         if (!sveaOrderId) {
           results.push({ orderId: order.id, status: 'skipped', error: 'No Svea order ID' });
@@ -133,13 +133,51 @@ export async function POST(request: NextRequest) {
             }
 
             // Create purchases for courses
+            const courseNameMap: Record<string, string> = {
+              'functional energy': 'Functional Energy',
+              'functional basics': 'Functional Basics',
+              'functional flow': 'Functional Flow',
+              'hormonell balans': 'Hormonell Balans'
+            };
+
             for (const item of order.items) {
-              if (item.type === 'course' && item.courseId && user) {
+              if (item.type === 'course' && user) {
+                let courseId = item.courseId;
+                
+                // If no courseId, try to match by name
+                if (!courseId) {
+                  const normalizedName = item.name.toLowerCase().trim();
+                  const mappedName = courseNameMap[normalizedName] || item.name;
+                  
+                  const course = await tx.courseProduct.findFirst({
+                    where: {
+                      OR: [
+                        { name: { equals: mappedName, mode: 'insensitive' } },
+                        { name: { equals: item.name, mode: 'insensitive' } },
+                        { name: { contains: normalizedName.split(' ').pop() || '', mode: 'insensitive' } }
+                      ]
+                    }
+                  });
+                  
+                  if (course) {
+                    courseId = course.id;
+                    // Update order item with courseId
+                    await tx.orderItem.update({
+                      where: { id: item.id },
+                      data: { courseId: course.id }
+                    });
+                    console.log(`✅ Matched course: "${item.name}" → "${course.name}"`);
+                  } else {
+                    console.error(`❌ Could not match course: "${item.name}"`);
+                    continue;
+                  }
+                }
+
                 const existingPurchase = await tx.purchase.findUnique({
                   where: {
                     userId_courseId: {
                       userId: user.id,
-                      courseId: item.courseId
+                      courseId: courseId
                     }
                   }
                 });
@@ -148,13 +186,14 @@ export async function POST(request: NextRequest) {
                   await tx.purchase.create({
                     data: {
                       userId: user.id,
-                      courseId: item.courseId,
+                      courseId: courseId,
                       amount: item.price * (item.quantity || 1),
                       status: 'completed',
                       orderId: order.id,
                       accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
                     }
                   });
+                  console.log(`✅ Created purchase for user ${user.email}, course ${courseId}`);
                 }
               }
             }
