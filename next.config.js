@@ -78,7 +78,7 @@ const nextConfig = {
       { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
       { 
         key: 'Content-Security-Policy', 
-        value: "default-src 'self'; img-src 'self' data: blob: https: http:; media-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net https://*.facebook.net https://js.stripe.com https://*.svea.com https:; style-src 'self' 'unsafe-inline' https:; connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.net https://*.facebook.com https://*.svea.com https: wss:; frame-ancestors 'none'; frame-src https://*.svea.com https:; form-action 'self' https://checkout.stripe.com https://*.svea.com" 
+        value: "default-src 'self'; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; media-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net https://*.facebook.net https://js.stripe.com https://*.svea.com https:; style-src 'self' 'unsafe-inline' https:; connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.net https://*.facebook.com https://*.svea.com https: wss:; frame-ancestors 'none'; frame-src https://*.svea.com https:; form-action 'self' https://checkout.stripe.com https://*.svea.com" 
       }
     ];
 
