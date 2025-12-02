@@ -201,7 +201,7 @@ export default function GoogleAnalytics() {
             try {
               var params = new URLSearchParams(window.location.search);
               var campaignConfig = {
-                send_page_view: false, // We send manually for better control
+                send_page_view: true, // Let GA4 automatically send page_view
                 allow_google_signals: true,
                 allow_ad_personalization_signals: false
               };
@@ -278,7 +278,7 @@ export default function GoogleAnalytics() {
             } catch(e) {
               console.error('GA4 config error:', e);
               gtag('config', '${GA_ID}', {
-                send_page_view: false,
+                send_page_view: true,
                 allow_google_signals: true,
                 allow_ad_personalization_signals: false
               });
