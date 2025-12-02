@@ -132,7 +132,10 @@ export default function GoogleAnalytics() {
   }, [pathname, searchParams, isAdmin]);
 
   if (isAdmin) return null;
-  if (!GA_ID) return null;
+  if (!GA_ID) {
+    console.warn('⚠️ GA4: NEXT_PUBLIC_GA_MEASUREMENT_ID is not set');
+    return null;
+  }
 
   return (
     <>
