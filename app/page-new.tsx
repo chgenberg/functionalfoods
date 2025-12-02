@@ -16,6 +16,7 @@ import NewsletterSignup from "./components/NewsletterSignup";
 import FeaturePopup from "./components/FeaturePopup";
 import RecipeCarousel from "./components/RecipeCarousel";
 import CustomerReviews from "./components/CustomerReviews";
+import CustomerTestimonials from "./components/CustomerTestimonials";
 import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 import { trackGenerateLead } from "./lib/analytics";
@@ -251,6 +252,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <CustomerTestimonials />
 
       <RecipeCarousel />
 
