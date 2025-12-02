@@ -23,6 +23,19 @@ export async function GET(
         isActive: true,
         createdAt: true,
         lastLogin: true,
+        purchases: {
+          select: {
+            id: true,
+            amount: true,
+            createdAt: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              }
+            }
+          }
+        }
       },
     });
 
@@ -30,7 +43,20 @@ export async function GET(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    // Transform purchases to courses array for frontend
+    const courses = user.purchases.map(p => ({
+      id: p.course.id,
+      name: p.course.name,
+      purchaseId: p.id,
+      purchaseDate: p.createdAt,
+      amount: p.amount
+    }));
+
+    return NextResponse.json({
+      ...user,
+      courses,
+      coursesCount: courses.length
+    });
   } catch (error) {
     console.error('Error fetching user:', error);
     return NextResponse.json(

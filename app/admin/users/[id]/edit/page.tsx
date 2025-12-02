@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, User, Mail, Shield, Check, Users, AlertTriangle, Merge } from 'lucide-react';
+import { ArrowLeft, Save, User, Mail, Shield, Check, Users, AlertTriangle, Merge, BookOpen, Plus, Trash2, GraduationCap } from 'lucide-react';
 
 interface User {
   id: string;
@@ -20,6 +20,13 @@ interface Course {
   name: string;
   purchaseDate: string;
   amount: number;
+  purchaseId?: string;
+}
+
+interface AvailableCourse {
+  id: string;
+  name: string;
+  price: number;
 }
 
 interface DuplicateUser {
@@ -47,10 +54,35 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     isActive: true,
     newPassword: ''
   });
+  
+  // Course management state
+  const [availableCourses, setAvailableCourses] = useState<AvailableCourse[]>([]);
+  const [selectedCourseToAdd, setSelectedCourseToAdd] = useState<string>('');
+  const [addingCourse, setAddingCourse] = useState(false);
+  const [removingCourse, setRemovingCourse] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUser();
+    fetchAvailableCourses();
   }, [params.id]);
+  
+  const fetchAvailableCourses = async () => {
+    try {
+      const response = await fetch('/api/admin/functional-courses');
+      if (response.ok) {
+        const data = await response.json();
+        // Map course products to our format
+        const courses = (data.courses || []).map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          price: c.price || c.salePrice || c.basePrice || 0
+        }));
+        setAvailableCourses(courses);
+      }
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
 
   const fetchUser = async () => {
     try {
@@ -131,6 +163,62 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
       alert('Ett fel uppstod vid sammanslagning av kurser');
     } finally {
       setMerging(false);
+    }
+  };
+
+  const handleAddCourse = async () => {
+    if (!selectedCourseToAdd || !user) return;
+    
+    setAddingCourse(true);
+    try {
+      const response = await fetch('/api/admin/users/add-course', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          courseId: selectedCourseToAdd
+        })
+      });
+      
+      if (response.ok) {
+        await fetchUser(); // Refresh user data
+        setSelectedCourseToAdd('');
+        alert('Kurstillgång tillagd!');
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Kunde inte lägga till kurs');
+      }
+    } catch (error) {
+      console.error('Error adding course:', error);
+      alert('Ett fel uppstod');
+    } finally {
+      setAddingCourse(false);
+    }
+  };
+  
+  const handleRemoveCourse = async (purchaseId: string, courseName: string) => {
+    if (!confirm(`Är du säker på att du vill ta bort tillgång till "${courseName}"?`)) {
+      return;
+    }
+    
+    setRemovingCourse(purchaseId);
+    try {
+      const response = await fetch(`/api/admin/users/remove-course?purchaseId=${purchaseId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        await fetchUser(); // Refresh user data
+        alert('Kurstillgång borttagen');
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Kunde inte ta bort kurs');
+      }
+    } catch (error) {
+      console.error('Error removing course:', error);
+      alert('Ett fel uppstod');
+    } finally {
+      setRemovingCourse(null);
     }
   };
 
@@ -309,6 +397,85 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                 <span>{new Date(user.lastLogin).toLocaleDateString('sv-SE')}</span>
               </div>
             )}
+          </div>
+
+          {/* Course Access Section */}
+          <div className="border-t pt-6">
+            <h3 className="text-lg font-medium text-[var(--text-primary)] flex items-center gap-2 mb-4">
+              <GraduationCap className="w-5 h-5" />
+              Kurstillgångar
+            </h3>
+            
+            {/* Current courses */}
+            <div className="space-y-3 mb-4">
+              {user.courses && user.courses.length > 0 ? (
+                user.courses.map((course) => (
+                  <div key={course.id} className="flex items-center justify-between bg-white border border-[var(--border-light)] rounded-lg p-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-[var(--primary-beige)] rounded-lg flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-[var(--primary-green)]" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-[var(--text-primary)]">{course.name}</div>
+                        <div className="text-sm text-[var(--text-secondary)]">
+                          Köpt: {new Date(course.purchaseDate).toLocaleDateString('sv-SE')}
+                          {course.amount > 0 && ` • ${course.amount} kr`}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCourse(course.purchaseId || course.id, course.name)}
+                      disabled={removingCourse === (course.purchaseId || course.id)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                      title="Ta bort kurstillgång"
+                    >
+                      {removingCourse === (course.purchaseId || course.id) ? (
+                        <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-4 text-[var(--text-secondary)] bg-[var(--primary-beige)] rounded-lg">
+                  Inga kurser tilldelade
+                </div>
+              )}
+            </div>
+            
+            {/* Add course */}
+            <div className="flex gap-2">
+              <select
+                value={selectedCourseToAdd}
+                onChange={(e) => setSelectedCourseToAdd(e.target.value)}
+                className="admin-select flex-1"
+              >
+                <option value="">Välj kurs att lägga till...</option>
+                {availableCourses
+                  .filter(course => !user.courses?.some(uc => uc.id === course.id || uc.name === course.name))
+                  .map(course => (
+                    <option key={course.id} value={course.id}>
+                      {course.name} ({course.price} kr)
+                    </option>
+                  ))
+                }
+              </select>
+              <button
+                type="button"
+                onClick={handleAddCourse}
+                disabled={!selectedCourseToAdd || addingCourse}
+                className="admin-btn admin-btn-primary"
+              >
+                {addingCourse ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Plus className="w-4 h-4" />
+                )}
+                Lägg till
+              </button>
+            </div>
           </div>
 
           {/* Course Merge Section */}
