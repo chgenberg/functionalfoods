@@ -63,20 +63,30 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     fetchUser();
-    fetchAvailableCourses();
   }, [params.id]);
+  
+  // Fetch available courses when user is loaded
+  useEffect(() => {
+    if (user) {
+      fetchAvailableCourses();
+    }
+  }, [user?.courses]);
   
   const fetchAvailableCourses = async () => {
     try {
-      const response = await fetch('/api/admin/functional-courses');
+      // Use course-products API which returns actual database IDs
+      const response = await fetch('/api/admin/course-products');
       if (response.ok) {
         const data = await response.json();
-        // Map course products to our format
-        const courses = (data.courses || []).map((c: any) => ({
-          id: c.id,
-          name: c.name,
-          price: c.price || c.salePrice || c.basePrice || 0
-        }));
+        // Filter to only show courses the user doesn't already have
+        const userCourseIds = user?.courses?.map(c => c.id) || [];
+        const courses = (data || [])
+          .filter((c: any) => !userCourseIds.includes(c.id))
+          .map((c: any) => ({
+            id: c.id,
+            name: c.name,
+            price: c.price || c.salePrice || c.basePrice || 0
+          }));
         setAvailableCourses(courses);
       }
     } catch (error) {
