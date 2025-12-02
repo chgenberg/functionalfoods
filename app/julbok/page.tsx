@@ -207,7 +207,7 @@ export default function JulbokPage() {
               </motion.button>
 
               <p className="text-gray-500 text-sm">
-                ✨ E-boken skickas direkt till din e-post efter köp
+                E-boken skickas direkt till din e-post efter köp
               </p>
             </div>
           </motion.div>
@@ -263,7 +263,7 @@ export default function JulbokPage() {
         >
           <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#93C560] to-[#014421] flex items-center justify-center flex-shrink-0">
-              <span className="text-3xl">👩‍🍳</span>
+              <ChefHat className="w-10 h-10 text-white" />
             </div>
             <div>
               <h3 className="text-xl font-semibold text-white mb-2">Om Ulrika Davidsson</h3>
