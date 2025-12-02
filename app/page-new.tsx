@@ -197,7 +197,7 @@ export default function Home() {
       {/* Course Boxes Section */}
       <section className="py-8 md:py-12 px-4 bg-[#F9F7F2]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-center text-lg md:text-xl font-light text-gray-600 mb-6 md:mb-8 tracking-wide">
+          <h2 className="text-center text-2xl md:text-3xl font-semibold text-[#014421] mb-6 md:mb-8">
             Våra kurser & boken
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
