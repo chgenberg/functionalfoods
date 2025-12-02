@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+// GA4 Measurement ID - fallback to hardcoded value if env var not available at build time
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-KL3JX1JPS4';
 
 function readConsent(): { analytics: boolean; marketing: boolean } {
   try {
@@ -132,10 +133,7 @@ export default function GoogleAnalytics() {
   }, [pathname, searchParams, isAdmin]);
 
   if (isAdmin) return null;
-  if (!GA_ID) {
-    console.warn('⚠️ GA4: NEXT_PUBLIC_GA_MEASUREMENT_ID is not set');
-    return null;
-  }
+  if (!GA_ID) return null;
 
   return (
     <>
