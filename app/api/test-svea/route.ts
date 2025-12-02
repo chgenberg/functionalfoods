@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
         termsUri: 'https://functionalfoods.se/anvandarvillkor',
         checkoutUri: 'https://functionalfoods.se/checkout',
         confirmationUri: 'https://functionalfoods.se/checkout/success',
-        pushUri: 'https://functionalfoods.se/api/webhooks/svea'
+        pushUri: 'https://www.functionalfoods.se/api/webhooks/svea-v2'
       },
       cart: {
         items: [{

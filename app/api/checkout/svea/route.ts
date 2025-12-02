@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
         termsUri: `${origin}/anvandarvillkor`,
         checkoutUri: `${origin}/checkout`,
         confirmationUri: `${origin}/checkout/success/svea?checkoutOrderId={checkout.order.id}&orderId=${orderId}`,
-        pushUri: `${origin}/api/webhooks/svea`
+        pushUri: `${origin}/api/webhooks/svea-v2`  // Updated to v2 webhook that handles emails correctly
       },
       cart: { items: sveaItems },
       presetValues: customer?.email ? [{
