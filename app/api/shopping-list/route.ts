@@ -113,7 +113,8 @@ export async function GET(request: NextRequest) {
         name: name || ingredientStr,
         amount: amount,
         unit: unit,
-        category: categorizeIngredient(name || ingredientStr),
+        // Use saved category from admin, or fall back to auto-categorization
+        category: item.category || categorizeIngredient(name || ingredientStr),
         checked: false
       };
     });

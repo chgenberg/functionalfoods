@@ -338,13 +338,14 @@ export default function BasicPage() {
     const saveShoppingList = async () => {
       setIsSaving(true);
       try {
-        // Transform items to API format: { amount, unit, name }
+        // Transform items to API format: { amount, unit, name, category }
         const apiItems = shoppingList.items.map((item: any) => {
           const parts = (item.quantity || '').split(' ');
           return {
             amount: parts[0] || '1',
             unit: parts[1] || 'st',
-            name: item.name || ''
+            name: item.name || '',
+            category: item.category || 'Övrigt'  // Include category!
           };
         });
 

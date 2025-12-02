@@ -458,6 +458,7 @@ model ShoppingListItem {
   id         String             @id @default(uuid())
   listId     String
   ingredient String
+  category   String?            // Category override from admin (e.g., "Skafferi", "Mejeri")
   isChecked  Boolean            @default(false)
   list       WeeklyShoppingList @relation(fields: [listId], references: [id], onDelete: Cascade)
 

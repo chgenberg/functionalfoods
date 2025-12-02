@@ -121,7 +121,8 @@ export async function GET(
         name,
         amount,
         unit,
-        category: categorizeIngredient(item.ingredient)
+        // Use saved category if exists, otherwise calculate from ingredient name
+        category: item.category || categorizeIngredient(item.ingredient)
       };
     });
     
@@ -193,9 +194,10 @@ export async function POST(
       where: { listId: list.id }
     });
 
-    // Transform admin format to DB format
+    // Transform admin format to DB format (including category!)
     const dbItems = items.map(item => ({
       ingredient: `${item.amount} ${item.unit} ${item.name}`.trim(),
+      category: item.category || null,  // Save category override from admin
       listId: list.id
     }));
 
