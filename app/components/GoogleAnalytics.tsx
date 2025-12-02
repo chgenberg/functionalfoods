@@ -169,17 +169,56 @@ export default function GoogleAnalytics() {
         }}
       />
       
-      {/* Step 3: Configure GA4 */}
+      {/* Step 3: Configure GA4 with campaign data from URL */}
       <Script id="ga4-config" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${GA_ID}', {
-            send_page_view: false,
-            allow_google_signals: true,
-            allow_ad_personalization_signals: false
-          });
+          
+          // Extract campaign parameters from URL for proper attribution
+          (function() {
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var campaignConfig = {
+                send_page_view: false,
+                allow_google_signals: true,
+                allow_ad_personalization_signals: false
+              };
+              
+              // Add campaign parameters if present
+              if (params.get('utm_source')) campaignConfig.campaign_source = params.get('utm_source');
+              if (params.get('utm_medium')) campaignConfig.campaign_medium = params.get('utm_medium');
+              if (params.get('utm_campaign')) campaignConfig.campaign_name = params.get('utm_campaign');
+              if (params.get('utm_term')) campaignConfig.campaign_term = params.get('utm_term');
+              if (params.get('utm_content')) campaignConfig.campaign_content = params.get('utm_content');
+              
+              // Pass gclid to GA4 for Google Ads attribution
+              if (params.get('gclid')) {
+                campaignConfig.campaign_source = campaignConfig.campaign_source || 'google';
+                campaignConfig.campaign_medium = campaignConfig.campaign_medium || 'cpc';
+              }
+              
+              // Pass fbclid for Meta attribution (even though GA4 won't use it, good for debugging)
+              if (params.get('fbclid')) {
+                campaignConfig.campaign_source = campaignConfig.campaign_source || 'facebook';
+                campaignConfig.campaign_medium = campaignConfig.campaign_medium || 'cpc';
+              }
+              
+              gtag('config', '${GA_ID}', campaignConfig);
+              
+              // Log for debugging
+              if (campaignConfig.campaign_source) {
+                console.log('📊 GA4 Campaign:', campaignConfig.campaign_source, '/', campaignConfig.campaign_medium);
+              }
+            } catch(e) {
+              gtag('config', '${GA_ID}', {
+                send_page_view: false,
+                allow_google_signals: true,
+                allow_ad_personalization_signals: false
+              });
+            }
+          })();
         `}
       </Script>
     </>

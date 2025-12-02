@@ -12,7 +12,7 @@ import { ToastProvider } from './context/ToastContext';
 import { generateMetadata as generateSEOMetadata } from './lib/seo';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import MetaPixel from './components/MetaPixel';
-import { getAttributionFromUrl, saveAttribution } from './lib/attribution';
+import AttributionCapture from './components/AttributionCapture';
 
 // Force dynamic rendering across the app to avoid prerender CSR bailouts when using useSearchParams
 export const dynamic = 'force-dynamic';
@@ -135,6 +135,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   }}
                 />
                 <GoogleAnalytics />
+                <MetaPixel />
+                <AttributionCapture />
                 <AutoTranslate />
                 <div className="flex flex-col min-h-screen">
                   <header role="banner" aria-label="Huvud">
