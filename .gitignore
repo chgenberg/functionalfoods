@@ -96,3 +96,6 @@ public/**/**.pdf
 *.mov
 *.avi
 *.mkv
+
+# Allow Julbok PDF
+!public/Julbok/*.pdf
