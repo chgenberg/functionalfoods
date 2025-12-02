@@ -39,12 +39,18 @@ function updateConsentFromStorage() {
       // Fire a single initial page_view regardless of consent (cookieless if denied)
       if (GA_ID && !(window as any).__ff_initial_pv_sent) {
         const pagePath = window.location.pathname + (window.location.search ? `?${window.location.search.substring(1)}` : '');
-        (window as any).gtag('event', 'page_view', {
+        const pageViewParams: Record<string, any> = {
           page_title: document.title,
           page_location: window.location.href,
           page_path: pagePath,
           send_to: GA_ID
-        });
+        };
+        // Include campaign data if available
+        const campaign = (window as any).__ff_campaign;
+        if (campaign) {
+          Object.assign(pageViewParams, campaign);
+        }
+        (window as any).gtag('event', 'page_view', pageViewParams);
         (window as any).__ff_initial_pv_sent = true;
       }
     }
@@ -53,18 +59,23 @@ function updateConsentFromStorage() {
 
 function ensureInitialPageViewOnce() {
   try {
-    const { analytics: analyticsGranted } = readConsent();
     if (!GA_ID) return;
     if ((typeof window !== 'undefined') && (window as any).__ff_initial_pv_sent) return;
     const send = () => {
       if (typeof window !== 'undefined' && (window as any).gtag) {
         const pagePath = window.location.pathname + (window.location.search ? `?${window.location.search.substring(1)}` : '');
-        (window as any).gtag('event', 'page_view', {
+        const pageViewParams: Record<string, any> = {
           page_title: document.title,
           page_location: window.location.href,
           page_path: pagePath,
           send_to: GA_ID
-        });
+        };
+        // Include campaign data if available
+        const campaign = (window as any).__ff_campaign;
+        if (campaign) {
+          Object.assign(pageViewParams, campaign);
+        }
+        (window as any).gtag('event', 'page_view', pageViewParams);
         (window as any).__ff_initial_pv_sent = true;
         return true;
       }
@@ -105,12 +116,18 @@ export default function GoogleAnalytics() {
     if (!GA_ID) return;
     const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
     if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'page_view', {
+      const pageViewParams: Record<string, any> = {
         page_title: document.title,
         page_location: window.location.href,
         page_path: url,
         send_to: GA_ID
-      });
+      };
+      // Include campaign data if available (for proper attribution across navigation)
+      const campaign = (window as any).__ff_campaign;
+      if (campaign) {
+        Object.assign(pageViewParams, campaign);
+      }
+      (window as any).gtag('event', 'page_view', pageViewParams);
     }
   }, [pathname, searchParams, isAdmin]);
 
@@ -169,41 +186,84 @@ export default function GoogleAnalytics() {
         }}
       />
       
-      {/* Step 3: Configure GA4 with campaign data from URL */}
+      {/* Step 3: Configure GA4 with campaign data from URL and localStorage */}
       <Script id="ga4-config" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           
-          // Extract campaign parameters from URL for proper attribution
+          // Extract campaign parameters from URL OR localStorage (for returning visitors)
           (function() {
             try {
               var params = new URLSearchParams(window.location.search);
               var campaignConfig = {
-                send_page_view: false,
+                send_page_view: false, // We send manually for better control
                 allow_google_signals: true,
                 allow_ad_personalization_signals: false
               };
               
-              // Add campaign parameters if present
-              if (params.get('utm_source')) campaignConfig.campaign_source = params.get('utm_source');
-              if (params.get('utm_medium')) campaignConfig.campaign_medium = params.get('utm_medium');
-              if (params.get('utm_campaign')) campaignConfig.campaign_name = params.get('utm_campaign');
-              if (params.get('utm_term')) campaignConfig.campaign_term = params.get('utm_term');
-              if (params.get('utm_content')) campaignConfig.campaign_content = params.get('utm_content');
+              // First, try to get from URL (fresh visit)
+              var utm_source = params.get('utm_source');
+              var utm_medium = params.get('utm_medium');
+              var utm_campaign = params.get('utm_campaign');
+              var utm_term = params.get('utm_term');
+              var utm_content = params.get('utm_content');
+              var gclid = params.get('gclid');
+              var gbraid = params.get('gbraid');
+              var wbraid = params.get('wbraid');
+              var fbclid = params.get('fbclid');
               
-              // Pass gclid to GA4 for Google Ads attribution
-              if (params.get('gclid')) {
+              // If no URL params, try localStorage (returning visitor)
+              if (!utm_source && !gclid && !gbraid && !wbraid && !fbclid) {
+                try {
+                  var stored = localStorage.getItem('ff_attribution');
+                  if (stored) {
+                    var attr = JSON.parse(stored);
+                    // Only use if captured within last 30 days
+                    var daysSinceCapture = attr.ts ? (Date.now() - attr.ts) / (1000 * 60 * 60 * 24) : 999;
+                    if (daysSinceCapture < 30) {
+                      utm_source = attr.utm_source || null;
+                      utm_medium = attr.utm_medium || null;
+                      utm_campaign = attr.utm_campaign || null;
+                      utm_term = attr.utm_term || null;
+                      utm_content = attr.utm_content || null;
+                      gclid = attr.gclid || null;
+                      gbraid = attr.gbraid || null;
+                      wbraid = attr.wbraid || null;
+                      console.log('📊 GA4: Using stored attribution from', new Date(attr.ts).toLocaleDateString());
+                    }
+                  }
+                } catch(e) {}
+              }
+              
+              // Add campaign parameters if present
+              if (utm_source) campaignConfig.campaign_source = utm_source;
+              if (utm_medium) campaignConfig.campaign_medium = utm_medium;
+              if (utm_campaign) campaignConfig.campaign_name = utm_campaign;
+              if (utm_term) campaignConfig.campaign_term = utm_term;
+              if (utm_content) campaignConfig.campaign_content = utm_content;
+              
+              // Google Ads auto-tagging (gclid, gbraid, wbraid)
+              if (gclid || gbraid || wbraid) {
                 campaignConfig.campaign_source = campaignConfig.campaign_source || 'google';
                 campaignConfig.campaign_medium = campaignConfig.campaign_medium || 'cpc';
               }
               
-              // Pass fbclid for Meta attribution (even though GA4 won't use it, good for debugging)
-              if (params.get('fbclid')) {
+              // Meta/Facebook auto-tagging
+              if (fbclid) {
                 campaignConfig.campaign_source = campaignConfig.campaign_source || 'facebook';
                 campaignConfig.campaign_medium = campaignConfig.campaign_medium || 'cpc';
               }
+              
+              // Store campaign data globally for use in manual page_view events
+              window.__ff_campaign = campaignConfig.campaign_source ? {
+                campaign_source: campaignConfig.campaign_source,
+                campaign_medium: campaignConfig.campaign_medium,
+                campaign_name: campaignConfig.campaign_name,
+                campaign_term: campaignConfig.campaign_term,
+                campaign_content: campaignConfig.campaign_content
+              } : null;
               
               gtag('config', '${GA_ID}', campaignConfig);
               
@@ -212,6 +272,7 @@ export default function GoogleAnalytics() {
                 console.log('📊 GA4 Campaign:', campaignConfig.campaign_source, '/', campaignConfig.campaign_medium);
               }
             } catch(e) {
+              console.error('GA4 config error:', e);
               gtag('config', '${GA_ID}', {
                 send_page_view: false,
                 allow_google_signals: true,
