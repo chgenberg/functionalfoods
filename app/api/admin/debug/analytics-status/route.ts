@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
     const gaSecret = process.env.GA4_API_SECRET;
     const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
-    const metaAccessToken = process.env.META_ACCESS_TOKEN;
+    const metaAccessToken = process.env.META_CAPI_TOKEN || process.env.META_ACCESS_TOKEN;
 
     const issues: string[] = [];
     const recommendations: string[] = [];

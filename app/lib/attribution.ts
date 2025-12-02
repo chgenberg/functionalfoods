@@ -1,18 +1,24 @@
 "use client";
 
-// Lightweight attribution capture and storage (gclid/gbraid/wbraid + utm params)
+// Lightweight attribution capture and storage (gclid/gbraid/wbraid/fbclid + utm params)
 
 export type Attribution = {
+  // Google Ads click identifiers
   gclid?: string;
   gbraid?: string;
   wbraid?: string;
+  // Meta/Facebook click identifier
+  fbclid?: string;
+  // UTM parameters (all platforms)
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
   utm_term?: string;
   utm_content?: string;
+  // Referrer
   ref?: string;
-  ts?: number; // epoch ms when captured
+  // Timestamp when captured
+  ts?: number;
 };
 
 const COOKIE_NAME = "_ff_attr";
@@ -23,14 +29,19 @@ export function getAttributionFromUrl(url?: string): Attribution | null {
     const u = new URL(url || (typeof window !== 'undefined' ? window.location.href : ''));
     const p = u.searchParams;
     const attr: Attribution = {
+      // Google Ads
       gclid: p.get('gclid') || undefined,
       gbraid: p.get('gbraid') || undefined,
       wbraid: p.get('wbraid') || undefined,
+      // Meta/Facebook
+      fbclid: p.get('fbclid') || undefined,
+      // UTM parameters
       utm_source: p.get('utm_source') || undefined,
       utm_medium: p.get('utm_medium') || undefined,
       utm_campaign: p.get('utm_campaign') || undefined,
       utm_term: p.get('utm_term') || undefined,
       utm_content: p.get('utm_content') || undefined,
+      // Referrer
       ref: (typeof document !== 'undefined' ? document.referrer : undefined) || undefined,
       ts: Date.now()
     };
@@ -89,7 +100,7 @@ export function attachAttributionToUrl(url: string, attr?: Attribution | null): 
     const a = attr || readAttribution();
     if (!a) return url;
     const u = new URL(url, typeof window !== 'undefined' ? window.location.origin : undefined);
-    const keys: Array<keyof Attribution> = ['gclid','gbraid','wbraid','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+    const keys: Array<keyof Attribution> = ['gclid','gbraid','wbraid','fbclid','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
     for (const k of keys) {
       const v = a[k];
       if (v && !u.searchParams.get(k as string)) {

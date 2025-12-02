@@ -28,7 +28,8 @@ export default function AttributionCapture() {
           campaign: attr.utm_campaign,
           gclid: attr.gclid ? 'present' : 'none',
           gbraid: attr.gbraid ? 'present' : 'none',
-          wbraid: attr.wbraid ? 'present' : 'none'
+          wbraid: attr.wbraid ? 'present' : 'none',
+          fbclid: attr.fbclid ? 'present' : 'none'
         });
         
         saveAttribution(attr);

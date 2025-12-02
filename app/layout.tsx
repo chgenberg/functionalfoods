@@ -125,8 +125,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       (function(){
                         try {
                           var params = new URLSearchParams(window.location.search);
-                          var hasUtm = params.get('utm_source') || params.get('utm_medium') || params.get('utm_campaign') || params.get('gclid') || params.get('gbraid') || params.get('wbraid');
-                          if (hasUtm) {
+                          var hasAttr = params.get('utm_source') || params.get('utm_medium') || params.get('utm_campaign') || params.get('gclid') || params.get('gbraid') || params.get('wbraid') || params.get('fbclid');
+                          if (hasAttr) {
                             window.localStorage.setItem('ff_attr_url', window.location.href);
                           }
                         } catch(e) {}

@@ -231,6 +231,7 @@ export default function GoogleAnalytics() {
                       gclid = attr.gclid || null;
                       gbraid = attr.gbraid || null;
                       wbraid = attr.wbraid || null;
+                      fbclid = attr.fbclid || null;
                       console.log('📊 GA4: Using stored attribution from', new Date(attr.ts).toLocaleDateString());
                     }
                   }
