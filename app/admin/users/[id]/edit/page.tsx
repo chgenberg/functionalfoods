@@ -320,11 +320,13 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
           {/* Name Field */}
           <div>
-            <label className="admin-label">
+            <label htmlFor="userName" className="admin-label">
               Namn
             </label>
             <input
               type="text"
+              id="userName"
+              name="userName"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="admin-input"
@@ -334,11 +336,13 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
           {/* Email Field */}
           <div>
-            <label className="admin-label">
+            <label htmlFor="userEmail" className="admin-label">
               E-postadress
             </label>
             <input
               type="email"
+              id="userEmail"
+              name="userEmail"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="admin-input"
@@ -349,10 +353,12 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
           {/* Role Field */}
           <div>
-            <label className="admin-label">
+            <label htmlFor="userRole" className="admin-label">
               Roll
             </label>
             <select
+              id="userRole"
+              name="userRole"
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               className="admin-select"
@@ -364,11 +370,13 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
 
           {/* New Password Field */}
           <div>
-            <label className="admin-label">
+            <label htmlFor="newPassword" className="admin-label">
               Nytt lösenord (lämna tomt för att behålla nuvarande)
             </label>
             <input
               type="password"
+              id="newPassword"
+              name="newPassword"
               value={formData.newPassword}
               onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
               className="admin-input"
@@ -453,6 +461,8 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
             {/* Add course */}
             <div className="flex gap-2">
               <select
+                id="addCourse"
+                name="addCourse"
                 value={selectedCourseToAdd}
                 onChange={(e) => setSelectedCourseToAdd(e.target.value)}
                 className="admin-select flex-1"

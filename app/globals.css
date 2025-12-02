@@ -1,12 +1,14 @@
+/* Import Work Sans font - primary typeface (must be before @tailwind) */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* React Quill CSS */
-@import 'quill/dist/quill.snow.css';
-
-/* Import Work Sans font - primary typeface */
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap');
+/* React Quill CSS - loaded via @layer to avoid @import order issues */
+@layer components {
+  /* Quill styles will be imported via JS instead */
+}
 
 /* Emoji support för bättre rendering */
 .emoji-support {

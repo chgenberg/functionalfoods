@@ -25,6 +25,9 @@ export default function WysiwygEditor({
   useEffect(() => {
     setIsClient(true);
     
+    // Import Quill CSS dynamically
+    import('quill/dist/quill.snow.css');
+    
     // Dynamisk import av React Quill för att undvika SSR-problem
     import('react-quill').then((mod) => {
       setReactQuill(() => mod.default);
