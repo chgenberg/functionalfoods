@@ -666,3 +666,21 @@ model Notification {
   @@index([isRead])
   @@index([createdAt])
 }
+
+model EbookDownload {
+  id              String    @id @default(uuid())
+  token           String    @unique
+  orderNumber     String
+  customerEmail   String
+  ebookId         String    // e.g., 'julbok-2025'
+  ebookName       String
+  downloadCount   Int       @default(0)
+  maxDownloads    Int       @default(5)  // Allow up to 5 downloads per token
+  expiresAt       DateTime  // Token expires after X days
+  createdAt       DateTime  @default(now())
+  lastDownloadAt  DateTime?
+
+  @@index([token])
+  @@index([customerEmail])
+  @@index([orderNumber])
+}

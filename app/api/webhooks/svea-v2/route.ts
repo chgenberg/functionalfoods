@@ -512,26 +512,41 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
         
         for (const book of bookItems) {
-          // Determine download URL and password based on the book
-          let downloadUrl = `${baseUrl}/julbok/ladda-ner`;
-          let downloadPassword = 'julbord2025';
+          // Generate unique download token
+          const crypto = await import('crypto');
+          const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
           
-          // You can add more e-books here with different passwords
+          // Determine ebookId based on book name
+          let ebookId = 'julbok-2025';
           if (book.name.toLowerCase().includes('julbord') || book.name.toLowerCase().includes('julbok')) {
-            downloadUrl = `${baseUrl}/julbok/ladda-ner`;
-            downloadPassword = 'julbord2025';
+            ebookId = 'julbok-2025';
           }
+          
+          // Store the download token in database
+          await prisma.ebookDownload.create({
+            data: {
+              token: downloadToken,
+              orderNumber: updatedOrder.orderNumber,
+              customerEmail: emailToUse,
+              ebookId,
+              ebookName: book.name,
+              maxDownloads: 5,
+              expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
+            }
+          });
+          
+          const downloadUrl = `${baseUrl}/julbok/ladda-ner?token=${downloadToken}`;
           
           await emailService.sendEbookDownloadEmail({
             email: emailToUse,
             name: nameToUse,
             ebookName: book.name,
             downloadUrl,
-            downloadPassword,
+            downloadPassword: downloadToken, // Now using unique token instead of static password
             orderNumber: updatedOrder.orderNumber
           });
           
-          console.log(`✅ E-book download email sent for: ${book.name}`);
+          console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
         }
       }
 

@@ -1,46 +1,78 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   Download, 
   Lock, 
-  BookOpen, 
   Check, 
   AlertCircle,
   Gift,
-  ChefHat
+  Loader2
 } from 'lucide-react';
 import Image from 'next/image';
 
-const CORRECT_PASSWORD = 'julbord2025';
-
-export default function DownloadEbookPage() {
-  const [password, setPassword] = useState('');
+function DownloadContent() {
+  const searchParams = useSearchParams();
+  const tokenFromUrl = searchParams.get('token');
+  
+  const [token, setToken] = useState(tokenFromUrl || '');
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [error, setError] = useState('');
   const [isChecking, setIsChecking] = useState(false);
+  const [ebookName, setEbookName] = useState('');
+  const [downloadPath, setDownloadPath] = useState('');
+  const [downloadsRemaining, setDownloadsRemaining] = useState(0);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Auto-verify if token is in URL
+  useEffect(() => {
+    if (tokenFromUrl) {
+      setToken(tokenFromUrl);
+      verifyToken(tokenFromUrl);
+    }
+  }, [tokenFromUrl]);
+
+  const verifyToken = async (tokenToVerify: string) => {
     setIsChecking(true);
     setError('');
 
-    // Simulate a small delay for UX
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const response = await fetch('/api/ebook/verify-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tokenToVerify })
+      });
 
-    if (password.toLowerCase() === CORRECT_PASSWORD.toLowerCase()) {
-      setIsUnlocked(true);
-    } else {
-      setError('Fel lösenord. Kontrollera din orderbekräftelse.');
+      const data = await response.json();
+
+      if (data.valid) {
+        setIsUnlocked(true);
+        setEbookName(data.ebookName);
+        setDownloadPath(data.downloadPath);
+        setDownloadsRemaining(data.downloadsRemaining);
+      } else {
+        setError(data.error || 'Ogiltig nedladdningskod');
+      }
+    } catch (err) {
+      setError('Ett fel uppstod. Försök igen.');
     }
+    
     setIsChecking(false);
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token.trim()) return;
+    await verifyToken(token.trim());
+  };
+
   const handleDownload = () => {
+    if (!downloadPath) return;
+    
     // Trigger download
     const link = document.createElement('a');
-    link.href = '/Julbok/Functional_foods_julbord_2025.pdf';
+    link.href = downloadPath;
     link.download = 'Julbord_Functional_Foods_2025.pdf';
     document.body.appendChild(link);
     link.click();
@@ -92,35 +124,42 @@ export default function DownloadEbookPage() {
               />
             </div>
             <div>
-              <h2 className="text-white font-semibold">Julbord – E-bok</h2>
+              <h2 className="text-white font-semibold">{ebookName || 'Julbord – E-bok'}</h2>
               <p className="text-gray-400 text-sm">PDF • 20+ recept</p>
             </div>
           </div>
 
           <div className="p-8">
-            {!isUnlocked ? (
+            {isChecking && !isUnlocked ? (
+              <div className="text-center py-8">
+                <Loader2 className="w-12 h-12 text-[#93C560] animate-spin mx-auto mb-4" />
+                <p className="text-gray-400">Verifierar din nedladdningskod...</p>
+              </div>
+            ) : !isUnlocked ? (
               <>
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Lock className="w-8 h-8 text-[#93C560]" />
                   </div>
                   <h2 className="text-xl font-semibold text-white mb-2">
-                    Ange ditt lösenord
+                    Ange din nedladdningskod
                   </h2>
                   <p className="text-gray-400 text-sm">
-                    Lösenordet finns i ditt orderbekräftelse-mejl
+                    Koden finns i ditt orderbekräftelse-mejl
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Ange lösenord"
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all"
+                      type="text"
+                      value={token}
+                      onChange={(e) => setToken(e.target.value.toUpperCase())}
+                      placeholder="Ange din nedladdningskod"
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all font-mono tracking-wider text-center"
                       disabled={isChecking}
+                      autoComplete="off"
+                      spellCheck="false"
                     />
                   </div>
 
@@ -137,12 +176,12 @@ export default function DownloadEbookPage() {
 
                   <button
                     type="submit"
-                    disabled={isChecking || !password}
+                    disabled={isChecking || !token}
                     className="w-full px-6 py-3 bg-gradient-to-r from-[#93C560] to-[#7fb050] text-white font-semibold rounded-xl hover:from-[#7fb050] hover:to-[#6fa040] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                   >
                     {isChecking ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <Loader2 className="w-5 h-5 animate-spin" />
                         Kontrollerar...
                       </>
                     ) : (
@@ -179,7 +218,10 @@ export default function DownloadEbookPage() {
                 </button>
 
                 <p className="text-gray-500 text-xs mt-4">
-                  Tips: Spara PDF:en på din dator eller mobil för offline-läsning
+                  {downloadsRemaining > 0 
+                    ? `Du har ${downloadsRemaining} nedladdning${downloadsRemaining !== 1 ? 'ar' : ''} kvar`
+                    : 'Detta var din sista nedladdning'
+                  }
                 </p>
               </motion.div>
             )}
@@ -205,3 +247,14 @@ export default function DownloadEbookPage() {
   );
 }
 
+export default function DownloadEbookPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-[#0a1f14] via-[#102a1c] to-[#0a1f14] flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-[#93C560] animate-spin" />
+      </div>
+    }>
+      <DownloadContent />
+    </Suspense>
+  );
+}
