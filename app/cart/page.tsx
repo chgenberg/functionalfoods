@@ -220,7 +220,7 @@ export default function CartPage() {
                       Gratis E-bok
                     </h3>
                     <p className="text-gray-600 text-sm mb-3">
-                      Exklusiva recept och tips för din hälsoresa - ett värde av 199 kr
+                      Efterrätter och drinkar till julminglet
                     </p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -230,9 +230,6 @@ export default function CartPage() {
                       <div className="text-right">
                         <div className="text-lg font-bold text-green-600">
                           0 kr
-                        </div>
-                        <div className="text-sm text-gray-400 line-through">
-                          199 kr
                         </div>
                       </div>
                     </div>

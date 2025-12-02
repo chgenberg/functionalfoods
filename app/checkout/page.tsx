@@ -431,7 +431,7 @@ export default function Checkout() {
                         <span className="text-xs font-bold text-red-600 uppercase tracking-wide">Julbonus ingår</span>
                       </div>
                       <h3 className="font-medium text-gray-900 text-sm">Gratis E-bok</h3>
-                      <p className="text-xs text-gray-500">Recept och tips för din hälsoresa</p>
+                      <p className="text-xs text-gray-500">Efterrätter och drinkar till julminglet</p>
                       <p className="font-medium text-green-600 text-sm mt-0.5">0 kr</p>
                     </div>
                   </div>
