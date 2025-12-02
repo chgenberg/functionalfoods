@@ -498,25 +498,72 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
 
       const VAT_RATE = 0.25;
       const courseItems = updatedOrder.items.filter(item => item.type === 'course');
+      const bookItems = updatedOrder.items.filter(item => item.type === 'book');
       const emailCourses = courseItems.map(item => ({
         name: item.name,
         price: Math.round(item.price * (1 + VAT_RATE) * 100) / 100 * (item.quantity || 1)
       }));
 
       console.log(`📧 Preparing to send order confirmation email to: ${emailToUse}, isNewUser: ${isNewUser}`);
+      console.log(`📚 Order contains: ${courseItems.length} courses, ${bookItems.length} e-books`);
 
-      await emailService.sendOrderConfirmation({
-        customerEmail: emailToUse,
-        customerName: nameToUse,
-        orderNumber: updatedOrder.orderNumber,
-        totalAmount: updatedOrder.totalAmount || 0,
-        courses: emailCourses,
-        loginCredentials: (isNewUser && temporaryPassword) ? {
-          email: emailToUse,
-          password: temporaryPassword,
-          loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/login`
-        } : undefined
-      });
+      // Send e-book download email for standalone e-book purchases (or mixed orders with e-books)
+      if (bookItems.length > 0) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+        
+        for (const book of bookItems) {
+          // Determine download URL and password based on the book
+          let downloadUrl = `${baseUrl}/julbok/ladda-ner`;
+          let downloadPassword = 'julbord2025';
+          
+          // You can add more e-books here with different passwords
+          if (book.name.toLowerCase().includes('julbord') || book.name.toLowerCase().includes('julbok')) {
+            downloadUrl = `${baseUrl}/julbok/ladda-ner`;
+            downloadPassword = 'julbord2025';
+          }
+          
+          await emailService.sendEbookDownloadEmail({
+            email: emailToUse,
+            name: nameToUse,
+            ebookName: book.name,
+            downloadUrl,
+            downloadPassword,
+            orderNumber: updatedOrder.orderNumber
+          });
+          
+          console.log(`✅ E-book download email sent for: ${book.name}`);
+        }
+      }
+
+      // Send regular order confirmation for course purchases (or if there are courses in a mixed order)
+      if (courseItems.length > 0) {
+        await emailService.sendOrderConfirmation({
+          customerEmail: emailToUse,
+          customerName: nameToUse,
+          orderNumber: updatedOrder.orderNumber,
+          totalAmount: updatedOrder.totalAmount || 0,
+          courses: emailCourses,
+          loginCredentials: (isNewUser && temporaryPassword) ? {
+            email: emailToUse,
+            password: temporaryPassword,
+            loginUrl: `${baseUrl}/login`
+          } : undefined
+        });
+      } else if (bookItems.length === 0) {
+        // Fallback: if no courses and no books, still send a basic confirmation
+        await emailService.sendOrderConfirmation({
+          customerEmail: emailToUse,
+          customerName: nameToUse,
+          orderNumber: updatedOrder.orderNumber,
+          totalAmount: updatedOrder.totalAmount || 0,
+          courses: emailCourses,
+          loginCredentials: (isNewUser && temporaryPassword) ? {
+            email: emailToUse,
+            password: temporaryPassword,
+            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/login`
+          } : undefined
+        });
+      }
       
       // Mark email as sent in metadata
       await prisma.order.update({

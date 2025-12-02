@@ -853,6 +853,127 @@ export class EmailService {
       tags: ['migration', 'welcome', 'platform-upgrade']
     });
   }
+
+  // Send e-book download email (for standalone e-book purchases)
+  async sendEbookDownloadEmail(params: { 
+    email: string; 
+    name: string; 
+    ebookName: string;
+    downloadUrl: string;
+    downloadPassword: string;
+    orderNumber: string;
+  }): Promise<boolean> {
+    const { email, name, ebookName, downloadUrl, downloadPassword, orderNumber } = params;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0a1f14; color: #fff;">
+        <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, #0a1f14 0%, #102a1c 50%, #0a1f14 100%);">
+          
+          <!-- Header -->
+          <div style="text-align: center; padding: 40px 30px 30px;">
+            <div style="display: inline-block; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 100px; padding: 8px 20px; margin-bottom: 20px;">
+              <span style="color: #fca5a5; font-size: 14px; font-weight: 500;">🎁 Din E-bok är redo!</span>
+            </div>
+            <h1 style="color: #fff; font-size: 32px; font-weight: 700; margin: 0 0 10px 0;">
+              Tack för ditt köp!
+            </h1>
+            <p style="color: #9ca3af; font-size: 16px; margin: 0;">
+              Ordernummer: ${orderNumber}
+            </p>
+          </div>
+          
+          <!-- Content Box -->
+          <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
+            <div style="text-align: center; margin-bottom: 24px;">
+              <div style="display: inline-block; width: 64px; height: 64px; background: linear-gradient(135deg, #93C560 0%, #7fb050 100%); border-radius: 16px; line-height: 64px; font-size: 28px;">
+                📚
+              </div>
+            </div>
+            
+            <h2 style="color: #fff; font-size: 20px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
+              ${ebookName}
+            </h2>
+            <p style="color: #9ca3af; font-size: 14px; text-align: center; margin: 0 0 24px 0;">
+              Digital E-bok (PDF)
+            </p>
+            
+            <!-- Download Info Box -->
+            <div style="background: rgba(147, 197, 96, 0.1); border: 2px solid rgba(147, 197, 96, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+              <h3 style="color: #93C560; font-size: 16px; font-weight: 600; margin: 0 0 16px 0;">
+                🔐 Dina nedladdningsuppgifter
+              </h3>
+              <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 16px;">
+                <p style="color: #d1d5db; margin: 0 0 8px 0; font-size: 14px;">
+                  <strong style="color: #fff;">Lösenord:</strong>
+                </p>
+                <p style="color: #93C560; font-family: monospace; font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 2px;">
+                  ${downloadPassword}
+                </p>
+              </div>
+            </div>
+            
+            <!-- CTA Button -->
+            <div style="text-align: center;">
+              <a href="${downloadUrl}" 
+                 style="display: inline-block; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; padding: 16px 40px; border-radius: 12px; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);">
+                📥 Ladda ner din E-bok
+              </a>
+            </div>
+          </div>
+          
+          <!-- Instructions -->
+          <div style="padding: 0 30px 30px;">
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 24px;">
+              <h3 style="color: #fff; font-size: 16px; font-weight: 600; margin: 0 0 16px 0;">
+                📋 Så här gör du:
+              </h3>
+              <ol style="color: #d1d5db; margin: 0; padding-left: 20px; line-height: 2;">
+                <li>Klicka på "Ladda ner din E-bok" ovan</li>
+                <li>Ange lösenordet: <strong style="color: #93C560;">${downloadPassword}</strong></li>
+                <li>Klicka på "Lås upp" och sedan "Ladda ner"</li>
+                <li>Spara PDF:en på din dator eller mobil</li>
+              </ol>
+            </div>
+          </div>
+          
+          <!-- Help Section -->
+          <div style="padding: 0 30px 30px; text-align: center;">
+            <p style="color: #6b7280; font-size: 14px; margin: 0;">
+              Problem med nedladdningen?<br>
+              Kontakta oss på <a href="mailto:info@functionalfoods.se" style="color: #93C560; text-decoration: none;">info@functionalfoods.se</a>
+            </p>
+          </div>
+          
+          <!-- Footer -->
+          <div style="background: rgba(0, 0, 0, 0.3); padding: 24px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <p style="color: #93C560; font-size: 14px; margin: 0 0 8px 0; font-weight: 500;">
+              🎄 God jul önskar Functional Foods!
+            </p>
+            <p style="color: #6b7280; font-size: 12px; margin: 0;">
+              © ${new Date().getFullYear()} Functional Foods • functionalfoods.se
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return this.sendEmail({
+      to: email,
+      toName: name,
+      subject: `📚 Din E-bok är redo att laddas ner – ${ebookName}`,
+      html,
+      fromEmail: 'info@functionalfoods.se',
+      fromName: 'Functional Foods',
+      tags: ['ebook-download', 'transactional', 'julbok']
+    });
+  }
 }
 
 // Export singleton instance
