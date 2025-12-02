@@ -10,6 +10,7 @@ interface Testimonial {
   name: string;
   quote: string;
   image: string;
+  imageRotation?: number; // Degrees to rotate the image
 }
 
 const testimonials: Testimonial[] = [
@@ -24,6 +25,7 @@ const testimonials: Testimonial[] = [
     name: "Monica",
     quote: "Det bästa som man kan ge sig själv! Min värk i höfterna har helt försvunnit, jag har kommit igång med träningen och jag har ätit god och färgrik mat.",
     image: "/Kundcitat/Monica/Monica-bild-4-optimized.webp",
+    imageRotation: 90, // Rotate 90 degrees clockwise
   },
   {
     id: 3,
@@ -110,6 +112,7 @@ export default function CustomerTestimonials() {
                         alt={testimonial.name}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        style={testimonial.imageRotation ? { transform: `rotate(${testimonial.imageRotation}deg) scale(1.2)` } : undefined}
                         sizes="96px"
                       />
                     </div>
@@ -163,6 +166,7 @@ export default function CustomerTestimonials() {
                         alt={testimonial.name}
                         fill
                         className="object-cover"
+                        style={testimonial.imageRotation ? { transform: `rotate(${testimonial.imageRotation}deg) scale(1.2)` } : undefined}
                         sizes="80px"
                       />
                     </div>
