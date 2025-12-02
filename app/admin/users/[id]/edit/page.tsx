@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, User, Mail, Shield, Check, Users, AlertTriangle, Merge, BookOpen, Plus, Trash2, GraduationCap } from 'lucide-react';
+import { ArrowLeft, Save, User, Check, Users, AlertTriangle, Merge, BookOpen, Plus, Trash2, GraduationCap } from 'lucide-react';
 
 interface User {
   id: string;
@@ -327,16 +327,14 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
             <label className="admin-label">
               E-postadress
             </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 text-[var(--text-secondary)] w-5 h-5" />
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="admin-input pl-10"
-                required
-              />
-            </div>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="admin-input"
+              required
+              autoComplete="off"
+            />
           </div>
 
           {/* Role Field */}
@@ -344,17 +342,14 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
             <label className="admin-label">
               Roll
             </label>
-            <div className="relative">
-              <Shield className="absolute left-3 top-3 text-[var(--text-secondary)] w-5 h-5" />
-              <select
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="admin-select pl-10"
-              >
-                <option value="customer">Kund</option>
-                <option value="admin">Administratör</option>
-              </select>
-            </div>
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              className="admin-select"
+            >
+              <option value="customer">Kund</option>
+              <option value="admin">Administratör</option>
+            </select>
           </div>
 
           {/* New Password Field */}
