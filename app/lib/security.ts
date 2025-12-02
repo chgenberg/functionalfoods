@@ -4,25 +4,9 @@ import { NextResponse } from 'next/server';
  * Security headers for production
  */
 export function addSecurityHeaders(response: NextResponse): NextResponse {
-  // Content Security Policy - prevents XSS attacks
-  const csp = [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://vimeo.com https://*.vimeo.com https://checkoutapi.svea.com https://checkoutapistage.svea.com https://webpaypaymentgateway.svea.com https://*.svea.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.svea.com",
-    "img-src 'self' data: blob: https: http:",
-    "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self' https://api.stripe.com https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://connect.facebook.net https://www.facebook.com https://vitals.vercel-insights.com https://vimeo.com https://*.vimeo.com wss://vimeo.com wss://*.vimeo.com https://checkoutapi.svea.com https://checkoutapistage.svea.com https://webpaypaymentgateway.svea.com https://*.svea.com",
-    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://vimeo.com https://checkoutapi.svea.com https://checkoutapistage.svea.com https://webpaypaymentgateway.svea.com https://*.svea.com",
-    "media-src 'self' https: data: blob:",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self' https://checkout.stripe.com https://checkoutapi.svea.com https://checkoutapistage.svea.com https://webpaypaymentgateway.svea.com https://*.svea.com",
-    "frame-ancestors 'none'",
-    "upgrade-insecure-requests"
-  ].join('; ');
-
-  // Security headers
-  response.headers.set('Content-Security-Policy', csp);
+  // CSP is now handled by next.config.js headers() to avoid conflicts
+  // Only set other security headers here
+  
   response.headers.set('X-Frame-Options', 'DENY'); // Prevent clickjacking
   response.headers.set('X-Content-Type-Options', 'nosniff'); // Prevent MIME sniffing
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
