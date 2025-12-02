@@ -138,8 +138,12 @@ export default function CartPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="text-lg font-semibold text-[#014421] mb-1">{item.name}</h3>
-                        <p className="text-gray-600 text-sm mb-3">
-                          {item.type === 'course' ? '🎓 Online-kurs' : '<Book className="w-5 h-5 inline" /> Digital bok'}
+                        <p className="text-gray-600 text-sm mb-3 flex items-center gap-1.5">
+                          {item.type === 'course' ? (
+                            <><span>🎓</span> Online-kurs</>
+                          ) : (
+                            <><Book className="w-4 h-4" /> Digital bok</>
+                          )}
                         </p>
                       </div>
                       <button
