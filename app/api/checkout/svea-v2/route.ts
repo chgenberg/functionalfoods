@@ -119,6 +119,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Add book products (not in CourseProduct table)
+    const bookProducts: Record<string, { id: string; name: string; price: number; type: 'book' }> = {
+      'julbok-2025': {
+        id: 'julbok-2025',
+        name: 'Julbord – E-bok av Ulrika Davidsson',
+        price: 47.20, // 59 kr inkl moms = 47.20 kr exkl moms
+        type: 'book'
+      }
+    };
+
+    // Add book products to productMap
+    for (const [bookId, bookProduct] of Object.entries(bookProducts)) {
+      productMap.set(bookId, bookProduct);
+    }
+
     // Validate and enrich items with server-side data
     const validatedItems = [];
     for (const item of items) {
@@ -387,6 +402,7 @@ export async function POST(req: NextRequest) {
       if (key.includes('functional basics') || key.includes('functional-basics') || key.includes('basics')) return '21122';
       if (key.includes('functional flow') || key.includes('functional-flow') || key.includes('gut')) return '21127';
       if (key.includes('functional energy') || key.includes('insulin') || key.includes('functional-energy')) return '21128';
+      if (key.includes('julbok') || key.includes('e-bok')) return 'EBOOK-2025';
       return item.id; // fallback
     };
 
