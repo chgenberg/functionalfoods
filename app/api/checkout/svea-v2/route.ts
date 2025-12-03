@@ -120,12 +120,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Add book products (not in CourseProduct table)
-    const bookProducts: Record<string, { id: string; name: string; price: number; type: 'book' }> = {
+    // Books have 6% VAT in Sweden (not 25%)
+    const bookProducts: Record<string, { id: string; name: string; price: number; type: 'book'; vatRate: number }> = {
       'julbok-2025': {
         id: 'julbok-2025',
         name: 'Julbord – E-bok av Ulrika Davidsson',
-        price: 47.20, // 59 kr inkl moms = 47.20 kr exkl moms
-        type: 'book'
+        price: 55.66, // 59 kr inkl 6% moms = 55.66 kr exkl moms
+        type: 'book',
+        vatRate: 0.06 // 6% VAT for books
       }
     };
 
@@ -159,6 +161,7 @@ export async function POST(req: NextRequest) {
           ...item,
           price: product.price, // Use price from database
           name: product.name,   // Use name from database
+          vatRate: product.vatRate || 0.25, // Use product VAT rate or default 25%
         });
       } catch (itemError) {
         console.error(`❌ Error validating item "${item.id}":`, itemError);
@@ -410,30 +413,35 @@ export async function POST(req: NextRequest) {
     console.log('💰 Calculating order totals...');
     let subtotal = 0;
     const sveaItems: SveaCartItem[] = [];
-    const VAT_RATE = 0.25; // 25% moms - defined here so it's available for discount calculation later
+    const DEFAULT_VAT_RATE = 0.25; // 25% moms for courses
+    const BOOK_VAT_RATE = 0.06; // 6% moms for books
 
     try {
       
       for (const item of validatedItems) {
         // VIKTIGT: Svea förväntar sig pris INKLUSIVE moms i öre
         // vatPercent anger hur mycket av priset som är moms (för momsrapportering)
-        // item.price från DB är exkl. moms (1836 kr) -> vi behöver lägga till moms
+        // item.price från DB är exkl. moms -> vi behöver lägga till moms
+        const itemVatRate = item.vatRate || (item.type === 'book' ? BOOK_VAT_RATE : DEFAULT_VAT_RATE);
         const priceExclVATRounded = Math.ceil(item.price);
         // Lägg till moms för att få inkl-pris
-        const priceInclVAT = priceExclVATRounded * (1 + VAT_RATE);
+        const priceInclVAT = priceExclVATRounded * (1 + itemVatRate);
         // Konvertera till öre (minor units)
         const priceInOre = Math.round(priceInclVAT * 100);
         // För subtotal-tracking
         subtotal += priceInOre * item.quantity;
         
-        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), Rounded: ${priceExclVATRounded} kr, With VAT: ${priceInclVAT} kr, In öre (INKL VAT): ${priceInOre}, Sending to Svea: ${priceInOre} öre`);
+        // Convert VAT rate to Svea format (6% = 600, 25% = 2500)
+        const sveaVatPercent = Math.round(itemVatRate * 10000);
+        
+        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), VAT rate: ${itemVatRate * 100}%, Rounded: ${priceExclVATRounded} kr, With VAT: ${priceInclVAT} kr, In öre (INKL VAT): ${priceInOre}, Sending to Svea: ${priceInOre} öre`);
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
           name: item.name,
           quantity: item.quantity * 100, // Quantity in minor units: 100 = 1 unit
           unitPrice: priceInOre, // Pris INKLUSIVE moms i ÖRE (vatPercent används bara för momsrapportering)
-          vatPercent: 2500, // 25% moms - anger hur mycket av unitPrice som är moms (för rapportering)
+          vatPercent: sveaVatPercent, // VAT in Svea format (600 = 6%, 2500 = 25%)
           unit: 'st',
           discountPercent: 0
         });

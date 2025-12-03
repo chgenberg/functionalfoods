@@ -181,7 +181,7 @@ export default function CartPage() {
                   {/* Price - Mobile */}
                   <div className="text-right">
                     <div className="text-xl font-bold text-[#014421]">
-                      {Math.round(item.price * item.quantity * 1.25).toLocaleString('sv-SE')} kr
+                      {Math.round(item.price * item.quantity * (item.type === 'book' ? 1.06 : 1.25)).toLocaleString('sv-SE')} kr
                     </div>
                   </div>
                 </div>
@@ -245,11 +245,11 @@ export default function CartPage() {
                       {/* Price - Desktop */}
                       <div className="text-right">
                         <div className="text-2xl font-bold text-[#014421]">
-                          {Math.round(item.price * item.quantity * 1.25).toLocaleString('sv-SE')} kr
+                          {Math.round(item.price * item.quantity * (item.type === 'book' ? 1.06 : 1.25)).toLocaleString('sv-SE')} kr
                         </div>
                         {item.quantity > 1 && (
                           <div className="text-sm text-gray-500">
-                            {Math.round(item.price * 1.25).toLocaleString('sv-SE')} kr/st (inkl. moms)
+                            {Math.round(item.price * (item.type === 'book' ? 1.06 : 1.25)).toLocaleString('sv-SE')} kr/st (inkl. moms)
                           </div>
                         )}
                       </div>
@@ -391,31 +391,54 @@ export default function CartPage() {
                       {item.name} × {item.quantity}
                     </span>
                     <span className="font-medium text-gray-900 whitespace-nowrap">
-                      {Math.round(item.price * item.quantity * 1.25).toLocaleString('sv-SE')} kr
+                      {Math.round(item.price * item.quantity * (item.type === 'book' ? 1.06 : 1.25)).toLocaleString('sv-SE')} kr
                     </span>
                   </div>
                 ))}
               </div>
 
               <div className="py-4 sm:py-6 space-y-2 sm:space-y-3">
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-gray-600">Delsumma (inkl. moms)</span>
-                  <span className="text-gray-900 whitespace-nowrap">{Math.round(total * 1.25).toLocaleString('sv-SE')} kr</span>
-                </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-xs sm:text-sm">
-                    <span className="text-[#93C560]">Rabatt</span>
-                    <span className="text-[#93C560] whitespace-nowrap">-{discount.toLocaleString('sv-SE')} kr</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-xs sm:text-sm pb-3 border-b border-gray-200">
-                  <span className="text-gray-600">Moms (25%)</span>
-                  <span className="text-gray-900 whitespace-nowrap">{Math.round(finalTotal * 0.25).toLocaleString('sv-SE')} kr</span>
-                </div>
-                <div className="flex justify-between items-center text-base sm:text-xl font-bold pt-2 sm:pt-3 p-3 sm:p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-lg">
-                  <span className="text-[#014421]">Totalt</span>
-                  <span className="text-[#014421] text-lg sm:text-2xl">{Math.round(finalTotal * 1.25).toLocaleString('sv-SE')} kr</span>
-                </div>
+                {(() => {
+                  // Calculate totals with correct VAT rates (6% for books, 25% for courses)
+                  const subtotalInclVat = items.reduce((sum, item) => {
+                    const vatRate = item.type === 'book' ? 1.06 : 1.25;
+                    return sum + (item.price * item.quantity * vatRate);
+                  }, 0);
+                  const totalVat = items.reduce((sum, item) => {
+                    const vatRate = item.type === 'book' ? 0.06 : 0.25;
+                    return sum + (item.price * item.quantity * vatRate);
+                  }, 0);
+                  const finalTotalInclVat = subtotalInclVat - discount;
+                  const finalVat = Math.max(0, totalVat - (discount * (totalVat / subtotalInclVat)));
+                  
+                  // Check if we have mixed VAT rates
+                  const hasBooks = items.some(item => item.type === 'book');
+                  const hasCourses = items.some(item => item.type === 'course');
+                  const vatLabel = hasBooks && hasCourses ? 'Moms (6% & 25%)' : hasBooks ? 'Moms (6%)' : 'Moms (25%)';
+                  
+                  return (
+                    <>
+                      <div className="flex justify-between text-xs sm:text-sm">
+                        <span className="text-gray-600">Delsumma (inkl. moms)</span>
+                        <span className="text-gray-900 whitespace-nowrap">{Math.round(subtotalInclVat).toLocaleString('sv-SE')} kr</span>
+                      </div>
+                      {discount > 0 && (
+                        <div className="flex justify-between text-xs sm:text-sm">
+                          <span className="text-[#93C560]">Rabatt</span>
+                          <span className="text-[#93C560] whitespace-nowrap">-{discount.toLocaleString('sv-SE')} kr</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-xs sm:text-sm pb-3 border-b border-gray-200">
+                        <span className="text-gray-600">{vatLabel}</span>
+                        <span className="text-gray-900 whitespace-nowrap">{Math.round(finalVat).toLocaleString('sv-SE')} kr</span>
+                      </div>
+                      <div className="flex justify-between items-center text-base sm:text-xl font-bold pt-2 sm:pt-3 p-3 sm:p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-lg">
+                        <span className="text-[#014421]">Totalt</span>
+                        <span className="text-[#014421] text-lg sm:text-2xl">{Math.round(finalTotalInclVat).toLocaleString('sv-SE')} kr</span>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
 
               {/* Checkout Button */}

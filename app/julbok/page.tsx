@@ -30,7 +30,7 @@ export default function JulbokPage() {
     addItem({
       id: 'julbok-2025',
       name: 'Julbord – E-bok av Ulrika Davidsson',
-      price: 47.20, // 59 kr inkl moms = 47.20 kr exkl moms (59 / 1.25)
+      price: 55.66, // 59 kr inkl 6% moms = 55.66 kr exkl moms (59 / 1.06)
       quantity: 1,
       type: 'book',
       image: '/Julbok/Produktbild.png'

@@ -496,12 +496,13 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
         return;
       }
 
-      const VAT_RATE = 0.25;
+      const COURSE_VAT_RATE = 0.25;
+      const BOOK_VAT_RATE = 0.06;
       const courseItems = updatedOrder.items.filter(item => item.type === 'course');
       const bookItems = updatedOrder.items.filter(item => item.type === 'book');
       const emailCourses = courseItems.map(item => ({
         name: item.name,
-        price: Math.round(item.price * (1 + VAT_RATE) * 100) / 100 * (item.quantity || 1)
+        price: Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100 * (item.quantity || 1)
       }));
 
       console.log(`📧 Preparing to send order confirmation email to: ${emailToUse}, isNewUser: ${isNewUser}`);

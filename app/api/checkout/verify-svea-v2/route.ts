@@ -161,6 +161,9 @@ export async function POST(req: NextRequest) {
       // Try to find matching SVEA item
       let displayPrice = item.price;
       
+      // Determine VAT rate based on item type (6% for books, 25% for courses)
+      const vatRate = item.type === 'book' ? 1.06 : 1.25;
+      
       // Try to match by article number or name
       for (const [articleNumber, sveaItem] of sveaItemsMap.entries()) {
         const itemIdLower = item.id?.toLowerCase() || '';
@@ -173,7 +176,7 @@ export async function POST(req: NextRequest) {
           // Found matching SVEA item - use its price
           // SVEA price is in öre, inkl. moms - convert to SEK, then to exkl. moms for display
           const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
-          displayPrice = priceInclVAT / 1.25; // Convert to exkl. moms
+          displayPrice = priceInclVAT / vatRate; // Convert to exkl. moms using correct VAT rate
           break;
         }
       }
@@ -387,8 +390,10 @@ export async function POST(req: NextRequest) {
                 articleLower.includes(itemIdLower) ||
                 orderItem.name.toLowerCase().includes(articleLower)) {
               // Update item price to match SVEA (convert from öre to SEK, then to exkl. VAT)
+              // Use correct VAT rate: 6% for books, 25% for courses
+              const vatRate = orderItem.type === 'book' ? 1.06 : 1.25;
               const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
-              const priceExclVAT = priceInclVAT / 1.25; // Remove VAT
+              const priceExclVAT = priceInclVAT / vatRate; // Remove VAT using correct rate
               
               if (Math.abs(orderItem.price - priceExclVAT) > 0.01) {
                 await prisma.orderItem.update({
@@ -531,12 +536,13 @@ export async function POST(req: NextRequest) {
             return;
           }
 
-          const VAT_RATE = 0.25;
+          const COURSE_VAT_RATE = 0.25;
+          const BOOK_VAT_RATE = 0.06;
           const courseItems = updatedOrder.items.filter(item => item.type === 'course');
           const bookItems = updatedOrder.items.filter(item => item.type === 'book');
           const emailCourses = courseItems.map(item => ({
             name: item.name,
-            price: Math.round(item.price * (1 + VAT_RATE) * 100) / 100 * (item.quantity || 1)
+            price: Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100 * (item.quantity || 1)
           }));
 
           // Check if email was already sent (via metadata flag)
