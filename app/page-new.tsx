@@ -201,7 +201,7 @@ export default function Home() {
           <h2 className="text-center text-2xl md:text-3xl font-semibold text-[#014421] mb-6 md:mb-8">
             Våra kurser & boken
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
             {[
               {
                 name: 'Functional Basics',
@@ -222,6 +222,11 @@ export default function Home() {
                 name: 'Hormonell Balans',
                 image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
                 href: '/utbildning/hormonell-balans'
+              },
+              {
+                name: 'Jul E-bok',
+                image: '/Julbok/Produktbild.png',
+                href: '/julbok'
               },
               {
                 name: 'Boken',

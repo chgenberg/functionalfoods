@@ -322,18 +322,32 @@ export default function CartPage() {
                   </div>
                   <span className="font-medium">Omedelbar åtkomst efter köp</span>
                 </div>
-                <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
-                  <div className="p-0.5 sm:p-1 bg-[#93C560] rounded-full flex-shrink-0">
-                    <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                {/* Only show course-specific benefits if cart has courses */}
+                {items.some(item => item.type === 'course') && (
+                  <>
+                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
+                      <div className="p-0.5 sm:p-1 bg-[#93C560] rounded-full flex-shrink-0">
+                        <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                      </div>
+                      <span className="font-medium">12 månaders tillgång till allt material</span>
+                    </div>
+                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
+                      <div className="p-0.5 sm:p-1 bg-[#93C560] rounded-full flex-shrink-0">
+                        <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                      </div>
+                      <span className="font-medium">Personlig support via community</span>
+                    </div>
+                  </>
+                )}
+                {/* E-book specific benefit */}
+                {items.some(item => item.type === 'book') && !items.some(item => item.type === 'course') && (
+                  <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
+                    <div className="p-0.5 sm:p-1 bg-[#93C560] rounded-full flex-shrink-0">
+                      <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                    </div>
+                    <span className="font-medium">PDF skickas direkt till din e-post</span>
                   </div>
-                  <span className="font-medium">12 månaders tillgång till allt material</span>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
-                  <div className="p-0.5 sm:p-1 bg-[#93C560] rounded-full flex-shrink-0">
-                    <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-                  </div>
-                  <span className="font-medium">Personlig support via community</span>
-                </div>
+                )}
               </div>
 
               {/* Coupon */}
@@ -418,7 +432,11 @@ export default function CartPage() {
               <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-amber-800">
                   <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                  <span className="font-medium">Dina kurser väntar på dig!</span>
+                  <span className="font-medium">
+                    {items.some(item => item.type === 'course') 
+                      ? 'Dina kurser väntar på dig!' 
+                      : 'Din e-bok väntar på dig!'}
+                  </span>
                 </div>
               </div>
 
