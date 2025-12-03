@@ -716,13 +716,15 @@ export async function POST(req: NextRequest) {
       // Calculate discounted price per item
       // Each item's price should reflect the discount proportionally
       const itemsWithDiscountedPrice = validatedItems.map(item => {
+        // Use item's actual VAT rate (6% for books, 25% for courses)
+        const itemVatRate = item.vatRate || (item.type === 'book' ? BOOK_VAT_RATE : DEFAULT_VAT_RATE);
         // Item price is exkl. VAT, but we need to calculate the discounted price
-        // Original item total in öre (inkl. VAT): item.price * 1.25 * 100 * quantity
-        const itemTotalInOreInclVAT = SveaCheckoutService.formatPriceToMinorUnits(item.price * (1 + VAT_RATE)) * item.quantity;
+        // Original item total in öre (inkl. VAT)
+        const itemTotalInOreInclVAT = SveaCheckoutService.formatPriceToMinorUnits(item.price * (1 + itemVatRate)) * item.quantity;
         // Apply discount ratio to get discounted total
         const discountedItemTotalInOre = Math.round(itemTotalInOreInclVAT * discountRatio);
         // Convert back to SEK per unit (exkl. VAT for storage)
-        const discountedPricePerUnit = SveaCheckoutService.formatPriceFromMinorUnits(discountedItemTotalInOre / item.quantity) / (1 + VAT_RATE);
+        const discountedPricePerUnit = SveaCheckoutService.formatPriceFromMinorUnits(discountedItemTotalInOre / item.quantity) / (1 + itemVatRate);
         
         return {
           ...item,
