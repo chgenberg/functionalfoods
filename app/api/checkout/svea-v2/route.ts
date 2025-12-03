@@ -514,13 +514,19 @@ export async function POST(req: NextRequest) {
 
     // Add discount as negative item if applicable
     if (discountAmount > 0 && appliedCoupon) {
+      // Determine VAT rate for discount - use the same VAT as the items
+      // If all items are books (6% VAT), discount should also be 6%
+      // If mixed or courses only, use 25%
+      const allBooks = validatedItems.every(item => item.type === 'book');
+      const discountVatPercent = allBooks ? 600 : 2500;
+      
       // discountAmount är redan inkl moms i öre - använd direkt som negativt belopp
       sveaItems.push({
         articleNumber: 'DISCOUNT',
         name: `Rabatt (${appliedCoupon.code})`,
         quantity: 100, // Quantity in minor units: 100 = 1 unit
         unitPrice: -discountAmount, // Negativt belopp INKLUSIVE moms i ÖRE
-        vatPercent: 2500, // 25% moms - anger hur mycket av rabatten som är moms
+        vatPercent: discountVatPercent, // Dynamisk moms baserat på varor
         unit: 'st'
       });
     }

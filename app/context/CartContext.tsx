@@ -12,7 +12,7 @@ export interface CartItem {
 
 interface AppliedCoupon {
   code: string;
-  type: 'percent' | 'fixed';
+  type: string; // Can be 'percent', 'PERCENTAGE', 'fixed', 'FIXED', etc.
   amount: number;
   appliesTo: 'all' | string[];
 }
@@ -93,7 +93,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         : items.filter(i => (appliedCoupon.appliesTo as string[]).includes(i.id));
       const applicableSubtotal = applicableItems.reduce((s, i) => s + i.price * i.quantity, 0);
       if (applicableSubtotal > 0) {
-        if (appliedCoupon.type === 'percent') {
+        // Normalize type for comparison (handle PERCENTAGE, percent, PERCENT, etc.)
+        const normalizedType = String(appliedCoupon.type || '').toUpperCase();
+        const isPercentage = normalizedType === 'PERCENTAGE' || normalizedType === 'PERCENT';
+        
+        if (isPercentage) {
           newDiscount = Math.round(applicableSubtotal * (appliedCoupon.amount / 100));
         } else {
           newDiscount = Math.round(appliedCoupon.amount);

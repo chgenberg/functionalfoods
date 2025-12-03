@@ -12,7 +12,7 @@ interface Item {
   type: 'course' | 'book';
 }
 
-function computeDiscountForItems(items: Item[], type: 'percent'|'fixed', amount: number, applicableCourseIds?: string[] | null) {
+function computeDiscountForItems(items: Item[], type: string, amount: number, applicableCourseIds?: string[] | null) {
   const applicableItems = Array.isArray(applicableCourseIds) && applicableCourseIds.length > 0
     ? items.filter((i) => applicableCourseIds.includes(i.id))
     : items;
@@ -20,8 +20,12 @@ function computeDiscountForItems(items: Item[], type: 'percent'|'fixed', amount:
   const applicableSubtotal = applicableItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
   if (applicableSubtotal <= 0) return { discount: 0, applicableSubtotal: 0 };
 
+  // Normalize type to uppercase for comparison
+  const normalizedType = String(type || '').toUpperCase();
+  const isPercentage = normalizedType === 'PERCENTAGE' || normalizedType === 'PERCENT';
+
   let discount = 0;
-  if (type === 'percent') {
+  if (isPercentage) {
     discount = Math.round(applicableSubtotal * (amount / 100));
   } else {
     discount = Math.round(amount);
@@ -63,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     const applicableCourseIds: string[] | null = coupon.applicableCourseIds ? (Array.isArray(coupon.applicableCourseIds) ? coupon.applicableCourseIds as string[] : null) : null;
 
-    const { discount } = computeDiscountForItems(items, (coupon.type as 'percent'|'fixed'), coupon.amount, applicableCourseIds);
+    const { discount } = computeDiscountForItems(items, coupon.type, coupon.amount, applicableCourseIds);
 
     if (discount <= 0) {
       return NextResponse.json({ valid: false, error: 'Rabattkoden kan inte tillämpas på dessa varor' }, { status: 400 });
