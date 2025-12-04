@@ -340,45 +340,71 @@ export default function FunctionalBasicsPage() {
               och får kropp och sinne att prestera på topp.
             </motion.p>
 
-            {/* Price Box */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-6 border border-white/50 max-w-[280px] mx-auto flex flex-col items-center gap-3"
-            >
-              <div className="text-3xl font-bold" style={{ color: '#E7345D' }}>{formatPrice(displayPriceIncl)} kr</div>
-              {hasDiscount && (
-                <div className="text-sm text-gray-500 line-through">Ord. pris {formatPrice(displayOriginalPriceIncl)} kr</div>
-              )}
-              <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
-              <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
-              <button 
-                onClick={handleAddToCart}
-                className="bg-primary text-white px-6 py-2 rounded-full text-sm hover:bg-primary/90 transition-colors w-full"
+            {/* Price Box with E-book Bonus */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
+              {/* E-book Bonus Card */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.35 }}
+                className="bg-gradient-to-br from-[#1a472a] to-[#2d5a3d] rounded-xl p-4 shadow-lg border border-[#3d6a4d] max-w-[200px] flex flex-col items-center gap-2"
               >
-                Lägg i varukorg
-              </button>
-              <div className="w-full border-t border-gray-200 my-2"></div>
-              <div className="flex flex-col gap-2 w-full">
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <Book className="w-4 h-4 text-primary" />
-                  75 Recept & måltidsplaner
+                <div className="text-xs font-semibold text-[#c9a227] uppercase tracking-wide">Bonus vid köp</div>
+                <div className="relative w-24 h-32">
+                  <Image
+                    src="/Julbok/Produktbild.png"
+                    alt="Julbord E-bok"
+                    fill
+                    className="object-contain drop-shadow-lg"
+                  />
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <Video className="w-4 h-4 text-primary" />
-                  Videolektioner varje vecka
+                <div className="text-center">
+                  <div className="text-white font-semibold text-sm">Gratis E-bok</div>
+                  <div className="text-white/80 text-xs">Julbord av Ulrika</div>
+                  <div className="text-[#c9a227] text-xs font-medium mt-1">Värde 59 kr</div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <User className="w-4 h-4 text-primary" />
-                  Coaching med Ulrika + team
+              </motion.div>
+
+              {/* Price Box */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/50 max-w-[280px] flex flex-col items-center gap-3"
+              >
+                <div className="text-3xl font-bold" style={{ color: '#E7345D' }}>{formatPrice(displayPriceIncl)} kr</div>
+                {hasDiscount && (
+                  <div className="text-sm text-gray-500 line-through">Ord. pris {formatPrice(displayOriginalPriceIncl)} kr</div>
+                )}
+                <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
+                <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
+                <button 
+                  onClick={handleAddToCart}
+                  className="bg-primary text-white px-6 py-2 rounded-full text-sm hover:bg-primary/90 transition-colors w-full"
+                >
+                  Lägg i varukorg
+                </button>
+                <div className="w-full border-t border-gray-200 my-2"></div>
+                <div className="flex flex-col gap-2 w-full">
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <Book className="w-4 h-4 text-primary" />
+                    75 Recept & måltidsplaner
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <Video className="w-4 h-4 text-primary" />
+                    Videolektioner varje vecka
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <User className="w-4 h-4 text-primary" />
+                    Coaching med Ulrika + team
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <Clock className="w-4 h-4 text-primary" />
+                    1 års åtkomst
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <Clock className="w-4 h-4 text-primary" />
-                  1 års åtkomst
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
 
