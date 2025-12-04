@@ -92,8 +92,8 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F7F5F0]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="min-h-screen bg-[#F7F5F0] pb-28 lg:pb-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <Link 
@@ -479,6 +479,34 @@ export default function CartPage() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Fixed bottom checkout bar for mobile */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 lg:hidden shadow-lg z-50">
+        <div className="max-w-lg mx-auto">
+          {(() => {
+            const subtotalInclVat = items.reduce((sum, item) => {
+              const vatRate = item.type === 'book' ? 1.06 : 1.25;
+              return sum + (item.price * item.quantity * vatRate);
+            }, 0);
+            const finalTotalInclVat = subtotalInclVat - discount;
+            return (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-gray-500">Totalt ({items.length} {items.length === 1 ? 'vara' : 'varor'})</p>
+                  <p className="text-lg font-bold text-[#014421]">{Math.round(finalTotalInclVat).toLocaleString('sv-SE')} kr</p>
+                </div>
+                <Link
+                  href="/checkout"
+                  className="flex-1 bg-gradient-to-r from-[#014421] to-[#116530] text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-sm"
+                >
+                  <Shield className="w-4 h-4" />
+                  Till kassan
+                </Link>
+              </div>
+            );
+          })()}
         </div>
       </div>
 

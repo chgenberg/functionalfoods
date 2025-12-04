@@ -195,35 +195,35 @@ export default function Checkout() {
   const vatLabel = hasBooks && hasCourses ? 'Moms (6% & 25%)' : hasBooks ? 'Moms (6%)' : 'Moms (25%)';
 
   return (
-    <main className="min-h-screen bg-[#F7F5F0] py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#F7F5F0] py-6 sm:py-12 pb-32 lg:pb-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Simplified Header */}
-        <div className="mb-12 text-center">
-          <Link href="/cart" className="inline-flex items-center text-gray-600 hover:text-gray-800 mb-6 transition-colors">
-            <ArrowLeft className="mr-2 w-4 h-4" />
-            {t('checkout.backToCart','Tillbaka')}
+        <div className="mb-6 sm:mb-12 text-center">
+          <Link href="/cart" className="inline-flex items-center text-sm sm:text-base text-gray-600 hover:text-gray-800 mb-4 sm:mb-6 transition-colors">
+            <ArrowLeft className="mr-1.5 sm:mr-2 w-4 h-4" />
+            {t('checkout.backToCart','Tillbaka till varukorg')}
           </Link>
-          <h1 className="text-3xl font-light text-gray-900">{t('checkout.title','Slutför ditt köp')}</h1>
+          <h1 className="text-2xl sm:text-3xl font-light text-gray-900">{t('checkout.title','Slutför ditt köp')}</h1>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Main Content - Customer & Payment */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-2 lg:order-1">
             {/* Customer Information - Simplified */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h2 className="text-xl font-medium mb-6 flex items-center gap-2">
-                <User className="w-5 h-5 text-gray-400" />
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6 flex items-center gap-2">
+                <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                 {t('checkout.yourDetails','Dina uppgifter')}
               </h2>
 
               {guestMode ? (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
                     <input
                       type="text"
                       value={customerInfo.name}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
                       placeholder="Namn *"
                       required
                     />
@@ -234,23 +234,23 @@ export default function Checkout() {
                       type="email"
                       value={customerInfo.email}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
                       placeholder="E-post *"
                       required
                     />
                   </div>
 
-                  <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+                  <label className="flex items-start sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-600 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={customerInfo.createAccount}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, createAccount: e.target.checked })}
-                      className="w-4 h-4 text-[#014421] rounded focus:ring-[#93C560]"
+                      className="w-4 h-4 text-[#014421] rounded focus:ring-[#93C560] mt-0.5 sm:mt-0"
                     />
-                    {t('checkout.createAccount','Skapa ett konto för enklare köp nästa gång')}
+                    <span>{t('checkout.createAccount','Skapa ett konto för enklare köp nästa gång')}</span>
                   </label>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     {t('checkout.haveAccount','Har du redan ett konto?')} 
                     <Link href="/login" className="text-[#014421] hover:underline ml-1">
                       {t('checkout.loginHere','Logga in här')}
@@ -258,29 +258,29 @@ export default function Checkout() {
                   </p>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-green-600" />
+                <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-green-50 rounded-lg sm:rounded-xl">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-600">{t('checkout.loggedInAs','Inloggad som')}</p>
-                    <p className="font-medium text-gray-900">{user?.email}</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-gray-600">{t('checkout.loggedInAs','Inloggad som')}</p>
+                    <p className="font-medium text-sm sm:text-base text-gray-900 truncate">{user?.email}</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Payment Method */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h2 className="text-xl font-medium mb-6 flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-gray-400" />
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6 flex items-center gap-2">
+                <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                 {t('checkout.paymentMethod','Betalningsmetod')}
               </h2>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {/* Svea - Primary payment method */}
                 <label 
-                  className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                  className={`flex items-center p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-all ${
                     selectedPayment === 'svea'
                       ? 'border-[#014421] bg-green-50'
                       : 'border-gray-200 hover:border-gray-300'
@@ -294,15 +294,15 @@ export default function Checkout() {
                     onChange={(e) => setSelectedPayment(e.target.value)}
                     className="sr-only"
                   />
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  <div className="flex items-center gap-2 sm:gap-3 flex-1">
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       selectedPayment === 'svea' ? 'bg-[#014421] text-white' : 'bg-gray-100 text-gray-600'
                     }`}>
-                      <CreditCard className="w-5 h-5" />
+                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">Svea Ekonomi</p>
-                      <p className="text-sm text-gray-500">Betala med kort, faktura eller delbetalning</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm sm:text-base text-gray-900">Svea Ekonomi</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Betala med kort, faktura eller delbetalning</p>
                     </div>
                   </div>
                 </label>
@@ -311,7 +311,7 @@ export default function Checkout() {
                 <button
                   type="button"
                   onClick={() => setShowOtherPayments(!showOtherPayments)}
-                  className="text-sm text-gray-600 hover:text-[#014421] underline transition-colors pl-2"
+                  className="text-xs sm:text-sm text-gray-600 hover:text-[#014421] underline transition-colors pl-2"
                 >
                   {showOtherPayments ? '▼ Dölj övriga betalningsvillkor' : '▶ Övriga betalningsvillkor'}
                 </button>
@@ -319,7 +319,7 @@ export default function Checkout() {
                 {/* Stripe - Hidden by default */}
                 {showOtherPayments && (
                   <label 
-                    className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    className={`flex items-center p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-all ${
                       selectedPayment === 'stripe'
                         ? 'border-[#014421] bg-green-50'
                         : 'border-gray-200 hover:border-gray-300'
@@ -333,15 +333,15 @@ export default function Checkout() {
                       onChange={(e) => setSelectedPayment(e.target.value)}
                       className="sr-only"
                     />
-                    <div className="flex items-center gap-3 flex-1">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1">
+                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                         selectedPayment === 'stripe' ? 'bg-[#014421] text-white' : 'bg-gray-100 text-gray-600'
                       }`}>
-                        <CreditCard className="w-5 h-5" />
+                        <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900">Kort (Stripe)</p>
-                        <p className="text-sm text-gray-500">Betala med Visa, Mastercard, Apple Pay eller Google Pay</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm sm:text-base text-gray-900">Kort (Stripe)</p>
+                        <p className="text-xs sm:text-sm text-gray-500">Betala med Visa, Mastercard, Apple Pay eller Google Pay</p>
                       </div>
                     </div>
                   </label>
@@ -349,11 +349,11 @@ export default function Checkout() {
               </div>
 
               {/* Payment method logos */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-sm text-gray-600 mb-3">Accepterade betalningsmetoder:</p>
-                <div className="flex flex-wrap items-center gap-2">
+              <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200">
+                <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">Accepterade betalningsmetoder:</p>
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   {/* Visa */}
-                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  <div className="h-6 sm:h-7 bg-white border border-gray-200 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 flex items-center justify-center">
                     <img
                       src="/payment_icons/visa.png"
                       alt="Visa"
@@ -362,7 +362,7 @@ export default function Checkout() {
                   </div>
 
                   {/* Mastercard */}
-                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  <div className="h-6 sm:h-7 bg-white border border-gray-200 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 flex items-center justify-center">
                     <img
                       src="/payment_icons/mastercard.png"
                       alt="Mastercard"
@@ -371,7 +371,7 @@ export default function Checkout() {
                   </div>
 
                   {/* American Express */}
-                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  <div className="h-6 sm:h-7 bg-white border border-gray-200 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 flex items-center justify-center">
                     <img
                       src="/payment_icons/amex.png"
                       alt="American Express"
@@ -380,7 +380,7 @@ export default function Checkout() {
                   </div>
 
                   {/* Apple Pay */}
-                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  <div className="h-6 sm:h-7 bg-white border border-gray-200 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 flex items-center justify-center">
                     <img
                       src="/payment_icons/apple.png"
                       alt="Apple Pay"
@@ -389,7 +389,7 @@ export default function Checkout() {
                   </div>
 
                   {/* Google Pay */}
-                  <div className="h-7 bg-white border border-gray-200 rounded px-2 py-1 flex items-center justify-center">
+                  <div className="h-6 sm:h-7 bg-white border border-gray-200 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 flex items-center justify-center">
                     <img
                       src="/payment_icons/google.png"
                       alt="Google Pay"
@@ -397,7 +397,7 @@ export default function Checkout() {
                     />
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-3">
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-2 sm:mt-3">
                   Apple Pay och Google Pay visas automatiskt vid betalning om de är tillgängliga på din enhet.
                 </p>
               </div>
@@ -405,17 +405,17 @@ export default function Checkout() {
           </div>
 
           {/* Order Summary - Simplified */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden sticky top-8">
-              <div className="p-6 border-b border-gray-100">
-                <h2 className="text-lg font-medium">{t('checkout.orderSummary','Din beställning')}</h2>
+          <div className="lg:col-span-1 order-1 lg:order-2">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm overflow-hidden lg:sticky lg:top-8">
+              <div className="p-4 sm:p-6 border-b border-gray-100">
+                <h2 className="text-base sm:text-lg font-medium">{t('checkout.orderSummary','Din beställning')}</h2>
               </div>
 
-              <div className="p-6 space-y-4">
+              <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                 {/* Items */}
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-4">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                  <div key={item.id} className="flex gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                       {(item.image || courseImages[item.id]) ? (
                         <Image 
                           src={item.image || courseImages[item.id] || '/images/blog-placeholder.jpg'} 
@@ -426,24 +426,24 @@ export default function Checkout() {
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                          <Book className="w-6 h-6 text-gray-400" />
+                          <Book className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 truncate">{item.name}</h3>
-                      <p className="text-sm text-gray-500">
+                      <h3 className="font-medium text-sm sm:text-base text-gray-900 truncate">{item.name}</h3>
+                      <p className="text-xs sm:text-sm text-gray-500">
                         {item.type === 'course' ? 'Kurs' : 'Bok'} • {item.quantity} st
                       </p>
-                      <p className="font-medium text-gray-900 mt-1">{Math.round(item.price * (1 + (item.type === 'book' ? BOOK_VAT_RATE : COURSE_VAT_RATE))).toLocaleString()} kr</p>
+                      <p className="font-medium text-sm sm:text-base text-gray-900 mt-0.5 sm:mt-1">{Math.round(item.price * (1 + (item.type === 'book' ? BOOK_VAT_RATE : COURSE_VAT_RATE))).toLocaleString()} kr</p>
                     </div>
                   </div>
                 ))}
 
                 {/* Free Ebook Bonus */}
                 {items.some(item => item.type === 'course') && (
-                  <div className="flex gap-4 p-3 bg-gradient-to-r from-red-50 to-green-50 rounded-xl border border-red-100">
-                    <div className="w-14 h-16 rounded-lg overflow-hidden flex-shrink-0 shadow-md">
+                  <div className="flex gap-2 sm:gap-4 p-2 sm:p-3 bg-gradient-to-r from-red-50 to-green-50 rounded-lg sm:rounded-xl border border-red-100">
+                    <div className="w-10 h-12 sm:w-14 sm:h-16 rounded-lg overflow-hidden flex-shrink-0 shadow-md">
                       <Image 
                         src="/julbok.png" 
                         alt="Gratis E-bok" 
@@ -453,24 +453,24 @@ export default function Checkout() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <Gift className="w-4 h-4 text-red-500" />
-                        <span className="text-xs font-bold text-red-600 uppercase tracking-wide">Julbonus ingår</span>
+                      <div className="flex items-center gap-1 sm:gap-1.5 mb-0.5">
+                        <Gift className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
+                        <span className="text-[10px] sm:text-xs font-bold text-red-600 uppercase tracking-wide">Julbonus</span>
                       </div>
-                      <h3 className="font-medium text-gray-900 text-sm">Gratis E-bok</h3>
-                      <p className="text-xs text-gray-500">Efterrätter och drinkar till julminglet</p>
-                      <p className="font-medium text-green-600 text-sm mt-0.5">0 kr</p>
+                      <h3 className="font-medium text-gray-900 text-xs sm:text-sm">Gratis E-bok</h3>
+                      <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Efterrätter och drinkar</p>
+                      <p className="font-medium text-green-600 text-xs sm:text-sm mt-0.5">0 kr</p>
                     </div>
                   </div>
                 )}
 
                 {/* Coupon */}
-                <div className="pt-4 border-t border-gray-100">
+                <div className="pt-3 sm:pt-4 border-t border-gray-100">
                   {appliedCoupon ? (
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 text-green-700">
+                    <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-green-50 text-green-700">
                       <div className="flex items-center gap-2">
-                        <Tag className="w-4 h-4" />
-                        <span className="text-sm font-medium">{appliedCoupon.code}</span>
+                        <Tag className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="text-xs sm:text-sm font-medium">{appliedCoupon.code}</span>
                       </div>
                       <button onClick={removeCoupon} className="hover:text-green-900">
                         <X className="w-4 h-4" />
@@ -482,53 +482,53 @@ export default function Checkout() {
                         value={couponInput}
                         onChange={(e) => setCouponInput(e.target.value)}
                         placeholder="Rabattkod"
-                        className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#93C560]"
+                        className="flex-1 min-w-0 px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#93C560]"
                       />
                       <button 
                         onClick={handleApplyCoupon} 
                         disabled={applying}
-                        className="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                        className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 whitespace-nowrap"
                       >
                         {applying ? '...' : 'Använd'}
                       </button>
                     </div>
                   )}
                   {couponError && (
-                    <p className="text-red-600 text-sm mt-2">{couponError}</p>
+                    <p className="text-red-600 text-xs sm:text-sm mt-2">{couponError}</p>
                   )}
                 </div>
 
                 {/* Totals with VAT breakdown */}
-                <div className="pt-4 border-t border-gray-100 space-y-2">
-                  <div className="flex justify-between text-sm">
+                <div className="pt-3 sm:pt-4 border-t border-gray-100 space-y-1.5 sm:space-y-2">
+                  <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-gray-600">Delsumma (exkl. moms)</span>
-                    <span className="text-gray-900">{subtotalExVat.toLocaleString()} kr</span>
+                    <span className="text-gray-900 whitespace-nowrap">{subtotalExVat.toLocaleString()} kr</span>
                   </div>
                   {hasDiscount && (
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-600">Rabatt</span>
-                      <span className="text-green-600">-{discountExVat.toLocaleString()} kr</span>
+                      <span className="text-green-600 whitespace-nowrap">-{discountExVat.toLocaleString()} kr</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm pb-2 border-b">
+                  <div className="flex justify-between text-xs sm:text-sm pb-2 border-b">
                     <span className="text-gray-600">{vatLabel}</span>
-                    <span className="text-gray-900">{vatAmount.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kr</span>
+                    <span className="text-gray-900 whitespace-nowrap">{vatAmount.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kr</span>
                   </div>
                   <div className="flex justify-between pt-2">
-                    <span className="text-lg font-medium">Totalt (inkl. moms)</span>
-                    <span className="text-lg font-bold text-gray-900">{Math.round(totalInclVat).toLocaleString()} kr</span>
+                    <span className="text-sm sm:text-lg font-medium">Totalt (inkl. moms)</span>
+                    <span className="text-base sm:text-lg font-bold text-gray-900">{Math.round(totalInclVat).toLocaleString()} kr</span>
                   </div>
                 </div>
 
-                {/* Checkout Button */}
+                {/* Checkout Button - Desktop */}
                 <button
                   onClick={handleCheckout}
                   disabled={isProcessing || (!guestMode && !user)}
-                  className="w-full py-4 bg-[#014421] text-white rounded-xl font-medium hover:bg-[#1a5530] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="hidden lg:flex w-full py-3 sm:py-4 bg-[#014421] text-white rounded-lg sm:rounded-xl font-medium hover:bg-[#1a5530] transition-colors disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center gap-2"
                 >
                   {isProcessing ? (
                     <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
+                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent" />
                       {t('checkout.processing','Behandlar...')}
                     </>
                   ) : (
@@ -540,19 +540,46 @@ export default function Checkout() {
                 </button>
 
                 {error && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-sm text-red-600">{error}</p>
+                  <div className="p-2 sm:p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-xs sm:text-sm text-red-600">{error}</p>
                   </div>
                 )}
 
                 {/* Security badges */}
-                <div className="flex items-center justify-center gap-2 text-xs text-gray-500 mt-4">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-500 mt-3 sm:mt-4">
                   <Lock className="w-3 h-3" />
                   <span>Säker betalning med SSL-kryptering</span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Fixed bottom checkout button for mobile */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 sm:p-4 lg:hidden shadow-lg z-50">
+        <div className="max-w-lg mx-auto flex items-center gap-3">
+          <div className="flex-1">
+            <p className="text-xs text-gray-500">Totalt att betala</p>
+            <p className="text-lg font-bold text-[#014421]">{Math.round(totalInclVat).toLocaleString()} kr</p>
+          </div>
+          <button
+            onClick={handleCheckout}
+            disabled={isProcessing || (!guestMode && !user)}
+            className="flex-1 py-3 bg-[#014421] text-white rounded-lg font-medium hover:bg-[#1a5530] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+          >
+            {isProcessing ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                <span>Behandlar...</span>
+              </>
+            ) : (
+              <>
+                <Lock className="w-4 h-4" />
+                <span>Betala</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </main>
