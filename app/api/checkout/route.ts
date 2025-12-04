@@ -33,15 +33,38 @@ export async function POST(req: NextRequest) {
       .replace(/[^a-z0-9\-]+/g, '')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
+    
+    // Add hardcoded book products (not in CourseProduct table)
+    const bookProducts = [
+      {
+        id: 'julbok-2025',
+        name: 'Julbord – E-bok av Ulrika Davidsson',
+        price: 55.66, // 59 kr inkl 6% moms
+        basePrice: 55.66,
+        type: 'book' as const,
+        vatRate: 0.06
+      }
+    ];
+    
     const productMap = new Map<string, any>();
+    
+    // Add course products to map
     for (const p of courseProducts) {
       const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
       const key2 = slugify(p.name);
-      productMap.set(key1, p);
-      productMap.set(key2, p);
-      productMap.set(p.id, p); // allow using DB id directly
-      productMap.set(p.name.toLowerCase(), p); // exact name match (case-insensitive)
-      productMap.set(p.name, p); // exact name match (case-sensitive)
+      productMap.set(key1, { ...p, type: 'course', vatRate: 0.25 });
+      productMap.set(key2, { ...p, type: 'course', vatRate: 0.25 });
+      productMap.set(p.id, { ...p, type: 'course', vatRate: 0.25 });
+      productMap.set(p.name.toLowerCase(), { ...p, type: 'course', vatRate: 0.25 });
+      productMap.set(p.name, { ...p, type: 'course', vatRate: 0.25 });
+    }
+    
+    // Add book products to map
+    for (const p of bookProducts) {
+      productMap.set(p.id, p);
+      productMap.set(p.name.toLowerCase(), p);
+      productMap.set(p.name, p);
+      productMap.set(slugify(p.name), p);
     }
 
     // Validate and enrich items with server-side data
@@ -53,6 +76,9 @@ export async function POST(req: NextRequest) {
         product = productMap.get(item.name.toLowerCase()) || 
                   productMap.get(item.name) ||
                   courseProducts.find(p => p.name.toLowerCase() === item.name.toLowerCase());
+        if (product && !product.vatRate) {
+          product = { ...product, type: 'course', vatRate: 0.25 };
+        }
       }
       if (!product) {
         throw new Error(`Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`);
@@ -68,6 +94,8 @@ export async function POST(req: NextRequest) {
         ...item,
         price: effectivePrice, // Use dynamic price (campaign-aware), excl. VAT
         name: product.name,   // Use name from database
+        type: product.type || 'course',
+        vatRate: product.vatRate || 0.25
       };
     });
     // --- END SECURITY FIX ---
@@ -79,10 +107,10 @@ export async function POST(req: NextRequest) {
 
     const stripe = require('stripe')(secretKey);
 
-    // Calculate subtotal using price INCLUDING VAT (25%) for Stripe display
-    const VAT_RATE = 0.25;
+    // Calculate subtotal using price INCLUDING VAT (dynamic per item: 6% for books, 25% for courses)
     const subtotal = validatedItems.reduce((sum: number, i) => {
-      const grossInOre = Math.round(i.price * (1 + VAT_RATE) * 100);
+      const itemVatRate = i.vatRate || 0.25;
+      const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
       return sum + grossInOre * i.quantity;
     }, 0);
 
@@ -120,12 +148,13 @@ export async function POST(req: NextRequest) {
     }
 
     const line_items = validatedItems.map((item) => {
-      const grossUnitAmount = Math.round(item.price * (1 + VAT_RATE) * 100);
+      const itemVatRate = item.vatRate || 0.25;
+      const grossUnitAmount = Math.round(item.price * (1 + itemVatRate) * 100);
       return {
         price_data: {
           currency: 'sek',
           product_data: { name: item.name },
-          // Charge price including VAT so Checkout shows 2295 kr instead of 1836 kr
+          // Charge price including VAT (dynamic per item type)
           unit_amount: grossUnitAmount,
         },
         quantity: item.quantity,
@@ -136,12 +165,14 @@ export async function POST(req: NextRequest) {
     console.log('🔍 Stripe Checkout Debug (gross incl. VAT):', {
       items: validatedItems.map(i => ({
         name: i.name,
+        type: i.type,
+        vatRate: i.vatRate,
         priceExVatSEK: i.price,
-        priceInclVatSEK: Math.round(i.price * (1 + VAT_RATE)),
+        priceInclVatSEK: Math.round(i.price * (1 + (i.vatRate || 0.25))),
         quantity: i.quantity,
-        stripeUnitAmount: Math.round(i.price * (1 + VAT_RATE) * 100),
-        totalInOre: Math.round(i.price * (1 + VAT_RATE) * 100) * i.quantity,
-        totalInSEK: Math.round(i.price * (1 + VAT_RATE)) * i.quantity
+        stripeUnitAmount: Math.round(i.price * (1 + (i.vatRate || 0.25)) * 100),
+        totalInOre: Math.round(i.price * (1 + (i.vatRate || 0.25)) * 100) * i.quantity,
+        totalInSEK: Math.round(i.price * (1 + (i.vatRate || 0.25))) * i.quantity
       })),
       subtotalInOre: subtotal,
       subtotalInSEK: subtotal / 100,
