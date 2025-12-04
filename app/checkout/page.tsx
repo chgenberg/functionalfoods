@@ -159,13 +159,40 @@ export default function Checkout() {
 
   // Calculate if we have a discount
   const hasDiscount = discount > 0;
-  // VAT breakdown for display
-  const VAT_RATE = 0.25;
+  
+  // VAT rates
+  const BOOK_VAT_RATE = 0.06;
+  const COURSE_VAT_RATE = 0.25;
+  
+  // Calculate VAT per item type
+  const bookItems = items.filter(item => item.type === 'book');
+  const courseItems = items.filter(item => item.type === 'course');
+  
+  const bookSubtotalExVat = bookItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const courseSubtotalExVat = courseItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const subtotalExVat = total;
+  
+  // Distribute discount proportionally
   const discountExVat = discount;
+  const bookDiscountRatio = subtotalExVat > 0 ? bookSubtotalExVat / subtotalExVat : 0;
+  const courseDiscountRatio = subtotalExVat > 0 ? courseSubtotalExVat / subtotalExVat : 0;
+  const bookDiscount = discount * bookDiscountRatio;
+  const courseDiscount = discount * courseDiscountRatio;
+  
+  const bookTaxableBase = Math.max(0, bookSubtotalExVat - bookDiscount);
+  const courseTaxableBase = Math.max(0, courseSubtotalExVat - courseDiscount);
+  
+  const bookVat = Math.round(bookTaxableBase * BOOK_VAT_RATE * 100) / 100;
+  const courseVat = Math.round(courseTaxableBase * COURSE_VAT_RATE * 100) / 100;
+  const vatAmount = Math.round((bookVat + courseVat) * 100) / 100;
+  
   const taxableBaseExVat = Math.max(0, subtotalExVat - discountExVat);
-  const vatAmount = Math.round(taxableBaseExVat * VAT_RATE);
-  const totalInclVat = taxableBaseExVat + vatAmount;
+  const totalInclVat = Math.round((taxableBaseExVat + vatAmount) * 100) / 100;
+  
+  // Determine which VAT label to show
+  const hasBooks = bookItems.length > 0;
+  const hasCourses = courseItems.length > 0;
+  const vatLabel = hasBooks && hasCourses ? 'Moms (6% & 25%)' : hasBooks ? 'Moms (6%)' : 'Moms (25%)';
 
   return (
     <main className="min-h-screen bg-[#F7F5F0] py-12">
@@ -408,7 +435,7 @@ export default function Checkout() {
                       <p className="text-sm text-gray-500">
                         {item.type === 'course' ? 'Kurs' : 'Bok'} • {item.quantity} st
                       </p>
-                      <p className="font-medium text-gray-900 mt-1">{Math.ceil(item.price * (1 + VAT_RATE)).toLocaleString()} kr</p>
+                      <p className="font-medium text-gray-900 mt-1">{Math.round(item.price * (1 + (item.type === 'book' ? BOOK_VAT_RATE : COURSE_VAT_RATE))).toLocaleString()} kr</p>
                     </div>
                   </div>
                 ))}
@@ -484,12 +511,12 @@ export default function Checkout() {
                     </div>
                   )}
                   <div className="flex justify-between text-sm pb-2 border-b">
-                    <span className="text-gray-600">Moms (25%)</span>
-                    <span className="text-gray-900">{vatAmount.toLocaleString()} kr</span>
+                    <span className="text-gray-600">{vatLabel}</span>
+                    <span className="text-gray-900">{vatAmount.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kr</span>
                   </div>
                   <div className="flex justify-between pt-2">
                     <span className="text-lg font-medium">Totalt (inkl. moms)</span>
-                    <span className="text-lg font-bold text-gray-900">{totalInclVat.toLocaleString()} kr</span>
+                    <span className="text-lg font-bold text-gray-900">{Math.round(totalInclVat).toLocaleString()} kr</span>
                   </div>
                 </div>
 
