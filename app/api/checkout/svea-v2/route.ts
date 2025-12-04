@@ -481,8 +481,8 @@ export async function POST(req: NextRequest) {
             if (isPercentage) {
               // subtotal är inkl moms i öre, räkna rabatt på det
               discountAmount = Math.round(subtotal * (coupon.amount / 100));
-              // Runda upp till närmsta krona
-              const discountInKr = Math.ceil(discountAmount / 100);
+              // Runda NER rabatten till närmsta krona (så kunden betalar ett jämnt belopp)
+              const discountInKr = Math.floor(discountAmount / 100);
               discountAmount = discountInKr * 100;
             } else if (isFixed) {
               // Fixed rabatt är i kr exkl moms, konvertera till inkl moms
