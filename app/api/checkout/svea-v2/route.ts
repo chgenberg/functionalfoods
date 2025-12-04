@@ -423,18 +423,18 @@ export async function POST(req: NextRequest) {
         // vatPercent anger hur mycket av priset som är moms (för momsrapportering)
         // item.price från DB är exkl. moms -> vi behöver lägga till moms
         const itemVatRate = item.vatRate || (item.type === 'book' ? BOOK_VAT_RATE : DEFAULT_VAT_RATE);
-        const priceExclVATRounded = Math.ceil(item.price);
-        // Lägg till moms för att få inkl-pris
-        const priceInclVAT = priceExclVATRounded * (1 + itemVatRate);
-        // Konvertera till öre (minor units)
-        const priceInOre = Math.round(priceInclVAT * 100);
+        // Lägg till moms för att få inkl-pris (runda INTE före moms läggs till!)
+        const priceInclVAT = item.price * (1 + itemVatRate);
+        // Runda till närmsta krona för slutpris, sedan konvertera till öre
+        const priceInclVATRounded = Math.round(priceInclVAT);
+        const priceInOre = priceInclVATRounded * 100;
         // För subtotal-tracking
         subtotal += priceInOre * item.quantity;
         
         // Convert VAT rate to Svea format (6% = 600, 25% = 2500)
         const sveaVatPercent = Math.round(itemVatRate * 10000);
         
-        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), VAT rate: ${itemVatRate * 100}%, Rounded: ${priceExclVATRounded} kr, With VAT: ${priceInclVAT} kr, In öre (INKL VAT): ${priceInOre}, Sending to Svea: ${priceInOre} öre`);
+        console.log(`🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), VAT rate: ${itemVatRate * 100}%, With VAT: ${priceInclVAT} kr, Rounded: ${priceInclVATRounded} kr, In öre: ${priceInOre}, Sending to Svea: ${priceInOre} öre`);
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
