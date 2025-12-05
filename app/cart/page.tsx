@@ -408,8 +408,24 @@ export default function CartPage() {
                     const vatRate = item.type === 'book' ? 0.06 : 0.25;
                     return sum + (item.price * item.quantity * vatRate);
                   }, 0);
-                  const finalTotalInclVat = subtotalInclVat - discount;
-                  const finalVat = Math.max(0, totalVat - (discount * (totalVat / subtotalInclVat)));
+                  
+                  // Calculate discount on INCLUDING VAT prices (what the customer sees)
+                  let discountInclVat = 0;
+                  if (appliedCoupon && subtotalInclVat > 0) {
+                    const normalizedType = String(appliedCoupon.type || '').toUpperCase();
+                    const isPercentage = normalizedType === 'PERCENTAGE' || normalizedType === 'PERCENT';
+                    if (isPercentage) {
+                      discountInclVat = Math.round(subtotalInclVat * (appliedCoupon.amount / 100));
+                    } else {
+                      // Fixed amount discount - assume it's already including VAT
+                      discountInclVat = Math.round(appliedCoupon.amount * 1.25);
+                    }
+                    if (discountInclVat > subtotalInclVat) discountInclVat = subtotalInclVat;
+                  }
+                  
+                  const finalTotalInclVat = Math.max(0, subtotalInclVat - discountInclVat);
+                  const discountRatio = discountInclVat / subtotalInclVat;
+                  const finalVat = Math.max(0, totalVat * (1 - discountRatio));
                   
                   // Check if we have mixed VAT rates
                   const hasBooks = items.some(item => item.type === 'book');
@@ -422,10 +438,10 @@ export default function CartPage() {
                         <span className="text-gray-600">Delsumma (inkl. moms)</span>
                         <span className="text-gray-900 whitespace-nowrap">{Math.round(subtotalInclVat).toLocaleString('sv-SE')} kr</span>
                       </div>
-                      {discount > 0 && (
+                      {discountInclVat > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#93C560]">Rabatt</span>
-                          <span className="text-[#93C560] whitespace-nowrap">-{discount.toLocaleString('sv-SE')} kr</span>
+                          <span className="text-[#93C560] whitespace-nowrap">-{discountInclVat.toLocaleString('sv-SE')} kr</span>
                         </div>
                       )}
                       <div className="flex justify-between text-xs sm:text-sm pb-3 border-b border-gray-200">
@@ -490,7 +506,21 @@ export default function CartPage() {
               const vatRate = item.type === 'book' ? 1.06 : 1.25;
               return sum + (item.price * item.quantity * vatRate);
             }, 0);
-            const finalTotalInclVat = subtotalInclVat - discount;
+            
+            // Calculate discount on INCLUDING VAT prices
+            let discountInclVat = 0;
+            if (appliedCoupon && subtotalInclVat > 0) {
+              const normalizedType = String(appliedCoupon.type || '').toUpperCase();
+              const isPercentage = normalizedType === 'PERCENTAGE' || normalizedType === 'PERCENT';
+              if (isPercentage) {
+                discountInclVat = Math.round(subtotalInclVat * (appliedCoupon.amount / 100));
+              } else {
+                discountInclVat = Math.round(appliedCoupon.amount * 1.25);
+              }
+              if (discountInclVat > subtotalInclVat) discountInclVat = subtotalInclVat;
+            }
+            
+            const finalTotalInclVat = Math.max(0, subtotalInclVat - discountInclVat);
             return (
               <div className="flex items-center gap-3">
                 <div className="flex-1 min-w-0">
