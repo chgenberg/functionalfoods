@@ -424,7 +424,7 @@ export default function CartPage() {
                   }
                   
                   const finalTotalInclVat = Math.max(0, subtotalInclVat - discountInclVat);
-                  const discountRatio = discountInclVat / subtotalInclVat;
+                  const discountRatio = subtotalInclVat > 0 ? discountInclVat / subtotalInclVat : 0;
                   const finalVat = Math.max(0, totalVat * (1 - discountRatio));
                   
                   // Check if we have mixed VAT rates
