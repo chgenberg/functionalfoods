@@ -517,130 +517,117 @@ export async function POST(req: NextRequest) {
 
           if (!updatedOrder) {
             console.warn(`⚠️ Order not found for email sending: ${order.id}`);
-            return;
-          }
+            // Don't return - continue to return the response
+          } else {
+            // Determine email address to use - prioritize customerEmail from order or Svea
+            const emailToUse = updatedOrder.customerEmail || 
+                              (updatedOrder.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
+                              (sveaOrder.customer?.email || null);
+            
+            const nameToUse = updatedOrder.customerName || 
+                              (updatedOrder.user?.name || null) ||
+                              `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() ||
+                              emailToUse?.split('@')[0] ||
+                              'Kund';
 
-          // Determine email address to use - prioritize customerEmail from order or Svea
-          const emailToUse = updatedOrder.customerEmail || 
-                            (updatedOrder.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
-                            (sveaOrder.customer?.email || null);
-          
-          const nameToUse = updatedOrder.customerName || 
-                            (updatedOrder.user?.name || null) ||
-                            `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() ||
-                            emailToUse?.split('@')[0] ||
-                            'Kund';
+            if (!emailToUse || isGuestEmail(emailToUse)) {
+              console.warn(`⚠️ No valid email address found for order ${order.id}. customerEmail: ${updatedOrder.customerEmail}, user.email: ${updatedOrder.user?.email}`);
+              // Don't return - continue to return the response
+            } else {
+              const COURSE_VAT_RATE = 0.25;
+              const BOOK_VAT_RATE = 0.06;
+              const courseItems = updatedOrder.items.filter(item => item.type === 'course');
+              const bookItems = updatedOrder.items.filter(item => item.type === 'book');
+              const emailCourses = courseItems.map(item => ({
+                name: item.name,
+                price: Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100 * (item.quantity || 1)
+              }));
 
-          if (!emailToUse || isGuestEmail(emailToUse)) {
-            console.warn(`⚠️ No valid email address found for order ${order.id}. customerEmail: ${updatedOrder.customerEmail}, user.email: ${updatedOrder.user?.email}`);
-            return;
-          }
-
-          const COURSE_VAT_RATE = 0.25;
-          const BOOK_VAT_RATE = 0.06;
-          const courseItems = updatedOrder.items.filter(item => item.type === 'course');
-          const bookItems = updatedOrder.items.filter(item => item.type === 'book');
-          const emailCourses = courseItems.map(item => ({
-            name: item.name,
-            price: Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100 * (item.quantity || 1)
-          }));
-
-          // Check if email was already sent (via metadata flag)
-          const metadata = updatedOrder.metadata as any;
-          if (metadata?.confirmationEmailSent) {
-            console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
-            return;
-          }
-
-          console.log(`📧 Preparing to send order confirmation email via verify to: ${emailToUse}, isNewUser: ${isNewUser}`);
-          console.log(`📚 Order contains: ${courseItems.length} courses, ${bookItems.length} e-books`);
-
-          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
-
-          // Send e-book download email for e-book purchases
-          if (bookItems.length > 0) {
-            for (const book of bookItems) {
-              // Generate unique download token
-              const crypto = await import('crypto');
-              const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+              // Check if email was already sent (via metadata flag)
+              const metadata = updatedOrder.metadata as any;
+              const emailAlreadySent = metadata?.confirmationEmailSent;
               
-              // Determine ebookId based on book name
-              let ebookId = 'julbok-2025';
-              if (book.name.toLowerCase().includes('julbord') || book.name.toLowerCase().includes('julbok')) {
-                ebookId = 'julbok-2025';
-              }
-              
-              // Store the download token in database
-              await prisma.ebookDownload.create({
-                data: {
-                  token: downloadToken,
-                  orderNumber: updatedOrder.orderNumber,
-                  customerEmail: emailToUse,
-                  ebookId,
-                  ebookName: book.name,
-                  maxDownloads: 5,
-                  expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
+              if (emailAlreadySent) {
+                console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
+              } else {
+                console.log(`📧 Preparing to send order confirmation email via verify to: ${emailToUse}, isNewUser: ${isNewUser}`);
+                console.log(`📚 Order contains: ${courseItems.length} courses, ${bookItems.length} e-books`);
+
+                const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+
+                // Send e-book download email for e-book purchases
+                if (bookItems.length > 0) {
+                  for (const book of bookItems) {
+                    // Generate unique download token
+                    const crypto = await import('crypto');
+                    const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+                    
+                    // Determine ebookId based on book name
+                    let ebookId = 'julbok-2025';
+                    if (book.name.toLowerCase().includes('julbord') || book.name.toLowerCase().includes('julbok')) {
+                      ebookId = 'julbok-2025';
+                    }
+                    
+                    // Store the download token in database
+                    await prisma.ebookDownload.create({
+                      data: {
+                        token: downloadToken,
+                        orderNumber: updatedOrder.orderNumber,
+                        customerEmail: emailToUse,
+                        ebookId,
+                        ebookName: book.name,
+                        maxDownloads: 5,
+                        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
+                      }
+                    });
+                    
+                    const downloadUrl = `${baseUrl}/julbok/ladda-ner?token=${downloadToken}`;
+                    
+                    await emailService.sendEbookDownloadEmail({
+                      email: emailToUse,
+                      name: nameToUse,
+                      ebookName: book.name,
+                      downloadUrl,
+                      downloadPassword: downloadToken, // Now using unique token instead of static password
+                      orderNumber: updatedOrder.orderNumber
+                    });
+                    
+                    console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
+                  }
                 }
-              });
-              
-              const downloadUrl = `${baseUrl}/julbok/ladda-ner?token=${downloadToken}`;
-              
-              await emailService.sendEbookDownloadEmail({
-                email: emailToUse,
-                name: nameToUse,
-                ebookName: book.name,
-                downloadUrl,
-                downloadPassword: downloadToken, // Now using unique token instead of static password
-                orderNumber: updatedOrder.orderNumber
-              });
-              
-              console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
-            }
-          }
 
-          // Send regular order confirmation for course purchases
-          if (courseItems.length > 0) {
-            await emailService.sendOrderConfirmation({
-              customerEmail: emailToUse,
-              customerName: nameToUse,
-              orderNumber: updatedOrder.orderNumber,
-              totalAmount: displayTotalAmount,
-              courses: emailCourses,
-              loginCredentials: (isNewUser && temporaryPassword) ? {
-                email: emailToUse,
-                password: temporaryPassword,
-                loginUrl: `${baseUrl}/login`
-              } : undefined
-            });
-          } else if (bookItems.length === 0) {
-            // Fallback: if no courses and no books, still send a basic confirmation
-            await emailService.sendOrderConfirmation({
-              customerEmail: emailToUse,
-              customerName: nameToUse,
-              orderNumber: updatedOrder.orderNumber,
-              totalAmount: displayTotalAmount,
-              courses: emailCourses,
-              loginCredentials: (isNewUser && temporaryPassword) ? {
-                email: emailToUse,
-                password: temporaryPassword,
-                loginUrl: `${baseUrl}/login`
-              } : undefined
-            });
-          }
-          
-          // Mark email as sent in metadata
-          await prisma.order.update({
-            where: { id: order.id },
-            data: {
-              metadata: {
-                ...metadata,
-                confirmationEmailSent: true,
-                confirmationEmailSentAt: new Date().toISOString()
+                // Send regular order confirmation for course purchases (ALWAYS send if there are courses)
+                if (courseItems.length > 0) {
+                  console.log(`📧 Sending order confirmation for ${courseItems.length} courses, isNewUser: ${isNewUser}, hasPassword: ${!!temporaryPassword}`);
+                  await emailService.sendOrderConfirmation({
+                    customerEmail: emailToUse,
+                    customerName: nameToUse,
+                    orderNumber: updatedOrder.orderNumber,
+                    totalAmount: displayTotalAmount,
+                    courses: emailCourses,
+                    loginCredentials: (isNewUser && temporaryPassword) ? {
+                      email: emailToUse,
+                      password: temporaryPassword,
+                      loginUrl: `${baseUrl}/login`
+                    } : undefined
+                  });
+                  console.log(`✅ Order confirmation email sent via verify to ${emailToUse}${isNewUser ? ' (new user with login credentials)' : ' (existing user)'}`);
+                }
+                
+                // Mark email as sent in metadata
+                await prisma.order.update({
+                  where: { id: order.id },
+                  data: {
+                    metadata: {
+                      ...metadata,
+                      confirmationEmailSent: true,
+                      confirmationEmailSentAt: new Date().toISOString()
+                    }
+                  }
+                });
               }
             }
-          });
-          
-          console.log(`✅ Order confirmation email sent via verify to ${emailToUse}${isNewUser ? ' (new user with login credentials)' : ''}`);
+          }
         } catch (emailError) {
           console.error('❌ Failed to send order confirmation email via verify:', emailError);
           // Don't throw - email failure shouldn't fail verification
