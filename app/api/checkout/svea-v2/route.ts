@@ -136,6 +136,34 @@ export async function POST(req: NextRequest) {
       productMap.set(bookId, bookProduct);
     }
 
+    // Helper function to resolve courseId from cart item (used for both simulated and real orders)
+    async function resolveCourseIdFromCartItem(itemId: string, itemName?: string): Promise<string | null> {
+      const id = itemId.toLowerCase();
+      const name = (itemName || '').toLowerCase();
+      let keyword = '';
+      
+      // Match by ID pattern
+      if (id.includes('energy') || id.includes('insulin')) keyword = 'Energy';
+      else if (id.includes('basic')) keyword = 'Basics';
+      else if (id.includes('flow') || id.includes('gut')) keyword = 'Flow';
+      else if (id.includes('hormone') || id.includes('hormon')) keyword = 'Hormonell';
+      
+      // Fallback: match by name
+      if (!keyword) {
+        if (name.includes('energy') || name.includes('insulin')) keyword = 'Energy';
+        else if (name.includes('basic')) keyword = 'Basics';
+        else if (name.includes('flow') || name.includes('gut')) keyword = 'Flow';
+        else if (name.includes('hormon')) keyword = 'Hormonell';
+      }
+      
+      if (!keyword) return null;
+      const cp = await prisma.courseProduct.findFirst({ 
+        where: { name: { contains: keyword, mode: 'insensitive' } }, 
+        select: { id: true } 
+      });
+      return cp?.id || null;
+    }
+
     // Validate and enrich items with server-side data
     const validatedItems = [];
     for (const item of items) {
@@ -267,18 +295,6 @@ export async function POST(req: NextRequest) {
       const randomPart = Math.random().toString(36).substring(2, 9);
       const orderId = `FF-${timestamp}-${randomPart}`;
 
-      // Map cart item ids to CourseProduct ids when possible
-      async function resolveCourseIdFromItemId(itemId: string): Promise<string | null> {
-        const id = itemId.toLowerCase();
-        let keyword = '';
-        if (id.includes('energy') || id.includes('insulin')) keyword = 'Energy';
-        else if (id.includes('basic')) keyword = 'Basics';
-        else if (id.includes('flow') || id.includes('gut')) keyword = 'Flow';
-        if (!keyword) return null;
-        const cp = await prisma.courseProduct.findFirst({ where: { name: { contains: keyword, mode: 'insensitive' } }, select: { id: true } });
-        return cp?.id || null;
-      }
-
       // Create order + payment + purchases in one transaction
       let createdOrderId = '';
       await prisma.$transaction(async (tx) => {
@@ -296,7 +312,7 @@ export async function POST(req: NextRequest) {
                 type: item.type,
                 quantity: item.quantity,
                 price: item.price,
-                courseId: await resolveCourseIdFromItemId(item.id)
+                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null
               })))
             }
           }
@@ -750,13 +766,13 @@ export async function POST(req: NextRequest) {
             discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
           },
           items: {
-            create: itemsWithDiscountedPrice.map(item => ({
-              courseId: null, // Will be resolved later if needed
+            create: await Promise.all(itemsWithDiscountedPrice.map(async (item) => ({
+              courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null,
               name: item.name,
               quantity: item.quantity,
               price: item.discountedPrice, // Use discounted price instead of original
               type: item.type
-            }))
+            })))
           }
         }
       });
