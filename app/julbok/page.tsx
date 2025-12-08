@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { 
@@ -16,6 +16,7 @@ import {
   Leaf
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 export default function JulbokPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -23,18 +24,27 @@ export default function JulbokPage() {
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
   const router = useRouter();
+  const ebook = {
+    id: 'julbok-2025',
+    name: 'Julbord – E-bok av Ulrika Davidsson',
+    price: 55.66, // 59 kr inkl 6% moms = 55.66 kr exkl moms (59 / 1.06)
+    quantity: 1,
+    type: 'book' as const,
+    image: '/Julbok/Produktbild.png'
+  };
+
+  // Track product view (GA/Meta server fallback included)
+  useEffect(() => {
+    try {
+      trackViewContent({ id: ebook.id, name: ebook.name, price: ebook.price }, 'SEK');
+    } catch {}
+  }, []);
 
   const handleAddToCart = async () => {
     setIsAdding(true);
     
-    addItem({
-      id: 'julbok-2025',
-      name: 'Julbord – E-bok av Ulrika Davidsson',
-      price: 55.66, // 59 kr inkl 6% moms = 55.66 kr exkl moms (59 / 1.06)
-      quantity: 1,
-      type: 'book',
-      image: '/Julbok/Produktbild.png'
-    });
+    addItem(ebook);
+    try { trackAddToCart({ id: ebook.id, name: ebook.name, price: ebook.price, quantity: 1 }, 'SEK'); } catch {}
 
     setAdded(true);
     

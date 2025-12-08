@@ -55,24 +55,10 @@ export default function FunctionalBasicsPage() {
     fetchPrice();
   }, []);
 
-  // Fire ViewContent once after fbq is available and consent granted
+  // Fire ViewContent once when price is available (server fallback handles blocked clients)
   useEffect(() => {
-    let attempts = 0;
-    const maxAttempts = 25;
-    const id = window.setInterval(() => {
-      attempts += 1;
-      try {
-        const consent = localStorage.getItem('cookie-consent');
-        const marketingOk = !!consent && JSON.parse(consent)?.preferences?.marketing;
-        if (marketingOk && coursePrice) {
-          // trackViewContent hanterar själv server‑fallback när fbq är blockerat
-          trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: coursePrice });
-          window.clearInterval(id);
-        }
-      } catch {}
-      if (attempts >= maxAttempts) window.clearInterval(id);
-    }, 200);
-    return () => window.clearInterval(id);
+    if (!coursePrice) return; // Wait for price to load
+    trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: coursePrice });
   }, [coursePrice]);
   
   // Add CSS for gradient animation

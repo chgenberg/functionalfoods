@@ -111,24 +111,10 @@ export default function FunctionalEnergyPage() {
     router.push('/cart');
   };
 
-  // Fire ViewContent once after fbq is available and consent granted
+  // Fire ViewContent once when price is available (server fallback handles blocked clients)
   useEffect(() => {
     if (!coursePrice) return; // Wait for price to load
-    let attempts = 0;
-    const maxAttempts = 25;
-    const id = window.setInterval(() => {
-      attempts += 1;
-      try {
-        const consent = localStorage.getItem('cookie-consent');
-        const marketingOk = !!consent && JSON.parse(consent)?.preferences?.marketing;
-        if (marketingOk) {
-          trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: coursePrice });
-          window.clearInterval(id);
-        }
-      } catch {}
-      if (attempts >= maxAttempts) window.clearInterval(id);
-    }, 200);
-    return () => window.clearInterval(id);
+    trackViewContent({ id: 'functional-energy', name: 'Functional Insulin balance/Energy', price: coursePrice });
   }, [coursePrice]);
 
   const benefits = [
