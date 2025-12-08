@@ -458,6 +458,33 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
       console.warn('⚠️ Mailchimp E-commerce tracking failed:', e);
     }
 
+    // GA4 server-side purchase tracking (non-blocking)
+    try {
+      const { trackPurchaseServer } = await import('@/app/lib/server-analytics');
+      const normalizeGaItemId = (rawId: string | undefined | null, name: string | undefined | null) => {
+        const n = (name || '').toLowerCase();
+        const rid = (rawId || '').toLowerCase();
+        if (n.includes('julbok') || n.includes('julbord') || rid === 'julbok-2025') return 'julbok-2025';
+        return rawId || undefined;
+      };
+      const gaItems = updatedOrder.items.map(item => ({
+        item_id: normalizeGaItemId(item.courseId || item.id, item.name),
+        item_name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+      await trackPurchaseServer({
+        transactionId: updatedOrder.orderNumber,
+        value: updatedOrder.totalAmount || 0,
+        currency: updatedOrder.currency || 'SEK',
+        items: gaItems,
+        userId: updatedOrder.customerEmail || undefined,
+        clientSeed: updatedOrder.customerEmail || updatedOrder.orderNumber
+      });
+    } catch (e) {
+      console.warn('⚠️ GA4 server purchase tracking failed (Svea):', e);
+    }
+
     // Send order confirmation email with login credentials for new users
     try {
       const updatedOrder = await prisma.order.findUnique({
