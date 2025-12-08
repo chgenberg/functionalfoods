@@ -425,6 +425,38 @@ export default function EnhancedAdminSalesPage() {
         });
       }
 
+      // Fallback to metadata courseNames/items if available
+      if (!added) {
+        const metaCourses = payment.metadata?.courseNames
+          ? String(payment.metadata.courseNames).split(',').map((c: string) => normalizeProductName(c, undefined))
+          : [];
+        const metaItems = Array.isArray(payment.metadata?.items) ? payment.metadata.items : [];
+        if (metaCourses.length || metaItems.length) {
+          const perItemRevenue = (payment.amount - payment.refundAmount) / Math.max(1, (metaCourses.length || metaItems.length));
+          metaCourses.forEach((name: string) => {
+            const course = normalizeProductName(name, undefined);
+            if (course === '-') return;
+            if (!courseMap[course]) {
+              courseMap[course] = { count: 0, revenue: 0 };
+            }
+            courseMap[course].count += 1;
+            courseMap[course].revenue += perItemRevenue;
+          });
+          if (metaItems.length) {
+            metaItems.forEach((item: any) => {
+              const course = normalizeProductName(item?.name || '', item?.type);
+              if (course === '-') return;
+              if (!courseMap[course]) {
+                courseMap[course] = { count: 0, revenue: 0 };
+              }
+              courseMap[course].count += 1;
+              courseMap[course].revenue += perItemRevenue;
+            });
+          }
+          added = true;
+        }
+      }
+
       // Fallback to description parsing
       if (!added) {
         const course = extractCourseFromDescription(payment.description);

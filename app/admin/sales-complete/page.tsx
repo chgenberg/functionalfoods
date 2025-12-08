@@ -207,8 +207,14 @@ export default function UnifiedSalesPage() {
       if (stripeData.payments) {
         stripeData.payments.forEach((payment: any) => {
           const itemCourses = (payment.orderInfo?.items || []).map((item: any) => normalizeCourseNames([item.name])[0]);
+          const metaCourses = payment.metadata?.courseNames
+            ? normalizeCourseNames(String(payment.metadata.courseNames).split(','))
+            : [];
+          const metaItemCourses = payment.metadata?.items
+            ? normalizeCourseNames((Array.isArray(payment.metadata.items) ? payment.metadata.items : []).map((i: any) => i?.name || ''))
+            : [];
           const descriptionCourses = extractCoursesFromDescription(payment.description);
-          const courses = Array.from(new Set([...itemCourses, ...descriptionCourses])).filter(Boolean);
+          const courses = Array.from(new Set([...itemCourses, ...metaCourses, ...metaItemCourses, ...descriptionCourses])).filter(Boolean);
 
           combinedOrders.push({
             id: payment.id,
