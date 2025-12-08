@@ -1,5 +1,3 @@
-"use server";
-
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
@@ -22,8 +20,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: true, skipped: true, reason: 'build phase' });
   }
 
-  const authResult = await requireAdminAuth(request);
-  if (authResult instanceof NextResponse) return authResult;
+  // Optional cron key bypass (for scheduled pings)
+  const cronKey = process.env.ADMIN_CRON_KEY;
+  const headerKey = request.headers.get('x-admin-cron');
+  if (!cronKey || headerKey !== cronKey) {
+    const authResult = await requireAdminAuth(request);
+    if (authResult instanceof NextResponse) return authResult;
+  }
 
   const { searchParams } = new URL(request.url);
   const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
