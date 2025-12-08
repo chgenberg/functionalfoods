@@ -234,7 +234,8 @@ export default function UnifiedSalesPage() {
             refunded: payment.refunded,
             refundAmount: payment.refundAmount / 100,
             receiptUrl: payment.receiptUrl,
-            metadata: payment
+            metadata: payment,
+            source: 'stripe'
           });
         });
       }
@@ -283,7 +284,8 @@ export default function UnifiedSalesPage() {
           createdAt: order.createdAt,
           refunded: metadata.refunded || false,
           refundAmount: metadata.refundAmount || 0,
-          metadata: order.metadata
+          metadata: order.metadata,
+          source: 'db'
         });
       });
 
@@ -322,6 +324,7 @@ export default function UnifiedSalesPage() {
 
     orders.forEach(order => {
       const isCompleted = order.status === 'succeeded' || order.status === 'COMPLETED';
+      const isDbSource = order.source === 'db';
 
       // Count by status (exclude PENDING from completed)
       if (isCompleted) {
@@ -342,7 +345,7 @@ export default function UnifiedSalesPage() {
       }
 
       // Course/book breakdown - only completed/succeeded orders; use item-level revenue when available
-      if (isCompleted) {
+      if (isCompleted && isDbSource) {
         const hasItems = Array.isArray(order.items) && order.items.length > 0;
         if (hasItems) {
           order.items.forEach((item) => {
