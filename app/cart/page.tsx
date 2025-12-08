@@ -3,7 +3,8 @@ import { useCart } from '../context/CartContext';
 import Link from 'next/link';
 import { ArrowLeft, Book, Check, Clock, CreditCard, Gift, Lightbulb, Minus, Plus, Shield, Sparkles, Tag, Trash2, X, Zap } from "lucide-react";
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
 // Course images mapping
 const courseImages: Record<string, string> = {
@@ -25,6 +26,36 @@ export default function CartPage() {
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
+
+  // Fire view/add events for items already in cart (covers direct-to-cart flows)
+  useEffect(() => {
+    if (!isLoaded || items.length === 0) return;
+    try {
+      const seen: Record<string, boolean> = {};
+      items.forEach((item) => {
+        const viewKey = `ff_ga_view_${item.id}`;
+        const addKey = `ff_ga_add_${item.id}`;
+        const hasView = typeof window !== 'undefined' ? sessionStorage.getItem(viewKey) : null;
+        const hasAdd = typeof window !== 'undefined' ? sessionStorage.getItem(addKey) : null;
+
+        // Track view_item once per session
+        if (!hasView) {
+          trackViewContent({ id: item.id, name: item.name, price: item.price }, 'SEK');
+          if (typeof window !== 'undefined') sessionStorage.setItem(viewKey, '1');
+        }
+
+        // Track add_to_cart once per session (if it wasn’t already fired on product page)
+        if (!hasAdd) {
+          trackAddToCart({ id: item.id, name: item.name, price: item.price, quantity: item.quantity }, 'SEK');
+          if (typeof window !== 'undefined') sessionStorage.setItem(addKey, '1');
+        }
+
+        seen[item.id] = true;
+      });
+    } catch {
+      // no-op if sessionStorage unavailable
+    }
+  }, [isLoaded, items]);
 
   const handleRemove = async (id: string) => {
     setRemovingItem(id);
