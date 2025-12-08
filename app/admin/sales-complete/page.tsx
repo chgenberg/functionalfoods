@@ -341,17 +341,33 @@ export default function UnifiedSalesPage() {
         }
       }
 
-      // Course breakdown - only completed/succeeded orders with actual revenue
-      if (isCompleted && order.amount > 0) {
-        order.courses.forEach(course => {
-          if (!summary.courseBreakdown[course]) {
-            summary.courseBreakdown[course] = { count: 0, revenue: 0 };
+      // Course/book breakdown - only completed/succeeded orders; use item-level revenue when available
+      if (isCompleted) {
+        const hasItems = Array.isArray(order.items) && order.items.length > 0;
+        if (hasItems) {
+          order.items.forEach((item) => {
+            const courseName = normalizeCourseNames([item.name || ''])[0];
+            if (!courseName) return;
+            if (!summary.courseBreakdown[courseName]) {
+              summary.courseBreakdown[courseName] = { count: 0, revenue: 0 };
+            }
+            summary.courseBreakdown[courseName].count += item.quantity || 1;
+            // item.price is exkl moms i DB; summera exkl moms för konsistens
+            summary.courseBreakdown[courseName].revenue += (item.price || 0) * (item.quantity || 1);
+          });
+        } else {
+          // Fallback to legacy course list if items saknas
+          if (order.courses.length > 0 && order.amount > 0) {
+            order.courses.forEach(course => {
+              if (!summary.courseBreakdown[course]) {
+                summary.courseBreakdown[course] = { count: 0, revenue: 0 };
+              }
+              summary.courseBreakdown[course].count += 1;
+              const perItemRevenue = (order.amount - (order.refundAmount || 0)) / Math.max(1, order.courses.length);
+              summary.courseBreakdown[course].revenue += perItemRevenue;
+            });
           }
-          summary.courseBreakdown[course].count++;
-          // Distribute revenue evenly across items if multiple items exist
-          const perItemRevenue = (order.amount - (order.refundAmount || 0)) / Math.max(1, order.items.length);
-          summary.courseBreakdown[course].revenue += perItemRevenue;
-        });
+        }
       }
 
       // Monthly revenue
