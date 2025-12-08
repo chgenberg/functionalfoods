@@ -304,7 +304,7 @@ export default function UnifiedSalesPage() {
   const calculateSummary = (orders: UnifiedOrder[]): OrderSummary => {
 
     const summary: OrderSummary = {
-      totalOrders: orders.length,
+      totalOrders: 0,
       totalRevenue: 0,
       averageOrderValue: 0,
       successfulOrders: 0,
@@ -335,6 +335,7 @@ export default function UnifiedSalesPage() {
       if (isCompleted) {
         summary.successfulOrders++;
         summary.totalRevenue += order.amount - (order.refundAmount || 0);
+        summary.totalOrders++;
       } else if (order.status === 'processing' || order.status === 'PENDING') {
         summary.pendingOrders++;
       } else if (order.status === 'failed' || order.status === 'CANCELLED') {
@@ -404,7 +405,8 @@ export default function UnifiedSalesPage() {
   };
 
   const applyFilters = () => {
-    let filtered = [...orders];
+    // Baseline: använd bara DB-ordrar
+    let filtered = orders.filter(o => o.source === 'db');
 
     // Tab filter
     if (activeTab !== 'all') {
