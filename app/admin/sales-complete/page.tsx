@@ -348,7 +348,9 @@ export default function UnifiedSalesPage() {
             summary.courseBreakdown[course] = { count: 0, revenue: 0 };
           }
           summary.courseBreakdown[course].count++;
-          summary.courseBreakdown[course].revenue += order.amount - (order.refundAmount || 0);
+          // Distribute revenue evenly across items if multiple items exist
+          const perItemRevenue = (order.amount - (order.refundAmount || 0)) / Math.max(1, order.items.length);
+          summary.courseBreakdown[course].revenue += perItemRevenue;
         });
       }
 
