@@ -377,10 +377,6 @@ export default function FunctionalBasicsPage() {
                     75 Recept & måltidsplaner
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <Video className="w-4 h-4 text-primary" />
-                    Videolektioner varje vecka
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
                     <User className="w-4 h-4 text-primary" />
                     Coaching med Ulrika + team
                   </div>

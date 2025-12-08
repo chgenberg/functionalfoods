@@ -405,8 +405,8 @@ export default function UnifiedSalesPage() {
   };
 
   const applyFilters = () => {
-    // Baseline: använd bara DB-ordrar
-    let filtered = orders.filter(o => o.source === 'db');
+    // Visa alla ordrar (inkl. pending) i listan, men statistiken beräknas ändå bara på DB-ordrar
+    let filtered = [...orders];
 
     // Tab filter
     if (activeTab !== 'all') {
