@@ -321,8 +321,10 @@ export default function UnifiedSalesPage() {
     const monthlyMap: Record<string, number> = {};
 
     orders.forEach(order => {
-      // Count by status
-      if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+      const isCompleted = order.status === 'succeeded' || order.status === 'COMPLETED';
+
+      // Count by status (exclude PENDING from completed)
+      if (isCompleted) {
         summary.successfulOrders++;
         summary.totalRevenue += order.amount - (order.refundAmount || 0);
       } else if (order.status === 'processing' || order.status === 'PENDING') {
@@ -334,14 +336,13 @@ export default function UnifiedSalesPage() {
       // Provider breakdown
       if (summary.providerBreakdown[order.paymentProvider]) {
         summary.providerBreakdown[order.paymentProvider].count++;
-        if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+        if (isCompleted) {
           summary.providerBreakdown[order.paymentProvider].revenue += order.amount - (order.refundAmount || 0);
         }
       }
 
-      // Course breakdown - count succeeded/completed/pending orders with actual revenue
-      const isSuccessful = order.status === 'succeeded' || order.status === 'COMPLETED' || order.status === 'PENDING';
-      if (isSuccessful && order.amount > 0) {
+      // Course breakdown - only completed/succeeded orders with actual revenue
+      if (isCompleted && order.amount > 0) {
         order.courses.forEach(course => {
           if (!summary.courseBreakdown[course]) {
             summary.courseBreakdown[course] = { count: 0, revenue: 0 };
