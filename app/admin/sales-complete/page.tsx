@@ -326,6 +326,11 @@ export default function UnifiedSalesPage() {
       const isCompleted = order.status === 'succeeded' || order.status === 'COMPLETED';
       const isDbSource = order.source === 'db';
 
+      // Räkna bara DB-ordrar i statistik (matchar verkliga ordrar)
+      if (!isDbSource) {
+        return;
+      }
+
       // Count by status (exclude PENDING from completed)
       if (isCompleted) {
         summary.successfulOrders++;
@@ -336,7 +341,7 @@ export default function UnifiedSalesPage() {
         summary.failedOrders++;
       }
 
-      // Provider breakdown
+      // Provider breakdown (DB orders only)
       if (summary.providerBreakdown[order.paymentProvider]) {
         summary.providerBreakdown[order.paymentProvider].count++;
         if (isCompleted) {
