@@ -39,8 +39,7 @@ export async function GET(request: NextRequest) {
       },
       orderBy: {
         createdAt: 'desc'
-      },
-      take: 200 // Increased to allow proper date filtering
+      }
     });
 
     const formattedOrders = orders.map((order) => {
