@@ -562,7 +562,13 @@ export class SveaCheckoutService {
    * Check if order is in final state
    */
   static isOrderCompleted(status: string): boolean {
-    return status === 'Final' || status === 'Confirmed';
+    // Treat Delivered/Approved as completed too (Svea may send these before Final)
+    return (
+      status === 'Final' ||
+      status === 'Confirmed' ||
+      status === 'Delivered' ||
+      status === 'Approved'
+    );
   }
 
   /**
