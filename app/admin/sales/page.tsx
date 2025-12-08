@@ -302,11 +302,27 @@ export default function EnhancedAdminSalesPage() {
     XLSX.writeFile(wb, filename);
   };
 
-  const extractCourseFromDescription = (description: string): string => {
-    if (!description) return '-';
-    if (description.includes('Functional Basics')) return 'Functional Basics';
-    if (description.includes('Functional Flow')) return 'Functional Flow';
-    if (description.includes('Functional Insulin balance/Energy') || description.includes('Functional Energy')) return 'Functional Insulin balance/Energy';
+  const normalizeProductName = (name: string, type?: string): string => {
+    const lower = (name || '').toLowerCase();
+    if (type === 'book' || lower.includes('julbok') || lower.includes('julbord') || lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) {
+      return 'Julbord – E-bok';
+    }
+    if (lower.includes('flow') || lower.includes('gut health')) return 'Functional Flow';
+    if (lower.includes('energy') || lower.includes('insulin')) return 'Functional Energy';
+    if (lower.includes('basic')) return 'Functional Basics';
+    if (lower.includes('hormon')) return 'Hormonell Balans';
+    return name || '-';
+  };
+
+  const extractCourseFromDescription = (description: string, type?: string): string => {
+    if (!description && !type) return '-';
+    const lower = (description || '').toLowerCase();
+    if (type === 'book') return 'Julbord – E-bok';
+    if (lower.includes('julbok') || lower.includes('julbord') || lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) return 'Julbord – E-bok';
+    if (lower.includes('flow') || lower.includes('gut')) return 'Functional Flow';
+    if (lower.includes('energy') || lower.includes('insulin')) return 'Functional Energy';
+    if (lower.includes('basic')) return 'Functional Basics';
+    if (lower.includes('hormon')) return 'Hormonell Balans';
     return '-';
   };
 
@@ -392,13 +408,33 @@ export default function EnhancedAdminSalesPage() {
     filteredPayments.forEach(payment => {
       if (payment.status !== 'succeeded') return;
       
-      const course = extractCourseFromDescription(payment.description);
-      if (course !== '-') {
-        if (!courseMap[course]) {
-          courseMap[course] = { count: 0, revenue: 0 };
+      let added = false;
+
+      // Prefer structured order items if available
+      if (payment.orderInfo?.items?.length) {
+        const perItemRevenue = (payment.amount - payment.refundAmount) / payment.orderInfo.items.length;
+        payment.orderInfo.items.forEach((item: any) => {
+          const course = normalizeProductName(item.name, item.type);
+          if (course === '-') return;
+          if (!courseMap[course]) {
+            courseMap[course] = { count: 0, revenue: 0 };
+          }
+          courseMap[course].count += 1;
+          courseMap[course].revenue += perItemRevenue;
+          added = true;
+        });
+      }
+
+      // Fallback to description parsing
+      if (!added) {
+        const course = extractCourseFromDescription(payment.description);
+        if (course !== '-') {
+          if (!courseMap[course]) {
+            courseMap[course] = { count: 0, revenue: 0 };
+          }
+          courseMap[course].count += 1;
+          courseMap[course].revenue += payment.amount - payment.refundAmount;
         }
-        courseMap[course].count += 1;
-        courseMap[course].revenue += payment.amount - payment.refundAmount;
       }
     });
     

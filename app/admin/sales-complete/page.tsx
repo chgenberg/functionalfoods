@@ -119,25 +119,27 @@ export default function UnifiedSalesPage() {
   // Helper function to normalize course names
   const normalizeCourseNames = (courses: string[]): string[] => {
     return courses.map(course => {
-      const normalized = course.trim();
+      const normalized = (course || '').trim();
+      const lower = normalized.toLowerCase();
       
-      // Normalize Flow variants
-      if (normalized.includes('Flow') || normalized.includes('Gut Health')) {
+      // E-book
+      if (lower.includes('julbok') || lower.includes('julbord') || lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) {
+        return 'Julbord – E-bok';
+      }
+      // Flow variants
+      if (lower.includes('flow') || lower.includes('gut health')) {
         return 'Functional Flow';
       }
-      
-      // Normalize Energy variants
-      if (normalized.includes('Energy') || normalized.includes('Insulin balance')) {
+      // Energy variants
+      if (lower.includes('energy') || lower.includes('insulin')) {
         return 'Functional Energy';
       }
-      
-      // Normalize Basics
-      if (normalized.includes('Basics')) {
+      // Basics
+      if (lower.includes('basic')) {
         return 'Functional Basics';
       }
-      
-      // Hormonell Balans stays the same
-      if (normalized.includes('Hormonell') || normalized.includes('Hormon')) {
+      // Hormonell Balans
+      if (lower.includes('hormon')) {
         return 'Hormonell Balans';
       }
       
@@ -147,18 +149,22 @@ export default function UnifiedSalesPage() {
 
   const extractCoursesFromDescription = (description: string): string[] => {
     if (!description) return [];
+    const lower = description.toLowerCase();
     const courses: string[] = [];
     
-    if (description.includes('Functional Basics') || description.includes('Basics')) {
+    if (lower.includes('julbok') || lower.includes('julbord') || lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) {
+      courses.push('Julbord – E-bok');
+    }
+    if (lower.includes('functional basics') || lower.includes('basics')) {
       courses.push('Functional Basics');
     }
-    if (description.includes('Functional Flow') || description.includes('Functional Gut Health/Flow') || description.includes('Gut Health') || description.includes('Flow')) {
+    if (lower.includes('functional flow') || lower.includes('gut health') || lower.includes('flow')) {
       courses.push('Functional Flow');
     }
-    if (description.includes('Functional Energy') || description.includes('Functional Insulin balance/Energy') || description.includes('Insulin balance') || description.includes('Energy')) {
+    if (lower.includes('functional energy') || lower.includes('insulin') || lower.includes('energy')) {
       courses.push('Functional Energy');
     }
-    if (description.includes('Hormonell Balans') || description.includes('Hormon')) {
+    if (lower.includes('hormon')) {
       courses.push('Hormonell Balans');
     }
     
@@ -200,6 +206,10 @@ export default function UnifiedSalesPage() {
       // Process Stripe payments FIRST (they are the source of truth for payments)
       if (stripeData.payments) {
         stripeData.payments.forEach((payment: any) => {
+          const itemCourses = (payment.orderInfo?.items || []).map((item: any) => normalizeCourseNames([item.name])[0]);
+          const descriptionCourses = extractCoursesFromDescription(payment.description);
+          const courses = Array.from(new Set([...itemCourses, ...descriptionCourses])).filter(Boolean);
+
           combinedOrders.push({
             id: payment.id,
             orderNumber: payment.orderInfo?.orderNumber || payment.id,
@@ -213,7 +223,7 @@ export default function UnifiedSalesPage() {
             paymentMethod: payment.paymentMethod?.type || 'card',
             paymentProvider: 'stripe',
             items: payment.orderInfo?.items || [],
-            courses: extractCoursesFromDescription(payment.description),
+            courses,
             createdAt: payment.created,
             refunded: payment.refunded,
             refundAmount: payment.refundAmount / 100,
@@ -246,8 +256,8 @@ export default function UnifiedSalesPage() {
           }
         }
 
-        const rawCourses = order.items?.filter((i: any) => i.type === 'course').map((i: any) => i.name) || [];
-        const normalizedCourses = normalizeCourseNames(rawCourses);
+        const rawProducts = order.items?.map((i: any) => i?.name || '') || [];
+        const normalizedCourses = normalizeCourseNames(rawProducts);
         const metadata = order.metadata as any || {};
 
         combinedOrders.push({
