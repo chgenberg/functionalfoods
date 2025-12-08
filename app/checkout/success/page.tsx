@@ -48,12 +48,22 @@ function CheckoutSuccessContent() {
             
             // GA4 purchase for Stripe session
             try {
+              const normalizeGaItemId = (rawId: string | undefined, name: string | undefined) => {
+                const n = (name || '').toLowerCase();
+                const rid = (rawId || '').toLowerCase();
+                // Force julboken till ett stabilt item_id för GA4
+                if (n.includes('julbok') || n.includes('julbord') || rid === 'julbok-2025') {
+                  return 'julbok-2025';
+                }
+                return rawId;
+              };
+
               trackPurchase({
                 transactionId: data.order?.id || data.session_id || sessionId,
                 value: Number(data.amount_total ? data.amount_total / 100 : data.total_amount || 0),
                 currency: (data.currency || 'SEK').toUpperCase(),
                 items: Array.isArray(data.line_items) ? data.line_items.map((li: any) => ({
-                  id: li.price?.product || li.id,
+                  id: normalizeGaItemId(li.price?.product || li.id, li.description),
                   name: li.description,
                   quantity: li.quantity,
                   price: li.price?.unit_amount ? li.price.unit_amount / 100 : undefined,
