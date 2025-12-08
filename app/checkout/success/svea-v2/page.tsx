@@ -101,8 +101,17 @@ function SveaSuccessContent() {
         sessionStorage.removeItem('svea_checkout_id');
         // GA4: purchase event
         try {
+          const normalizeGaItemId = (rawId: string | undefined, name: string | undefined) => {
+            const n = (name || '').toLowerCase();
+            const rid = (rawId || '').toLowerCase();
+            if (n.includes('julbok') || n.includes('julbord') || rid === 'julbok-2025') {
+              return 'julbok-2025';
+            }
+            return rawId;
+          };
+
           const items = Array.isArray(data.order?.items) ? data.order.items.map((i: any) => ({
-            id: i.productId,
+            id: normalizeGaItemId(i.productId, i.productName),
             name: i.productName,
             quantity: i.quantity,
             price: i.price,
