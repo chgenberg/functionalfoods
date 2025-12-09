@@ -116,6 +116,8 @@ export default function UnifiedSalesPage() {
     all: { label: 'Alla transaktioner', days: null }
   };
 
+  const [manualProcessing, setManualProcessing] = useState<string | null>(null);
+
   // Helper function to normalize course names
   const normalizeCourseNames = (courses: string[]): string[] => {
     return courses.map(course => {
@@ -402,6 +404,32 @@ export default function UnifiedSalesPage() {
       .slice(-12); // Last 12 months
 
     return summary;
+  };
+
+  const manualCompleteOrder = async (orderId: string) => {
+    if (manualProcessing) return;
+    setManualProcessing(orderId);
+    try {
+      const confirmAction = window.confirm('Sätt ordern till COMPLETED och skicka mejl?');
+      if (!confirmAction) return;
+      const res = await fetch('/api/admin/orders/manual-complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ orderId })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error || 'Kunde inte uppdatera ordern');
+      }
+      alert(`Order uppdaterad: ${data.status}. Mejl: ${data.emails?.join(', ') || 'ingen'}`);
+      setSelectedOrder(null);
+      fetchOrders();
+    } catch (err: any) {
+      alert(err?.message || 'Ett fel uppstod vid manuell godkännande');
+    } finally {
+      setManualProcessing(null);
+    }
   };
 
   const applyFilters = () => {
@@ -1206,12 +1234,23 @@ export default function UnifiedSalesPage() {
                       </p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => setSelectedOrder(order)}
-                        className="text-[#014421] hover:text-[#012A14]"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        {order.paymentProvider === 'svea' && order.status === 'PENDING' && (
+                          <button
+                            onClick={() => manualCompleteOrder(order.id)}
+                            disabled={manualProcessing === order.id}
+                            className="text-xs px-3 py-1 rounded bg-[var(--primary-green)] text-white hover:opacity-90 disabled:opacity-50"
+                          >
+                            {manualProcessing === order.id ? 'Bearbetar...' : 'Godkänn'}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setSelectedOrder(order)}
+                          className="text-[#014421] hover:text-[#012A14]"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -1264,6 +1303,17 @@ export default function UnifiedSalesPage() {
                       </span>
                     )}
                   </div>
+                  {selectedOrder.paymentProvider === 'svea' && selectedOrder.status === 'PENDING' && (
+                    <div className="mt-3">
+                      <button
+                        onClick={() => manualCompleteOrder(selectedOrder.id)}
+                        disabled={manualProcessing === selectedOrder.id}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary-green)] text-white rounded-lg hover:opacity-90 disabled:opacity-50"
+                      >
+                        {manualProcessing === selectedOrder.id ? 'Bearbetar...' : 'Godkänn manuellt'}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div>
