@@ -1,3 +1,14 @@
+node_modules
+.next
+.turbo
+*.log
+deploy-issues.log
+spotcheck-report.json
+nutrition-sync-report.json
+recipe-audit-report.json
+verify-mealplan-images-report.json
+recept_images_2025
+platform-live-email-preview.html
 # Railway ignore file - excludes files from being uploaded to Railway build environment
 
 # Large image directories that aren't needed during build

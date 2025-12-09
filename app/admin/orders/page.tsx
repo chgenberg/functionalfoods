@@ -45,6 +45,7 @@ export default function AdminOrdersPage() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [syncing, setSyncing] = useState(false);
+  const [manualProcessing, setManualProcessing] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -183,6 +184,37 @@ export default function AdminOrdersPage() {
       alert('Ett fel uppstod vid synkronisering');
     } finally {
       setSyncing(false);
+    }
+  };
+
+  // Manually complete Svea order and send emails
+  const manualCompleteOrder = async (orderId: string) => {
+    if (manualProcessing) return;
+    setManualProcessing(orderId);
+    try {
+      const confirmed = window.confirm('Godkänn och skicka mejl? Detta markerar ordern som COMPLETED.');
+      if (!confirmed) return;
+      const res = await fetch('/api/admin/orders/manual-complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ orderId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(`Order uppdaterad. Status: ${data.status}. Mejl: ${data.emails?.join(', ') || 'ingen'}`);
+        fetchOrders();
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Kunde inte uppdatera ordern');
+      }
+    } catch (error) {
+      console.error('Manual complete failed:', error);
+      alert('Ett fel uppstod vid manuell godkännande');
+    } finally {
+      setManualProcessing(null);
     }
   };
 
@@ -499,6 +531,15 @@ export default function AdminOrdersPage() {
                               </>
                             )}
                           </div>
+                        )}
+                        {order.status === 'PENDING' && (
+                          <button
+                            onClick={() => manualCompleteOrder(order.id)}
+                            disabled={manualProcessing === order.id}
+                            className="text-xs text-white bg-[var(--primary-green)] px-3 py-1 rounded hover:opacity-90 transition disabled:opacity-50"
+                          >
+                            {manualProcessing === order.id ? 'Bearbetar...' : 'Godkänn manuellt'}
+                          </button>
                         )}
                       </div>
                     </td>
