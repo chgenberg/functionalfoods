@@ -101,19 +101,18 @@ export async function POST(request: NextRequest) {
       }
 
       // Update order status
-      await tx.order.update({
-        where: { id: order.id },
-        data: {
-          status: 'COMPLETED',
-          processedAt: new Date(),
-          metadata: {
-            ...metadata,
-            manuallyApproved: true,
-            approvedAt: new Date().toISOString(),
-            approvedBy: 'admin-manual-complete'
-          }
-        }
-      });
+            await tx.order.update({
+              where: { id: order.id },
+              data: {
+                status: 'COMPLETED',
+                metadata: {
+                  ...metadata,
+                  manuallyApproved: true,
+                  approvedAt: new Date().toISOString(),
+                  approvedBy: 'admin-manual-complete'
+                }
+              }
+            });
 
       // Update payment status if present
       if (order.payment) {
