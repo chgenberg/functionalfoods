@@ -84,7 +84,6 @@ export async function POST(request: NextRequest) {
               where: { id: order.id },
               data: {
                 status: 'COMPLETED',
-                processedAt: new Date(),
                 paymentMethod: sveaOrder.paymentType || 'svea',
                 customerEmail: customerEmail || order.customerEmail,
                 customerName: customerName || order.customerName,
