@@ -122,13 +122,28 @@ export class EmailService {
 
   // Send order confirmation email
   async sendOrderConfirmation(data: OrderConfirmationData): Promise<boolean> {
-    const coursesHtml = data.courses.map(course => `
+    const COURSE_VAT = 0.25;
+
+    // Compute exkl./inkl. moms per rad och totalsummera
+    const coursesWithVat = data.courses.map(course => {
+      const priceIncl = Math.round(course.price * 100) / 100;
+      const priceExcl = Math.round((priceIncl / (1 + COURSE_VAT)) * 100) / 100;
+      return { ...course, priceIncl, priceExcl };
+    });
+
+    const totalIncl = coursesWithVat.reduce((sum, c) => sum + c.priceIncl, 0);
+    const totalExcl = coursesWithVat.reduce((sum, c) => sum + c.priceExcl, 0);
+
+    const coursesHtml = coursesWithVat.map(course => `
       <tr>
-        <td style="padding: 16px; border-bottom: 1px solid #f0f0f0; color: #1a4324; font-size: 16px;">
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0; color: #1a4324; font-size: 15px;">
           <strong>${course.name}</strong>
         </td>
-        <td style="padding: 16px; border-bottom: 1px solid #f0f0f0; text-align: right; color: #1a4324; font-size: 16px; font-weight: 600;">
-          ${course.price} kr
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: right; color: #1a4324; font-size: 15px;">
+          ${course.priceExcl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+        </td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: right; color: #1a4324; font-size: 15px; font-weight: 600;">
+          ${course.priceIncl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
         </td>
       </tr>
     `).join('');
@@ -183,7 +198,7 @@ export class EmailService {
           <div style="height: 4px; background: linear-gradient(90deg, #9dc46d 0%, #7fb05a 100%);"></div>
           
           <!-- Content -->
-          <div style="padding: 40px 30px;">
+        <div style="padding: 40px 30px;">
             <!-- Personlig hälsning -->
             <div style="text-align: center; margin-bottom: 30px;">
               <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #9dc46d 0%, #7fb05a 100%); border-radius: 50%; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center;">
@@ -218,16 +233,29 @@ export class EmailService {
               </div>
               
               <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
-                ${coursesHtml}
-                <tr>
-                  <td style="padding: 20px 16px 0 16px; border-top: 2px solid #1a4324; font-weight: bold; color: #1a4324; font-size: 18px;">
-                    Totalt
-                  </td>
-                  <td style="padding: 20px 16px 0 16px; border-top: 2px solid #1a4324; text-align: right; font-weight: bold; color: #1a4324; font-size: 22px;">
-                    ${data.totalAmount} kr
-                  </td>
-                </tr>
+                <thead>
+                  <tr>
+                    <th style="text-align: left; padding: 10px; color: #1a4324; font-size: 13px; border-bottom: 1px solid #e0e0e0;">Produkt</th>
+                    <th style="text-align: right; padding: 10px; color: #1a4324; font-size: 13px; border-bottom: 1px solid #e0e0e0;">Exkl. moms</th>
+                    <th style="text-align: right; padding: 10px; color: #1a4324; font-size: 13px; border-bottom: 1px solid #e0e0e0;">Inkl. moms</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${coursesHtml}
+                  <tr>
+                    <td style="padding: 18px 12px 0 12px; border-top: 2px solid #1a4324; font-weight: bold; color: #1a4324; font-size: 16px;">
+                      Totalt
+                    </td>
+                    <td style="padding: 18px 12px 0 12px; border-top: 2px solid #1a4324; text-align: right; font-weight: bold; color: #1a4324; font-size: 16px;">
+                      ${totalExcl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+                    </td>
+                    <td style="padding: 18px 12px 0 12px; border-top: 2px solid #1a4324; text-align: right; font-weight: bold; color: #1a4324; font-size: 18px;">
+                      ${totalIncl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+                    </td>
+                  </tr>
+                </tbody>
               </table>
+              <p style="margin-top: 12px; color: #6b7280; font-size: 12px;">Priser exkl./inkl. moms (25%).</p>
             </div>
 
             ${loginSection}
