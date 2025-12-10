@@ -20,16 +20,40 @@ type WebhookEventType =
   | 'OrderPaymentDenied';
 
 interface SveaWebhookPayload {
-  orderId: number;
-  status: string;
+  // Svea uses PascalCase in webhooks
+  CheckoutOrderId?: number;
+  OrderId?: number;
+  Status?: string;
+  PaymentType?: string;
+  CreationDate?: string;
+  CustomerCountry?: string;
+  Currency?: string;
+  OrderAmount?: number;
+  CapturedAmount?: number;
+  CreditedAmount?: number;
+  MerchantData?: string;
+  // Also support camelCase (fallback)
+  orderId?: number;
+  status?: string;
   paymentType?: string;
-  creationDate: string;
+  creationDate?: string;
   customerCountry?: string;
   currency?: string;
   orderAmount?: number;
   capturedAmount?: number;
   creditedAmount?: number;
   merchantData?: string;
+}
+
+// Normalize webhook payload to consistent format
+function normalizeWebhookPayload(raw: SveaWebhookPayload) {
+  return {
+    orderId: raw.CheckoutOrderId || raw.OrderId || raw.orderId,
+    status: raw.Status || raw.status,
+    paymentType: raw.PaymentType || raw.paymentType,
+    merchantData: raw.MerchantData || raw.merchantData,
+    orderAmount: raw.OrderAmount || raw.orderAmount,
+  };
 }
 
 // Health check endpoint
@@ -74,15 +98,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse webhook payload
-    let webhookData: SveaWebhookPayload;
+    let rawWebhookData: SveaWebhookPayload;
     try {
-      webhookData = JSON.parse(body);
+      rawWebhookData = JSON.parse(body);
     } catch (error) {
       console.error('❌ Failed to parse webhook body:', error);
       return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
     }
 
-    console.log('✅ Webhook validated:', {
+    // Log raw payload for debugging
+    console.log('📦 Raw webhook payload:', JSON.stringify(rawWebhookData));
+
+    // Normalize to consistent format (Svea uses PascalCase)
+    const webhookData = normalizeWebhookPayload(rawWebhookData);
+
+    console.log('✅ Webhook normalized:', {
       orderId: webhookData.orderId,
       status: webhookData.status,
       merchantData: webhookData.merchantData
@@ -125,13 +155,18 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
+async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebhookPayload>) {
   const { orderId, merchantData } = webhookData;
   
   console.log('🎉 Processing completed order:', {
     sveaOrderId: orderId,
     internalOrderId: merchantData
   });
+
+  if (!orderId) {
+    console.error('❌ Missing orderId in webhook payload');
+    return;
+  }
 
   try {
     // Get full order details from Svea
@@ -618,7 +653,7 @@ async function handleOrderCompleted(webhookData: SveaWebhookPayload) {
   }
 }
 
-async function handleOrderFailed(webhookData: SveaWebhookPayload) {
+async function handleOrderFailed(webhookData: ReturnType<typeof normalizeWebhookPayload>) {
   const { orderId, merchantData, status } = webhookData;
   
   console.log('❌ Processing failed order:', {
