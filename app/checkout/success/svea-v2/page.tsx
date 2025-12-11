@@ -343,7 +343,8 @@ function SveaSuccessContent() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">📧 E-post på väg</h3>
                   <p className="text-gray-600 text-sm">
-                    Ett mejl med din personliga nerladdningslänk skickas till <strong>{orderDetails?.customerEmail}</strong>
+                    Ett mejl med din personliga nerladdningslänk skickas till <strong>{orderDetails?.customerEmail}</strong>.
+                    Det kan ta upp till 30 minuter innan mejlet når dig.
                   </p>
                 </div>
               </div>
@@ -377,8 +378,8 @@ function SveaSuccessContent() {
               {/* Tips box */}
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
                 <p className="text-sm text-yellow-800">
-                  <strong>💡 Tips:</strong> Kolla även din skräppost-mapp om du inte ser mejlet inom 5 minuter. 
-                  Mejlet kommer från <strong>Ulrika Davidsson / Functional Foods</strong>.
+                  <strong>💡 Tips:</strong> Det kan ta upp till 30 minuter innan mejlet når din inkorg. 
+                  Kolla även din skräppost-mapp! Mejlet kommer från <strong>Ulrika Davidsson / Functional Foods</strong>.
                 </p>
               </div>
 
@@ -427,11 +428,12 @@ function SveaSuccessContent() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">📧 Orderbekräftelse via email</h3>
                   <p className="text-gray-600 text-sm mb-2">
-                    Ett orderkvitto med dina inloggningsuppgifter skickas till <strong>{orderDetails?.customerEmail}</strong>
+                    Ett orderkvitto med dina inloggningsuppgifter skickas till <strong>{orderDetails?.customerEmail}</strong>.
+                    Det kan ta upp till 30 minuter innan mejlet når dig.
                   </p>
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-2">
                     <p className="text-sm text-yellow-800">
-                      <strong>💡 Tips:</strong> Kolla även din skräppost-mapp om du inte ser emailet inom 5 minuter.
+                      <strong>💡 Tips:</strong> Kolla även din skräppost-mapp! Mejlet kommer från Ulrika Davidsson / Functional Foods.
                     </p>
                   </div>
                 </div>
