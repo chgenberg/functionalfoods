@@ -259,14 +259,13 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
         where: { id: order.id },
         data: {
           status: 'COMPLETED',
-          paymentMethod: sveaOrder.paymentType || 'svea',
           customerEmail: customerEmail || order.customerEmail,
           customerName: customerName || order.customerName,
           metadata: {
             ...order.metadata as any,
             sveaOrderId: orderId,
             sveaStatus: sveaOrder.status,
-            paymentType: sveaOrder.paymentType,
+            sveaPaymentType: sveaOrder.paymentType || 'svea',
             customerInfo: {
               email: sveaOrder.customer?.email,
               phone: sveaOrder.customer?.phoneNumber,

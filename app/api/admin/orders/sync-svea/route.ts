@@ -84,12 +84,12 @@ export async function POST(request: NextRequest) {
               where: { id: order.id },
               data: {
                 status: 'COMPLETED',
-                paymentMethod: sveaOrder.paymentType || 'svea',
                 customerEmail: customerEmail || order.customerEmail,
                 customerName: customerName || order.customerName,
                 metadata: {
                   ...metadata,
                   sveaStatus: sveaOrder.status,
+                  sveaPaymentType: sveaOrder.paymentType || 'svea',
                   syncedAt: new Date().toISOString(),
                   manuallySynced: true
                 }
