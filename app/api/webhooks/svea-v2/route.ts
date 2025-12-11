@@ -72,12 +72,27 @@ export async function POST(request: NextRequest) {
     // Read raw body for signature validation
     body = await request.text();
     const signature = request.headers.get('x-svea-signature') || '';
+    const url = request.url;
+    const searchParams = new URL(url).searchParams;
+    
+    // Svea might send order ID in query params or headers
+    const queryOrderId = searchParams.get('checkoutOrderId') || 
+                         searchParams.get('CheckoutOrderId') ||
+                         searchParams.get('orderId') ||
+                         searchParams.get('OrderId');
+    const headerOrderId = request.headers.get('x-svea-checkout-orderid') ||
+                          request.headers.get('X-Svea-Checkout-OrderId');
     
     console.log('📩 Svea webhook received:', {
       hasBody: !!body,
       bodyLength: body.length,
+      bodyPreview: body.substring(0, 100),
       hasSignature: !!signature,
-      signatureLength: signature.length
+      signatureLength: signature.length,
+      url: url,
+      queryOrderId,
+      headerOrderId,
+      allHeaders: Object.fromEntries(request.headers.entries())
     });
 
     // Initialize Svea service
@@ -100,17 +115,45 @@ export async function POST(request: NextRequest) {
     // Parse webhook payload
     let rawWebhookData: SveaWebhookPayload;
     try {
-      rawWebhookData = JSON.parse(body);
+      rawWebhookData = JSON.parse(body || '{}');
     } catch (error) {
       console.error('❌ Failed to parse webhook body:', error);
-      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+      rawWebhookData = {};
     }
 
     // Log raw payload for debugging
     console.log('📦 Raw webhook payload:', JSON.stringify(rawWebhookData));
 
     // Normalize to consistent format (Svea uses PascalCase)
-    const webhookData = normalizeWebhookPayload(rawWebhookData);
+    let webhookData = normalizeWebhookPayload(rawWebhookData);
+    
+    // If body is empty/minimal, try to get orderId from query/headers
+    if (!webhookData.orderId) {
+      const fallbackOrderId = queryOrderId || headerOrderId;
+      if (fallbackOrderId) {
+        console.log(`🔄 Body empty, using orderId from query/header: ${fallbackOrderId}`);
+        
+        // Fetch order from Svea to get status and merchantData
+        try {
+          const sveaOrder = await sveaCheckout.getOrder(parseInt(fallbackOrderId));
+          console.log('📋 Fetched Svea order:', {
+            orderId: fallbackOrderId,
+            status: sveaOrder.status,
+            merchantData: sveaOrder.merchantData
+          });
+          
+          webhookData = {
+            orderId: parseInt(fallbackOrderId),
+            status: sveaOrder.status,
+            merchantData: sveaOrder.merchantData,
+            paymentType: sveaOrder.paymentType,
+            orderAmount: undefined
+          };
+        } catch (fetchError) {
+          console.error('❌ Failed to fetch Svea order:', fetchError);
+        }
+      }
+    }
 
     console.log('✅ Webhook normalized:', {
       orderId: webhookData.orderId,
