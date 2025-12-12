@@ -26,7 +26,9 @@ class MailchimpMarketingService {
   constructor() {
     const apiKey = process.env.MAILCHIMP_API_KEY;
     const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX;
-    const listId = process.env.MAILCHIMP_LIST_ID;
+    // Support both names to avoid misconfiguration across environments
+    // (Mailchimp calls this an "Audience", but the API path uses /lists/:id)
+    const listId = process.env.MAILCHIMP_LIST_ID || process.env.MAILCHIMP_AUDIENCE_ID;
 
     if (apiKey && serverPrefix && listId) {
       this.config = {
@@ -38,7 +40,7 @@ class MailchimpMarketingService {
       console.log('✅ Mailchimp Marketing configured');
     } else {
       console.warn('⚠️ Mailchimp Marketing not configured - missing env vars');
-      console.warn('Required: MAILCHIMP_API_KEY, MAILCHIMP_SERVER_PREFIX, MAILCHIMP_LIST_ID');
+      console.warn('Required: MAILCHIMP_API_KEY, MAILCHIMP_SERVER_PREFIX, and (MAILCHIMP_LIST_ID or MAILCHIMP_AUDIENCE_ID)');
     }
   }
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getSveaCheckout } from '@/app/lib/svea-checkout-service';
 import { emailService } from '@/app/lib/email';
+import { getMailchimpMarketing } from '@/app/lib/mailchimp-marketing';
 import bcrypt from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
@@ -236,6 +237,34 @@ async function completeOrder(order: any, sveaOrder: any) {
       }
     }
   });
+
+  // Non-blocking: ensure customer is added to Mailchimp audience on completion
+  try {
+    if (customerEmail) {
+      const normalizedEmail = customerEmail.toLowerCase().trim();
+      const tags = ['kund'];
+      const hasBook = order.items?.some((i: any) => i.type === 'book');
+      const hasCourse = order.items?.some((i: any) => i.type === 'course');
+      if (hasBook) tags.push('ebok');
+      if (hasCourse) tags.push('kurs');
+
+      const mailchimpMarketing = getMailchimpMarketing();
+      if (mailchimpMarketing.isConfigured()) {
+        const name = (customerName || '').trim();
+        const [firstName, ...rest] = name ? name.split(/\s+/) : [];
+        const lastName = rest.length ? rest.join(' ') : undefined;
+        await mailchimpMarketing.addSubscriber({
+          email: normalizedEmail,
+          firstName: firstName || undefined,
+          lastName,
+          tags,
+          status: 'subscribed'
+        });
+      }
+    }
+  } catch (e) {
+    console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+  }
 
   // Send emails
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';

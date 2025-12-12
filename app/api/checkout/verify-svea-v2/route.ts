@@ -543,6 +543,30 @@ export async function POST(req: NextRequest) {
                 price: Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100 * (item.quantity || 1)
               }));
 
+              // Non-blocking: ensure customer is added to Mailchimp audience on completion
+              try {
+                const normalizedEmail = emailToUse.toLowerCase().trim();
+                const tags = ['kund'];
+                if (bookItems.length > 0) tags.push('ebok');
+                if (courseItems.length > 0) tags.push('kurs');
+
+                const mailchimpMarketing = getMailchimpMarketing();
+                if (mailchimpMarketing.isConfigured()) {
+                  const name = (nameToUse || '').trim();
+                  const [firstName, ...rest] = name ? name.split(/\s+/) : [];
+                  const lastName = rest.length ? rest.join(' ') : undefined;
+                  await mailchimpMarketing.addSubscriber({
+                    email: normalizedEmail,
+                    firstName: firstName || undefined,
+                    lastName,
+                    tags,
+                    status: 'subscribed'
+                  });
+                }
+              } catch (e) {
+                console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+              }
+
               // Check if email was already sent (via metadata flag)
               const metadata = updatedOrder.metadata as any;
               const emailAlreadySent = metadata?.confirmationEmailSent;
