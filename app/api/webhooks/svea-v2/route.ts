@@ -104,8 +104,8 @@ export async function POST(request: NextRequest) {
         // Fallback: tillåt utan signatur men logga varning (för att inte blockera auto-godkännande)
         console.warn('⚠️ Missing webhook signature - allowing due to fallback');
       } else {
-        const isValid = sveaCheckout.validateWebhookSignature(body, signature);
-        if (!isValid) {
+      const isValid = sveaCheckout.validateWebhookSignature(body, signature);
+      if (!isValid) {
           // Fallback: logga men fortsätt ändå
           console.warn('⚠️ Invalid webhook signature - allowing due to fallback');
         }
@@ -483,47 +483,6 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
         include: { user: true, items: true }
       });
 
-      // --- Mailchimp Marketing audience sync (customer registry) ---
-      try {
-        const emailToUse =
-          updatedOrder?.customerEmail ||
-          (updatedOrder?.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
-          (sveaOrder.customer?.email || null);
-
-        const nameToUse =
-          updatedOrder?.customerName ||
-          (updatedOrder?.user?.name || null) ||
-          `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() ||
-          emailToUse?.split('@')[0] ||
-          'Kund';
-
-        if (emailToUse && !isGuestEmail(emailToUse)) {
-          const normalizedEmail = emailToUse.toLowerCase().trim();
-          const tags = ['kund'];
-          const hasBook = updatedOrder?.items?.some(i => i.type === 'book');
-          const hasCourse = updatedOrder?.items?.some(i => i.type === 'course');
-          if (hasBook) tags.push('ebok');
-          if (hasCourse) tags.push('kurs');
-
-          const mailchimpMarketing = getMailchimpMarketing();
-          if (mailchimpMarketing.isConfigured()) {
-            const name = (nameToUse || '').trim();
-            const [firstName, ...rest] = name ? name.split(/\s+/) : [];
-            const lastName = rest.length ? rest.join(' ') : undefined;
-            await mailchimpMarketing.addSubscriber({
-              email: normalizedEmail,
-              firstName: firstName || undefined,
-              lastName,
-              tags,
-              status: 'subscribed'
-            });
-            console.log(`✅ Customer synced to Mailchimp audience: ${normalizedEmail}`);
-          }
-        }
-      } catch (e) {
-        console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
-      }
-
       if (updatedOrder && updatedOrder.user) {
         const totalAmount = updatedOrder.totalAmount;
         const vatRate = 0.25;
@@ -690,6 +649,30 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
                 });
                 
                 console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
+
+                // After successful e-book send: sync to Mailchimp (non-blocking + timeout)
+                try {
+                  const mailchimpMarketing = getMailchimpMarketing();
+                  if (mailchimpMarketing.isConfigured()) {
+                    const normalizedEmail = emailToUse.toLowerCase().trim();
+                    const name = (nameToUse || '').trim();
+                    const [firstName, ...rest] = name ? name.split(/\s+/) : [];
+                    const lastName = rest.length ? rest.join(' ') : undefined;
+
+                    await Promise.race([
+                      mailchimpMarketing.addSubscriber({
+                        email: normalizedEmail,
+                        firstName: firstName || undefined,
+                        lastName,
+                        tags: ['kund', 'ebok'],
+                        status: 'subscribed'
+                      }),
+                      new Promise((resolve) => setTimeout(resolve, 1500))
+                    ]);
+                  }
+                } catch (e) {
+                  console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+                }
               }
             }
 

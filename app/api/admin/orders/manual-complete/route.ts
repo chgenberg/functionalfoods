@@ -224,30 +224,6 @@ export async function POST(request: NextRequest) {
     const courseItemsNow = updatedOrder.items.filter(i => i.type === 'course');
     const bookItemsNow = updatedOrder.items.filter(i => i.type === 'book');
 
-    // Non-blocking: ensure customer is added to Mailchimp audience on completion
-    try {
-      const normalizedEmail = customerEmail.toLowerCase().trim();
-      const tags = ['kund'];
-      if (bookItemsNow.length > 0) tags.push('ebok');
-      if (courseItemsNow.length > 0) tags.push('kurs');
-
-      const mailchimpMarketing = getMailchimpMarketing();
-      if (mailchimpMarketing.isConfigured()) {
-        const name = (customerName || '').trim();
-        const [firstName, ...rest] = name ? name.split(/\s+/) : [];
-        const lastName = rest.length ? rest.join(' ') : undefined;
-        await mailchimpMarketing.addSubscriber({
-          email: normalizedEmail,
-          firstName: firstName || undefined,
-          lastName,
-          tags,
-          status: 'subscribed'
-        });
-      }
-    } catch (e) {
-      console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
-    }
-
     // Course confirmation email (if not already sent)
     if (courseItemsNow.length > 0 && !freshMetadata.confirmationEmailSent) {
       const emailCourses = courseItemsNow.map(item => ({
@@ -298,6 +274,32 @@ export async function POST(request: NextRequest) {
             orderNumber: updatedOrder.orderNumber
           });
           if (sent) results.push(`ebook_email_sent:${book.name}`);
+
+          // After successful e-book send: sync to Mailchimp (non-blocking + timeout)
+          if (sent) {
+            try {
+              const mailchimpMarketing = getMailchimpMarketing();
+              if (mailchimpMarketing.isConfigured()) {
+                const normalizedEmail = customerEmail.toLowerCase().trim();
+                const name = (customerName || '').trim();
+                const [firstName, ...rest] = name ? name.split(/\s+/) : [];
+                const lastName = rest.length ? rest.join(' ') : undefined;
+
+                await Promise.race([
+                  mailchimpMarketing.addSubscriber({
+                    email: normalizedEmail,
+                    firstName: firstName || undefined,
+                    lastName,
+                    tags: ['kund', 'ebok'],
+                    status: 'subscribed'
+                  }),
+                  new Promise((resolve) => setTimeout(resolve, 1500))
+                ]);
+              }
+            } catch (e) {
+              console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+            }
+          }
         }
       }
     }

@@ -238,34 +238,6 @@ async function completeOrder(order: any, sveaOrder: any) {
     }
   });
 
-  // Non-blocking: ensure customer is added to Mailchimp audience on completion
-  try {
-    if (customerEmail) {
-      const normalizedEmail = customerEmail.toLowerCase().trim();
-      const tags = ['kund'];
-      const hasBook = order.items?.some((i: any) => i.type === 'book');
-      const hasCourse = order.items?.some((i: any) => i.type === 'course');
-      if (hasBook) tags.push('ebok');
-      if (hasCourse) tags.push('kurs');
-
-      const mailchimpMarketing = getMailchimpMarketing();
-      if (mailchimpMarketing.isConfigured()) {
-        const name = (customerName || '').trim();
-        const [firstName, ...rest] = name ? name.split(/\s+/) : [];
-        const lastName = rest.length ? rest.join(' ') : undefined;
-        await mailchimpMarketing.addSubscriber({
-          email: normalizedEmail,
-          firstName: firstName || undefined,
-          lastName,
-          tags,
-          status: 'subscribed'
-        });
-      }
-    }
-  } catch (e) {
-    console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
-  }
-
   // Send emails
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
   const bookItems = order.items.filter((item: any) => item.type === 'book');
@@ -306,6 +278,30 @@ async function completeOrder(order: any, sveaOrder: any) {
       });
       
       console.log(`📧 E-book email sent: ${book.name} to ${customerEmail}`);
+
+      // After successful e-book send: sync to Mailchimp (non-blocking + timeout)
+      try {
+        const mailchimpMarketing = getMailchimpMarketing();
+        if (mailchimpMarketing.isConfigured()) {
+          const normalizedEmail = customerEmail.toLowerCase().trim();
+          const name = (customerName || '').trim();
+          const [firstName, ...rest] = name ? name.split(/\s+/) : [];
+          const lastName = rest.length ? rest.join(' ') : undefined;
+
+          await Promise.race([
+            mailchimpMarketing.addSubscriber({
+              email: normalizedEmail,
+              firstName: firstName || undefined,
+              lastName,
+              tags: ['kund', 'ebok'],
+              status: 'subscribed'
+            }),
+            new Promise((resolve) => setTimeout(resolve, 1500))
+          ]);
+        }
+      } catch (e) {
+        console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+      }
     }
   }
 
