@@ -1,7 +1,12 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Download, FileSpreadsheet, TrendingUp, Users, ShoppingBag, BookOpen } from 'lucide-react';
+import { FileSpreadsheet, TrendingUp, Users, ShoppingBag, BookOpen, AlertCircle } from 'lucide-react';
+
+interface CourseBreakdown {
+  count: number;
+  revenue: number;
+}
 
 interface DashboardStats {
   totalUsers: number;
@@ -16,6 +21,8 @@ interface DashboardStats {
   totalCourseEnrollments?: number;
   revenueThisMonth?: number;
   ordersThisMonth?: number;
+  courseBreakdown?: Record<string, CourseBreakdown>;
+  pendingOrders?: number;
 }
 
 export default function AdminDashboard() {
@@ -100,15 +107,23 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
-          <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Ordrar</p>
+          <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Slutförda ordrar</p>
           <p className="text-2xl font-semibold text-[var(--text-primary)] mt-1">{stats?.totalOrders || 0}</p>
-          {stats?.ordersThisMonth ? (
-            <p className="text-xs text-[var(--text-secondary)] mt-1">{stats.ordersThisMonth} denna månad</p>
-          ) : null}
+          <div className="flex items-center gap-2 mt-1">
+            {stats?.ordersThisMonth ? (
+              <span className="text-xs text-[var(--text-secondary)]">{stats.ordersThisMonth} denna månad</span>
+            ) : null}
+            {stats?.pendingOrders && stats.pendingOrders > 0 ? (
+              <span className="text-xs text-amber-600 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {stats.pendingOrders} väntande
+              </span>
+            ) : null}
+          </div>
         </div>
 
         <div className="bg-white border border-[var(--border-light)] rounded-lg p-4">
-          <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Intäkter</p>
+          <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Intäkter (inkl. moms)</p>
           <p className="text-2xl font-semibold text-[var(--text-primary)] mt-1">{formatCurrency(stats?.totalRevenue || 0)}</p>
           {stats?.revenueThisMonth ? (
             <p className="text-xs text-green-600 mt-1">{formatCurrency(stats.revenueThisMonth)} denna månad</p>
@@ -120,6 +135,47 @@ export default function AdminDashboard() {
           <p className="text-2xl font-semibold text-[var(--text-primary)] mt-1">{stats?.totalRecipes || 0}</p>
         </div>
       </div>
+
+      {/* Course/Product Breakdown */}
+      {stats?.courseBreakdown && Object.keys(stats.courseBreakdown).length > 0 && (
+        <div className="bg-white border border-[var(--border-light)] rounded-lg p-5">
+          <h2 className="text-sm font-medium text-[var(--text-primary)] mb-4">Försäljning per produkt</h2>
+          <div className="space-y-3">
+            {Object.entries(stats.courseBreakdown)
+              .sort(([, a], [, b]) => b.revenue - a.revenue)
+              .map(([name, data]) => {
+                const maxRevenue = Math.max(...Object.values(stats.courseBreakdown!).map(d => d.revenue));
+                const widthPercent = maxRevenue > 0 ? (data.revenue / maxRevenue) * 100 : 0;
+                
+                return (
+                  <div key={name} className="relative">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-[var(--text-primary)]">{name}</span>
+                      <div className="flex items-center gap-4">
+                        <span className="text-xs text-[var(--text-secondary)]">{data.count} st</span>
+                        <span className="text-sm font-medium text-[var(--primary-green)]">
+                          {formatCurrency(data.revenue)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-[var(--primary-green)] rounded-full transition-all duration-500"
+                        style={{ width: `${widthPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+          <Link 
+            href="/admin/sales-complete" 
+            className="inline-block mt-4 text-xs text-[var(--primary-green)] hover:underline"
+          >
+            Visa detaljerad försäljningsrapport →
+          </Link>
+        </div>
+      )}
 
       {/* Quick links */}
       <div>
