@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { CreditCard, Package, User, Calendar, CheckCircle, XCircle, Clock, Filter, Search, RefreshCw, Download, AlertCircle } from 'lucide-react';
+import { CreditCard, Package, User, Calendar, CheckCircle, XCircle, Clock, Filter, Search, Download, AlertCircle } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -44,7 +44,6 @@ export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  const [syncing, setSyncing] = useState(false);
   const [manualProcessing, setManualProcessing] = useState<string | null>(null);
 
   useEffect(() => {
@@ -160,30 +159,6 @@ export default function AdminOrdersPage() {
       const yearAgo = new Date(today);
       yearAgo.setFullYear(yearAgo.getFullYear() - 1);
       setDateFrom(yearAgo.toISOString().split('T')[0]);
-    }
-  };
-
-  // Manual sync function for pending Svea orders
-  const syncPendingOrders = async () => {
-    if (syncing) return;
-    setSyncing(true);
-    try {
-      const response = await fetch('/api/admin/orders/sync-svea', {
-        method: 'POST',
-        credentials: 'include'
-      });
-      if (response.ok) {
-        const result = await response.json();
-        alert(`Synkade ${result.synced || 0} ordrar`);
-        fetchOrders();
-      } else {
-        alert('Kunde inte synkronisera ordrar');
-      }
-    } catch (error) {
-      console.error('Sync failed:', error);
-      alert('Ett fel uppstod vid synkronisering');
-    } finally {
-      setSyncing(false);
     }
   };
 
@@ -313,14 +288,6 @@ export default function AdminOrdersPage() {
             {/* Actions */}
             <div className="flex gap-2">
               <button
-                onClick={syncPendingOrders}
-                disabled={syncing}
-                className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-all text-sm"
-              >
-                <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
-                Synka Svea
-              </button>
-              <button
                 onClick={exportToCSV}
                 className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all text-sm"
               >
@@ -407,7 +374,7 @@ export default function AdminOrdersPage() {
               {stats.pending} ordrar väntar på bekräftelse
             </p>
             <p className="text-xs text-yellow-700 mt-0.5">
-              Dessa kan vara betalda i Svea men ej synkade. Klicka på &quot;Synka Svea&quot; för att uppdatera.
+              Dessa synkas automatiskt inom kort. Du kan även godkänna manuellt via raden nedan.
             </p>
           </div>
         </div>
