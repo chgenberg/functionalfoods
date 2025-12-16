@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 import { useT } from '@/app/lib/i18n/LanguageProvider';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, MapPin, Send } from 'lucide-react';
 
 export default function KontaktFormular() {
   const t = useT();
@@ -52,18 +52,6 @@ export default function KontaktFormular() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="lg:col-span-1 space-y-4">
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-primary">{t('contact.phone','Telefon')}</h3>
-                  <p className="text-text-secondary">+46 70 123 45 67</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
                   <Mail className="w-5 h-5 text-accent" />
