@@ -18,20 +18,74 @@ import {
 import { motion } from 'framer-motion';
 import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
+// Default content (fallback)
+const DEFAULT_CONTENT = {
+  title: 'Julbord',
+  subtitle: 'E-bok av Ulrika Davidsson',
+  description: 'Vill du uppleva ny god mat i jul? Då är Ulrikas nya jul-e-bok din perfekta guide. Ulrika Davidsson har tagit fram helt nya julrecept som kombinerar klassiska smaker med functional foods – för en jul som både smakar fantastiskt och får dig att måriktigt bra.',
+  shortDescription: 'I E-boken får du ett komplett, hälsobaserat julbord som hjälper dig att hålla blodsockret jämnt och energin stabil, utan att kompromissa med julkänslan eller njutningen.',
+  image: '/Julbok/Produktbild.png',
+  price: '59 kr',
+  features: [
+    'Ett komplett hälsobaserat julbord',
+    '20+ näringsrika julrecept',
+    'Juliga drinkar & tillbehör',
+    'Desserter & julefika',
+    'Naturligt glutenfria & sockerfria recept',
+    'Functional foods som minskar uppblåsthet'
+  ],
+  authorSection: 'Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker. Hennes online-kurser har hjälpt tiotusentals personer att finna en mer hållbar och hälsosam livsstil.'
+};
+
+interface PageContent {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  shortDescription?: string;
+  image?: string;
+  price?: string;
+  features?: string[];
+  authorSection?: string;
+}
+
 export default function JulbokPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [pageContent, setPageContent] = useState<PageContent>(DEFAULT_CONTENT);
   const { addItem } = useCart();
   const router = useRouter();
+  
+  // Merge custom content with defaults
+  const content = { ...DEFAULT_CONTENT, ...pageContent };
+  
   const ebook = {
     id: 'julbok-2025',
     name: 'Julbord – E-bok av Ulrika Davidsson',
     price: 55.66, // 59 kr inkl 6% moms = 55.66 kr exkl moms (59 / 1.06)
     quantity: 1,
     type: 'book' as const,
-    image: '/Julbok/Produktbild.png'
+    image: content.image || '/Julbok/Produktbild.png'
   };
+
+  // Fetch custom page content
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('/api/pages/julbok');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.content) {
+            setPageContent(data.content);
+          }
+        }
+      } catch (error) {
+        // Silently fail - use defaults
+        console.error('Failed to fetch page content:', error);
+      }
+    };
+    fetchContent();
+  }, []);
 
   // Track product view (GA/Meta server fallback included)
   useEffect(() => {
@@ -54,14 +108,12 @@ export default function JulbokPage() {
     }, 800);
   };
 
-  const features = [
-    { icon: ChefHat, text: 'Ett komplett hälsobaserat julbord' },
-    { icon: BookOpen, text: '20+ näringsrika julrecept' },
-    { icon: Wine, text: 'Juliga drinkar & tillbehör' },
-    { icon: Cookie, text: 'Desserter & julefika' },
-    { icon: Leaf, text: 'Naturligt glutenfria & sockerfria recept' },
-    { icon: Sparkles, text: 'Functional foods som minskar uppblåsthet' },
-  ];
+  // Map icons to features dynamically
+  const featureIcons = [ChefHat, BookOpen, Wine, Cookie, Leaf, Sparkles];
+  const features = (content.features || DEFAULT_CONTENT.features).map((text, index) => ({
+    icon: featureIcons[index % featureIcons.length],
+    text
+  }));
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0a1f14] via-[#102a1c] to-[#0a1f14] relative overflow-hidden">
@@ -123,8 +175,8 @@ export default function JulbokPage() {
               <div className="relative">
                 <div className={`transition-all duration-700 ${imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
                   <Image
-                    src="/Julbok/Produktbild.png"
-                    alt="Julbord – E-bok av Ulrika Davidsson"
+                    src={content.image || '/Julbok/Produktbild.png'}
+                    alt={`${content.title} – ${content.subtitle}`}
                     width={400}
                     height={500}
                     className="rounded-2xl shadow-2xl shadow-black/50 transition-transform duration-500 group-hover:scale-[1.02]"
@@ -138,7 +190,7 @@ export default function JulbokPage() {
                 
                 {/* Price badge */}
                 <div className="absolute -top-4 -right-4 bg-red-500 text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg transform rotate-12">
-                  59 kr
+                  {content.price}
                 </div>
               </div>
             </div>
@@ -152,21 +204,16 @@ export default function JulbokPage() {
             className="order-2 lg:order-2 space-y-6"
           >
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
-              Julbord
-              <span className="block text-[#93C560] mt-2">E-bok av Ulrika Davidsson</span>
+              {content.title}
+              <span className="block text-[#93C560] mt-2">{content.subtitle}</span>
             </h1>
 
             <p className="text-gray-300 text-lg leading-relaxed">
-              Vill du uppleva ny god mat i jul? Då är Ulrikas nya jul-e-bok din perfekta guide. 
-              Ulrika Davidsson har tagit fram helt nya julrecept som kombinerar klassiska smaker 
-              med functional foods – för en jul som både smakar fantastiskt och får dig att 
-              måriktigt bra.
+              {content.description}
             </p>
 
             <p className="text-gray-400 leading-relaxed">
-              I E-boken får du ett komplett, hälsobaserat julbord som hjälper dig att hålla 
-              blodsockret jämnt och energin stabil, utan att kompromissa med julkänslan eller 
-              njutningen.
+              {content.shortDescription}
             </p>
 
             {/* Features grid */}
@@ -211,7 +258,7 @@ export default function JulbokPage() {
                 ) : (
                   <>
                     <ShoppingCart className="w-5 h-5" />
-                    Köp E-bok – 59 kr
+                    Köp E-bok – {content.price}
                   </>
                 )}
               </motion.button>
@@ -278,8 +325,7 @@ export default function JulbokPage() {
             <div>
               <h3 className="text-xl font-semibold text-white mb-2">Om Ulrika Davidsson</h3>
               <p className="text-gray-400">
-                Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker. 
-                Hennes online-kurser har hjälpt tiotusentals personer att finna en mer hållbar och hälsosam livsstil.
+                {content.authorSection}
               </p>
             </div>
           </div>

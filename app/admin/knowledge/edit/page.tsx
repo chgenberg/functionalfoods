@@ -6,11 +6,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowLeft, Save, Eye, FileText, Clock, BookOpen, Upload, Image as ImageIcon, X, Plus } from 'lucide-react';
 import ImageUpload from '@/app/components/admin/ImageUpload';
-import dynamic from 'next/dynamic';
-
-// Dynamisk import av rich text editor
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-import 'react-quill/dist/quill.snow.css';
+import WysiwygEditor from '@/app/components/WysiwygEditor';
 
 interface KnowledgeDocument {
   id?: string;
@@ -378,20 +374,11 @@ export default function EditKnowledgeDocumentPage() {
                     dangerouslySetInnerHTML={{ __html: selectedDoc.content }}
                   />
                 ) : (
-                  <ReactQuill
+                  <WysiwygEditor
                     value={selectedDoc.content}
                     onChange={(content) => updateDocument('content', content)}
-                    theme="snow"
-                    style={{ height: '400px', marginBottom: '50px' }}
-                    modules={{
-                      toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        ['link', 'image'],
-                        ['clean']
-                      ]
-                    }}
+                    height={400}
+                    placeholder="Skriv dokumentets innehåll här..."
                   />
                 )}
               </div>

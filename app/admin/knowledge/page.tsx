@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react';
 import { Loader2, Plus, Edit, Trash2, Search, X, Bold, Italic, List, Link2 } from 'lucide-react';
 import Link from 'next/link';
 import ImageUpload from '@/app/components/admin/ImageUpload';
-import dynamic from 'next/dynamic';
-
-// Dynamisk import av rich text editor
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
-// Import CSS for ReactQuill
-import './quill-editor.css';
+import WysiwygEditor from '@/app/components/WysiwygEditor';
 
 interface KnowledgeDocument {
   id: string;
@@ -456,29 +450,12 @@ export default function KnowledgeAdminPage() {
                 </div>
                 
                 {useRichEditor ? (
-                  <div className="border rounded-lg overflow-hidden">
-                    <ReactQuill
-                      theme="snow"
-                      value={editingDoc.content || ''}
-                      onChange={(content) => setEditingDoc({ ...editingDoc, content })}
-                      modules={{
-                        toolbar: [
-                          [{ 'header': [1, 2, 3, false] }],
-                          ['bold', 'italic', 'underline', 'strike'],
-                          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                          ['link', 'image'],
-                          [{ 'color': [] }, { 'background': [] }],
-                          ['clean']
-                        ],
-                      }}
-                      formats={[
-                        'header', 'bold', 'italic', 'underline', 'strike',
-                        'list', 'bullet', 'link', 'image', 'color', 'background'
-                      ]}
-                      style={{ height: '300px', marginBottom: '50px' }}
-                      placeholder="Skriv artikel innehåll här..."
-                    />
-                  </div>
+                  <WysiwygEditor
+                    value={editingDoc.content || ''}
+                    onChange={(content) => setEditingDoc({ ...editingDoc, content })}
+                    height={300}
+                    placeholder="Skriv artikelinnehåll här..."
+                  />
                 ) : (
                   <textarea
                     value={editingDoc.content || ''}
