@@ -46,6 +46,7 @@ export default function AdminLayout({
   const menuItems = [
     { label: 'Dashboard', href: '/admin' },
     { label: 'Produktsidor', href: '/admin/products' },
+    { label: 'Frågor & Svar', href: '/admin/faq' },
     { label: 'Blogg', href: '/admin/blog' },
     { label: 'Recept', href: '/admin/recipes' },
     { label: 'Kurser', href: '/admin/courses' },

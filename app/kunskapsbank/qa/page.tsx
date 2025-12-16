@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { GiFruitBowl } from 'react-icons/gi';
@@ -8,6 +8,7 @@ import { useT } from '@/app/lib/i18n/LanguageProvider';
 import { ChevronDown, Search, Book, ShoppingCart, CreditCard, Shield, HelpCircle } from 'lucide-react';
 
 interface FAQ {
+  id?: string;
   question: string;
   answer: string;
 }
@@ -19,57 +20,81 @@ interface Section {
   faqs: FAQ[];
 }
 
-const sections: Section[] = [
+// Default FAQs (fallback)
+const DEFAULT_FAQS: FAQ[] = [
   {
-    id: 'general',
-    title: 'Vanliga frågor',
-    icon: GiFruitBowl,
-    faqs: [
-      {
-        question: 'Vem står bakom sajten?',
-        answer: 'Functional Foods drivs av kostrådgivaren och kokboksförfattaren Ulrika Davidsson och hennes team på Ulrikas Kickstart AB.'
-      },
-      {
-        question: 'Hur skiljer sig era program från vanliga kost- och receptsajter?',
-        answer: 'Ulrika har kreerat och lagat upp alla functional foods‑recept som ingår i kurserna, gjort måltidsplaner och inköpslistor – allt är planerat och förberett för dig. Coachningen sker av Ulrika och hennes team.'
-      },
-      {
-        question: 'Vilka kurser erbjuder ni?',
-        answer: 'Functional Basics – grunderna i functional foods och hållbara matvanor. Functional Gut Health/Flow – fokus på tarmflora, antiinflammatorisk kost och bättre matsmältning. Functional insulin balance/Energy – stabilisera blodsockret och få jämn energi.'
-      },
-      {
-        question: 'Ingår personlig coaching?',
-        answer: 'Ja, Ulrika och hennes team coachar i kurserna söndag–fredag. Live‑ och Q&A‑träffar sker regelbundet.'
-      },
-      {
-        question: 'Vilka betalningssätt accepterar ni?',
-        answer: 'Vi använder Stripe samt SVEA som betalningslösning. Du kan betala med kort, Swish, faktura samt delbetalning.'
-      },
-      {
-        question: 'Har ni öppet köp?',
-        answer: 'Vi följer distanshandelslagen. Som privatkund har du 14 dagars ångerrätt från att du fått bokningsbekräftelse/leverans. Ångerrätten upphör efter 14 dagar eller när du tagit del av kursen om det sker tidigare. Kontakta oss på info@functionalfoods.se inom 14 dagar eller innan du påbörjar kursen.'
-      },
-      {
-        question: 'Kan jag köpa kursen som present?',
-        answer: 'Ja. Välj “Ge bort som gåva” i kassan så får du ett presentkort via e‑post.'
-      },
-      {
-        question: 'Hur kontaktar jag er?',
-        answer: 'info@ulrikadavidsson.se'
-      },
-      {
-        question: 'Kan jag använda mitt friskvårdsbidrag?',
-        answer: 'Ja. Spara kvittot från “Mitt konto” och lämna till din arbetsgivare, eller köp via din friskvårdsleverantör (Epassi, Benefix, Wellnet, Benefits).'
-      }
-    ]
+    question: 'Vem står bakom sajten?',
+    answer: 'Functional Foods drivs av kostrådgivaren och kokboksförfattaren Ulrika Davidsson och hennes team på Ulrikas Kickstart AB.'
+  },
+  {
+    question: 'Hur skiljer sig era program från vanliga kost- och receptsajter?',
+    answer: 'Ulrika har kreerat och lagat upp alla functional foods‑recept som ingår i kurserna, gjort måltidsplaner och inköpslistor – allt är planerat och förberett för dig. Coachningen sker av Ulrika och hennes team.'
+  },
+  {
+    question: 'Vilka kurser erbjuder ni?',
+    answer: 'Functional Basics – grunderna i functional foods och hållbara matvanor. Functional Gut Health/Flow – fokus på tarmflora, antiinflammatorisk kost och bättre matsmältning. Functional insulin balance/Energy – stabilisera blodsockret och få jämn energi.'
+  },
+  {
+    question: 'Ingår personlig coaching?',
+    answer: 'Ja, Ulrika och hennes team coachar i kurserna söndag–fredag. Live‑ och Q&A‑träffar sker regelbundet.'
+  },
+  {
+    question: 'Vilka betalningssätt accepterar ni?',
+    answer: 'Vi använder Stripe samt SVEA som betalningslösning. Du kan betala med kort, Swish, faktura samt delbetalning.'
+  },
+  {
+    question: 'Har ni öppet köp?',
+    answer: 'Vi följer distanshandelslagen. Som privatkund har du 14 dagars ångerrätt från att du fått bokningsbekräftelse/leverans. Ångerrätten upphör efter 14 dagar eller när du tagit del av kursen om det sker tidigare. Kontakta oss på info@functionalfoods.se inom 14 dagar eller innan du påbörjar kursen.'
+  },
+  {
+    question: 'Kan jag köpa kursen som present?',
+    answer: 'Ja. Välj "Ge bort som gåva" i kassan så får du ett presentkort via e‑post.'
+  },
+  {
+    question: 'Hur kontaktar jag er?',
+    answer: 'info@ulrikadavidsson.se'
+  },
+  {
+    question: 'Kan jag använda mitt friskvårdsbidrag?',
+    answer: 'Ja. Spara kvittot från "Mitt konto" och lämna till din arbetsgivare, eller köp via din friskvårdsleverantör (Epassi, Benefix, Wellnet, Benefits).'
   }
 ];
 
 export default function QAPage() {
+  const [faqs, setFaqs] = useState<FAQ[]>(DEFAULT_FAQS);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedSections, setExpandedSections] = useState<string[]>(['general']);
   const [expandedQuestions, setExpandedQuestions] = useState<string[]>([]);
   const t = useT();
+
+  // Fetch FAQs from API
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        const response = await fetch('/api/faq');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.faqs && data.faqs.length > 0) {
+            setFaqs(data.faqs);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch FAQs:', error);
+        // Keep default FAQs on error
+      }
+    };
+    fetchFAQs();
+  }, []);
+
+  // Build sections with dynamic FAQs
+  const sections: Section[] = [
+    {
+      id: 'general',
+      title: 'Vanliga frågor',
+      icon: GiFruitBowl,
+      faqs: faqs
+    }
+  ];
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>
