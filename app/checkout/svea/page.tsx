@@ -24,7 +24,12 @@ export default function SveaCheckoutPage() {
       sessionStorage.removeItem('checkout_data');
       initializeCheckout(checkoutData);
     } else if (items.length > 0) {
-      // Fallback to cart items if no stored data
+      // If user is not logged in, we require checkout details (name/email) from /checkout
+      if (!user) {
+        router.push('/checkout');
+        return;
+      }
+      // Logged-in users can continue without stored checkout data
       initializeCheckout();
     } else {
       // No items and no stored data, redirect to cart

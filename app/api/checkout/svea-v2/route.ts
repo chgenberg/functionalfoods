@@ -52,6 +52,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Require customer name/email for all purchases (course or ebook)
+    const customerName = (customer?.name || '').trim();
+    const customerEmail = (customer?.email || '').trim();
+    if (!customerName) {
+      return NextResponse.json({ error: 'Namn är obligatoriskt' }, { status: 400 });
+    }
+    if (!customerEmail) {
+      return NextResponse.json({ error: 'E-postadress är obligatorisk' }, { status: 400 });
+    }
+
     console.log('📦 Processing checkout:', {
       itemCount: items.length,
       itemIds: items.map(i => i.id),

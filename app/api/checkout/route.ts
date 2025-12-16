@@ -23,6 +23,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Inga varor i varukorgen' }, { status: 400 });
     }
 
+    // Require customer name (and email for receipts) for all purchases
+    const customerName = (customer?.name || '').trim();
+    const customerEmail = (customer?.email || '').trim();
+    if (!customerName) {
+      return NextResponse.json({ error: 'Namn är obligatoriskt' }, { status: 400 });
+    }
+    if (!customerEmail) {
+      return NextResponse.json({ error: 'E-postadress är obligatorisk' }, { status: 400 });
+    }
+
     // --- SECURITY FIX: Fetch product data from database ---
     const courseProducts = await prisma.courseProduct.findMany();
     const slugify = (s: string) => s
@@ -201,8 +211,8 @@ export async function POST(req: NextRequest) {
         couponCode: couponCode || '',
         courseNames: validatedItems.map(item => item.name).join(', '),
         totalItems: validatedItems.length.toString(),
-        customerEmail: customer?.email || '',
-        customerName: customer?.name || '',
+        customerEmail: customerEmail,
+        customerName: customerName,
         // Attribution (flattened for Stripe metadata limits)
         gclid: attribution?.gclid || '',
         gbraid: attribution?.gbraid || '',

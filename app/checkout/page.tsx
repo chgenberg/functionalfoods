@@ -38,6 +38,14 @@ export default function Checkout() {
     createAccount: false
   });
 
+  const nameIsValid = customerInfo.name.trim().length > 1;
+  const emailIsValid = customerInfo.email.trim().length > 3;
+  const canCheckout = !isProcessing && (
+    guestMode
+      ? (nameIsValid && emailIsValid)
+      : (!!user && nameIsValid)
+  );
+
   useEffect(() => {
     if (user) {
       setGuestMode(false);
@@ -63,13 +71,16 @@ export default function Checkout() {
     setError(null);
 
     try {
-      // Validate form if guest mode
-      if (guestMode) {
-        if (!customerInfo.name.trim() || !customerInfo.email.trim()) {
-          setError('Vänligen fyll i alla obligatoriska fält');
-          setIsProcessing(false);
-          return;
-        }
+      // Validate required fields (name is mandatory for all purchases)
+      if (!nameIsValid) {
+        setError('Vänligen fyll i ditt namn');
+        setIsProcessing(false);
+        return;
+      }
+      if (guestMode && !emailIsValid) {
+        setError('Vänligen fyll i din e-postadress');
+        setIsProcessing(false);
+        return;
       }
 
       // Build checkout payload (compatible with Stripe /api/checkout endpoint)
@@ -82,13 +93,13 @@ export default function Checkout() {
           quantity: item.quantity,
           type: item.type
         })),
-        customer: guestMode ? { 
-          name: customerInfo.name, 
-          email: customerInfo.email 
-        } : (user ? { 
-          name: user.name, 
-          email: user.email, 
-          id: user.id 
+        customer: guestMode ? {
+          name: customerInfo.name,
+          email: customerInfo.email
+        } : (user ? {
+          name: customerInfo.name,
+          email: user.email,
+          id: user.id
         } : undefined),
         couponCode: appliedCoupon?.code || undefined,
         attribution
@@ -258,13 +269,26 @@ export default function Checkout() {
                   </p>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-green-50 rounded-lg sm:rounded-xl">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <User className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-green-50 rounded-lg sm:rounded-xl">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm text-gray-600">{t('checkout.loggedInAs','Inloggad som')}</p>
+                      <p className="font-medium text-sm sm:text-base text-gray-900 truncate">{user?.email}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-gray-600">{t('checkout.loggedInAs','Inloggad som')}</p>
-                    <p className="font-medium text-sm sm:text-base text-gray-900 truncate">{user?.email}</p>
+
+                  <div>
+                    <input
+                      type="text"
+                      value={customerInfo.name}
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
+                      placeholder="Namn *"
+                      required
+                    />
                   </div>
                 </div>
               )}
@@ -523,7 +547,7 @@ export default function Checkout() {
                 {/* Checkout Button - Desktop */}
                 <button
                   onClick={handleCheckout}
-                  disabled={isProcessing || (!guestMode && !user)}
+                  disabled={!canCheckout}
                   className="hidden lg:flex w-full py-3 sm:py-4 bg-[#014421] text-white rounded-lg sm:rounded-xl font-medium hover:bg-[#1a5530] transition-colors disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center gap-2"
                 >
                   {isProcessing ? (
@@ -565,7 +589,7 @@ export default function Checkout() {
           </div>
           <button
             onClick={handleCheckout}
-            disabled={isProcessing || (!guestMode && !user)}
+            disabled={!canCheckout}
             className="flex-1 py-3 bg-[#014421] text-white rounded-lg font-medium hover:bg-[#1a5530] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
           >
             {isProcessing ? (
