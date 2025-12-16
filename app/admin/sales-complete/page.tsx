@@ -188,80 +188,31 @@ export default function UnifiedSalesPage() {
       setLoading(true);
       setError(null);
 
-      // Fetch from all sources in parallel
-      // Note: We need Stripe API because many payments never became orders in DB (webhook issues)
-      const [stripeRes, ordersRes] = await Promise.all([
-        fetch('/api/admin/stripe-payments', { credentials: 'include' }),
-        fetch('/api/admin/orders', { credentials: 'include' })
-      ]);
+      // Only fetch from database - this is the source of truth
+      const ordersRes = await fetch('/api/admin/orders', { credentials: 'include' });
 
-      if (!stripeRes.ok || !ordersRes.ok) {
+      if (!ordersRes.ok) {
         throw new Error('Failed to fetch order data');
       }
 
-      const stripeData = await stripeRes.json();
       const ordersData = await ordersRes.json();
 
-      // Combine and format all orders
+      // Process orders from database only (no duplicates!)
       const combinedOrders: UnifiedOrder[] = [];
-
-      // Process Stripe payments FIRST (they are the source of truth for payments)
-      if (stripeData.payments) {
-        stripeData.payments.forEach((payment: any) => {
-          const itemCourses = (payment.orderInfo?.items || []).map((item: any) => normalizeCourseNames([item.name])[0]);
-          const metaCourses = payment.metadata?.courseNames
-            ? normalizeCourseNames(String(payment.metadata.courseNames).split(','))
-            : [];
-          const metaItemCourses = payment.metadata?.items
-            ? normalizeCourseNames((Array.isArray(payment.metadata.items) ? payment.metadata.items : []).map((i: any) => i?.name || ''))
-            : [];
-          const descriptionCourses = extractCoursesFromDescription(payment.description);
-          const courses = Array.from(new Set([...itemCourses, ...metaCourses, ...metaItemCourses, ...descriptionCourses])).filter(Boolean);
-
-          combinedOrders.push({
-            id: payment.id,
-            orderNumber: payment.orderInfo?.orderNumber || payment.id,
-            customerName: payment.customer.name || 'Okänd',
-            customerEmail: payment.customer.email,
-            customerPhone: payment.customer.metadata?.phone,
-            customerCountry: payment.customer.metadata?.country || 'SE',
-            amount: payment.amount / 100,
-            currency: payment.currency.toUpperCase(),
-            status: payment.status,
-            paymentMethod: payment.paymentMethod?.type || 'card',
-            paymentProvider: 'stripe',
-            items: payment.orderInfo?.items || [],
-            courses,
-            createdAt: payment.created,
-            refunded: payment.refunded,
-            refundAmount: payment.refundAmount / 100,
-            receiptUrl: payment.receiptUrl,
-            metadata: payment,
-            source: 'stripe'
-          });
-        });
-      }
-
-      // Process orders from database (Svea and manual) - skip if already from Stripe
+      
       ordersData.forEach((order: any) => {
-        // Skip if already processed as Stripe payment
-        if (combinedOrders.some(o => o.orderNumber === order.orderNumber)) {
-          return;
-        }
-
-        // Determine payment provider more accurately
-        let paymentProvider: 'stripe' | 'svea' | 'manual' = 'manual'; // Default to manual for old orders
+        // Determine payment provider
+        let paymentProvider: 'stripe' | 'svea' | 'manual' = 'manual';
         
         if (order.checkoutOrderId) {
           // If there's a checkoutOrderId, it's from Svea
           paymentProvider = 'svea';
         } else if (order.payment?.paymentMethod) {
-          // Check payment method
           const method = order.payment.paymentMethod.toLowerCase();
-          if (method.includes('manual')) {
-            paymentProvider = 'manual';
-          } else if (method.includes('stripe')) {
+          if (method.includes('stripe') || method.includes('card')) {
             paymentProvider = 'stripe';
+          } else if (method.includes('svea') || method.includes('swish') || method.includes('faktura')) {
+            paymentProvider = 'svea';
           }
         }
 
@@ -304,7 +255,6 @@ export default function UnifiedSalesPage() {
   };
 
   const calculateSummary = (orders: UnifiedOrder[]): OrderSummary => {
-
     const summary: OrderSummary = {
       totalOrders: 0,
       totalRevenue: 0,
@@ -325,35 +275,33 @@ export default function UnifiedSalesPage() {
     const monthlyMap: Record<string, number> = {};
 
     orders.forEach(order => {
-      const isCompleted = order.status === 'succeeded' || order.status === 'COMPLETED';
-      const isDbSource = order.source === 'db';
+      const isCompleted = order.status === 'COMPLETED';
+      const isPending = order.status === 'PENDING';
+      const isFailed = order.status === 'FAILED' || order.status === 'CANCELLED';
 
-      // Räkna bara DB-ordrar i statistik (matchar verkliga ordrar)
-      if (!isDbSource) {
-        return;
-      }
+      // Count all orders
+      summary.totalOrders++;
 
-      // Count by status (exclude PENDING from completed)
+      // Count by status
       if (isCompleted) {
         summary.successfulOrders++;
         summary.totalRevenue += order.amount - (order.refundAmount || 0);
-        summary.totalOrders++;
-      } else if (order.status === 'processing' || order.status === 'PENDING') {
+      } else if (isPending) {
         summary.pendingOrders++;
-      } else if (order.status === 'failed' || order.status === 'CANCELLED') {
+      } else if (isFailed) {
         summary.failedOrders++;
       }
 
-      // Provider breakdown (DB orders only)
+      // Provider breakdown - only count completed orders for revenue
       if (summary.providerBreakdown[order.paymentProvider]) {
-        summary.providerBreakdown[order.paymentProvider].count++;
         if (isCompleted) {
+          summary.providerBreakdown[order.paymentProvider].count++;
           summary.providerBreakdown[order.paymentProvider].revenue += order.amount - (order.refundAmount || 0);
         }
       }
 
-      // Course/book breakdown - only completed/succeeded orders; use item-level revenue when available
-      if (isCompleted && isDbSource) {
+      // Course/book breakdown - only completed orders
+      if (isCompleted) {
         const hasItems = Array.isArray(order.items) && order.items.length > 0;
         if (hasItems) {
           order.items.forEach((item) => {
@@ -362,28 +310,27 @@ export default function UnifiedSalesPage() {
             if (!summary.courseBreakdown[courseName]) {
               summary.courseBreakdown[courseName] = { count: 0, revenue: 0 };
             }
+            // Count each item quantity (e.g., 2x Functional Basics = 2)
             summary.courseBreakdown[courseName].count += item.quantity || 1;
-            // item.price is exkl moms i DB; summera exkl moms för konsistens
-            summary.courseBreakdown[courseName].revenue += (item.price || 0) * (item.quantity || 1);
+            // Calculate revenue including VAT for display
+            const vatRate = (item.type === 'book' || item.name?.toLowerCase().includes('bok')) ? 0.06 : 0.25;
+            const priceInclVAT = (item.price || 0) * (1 + vatRate);
+            summary.courseBreakdown[courseName].revenue += priceInclVAT * (item.quantity || 1);
           });
-        } else {
-          // Fallback to legacy course list if items saknas
-          if (order.courses.length > 0 && order.amount > 0) {
-            order.courses.forEach(course => {
-              if (!summary.courseBreakdown[course]) {
-                summary.courseBreakdown[course] = { count: 0, revenue: 0 };
-              }
-              summary.courseBreakdown[course].count += 1;
-              const perItemRevenue = (order.amount - (order.refundAmount || 0)) / Math.max(1, order.courses.length);
-              summary.courseBreakdown[course].revenue += perItemRevenue;
-            });
-          }
+        } else if (order.courses.length > 0 && order.amount > 0) {
+          // Fallback to legacy course list
+          order.courses.forEach(course => {
+            if (!summary.courseBreakdown[course]) {
+              summary.courseBreakdown[course] = { count: 0, revenue: 0 };
+            }
+            summary.courseBreakdown[course].count += 1;
+            const perItemRevenue = (order.amount - (order.refundAmount || 0)) / Math.max(1, order.courses.length);
+            summary.courseBreakdown[course].revenue += perItemRevenue;
+          });
         }
-      }
 
-      // Monthly revenue
-      const month = new Date(order.createdAt).toISOString().slice(0, 7);
-      if (order.status === 'succeeded' || order.status === 'COMPLETED') {
+        // Monthly revenue
+        const month = new Date(order.createdAt).toISOString().slice(0, 7);
         monthlyMap[month] = (monthlyMap[month] || 0) + order.amount - (order.refundAmount || 0);
       }
 
@@ -393,7 +340,7 @@ export default function UnifiedSalesPage() {
       }
     });
 
-    // Calculate average
+    // Calculate average (based on completed orders only)
     summary.averageOrderValue = summary.successfulOrders > 0 ? 
       summary.totalRevenue / summary.successfulOrders : 0;
 
@@ -401,7 +348,7 @@ export default function UnifiedSalesPage() {
     summary.monthlyRevenue = Object.entries(monthlyMap)
       .map(([date, amount]) => ({ date, amount }))
       .sort((a, b) => a.date.localeCompare(b.date))
-      .slice(-12); // Last 12 months
+      .slice(-12);
 
     return summary;
   };
@@ -590,19 +537,12 @@ export default function UnifiedSalesPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'succeeded':
       case 'COMPLETED':
         return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case 'processing':
       case 'PENDING':
         return <Clock className="w-5 h-5 text-yellow-600" />;
-      case 'requires_payment_method':
-      case 'requires_confirmation':
-      case 'requires_action':
-        return <AlertCircle className="w-5 h-5 text-orange-600" />;
-      case 'canceled':
       case 'CANCELLED':
-      case 'failed':
+      case 'FAILED':
         return <XCircle className="w-5 h-5 text-red-600" />;
       default:
         return <Clock className="w-5 h-5 text-gray-600" />;
@@ -611,16 +551,11 @@ export default function UnifiedSalesPage() {
 
   const getStatusText = (status: string) => {
     const statusMap: { [key: string]: string } = {
-      'succeeded': 'Lyckad',
       'COMPLETED': 'Slutförd',
-      'processing': 'Behandlas',
       'PENDING': 'Väntar',
-      'requires_payment_method': 'Kräver betalningsmetod',
-      'requires_confirmation': 'Kräver bekräftelse',
-      'requires_action': 'Kräver åtgärd',
-      'canceled': 'Avbruten',
       'CANCELLED': 'Avbruten',
-      'failed': 'Misslyckad'
+      'FAILED': 'Misslyckad',
+      'REFUNDED': 'Återbetalad'
     };
     return statusMap[status] || status;
   };
@@ -872,17 +807,17 @@ export default function UnifiedSalesPage() {
                 <div className="space-y-2">
                   <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Status</span>
                   <div className="relative">
-                    <select
-                      value={filters.status}
-                      onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                      className="w-full appearance-none bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white cursor-pointer transition-all"
-                    >
-                      <option value="all">Alla</option>
-                      <option value="succeeded">Lyckad</option>
-                      <option value="COMPLETED">Slutförd</option>
-                      <option value="PENDING">Väntar</option>
-                      <option value="failed">Misslyckad</option>
-                    </select>
+<select
+                                      value={filters.status}
+                                      onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                                      className="w-full appearance-none bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white cursor-pointer transition-all"
+                                    >
+                                      <option value="all">Alla</option>
+                                      <option value="COMPLETED">Slutförd</option>
+                                      <option value="PENDING">Väntar</option>
+                                      <option value="CANCELLED">Avbruten</option>
+                                      <option value="FAILED">Misslyckad</option>
+                                    </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
