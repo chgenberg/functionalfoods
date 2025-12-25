@@ -535,9 +535,7 @@ export async function POST(req: NextRequest) {
               // Don't return - continue to return the response
             } else {
               const COURSE_VAT_RATE = 0.25;
-              const BOOK_VAT_RATE = 0.06;
               const courseItems = updatedOrder.items.filter(item => item.type === 'course');
-              const bookItems = updatedOrder.items.filter(item => item.type === 'book');
               const emailCourses = courseItems.map(item => ({
                 name: item.name,
                 price: Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100 * (item.quantity || 1)
@@ -551,74 +549,9 @@ export async function POST(req: NextRequest) {
                 console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
               } else {
                 console.log(`📧 Preparing to send order confirmation email via verify to: ${emailToUse}, isNewUser: ${isNewUser}`);
-                console.log(`📚 Order contains: ${courseItems.length} courses, ${bookItems.length} e-books`);
+                console.log(`📚 Order contains: ${courseItems.length} courses`);
 
                 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
-
-                // Send e-book download email for e-book purchases
-                if (bookItems.length > 0) {
-                  for (const book of bookItems) {
-                    // Generate unique download token
-                    const crypto = await import('crypto');
-                    const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
-                    
-                    // Determine ebookId based on book name
-                    let ebookId = 'julbok-2025';
-                    if (book.name.toLowerCase().includes('julbord') || book.name.toLowerCase().includes('julbok')) {
-                      ebookId = 'julbok-2025';
-                    }
-                    
-                    // Store the download token in database
-                    await prisma.ebookDownload.create({
-                      data: {
-                        token: downloadToken,
-                        orderNumber: updatedOrder.orderNumber,
-                        customerEmail: emailToUse,
-                        ebookId,
-                        ebookName: book.name,
-                        maxDownloads: 5,
-                        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
-                      }
-                    });
-                    
-                    const downloadUrl = `${baseUrl}/julbok/ladda-ner?token=${downloadToken}`;
-                    
-                    await emailService.sendEbookDownloadEmail({
-                      email: emailToUse,
-                      name: nameToUse,
-                      ebookName: book.name,
-                      downloadUrl,
-                      downloadPassword: downloadToken, // Now using unique token instead of static password
-                      orderNumber: updatedOrder.orderNumber
-                    });
-                    
-                    console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
-
-                    // After successful e-book send: sync to Mailchimp (non-blocking + timeout)
-                    try {
-                      const mailchimpMarketing = getMailchimpMarketing();
-                      if (mailchimpMarketing.isConfigured()) {
-                        const normalizedEmail = emailToUse.toLowerCase().trim();
-                        const name = (nameToUse || '').trim();
-                        const [firstName, ...rest] = name ? name.split(/\s+/) : [];
-                        const lastName = rest.length ? rest.join(' ') : undefined;
-
-                        await Promise.race([
-                          mailchimpMarketing.addSubscriber({
-                            email: normalizedEmail,
-                            firstName: firstName || undefined,
-                            lastName,
-                            tags: ['kund', 'ebok'],
-                            status: 'subscribed'
-                          }),
-                          new Promise((resolve) => setTimeout(resolve, 1500))
-                        ]);
-                      }
-                    } catch (e) {
-                      console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
-                    }
-                  }
-                }
 
                 // Send regular order confirmation for course purchases (ALWAYS send if there are courses)
                 if (courseItems.length > 0) {

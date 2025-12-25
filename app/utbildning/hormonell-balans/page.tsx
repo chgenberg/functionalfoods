@@ -313,32 +313,8 @@ export default function HormonellBalansPage() {
               För dig som vill få koll på dina hormoner! Känner du dig ofta trött, nedstämd och att känslorna snurrar runt inombords? Du är inte ensam! Ungefär 8 av 10 kvinnor upplever olika typer av hormonella besvär vid PMS, i förklimakteriet eller i klimakteriet. Men det finns lösningar för att må bättre – med rätt kost och coachning kan symptomen minskas!
             </motion.p>
 
-            {/* Price Box with E-book Bonus */}
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
-              {/* E-book Bonus Card */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.35 }}
-                className="bg-gradient-to-br from-[#1a472a] to-[#2d5a3d] rounded-xl p-4 shadow-lg border border-[#3d6a4d] max-w-[200px] flex flex-col items-center gap-2"
-              >
-                <div className="text-xs font-semibold text-[#c9a227] uppercase tracking-wide">Bonus vid köp</div>
-                <div className="relative w-24 h-32">
-                  <Image
-                    src="/Julbok/Produktbild.png"
-                    alt="Julbord E-bok"
-                    fill
-                    className="object-contain drop-shadow-lg"
-                  />
-                </div>
-                <div className="text-center">
-                  <div className="text-white font-semibold text-sm">Gratis E-bok</div>
-                  <div className="text-white/80 text-xs">Julbord av Ulrika</div>
-                  <div className="text-[#c9a227] text-xs font-medium mt-1">Värde 59 kr</div>
-                </div>
-              </motion.div>
-
-              {/* Price Box */}
+            {/* Price Box */}
+            <div className="flex flex-col items-center justify-center gap-4 mb-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

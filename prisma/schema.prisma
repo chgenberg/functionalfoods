@@ -672,7 +672,7 @@ model EbookDownload {
   token           String    @unique
   orderNumber     String
   customerEmail   String
-  ebookId         String    // e.g., 'julbok-2025'
+  ebookId         String    // Identifier for the e-book/product
   ebookName       String
   downloadCount   Int       @default(0)
   maxDownloads    Int       @default(5)  // Allow up to 5 downloads per token

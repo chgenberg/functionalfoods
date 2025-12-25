@@ -8,9 +8,7 @@ export const dynamic = 'force-dynamic';
 function normalizeCourseNames(name: string): string {
   const lower = (name || '').toLowerCase().trim();
   
-  if (lower.includes('julbok') || lower.includes('julbord') || lower.includes('e-bok') || lower.includes('ebook')) {
-    return 'Julbord E-bok';
-  }
+  if (lower.includes('e-bok') || lower.includes('ebook')) return 'E-bok';
   if (lower.includes('flow') || lower.includes('gut health')) {
     return 'Functional Flow';
   }

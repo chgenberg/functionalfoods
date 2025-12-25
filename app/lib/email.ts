@@ -291,25 +291,6 @@ export class EmailService {
               `}
             </div>
 
-            <!-- E-bok bonus sektion -->
-            <div style="background: linear-gradient(135deg, #fef3f2 0%, #fde8e8 100%); border: 2px solid #f87171; border-radius: 12px; padding: 24px; margin: 30px 0; position: relative; overflow: hidden;">
-              <div style="position: absolute; top: -15px; right: -15px; width: 60px; height: 60px; background: #f87171; border-radius: 50%; opacity: 0.1;"></div>
-              <h3 style="color: #991b1b; margin: 0 0 16px 0; font-size: 20px; display: flex; align-items: center;">
-                <span style="display: inline-block; width: 32px; height: 32px; background: #f87171; border-radius: 50%; text-align: center; line-height: 36px; color: white; font-size: 18px; margin-right: 12px;">🎁</span>
-                Din bonus: Exklusiv E-bok!
-              </h3>
-              <p style="color: #7f1d1d; line-height: 1.6; margin: 0 0 16px 0;">
-                Som tack för ditt köp får du vår exklusiva e-bok med recept och tips helt gratis!
-              </p>
-              <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-                <p style="margin: 8px 0; color: #991b1b;"><strong>Ladda ner här:</strong> <a href="https://www.functionalfoods.se/e-bok" style="color: #f87171; font-weight: 600;">functionalfoods.se/e-bok</a></p>
-                <p style="margin: 8px 0; color: #991b1b;"><strong>Lösenord:</strong> <span style="font-family: monospace; background: #fef2f2; padding: 4px 8px; border-radius: 4px; color: #991b1b; font-weight: 600;">Christmas</span></p>
-              </div>
-              <p style="color: #7f1d1d; font-size: 14px; margin: 0; font-style: italic;">
-                🎄 Spara denna information - du kan ladda ner e-boken när som helst!
-              </p>
-            </div>
-
             <!-- Help Section med ikoner -->
             <div style="border-top: 2px solid #f0f0f0; padding-top: 30px; margin-top: 40px;">
               <h3 style="color: #1a4324; margin: 0 0 20px 0; text-align: center;">Behöver du hjälp? Vi finns här!</h3>
@@ -980,9 +961,6 @@ export class EmailService {
           
           <!-- Footer -->
           <div style="background: rgba(0, 0, 0, 0.3); padding: 24px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <p style="color: #93C560; font-size: 14px; margin: 0 0 8px 0; font-weight: 500;">
-              God jul önskar Functional Foods!
-            </p>
             <p style="color: #6b7280; font-size: 12px; margin: 0;">
               © ${new Date().getFullYear()} Functional Foods • functionalfoods.se
             </p>
@@ -999,7 +977,7 @@ export class EmailService {
       html,
       fromEmail: 'info@functionalfoods.se',
       fromName: 'Functional Foods',
-      tags: ['ebook-download', 'transactional', 'julbok']
+      tags: ['ebook-download', 'transactional']
     });
   }
 }

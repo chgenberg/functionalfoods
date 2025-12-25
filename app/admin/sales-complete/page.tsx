@@ -125,9 +125,7 @@ export default function UnifiedSalesPage() {
       const lower = normalized.toLowerCase();
       
       // E-book
-      if (lower.includes('julbok') || lower.includes('julbord') || lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) {
-        return 'Julbord – E-bok';
-      }
+      if (lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) return 'E-bok';
       // Flow variants
       if (lower.includes('flow') || lower.includes('gut health')) {
         return 'Functional Flow';
@@ -154,9 +152,7 @@ export default function UnifiedSalesPage() {
     const lower = description.toLowerCase();
     const courses: string[] = [];
     
-    if (lower.includes('julbok') || lower.includes('julbord') || lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) {
-      courses.push('Julbord – E-bok');
-    }
+    if (lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) courses.push('E-bok');
     if (lower.includes('functional basics') || lower.includes('basics')) {
       courses.push('Functional Basics');
     }

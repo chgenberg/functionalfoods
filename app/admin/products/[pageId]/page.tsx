@@ -49,21 +49,6 @@ interface PageConfig {
 }
 
 const PAGE_CONFIGS: Record<string, PageConfig> = {
-  'julbok': {
-    pageId: 'julbok',
-    name: 'Julbord E-bok',
-    path: '/julbok',
-    fields: [
-      { key: 'title', label: 'Rubrik', type: 'text', placeholder: 'Julbord' },
-      { key: 'subtitle', label: 'Underrubrik', type: 'text', placeholder: 'E-bok av Ulrika Davidsson' },
-      { key: 'description', label: 'Beskrivning', type: 'textarea', placeholder: 'Huvudbeskrivning av e-boken...' },
-      { key: 'shortDescription', label: 'Kort beskrivning', type: 'textarea', placeholder: 'Kortare beskrivning...' },
-      { key: 'image', label: 'Produktbild', type: 'image', help: 'Huvudbild för e-boken (visas på produktsidan)' },
-      { key: 'price', label: 'Pris (visningstext)', type: 'text', placeholder: '59 kr' },
-      { key: 'features', label: 'Funktioner/Features', type: 'array', placeholder: 'T.ex. "20+ näringsrika julrecept"' },
-      { key: 'authorSection', label: 'Om författaren', type: 'textarea', placeholder: 'Text om Ulrika...' },
-    ]
-  },
   'boken': {
     pageId: 'boken',
     name: 'Functional Foods Boken',

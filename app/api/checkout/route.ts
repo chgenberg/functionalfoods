@@ -44,18 +44,6 @@ export async function POST(req: NextRequest) {
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
     
-    // Add hardcoded book products (not in CourseProduct table)
-    const bookProducts = [
-      {
-        id: 'julbok-2025',
-        name: 'Julbord – E-bok av Ulrika Davidsson',
-        price: 55.66, // 59 kr inkl 6% moms
-        basePrice: 55.66,
-        type: 'book' as const,
-        vatRate: 0.06
-      }
-    ];
-    
     const productMap = new Map<string, any>();
     
     // Add course products to map
@@ -69,14 +57,6 @@ export async function POST(req: NextRequest) {
       productMap.set(p.name, { ...p, type: 'course', vatRate: 0.25 });
     }
     
-    // Add book products to map
-    for (const p of bookProducts) {
-      productMap.set(p.id, p);
-      productMap.set(p.name.toLowerCase(), p);
-      productMap.set(p.name, p);
-      productMap.set(slugify(p.name), p);
-    }
-
     // Validate and enrich items with server-side data
     const now = new Date();
     const validatedItems = items.map(item => {

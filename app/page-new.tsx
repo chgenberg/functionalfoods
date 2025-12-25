@@ -137,62 +137,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Christmas Ebook Promotion - Prominent Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6, type: "spring" }}
-          className="absolute bottom-4 left-4 right-4 md:left-auto md:right-8 md:bottom-8 md:max-w-sm z-30"
-        >
-          <Link href="/utbildning" className="group block">
-            <div className="relative bg-gradient-to-br from-[#b91c1c] via-[#991b1b] to-[#7f1d1d] rounded-2xl shadow-2xl overflow-hidden border-2 border-white/30 hover:border-white/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(239,68,68,0.4)]">
-              {/* Animated glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
-              
-              <div className="relative flex items-center gap-4 p-4">
-                {/* Book image */}
-                <div className="relative w-20 h-24 md:w-28 md:h-32 flex-shrink-0 rounded-xl overflow-hidden shadow-xl border-2 border-white/20">
-                  <Image
-                    src="/julbok.png"
-                    alt="Gratis E-bok"
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  {/* Shimmer effect */}
-                  <motion.div
-                    initial={{ x: "-100%" }}
-                    animate={{ x: "200%" }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
-                  />
-                </div>
-
-                {/* Text content */}
-                <div className="flex flex-col flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Gift className="w-5 h-5 text-white" />
-                    <span className="text-white text-sm md:text-base font-bold uppercase tracking-wide">Julkampanj!</span>
-                  </div>
-                  <p className="text-white font-bold text-lg md:text-xl leading-tight">
-                    Gratis E-bok
-                  </p>
-                  <p className="text-white/80 text-sm mt-1">
-                    vid köp av valfri kurs
-                  </p>
-                  <div className="flex items-center gap-2 mt-3">
-                    <span className="bg-white text-red-700 px-4 py-1.5 rounded-full text-sm font-bold group-hover:bg-white/90 transition-colors">
-                      Köp nu
-                    </span>
-                    <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom accent */}
-              <div className="h-1.5 bg-gradient-to-r from-green-500 via-white to-green-500" />
-            </div>
-          </Link>
-        </motion.div>
       </section>
 
       {/* Course Boxes Section */}
@@ -222,11 +166,6 @@ export default function Home() {
                 name: 'Hormonell Balans',
                 image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
                 href: '/utbildning/hormonell-balans'
-              },
-              {
-                name: 'Jul E-bok',
-                image: '/Julbok/Produktbild.png',
-                href: '/julbok'
               },
               {
                 name: 'Boken',
