@@ -62,6 +62,8 @@ interface FilterOptions {
   provider: string;
   status: string;
   dateRange: string;
+  dateFrom: string;
+  dateTo: string;
   course: string;
   paymentMethod: string;
   minAmount: string;
@@ -115,6 +117,8 @@ export default function UnifiedSalesPage() {
     provider: 'all',
     status: 'all',
     dateRange: 'all',
+    dateFrom: '',
+    dateTo: '',
     course: 'all',
     paymentMethod: 'all',
     minAmount: '',
@@ -131,6 +135,7 @@ export default function UnifiedSalesPage() {
     month: { label: 'Senaste 30 dagarna', days: 30 },
     quarter: { label: 'Senaste 90 dagarna', days: 90 },
     year: { label: 'Senaste året', days: 365 },
+    custom: { label: 'Välj datum', days: null },
     all: { label: 'Alla transaktioner', days: null }
   };
 
@@ -417,9 +422,27 @@ export default function UnifiedSalesPage() {
     }
 
     // Date range filter
-    if (filters.dateRange !== 'all') {
+    const parseDateInput = (dateStr: string, endOfDay: boolean) => {
+      // Parse YYYY-MM-DD as local date to avoid timezone shifting
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
+      if (!m) return null;
+      const year = Number(m[1]);
+      const month = Number(m[2]) - 1;
+      const day = Number(m[3]);
+      return endOfDay
+        ? new Date(year, month, day, 23, 59, 59, 999)
+        : new Date(year, month, day, 0, 0, 0, 0);
+    };
+
+    const hasExactDates = !!filters.dateFrom || !!filters.dateTo;
+    if (filters.dateRange === 'custom' || hasExactDates) {
+      const from = filters.dateFrom ? parseDateInput(filters.dateFrom, false) : null;
+      const to = filters.dateTo ? parseDateInput(filters.dateTo, true) : null;
+      if (from) filtered = filtered.filter(o => new Date(o.createdAt) >= from);
+      if (to) filtered = filtered.filter(o => new Date(o.createdAt) <= to);
+    } else if (filters.dateRange !== 'all') {
       const preset = dateRangePresets[filters.dateRange as keyof typeof dateRangePresets];
-      if (preset.days !== null) {
+      if (preset?.days !== null && typeof preset?.days === 'number') {
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - preset.days);
         filtered = filtered.filter(o => new Date(o.createdAt) >= cutoffDate);
@@ -632,6 +655,8 @@ export default function UnifiedSalesPage() {
       provider: 'all',
       status: 'all',
       dateRange: 'all',
+      dateFrom: '',
+      dateTo: '',
       course: 'all',
       paymentMethod: 'all',
       minAmount: '',
@@ -837,7 +862,11 @@ export default function UnifiedSalesPage() {
                   {Object.entries(dateRangePresets).map(([key, preset]) => (
                     <button
                       key={key}
-                      onClick={() => setFilters(prev => ({ ...prev, dateRange: key }))}
+                      onClick={() => setFilters(prev => ({
+                        ...prev,
+                        dateRange: key,
+                        ...(key !== 'custom' ? { dateFrom: '', dateTo: '' } : {})
+                      }))}
                       className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 ${
                         filters.dateRange === key
                           ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-200'
@@ -847,6 +876,29 @@ export default function UnifiedSalesPage() {
                       {preset.label}
                     </button>
                   ))}
+                </div>
+
+                {/* Exact date range (from/to) */}
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
+                  <div className="space-y-2">
+                    <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Från</span>
+                    <input
+                      type="date"
+                      value={filters.dateFrom}
+                      onChange={(e) => setFilters(prev => ({ ...prev, dateRange: 'custom', dateFrom: e.target.value }))}
+                      className="w-full bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Till</span>
+                    <input
+                      type="date"
+                      value={filters.dateTo}
+                      min={filters.dateFrom || undefined}
+                      onChange={(e) => setFilters(prev => ({ ...prev, dateRange: 'custom', dateTo: e.target.value }))}
+                      className="w-full bg-gray-50/80 border-0 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
+                    />
+                  </div>
                 </div>
               </div>
 
