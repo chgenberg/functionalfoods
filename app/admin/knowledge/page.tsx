@@ -444,7 +444,7 @@ export default function KnowledgeAdminPage() {
                       onClick={() => setUseRichEditor(!useRichEditor)}
                       className="text-xs text-blue-600 hover:text-blue-800"
                     >
-                      {useRichEditor ? 'Visa HTML' : 'Visa editor'}
+                      {useRichEditor ? 'Avancerat: Visa HTML' : 'Avancerat: Visa editor'}
                     </button>
                   </div>
                 </div>
@@ -453,6 +453,7 @@ export default function KnowledgeAdminPage() {
                   <WysiwygEditor
                     value={editingDoc.content || ''}
                     onChange={(content) => setEditingDoc({ ...editingDoc, content })}
+                    toolbarPreset="simple"
                     height={300}
                     placeholder="Skriv artikelinnehåll här..."
                   />
@@ -464,6 +465,9 @@ export default function KnowledgeAdminPage() {
                     placeholder="<p>Artikel innehåll här...</p>"
                   />
                 )}
+                <p className="mt-2 text-xs text-gray-500">
+                  Tips: Om du ser &quot;kod&quot; i editorn har du oftast råkat slå på kodblock eller bytt till HTML-läget. Klicka på &quot;Rensa formatering&quot; (suddgummit) eller växla tillbaka till editor.
+                </p>
               </div>
 
               <div className="flex gap-4">

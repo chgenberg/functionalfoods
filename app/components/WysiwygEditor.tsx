@@ -9,6 +9,7 @@ interface WysiwygEditorProps {
   placeholder?: string;
   height?: number;
   className?: string;
+  toolbarPreset?: 'full' | 'simple';
 }
 
 export default function WysiwygEditor({ 
@@ -16,7 +17,8 @@ export default function WysiwygEditor({
   onChange, 
   placeholder = "Skriv ditt innehåll här...", 
   height = 400,
-  className = ""
+  className = "",
+  toolbarPreset = 'full'
 }: WysiwygEditorProps) {
   const [isClient, setIsClient] = useState(false);
   const [ReactQuill, setReactQuill] = useState<any>(null);
@@ -34,30 +36,53 @@ export default function WysiwygEditor({
     });
   }, []);
 
+  const toolbarFull = [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'indent': '-1'}, { 'indent': '+1' }],
+    [{ 'align': [] }],
+    ['blockquote', 'code-block'],
+    ['link', 'image'],
+    ['clean']
+  ];
+
+  const toolbarSimple = [
+    [{ 'header': [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'indent': '-1'}, { 'indent': '+1' }],
+    [{ 'align': [] }],
+    ['blockquote'],
+    ['link'],
+    ['clean']
+  ];
+
   const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
-      [{ 'align': [] }],
-      ['blockquote', 'code-block'],
-      ['link', 'image'],
-      ['clean']
-    ],
+    toolbar: toolbarPreset === 'simple' ? toolbarSimple : toolbarFull,
     clipboard: {
       matchVisual: false,
     }
   };
 
-  const formats = [
+  const formatsFull = [
     'header', 'font', 'size',
     'bold', 'italic', 'underline', 'strike', 'blockquote',
     'list', 'bullet', 'indent',
     'link', 'image', 'color', 'background',
     'align', 'code-block'
   ];
+
+  const formatsSimple = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link',
+    'align'
+  ];
+
+  const formats = toolbarPreset === 'simple' ? formatsSimple : formatsFull;
 
   if (!isClient || !ReactQuill) {
     return (

@@ -377,6 +377,7 @@ export default function EditKnowledgeDocumentPage() {
                   <WysiwygEditor
                     value={selectedDoc.content}
                     onChange={(content) => updateDocument('content', content)}
+                    toolbarPreset="simple"
                     height={400}
                     placeholder="Skriv dokumentets innehåll här..."
                   />
