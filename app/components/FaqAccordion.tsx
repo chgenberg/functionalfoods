@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Search, HelpCircle } from 'lucide-react';
+import { ChevronDown, Search, HelpCircle, MessageCircle } from 'lucide-react';
 
 interface FAQ {
   id?: string;
@@ -74,49 +74,108 @@ export default function FaqAccordion({
     <div className={className}>
       {variant === 'page' && (
         <>
-          <div className="text-center mb-10">
-            <div className="flex justify-center mb-4">
-              <div className="bg-primary rounded-full p-4">
-                <HelpCircle className="w-8 h-8 text-white" />
+          {/* Hero Header */}
+          <div className="text-center mb-12">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="inline-flex items-center justify-center mb-6"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#93C560] rounded-full blur-xl opacity-30 animate-pulse" />
+                <div className="relative bg-gradient-to-br from-[#014421] to-[#016630] rounded-2xl p-5 shadow-lg">
+                  <HelpCircle className="w-10 h-10 text-white" />
+                </div>
               </div>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{title}</h1>
-            <p className="text-lg text-gray-600">{subtitle}</p>
+            </motion.div>
+            <motion.h1 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="text-3xl md:text-4xl font-bold text-[#014421] mb-4"
+            >
+              {title}
+            </motion.h1>
+            <motion.p 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="text-lg text-gray-600 max-w-2xl mx-auto"
+            >
+              {subtitle}
+            </motion.p>
           </div>
 
+          {/* Search Bar */}
           {showSearch && (
-            <div className="relative mb-8">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="relative mb-10 max-w-2xl mx-auto"
+            >
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Sök bland frågor och svar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full pl-14 pr-6 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#93C560] focus:border-transparent transition-all text-gray-700 placeholder-gray-400"
               />
-            </div>
+            </motion.div>
           )}
         </>
       )}
 
-      <div className="space-y-2">
+      {/* FAQ Items */}
+      <div className="space-y-4">
         {filteredFaqs.map((faq, index) => {
           const questionId = `faq-${index}`;
           const isExpanded = expandedQuestions.includes(questionId);
 
           return (
-            <div key={faq.id || questionId} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+            <motion.div 
+              key={faq.id || questionId} 
+              initial={variant === 'page' ? { y: 20, opacity: 0 } : false}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.3, delay: variant === 'page' ? 0.4 + index * 0.05 : 0 }}
+              className={`rounded-xl overflow-hidden transition-all duration-300 ${
+                isExpanded 
+                  ? 'bg-white shadow-lg ring-1 ring-[#93C560]/30' 
+                  : 'bg-white shadow-sm hover:shadow-md border border-gray-100'
+              }`}
+            >
               <button
                 onClick={() => toggleQuestion(questionId)}
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors flex items-start justify-between gap-3"
+                className={`w-full px-6 py-5 text-left flex items-start justify-between gap-4 transition-colors ${
+                  isExpanded ? 'bg-gradient-to-r from-[#014421]/5 to-transparent' : 'hover:bg-gray-50'
+                }`}
               >
-                <span className="font-medium text-gray-800">{faq.question}</span>
+                <div className="flex items-start gap-4">
+                  <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                    isExpanded 
+                      ? 'bg-[#014421] text-white' 
+                      : 'bg-[#93C560]/20 text-[#014421]'
+                  }`}>
+                    <MessageCircle className="w-4 h-4" />
+                  </div>
+                  <span className={`font-medium text-base md:text-lg leading-relaxed ${
+                    isExpanded ? 'text-[#014421]' : 'text-gray-800'
+                  }`}>
+                    {faq.question}
+                  </span>
+                </div>
                 <motion.div
                   animate={{ rotate: isExpanded ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex-shrink-0 mt-0.5"
+                  transition={{ duration: 0.3 }}
+                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                    isExpanded 
+                      ? 'bg-[#014421] text-white' 
+                      : 'bg-gray-100 text-gray-500'
+                  }`}
                 >
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                  <ChevronDown className="w-5 h-5" />
                 </motion.div>
               </button>
 
@@ -126,31 +185,64 @@ export default function FaqAccordion({
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
                     className="overflow-hidden"
                   >
-                    <div className="px-4 pb-4 text-gray-700 whitespace-pre-line">
-                      {faq.answer}
+                    <div className="px-6 pb-6">
+                      {/* Divider */}
+                      <div className="border-t border-gray-100 mb-5" />
+                      
+                      {/* Answer Content */}
+                      <div className="pl-12">
+                        <div className="prose prose-gray max-w-none">
+                          <p className="text-gray-600 leading-relaxed text-base whitespace-pre-line">
+                            {faq.answer}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           );
         })}
       </div>
+
+      {/* Empty State */}
+      {filteredFaqs.length === 0 && searchTerm && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-12"
+        >
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Search className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Inga resultat</h3>
+          <p className="text-gray-600">
+            Vi hittade inga frågor som matchar "{searchTerm}"
+          </p>
+          <button
+            onClick={() => setSearchTerm('')}
+            className="mt-4 text-[#014421] hover:underline font-medium"
+          >
+            Rensa sökning
+          </button>
+        </motion.div>
+      )}
     </div>
   );
 
   if (variant === 'page') {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {content}
+      <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
+        <div className="max-w-3xl mx-auto px-4 py-12 md:py-16">
+          {content}
+        </div>
       </div>
     );
   }
 
   return content;
 }
-
-
