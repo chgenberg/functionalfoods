@@ -5,6 +5,15 @@ const prisma = new PrismaClient();
 
 const FAQ_KEY = 'faq_content';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noStoreHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  'Pragma': 'no-cache',
+  'Expires': '0'
+};
+
 // Default FAQs (used as fallback)
 const DEFAULT_FAQS = [
   {
@@ -62,13 +71,13 @@ export async function GET(req: NextRequest) {
     });
 
     if (!setting) {
-      return NextResponse.json({ faqs: DEFAULT_FAQS });
+      return NextResponse.json({ faqs: DEFAULT_FAQS }, { headers: noStoreHeaders });
     }
 
-    return NextResponse.json({ faqs: JSON.parse(setting.value) });
+    return NextResponse.json({ faqs: JSON.parse(setting.value) }, { headers: noStoreHeaders });
   } catch (error) {
     console.error('Failed to fetch FAQs:', error);
-    return NextResponse.json({ faqs: DEFAULT_FAQS });
+    return NextResponse.json({ faqs: DEFAULT_FAQS }, { headers: noStoreHeaders });
   }
 }
 
