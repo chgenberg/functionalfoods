@@ -236,10 +236,8 @@ export default function FaqAccordion({
 
   if (variant === 'page') {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#fffdf3' }}>
-        <div className="max-w-3xl mx-auto px-4 py-12 md:py-16">
-          {content}
-        </div>
+      <div className="max-w-3xl mx-auto px-4 py-12 md:py-16">
+        {content}
       </div>
     );
   }
