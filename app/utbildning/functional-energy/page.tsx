@@ -10,6 +10,7 @@ import { useCart } from '../../context/CartContext';
 import AddToCart from '@/app/components/AddToCart';
 import CourseReviews from '@/app/components/CourseReviews';
 import HealthDisclaimer from '@/app/components/HealthDisclaimer';
+import FaqAccordion from '@/app/components/FaqAccordion';
 import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User, ChevronRight, Battery, Coffee, Moon } from 'lucide-react';
 import { formatPrice } from '@/app/lib/utils';
 import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
@@ -565,38 +566,7 @@ export default function FunctionalEnergyPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Vanliga frågor</h2>
-          <div className="space-y-4 max-w-3xl mx-auto">
-            {[
-              {
-                q: "Passar kursen för mig som har diabetes?",
-                a: "Kursen är utformad för att hjälpa till med blodsockerkontroll, men ersätter inte medicinsk behandling. Konsultera alltid din läkare."
-              },
-              {
-                q: "Vilken typ av mat lagar vi?",
-                a: "Mat som ger långvarigt bränsle med fokus på långsamma kolhydrater, fibrer, kvalitetsfetter och proteinrika råvaror."
-              },
-              {
-                q: "Hur mycket tid behöver jag lägga per vecka?",
-                a: "Räkna med 3-4 timmar för matlagning och planering, plus tid för videolektioner."
-              },
-              {
-                q: "Får jag tillgång till allt material direkt?",
-                a: "Ja, du får direkt tillgång till hela kursen och kan gå i din egen takt."
-              }
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-xl p-6 shadow-sm"
-              >
-                <h3 className="font-bold text-[#014421] mb-2">{faq.q}</h3>
-                <p className="text-gray-600">{faq.a}</p>
-              </motion.div>
-            ))}
-          </div>
+          <FaqAccordion className="max-w-3xl mx-auto" />
         </div>
       </section>
 
