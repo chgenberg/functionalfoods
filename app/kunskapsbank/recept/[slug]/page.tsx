@@ -81,6 +81,53 @@ export default function RecipePage() {
   const [resterNote, setResterNote] = useState<string | null>(null);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
 
+  // Scale ingredient lines when the recipe uses grouped structured ingredients (strings).
+  // This keeps the old "change servings -> amounts update" behavior without touching backend.
+  const scaleIngredientText = (text: string, targetServings: number, originalServings: number): string => {
+    const baseServings = originalServings > 0 ? originalServings : 1;
+    const factor = targetServings / baseServings;
+    if (!isFinite(factor) || factor === 1) return text;
+
+    const parseAmount = (raw: string): number | null => {
+      const s = String(raw).trim();
+      const fracMap: Record<string, number> = { '¼': 0.25, '½': 0.5, '¾': 0.75, '⅓': 1/3, '⅔': 2/3 };
+      if (fracMap[s] != null) return fracMap[s];
+      if (/^\d+\/\d+$/.test(s)) {
+        const [a, b] = s.split('/').map(Number);
+        if (isFinite(a) && isFinite(b) && b !== 0) return a / b;
+        return null;
+      }
+      const n = parseFloat(s.replace(',', '.'));
+      return isFinite(n) ? n : null;
+    };
+
+    const formatAmount = (val: number, unit?: string) => {
+      if (!isFinite(val)) return null;
+      // Common fractions
+      if (Math.abs(val - 0.25) < 0.01) return `¼${unit ? ' ' + unit : ''}`;
+      if (Math.abs(val - 0.5) < 0.01) return `½${unit ? ' ' + unit : ''}`;
+      if (Math.abs(val - 0.75) < 0.01) return `¾${unit ? ' ' + unit : ''}`;
+      if (val % 1 === 0) return `${Math.round(val)}${unit ? ' ' + unit : ''}`;
+      const s = val.toFixed(val < 1 ? 1 : 1).replace('.', ',');
+      return `${s}${unit ? ' ' + unit : ''}`;
+    };
+
+    // Scale leading quantities (and quantities with known units).
+    return text.replace(
+      /(\d+(?:[.,]\d+)?|\d+\/\d+|[¼½¾⅓⅔])(\s*)(kg|g|mg|l|dl|cl|ml|msk|tsk|krm|st|st\.|stycken|styck|burk|burkar|påse|påsar|förpackning|förpackningar|klyfta|klyftor)?/gi,
+      (match, amountRaw, _space, unit, offset) => {
+        const amount = parseAmount(amountRaw);
+        if (amount == null) return match;
+        // Avoid scaling numbers in the middle of a sentence unless they have a unit
+        const hasUnit = !!unit;
+        if (!hasUnit && offset !== 0) return match;
+
+        const scaled = amount * factor;
+        return formatAmount(scaled, unit) ?? match;
+      }
+    );
+  };
+
   // Get course context from URL params
   const fromCourse = searchParams.get('from');
   const fromWeek = searchParams.get('week');
@@ -1271,6 +1318,10 @@ export default function RecipePage() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                             {group.items.map((ingredient: string, itemIndex: number) => {
                               const globalIndex = itemIndexOffset + itemIndex;
+                              const baseServings = typeof recipe?.servings === 'number' && recipe.servings > 0 ? recipe.servings : 1;
+                              const scaledIngredient = typeof ingredient === 'string'
+                                ? scaleIngredientText(ingredient, servings, baseServings)
+                                : String(ingredient);
                               return (
                                 <motion.div
                                   key={globalIndex}
@@ -1294,8 +1345,8 @@ export default function RecipePage() {
                                     )}
                                   </div>
                                   <LinkedIngredient
-                                    ingredient={ingredient}
-                                    rawMaterial={findRawMaterial(ingredient, rawMaterials)}
+                                    ingredient={scaledIngredient}
+                                    rawMaterial={findRawMaterial(typeof ingredient === 'string' ? ingredient : scaledIngredient, rawMaterials)}
                                     className={`text-sm md:text-base ${checkedIngredients.includes(globalIndex) ? 'line-through opacity-60' : ''}`}
                                   />
                                 </motion.div>
@@ -1340,58 +1391,6 @@ export default function RecipePage() {
                         </motion.div>
                       ))}
                     </div>
-                  ) : (recipe as any).ingredientsStructured?.groups ? (
-                    // NEW: Grouped ingredients
-                    (recipe as any).ingredientsStructured.groups.map((group: any, groupIndex: number) => {
-                      let itemIndexOffset = 0;
-                      for (let i = 0; i < groupIndex; i++) {
-                        itemIndexOffset += (recipe as any).ingredientsStructured.groups[i].items.length;
-                      }
-                      
-                      return (
-                        <div key={groupIndex} className="space-y-2">
-                          {group.title && (
-                            <h4 className="font-semibold text-[#014421] text-sm uppercase tracking-wide mt-4 first:mt-0">
-                              {group.title}
-                            </h4>
-                          )}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-                            {group.items.map((ingredient: string, itemIndex: number) => {
-                              const globalIndex = itemIndexOffset + itemIndex;
-                              return (
-                                <motion.div
-                                  key={globalIndex}
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: globalIndex * 0.03 }}
-                                  onClick={() => toggleIngredient(globalIndex)}
-                                  className={`flex items-center p-2.5 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all border-2 no-print ${
-                                    checkedIngredients.includes(globalIndex) 
-                                      ? 'bg-[#93C560]/10 border-[#93C560] text-gray-500' 
-                                      : 'bg-[#F3EFE3]/50 border-transparent hover:border-[#93C560]/30'
-                                  }`}
-                                >
-                                  <div className={`w-5 h-5 md:w-6 md:h-6 rounded-md md:rounded-lg border-2 mr-2 md:mr-3 flex items-center justify-center transition-all flex-shrink-0 no-print ${
-                                    checkedIngredients.includes(globalIndex) 
-                                      ? 'bg-[#93C560] border-[#93C560]' 
-                                      : 'border-gray-300 bg-white'
-                                  }`}>
-                                    {checkedIngredients.includes(globalIndex) && (
-                                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                                    )}
-                                  </div>
-                                  <LinkedIngredient
-                                    ingredient={ingredient}
-                                    rawMaterial={findRawMaterial(ingredient, rawMaterials)}
-                                    className={`text-sm md:text-base ${checkedIngredients.includes(globalIndex) ? 'line-through opacity-60' : ''}`}
-                                  />
-                                </motion.div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })
                   ) : (recipe as any).ingredientsStructured && Array.isArray((recipe as any).ingredientsStructured) && (recipe as any).ingredientsStructured.length > 0 ? (
                     (recipe as any).ingredientsStructured.map((item: any, index: number) => {
                       // Scale amounts from recipe base servings -> current servings
