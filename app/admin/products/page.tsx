@@ -141,7 +141,7 @@ export default function ProductsAdminPage() {
       <div className="bg-[var(--primary-beige)] border border-[var(--border-light)] rounded-lg p-4">
         <h3 className="text-sm font-medium text-[var(--text-primary)] mb-2">Tips</h3>
         <ul className="text-sm text-[var(--text-secondary)] space-y-1">
-          <li>• Bilder bör vara i JPG eller PNG-format, max 5MB</li>
+          <li>• Bilder bör vara i JPG eller PNG-format, max 10MB</li>
           <li>• Rekommenderad bildstorlek: 800x800 pixlar eller större</li>
           <li>• Ändringar syns direkt på hemsidan efter att du sparat</li>
           <li>• Du kan alltid återställa till originalinnehållet</li>
