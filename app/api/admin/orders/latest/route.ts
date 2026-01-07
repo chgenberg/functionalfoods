@@ -3,6 +3,21 @@ import { prisma } from '@/app/lib/database';
 
 export const dynamic = 'force-dynamic';
 
+type DisplayStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REFUNDED' | 'CANCELLED' | 'PROCESSING' | 'CONFIRMED' | string;
+
+function toDisplayPaymentStatus(orderStatus: string | null | undefined, paymentStatus: string | null | undefined): DisplayStatus {
+  const os = String(orderStatus || '');
+  const ps = String(paymentStatus || '');
+  if (os === 'REFUNDED') return 'REFUNDED';
+  if (ps) {
+    if (ps === 'COMPLETED') return 'COMPLETED';
+    if (ps === 'PROCESSING' || ps === 'PENDING') return 'PENDING';
+    if (ps === 'FAILED' || ps === 'CANCELLED') return 'FAILED';
+    return ps;
+  }
+  return os || 'PENDING';
+}
+
 export async function GET() {
   try {
     // Get the 5 most recent orders with full details
@@ -35,6 +50,9 @@ export async function GET() {
     const formattedOrders = orders.map(order => ({
       orderNumber: order.orderNumber,
       status: order.status,
+      orderStatus: order.status,
+      paymentStatus: order.payment?.status ?? null,
+      displayPaymentStatus: toDisplayPaymentStatus(order.status, order.payment?.status),
       createdAt: order.createdAt,
       totalAmount: order.totalAmount,
       currency: order.currency,

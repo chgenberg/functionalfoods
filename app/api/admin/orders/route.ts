@@ -6,6 +6,27 @@ const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
+type DisplayStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REFUNDED' | 'CANCELLED' | 'PROCESSING' | 'CONFIRMED' | string;
+
+function toDisplayPaymentStatus(orderStatus: string | null | undefined, paymentStatus: string | null | undefined): DisplayStatus {
+  const os = String(orderStatus || '');
+  const ps = String(paymentStatus || '');
+
+  // Refund should win for display (even if the original payment succeeded)
+  if (os === 'REFUNDED') return 'REFUNDED';
+
+  // Prefer payment status if we have it
+  if (ps) {
+    if (ps === 'COMPLETED') return 'COMPLETED';
+    if (ps === 'PROCESSING' || ps === 'PENDING') return 'PENDING';
+    if (ps === 'FAILED' || ps === 'CANCELLED') return 'FAILED';
+    return ps;
+  }
+
+  // Fallback to order status
+  return os || 'PENDING';
+}
+
 export async function GET(request: NextRequest) {
   // Skip during build process
   if (process.env.NEXT_PHASE === 'phase-production-build') {
@@ -70,6 +91,10 @@ export async function GET(request: NextRequest) {
 
       return {
         ...order,
+        // Explicit fields to avoid confusion between order status and payment status
+        orderStatus: order.status,
+        paymentStatus: order.payment?.status ?? null,
+        displayPaymentStatus: toDisplayPaymentStatus(order.status, order.payment?.status),
         totalAmount: displayTotalAmount,
         metadata: {
           ...metadata,
