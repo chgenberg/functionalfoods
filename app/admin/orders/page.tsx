@@ -235,8 +235,7 @@ export default function AdminOrdersPage() {
     
     // Swedish Excel: prefer semicolon delimiter + UTF-8 BOM
     const escapeCell = (cell: any) => `"${String(cell ?? '').replace(/"/g, '""')}"`;
-    const headerRow = headers.map(escapeCell).join(';');
-    const csv = ['\ufeff' + headerRow, ...rows.map(row => row.map(escapeCell).join(';'))].join('\n');
+    const csv = ['\ufeff' + headers.join(';'), ...rows.map(row => row.map(escapeCell).join(';'))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
