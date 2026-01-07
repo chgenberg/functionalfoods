@@ -247,6 +247,14 @@ export default function EditProductPage() {
     }
   };
 
+  const handleDiscardUnsaved = () => {
+    if (!confirm('Ångra osparade ändringar? Detta påverkar inte hemsidan förrän du sparar.')) return;
+    setContent({});
+    setHasChanges(false);
+    setSuccess('Osparade ändringar ångrade');
+    setTimeout(() => setSuccess(null), 3000);
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !currentImageField) return;
@@ -422,12 +430,17 @@ export default function EditProductPage() {
             </button>
           )}
           <button
-            onClick={handleReset}
-            disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 text-sm bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+            onClick={hasCustomContent ? handleReset : handleDiscardUnsaved}
+            disabled={saving || (!hasCustomContent && !hasChanges)}
+            className={`flex items-center gap-2 px-4 py-2 text-sm border rounded-lg transition-colors ${
+              (saving || (!hasCustomContent && !hasChanges))
+                ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-white border border-red-200 text-red-600 hover:bg-red-50'
+            }`}
+            title={!hasCustomContent && !hasChanges ? 'Inget sparat innehåll att återställa' : undefined}
           >
             <Trash2 className="w-4 h-4" />
-            {hasCustomContent ? 'Ta bort ändringar' : 'Återställ'}
+            {hasCustomContent ? 'Ta bort ändringar' : 'Ångra ändringar'}
           </button>
           <button
             onClick={handleSave}
