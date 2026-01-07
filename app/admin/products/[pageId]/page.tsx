@@ -135,6 +135,8 @@ export default function EditProductPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [hasCustomContent, setHasCustomContent] = useState(false);
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentImageField, setCurrentImageField] = useState<keyof PageContent | null>(null);
@@ -153,13 +155,47 @@ export default function EditProductPage() {
       const response = await fetch(`/api/admin/pages/${pageId}`);
       if (!response.ok) throw new Error('Failed to fetch page');
       const data = await response.json();
-      setContent(data.content || {});
+      const incoming = data?.content ?? null;
+      setContent(incoming || {});
+      setHasCustomContent(!!incoming);
+      setLastUpdatedAt(data?.updatedAt ? new Date(data.updatedAt).toISOString() : null);
     } catch (err) {
       console.error(err);
       setError('Kunde inte hämta sidinnehåll');
     } finally {
       setLoading(false);
     }
+  };
+
+  const buildTemplateFromConfig = (cfg: PageConfig): PageContent => {
+    const template: PageContent = {};
+    for (const f of cfg.fields) {
+      if (f.type === 'text' || f.type === 'textarea') {
+        // Use placeholder as an initial starting point (user can overwrite)
+        if (f.placeholder) (template as any)[f.key] = f.placeholder;
+      } else if (f.type === 'array') {
+        // Add a few empty items so the user sees the structure immediately
+        (template as any)[f.key] = ['', '', ''];
+      } else if (f.type === 'benefits') {
+        template.benefits = [
+          { title: '', description: '' },
+          { title: '', description: '' },
+          { title: '', description: '' },
+        ];
+      } else if (f.type === 'image') {
+        // leave empty
+      }
+    }
+    return template;
+  };
+
+  const fillTemplate = () => {
+    if (!config) return;
+    if (!confirm('Fyll i en mall som utgångspunkt? Du kan alltid ändra allt innan du sparar.')) return;
+    setContent(buildTemplateFromConfig(config));
+    setHasChanges(true);
+    setSuccess('Mall ifylld – redigera och spara när du är klar.');
+    setTimeout(() => setSuccess(null), 3000);
   };
 
   const handleSave = async () => {
@@ -348,6 +384,20 @@ export default function EditProductPage() {
             <p className="text-sm text-[var(--text-secondary)]">
               {config.path}
             </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${
+                hasCustomContent
+                  ? 'bg-green-50 text-green-700 border-green-200'
+                  : 'bg-gray-50 text-gray-700 border-gray-200'
+              }`}>
+                {hasCustomContent ? 'Anpassad' : 'Standard'}
+              </span>
+              {lastUpdatedAt && (
+                <span className="text-xs text-[var(--text-secondary)]">
+                  Senast uppdaterad: {new Date(lastUpdatedAt).toLocaleString('sv-SE')}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -360,13 +410,24 @@ export default function EditProductPage() {
             <ExternalLink className="w-4 h-4" />
             Visa sida
           </a>
+          {!hasCustomContent && (
+            <button
+              onClick={fillTemplate}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-white border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors"
+              title="Fyll i en mall så att du har något att utgå från"
+            >
+              <Plus className="w-4 h-4" />
+              Fyll i mall
+            </button>
+          )}
           <button
             onClick={handleReset}
             disabled={saving}
             className="flex items-center gap-2 px-4 py-2 text-sm bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
-            Återställ
+            {hasCustomContent ? 'Ta bort ändringar' : 'Återställ'}
           </button>
           <button
             onClick={handleSave}
@@ -404,6 +465,20 @@ export default function EditProductPage() {
           <p className="text-sm text-green-700">{success}</p>
         </div>
       )}
+
+      {/* Guidance */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 className="text-sm font-medium text-blue-900 mb-1">Info</h3>
+        <p className="text-sm text-blue-800">
+          Den publika sidan visar <strong>standardinnehåll</strong> tills du sparar en ändring här.
+          Om fälten är tomma betyder det att det ännu inte finns anpassat innehåll sparat för sidan.
+        </p>
+        {!hasCustomContent && (
+          <p className="text-xs text-blue-800 mt-2">
+            Tips: klicka på <strong>“Fyll i mall”</strong> för att få en utgångspunkt (du kan sedan ändra allt och spara).
+          </p>
+        )}
+      </div>
 
       {/* Uploading overlay */}
       {uploading && (
@@ -477,7 +552,7 @@ export default function EditProductPage() {
                     Ladda upp bild
                   </button>
                   <p className="text-xs text-[var(--text-secondary)]">
-                    JPG, PNG, WebP eller GIF. Max 5MB.
+                    JPG, PNG, WebP eller GIF. Max 10MB.
                   </p>
                   {content[field.key] && (
                     <input
