@@ -309,7 +309,7 @@ export default function AdminDashboard() {
             </div>
           </Link>
           <Link 
-            href="/admin/sales" 
+            href="/admin/sales-complete" 
             className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[var(--border-light)] hover:border-[var(--primary-green)] transition-colors group"
           >
             <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
@@ -317,7 +317,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <p className="text-xs font-medium text-[var(--text-primary)]">Försäljning</p>
-              <p className="text-[10px] text-[var(--text-secondary)]">Excel</p>
+              <p className="text-[10px] text-[var(--text-secondary)]">Rapport</p>
             </div>
           </Link>
           <Link 
