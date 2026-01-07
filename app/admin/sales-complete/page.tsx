@@ -38,6 +38,7 @@ interface UnifiedOrder {
   refundAmount?: number;
   receiptUrl?: string;
   metadata?: any;
+  source?: string;
 }
 
 interface OrderSummary {
@@ -75,6 +76,22 @@ export default function UnifiedSalesPage() {
   const [orders, setOrders] = useState<UnifiedOrder[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<UnifiedOrder[]>([]);
   const [summary, setSummary] = useState<OrderSummary>({
+    totalOrders: 0,
+    totalRevenue: 0,
+    averageOrderValue: 0,
+    successfulOrders: 0,
+    pendingOrders: 0,
+    failedOrders: 0,
+    refundedAmount: 0,
+    providerBreakdown: {
+      stripe: { count: 0, revenue: 0 },
+      svea: { count: 0, revenue: 0 },
+      manual: { count: 0, revenue: 0 }
+    },
+    courseBreakdown: {},
+    monthlyRevenue: []
+  });
+  const [filteredSummary, setFilteredSummary] = useState<OrderSummary>({
     totalOrders: 0,
     totalRevenue: 0,
     averageOrderValue: 0,
@@ -246,6 +263,7 @@ export default function UnifiedSalesPage() {
 
       setOrders(combinedOrders);
       setSummary(summary);
+      setFilteredSummary(summary);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -274,7 +292,8 @@ export default function UnifiedSalesPage() {
     const monthlyMap: Record<string, number> = {};
 
     orders.forEach(order => {
-      const isCompleted = order.status === 'COMPLETED' || order.status === 'REFUNDED';
+      // Only count actually sold items for completed payments (refunds should NOT count as sold)
+      const isCompleted = order.status === 'COMPLETED';
       const isPending = order.status === 'PENDING' || order.status === 'PROCESSING' || order.status === 'CONFIRMED';
       const isFailed = order.status === 'FAILED' || order.status === 'CANCELLED';
 
@@ -460,6 +479,7 @@ export default function UnifiedSalesPage() {
     });
 
     setFilteredOrders(filtered);
+    setFilteredSummary(calculateSummary(filtered));
   };
 
   const exportToExcel = () => {
@@ -482,20 +502,20 @@ export default function UnifiedSalesPage() {
     }));
 
     const summaryData = [
-      { 'Sammanfattning': 'Total försäljning', 'Värde': `${formatPrice(summary.totalRevenue)} kr` },
-      { 'Sammanfattning': 'Antal transaktioner', 'Värde': summary.totalOrders },
-      { 'Sammanfattning': 'Genomsnittligt ordervärde', 'Värde': `${formatPrice(summary.averageOrderValue)} kr` },
-      { 'Sammanfattning': 'Lyckade transaktioner', 'Värde': summary.successfulOrders },
-      { 'Sammanfattning': 'Väntande transaktioner', 'Värde': summary.pendingOrders },
-      { 'Sammanfattning': 'Misslyckade transaktioner', 'Värde': summary.failedOrders },
-      { 'Sammanfattning': 'Återbetalat totalt', 'Värde': `${formatPrice(summary.refundedAmount)} kr` },
+      { 'Sammanfattning': 'Total försäljning', 'Värde': `${formatPrice(filteredSummary.totalRevenue)} kr` },
+      { 'Sammanfattning': 'Antal transaktioner', 'Värde': filteredSummary.totalOrders },
+      { 'Sammanfattning': 'Genomsnittligt ordervärde', 'Värde': `${formatPrice(filteredSummary.averageOrderValue)} kr` },
+      { 'Sammanfattning': 'Lyckade transaktioner', 'Värde': filteredSummary.successfulOrders },
+      { 'Sammanfattning': 'Väntande transaktioner', 'Värde': filteredSummary.pendingOrders },
+      { 'Sammanfattning': 'Misslyckade transaktioner', 'Värde': filteredSummary.failedOrders },
+      { 'Sammanfattning': 'Återbetalat totalt', 'Värde': `${formatPrice(filteredSummary.refundedAmount)} kr` },
       '',
-      { 'Sammanfattning': 'Stripe-transaktioner', 'Värde': summary.providerBreakdown.stripe.count },
-      { 'Sammanfattning': 'Stripe-intäkter', 'Värde': `${formatPrice(summary.providerBreakdown.stripe.revenue)} kr` },
-      { 'Sammanfattning': 'Svea-transaktioner', 'Värde': summary.providerBreakdown.svea.count },
-      { 'Sammanfattning': 'Svea-intäkter', 'Värde': `${formatPrice(summary.providerBreakdown.svea.revenue)} kr` },
-      { 'Sammanfattning': 'Manuella ordrar', 'Värde': summary.providerBreakdown.manual.count },
-      { 'Sammanfattning': 'Manuella intäkter', 'Värde': `${formatPrice(summary.providerBreakdown.manual.revenue)} kr` }
+      { 'Sammanfattning': 'Stripe-transaktioner', 'Värde': filteredSummary.providerBreakdown.stripe.count },
+      { 'Sammanfattning': 'Stripe-intäkter', 'Värde': `${formatPrice(filteredSummary.providerBreakdown.stripe.revenue)} kr` },
+      { 'Sammanfattning': 'Svea-transaktioner', 'Värde': filteredSummary.providerBreakdown.svea.count },
+      { 'Sammanfattning': 'Svea-intäkter', 'Värde': `${formatPrice(filteredSummary.providerBreakdown.svea.revenue)} kr` },
+      { 'Sammanfattning': 'Manuella ordrar', 'Värde': filteredSummary.providerBreakdown.manual.count },
+      { 'Sammanfattning': 'Manuella intäkter', 'Värde': `${formatPrice(filteredSummary.providerBreakdown.manual.revenue)} kr` }
     ];
 
     const wb = XLSX.utils.book_new();
@@ -657,10 +677,10 @@ export default function UnifiedSalesPage() {
             <DollarSign className="w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {formatPrice(summary.totalRevenue)} kr
+            {formatPrice(filteredSummary.totalRevenue)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {summary.totalOrders} ordrar totalt
+            {filteredSummary.totalOrders} ordrar (enligt filter)
           </p>
         </motion.div>
 
@@ -675,7 +695,7 @@ export default function UnifiedSalesPage() {
             <BarChart3 className="w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {formatPrice(summary.averageOrderValue)} kr
+            {formatPrice(filteredSummary.averageOrderValue)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Per order
@@ -693,10 +713,10 @@ export default function UnifiedSalesPage() {
             <CreditCard className="w-5 h-5 text-blue-600" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {summary.providerBreakdown.stripe.count}
+            {filteredSummary.providerBreakdown.stripe.count}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {formatPrice(summary.providerBreakdown.stripe.revenue)} kr
+            {formatPrice(filteredSummary.providerBreakdown.stripe.revenue)} kr
           </p>
         </motion.div>
 
@@ -711,10 +731,10 @@ export default function UnifiedSalesPage() {
             <Building2 className="w-5 h-5 text-green-600" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {summary.providerBreakdown.svea.count}
+            {filteredSummary.providerBreakdown.svea.count}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {formatPrice(summary.providerBreakdown.svea.revenue)} kr
+            {formatPrice(filteredSummary.providerBreakdown.svea.revenue)} kr
           </p>
         </motion.div>
 
@@ -729,7 +749,7 @@ export default function UnifiedSalesPage() {
             <RotateCcw className="w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {formatPrice(summary.refundedAmount)} kr
+            {formatPrice(filteredSummary.refundedAmount)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
             Totalt återbetalat
@@ -961,7 +981,7 @@ export default function UnifiedSalesPage() {
           >
             <div className="flex items-center gap-2">
               <CreditCard className="w-5 h-5" />
-              Stripe ({summary.providerBreakdown.stripe.count})
+              Stripe ({filteredSummary.providerBreakdown.stripe.count})
             </div>
           </button>
           <button
@@ -974,7 +994,7 @@ export default function UnifiedSalesPage() {
           >
             <div className="flex items-center gap-2">
               <Building2 className="w-5 h-5" />
-              Svea ({summary.providerBreakdown.svea.count})
+              Svea ({filteredSummary.providerBreakdown.svea.count})
             </div>
           </button>
           <button
@@ -987,7 +1007,7 @@ export default function UnifiedSalesPage() {
           >
             <div className="flex items-center gap-2">
               <UserPlus className="w-5 h-5" />
-              Manuella ({summary.providerBreakdown.manual.count})
+              Manuella ({filteredSummary.providerBreakdown.manual.count})
             </div>
           </button>
         </nav>
@@ -1002,8 +1022,8 @@ export default function UnifiedSalesPage() {
         >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Månadsvis försäljning</h3>
           <div className="space-y-3">
-            {summary.monthlyRevenue.map((month, idx) => {
-              const maxRevenue = Math.max(...summary.monthlyRevenue.map(m => m.amount));
+            {filteredSummary.monthlyRevenue.map((month, idx) => {
+              const maxRevenue = Math.max(...filteredSummary.monthlyRevenue.map(m => m.amount));
               const percentage = maxRevenue > 0 ? (month.amount / maxRevenue) * 100 : 0;
               
               return (
@@ -1040,10 +1060,10 @@ export default function UnifiedSalesPage() {
         >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Försäljning per kurs</h3>
           <div className="space-y-4">
-            {Object.entries(summary.courseBreakdown)
+            {Object.entries(filteredSummary.courseBreakdown)
               .sort((a, b) => b[1].revenue - a[1].revenue)
               .map(([course, data], idx) => {
-                const totalRevenue = Object.values(summary.courseBreakdown).reduce((sum, c) => sum + c.revenue, 0);
+                const totalRevenue = Object.values(filteredSummary.courseBreakdown).reduce((sum, c) => sum + c.revenue, 0);
                 const percentage = totalRevenue > 0 ? (data.revenue / totalRevenue) * 100 : 0;
                 const colors = [
                   { gradient: 'from-blue-500 to-blue-600', text: 'text-blue-700' },
@@ -1059,7 +1079,7 @@ export default function UnifiedSalesPage() {
                       <span className="text-sm font-medium text-gray-700">{course}</span>
                       <div className="text-right">
                         <p className={`text-sm font-bold ${colorSet.text}`}>{formatPrice(data.revenue)} kr</p>
-                        <p className="text-xs text-gray-500">{data.count} ordrar</p>
+                        <p className="text-xs text-gray-500">{data.count} sålda</p>
                       </div>
                     </div>
                     <div className="relative">
