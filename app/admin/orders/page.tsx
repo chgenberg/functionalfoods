@@ -229,10 +229,13 @@ export default function AdminOrdersPage() {
       order.status,
       order.totalAmount,
       getPaymentMethodLabel(order),
-      order.items.map(i => `${i.quantity}x ${i.name}`).join('; ')
+      // Use a pipe separator to avoid conflicts with Swedish Excel's semicolon delimiter
+      order.items.map(i => `${i.quantity}x ${i.name}`).join(' | ')
     ]);
     
-    const csv = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+    // Swedish Excel: prefer semicolon delimiter + UTF-8 BOM
+    const escapeCell = (cell: any) => `"${String(cell ?? '').replace(/"/g, '""')}"`;
+    const csv = ['\ufeff' + headers.join(';'), ...rows.map(row => row.map(escapeCell).join(';'))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);

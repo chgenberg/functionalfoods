@@ -483,23 +483,67 @@ export default function UnifiedSalesPage() {
   };
 
   const exportToExcel = () => {
-    const exportData = filteredOrders.map(order => ({
-      'Order ID': order.id,
-      'Ordernummer': order.orderNumber,
-      'Datum': new Date(order.createdAt).toLocaleString('sv-SE'),
-      'Kund': order.customerName,
-      'E-post': order.customerEmail,
-      'Telefon': order.customerPhone || '-',
-      'Land': order.customerCountry || '-',
-      'Produkter': order.items.map(i => `${i.quantity}x ${i.name}`).join('; '),
-      'Kurser': order.courses.join(', ') || '-',
-      'Belopp': `${formatPrice(order.amount)} ${order.currency}`,
-      'Status': getStatusText(order.status),
-      'Betalningsmetod': order.paymentMethod,
-      'Leverantör': getProviderText(order.paymentProvider),
-      'Återbetalad': order.refunded ? 'Ja' : 'Nej',
-      'Återbetalat belopp': order.refundAmount ? `${formatPrice(order.refundAmount)} ${order.currency}` : '-'
-    }));
+    // 1) Transaction-level export (easy to filter by status/provider/customer)
+    const exportData = filteredOrders.map(order => {
+      const refund = order.refundAmount || 0;
+      const net = order.amount - refund;
+      return {
+        'Order ID': order.id,
+        'Ordernummer': order.orderNumber,
+        // Keep as ISO-like string for robust Excel sorting/filtering
+        'Datum': new Date(order.createdAt).toISOString().replace('T', ' ').slice(0, 19),
+        'Kund': order.customerName,
+        'E-post': order.customerEmail,
+        'Telefon': order.customerPhone || '',
+        'Land': order.customerCountry || '',
+        // Keep product list human-friendly (use " | " to avoid CSV/Excel delimiter collisions)
+        'Produkter': order.items.map(i => `${i.quantity}x ${i.name}`).join(' | '),
+        'Kurser': (order.courses || []).join(' | ') || '',
+        // Export numeric amounts as numbers (Excel-friendly)
+        'Belopp (SEK)': Number(order.amount),
+        'Återbetalat (SEK)': Number(refund),
+        'Netto (SEK)': Number(net),
+        'Valuta': order.currency,
+        // Provide both a human label and a code for filtering/pivoting
+        'Status': getStatusText(order.status),
+        'Status (kod)': order.status,
+        'Betalningsmetod': order.paymentMethod,
+        'Leverantör': getProviderText(order.paymentProvider),
+        'Leverantör (kod)': order.paymentProvider,
+        'Återbetalad': order.refunded ? 'Ja' : 'Nej',
+      };
+    });
+
+    // 2) Line-item export (easy to pivot by product, quantity, VAT buckets)
+    const lineItemsData = filteredOrders.flatMap(order => {
+      const createdAtIso = new Date(order.createdAt).toISOString().replace('T', ' ').slice(0, 19);
+      return (order.items || []).map((item) => {
+        const isBook = item.type === 'book' || (item.name || '').toLowerCase().includes('bok');
+        const vatRate = isBook ? 0.06 : 0.25;
+        const unitPriceExVat = Number(item.price || 0);
+        const unitPriceInclVat = Math.round(unitPriceExVat * (1 + vatRate) * 100) / 100;
+        const qty = Number(item.quantity || 1);
+        const lineExVat = Math.round(unitPriceExVat * qty * 100) / 100;
+        const lineInclVat = Math.round(unitPriceInclVat * qty * 100) / 100;
+
+        return {
+          'Ordernummer': order.orderNumber,
+          'Datum': createdAtIso,
+          'E-post': order.customerEmail,
+          'Kund': order.customerName,
+          'Leverantör (kod)': order.paymentProvider,
+          'Status (kod)': order.status,
+          'Produkt': item.name,
+          'Typ': item.type,
+          'Antal': qty,
+          'Pris exkl moms (SEK)': unitPriceExVat,
+          'Moms %': vatRate * 100,
+          'Pris inkl moms (SEK)': unitPriceInclVat,
+          'Rad exkl moms (SEK)': lineExVat,
+          'Rad inkl moms (SEK)': lineInclVat,
+        };
+      });
+    });
 
     const summaryData = [
       { 'Sammanfattning': 'Total försäljning', 'Värde': `${formatPrice(filteredSummary.totalRevenue)} kr` },
@@ -522,12 +566,16 @@ export default function UnifiedSalesPage() {
     
     const wsTransactions = XLSX.utils.json_to_sheet(exportData);
     XLSX.utils.book_append_sheet(wb, wsTransactions, 'Transaktioner');
+
+    const wsLineItems = XLSX.utils.json_to_sheet(lineItemsData);
+    XLSX.utils.book_append_sheet(wb, wsLineItems, 'Orderrader');
     
     const wsSummary = XLSX.utils.json_to_sheet(summaryData);
     XLSX.utils.book_append_sheet(wb, wsSummary, 'Sammanfattning');
 
     const date = new Date().toISOString().split('T')[0];
-    const filename = `forsaljning_alla_${date}.xlsx`;
+    const tabLabel = activeTab === 'all' ? 'alla' : activeTab;
+    const filename = `forsaljning_${tabLabel}_${date}.xlsx`;
     
     XLSX.writeFile(wb, filename);
   };
