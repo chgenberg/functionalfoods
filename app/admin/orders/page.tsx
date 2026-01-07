@@ -9,6 +9,9 @@ interface Order {
   id: string;
   orderNumber: string;
   status: string;
+  orderStatus?: string;
+  paymentStatus?: string | null;
+  displayPaymentStatus?: string;
   totalAmount: number;
   currency: string;
   createdAt: string;
@@ -72,6 +75,9 @@ export default function AdminOrdersPage() {
     switch (status) {
       case 'COMPLETED': return 'bg-green-100 text-green-800';
       case 'PENDING': return 'bg-yellow-100 text-yellow-800';
+      case 'PROCESSING': return 'bg-yellow-100 text-yellow-800';
+      case 'CONFIRMED': return 'bg-yellow-100 text-yellow-800';
+      case 'REFUNDED': return 'bg-purple-100 text-purple-800';
       case 'FAILED': return 'bg-red-100 text-red-800';
       case 'CANCELLED': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -82,9 +88,20 @@ export default function AdminOrdersPage() {
     switch (status) {
       case 'COMPLETED': return <CheckCircle className="w-4 h-4" />;
       case 'PENDING': return <Clock className="w-4 h-4" />;
+      case 'PROCESSING': return <Clock className="w-4 h-4" />;
+      case 'CONFIRMED': return <Clock className="w-4 h-4" />;
+      case 'REFUNDED': return <AlertCircle className="w-4 h-4" />;
       case 'FAILED': return <XCircle className="w-4 h-4" />;
       default: return <Package className="w-4 h-4" />;
     }
+  };
+
+  const getDisplayPaymentStatus = (order: Order) => {
+    return order.displayPaymentStatus || order.paymentStatus || order.payment?.status || order.status;
+  };
+
+  const getOrderLifecycleStatus = (order: Order) => {
+    return order.orderStatus || order.status;
   };
 
   const getPaymentMethodLabel = (order: Order) => {
@@ -96,7 +113,12 @@ export default function AdminOrdersPage() {
   };
 
   const filteredOrders = orders
-    .filter(order => filter === 'all' || order.status === filter)
+    .filter(order => {
+      if (filter === 'all') return true;
+      const s = getDisplayPaymentStatus(order);
+      if (filter === 'FAILED') return s === 'FAILED' || s === 'CANCELLED' || s === 'REFUNDED';
+      return s === filter;
+    })
     .filter(order => {
       if (!searchTerm) return true;
       const search = searchTerm.toLowerCase();
@@ -126,11 +148,14 @@ export default function AdminOrdersPage() {
   // Calculate stats for filtered date range
   const filteredStats = {
     total: filteredOrders.length,
-    completed: filteredOrders.filter(o => o.status === 'COMPLETED').length,
-    pending: filteredOrders.filter(o => o.status === 'PENDING').length,
-    failed: filteredOrders.filter(o => o.status === 'FAILED' || o.status === 'CANCELLED').length,
+    completed: filteredOrders.filter(o => getDisplayPaymentStatus(o) === 'COMPLETED').length,
+    pending: filteredOrders.filter(o => getDisplayPaymentStatus(o) === 'PENDING' || getDisplayPaymentStatus(o) === 'PROCESSING' || getDisplayPaymentStatus(o) === 'CONFIRMED').length,
+    failed: filteredOrders.filter(o => {
+      const s = getDisplayPaymentStatus(o);
+      return s === 'FAILED' || s === 'CANCELLED' || s === 'REFUNDED';
+    }).length,
     revenue: filteredOrders
-      .filter(o => o.status === 'COMPLETED')
+      .filter(o => getOrderLifecycleStatus(o) === 'COMPLETED')
       .reduce((sum, o) => sum + o.totalAmount, 0)
   };
 
@@ -218,11 +243,17 @@ export default function AdminOrdersPage() {
   // Use filtered stats when date filter is active
   const stats = (dateFrom || dateTo) ? filteredStats : {
     total: orders.length,
-    completed: orders.filter(o => o.status === 'COMPLETED').length,
-    pending: orders.filter(o => o.status === 'PENDING').length,
-    failed: orders.filter(o => o.status === 'FAILED' || o.status === 'CANCELLED').length,
+    completed: orders.filter(o => getDisplayPaymentStatus(o) === 'COMPLETED').length,
+    pending: orders.filter(o => {
+      const s = getDisplayPaymentStatus(o);
+      return s === 'PENDING' || s === 'PROCESSING' || s === 'CONFIRMED';
+    }).length,
+    failed: orders.filter(o => {
+      const s = getDisplayPaymentStatus(o);
+      return s === 'FAILED' || s === 'CANCELLED' || s === 'REFUNDED';
+    }).length,
     revenue: orders
-      .filter(o => o.status === 'COMPLETED')
+      .filter(o => getOrderLifecycleStatus(o) === 'COMPLETED')
       .reduce((sum, o) => sum + o.totalAmount, 0)
   };
 
@@ -390,7 +421,7 @@ export default function AdminOrdersPage() {
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Kund</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Produkter</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Betalning</th>
-                <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Status</th>
+                <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Betalstatus</th>
                 <th className="text-right p-4 text-sm font-medium text-[var(--primary-green)]">Belopp</th>
               </tr>
             </thead>
@@ -479,12 +510,16 @@ export default function AdminOrdersPage() {
 
                     {/* Status */}
                     <td className="p-4">
+                      {(() => {
+                        const displayStatus = getDisplayPaymentStatus(order);
+                        const orderStatus = getOrderLifecycleStatus(order);
+                        return (
                       <div className="flex flex-col gap-1">
-                        <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                          {getStatusIcon(order.status)}
-                          {order.status}
+                        <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(displayStatus)}`}>
+                          {getStatusIcon(displayStatus)}
+                          {displayStatus}
                         </div>
-                        {order.status === 'COMPLETED' && (
+                        {orderStatus === 'COMPLETED' && (
                           <div className={`text-xs flex items-center gap-1 ${order.metadata?.confirmationEmailSent ? 'text-green-600' : 'text-red-500'}`}>
                             {order.metadata?.confirmationEmailSent ? (
                               <>
@@ -499,7 +534,7 @@ export default function AdminOrdersPage() {
                             )}
                           </div>
                         )}
-                        {order.status === 'PENDING' && (
+                        {orderStatus === 'PENDING' && (
                           <button
                             onClick={() => manualCompleteOrder(order.id)}
                             disabled={manualProcessing === order.id}
@@ -509,6 +544,8 @@ export default function AdminOrdersPage() {
                           </button>
                         )}
                       </div>
+                        );
+                      })()}
                     </td>
 
                     {/* Amount */}

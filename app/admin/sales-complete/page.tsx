@@ -23,6 +23,7 @@ interface UnifiedOrder {
   amount: number;
   currency: string;
   status: string;
+  orderStatus?: string;
   paymentMethod: string;
   paymentProvider: 'stripe' | 'svea' | 'manual';
   items: Array<{
@@ -215,6 +216,7 @@ export default function UnifiedSalesPage() {
         const rawProducts = order.items?.map((i: any) => i?.name || '') || [];
         const normalizedCourses = normalizeCourseNames(rawProducts);
         const metadata = order.metadata as any || {};
+        const displayPaymentStatus = order.displayPaymentStatus || order.paymentStatus || order.payment?.status || order.status;
 
         combinedOrders.push({
           id: order.id,
@@ -225,7 +227,8 @@ export default function UnifiedSalesPage() {
           customerCountry: metadata.country || 'SE',
           amount: order.totalAmount,
           currency: order.currency || 'SEK',
-          status: order.status,
+          status: displayPaymentStatus,
+          orderStatus: order.orderStatus || order.status,
           paymentMethod: order.payment?.paymentMethod || metadata.sveaPaymentType || 'unknown',
           paymentProvider: paymentProvider,
           items: order.items || [],
@@ -271,8 +274,8 @@ export default function UnifiedSalesPage() {
     const monthlyMap: Record<string, number> = {};
 
     orders.forEach(order => {
-      const isCompleted = order.status === 'COMPLETED';
-      const isPending = order.status === 'PENDING';
+      const isCompleted = order.status === 'COMPLETED' || order.status === 'REFUNDED';
+      const isPending = order.status === 'PENDING' || order.status === 'PROCESSING' || order.status === 'CONFIRMED';
       const isFailed = order.status === 'FAILED' || order.status === 'CANCELLED';
 
       // Count all orders
