@@ -383,6 +383,9 @@ export default function CartPage() {
               <div className="py-4 sm:py-6 space-y-2 sm:space-y-3">
                 {(() => {
                   // Calculate totals with correct VAT rates (6% for books, 25% for courses)
+                  const hasBooks = items.some(item => item.type === 'book');
+                  const hasCourses = items.some(item => item.type === 'course');
+
                   const subtotalInclVat = items.reduce((sum, item) => {
                     const vatRate = item.type === 'book' ? 1.06 : 1.25;
                     return sum + (item.price * item.quantity * vatRate);
@@ -400,8 +403,10 @@ export default function CartPage() {
                     if (isPercentage) {
                       discountInclVat = Math.round(subtotalInclVat * (appliedCoupon.amount / 100));
                     } else {
-                      // Fixed amount discount - assume it's already including VAT
-                      discountInclVat = Math.round(appliedCoupon.amount * 1.25);
+                      // Fixed amount coupons are stored ex VAT in the admin.
+                      // Convert to gross for display (6% for book-only carts, otherwise default to 25%).
+                      const fixedVatMultiplier = (hasBooks && !hasCourses) ? 1.06 : 1.25;
+                      discountInclVat = Math.round(appliedCoupon.amount * fixedVatMultiplier);
                     }
                     if (discountInclVat > subtotalInclVat) discountInclVat = subtotalInclVat;
                   }
@@ -410,9 +415,6 @@ export default function CartPage() {
                   const discountRatio = subtotalInclVat > 0 ? discountInclVat / subtotalInclVat : 0;
                   const finalVat = Math.max(0, totalVat * (1 - discountRatio));
                   
-                  // Check if we have mixed VAT rates
-                  const hasBooks = items.some(item => item.type === 'book');
-                  const hasCourses = items.some(item => item.type === 'course');
                   const vatLabel = hasBooks && hasCourses ? 'Moms (6% & 25%)' : hasBooks ? 'Moms (6%)' : 'Moms (25%)';
                   
                   return (
@@ -485,6 +487,9 @@ export default function CartPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 lg:hidden shadow-lg z-50">
         <div className="max-w-lg mx-auto">
           {(() => {
+            const hasBooks = items.some(item => item.type === 'book');
+            const hasCourses = items.some(item => item.type === 'course');
+
             const subtotalInclVat = items.reduce((sum, item) => {
               const vatRate = item.type === 'book' ? 1.06 : 1.25;
               return sum + (item.price * item.quantity * vatRate);
@@ -498,7 +503,8 @@ export default function CartPage() {
               if (isPercentage) {
                 discountInclVat = Math.round(subtotalInclVat * (appliedCoupon.amount / 100));
               } else {
-                discountInclVat = Math.round(appliedCoupon.amount * 1.25);
+                const fixedVatMultiplier = (hasBooks && !hasCourses) ? 1.06 : 1.25;
+                discountInclVat = Math.round(appliedCoupon.amount * fixedVatMultiplier);
               }
               if (discountInclVat > subtotalInclVat) discountInclVat = subtotalInclVat;
             }

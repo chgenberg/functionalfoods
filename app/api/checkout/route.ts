@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
       return sum + grossInOre * i.quantity;
     }, 0);
 
-    // Optional: validate coupon and compute discount amount in öre
+    // Optional: validate coupon and compute discount amount in öre (gross incl. VAT, since Stripe charges gross)
     let discountAmount = 0;
     let stripeDiscount: any | null = null;
     if (couponCode) {
@@ -114,14 +114,23 @@ export async function POST(req: NextRequest) {
       if (coupon && coupon.active && (!coupon.startsAt || now >= coupon.startsAt) && (!coupon.expiresAt || now <= coupon.expiresAt) && (coupon.usageLimit == null || coupon.timesUsed < coupon.usageLimit)) {
         const applicableIds = coupon.applicableCourseIds && Array.isArray(coupon.applicableCourseIds) ? (coupon.applicableCourseIds as string[]) : null;
         const applicableItems = applicableIds && applicableIds.length > 0 ? validatedItems.filter(i => applicableIds.includes(i.id)) : validatedItems;
-        const applicableSubtotal = applicableItems.reduce((sum, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
-        if (applicableSubtotal > 0) {
+        const applicableSubtotalExVat = applicableItems.reduce((sum, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
+        const applicableSubtotalGross = applicableItems.reduce((sum, i) => {
+          const itemVatRate = i.vatRate || 0.25;
+          const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
+          return sum + grossInOre * i.quantity;
+        }, 0);
+
+        if (applicableSubtotalGross > 0) {
           if (coupon.type === 'percent') {
-            discountAmount = Math.floor(applicableSubtotal * (coupon.amount / 100));
+            // Stripe applies percent_off to gross line items, so compute gross discount for logging/consistency.
+            discountAmount = Math.floor(applicableSubtotalGross * (coupon.amount / 100));
           } else {
-            discountAmount = Math.floor(coupon.amount * 100);
+            // Fixed coupon amounts are stored ex VAT; convert to gross using the effective VAT mix of the applicable items.
+            const vatMultiplier = applicableSubtotalExVat > 0 ? (applicableSubtotalGross / applicableSubtotalExVat) : 1;
+            discountAmount = Math.floor(coupon.amount * 100 * vatMultiplier);
           }
-          if (discountAmount > applicableSubtotal) discountAmount = applicableSubtotal;
+          if (discountAmount > applicableSubtotalGross) discountAmount = applicableSubtotalGross;
 
           // Create a one-time Stripe coupon for the exact amount off if fixed, or percent_off if percent
           if (discountAmount > 0) {
