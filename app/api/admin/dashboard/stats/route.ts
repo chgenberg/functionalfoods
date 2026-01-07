@@ -4,11 +4,48 @@ import { requireAdminAuth } from '@/app/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
+type DisplayStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REFUNDED' | 'CANCELLED' | 'PROCESSING' | 'CONFIRMED' | string;
+
+function toDisplayPaymentStatus(orderStatus: string | null | undefined, paymentStatus: string | null | undefined): DisplayStatus {
+  const os = String(orderStatus || '');
+  const ps = String(paymentStatus || '');
+
+  // Refund should win for display (even if the original payment succeeded)
+  if (os === 'REFUNDED') return 'REFUNDED';
+
+  // Prefer payment status if we have it
+  if (ps) {
+    if (ps === 'COMPLETED') return 'COMPLETED';
+    if (ps === 'PROCESSING' || ps === 'PENDING') return 'PENDING';
+    if (ps === 'FAILED' || ps === 'CANCELLED') return 'FAILED';
+    return ps;
+  }
+
+  // Fallback to order status
+  return os || 'PENDING';
+}
+
+function getDisplayTotalAmount(orderTotal: number, metadata: any): number {
+  const actualPaidAmount =
+    typeof metadata?.actualPaidAmount === 'number'
+      ? metadata.actualPaidAmount
+      : typeof metadata?.displayTotalAmount === 'number'
+        ? metadata.displayTotalAmount
+        : null;
+
+  const displayTotalAmount =
+    actualPaidAmount && actualPaidAmount > 0
+      ? actualPaidAmount
+      : orderTotal;
+
+  return displayTotalAmount;
+}
+
 // Helper to normalize course names (same as sales page)
 function normalizeCourseNames(name: string): string {
   const lower = (name || '').toLowerCase().trim();
   
-  if (lower.includes('e-bok') || lower.includes('ebook')) return 'E-bok';
+  if (lower.includes('e-bok') || lower.includes('ebook') || lower.includes('e bok')) return 'E-bok';
   if (lower.includes('flow') || lower.includes('gut health')) {
     return 'Functional Flow';
   }
@@ -50,21 +87,35 @@ export async function GET(request: NextRequest) {
     
     // Get orders with items for detailed stats
     const allOrders = await prisma.order.findMany({
-      where: { status: 'COMPLETED' },
       include: {
-        items: true
+        items: true,
+        payment: { select: { status: true } }
       }
     });
     
-    // Calculate stats (same logic as sales page)
+    // Calculate stats (MATCH sales-complete: only count sold for displayPaymentStatus === COMPLETED)
     let totalRevenue = 0;
     const courseBreakdown: Record<string, { count: number; revenue: number }> = {};
+    let refundedAmount = 0;
     
     allOrders.forEach(order => {
-      totalRevenue += order.totalAmount;
+      const metadata = (order.metadata as any) || {};
+      const displayPaymentStatus = toDisplayPaymentStatus(order.status, order.payment?.status);
+      const displayTotalAmount = getDisplayTotalAmount(order.totalAmount || 0, metadata);
+      const refundAmount = typeof metadata?.refundAmount === 'number' ? metadata.refundAmount : 0;
+      const refunded = !!metadata?.refunded;
+
+      // Only count as sold/revenue when payment is completed
+      if (displayPaymentStatus === 'COMPLETED') {
+        totalRevenue += displayTotalAmount - (refundAmount || 0);
+      }
+
+      if (refunded && refundAmount) {
+        refundedAmount += refundAmount;
+      }
       
       // Count products per course
-      if (order.items && order.items.length > 0) {
+      if (displayPaymentStatus === 'COMPLETED' && order.items && order.items.length > 0) {
         order.items.forEach(item => {
           const courseName = normalizeCourseNames(item.name || '');
           if (!courseName) return;
@@ -85,7 +136,7 @@ export async function GET(request: NextRequest) {
       }
     });
     
-    const totalOrders = allOrders.length;
+    const totalOrders = allOrders.filter(o => toDisplayPaymentStatus(o.status, o.payment?.status) === 'COMPLETED').length;
     
     // Get pending orders count
     const pendingOrders = await prisma.order.count({
@@ -150,21 +201,21 @@ export async function GET(request: NextRequest) {
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
     
-    const ordersThisMonth = await prisma.order.count({
+    const ordersThisMonthOrders = await prisma.order.findMany({
       where: {
-        status: 'COMPLETED',
-        createdAt: { gte: startOfMonth }
-      }
-    });
-    
-    const revenueThisMonthOrders = await prisma.order.findMany({
-      where: {
-        status: 'COMPLETED',
         createdAt: { gte: startOfMonth }
       },
-      select: { totalAmount: true }
+      select: { status: true, totalAmount: true, metadata: true, payment: { select: { status: true } } }
     });
-    const revenueThisMonth = revenueThisMonthOrders.reduce((sum, o) => sum + o.totalAmount, 0);
+    const ordersThisMonth = ordersThisMonthOrders.filter(o => toDisplayPaymentStatus(o.status, o.payment?.status) === 'COMPLETED').length;
+    const revenueThisMonth = ordersThisMonthOrders.reduce((sum, o) => {
+      const displayPaymentStatus = toDisplayPaymentStatus(o.status, o.payment?.status);
+      if (displayPaymentStatus !== 'COMPLETED') return sum;
+      const metadata = (o.metadata as any) || {};
+      const displayTotalAmount = getDisplayTotalAmount(o.totalAmount || 0, metadata);
+      const refundAmount = typeof metadata?.refundAmount === 'number' ? metadata.refundAmount : 0;
+      return sum + (displayTotalAmount - (refundAmount || 0));
+    }, 0);
     
     // Get new users this week
     const startOfWeek = new Date();
@@ -185,7 +236,8 @@ export async function GET(request: NextRequest) {
       pendingOrders,
       ordersThisMonth,
       revenueThisMonth,
-      newUsersThisWeek
+      newUsersThisWeek,
+      refundedAmount
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);
