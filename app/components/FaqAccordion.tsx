@@ -41,7 +41,7 @@ export default function FaqAccordion({
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const response = await fetch('/api/faq', { cache: 'no-store' });
+        const response = await fetch('/api/faq');
         if (response.ok) {
           const data = await response.json();
           if (data.faqs && Array.isArray(data.faqs) && data.faqs.length > 0) {

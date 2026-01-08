@@ -38,7 +38,7 @@ export default function UtbildningPage() {
     {
       id: 'hormone',
       title: 'Hormonell Balans',
-      description: 'För dig som vill få koll på dina hormoner. Kombinera rätt kost, styrketräning och coachning för hormonell balans.',
+      description: 'För dig som vill få koll på dina hormoner. Kombinera rätt kost och coachning för hormonell balans.',
       href: '/utbildning/hormonell-balans',
       image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
       duration: '6 veckor',
