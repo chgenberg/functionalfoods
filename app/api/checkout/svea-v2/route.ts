@@ -522,6 +522,167 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // If total becomes free (0 kr) after discounts, bypass Svea entirely.
+    // Svea may reject 0-amount checkouts or negative line items.
+    const totalAfterDiscountInOre = subtotal - discountAmount;
+    if (totalAfterDiscountInOre <= 0) {
+      console.log('💚 Free order detected after discount - bypassing Svea checkout', {
+        subtotal,
+        discountAmount,
+        totalAfterDiscountInOre,
+        couponCode: appliedCoupon?.code || null,
+      });
+
+      // Generate order ID
+      const ts = Date.now();
+      const randomPart = Math.random().toString(36).substring(2, 9);
+      const orderId = `FF-FREE-${ts}-${randomPart}`;
+
+      // Resolve user
+      let userId: string | null = customer?.id || null;
+      let needsLoginCredentials = false;
+      let temporaryPassword = '';
+      if (!userId && customerEmail) {
+        const normalizedEmail = customerEmail.toLowerCase().trim();
+        const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+        if (existing) {
+          userId = existing.id;
+        } else {
+          temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-4).toUpperCase();
+          const hashed = await bcrypt.hash(temporaryPassword, 12);
+          const created = await prisma.user.create({
+            data: {
+              email: normalizedEmail,
+              name: customerName || normalizedEmail.split('@')[0],
+              password: hashed,
+              role: 'customer',
+              isActive: true,
+              mustChangePassword: true
+            }
+          });
+          userId = created.id;
+          needsLoginCredentials = true;
+        }
+      }
+
+      if (!userId) {
+        const tempEmail = `guest-${Date.now()}-${Math.random().toString(36).slice(2,8)}@functionalfoods.se`;
+        const hashed = await bcrypt.hash(Math.random().toString(36), 10);
+        const created = await prisma.user.create({
+          data: {
+            email: tempEmail,
+            name: customerName || 'Gäst',
+            password: hashed,
+            role: 'customer',
+            isActive: true,
+            mustChangePassword: false
+          }
+        });
+        userId = created.id;
+      }
+
+      // Create order + purchases
+      await prisma.$transaction(async (tx) => {
+        await tx.order.create({
+          data: {
+            id: orderId,
+            orderNumber: orderId,
+            status: 'COMPLETED',
+            totalAmount: 0,
+            currency: 'SEK',
+            userId: userId as string,
+            customerEmail: customerEmail,
+            customerName: customerName,
+            metadata: {
+              items: validatedItems,
+              couponCode: appliedCoupon?.code || null,
+              discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
+              freeOrder: true
+            },
+            items: {
+              create: await Promise.all(validatedItems.map(async (item) => ({
+                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null,
+                name: item.name,
+                quantity: item.quantity,
+                price: 0,
+                type: item.type
+              })))
+            }
+          }
+        });
+
+        // Increment coupon usage (only once)
+        if (appliedCoupon) {
+          try {
+            await tx.coupon.update({
+              where: { id: appliedCoupon.id },
+              data: { timesUsed: { increment: 1 } }
+            });
+          } catch (e) {
+            console.warn('⚠️ Failed to increment coupon usage for free order (non-critical):', e);
+          }
+        }
+
+        // Create purchases for courses
+        const order = await tx.order.findUnique({ where: { id: orderId }, include: { items: true } });
+        for (const it of order?.items || []) {
+          if (it.type === 'course' && it.courseId) {
+            const exists = await tx.purchase.findUnique({
+              where: { userId_courseId: { userId: userId as string, courseId: it.courseId } }
+            });
+            if (!exists) {
+              await tx.purchase.create({
+                data: {
+                  userId: userId as string,
+                  courseId: it.courseId,
+                  amount: 0,
+                  status: 'completed',
+                  orderId: orderId,
+                  accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+                }
+              });
+            }
+          }
+        }
+      });
+
+      // Send confirmation email
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+        await emailService.sendOrderConfirmation({
+          customerEmail,
+          customerName,
+          orderNumber: orderId,
+          totalAmount: 0,
+          courses: validatedItems.filter(i => i.type === 'course').map(i => ({ name: i.name, price: 0 })),
+          loginCredentials: (needsLoginCredentials && temporaryPassword) ? {
+            email: customerEmail,
+            password: temporaryPassword,
+            loginUrl: `${baseUrl}/login`
+          } : undefined
+        });
+      } catch (e) {
+        console.warn('⚠️ Failed to send free-order email (non-critical):', e);
+      }
+
+      // Return a lightweight GUI snippet similar to simulated payments
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+      const snippet = `
+        <div style="padding:24px;text-align:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+          <h2 style="margin:0 0 8px 0;color:#014421">Gratis beställning</h2>
+          <p style="margin:0 0 16px 0;color:#334155">Din rabatt gör att totalsumman blir 0 kr. Klicka för att slutföra.</p>
+          <a href="${baseUrl}/checkout/success/svea-v2?checkoutOrderId=SIMULATED&orderId=${orderId}"
+             style="display:inline-block;background:#014421;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none">Slutför</a>
+        </div>`;
+
+      return NextResponse.json({
+        success: true,
+        checkoutOrderId: 'SIMULATED',
+        orderId,
+        gui: { snippet }
+      });
+    }
+
     // Add discount as negative item if applicable
     if (discountAmount > 0 && appliedCoupon) {
       // Determine VAT rate for discount - use the same VAT as the items
