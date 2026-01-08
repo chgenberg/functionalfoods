@@ -546,8 +546,17 @@ export async function POST(req: NextRequest) {
     const randomPart = Math.random().toString(36).substring(2, 9);
     const orderId = `FF-${timestamp}-${randomPart}`;
 
-    // Get site URLs
-    const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://ulrikafunctionalfoods.com';
+    // Get site base URL for Svea callback URLs.
+    // IMPORTANT: Prefer configured canonical URL over request Origin.
+    // When testing on a Railway subdomain, Origin may be a *.up.railway.app host which Svea may reject.
+    const configuredBaseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      process.env.NEXTAUTH_URL ||
+      '';
+    const requestOrigin = req.headers.get('origin') || '';
+    const originRaw = (configuredBaseUrl || requestOrigin || 'https://www.functionalfoods.se').trim();
+    const origin = originRaw.replace(/\/+$/, '');
 
     // Create Svea checkout order
     const checkoutRequest: CreateCheckoutOrderRequest = {
