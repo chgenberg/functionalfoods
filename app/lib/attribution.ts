@@ -9,6 +9,9 @@ export type Attribution = {
   wbraid?: string;
   // Meta/Facebook click identifier
   fbclid?: string;
+  // Mailchimp campaign identifiers
+  mc_cid?: string;  // Mailchimp campaign ID
+  mc_eid?: string;  // Mailchimp subscriber/email ID
   // UTM parameters (all platforms)
   utm_source?: string;
   utm_medium?: string;
@@ -35,6 +38,9 @@ export function getAttributionFromUrl(url?: string): Attribution | null {
       wbraid: p.get('wbraid') || undefined,
       // Meta/Facebook
       fbclid: p.get('fbclid') || undefined,
+      // Mailchimp campaign tracking
+      mc_cid: p.get('mc_cid') || undefined,
+      mc_eid: p.get('mc_eid') || undefined,
       // UTM parameters
       utm_source: p.get('utm_source') || undefined,
       utm_medium: p.get('utm_medium') || undefined,
@@ -100,7 +106,7 @@ export function attachAttributionToUrl(url: string, attr?: Attribution | null): 
     const a = attr || readAttribution();
     if (!a) return url;
     const u = new URL(url, typeof window !== 'undefined' ? window.location.origin : undefined);
-    const keys: Array<keyof Attribution> = ['gclid','gbraid','wbraid','fbclid','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+    const keys: Array<keyof Attribution> = ['gclid','gbraid','wbraid','fbclid','mc_cid','mc_eid','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
     for (const k of keys) {
       const v = a[k];
       if (v && !u.searchParams.get(k as string)) {

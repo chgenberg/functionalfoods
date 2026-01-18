@@ -14,6 +14,8 @@ export async function POST(req: NextRequest) {
       couponCode?: string
       attribution?: {
         gclid?: string; gbraid?: string; wbraid?: string;
+        fbclid?: string;
+        mc_cid?: string; mc_eid?: string;  // Mailchimp campaign tracking
         utm_source?: string; utm_medium?: string; utm_campaign?: string; utm_term?: string; utm_content?: string;
         ref?: string; ts?: number;
       }
@@ -206,6 +208,9 @@ export async function POST(req: NextRequest) {
         gclid: attribution?.gclid || '',
         gbraid: attribution?.gbraid || '',
         wbraid: attribution?.wbraid || '',
+        fbclid: attribution?.fbclid || '',
+        mc_cid: attribution?.mc_cid || '',
+        mc_eid: attribution?.mc_eid || '',
         utm_source: attribution?.utm_source || '',
         utm_medium: attribution?.utm_medium || '',
         utm_campaign: attribution?.utm_campaign || '',

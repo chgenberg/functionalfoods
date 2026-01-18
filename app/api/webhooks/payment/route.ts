@@ -619,6 +619,22 @@ async function handleCheckoutSessionCompleted(session: any) {
         const discountTotal = session.total_details?.amount_discount ? session.total_details.amount_discount / 100 : 0;
         const shippingTotal = session.total_details?.amount_shipping ? session.total_details.amount_shipping / 100 : 0;
 
+        // Extract attribution from session metadata for campaign tracking
+        const sessionMeta = session.metadata || {};
+        const campaignId = sessionMeta.mc_cid || undefined;
+        const trackingCode = sessionMeta.utm_campaign || campaignId || undefined;
+        
+        // Build landing site URL from UTM params if available
+        let landingSite: string | undefined;
+        if (sessionMeta.utm_source || sessionMeta.utm_campaign) {
+          const params = new URLSearchParams();
+          if (sessionMeta.utm_source) params.set('utm_source', sessionMeta.utm_source);
+          if (sessionMeta.utm_medium) params.set('utm_medium', sessionMeta.utm_medium);
+          if (sessionMeta.utm_campaign) params.set('utm_campaign', sessionMeta.utm_campaign);
+          if (sessionMeta.mc_cid) params.set('mc_cid', sessionMeta.mc_cid);
+          landingSite = `https://functionalfoods.se/?${params.toString()}`;
+        }
+        
         await mailchimpEcommerce.trackPurchase({
           orderId: order.orderNumber,
           customerEmail: order.user.email,
@@ -635,7 +651,11 @@ async function handleCheckoutSessionCompleted(session: any) {
           orderDate: order.createdAt,
           discountTotal: discountTotal,
           shippingTotal: shippingTotal,
-          taxTotal: taxTotal
+          taxTotal: taxTotal,
+          // Campaign attribution for Mailchimp reports
+          campaignId: campaignId,
+          landingSite: landingSite,
+          trackingCode: trackingCode
         });
       }
     } catch (e) {

@@ -511,6 +511,22 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
           }
         }
 
+        // Extract attribution data from order metadata for campaign tracking
+        const attribution = metadata?.attribution || {};
+        const campaignId = attribution?.mc_cid || undefined;
+        const trackingCode = attribution?.utm_campaign || campaignId || undefined;
+        
+        // Build landing site URL from UTM params if available
+        let landingSite: string | undefined;
+        if (attribution?.utm_source || attribution?.utm_campaign) {
+          const params = new URLSearchParams();
+          if (attribution.utm_source) params.set('utm_source', attribution.utm_source);
+          if (attribution.utm_medium) params.set('utm_medium', attribution.utm_medium);
+          if (attribution.utm_campaign) params.set('utm_campaign', attribution.utm_campaign);
+          if (attribution.mc_cid) params.set('mc_cid', attribution.mc_cid);
+          landingSite = `https://functionalfoods.se/?${params.toString()}`;
+        }
+        
         await mailchimpEcommerce.trackPurchase({
           orderId: updatedOrder.orderNumber,
           customerEmail: updatedOrder.user.email,
@@ -527,7 +543,11 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
           orderDate: updatedOrder.createdAt,
           discountTotal: discountTotal,
           shippingTotal: 0,
-          taxTotal: taxTotal
+          taxTotal: taxTotal,
+          // Campaign attribution for Mailchimp reports
+          campaignId: campaignId,
+          landingSite: landingSite,
+          trackingCode: trackingCode
         });
       }
     } catch (e) {

@@ -50,7 +50,11 @@ interface MailchimpOrder {
   currency_code: string;
   order_total: number;
   lines: MailchimpOrderLine[];
-  tracking_code?: string;
+  // Campaign attribution
+  campaign_id?: string;     // Mailchimp campaign ID (mc_cid)
+  landing_site?: string;    // Original landing URL
+  tracking_code?: string;   // Custom tracking code
+  // Order status
   financial_status?: string;
   fulfillment_status?: string;
   order_date?: string;
@@ -164,6 +168,10 @@ class MailchimpEcommerceService {
     discountTotal?: number;
     shippingTotal?: number;
     taxTotal?: number;
+    // Campaign attribution
+    campaignId?: string;     // mc_cid from Mailchimp email links
+    landingSite?: string;    // Original landing URL with UTM params
+    trackingCode?: string;   // Custom tracking code (can be mc_cid or utm_campaign)
   }): Promise<void> {
     if (!this.isConfigured()) {
       console.log('ℹ️ Mailchimp E-commerce not configured, skipping purchase tracking');
@@ -181,7 +189,10 @@ class MailchimpEcommerceService {
         orderDate = new Date(),
         discountTotal = 0,
         shippingTotal = 0,
-        taxTotal = 0
+        taxTotal = 0,
+        campaignId,
+        landingSite,
+        trackingCode
       } = params;
 
       // Sync products first (if they don't exist, Mailchimp will create them automatically)
@@ -224,7 +235,7 @@ class MailchimpEcommerceService {
         price: item.price
       }));
 
-      // Create order
+      // Create order with campaign attribution
       const order: MailchimpOrder = {
         id: orderId,
         customer: {
@@ -242,7 +253,11 @@ class MailchimpEcommerceService {
         order_date: orderDate.toISOString(),
         discount_total: discountTotal,
         shipping_total: shippingTotal,
-        tax_total: taxTotal
+        tax_total: taxTotal,
+        // Campaign attribution for Mailchimp reports
+        campaign_id: campaignId || undefined,
+        landing_site: landingSite || undefined,
+        tracking_code: trackingCode || campaignId || undefined
       };
 
       // Send order to Mailchimp
@@ -265,7 +280,9 @@ class MailchimpEcommerceService {
         orderId,
         customerEmail,
         totalAmount,
-        itemsCount: items.length
+        itemsCount: items.length,
+        campaignId: campaignId || 'none',
+        trackingCode: trackingCode || campaignId || 'none'
       });
 
     } catch (error) {

@@ -16,6 +16,22 @@ interface CheckoutItem {
   type: 'course' | 'book';
 }
 
+interface Attribution {
+  gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
+  fbclid?: string;
+  mc_cid?: string;  // Mailchimp campaign ID
+  mc_eid?: string;  // Mailchimp subscriber ID
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  ref?: string;
+  ts?: number;
+}
+
 interface CheckoutRequest {
   items: CheckoutItem[];
   customer?: {
@@ -24,6 +40,7 @@ interface CheckoutRequest {
     id?: string;
   };
   couponCode?: string;
+  attribution?: Attribution;
 }
 
 export async function POST(req: NextRequest) {
@@ -41,7 +58,7 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    const { items, customer, couponCode } = body;
+    const { items, customer, couponCode, attribution } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -597,7 +614,8 @@ export async function POST(req: NextRequest) {
               items: validatedItems,
               couponCode: appliedCoupon?.code || null,
               discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
-              freeOrder: true
+              freeOrder: true,
+              attribution: attribution || null
             },
             items: {
               create: await Promise.all(validatedItems.map(async (item) => ({
@@ -927,7 +945,8 @@ export async function POST(req: NextRequest) {
           metadata: {
             items: validatedItems, // Use validated items
             couponCode: appliedCoupon?.code || null,
-            discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null
+            discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
+            attribution: attribution || null
           },
           items: {
             create: await Promise.all(itemsWithDiscountedPrice.map(async (item) => ({
