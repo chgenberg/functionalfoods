@@ -312,7 +312,10 @@ export async function POST(req: NextRequest) {
                   const courseNames = order.items
                     .filter(item => item.type === 'course')
                     .map(item => item.name);
-                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames);
+                  const nameParts = (customerName || '').split(' ');
+                  const firstName = nameParts[0] || '';
+                  const lastName = nameParts.slice(1).join(' ') || '';
+                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames, firstName, lastName);
                   console.log(`✅ Customer added to Mailchimp with course tags: ${normalizedEmail}`);
                 }
               } catch (mailchimpError) {
@@ -357,7 +360,10 @@ export async function POST(req: NextRequest) {
                   const courseNames = order.items
                     .filter(item => item.type === 'course')
                     .map(item => item.name);
-                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames);
+                  const nameParts = (customerName || '').split(' ');
+                  const firstName = nameParts[0] || '';
+                  const lastName = nameParts.slice(1).join(' ') || '';
+                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames, firstName, lastName);
                   console.log(`✅ Customer added to Mailchimp with course tags: ${normalizedEmail}`);
                 }
               } catch (mailchimpError) {

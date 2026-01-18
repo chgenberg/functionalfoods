@@ -129,8 +129,15 @@ class MailchimpMarketingService {
    * Add customer tag with course-specific tags
    * @param email - Customer email
    * @param courseNames - Array of course names purchased
+   * @param firstName - Optional first name
+   * @param lastName - Optional last name
    */
-  async addCustomerWithCourseTags(email: string, courseNames: string[]): Promise<boolean> {
+  async addCustomerWithCourseTags(
+    email: string, 
+    courseNames: string[],
+    firstName?: string,
+    lastName?: string
+  ): Promise<boolean> {
     // Map course IDs/names to readable tag names
     const courseTagMap: Record<string, string> = {
       'functional-basics': 'Köp – Functional Basics',
@@ -173,6 +180,8 @@ class MailchimpMarketingService {
 
     return this.addSubscriber({
       email,
+      firstName,
+      lastName,
       tags,
       status: 'subscribed'
     });

@@ -519,7 +519,10 @@ async function handleCheckoutSessionCompleted(session: any) {
             const courseNames = (items || [])
               .filter(item => item.type === 'course')
               .map(item => item.name);
-            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames);
+            const nameParts = customerName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames, firstName, lastName);
             console.log(`✅ New customer added to Mailchimp with course tags: ${customerEmail}`);
           }
         }
@@ -578,7 +581,10 @@ async function handleCheckoutSessionCompleted(session: any) {
             const courseNames = (items || [])
               .filter(item => item.type === 'course')
               .map(item => item.name);
-            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames);
+            const nameParts = customerName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames, firstName, lastName);
             console.log(`✅ New customer added to Mailchimp with course tags: ${customerEmail}`);
           }
         }
@@ -841,7 +847,10 @@ async function handleFreeOrder(session: any) {
             const courseNames = (items || [])
               .filter((item: any) => item.type === 'course')
               .map((item: any) => item.name);
-            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames);
+            const nameParts = customerName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames, firstName, lastName);
             console.log(`✅ New customer added to Mailchimp with course tags (free order): ${customerEmail}`);
           }
         }
