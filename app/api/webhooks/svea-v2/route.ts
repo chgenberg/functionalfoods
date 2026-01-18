@@ -516,9 +516,9 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
         const campaignId = attribution?.mc_cid || undefined;
         const trackingCode = attribution?.utm_campaign || campaignId || undefined;
         
-        // Build landing site URL from UTM params if available
+        // Build landing site URL from UTM params or Mailchimp campaign tracking
         let landingSite: string | undefined;
-        if (attribution?.utm_source || attribution?.utm_campaign) {
+        if (attribution?.utm_source || attribution?.utm_campaign || attribution?.mc_cid) {
           const params = new URLSearchParams();
           if (attribution.utm_source) params.set('utm_source', attribution.utm_source);
           if (attribution.utm_medium) params.set('utm_medium', attribution.utm_medium);
