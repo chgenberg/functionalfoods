@@ -624,9 +624,9 @@ async function handleCheckoutSessionCompleted(session: any) {
         const campaignId = sessionMeta.mc_cid || undefined;
         const trackingCode = sessionMeta.utm_campaign || campaignId || undefined;
         
-        // Build landing site URL from UTM params or Mailchimp campaign tracking
+        // Build landing site URL from UTM params if available
         let landingSite: string | undefined;
-        if (sessionMeta.utm_source || sessionMeta.utm_campaign || sessionMeta.mc_cid) {
+        if (sessionMeta.utm_source || sessionMeta.utm_campaign) {
           const params = new URLSearchParams();
           if (sessionMeta.utm_source) params.set('utm_source', sessionMeta.utm_source);
           if (sessionMeta.utm_medium) params.set('utm_medium', sessionMeta.utm_medium);
