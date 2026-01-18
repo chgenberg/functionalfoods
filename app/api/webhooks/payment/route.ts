@@ -506,7 +506,7 @@ async function handleCheckoutSessionCompleted(session: any) {
       }
     });
 
-    // --- Add new customers to Mailchimp Marketing with "kund" tag ---
+    // --- Add new customers to Mailchimp Marketing with "kund" tag + course tags ---
     try {
       const user = await prisma.user.findUnique({ where: { email: customerEmail } });
       if (user) {
@@ -516,18 +516,11 @@ async function handleCheckoutSessionCompleted(session: any) {
         if (isNewUser) {
           const mailchimpMarketing = getMailchimpMarketing();
           if (mailchimpMarketing.isConfigured()) {
-            const nameParts = customerName.split(' ');
-            const firstName = nameParts[0] || '';
-            const lastName = nameParts.slice(1).join(' ') || '';
-            
-            await mailchimpMarketing.addSubscriber({
-              email: customerEmail,
-              firstName,
-              lastName,
-              tags: ['kund'],
-              status: 'subscribed'
-            });
-            console.log(`✅ New customer added to Mailchimp Marketing: ${customerEmail}`);
+            const courseNames = (items || [])
+              .filter(item => item.type === 'course')
+              .map(item => item.name);
+            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames);
+            console.log(`✅ New customer added to Mailchimp with course tags: ${customerEmail}`);
           }
         }
       }
@@ -582,18 +575,11 @@ async function handleCheckoutSessionCompleted(session: any) {
         if (isNewUser) {
           const mailchimpMarketing = getMailchimpMarketing();
           if (mailchimpMarketing.isConfigured()) {
-            const nameParts = customerName.split(' ');
-            const firstName = nameParts[0] || '';
-            const lastName = nameParts.slice(1).join(' ') || '';
-            
-            await mailchimpMarketing.addSubscriber({
-              email: customerEmail,
-              firstName,
-              lastName,
-              tags: ['kund'],
-              status: 'subscribed'
-            });
-            console.log(`✅ New customer added to Mailchimp Marketing: ${customerEmail}`);
+            const courseNames = (items || [])
+              .filter(item => item.type === 'course')
+              .map(item => item.name);
+            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames);
+            console.log(`✅ New customer added to Mailchimp with course tags: ${customerEmail}`);
           }
         }
       }
@@ -842,7 +828,7 @@ async function handleFreeOrder(session: any) {
       }
     });
 
-    // --- Add new customers to Mailchimp Marketing with "kund" tag ---
+    // --- Add new customers to Mailchimp Marketing with "kund" tag + course tags ---
     try {
       const user = await prisma.user.findUnique({ where: { email: customerEmail } });
       if (user) {
@@ -852,18 +838,11 @@ async function handleFreeOrder(session: any) {
         if (isNewUser) {
           const mailchimpMarketing = getMailchimpMarketing();
           if (mailchimpMarketing.isConfigured()) {
-            const nameParts = customerName.split(' ');
-            const firstName = nameParts[0] || '';
-            const lastName = nameParts.slice(1).join(' ') || '';
-            
-            await mailchimpMarketing.addSubscriber({
-              email: customerEmail,
-              firstName,
-              lastName,
-              tags: ['kund'],
-              status: 'subscribed'
-            });
-            console.log(`✅ New customer added to Mailchimp Marketing (free order): ${customerEmail}`);
+            const courseNames = (items || [])
+              .filter((item: any) => item.type === 'course')
+              .map((item: any) => item.name);
+            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames);
+            console.log(`✅ New customer added to Mailchimp with course tags (free order): ${customerEmail}`);
           }
         }
       }

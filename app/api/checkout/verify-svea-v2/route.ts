@@ -305,12 +305,15 @@ export async function POST(req: NextRequest) {
 
               console.log(`📧 Guest user upgraded via verify: ${updatedUser.email}`);
               
-              // Add to Mailchimp Marketing with "kund" tag
+              // Add to Mailchimp Marketing with "kund" tag + course tags
               try {
                 const mailchimpMarketing = getMailchimpMarketing();
                 if (mailchimpMarketing.isConfigured()) {
-                  await mailchimpMarketing.addCustomerTag(normalizedEmail);
-                  console.log(`✅ Customer added to Mailchimp: ${normalizedEmail}`);
+                  const courseNames = order.items
+                    .filter(item => item.type === 'course')
+                    .map(item => item.name);
+                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames);
+                  console.log(`✅ Customer added to Mailchimp with course tags: ${normalizedEmail}`);
                 }
               } catch (mailchimpError) {
                 console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);
@@ -347,12 +350,15 @@ export async function POST(req: NextRequest) {
               
               console.log(`📧 New user created via verify: ${newUser.email}`);
               
-              // Add to Mailchimp Marketing with "kund" tag
+              // Add to Mailchimp Marketing with "kund" tag + course tags
               try {
                 const mailchimpMarketing = getMailchimpMarketing();
                 if (mailchimpMarketing.isConfigured()) {
-                  await mailchimpMarketing.addCustomerTag(normalizedEmail);
-                  console.log(`✅ Customer added to Mailchimp: ${normalizedEmail}`);
+                  const courseNames = order.items
+                    .filter(item => item.type === 'course')
+                    .map(item => item.name);
+                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames);
+                  console.log(`✅ Customer added to Mailchimp with course tags: ${normalizedEmail}`);
                 }
               } catch (mailchimpError) {
                 console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);

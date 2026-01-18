@@ -355,12 +355,15 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
 
           console.log(`📧 New user created: ${user.email}`);
           
-          // Add new customer to Mailchimp Marketing with "kund" tag
+          // Add new customer to Mailchimp Marketing with "kund" tag + course tags
           try {
             const mailchimpMarketing = getMailchimpMarketing();
             if (mailchimpMarketing.isConfigured()) {
-              await mailchimpMarketing.addCustomerTag(normalizedEmail);
-              console.log(`✅ New customer added to Mailchimp with "kund" tag: ${normalizedEmail}`);
+              const courseNames = order.items
+                .filter(item => item.type === 'course')
+                .map(item => item.name);
+              await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames);
+              console.log(`✅ New customer added to Mailchimp with course tags: ${normalizedEmail}`);
             }
           } catch (mailchimpError) {
             console.warn('⚠️ Failed to add customer to Mailchimp (non-critical):', mailchimpError);

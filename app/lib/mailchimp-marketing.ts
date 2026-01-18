@@ -124,6 +124,59 @@ class MailchimpMarketingService {
       status: 'subscribed'
     });
   }
+
+  /**
+   * Add customer tag with course-specific tags
+   * @param email - Customer email
+   * @param courseNames - Array of course names purchased
+   */
+  async addCustomerWithCourseTags(email: string, courseNames: string[]): Promise<boolean> {
+    // Map course IDs/names to readable tag names
+    const courseTagMap: Record<string, string> = {
+      'functional-basics': 'Köp – Functional Basics',
+      'functional-flow': 'Köp – Functional Flow',
+      'functional-energy': 'Köp – Functional Energy',
+      'functional-hormone': 'Köp – Hormonell Balans',
+      'hormonell-balans': 'Köp – Hormonell Balans',
+      // Also handle display names
+      'Functional Basics': 'Köp – Functional Basics',
+      'Functional Gut Health/Flow': 'Köp – Functional Flow',
+      'Functional Insulin balance/Energy': 'Köp – Functional Energy',
+      'Hormonell Balans': 'Köp – Hormonell Balans',
+    };
+
+    // Build tags array
+    const tags = ['kund'];
+    
+    for (const courseName of courseNames) {
+      // Try exact match first
+      let tag = courseTagMap[courseName];
+      
+      // If no exact match, try case-insensitive partial match
+      if (!tag) {
+        const lowerName = courseName.toLowerCase();
+        for (const [key, value] of Object.entries(courseTagMap)) {
+          if (lowerName.includes(key.toLowerCase()) || key.toLowerCase().includes(lowerName)) {
+            tag = value;
+            break;
+          }
+        }
+      }
+      
+      // Add tag if found and not already in array
+      if (tag && !tags.includes(tag)) {
+        tags.push(tag);
+      }
+    }
+
+    console.log(`🏷️ Adding tags to ${email}:`, tags);
+
+    return this.addSubscriber({
+      email,
+      tags,
+      status: 'subscribed'
+    });
+  }
 }
 
 // Singleton instance
