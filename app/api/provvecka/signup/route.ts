@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     const memberUrl = `${baseUrl}/lists/${MAILCHIMP_LIST_ID}/members/${subscriberHash}`;
 
     // Build tags array
-    const tags = [TAG_NAME, 'Functional Foods'];
+    const tags = [TAG_NAME];
     if (source) {
       tags.push(`Provvecka – ${source}`);
     }

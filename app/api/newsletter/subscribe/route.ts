@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
 
     const checkUrl = `${url}/${subscriberHash}`;
     
-    const tags = ['Website Signup', 'Functional Foods'];
+    const tags = ['Website Signup'];
     if (source === 'health-quiz') {
       tags.push('Health Quiz');
       console.log('🏷️ Adding "Health Quiz" tag to subscriber:', email);

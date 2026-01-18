@@ -50,7 +50,7 @@ async function sendContactEmail(data: {
             FNAME: data.namn.split(' ')[0],
             LNAME: data.namn.split(' ').slice(1).join(' '),
           },
-          tags: ['Contact Form', 'Functional Foods'],
+          tags: ['Contact Form'],
         }),
       });
     } catch (error) {
