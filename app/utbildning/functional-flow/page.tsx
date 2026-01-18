@@ -366,25 +366,117 @@ export default function FunctionalFlowPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="max-w-4xl mx-auto mb-16"
+              className="space-y-12 mb-16"
             >
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-primary/10">
-                <h2 className="text-3xl font-light text-center mb-8 text-primary">
-                  För vem är kursen?
+              {/* Course Description */}
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-primary/10 max-w-4xl mx-auto">
+                <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
+                  Din resa till en lugnare mage med <span className="text-primary font-bold">antiinflammatorisk kost</span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
+                  <p className="mb-4">
+                    Tack vare en antiinflammatorisk kost och viktiga livsstilsförändringar kan du gå från att ständigt ha en krånglig mage till att hitta balans i tarmfloran, minska inflammation och få en mage som mår bra. I kursen Functional Flow har Ulrika förenklat för dig med färdiga kostscheman att följa vecka för vecka samt lättlagade recept som är både smakrika, färggranna, mättande och lättlagade.
+                  </p>
+                  <p className="mb-4">
+                    Recepten är baserade på medelhavskosten med fokus på fördelarna med Functional Foods – alltså mat som ger mervärde i kroppen och ger dig både energi, antioxidanter, probiotika, prebiotika, matsmältningsenzymer, omega 3 och fibrer. Detta tillsammans kommer att göra en stor skillnad för din mag- och tarm och du kommer att känna ett märkbart resultat på dessa 6 veckor.
+                  </p>
+                  <p className="mb-4">
+                    Magen är som en kompass för hur resten av kroppen mår, och när den är i balans känner du ett lugn och har en energi som sprider sig i kroppen.
+                  </p>
+                </div>
+                
+                <h3 className="text-xl font-medium mb-4">För vem?</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {forWho.map((item, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-3 p-4 bg-background rounded-lg"
-                    >
-                      <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                    <div key={index} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                       <span className="text-text-secondary">{item}</span>
-                    </motion.div>
+                    </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Food Examples */}
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-primary/10 max-w-4xl mx-auto">
+                <h3 className="text-2xl font-light mb-6 text-center">
+                  Vad för typ av <span className="text-primary font-bold">mat?</span>
+                </h3>
+                <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
+                  <p className="mb-6 font-medium text-primary">
+                    Du kommer att äta rikligt av:
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    {[
+                      'Grönsaker, frukt och bär',
+                      'Naturligt protein som kött, fisk, fågel och skaldjur',
+                      'Berikande fetter i form av olivolja, frön, nötter, oliver och avokado'
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                        <span className="text-text-secondary">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <p className="mb-4 font-medium text-gray-600">
+                    Du undviker eller drar ner på:
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+                    {[
+                      'Processade livsmedel',
+                      'Snabba kolhydrater',
+                      'Gluten',
+                      'Socker',
+                      'Alkohol',
+                      'Mejeriprodukter'
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center gap-2 text-sm">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full flex-shrink-0" />
+                        <span className="text-text-secondary">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="mb-4 font-medium">
+                    Här är några exempel på rätter du får laga:
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    {[
+                      'Linssoppa med ingefära och citron',
+                      'Laxgratäng med broccoli och scampi',
+                      'Chiapudding med bär och nötter',
+                      'Fänkålssallad med grapefrukt och burrata',
+                      'Ugnsomelett med keso och färska bär',
+                      'Grillad kyckling med örtmarinad',
+                      'Quinoasallad med rostade grönsaker',
+                      'Kokosgröt med mango och passionsfrukt'
+                    ].map((dish, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <GiWheat className="w-4 h-4 text-primary" />
+                        <span className="text-text-secondary">{dish}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Coaching/Community Section */}
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-primary/10 max-w-4xl mx-auto">
+                <h3 className="text-2xl font-light mb-6 text-center">
+                  <span className="text-primary font-bold">Kunskap & Community</span>
+                </h3>
+                <div className="prose prose-lg max-w-none text-text-secondary leading-relaxed">
+                  <p className="mb-4">
+                    Kursen innefattar dokument där information är samlat om olika mag- och tarmproblem, vilken kost som främjar din tarmflora, inflammationsdämpande kost, fördelaktiga drycker, tillskott som stödjer din tarmhälsa och råd om övriga livsstilsfaktorer som påverkar din tarm såsom avkoppling, sömn, och motion.
+                  </p>
+                  <p className="mb-4">
+                    En stor inspiration är också gemenskapen i det community vi har tillsammans där du kan ställa frågor och dela dina tankar och framgångar. Ulrika livesänder i communityn då och då och det motiverar ytterligare.
+                  </p>
+                  <div className="bg-primary/5 rounded-xl p-6 mt-6">
+                    <p className="text-primary font-medium italic text-center">
+                      "Kom ihåg att varje liten förändring du gör – vare sig det är att lägga till en grönsak, prova ett glas kefir, eller ta fem minuter för djupandning – är ett steg i rätt riktning. Magen och kroppen älskar när vi tar hand om dem. Och du, du förtjänar att må bra! Ge din mage kärlek genom mat som läker och en livsstil som ger lugn, så ska du se att den ger massor av välmående tillbaka."
+                    </p>
+                  </div>
                 </div>
               </div>
             </motion.div>
