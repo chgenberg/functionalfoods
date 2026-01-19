@@ -421,6 +421,18 @@ export default function FunctionalEnergyPage() {
                   ))}
                 </div>
               </div>
+
+              {/* Coachning Section */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
+                <h3 className="text-2xl font-light mb-6 text-center">
+                  <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">Coachning & Community</span>
+                </h3>
+                <div className="prose prose-lg max-w-none text-text-secondary leading-relaxed">
+                  <p className="mb-4">
+                    Du får även personlig coachning och stöd i vårt community där du kan ställa frågor, dela erfarenheter och få motivation längs vägen. Ulrika livesänder även i communityn vid utvalda tillfällen.
+                  </p>
+                </div>
+              </div>
             </motion.div>
               )}
 

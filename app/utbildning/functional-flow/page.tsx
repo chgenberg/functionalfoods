@@ -470,7 +470,7 @@ export default function FunctionalFlowPage() {
                     Kursen innefattar dokument där information är samlat om olika mag- och tarmproblem, vilken kost som främjar din tarmflora, inflammationsdämpande kost, fördelaktiga drycker, tillskott som stödjer din tarmhälsa och råd om övriga livsstilsfaktorer som påverkar din tarm såsom avkoppling, sömn, och motion.
                   </p>
                   <p className="mb-4">
-                    En stor inspiration är också gemenskapen i det community vi har tillsammans där du kan ställa frågor och dela dina tankar och framgångar. Ulrika livesänder i communityn då och då och det motiverar ytterligare.
+                    Du får även personlig coachning och stöd i vårt community där du kan ställa frågor, dela erfarenheter och få motivation längs vägen. Ulrika livesänder även i communityn vid utvalda tillfällen.
                   </p>
                   <div className="bg-primary/5 rounded-xl p-6 mt-6">
                     <p className="text-primary font-medium italic text-center">

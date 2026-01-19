@@ -499,7 +499,7 @@ export default function HormonellBalansPage() {
                 </h3>
                 <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
                   <p className="mb-4">
-                    Den slutna gruppen är en av framgångsfaktorerna för att lyckas med genomförandet av kursen och att hjälpa till att nå dina mål. Du får möjlighet att både ge och få inspiration, tips och pepp under hela kursen. Functional foods teamet coachar, stöttar dig, ger tips, svarar på frågor och guidar dig under hela kursperioden.
+                    Du får även personlig coachning och stöd i vårt community där du kan ställa frågor, dela erfarenheter och få motivation längs vägen. Ulrika livesänder även i communityn vid utvalda tillfällen.
                   </p>
                 </div>
               </div>
