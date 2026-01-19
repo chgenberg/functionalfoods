@@ -396,38 +396,203 @@ export default function FunctionalEnergyPage() {
         <AnimatePresence mode="wait">
           {activeTab === 'overview' && (
             <motion.div
+              key="overview"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="max-w-4xl mx-auto mb-16"
+              transition={{ duration: 0.4 }}
+              className="space-y-12 mb-16"
             >
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#93C560]/10">
-                <h2 className="text-3xl font-light text-center mb-8 text-[#93C560]">
-                  För vem är kursen?
+              {/* Course Description */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
+                <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
+                  För dig som vill ta kontroll över <span className="text-[#93C560] font-bold">ditt blodsocker och din energi</span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {forWho.map((item, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-3 p-4 bg-background rounded-lg"
-                    >
-                      <CheckCircle className="w-6 h-6 text-[#93C560] flex-shrink-0 mt-1" />
-                      <span className="text-text-secondary">{item}</span>
-                    </motion.div>
-                  ))}
+                <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
+                  <p className="mb-4">
+                    Functional Energy är en 6-veckorskurs med fokus på insulinbalans och funktionell kost. Genom att förstå hur maten påverkar din kropp får du verktyg för att stabilisera blodsockret, öka din energi och förbättra ditt allmänna välbefinnande. Kursen kombinerar näringsrika måltider med hållbara livsstilsstrategier som hjälper kroppen att samarbeta med dig – inte mot dig.
+                  </p>
+                  
+                  <h3 className="text-xl font-medium mb-4 mt-6 text-[#93C560]">Din resa mot stabilt blodsocker och hållbar energi</h3>
+                  <p className="mb-4">
+                    Genom rätt sammansatt kost och smarta livsstilsförändringar kan du gå från energidippar, sötsug och svängande blodsocker till en stabil grund där kroppen får det stöd den behöver. I Functional Energy har Ulrika förenklat processen för dig genom tydliga kostscheman vecka för vecka, färdiga inköpslistor och näringsrika recept för alla dagens måltider.
+                  </p>
+                  
+                  <p className="mb-4">
+                    Kosten i kursen är särskilt utformad för dig som har prediabetes, typ 2-diabetes eller befinner dig i riskzonen, men passar även dig som vill förebygga framtida obalans och skapa en stark metabol hälsa. Du lär dig hur maten påverkar blodsocker, insulin och energi och hur små justeringar kan ge stora effekter.
+                  </p>
+                  
+                  <p className="mb-4">
+                    Recepten är baserade på en modern, funktionell kost med inspiration från medelhavskosten och låg glykemisk belastning. Fokus ligger på Functional Foods – mat som ger kroppen mervärde genom att bidra med stabil energi, bättre blodsockerkontroll, minskad inflammation och förbättrad mättnad.
+                  </p>
+                  
+                  <div className="bg-[#93C560]/5 rounded-xl p-6 my-6">
+                    <h4 className="text-lg font-medium mb-3 text-[#93C560]">Du får i dig rikligt med:</h4>
+                    <ul className="space-y-2">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                        <span>Högkvalitativt protein</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                        <span>Fiberrika grönsaker</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                        <span>Nyttiga fetter</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                        <span>Antioxidanter</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                        <span>Omega-3</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                        <span>Långsamma kolhydrater som stödjer ett jämnt blodsocker</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 
-              {/* Coachning Section */}
+              {/* För vem passar kursen? */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <h3 className="text-2xl font-light mb-6 text-center">
-                  <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">Coachning & Community</span>
+                  För vem passar <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">Functional Energy?</span>
+                </h3>
+                <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
+                  <p className="mb-4">Den här kursen är för dig som:</p>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-1 flex-shrink-0" />
+                      <span>har prediabetes eller typ 2-diabetes</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-1 flex-shrink-0" />
+                      <span>upplever trötthet, energidippar eller sötsug</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-1 flex-shrink-0" />
+                      <span>vill stabilisera blodsockret och förbättra insulinbalansen</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-1 flex-shrink-0" />
+                      <span>söker en hållbar, vetenskapligt förankrad kosthållning</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-1 flex-shrink-0" />
+                      <span>vill ha tydlig struktur, stöd och personlig coachning</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Vad för typ av mat? */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
+                <h3 className="text-2xl font-light mb-6 text-center">
+                  Vad för <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">typ av mat?</span>
                 </h3>
                 <div className="prose prose-lg max-w-none text-text-secondary leading-relaxed">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                    <div>
+                      <h4 className="text-lg font-medium mb-4 text-[#93C560]">Du kommer att äta rikligt av:</h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                          <span>Grönsaker, bär och utvalda frukter</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                          <span>Naturligt protein: fisk, kött, fågel, ägg och skaldjur</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                          <span>Hälsosamma fetter: olivolja, avokado, nötter, frön och oliver</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-medium mb-4 text-[#93C560]">Du undviker eller drar ner på:</h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-[#93C560] mt-0.5">•</span>
+                          <span>Socker och söta livsmedel</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-[#93C560] mt-0.5">•</span>
+                          <span>Snabba kolhydrater</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-[#93C560] mt-0.5">•</span>
+                          <span>Ultraproducerad mat</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-[#93C560] mt-0.5">•</span>
+                          <span>Alkohol</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-[#93C560] mt-0.5">•</span>
+                          <span>Raffinerade mjölprodukter</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Exempel på rätter */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
+                <h3 className="text-2xl font-light mb-6 text-center">
+                  Exempel på <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">rätter i kursen</span>
+                </h3>
+                <div className="prose prose-lg max-w-none text-text-secondary mb-6 leading-relaxed">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    {[
+                      'Kycklingburgare med mangosalsa och wasabi',
+                      'Fisk och skaldjursgryta från medelhavet',
+                      'Bananpannkaka med keso, blåbär och mango',
+                      'Kalkonbolognese med morotspasta',
+                      'Färskostmacka med ost och paprika'
+                    ].map((dish, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <GiWheat className="w-4 h-4 text-[#93C560]" />
+                        <span className="text-text-secondary">{dish}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Kunskap, coachning & community */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
+                <h3 className="text-2xl font-light mb-6 text-center">
+                  <span className="bg-gradient-to-r from-[#93C560] to-[#7FB547] bg-clip-text text-transparent font-bold">Kunskap, coachning & community</span>
+                </h3>
+                <div className="prose prose-lg max-w-none text-text-secondary leading-relaxed">
+                  <p className="mb-4">
+                    I kursen får du tillgång till kunskapsdokument och artiklar som förklarar:
+                  </p>
+                  <ul className="space-y-2 mb-6">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                      <span>hur blodsocker och insulin fungerar</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                      <span>vad insulinresistens innebär</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                      <span>hur Functional Foods kan användas för blodsockerkontroll</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#93C560] mt-0.5 flex-shrink-0" />
+                      <span>hur stress, sömn, rörelse och återhämtning påverkar din energi</span>
+                    </li>
+                  </ul>
                   <p className="mb-4">
                     Du får även personlig coachning och stöd i vårt community där du kan ställa frågor, dela erfarenheter och få motivation längs vägen. Ulrika livesänder även i communityn vid utvalda tillfällen.
                   </p>
