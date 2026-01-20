@@ -72,7 +72,7 @@ export default function AdminLayout({
       title: 'Innehåll',
       items: [
         { label: 'Produktsidor', href: '/admin/products', icon: ShoppingBag },
-        { label: 'Blogg', href: '/admin/blog', icon: FileText },
+        { label: 'Bloggar', href: '/admin/blog', icon: FileText },
         { label: 'Recept', href: '/admin/recipes', icon: ChefHat },
         { label: 'Kurser', href: '/admin/courses', icon: GraduationCap },
         { label: 'Kunskapsdokument', href: '/admin/knowledge', icon: BookOpen },
