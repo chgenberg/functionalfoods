@@ -241,64 +241,7 @@ export default function Home() {
 
       </section>
 
-      {/* Course Boxes Section */}
-      <section className="py-8 md:py-12 px-4 bg-[#F9F7F2]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-center text-2xl md:text-3xl font-semibold text-[#014421] mb-6 md:mb-8">
-            Våra kurser & boken
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
-            {[
-              {
-                name: 'Functional Basics',
-                image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
-                href: '/utbildning/functional-basics'
-              },
-              {
-                name: 'Gut Health/Flow',
-                image: '/Kurser_bilder/Functional_Gut Health.jpg',
-                href: '/utbildning/functional-flow'
-              },
-              {
-                name: 'Insulin balance/Energy',
-                image: '/Kurser_bilder/Functional_insulin balance.jpg',
-                href: '/utbildning/functional-energy'
-              },
-              {
-                name: 'Hormonell Balans',
-                image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
-                href: '/utbildning/hormonell-balans'
-              },
-              {
-                name: 'Boken',
-                image: '/boken.png',
-                href: '/boken'
-              }
-            ].map((course, index) => (
-              <Link
-                key={index}
-                href={course.href}
-                className="group relative overflow-hidden rounded-xl aspect-[4/5] bg-white shadow-sm hover:shadow-lg transition-all duration-300"
-              >
-                <Image
-                  src={course.image}
-                  alt={course.name}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                  <p className="text-white text-xs md:text-sm font-medium leading-tight drop-shadow-lg">
-                    {course.name}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      {/* Customer Testimonials - directly after hero */}
       <CustomerTestimonials />
 
       <RecipeCarousel />
