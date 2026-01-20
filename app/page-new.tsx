@@ -17,6 +17,7 @@ import FeaturePopup from "./components/FeaturePopup";
 import RecipeCarousel from "./components/RecipeCarousel";
 import CustomerReviews from "./components/CustomerReviews";
 import CustomerTestimonials from "./components/CustomerTestimonials";
+import BlogCarousel from "./components/BlogCarousel";
 import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 import { trackGenerateLead } from "./lib/analytics";
@@ -427,34 +428,7 @@ export default function Home() {
 
 
 
-      <section className="px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="relative h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-lg group">
-            <img
-              src="/Hem/Bild_till_startsidan.jpg"
-              alt="Functional Foods"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-transparent" />
-            <div className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-white">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs md:text-sm mb-2">
-                <span>{t('home.portrait.badge','Functional Foods med Ulrika')}</span>
-              </div>
-              <p className="text-lg md:text-2xl font-semibold drop-shadow">{t('home.portrait.subtitle','Mat som medicin för kropp och själ')}</p>
-            </div>
-            {/* Centered CTA */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <a
-                href="/utbildning"
-                className="pointer-events-auto inline-flex items-center px-6 md:px-8 py-3 md:py-4 rounded-full bg-[#FF7E70] hover:bg-[#ff6b5d] text-white font-semibold shadow-lg transition-colors"
-              >
-                Köp nu
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <BlogCarousel />
 
       <section className="py-12 md:py-20 px-4">
         <div className="max-w-6xl mx-auto">
