@@ -83,14 +83,28 @@ export default function Home() {
       
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: 'url(/Hem/UD.png)',
-              backgroundColor: '#F3EFE3',
-              zIndex: 1,
-            }}
-          />
+          {/* Desktop hero image */}
+          <div className="hidden lg:block absolute inset-0" style={{ zIndex: 1 }}>
+            <Image
+              src="/Hem/UDhero.jpeg"
+              alt="Functional Foods Hero"
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+          </div>
+          {/* Mobile hero image */}
+          <div className="lg:hidden absolute inset-0" style={{ zIndex: 1 }}>
+            <Image
+              src="/Hem/UDheromobile.jpeg"
+              alt="Functional Foods Hero"
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+          </div>
           <div className="absolute inset-0 bg-black/25 pointer-events-none" style={{ zIndex: 2 }} />
         </div>
 
