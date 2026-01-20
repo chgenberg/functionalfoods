@@ -5,6 +5,22 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { CreditCard, Package, User, Calendar, CheckCircle, XCircle, Clock, Filter, Search, Download, AlertCircle } from 'lucide-react';
 
+interface Attribution {
+  gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
+  fbclid?: string;
+  mc_cid?: string;
+  mc_eid?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  ref?: string;
+  ts?: number;
+}
+
 interface Order {
   id: string;
   orderNumber: string;
@@ -37,6 +53,7 @@ interface Order {
   metadata?: {
     confirmationEmailSent?: boolean;
     sveaOrderId?: string;
+    attribution?: Attribution;
   };
 }
 
@@ -110,6 +127,92 @@ export default function AdminOrdersPage() {
     if (method?.toLowerCase().includes('stripe')) return 'Stripe';
     if (method?.toLowerCase().includes('swish')) return 'Swish';
     return method || 'N/A';
+  };
+
+  const getAttributionLabel = (attr: Attribution | undefined): { label: string; color: string; detail?: string } => {
+    if (!attr) return { label: 'Direkt', color: 'gray' };
+
+    // Google Ads (priority)
+    if (attr.gclid || attr.gbraid || attr.wbraid) {
+      const campaign = attr.utm_campaign ? ` (${attr.utm_campaign})` : '';
+      return { 
+        label: 'Google Ads', 
+        color: 'blue',
+        detail: campaign || (attr.gclid ? `gclid: ${attr.gclid.substring(0, 8)}...` : '')
+      };
+    }
+
+    // Facebook/Meta Ads
+    if (attr.fbclid) {
+      const campaign = attr.utm_campaign ? ` (${attr.utm_campaign})` : '';
+      return { 
+        label: 'Facebook Ads', 
+        color: 'purple',
+        detail: campaign || `fbclid: ${attr.fbclid.substring(0, 8)}...`
+      };
+    }
+
+    // Mailchimp campaign
+    if (attr.mc_cid) {
+      return { 
+        label: 'Mailchimp', 
+        color: 'yellow',
+        detail: `Campaign: ${attr.mc_cid.substring(0, 10)}...`
+      };
+    }
+
+    // UTM parameters (organic/other campaigns)
+    if (attr.utm_source) {
+      const source = attr.utm_source.toLowerCase();
+      const campaign = attr.utm_campaign ? ` (${attr.utm_campaign})` : '';
+      
+      if (source === 'google' || source === 'google.com') {
+        return { label: 'Google', color: 'green', detail: campaign || attr.utm_medium };
+      }
+      if (source === 'facebook' || source === 'fb' || source === 'facebook.com') {
+        return { label: 'Facebook', color: 'purple', detail: campaign || attr.utm_medium };
+      }
+      if (source === 'instagram' || source === 'ig') {
+        return { label: 'Instagram', color: 'pink', detail: campaign || attr.utm_medium };
+      }
+      if (source === 'youtube') {
+        return { label: 'YouTube', color: 'red', detail: campaign || attr.utm_medium };
+      }
+      if (source === 'email' || source === 'newsletter') {
+        return { label: 'Email', color: 'teal', detail: campaign || attr.utm_medium };
+      }
+      
+      return { 
+        label: attr.utm_source, 
+        color: 'indigo',
+        detail: campaign || attr.utm_medium
+      };
+    }
+
+    // Referrer fallback
+    if (attr.ref) {
+      try {
+        const refUrl = new URL(attr.ref);
+        return { label: `Ref: ${refUrl.hostname}`, color: 'gray', detail: '' };
+      } catch {}
+    }
+
+    return { label: 'Direkt', color: 'gray' };
+  };
+
+  const getColorClasses = (color: string) => {
+    const colors: Record<string, string> = {
+      blue: 'bg-blue-100 text-blue-800',
+      green: 'bg-green-100 text-green-800',
+      yellow: 'bg-yellow-100 text-yellow-800',
+      purple: 'bg-purple-100 text-purple-800',
+      pink: 'bg-pink-100 text-pink-800',
+      red: 'bg-red-100 text-red-800',
+      teal: 'bg-teal-100 text-teal-800',
+      indigo: 'bg-indigo-100 text-indigo-800',
+      gray: 'bg-gray-100 text-gray-800',
+    };
+    return colors[color] || colors.gray;
   };
 
   const filteredOrders = orders
@@ -220,18 +323,22 @@ export default function AdminOrdersPage() {
 
   // Export orders to CSV
   const exportToCSV = () => {
-    const headers = ['Ordernummer', 'Datum', 'Kund', 'E-post', 'Status', 'Belopp', 'Betalmetod', 'Produkter'];
-    const rows = filteredOrders.map(order => [
-      order.orderNumber,
-      new Date(order.createdAt).toLocaleString('sv-SE'),
-      order.customerName || order.user?.name || 'N/A',
-      order.customerEmail || order.user?.email || 'N/A',
-      order.status,
-      order.totalAmount,
-      getPaymentMethodLabel(order),
-      // Use a pipe separator to avoid conflicts with Swedish Excel's semicolon delimiter
-      order.items.map(i => `${i.quantity}x ${i.name}`).join(' | ')
-    ]);
+    const headers = ['Ordernummer', 'Datum', 'Kund', 'E-post', 'Källa', 'Status', 'Belopp', 'Betalmetod', 'Produkter'];
+    const rows = filteredOrders.map(order => {
+      const attrInfo = getAttributionLabel(order.metadata?.attribution);
+      return [
+        order.orderNumber,
+        new Date(order.createdAt).toLocaleString('sv-SE'),
+        order.customerName || order.user?.name || 'N/A',
+        order.customerEmail || order.user?.email || 'N/A',
+        attrInfo.label + (attrInfo.detail ? ` - ${attrInfo.detail}` : ''),
+        order.status,
+        order.totalAmount,
+        getPaymentMethodLabel(order),
+        // Use a pipe separator to avoid conflicts with Swedish Excel's semicolon delimiter
+        order.items.map(i => `${i.quantity}x ${i.name}`).join(' | ')
+      ];
+    });
     
     // Swedish Excel: prefer semicolon delimiter + UTF-8 BOM
     const escapeCell = (cell: any) => `"${String(cell ?? '').replace(/"/g, '""')}"`;
@@ -422,6 +529,7 @@ export default function AdminOrdersPage() {
               <tr>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Order</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Kund</th>
+                <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Källa</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Produkter</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Betalning</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Betalstatus</th>
@@ -431,7 +539,7 @@ export default function AdminOrdersPage() {
             <tbody className="divide-y divide-[var(--border-light)]">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-[var(--text-secondary)]">
+                  <td colSpan={7} className="p-8 text-center text-[var(--text-secondary)]">
                     {searchTerm ? 'Inga ordrar matchar sökningen' : 'Inga ordrar hittades'}
                   </td>
                 </tr>
@@ -483,6 +591,26 @@ export default function AdminOrdersPage() {
                           )}
                         </div>
                       </div>
+                    </td>
+
+                    {/* Attribution Source */}
+                    <td className="p-4">
+                      {(() => {
+                        const attribution = order.metadata?.attribution;
+                        const attrInfo = getAttributionLabel(attribution);
+                        return (
+                          <div>
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getColorClasses(attrInfo.color)}`}>
+                              {attrInfo.label}
+                            </span>
+                            {attrInfo.detail && (
+                              <div className="text-xs text-[var(--text-secondary)] mt-1">
+                                {attrInfo.detail}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </td>
 
                     {/* Products */}
