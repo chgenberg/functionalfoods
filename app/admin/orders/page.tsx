@@ -164,7 +164,7 @@ export default function AdminOrdersPage() {
     // UTM parameters (organic/other campaigns)
     if (attr.utm_source) {
       const source = attr.utm_source.toLowerCase();
-      const campaign = attr.utm_campaign ? ` (${attr.utm_campaign})` : '';
+      const campaign = attr.utm_campaign ? `(${attr.utm_campaign})` : '';
       
       if (source === 'google' || source === 'google.com') {
         return { label: 'Google', color: 'green', detail: campaign || attr.utm_medium };
