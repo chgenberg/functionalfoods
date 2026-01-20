@@ -90,50 +90,152 @@ export default function Home() {
               zIndex: 1,
             }}
           />
-          <div className="absolute inset-0 bg-black/45 pointer-events-none" style={{ zIndex: 2 }} />
+          <div className="absolute inset-0 bg-black/25 pointer-events-none" style={{ zIndex: 2 }} />
         </div>
 
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-          <div className="flex items-center justify-center min-h-[500px] sm:min-h-[550px] md:min-h-[600px]">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 w-full">
+          {/* Mobile: Original layout */}
+          <div className="lg:hidden flex items-center justify-center min-h-[500px] sm:min-h-[550px]">
             <div className="text-center max-w-4xl">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-lg">
+              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-lg">
                 UPPTÄCK KRAFTEN I
                 <span className="block text-white mt-1 sm:mt-2 drop-shadow-lg">
                   FUNCTIONAL FOODS
                 </span>
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 mb-8 sm:mb-10 md:mb-12 leading-relaxed drop-shadow-lg px-4 sm:px-0">
+              <p className="text-lg sm:text-xl text-white/90 mb-8 sm:mb-10 leading-relaxed drop-shadow-lg px-4 sm:px-0">
                 Mat som medicin för kropp och själ
               </p>
               
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center px-2 sm:px-0">
-                <button
-                  onClick={() => setShowQuiz(true)}
-                  className="bg-[#Ff7e70] hover:bg-[#ff6b5d] text-white px-6 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-base sm:text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer relative w-full sm:w-auto"
-                  style={{ position: 'relative', zIndex: 50, pointerEvents: 'auto' }}
-                  aria-label="Starta hälsoquiz"
-                >
-                  Starta Hälsoquiz
-                  <ArrowRight className="w-5 h-5" />
-                </button>
                 <Link
                   href="/utbildning"
-                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-base sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3 w-full sm:w-auto"
+                  className="bg-[#014421] hover:bg-[#013318] text-white px-6 py-3 sm:px-6 sm:py-4 rounded-full font-semibold text-base shadow-xl transition-all flex items-center justify-center gap-3 w-full sm:w-auto"
                   style={{ position: 'relative', zIndex: 50 }}
                 >
                   <Book className="w-5 h-5" />
-                  {t('home.ourCourses','Våra kurser')}
-                </Link>
-                <Link
-                  href="/kunskapsbank/blogg"
-                  className="bg-white/90 border-2 border-white/30 text-gray-700 px-6 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 rounded-full font-semibold text-base sm:text-base md:text-lg hover:bg-white transition-all flex items-center justify-center gap-3 w-full sm:w-auto"
-                  style={{ position: 'relative', zIndex: 50 }}
-                >
-                  <TrendingUp className="w-5 h-5" />
-                  {t('home.quickArticles','Snabbläs artiklar')}
+                  Utforska våra kurser
                 </Link>
               </div>
             </div>
+          </div>
+
+          {/* Desktop: Course cards layout */}
+          <div className="hidden lg:block">
+            <div className="text-center mb-12">
+              <motion.h1 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight drop-shadow-lg"
+              >
+                UPPTÄCK KRAFTEN I
+                <span className="block text-white mt-2 drop-shadow-lg">
+                  FUNCTIONAL FOODS
+                </span>
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-2xl text-white/90 drop-shadow-lg"
+              >
+                Välj den kurs som passar dig bäst
+              </motion.p>
+            </div>
+
+            <div className="grid grid-cols-4 gap-6 max-w-6xl mx-auto">
+              {[
+                {
+                  name: 'Functional Basics',
+                  image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
+                  href: '/utbildning/functional-basics',
+                  description: 'Vill du använda maten som ditt främsta verktyg för bättre hälsa och ett längre liv? Kursen ger dig kunskap, recept och måltidsplaner som stärker ditt immunförsvar.',
+                  color: 'from-emerald-500 to-emerald-700'
+                },
+                {
+                  name: 'Gut Health / Flow',
+                  image: '/Kurser_bilder/Functional_Gut Health.jpg',
+                  href: '/utbildning/functional-flow',
+                  description: 'Vill du skapa en hållbar vardag där din kropp samarbetar med dig? En 6-veckorskurs med fokus på maghälsa, antiinflammatorisk kost och naturligt flöde.',
+                  color: 'from-teal-500 to-teal-700'
+                },
+                {
+                  name: 'Insulin Balance / Energy',
+                  image: '/Kurser_bilder/Functional_insulin balance.jpg',
+                  href: '/utbildning/functional-energy',
+                  description: 'Lär dig stabilisera blodsockret och få jämn energi hela dagen. Perfekt för dig som vill bromsa en utveckling mot typ 2-diabetes.',
+                  color: 'from-amber-500 to-amber-700'
+                },
+                {
+                  name: 'Hormonell Balans',
+                  image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
+                  href: '/utbildning/hormonell-balans',
+                  description: 'För dig som vill få koll på dina hormoner! Med rätt kost och coachning kan symptom vid PMS, förklimakteriet eller klimakteriet minskas.',
+                  color: 'from-rose-500 to-rose-700'
+                }
+              ].map((course, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                  className="group"
+                >
+                  <Link href={course.href} className="block">
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 h-full">
+                      {/* Image */}
+                      <div className="relative h-44 overflow-hidden">
+                        <Image
+                          src={course.image}
+                          alt={course.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          sizes="25vw"
+                        />
+                        <div className={`absolute inset-0 bg-gradient-to-t ${course.color} opacity-20 group-hover:opacity-30 transition-opacity`} />
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="p-5">
+                        <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-[#014421] transition-colors">
+                          {course.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-3">
+                          {course.description}
+                        </p>
+                        
+                        {/* Pulsating button */}
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-[#014421] rounded-full animate-ping opacity-20" />
+                          <span className="relative inline-flex items-center gap-2 bg-[#014421] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#013318] transition-all shadow-lg group-hover:shadow-xl">
+                            Läs mer
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Bottom CTA */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="text-center mt-10"
+            >
+              <Link
+                href="/utbildning"
+                className="inline-flex items-center gap-3 bg-white/90 backdrop-blur-sm text-gray-800 px-8 py-4 rounded-full font-semibold text-lg hover:bg-white transition-all shadow-lg hover:shadow-xl"
+              >
+                <Book className="w-5 h-5" />
+                Se alla kurser
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
           </div>
         </div>
 
