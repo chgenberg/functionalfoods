@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
-// GET - List all course drafts
+// GET - List course drafts (or all courses if includePublished=true)
 export async function GET(request: NextRequest) {
   // Skip during build
   if (process.env.NEXT_PHASE === 'phase-production-build') {
@@ -17,34 +17,43 @@ export async function GET(request: NextRequest) {
   if (authResult instanceof NextResponse) return authResult;
 
   try {
-    // Get all course products and filter drafts based on content.isDraft
+    const { searchParams } = new URL(request.url);
+    const includePublished = searchParams.get('includePublished') === 'true';
+
+    // Get all course products
     const courses = await prisma.courseProduct.findMany({
       orderBy: { updatedAt: 'desc' }
     });
 
-    // Filter courses that have isDraft in content
-    const drafts = courses
-      .filter(course => {
-        const content = (course.content as any) || {};
-        return content.isDraft === true;
-      })
-      .map(course => {
-        const content = (course.content as any) || {};
-        const builderData = content.builderData || {};
-        
-        return {
-          id: course.id,
-          title: course.name || 'Ny kurs (utkast)',
-          description: course.description,
-          duration: builderData.duration || '6 veckor',
-          price: course.price || 0,
-          status: content.isDraft ? 'draft' : 'published',
-          createdAt: course.createdAt.toISOString(),
-          updatedAt: course.updatedAt.toISOString(),
-          currentStep: builderData.currentStep || 1,
-          weeksCount: builderData.weeksCount || 6
-        };
-      });
+    // Filter courses based on includePublished flag
+    const filteredCourses = courses.filter(course => {
+      const content = (course.content as any) || {};
+      // If includePublished, return all courses with builderData
+      // Otherwise, only return drafts
+      if (includePublished) {
+        return content.builderData !== undefined;
+      }
+      return content.isDraft === true;
+    });
+
+    const drafts = filteredCourses.map(course => {
+      const content = (course.content as any) || {};
+      const builderData = content.builderData || {};
+      
+      return {
+        id: course.id,
+        title: builderData.title || course.name || 'Ny kurs',
+        description: builderData.description || course.description || '',
+        duration: builderData.duration || '6 veckor',
+        price: builderData.price ?? course.price ?? 0,
+        status: content.isDraft === true ? 'draft' : 'published',
+        createdAt: course.createdAt.toISOString(),
+        updatedAt: course.updatedAt.toISOString(),
+        currentStep: builderData.currentStep || 5,
+        weeksCount: builderData.weeksCount || 6,
+        hasBuilderData: !!content.builderData
+      };
+    });
 
     return NextResponse.json({ drafts });
   } catch (error) {

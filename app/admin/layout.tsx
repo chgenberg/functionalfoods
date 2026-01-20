@@ -74,8 +74,7 @@ export default function AdminLayout({
         { label: 'Produktsidor', href: '/admin/products', icon: ShoppingBag },
         { label: 'Blogg', href: '/admin/blog', icon: FileText },
         { label: 'Recept', href: '/admin/recipes', icon: ChefHat },
-        { label: 'Kurser', href: '/admin/courses', icon: GraduationCap },
-        { label: 'Skapa ny kurs', href: '/admin/course-builder', icon: PlusCircle },
+        { label: 'Kurser', href: '/admin/course-builder', icon: GraduationCap },
         { label: 'Kunskapsdokument', href: '/admin/knowledge', icon: BookOpen },
         { label: 'Frågor & Svar', href: '/admin/faq', icon: HelpCircle },
       ]
