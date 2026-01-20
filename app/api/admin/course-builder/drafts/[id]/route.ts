@@ -159,9 +159,13 @@ export async function PUT(
       }
     });
 
-    // If publishing, also create MealPlanWeeks and CourseWeekMeta
-    if (status === 'published' && isDraft !== existingContent.isDraft) {
-      await publishCourseData(params.id, updatedBuilderData);
+    // Sync to MealPlanWeeks and CourseWeekMeta when publishing
+    // Always sync if status is 'published' to keep tables in sync with edits
+    if (status === 'published') {
+      // Use existing slug from content if available (for migrated courses),
+      // otherwise derive from title (for new courses)
+      const courseSlug = existingContent.slug || null;
+      await publishCourseData(params.id, updatedBuilderData, courseSlug);
     }
 
     // Return the updated data
@@ -246,13 +250,16 @@ export async function DELETE(
 }
 
 // Helper function to publish course data to MealPlanWeek and CourseWeekMeta
-async function publishCourseData(courseId: string, builderData: any) {
-  const courseSlug = builderData.title
+async function publishCourseData(courseId: string, builderData: any, existingSlug: string | null = null) {
+  // Use existing slug if provided (for migrated courses), otherwise derive from title
+  const courseSlug = existingSlug || builderData.title
     .toLowerCase()
     .replace(/[åä]/g, 'a')
     .replace(/ö/g, 'o')
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '');
+  
+  console.log(`📝 Publishing course data with slug: ${courseSlug}`);
 
   const weeks = builderData.weeks || [];
 
