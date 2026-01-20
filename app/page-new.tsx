@@ -222,11 +222,13 @@ export default function Home() {
                           {course.description}
                         </p>
                         
-                        {/* Button - no pulse */}
-                        <span className="inline-flex items-center gap-2 bg-[#014421] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#013318] transition-all shadow-lg group-hover:shadow-xl">
-                          Läs mer
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
+                        {/* Button - centered */}
+                        <div className="flex justify-center">
+                          <span className="inline-flex items-center gap-2 bg-[#014421] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#013318] transition-all shadow-lg group-hover:shadow-xl">
+                            Läs mer
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </Link>
