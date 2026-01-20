@@ -256,6 +256,9 @@ async function publishCourseData(courseId: string, builderData: any) {
 
   const weeks = builderData.weeks || [];
 
+  // Collect all knowledge document IDs for this course
+  const allDocumentIds: string[] = [];
+
   for (const week of weeks) {
     // Create or update MealPlanWeek
     const daysData: Record<string, any> = {};
@@ -323,7 +326,59 @@ async function publishCourseData(courseId: string, builderData: any) {
         keyTakeaways: week.keyTakeaways || []
       }
     });
+
+    // Update knowledge documents linked to this week
+    const weekDocuments = week.knowledgeDocuments || [];
+    for (const doc of weekDocuments) {
+      if (doc.id) {
+        allDocumentIds.push(doc.id);
+        
+        // Update the knowledge document to include this course and week number
+        try {
+          const existingDoc = await prisma.knowledgeDocument.findUnique({
+            where: { id: doc.id }
+          });
+
+          if (existingDoc) {
+            const currentCourses = existingDoc.courses || [];
+            const updatedCourses = currentCourses.includes(courseSlug) 
+              ? currentCourses 
+              : [...currentCourses, courseSlug];
+
+            await prisma.knowledgeDocument.update({
+              where: { id: doc.id },
+              data: {
+                courses: updatedCourses,
+                weekNumber: week.weekNumber
+              }
+            });
+          }
+        } catch (docError) {
+          console.error(`Failed to update knowledge document ${doc.id}:`, docError);
+        }
+      }
+    }
   }
 
-  console.log(`✅ Published course data for ${courseSlug} with ${weeks.length} weeks`);
+  // Update the CourseProduct content with slug and linked documents (preserving existing data)
+  const existingCourse = await prisma.courseProduct.findUnique({
+    where: { id: courseId }
+  });
+  
+  const existingContent = (existingCourse?.content as any) || {};
+  
+  await prisma.courseProduct.update({
+    where: { id: courseId },
+    data: {
+      content: {
+        ...existingContent,
+        isDraft: false,
+        slug: courseSlug,
+        linkedDocumentIds: allDocumentIds,
+        publishedAt: new Date().toISOString()
+      }
+    }
+  });
+
+  console.log(`✅ Published course data for ${courseSlug} with ${weeks.length} weeks and ${allDocumentIds.length} linked documents`);
 }
