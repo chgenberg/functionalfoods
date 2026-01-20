@@ -500,8 +500,7 @@ export default function Home() {
         </div>
       </section>
 
-      <CustomerReviews />
-
+      {/* Så här fungerar det - direkt efter Hälsoquiz */}
       <section className="py-12 md:py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -550,6 +549,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <CustomerReviews />
 
       <BlogCarousel />
 
