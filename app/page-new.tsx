@@ -210,7 +210,6 @@ export default function Home() {
                           className="object-cover transition-transform duration-700 group-hover:scale-110"
                           sizes="25vw"
                         />
-                        <div className={`absolute inset-0 bg-gradient-to-t ${course.color} opacity-20 group-hover:opacity-30 transition-opacity`} />
                       </div>
                       
                       {/* Content */}
