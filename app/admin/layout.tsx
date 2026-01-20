@@ -6,7 +6,7 @@ import {
   LayoutDashboard, ShoppingBag, HelpCircle, FileText, ChefHat, 
   GraduationCap, Users, ShoppingCart, Star, MessageSquare, 
   Tag, TrendingUp, BookOpen, Settings, LogOut, Menu, X,
-  Leaf, ChevronDown
+  Leaf, ChevronDown, PlusCircle
 } from 'lucide-react';
 import './admin-ulrika-design.css';
 
@@ -75,6 +75,7 @@ export default function AdminLayout({
         { label: 'Blogg', href: '/admin/blog', icon: FileText },
         { label: 'Recept', href: '/admin/recipes', icon: ChefHat },
         { label: 'Kurser', href: '/admin/courses', icon: GraduationCap },
+        { label: 'Skapa ny kurs', href: '/admin/course-builder', icon: PlusCircle },
         { label: 'Kunskapsdokument', href: '/admin/knowledge', icon: BookOpen },
         { label: 'Frågor & Svar', href: '/admin/faq', icon: HelpCircle },
       ]
