@@ -177,7 +177,7 @@ export default function Home() {
               ].map((course, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 30, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
                   animate={{ 
                     opacity: 1, 
                     y: 0,
@@ -197,7 +197,7 @@ export default function Home() {
                       delay: 0.5 * index
                     }
                   }}
-                  className="group rounded-2xl"
+                  className="group rounded-2xl shadow-2xl"
                 >
                   <Link href={course.href} className="block">
                     <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-500 transform hover:-translate-y-2 hover:shadow-3xl h-full">
@@ -222,13 +222,11 @@ export default function Home() {
                           {course.description}
                         </p>
                         
-                        {/* Button - centered */}
-                        <div className="flex justify-center">
-                          <span className="inline-flex items-center gap-2 bg-[#014421] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#013318] transition-all shadow-lg group-hover:shadow-xl">
-                            Läs mer
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                          </span>
-                        </div>
+                        {/* Button - no pulse */}
+                        <span className="inline-flex items-center gap-2 bg-[#014421] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#013318] transition-all shadow-lg group-hover:shadow-xl">
+                          Läs mer
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
                       </div>
                     </div>
                   </Link>
