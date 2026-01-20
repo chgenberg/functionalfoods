@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { 
   Eye, 
   Check, 
@@ -11,7 +12,8 @@ import {
   Image as ImageIcon,
   Video,
   Users,
-  BookOpen
+  BookOpen,
+  ExternalLink
 } from 'lucide-react';
 import type { CourseDraftData } from '../[id]/step/[stepNumber]/page';
 
@@ -89,6 +91,27 @@ export default function Step5Preview({ draft, onUpdate, onSave, saving }: Step5P
         <p className="text-sm text-[var(--text-secondary)] mt-1">
           Granska din kurs innan publicering
         </p>
+      </div>
+
+      {/* Full preview button */}
+      <div className="bg-gradient-to-r from-[#014421] to-[#016d3a] rounded-xl p-6 text-white">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold">Testa kursen som kund</h3>
+            <p className="text-white/70 text-sm mt-1">
+              Se produktsidan, dashboard och veckovyn precis som kunderna kommer se dem
+            </p>
+          </div>
+          <Link
+            href={`/admin/course-builder/${draft.id}/preview`}
+            target="_blank"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#014421] rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          >
+            <Eye className="w-4 h-4" />
+            Öppna förhandsvisning
+            <ExternalLink className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
 
       {/* Completion status */}
