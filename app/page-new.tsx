@@ -189,7 +189,7 @@ export default function Home() {
             <div className="text-center mt-6">
               <Link
                 href="/utbildning"
-                className="inline-flex items-center gap-2 bg-red-900 text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-red-800 transition-all shadow-lg"
+                className="inline-flex items-center gap-2 bg-[#FF7e70] text-black px-6 py-3 rounded-full font-semibold text-sm hover:bg-[#ff6b5a] transition-all shadow-lg"
               >
                 <Book className="w-4 h-4" />
                 Se alla kurser
@@ -319,7 +319,7 @@ export default function Home() {
             >
               <Link
                 href="/utbildning"
-                className="inline-flex items-center gap-3 bg-red-900 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-red-800 transition-all shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-3 bg-[#FF7e70] text-black px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#ff6b5a] transition-all shadow-lg hover:shadow-xl"
               >
                 <Book className="w-5 h-5" />
                 Se alla kurser
