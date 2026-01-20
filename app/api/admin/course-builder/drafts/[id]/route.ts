@@ -375,10 +375,11 @@ async function publishCourseData(courseId: string, builderData: any) {
         isDraft: false,
         slug: courseSlug,
         linkedDocumentIds: allDocumentIds,
+        weekDocumentMap, // Maps weekNumber -> [documentId, documentId, ...]
         publishedAt: new Date().toISOString()
       }
     }
   });
 
-  console.log(`✅ Published course data for ${courseSlug} with ${weeks.length} weeks and ${allDocumentIds.length} linked documents`);
+  console.log(`✅ Published course data for ${courseSlug} with ${weeks.length} weeks and ${allDocumentIds.length} linked documents (week mapping preserved)`);
 }
