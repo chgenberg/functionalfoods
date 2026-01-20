@@ -41,6 +41,22 @@ interface UnifiedOrder {
   source?: string;
 }
 
+interface Attribution {
+  gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
+  fbclid?: string;
+  mc_cid?: string;
+  mc_eid?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  ref?: string;
+  ts?: number;
+}
+
 interface OrderSummary {
   totalOrders: number;
   totalRevenue: number;
@@ -650,6 +666,42 @@ export default function UnifiedSalesPage() {
     return statusMap[status] || status;
   };
 
+  const getAttributionLabel = (attr: Attribution | undefined): { label: string; color: string; detail?: string } => {
+    if (!attr) return { label: 'Direkt', color: 'gray' };
+
+    // Check for Google Ads click identifiers
+    if (attr.gclid || attr.gbraid || attr.wbraid) {
+      const campaign = attr.utm_campaign ? `(${attr.utm_campaign})` : '';
+      return { label: 'Google Ads', color: 'blue', detail: campaign };
+    }
+
+    // Check for Facebook click identifier
+    if (attr.fbclid) {
+      const campaign = attr.utm_campaign ? `(${attr.utm_campaign})` : '';
+      return { label: 'Facebook Ads', color: 'purple', detail: campaign };
+    }
+
+    // Check for Mailchimp campaign
+    if (attr.mc_cid) {
+      return { label: 'Mailchimp', color: 'yellow', detail: attr.mc_cid };
+    }
+
+    // Check UTM source
+    if (attr.utm_source) {
+      const source = attr.utm_source.toLowerCase();
+      const campaign = attr.utm_campaign ? `(${attr.utm_campaign})` : '';
+      
+      if (source === 'google') return { label: 'Google', color: 'green', detail: campaign };
+      if (source === 'facebook' || source === 'fb') return { label: 'Facebook', color: 'purple', detail: campaign };
+      if (source === 'instagram' || source === 'ig') return { label: 'Instagram', color: 'pink', detail: campaign };
+      if (source === 'email' || source === 'newsletter') return { label: 'Email', color: 'teal', detail: campaign };
+      
+      return { label: attr.utm_source, color: 'indigo', detail: campaign };
+    }
+
+    return { label: 'Direkt', color: 'gray' };
+  };
+
   const resetFilters = () => {
     setFilters({
       provider: 'all',
@@ -1209,6 +1261,7 @@ export default function UnifiedSalesPage() {
                 <th className="text-left">Status</th>
                 <th className="text-left">Order</th>
                 <th className="text-left">Kund</th>
+                <th className="text-left">Källa</th>
                 <th className="text-left">Produkter</th>
                 <th className="text-left">Belopp</th>
                 <th className="text-left">Datum</th>
@@ -1218,7 +1271,7 @@ export default function UnifiedSalesPage() {
             <tbody>
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-[var(--text-secondary)]">
+                  <td colSpan={9} className="px-6 py-12 text-center text-[var(--text-secondary)]">
                     Inga transaktioner hittades med valda filter
                   </td>
                 </tr>
@@ -1255,6 +1308,34 @@ export default function UnifiedSalesPage() {
                           {order.customerEmail}
                         </p>
                       </div>
+                    </td>
+                    <td className="whitespace-nowrap">
+                      {(() => {
+                        const attribution = order.metadata?.attribution as Attribution | undefined;
+                        const attrInfo = getAttributionLabel(attribution);
+                        const colorMap: Record<string, string> = {
+                          blue: 'bg-blue-100 text-blue-800',
+                          purple: 'bg-purple-100 text-purple-800',
+                          yellow: 'bg-yellow-100 text-yellow-800',
+                          green: 'bg-green-100 text-green-800',
+                          pink: 'bg-pink-100 text-pink-800',
+                          teal: 'bg-teal-100 text-teal-800',
+                          indigo: 'bg-indigo-100 text-indigo-800',
+                          gray: 'bg-gray-100 text-gray-600'
+                        };
+                        return (
+                          <div>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorMap[attrInfo.color] || colorMap.gray}`}>
+                              {attrInfo.label}
+                            </span>
+                            {attrInfo.detail && (
+                              <p className="text-xs text-gray-500 mt-0.5 truncate max-w-[120px]" title={attrInfo.detail}>
+                                {attrInfo.detail}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </td>
                     <td>
                       <div>
