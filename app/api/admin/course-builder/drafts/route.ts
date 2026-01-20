@@ -17,37 +17,34 @@ export async function GET(request: NextRequest) {
   if (authResult instanceof NextResponse) return authResult;
 
   try {
-    // Get all course products that have draft data in metadata
+    // Get all course products and filter drafts based on content.isDraft
     const courses = await prisma.courseProduct.findMany({
-      where: {
-        OR: [
-          { metadata: { path: ['isDraft'], equals: true } },
-          { metadata: { path: ['builderData'], not: undefined } }
-        ]
-      },
       orderBy: { updatedAt: 'desc' }
     });
 
-    // Also get any standalone drafts from a potential drafts table
-    // For now, we'll use the courseProduct with special metadata
-
-    const drafts = courses.map(course => {
-      const metadata = (course.metadata as any) || {};
-      const builderData = metadata.builderData || {};
-      
-      return {
-        id: course.id,
-        title: course.name || 'Ny kurs (utkast)',
-        description: course.description,
-        duration: builderData.duration || '6 veckor',
-        price: course.price || 0,
-        status: metadata.isDraft ? 'draft' : 'published',
-        createdAt: course.createdAt.toISOString(),
-        updatedAt: course.updatedAt.toISOString(),
-        currentStep: builderData.currentStep || 1,
-        weeksCount: builderData.weeksCount || 6
-      };
-    });
+    // Filter courses that have isDraft in content
+    const drafts = courses
+      .filter(course => {
+        const content = (course.content as any) || {};
+        return content.isDraft === true;
+      })
+      .map(course => {
+        const content = (course.content as any) || {};
+        const builderData = content.builderData || {};
+        
+        return {
+          id: course.id,
+          title: course.name || 'Ny kurs (utkast)',
+          description: course.description,
+          duration: builderData.duration || '6 veckor',
+          price: course.price || 0,
+          status: content.isDraft ? 'draft' : 'published',
+          createdAt: course.createdAt.toISOString(),
+          updatedAt: course.updatedAt.toISOString(),
+          currentStep: builderData.currentStep || 1,
+          weeksCount: builderData.weeksCount || 6
+        };
+      });
 
     return NextResponse.json({ drafts });
   } catch (error) {
@@ -74,15 +71,17 @@ export async function POST(request: NextRequest) {
     const weeksMatch = duration?.match(/(\d+)/);
     const weeksCount = weeksMatch ? parseInt(weeksMatch[1], 10) : 6;
 
-    // Create a new CourseProduct with draft metadata
+    // Generate a unique name for the draft
+    const timestamp = Date.now();
+    const draftName = title || `Ny kurs (utkast) ${timestamp}`;
+
+    // Create a new CourseProduct with draft data in content field
     const course = await prisma.courseProduct.create({
       data: {
-        name: title || 'Ny kurs (utkast)',
+        name: draftName,
         description: '',
         price: 0,
-        content: {},
-        features: [],
-        metadata: {
+        content: {
           isDraft: true,
           builderData: {
             title: title || 'Ny kurs (utkast)',
@@ -102,7 +101,8 @@ export async function POST(request: NextRequest) {
             weeks: [],
             currentStep: 1
           }
-        }
+        },
+        features: []
       }
     });
 

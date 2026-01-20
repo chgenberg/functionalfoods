@@ -31,8 +31,8 @@ export async function GET(
       );
     }
 
-    const metadata = (course.metadata as any) || {};
-    const builderData = metadata.builderData || {};
+    const content = (course.content as any) || {};
+    const builderData = content.builderData || {};
 
     // Return the full draft data
     return NextResponse.json({
@@ -53,7 +53,7 @@ export async function GET(
       enableCommunity: builderData.enableCommunity || false,
       communityDescription: builderData.communityDescription || '',
       weeks: builderData.weeks || [],
-      status: metadata.isDraft ? 'draft' : 'published',
+      status: content.isDraft ? 'draft' : 'published',
       currentStep: builderData.currentStep || 1
     });
   } catch (error) {
@@ -110,8 +110,8 @@ export async function PUT(
       );
     }
 
-    const existingMetadata = (existing.metadata as any) || {};
-    const existingBuilderData = existingMetadata.builderData || {};
+    const existingContent = (existing.content as any) || {};
+    const existingBuilderData = existingContent.builderData || {};
 
     // Merge the updates
     const updatedBuilderData = {
@@ -148,22 +148,19 @@ export async function PUT(
         welcomeText: updatedBuilderData.welcomeMessage,
         overviewVideoUrl: updatedBuilderData.introVideoUrl,
         content: {
-          ...(existing.content as any || {}),
+          ...existingContent,
+          isDraft,
           coverImage: updatedBuilderData.coverImage,
           objectives: updatedBuilderData.objectives,
-          weeks: updatedBuilderData.weeks
-        },
-        features: updatedBuilderData.features || [],
-        metadata: {
-          ...existingMetadata,
-          isDraft,
+          weeks: updatedBuilderData.weeks,
           builderData: updatedBuilderData
-        }
+        },
+        features: updatedBuilderData.features || []
       }
     });
 
     // If publishing, also create MealPlanWeeks and CourseWeekMeta
-    if (status === 'published' && isDraft !== existingMetadata.isDraft) {
+    if (status === 'published' && isDraft !== existingContent.isDraft) {
       await publishCourseData(params.id, updatedBuilderData);
     }
 
@@ -221,10 +218,10 @@ export async function DELETE(
       );
     }
 
-    const metadata = (course.metadata as any) || {};
+    const content = (course.content as any) || {};
     
     // Only allow deleting drafts, not published courses
-    if (!metadata.isDraft) {
+    if (!content.isDraft) {
       return NextResponse.json(
         { error: 'Cannot delete published course. Archive it instead.' },
         { status: 400 }
