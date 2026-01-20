@@ -94,30 +94,92 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/25 pointer-events-none" style={{ zIndex: 2 }} />
         </div>
 
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 w-full">
-          {/* Mobile: Original layout */}
-          <div className="lg:hidden flex items-center justify-center min-h-[500px] sm:min-h-[550px]">
-            <div className="text-center max-w-4xl">
-              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-lg">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 lg:py-20 w-full">
+          {/* Mobile: Course cards in single column */}
+          <div className="lg:hidden">
+            <div className="text-center mb-6">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight drop-shadow-lg">
                 UPPTÄCK KRAFTEN I
-                <span className="block text-white mt-1 sm:mt-2 drop-shadow-lg">
+                <span className="block text-white mt-1 drop-shadow-lg">
                   FUNCTIONAL FOODS
                 </span>
               </h1>
-              <p className="text-lg sm:text-xl text-white/90 mb-8 sm:mb-10 leading-relaxed drop-shadow-lg px-4 sm:px-0">
-                Mat som medicin för kropp och själ
+              <p className="text-base sm:text-lg text-white/90 drop-shadow-lg">
+                Välj den kurs som passar dig
               </p>
-              
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center px-2 sm:px-0">
-                <Link
-                  href="/utbildning"
-                  className="bg-[#014421] hover:bg-[#013318] text-white px-6 py-3 sm:px-6 sm:py-4 rounded-full font-semibold text-base shadow-xl transition-all flex items-center justify-center gap-3 w-full sm:w-auto"
-                  style={{ position: 'relative', zIndex: 50 }}
+            </div>
+
+            <div className="flex flex-col gap-4 max-w-md mx-auto">
+              {[
+                {
+                  name: 'Functional Basics',
+                  image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
+                  href: '/utbildning/functional-basics',
+                  description: 'Använd maten som verktyg för bättre hälsa. Kunskap, recept och måltidsplaner som stärker immunförsvaret.'
+                },
+                {
+                  name: 'Gut Health / Flow',
+                  image: '/Kurser_bilder/Functional_Gut Health.jpg',
+                  href: '/utbildning/functional-flow',
+                  description: 'Skapa hållbar vardag med fokus på maghälsa, antiinflammatorisk kost och naturligt flöde.'
+                },
+                {
+                  name: 'Insulin Balance / Energy',
+                  image: '/Kurser_bilder/Functional_insulin balance.jpg',
+                  href: '/utbildning/functional-energy',
+                  description: 'Stabilisera blodsockret och få jämn energi. Perfekt för dig i riskzonen för typ 2-diabetes.'
+                },
+                {
+                  name: 'Hormonell Balans',
+                  image: '/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif',
+                  href: '/utbildning/hormonell-balans',
+                  description: 'Få koll på hormonerna! Minska symptom vid PMS, förklimakteriet eller klimakteriet.'
+                }
+              ].map((course, index) => (
+                <Link 
+                  key={index} 
+                  href={course.href}
+                  className="group"
                 >
-                  <Book className="w-5 h-5" />
-                  Utforska våra kurser
+                  <div className="bg-white/95 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg flex h-28 sm:h-32">
+                    {/* Image */}
+                    <div className="relative w-28 sm:w-32 flex-shrink-0">
+                      <Image
+                        src={course.image}
+                        alt={course.name}
+                        fill
+                        className="object-cover"
+                        sizes="128px"
+                      />
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 p-3 sm:p-4 flex flex-col justify-center">
+                      <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 group-hover:text-[#014421] transition-colors">
+                        {course.name}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2">
+                        {course.description}
+                      </p>
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-[#014421]">
+                        Läs mer
+                        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </div>
+                  </div>
                 </Link>
-              </div>
+              ))}
+            </div>
+
+            {/* See all courses button */}
+            <div className="text-center mt-6">
+              <Link
+                href="/utbildning"
+                className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm text-gray-800 px-6 py-3 rounded-full font-semibold text-sm hover:bg-white transition-all shadow-lg"
+              >
+                <Book className="w-4 h-4" />
+                Se alla kurser
+              </Link>
             </div>
           </div>
 
