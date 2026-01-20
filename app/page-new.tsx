@@ -426,10 +426,6 @@ export default function Home() {
 
       <CustomerReviews />
 
-
-
-      <BlogCarousel />
-
       <section className="py-12 md:py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -478,6 +474,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <BlogCarousel />
 
       <section className="py-12 md:py-20 px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
