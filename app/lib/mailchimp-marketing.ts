@@ -76,10 +76,8 @@ class MailchimpMarketingService {
       if (params.firstName) data.merge_fields.FNAME = params.firstName;
       if (params.lastName) data.merge_fields.LNAME = params.lastName;
 
-      // Add tags if provided
-      if (params.tags && params.tags.length > 0) {
-        data.tags = params.tags;
-      }
+      // Note: tags are NOT supported in PUT /members endpoint
+      // They must be added via separate API call
 
       const response = await fetch(url, {
         method: 'PUT',
@@ -103,13 +101,65 @@ class MailchimpMarketingService {
       const result = await response.json();
       console.log(`✅ Subscriber added/updated in Mailchimp:`, {
         email,
-        status: result.status,
-        tags: params.tags
+        status: result.status
       });
+
+      // Add tags via separate API call if provided
+      if (params.tags && params.tags.length > 0) {
+        await this.addTagsToSubscriber(email, params.tags);
+      }
 
       return true;
     } catch (error) {
       console.error('❌ Error adding subscriber to Mailchimp:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Add tags to a subscriber via the tags endpoint
+   */
+  async addTagsToSubscriber(email: string, tags: string[]): Promise<boolean> {
+    if (!this.isConfigured() || !this.config || !this.baseUrl) {
+      return false;
+    }
+
+    try {
+      const subscriberHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
+      const url = `${this.baseUrl}/lists/${this.config.listId}/members/${subscriberHash}/tags`;
+
+      // Mailchimp expects tags in format: [{ name: "tag", status: "active" }]
+      const tagsData = {
+        tags: tags.map(tag => ({
+          name: tag,
+          status: 'active'
+        }))
+      };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(tagsData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ Mailchimp Tags API error:`, {
+          status: response.status,
+          error: errorText,
+          email,
+          tags
+        });
+        return false;
+      }
+
+      console.log(`🏷️ Tags added to ${email}:`, tags);
+      return true;
+    } catch (error) {
+      console.error('❌ Error adding tags to subscriber:', error);
       return false;
     }
   }
