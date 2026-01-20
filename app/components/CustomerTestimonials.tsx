@@ -47,7 +47,7 @@ export default function CustomerTestimonials() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-white">
+    <section className="pt-12 md:pt-16 pb-6 md:pb-8 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <motion.div

@@ -128,7 +128,7 @@ export default function RecipeCarousel() {
   // Loading skeleton
   if (loading) {
     return (
-      <section className="py-16 md:py-24 overflow-hidden bg-gradient-to-b from-white via-[#F3EFE3]/30 to-white">
+      <section className="pt-6 md:pt-8 pb-16 md:pb-24 overflow-hidden bg-gradient-to-b from-white via-[#F3EFE3]/30 to-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <div className="h-12 w-96 bg-gray-200 rounded-lg mx-auto mb-4 animate-pulse" />
@@ -157,7 +157,7 @@ export default function RecipeCarousel() {
   };
 
   return (
-    <section className="py-16 md:py-24 overflow-hidden bg-gradient-to-b from-white via-[#F3EFE3]/30 to-white relative">
+    <section className="pt-6 md:pt-8 pb-16 md:pb-24 overflow-hidden bg-gradient-to-b from-white via-[#F3EFE3]/30 to-white relative">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-x-48 -translate-y-48" />
