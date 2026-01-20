@@ -60,7 +60,15 @@ export interface WeekData {
   videoUrl?: string;
   welcomeMessage?: string;
   keyTakeaways: string[];
+  knowledgeDocuments?: LinkedDocument[];
   days: DayData[];
+}
+
+export interface LinkedDocument {
+  id: string;
+  title: string;
+  slug: string;
+  type: 'knowledge';
 }
 
 export interface DayData {
