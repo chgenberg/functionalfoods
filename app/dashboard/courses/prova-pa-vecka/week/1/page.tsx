@@ -61,7 +61,6 @@ export default function ProvaPaVeckaWeek1Page() {
       weekTitle="Prova på-veckan med Functional Foods!"
       weekSubtitle="En inspirerande introduktion till Functional Foods med smakrika recept"
       heroImage="/kurser/prova-pa/prova-pa.png"
-      videoUrl="https://player.vimeo.com/video/1156756899"
       mealPlans={mealPlan}
       courseStartDate={courseStartDate}
     />

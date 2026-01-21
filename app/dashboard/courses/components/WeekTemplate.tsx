@@ -648,81 +648,83 @@ export default function WeekTemplate({
       {/* Course Navigation - At the very top like overview page */}
       <CourseNavigation courseType={courseType} currentWeek={weekNumber} />
 
-      {/* Welcome Message Box with Week Documents Combined */}
-      <div className="bg-gradient-to-b from-[#F3EFE3] to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-[#014421]/10 relative overflow-hidden"
-          >
-            {/* Subtle pulsing glow effect */}
+      {/* Welcome Message Box with Week Documents Combined (not for prova-pa-vecka) */}
+      {courseType !== 'prova-pa-vecka' && (
+        <div className="bg-gradient-to-b from-[#F3EFE3] to-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-8">
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-[#014421]/5 via-[#014421]/10 to-[#014421]/5"
-              animate={{
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <div className="relative z-10">
-              <div className="text-center mb-4">
-                <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-2">
-                  Välkommen till vecka {weekNumber}!
-                </h1>
-              </div>
-              
-              {/* Video section - only show if video exists for this week */}
-              {effectiveVideoUrl && (
-                <div className="mb-8">
-                  <div className="max-w-4xl mx-auto">
-                    <div className="relative rounded-xl overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
-                      <iframe
-                        className="absolute inset-0 w-full h-full"
-                        src={effectiveVideoUrl}
-                        title={`Vecka ${weekNumber} video`}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 border border-[#014421]/10 relative overflow-hidden"
+            >
+              {/* Subtle pulsing glow effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-[#014421]/5 via-[#014421]/10 to-[#014421]/5"
+                animate={{
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              <div className="relative z-10">
+                <div className="text-center mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-2">
+                    Välkommen till vecka {weekNumber}!
+                  </h1>
+                </div>
+                
+                {/* Video section - only show if video exists for this week */}
+                {effectiveVideoUrl && (
+                  <div className="mb-8">
+                    <div className="max-w-4xl mx-auto">
+                      <div className="relative rounded-xl overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
+                        <iframe
+                          className="absolute inset-0 w-full h-full"
+                          src={effectiveVideoUrl}
+                          title={`Vecka ${weekNumber} video`}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Text content */}
-              <div className="prose prose-lg max-w-none text-gray-700">
-                {welcomeMessage.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4 leading-relaxed">
-                    {paragraph.trim()}
-                  </p>
-                ))}
+                {/* Text content */}
+                <div className="prose prose-lg max-w-none text-gray-700">
+                  {welcomeMessage.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="mb-4 leading-relaxed">
+                      {paragraph.trim()}
+                    </p>
+                  ))}
+                </div>
+
+                {/* Week Documents - Integrated in same box without border */}
+                {weekSpecificDocuments.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-xl md:text-2xl font-bold text-[#014421] mb-4">
+                      Veckans läsning
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      Klicka på dokumenten nedan för att fördjupa din kunskap denna vecka
+                    </p>
+                    <InfoPopupGrid 
+                      courseType={courseType} 
+                      courseId={`functional-${courseType}`}
+                      currentWeek={weekNumber}
+                    />
+                  </div>
+                )}
               </div>
-
-              {/* Week Documents - Integrated in same box without border */}
-              {weekSpecificDocuments.length > 0 && (
-                <div className="mt-8">
-                  <h3 className="text-xl md:text-2xl font-bold text-[#014421] mb-4">
-                    Veckans läsning
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Klicka på dokumenten nedan för att fördjupa din kunskap denna vecka
-                  </p>
-                  <InfoPopupGrid 
-                    courseType={courseType} 
-                    courseId={`functional-${courseType}`}
-                    currentWeek={weekNumber}
-                  />
-                </div>
-              )}
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Custom Content - If provided */}
       {customContent && (
@@ -733,6 +735,24 @@ export default function WeekTemplate({
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+        {/* Prova-pa vecka welcome (placed directly above meals) */}
+        {courseType === 'prova-pa-vecka' && (
+          <div className="max-w-4xl mx-auto mb-10">
+            <div className="text-center mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-2">
+                Välkommen till vecka {weekNumber}!
+              </h1>
+            </div>
+            <div className="prose prose-lg max-w-none text-gray-700">
+              {welcomeMessage.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="mb-4 leading-relaxed">
+                  {paragraph.trim()}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Week Meals */}
         <div className="mb-12">
           <div className="text-center mb-8">
