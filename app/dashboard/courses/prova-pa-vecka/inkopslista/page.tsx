@@ -50,14 +50,18 @@ export default function ProvaPaVeckaInkopslista() {
       } else {
         newSet.add(itemName);
       }
-      localStorage.setItem('provaPaVecka_shoppingChecked', JSON.stringify([...newSet]));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('provaPaVecka_shoppingChecked', JSON.stringify([...newSet]));
+      }
       return newSet;
     });
   };
 
   const clearAll = () => {
     setCheckedItems(new Set());
-    localStorage.removeItem('provaPaVecka_shoppingChecked');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('provaPaVecka_shoppingChecked');
+    }
   };
 
   // Group items by category
