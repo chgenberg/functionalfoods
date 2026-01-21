@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
+import path from 'path';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-import fs from 'fs';
-import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -91,19 +91,7 @@ export async function GET(
 
     console.log('✅ Recipe PDF: Found recipe:', recipe.title);
 
-    // Use buffer-based approach matching knowledge PDF route pattern
-    let PDFDocument: any;
-    try {
-      // Use require instead of dynamic import for better compatibility
-      PDFDocument = require('pdfkit');
-      if (!PDFDocument) {
-        throw new Error('PDFDocument not found in pdfkit module');
-      }
-      console.log('✅ Recipe PDF: pdfkit loaded successfully');
-    } catch (importError: any) {
-      console.error('❌ Recipe PDF: Failed to import pdfkit:', importError);
-      throw new Error(`Failed to load PDF library: ${importError?.message || 'Unknown error'}`);
-    }
+    console.log('✅ Recipe PDF: Using static pdfkit import');
     
     const pdf = new PDFDocument({ 
       size: 'A4', 

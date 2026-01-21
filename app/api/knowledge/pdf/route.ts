@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
+import path from 'path';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-import fs from 'fs';
-import path from 'path';
 
 interface KnowledgeDocument {
   title: string;
@@ -189,19 +189,7 @@ export async function GET(req: NextRequest) {
       hasSwedishChars: /[åäöÅÄÖ]/.test(doc.title || '')
     });
 
-    // Import pdfkit using require (more reliable on serverless)
-    let PDFDocument: any;
-    try {
-      // Use require instead of dynamic import for better compatibility
-      PDFDocument = require('pdfkit');
-      if (!PDFDocument) {
-        throw new Error('PDFDocument not found in pdfkit module');
-      }
-      console.log('✅ PDF: pdfkit loaded successfully');
-    } catch (importError: any) {
-      console.error('❌ PDF: Failed to import pdfkit:', importError);
-      throw new Error(`Failed to load PDF library: ${importError?.message || 'Unknown error'}`);
-    }
+    console.log('✅ PDF: Using static pdfkit import');
     
     const pdf = new PDFDocument({ 
       size: 'A4', 
