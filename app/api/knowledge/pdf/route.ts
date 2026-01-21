@@ -399,9 +399,8 @@ export async function GET(req: NextRequest) {
           .text('Inget innehåll tillgängligt.');
       }
 
-      // Footer
-      pdf.moveDown(2);
-      const footerY = pdf.page.height - pdf.page.margins.bottom - 30;
+      // Footer (keep inside page bounds to avoid extra blank page)
+      const footerY = pdf.page.height - pdf.page.margins.bottom - 40;
       
       // Footer line
       pdf
@@ -431,7 +430,7 @@ export async function GET(req: NextRequest) {
         .text(
           `Sida 1`,
           pdf.page.margins.left,
-          pdf.page.height - pdf.page.margins.bottom + 5,
+          footerY + 22,
           { align: 'right', width: pageWidth }
         );
 
