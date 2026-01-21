@@ -191,35 +191,47 @@ export async function GET(req: NextRequest) {
 
     console.log('✅ PDF: Using static pdfkit import');
     
-    const pdf = new PDFDocument({ 
-      size: 'A4', 
-      margin: 60,
-      info: { Title: doc.title }
-    });
-    
-    // Register custom fonts that support Swedish characters (å, ä, ö)
+    // Register custom fonts BEFORE creating PDFDocument to avoid Helvetica.afm error
     const regularFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Regular.ttf');
     const boldFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Bold.ttf');
     
     console.log('📄 PDF: Checking fonts at:', { regularFontPath, boldFontPath, cwd: process.cwd() });
     
-    let useCustomFont = false;
-    if (fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath)) {
-      try {
-        pdf.registerFont('OpenSans', regularFontPath);
-        pdf.registerFont('OpenSans-Bold', boldFontPath);
-        useCustomFont = true;
-        console.log('✅ PDF: Custom fonts registered successfully');
-      } catch (fontError: any) {
-        console.error('❌ PDF: Failed to register fonts:', fontError?.message);
-        useCustomFont = false;
-      }
-    } else {
-      console.warn('⚠️ PDF: Custom fonts not found, falling back to Helvetica', {
-        regularExists: fs.existsSync(regularFontPath),
-        boldExists: fs.existsSync(boldFontPath)
-      });
+    // Check if custom fonts exist
+    const regularFontExists = fs.existsSync(regularFontPath);
+    const boldFontExists = fs.existsSync(boldFontPath);
+    
+    if (!regularFontExists || !boldFontExists) {
+      console.error('❌ PDF: Required fonts not found:', { regularFontExists, boldFontExists });
+      throw new Error('Required fonts not found for PDF generation');
     }
+    
+    // Create PDF with autoFirstPage: false to prevent default font initialization
+    // Then register fonts and add page manually
+    const pdf = new PDFDocument({ 
+      size: 'A4', 
+      margin: 60,
+      autoFirstPage: false,
+      info: { Title: doc.title }
+    });
+    
+    // Register fonts before adding any pages
+    try {
+      pdf.registerFont('OpenSans', regularFontPath);
+      pdf.registerFont('OpenSans-Bold', boldFontPath);
+      console.log('✅ PDF: Custom fonts registered successfully');
+    } catch (fontError: any) {
+      console.error('❌ PDF: Failed to register fonts:', fontError?.message);
+      throw new Error(`Failed to register fonts: ${fontError?.message}`);
+    }
+    
+    // Now add the first page (after fonts are registered)
+    pdf.addPage();
+    
+    // Set the default font
+    pdf.font('OpenSans');
+    
+    const useCustomFont = true;
 
     // Collect PDF chunks
     const chunks: Buffer[] = [];
