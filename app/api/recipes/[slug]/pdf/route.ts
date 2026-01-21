@@ -94,11 +94,12 @@ export async function GET(
     // Use buffer-based approach matching knowledge PDF route pattern
     let PDFDocument: any;
     try {
-      const pdfkitModule = await import('pdfkit');
-      PDFDocument = (pdfkitModule as any).default || pdfkitModule;
+      // Use require instead of dynamic import for better compatibility
+      PDFDocument = require('pdfkit');
       if (!PDFDocument) {
         throw new Error('PDFDocument not found in pdfkit module');
       }
+      console.log('✅ Recipe PDF: pdfkit loaded successfully');
     } catch (importError: any) {
       console.error('❌ Recipe PDF: Failed to import pdfkit:', importError);
       throw new Error(`Failed to load PDF library: ${importError?.message || 'Unknown error'}`);
@@ -113,14 +114,25 @@ export async function GET(
     // Register custom fonts that support Swedish characters (å, ä, ö)
     const regularFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Regular.ttf');
     const boldFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Bold.ttf');
-    const useCustomFont = fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath);
     
-    if (useCustomFont) {
-      pdf.registerFont('OpenSans', regularFontPath);
-      pdf.registerFont('OpenSans-Bold', boldFontPath);
-      console.log('✅ Recipe PDF: Custom fonts registered successfully');
+    console.log('📄 Recipe PDF: Checking fonts at:', { regularFontPath, boldFontPath, cwd: process.cwd() });
+    
+    let useCustomFont = false;
+    if (fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath)) {
+      try {
+        pdf.registerFont('OpenSans', regularFontPath);
+        pdf.registerFont('OpenSans-Bold', boldFontPath);
+        useCustomFont = true;
+        console.log('✅ Recipe PDF: Custom fonts registered successfully');
+      } catch (fontError: any) {
+        console.error('❌ Recipe PDF: Failed to register fonts:', fontError?.message);
+        useCustomFont = false;
+      }
     } else {
-      console.warn('⚠️ Recipe PDF: Custom fonts not found, falling back to Helvetica');
+      console.warn('⚠️ Recipe PDF: Custom fonts not found, falling back to Helvetica', {
+        regularExists: fs.existsSync(regularFontPath),
+        boldExists: fs.existsSync(boldFontPath)
+      });
     }
     
     const boldFont = useCustomFont ? 'OpenSans-Bold' : 'Helvetica-Bold';

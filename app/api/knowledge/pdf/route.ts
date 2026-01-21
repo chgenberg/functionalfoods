@@ -189,14 +189,15 @@ export async function GET(req: NextRequest) {
       hasSwedishChars: /[åäöÅÄÖ]/.test(doc.title || '')
     });
 
-    // Dynamically import pdfkit
+    // Import pdfkit using require (more reliable on serverless)
     let PDFDocument: any;
     try {
-      const pdfkitModule = await import('pdfkit');
-      PDFDocument = (pdfkitModule as any).default || pdfkitModule;
+      // Use require instead of dynamic import for better compatibility
+      PDFDocument = require('pdfkit');
       if (!PDFDocument) {
         throw new Error('PDFDocument not found in pdfkit module');
       }
+      console.log('✅ PDF: pdfkit loaded successfully');
     } catch (importError: any) {
       console.error('❌ PDF: Failed to import pdfkit:', importError);
       throw new Error(`Failed to load PDF library: ${importError?.message || 'Unknown error'}`);
@@ -212,12 +213,24 @@ export async function GET(req: NextRequest) {
     const regularFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Regular.ttf');
     const boldFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Bold.ttf');
     
+    console.log('📄 PDF: Checking fonts at:', { regularFontPath, boldFontPath, cwd: process.cwd() });
+    
+    let useCustomFont = false;
     if (fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath)) {
-      pdf.registerFont('OpenSans', regularFontPath);
-      pdf.registerFont('OpenSans-Bold', boldFontPath);
-      console.log('✅ PDF: Custom fonts registered successfully');
+      try {
+        pdf.registerFont('OpenSans', regularFontPath);
+        pdf.registerFont('OpenSans-Bold', boldFontPath);
+        useCustomFont = true;
+        console.log('✅ PDF: Custom fonts registered successfully');
+      } catch (fontError: any) {
+        console.error('❌ PDF: Failed to register fonts:', fontError?.message);
+        useCustomFont = false;
+      }
     } else {
-      console.warn('⚠️ PDF: Custom fonts not found, falling back to Helvetica');
+      console.warn('⚠️ PDF: Custom fonts not found, falling back to Helvetica', {
+        regularExists: fs.existsSync(regularFontPath),
+        boldExists: fs.existsSync(boldFontPath)
+      });
     }
 
     // Collect PDF chunks
@@ -280,7 +293,6 @@ export async function GET(req: NextRequest) {
         .replace(/&#39;/g, "'");
       
       // Use custom font that supports Swedish characters (å, ä, ö)
-      const useCustomFont = fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath);
       const boldFont = useCustomFont ? 'OpenSans-Bold' : 'Helvetica-Bold';
       const regularFont = useCustomFont ? 'OpenSans' : 'Helvetica';
       
