@@ -19,7 +19,11 @@ export default function ProvaPaVeckaLayout({
   return (
     <>
       {children}
-      <HelpGuide isOpen={showHelpGuide} onClose={() => setShowHelpGuide(false)} />
+      <HelpGuide 
+        isOpen={showHelpGuide} 
+        onClose={() => setShowHelpGuide(false)} 
+        courseType="prova-pa-vecka"
+      />
     </>
   );
 }
