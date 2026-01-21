@@ -32,6 +32,9 @@ export async function GET(request: Request) {
       );
     }
 
+    // Debug logging
+    console.log('🔍 API Debug - User ID from JWT:', decoded.userId);
+    
     // Hämta användarens köp
     const purchases = await prisma.purchase.findMany({
       where: {
@@ -45,6 +48,9 @@ export async function GET(request: Request) {
         createdAt: 'desc'
       }
     });
+    
+    console.log('🔍 API Debug - Purchases found:', purchases.length);
+    console.log('🔍 API Debug - Course names:', purchases.map(p => p.course.name));
 
     // Beräkna 1 års åtkomstfönster
     const now = new Date();
@@ -55,7 +61,14 @@ export async function GET(request: Request) {
       return { ...p, accessExpiresAt, isActive };
     });
 
-    return NextResponse.json({ purchases: enriched });
+    // Include debug info in response temporarily
+    return NextResponse.json({ 
+      purchases: enriched,
+      _debug: {
+        userId: decoded.userId,
+        courseNames: purchases.map(p => p.course.name)
+      }
+    });
   } catch (error) {
     console.error('Error fetching purchases:', error);
     return NextResponse.json(

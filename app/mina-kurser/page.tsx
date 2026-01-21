@@ -176,6 +176,7 @@ export default function MyCoursesPage() {
       console.log('📦 API Response - purchases:', purchases);
       console.log('📦 Course names:', purchases.map((p: any) => p.course?.name));
       console.log('📦 Available metadata keys:', Object.keys(courseMetadata));
+      console.log('🔑 DEBUG INFO:', data._debug);
       
       setPurchases(purchases);
       
