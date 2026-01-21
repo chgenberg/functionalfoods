@@ -25,7 +25,7 @@ interface Ingredient {
 }
 
 interface ShoppingListTemplateProps {
-  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone' | 'prova-pa-vecka';
   weekNumber: number;
 }
 
@@ -104,8 +104,19 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
   const checkedCount = ingredients.filter(i => i.checked).length;
   const totalCount = ingredients.length;
 
+  const getCourseDisplayName = () => {
+    switch (courseType) {
+      case 'basics': return 'Functional Basics';
+      case 'flow': return 'Functional Gut Health/Flow';
+      case 'energy': return 'Functional Insulin balance/Energy';
+      case 'hormone': return 'Hormonell Balans';
+      case 'prova-pa-vecka': return 'Prova på vecka';
+      default: return courseType;
+    }
+  };
+
   const buildListText = () => {
-    const header = `Inköpslista • Vecka ${weekNumber} • ${courseType === 'basics' ? 'Basics' : 'Flow'} • ${servings} portioner`;
+    const header = `Inköpslista • Vecka ${weekNumber} • ${getCourseDisplayName()} • ${servings} portioner`;
     const body = ingredients.map(i => `${i.name} — ${i.amount} ${i.unit}`.trim()).join("\n");
     return `${header}\n\n${body}`;
   };
@@ -133,7 +144,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
 
   const handlePrint = () => {
     const today = new Date().toLocaleDateString('sv-SE');
-    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Gut Health/Flow';
+    const courseName = getCourseDisplayName();
     
     // Create the same beautiful HTML template for printing
     const htmlContent = `
@@ -399,7 +410,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
 
   const handleExport = () => {
     const today = new Date().toLocaleDateString('sv-SE');
-    const courseName = courseType === 'basics' ? 'Functional Basics' : 'Functional Gut Health/Flow';
+    const courseName = getCourseDisplayName();
     
     // Create beautiful HTML template for export/print
     const htmlContent = `
@@ -699,7 +710,9 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
               <Link
-                href={`/dashboard/courses/functional-${courseType}/week/${weekNumber}`}
+                href={courseType === 'prova-pa-vecka' 
+                  ? `/dashboard/courses/prova-pa-vecka/week/${weekNumber}`
+                  : `/dashboard/courses/functional-${courseType}/week/${weekNumber}`}
                 className="inline-flex items-center text-gray-600 hover:text-[#014421] transition-colors mb-3 text-sm font-medium"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />

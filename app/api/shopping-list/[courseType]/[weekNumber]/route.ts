@@ -206,7 +206,8 @@ export async function GET(
       'basics': 'Basic',
       'flow': 'Flow',
       'energy': 'Energy',
-      'hormone': 'Hormonell Balans'
+      'hormone': 'Hormonell Balans',
+      'prova-pa-vecka': 'Prova på vecka'
     };
 
     // Try to fetch from database FIRST for ALL courses (admin edits go here)
@@ -377,13 +378,13 @@ export async function GET(
     const weekKey = `week${weekNum}`;
     let weekMeals: WeekMealPlan | undefined;
     
-    // For hormone course, fetch from database
-    if (courseType === 'hormone') {
+    // For hormone and prova-pa-vecka courses, fetch from database
+    if (courseType === 'hormone' || courseType === 'prova-pa-vecka') {
       try {
         const dbMealPlan = await (prisma as any).mealPlanWeek?.findUnique({
           where: {
             course_weekNumber: {
-              course: 'hormone',
+              course: courseType,
               weekNumber: weekNum
             }
           }
@@ -391,12 +392,12 @@ export async function GET(
         
         if (dbMealPlan && dbMealPlan.days) {
           weekMeals = { days: dbMealPlan.days } as WeekMealPlan;
-          console.log(`✅ Found hormone meal plan for week ${weekNum} in database`);
+          console.log(`✅ Found ${courseType} meal plan for week ${weekNum} in database`);
         } else {
-          console.log(`❌ No hormone meal plan found for week ${weekNum}`);
+          console.log(`❌ No ${courseType} meal plan found for week ${weekNum}`);
         }
       } catch (err) {
-        console.error('Error fetching hormone meal plan:', err);
+        console.error(`Error fetching ${courseType} meal plan:`, err);
       }
     } else {
       // For other courses, use static data
