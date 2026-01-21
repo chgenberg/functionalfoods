@@ -20,11 +20,12 @@ export default function Client() {
   const [shoppingList, setShoppingList] = useState<any>(null);
 
   const week = searchParams.get('week') || '1';
-  const course = (searchParams.get('course') || 'basics') as 'basics' | 'flow' | 'energy' | 'hormone';
+  const course = (searchParams.get('course') || 'basics') as 'basics' | 'flow' | 'energy' | 'hormone' | 'prova-pa-vecka';
 
   const courseName = course === 'basics' ? 'Functional Basics'
     : course === 'flow' ? 'Functional Flow'
     : course === 'hormone' ? 'Hormonell Balans'
+    : course === 'prova-pa-vecka' ? 'Prova på vecka'
     : 'Functional Energy';
 
   useEffect(() => {

@@ -782,7 +782,9 @@ export default function WeekTemplate({
                   <h3 className="font-bold text-base sm:text-lg text-[#014421]">Inköpslista</h3>
                 </div>
                 <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Skapa inköpslista för veckans måltider</p>
-                <Link href={`/dashboard/courses/functional-${courseType}/inkopslista?week=${weekNumber}`}>
+                <Link href={courseType === 'prova-pa-vecka' 
+                  ? `/dashboard/courses/prova-pa-vecka/inkopslista?week=${weekNumber}`
+                  : `/dashboard/courses/functional-${courseType}/inkopslista?week=${weekNumber}`}>
                   <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
                     Visa inköpslista
                   </button>
@@ -797,7 +799,7 @@ export default function WeekTemplate({
                   <h3 className="font-bold text-base sm:text-lg text-[#014421]">Community</h3>
                 </div>
                 <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Diskutera och dela erfarenheter</p>
-                <a href="https://www.facebook.com/groups/1168295381877412/" target="_blank" rel="noopener noreferrer">
+                <a href={courseType === 'prova-pa-vecka' ? 'https://www.facebook.com/groups/provapavecka/' : 'https://www.facebook.com/groups/1168295381877412/'} target="_blank" rel="noopener noreferrer">
                   <button className="w-full bg-[#014421] text-white rounded-lg py-2.5 sm:py-3 hover:bg-[#112A12] transition-colors text-sm sm:text-base">
                     Öppna Facebook‑grupp
                   </button>
