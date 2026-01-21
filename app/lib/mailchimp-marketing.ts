@@ -195,11 +195,13 @@ class MailchimpMarketingService {
       'functional-energy': 'Köp – Functional Energy',
       'functional-hormone': 'Köp – Hormonell Balans',
       'hormonell-balans': 'Köp – Hormonell Balans',
+      'prova-pa-vecka': 'Köp – Prova på vecka',
       // Also handle display names
       'Functional Basics': 'Köp – Functional Basics',
       'Functional Gut Health/Flow': 'Köp – Functional Flow',
       'Functional Insulin balance/Energy': 'Köp – Functional Energy',
       'Hormonell Balans': 'Köp – Hormonell Balans',
+      'Prova på vecka med Functional Foods!': 'Köp – Prova på vecka',
     };
 
     // Build tags array

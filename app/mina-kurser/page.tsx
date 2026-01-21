@@ -116,6 +116,17 @@ const courseMetadata: Record<string, {
     image: '/Kurser_bilder/Functional_insulin balance.jpg',
     progress: 20,
     nextLesson: 'Vecka 1: Energimetabolism'
+  },
+  'Prova på vecka med Functional Foods!': {
+    color: '#014421',
+    bgColor: 'bg-[#014421]/10',
+    icon: '🌿',
+    dashboardPath: '/dashboard/courses/prova-pa-vecka',
+    duration: '7 dagar',
+    level: 'Nybörjare',
+    image: '/kurser/prova-pa/prova-pa.png',
+    progress: 0,
+    nextLesson: 'Dag 1: Kom igång'
   }
 };
 
