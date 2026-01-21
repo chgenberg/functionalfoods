@@ -8,6 +8,7 @@ import { useFavoriteRecipes } from '@/app/hooks/useFavoriteRecipes';
 import { X, Clock, ExternalLink, Info, CheckCircle, Star, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 
+// Standard meal format used by most courses
 interface Meal {
   mealType: string;
   time: string;
@@ -16,14 +17,86 @@ interface Meal {
   recipeLink?: string;
 }
 
+// Simple meal format used by prova-pa-vecka
+interface SimpleMeal {
+  name: string;
+  recipeLink: string;
+}
+
+// DayMeals object format (alternative to Meal[])
+interface DayMeals {
+  breakfast?: SimpleMeal | null;
+  lunch?: SimpleMeal | null;
+  dinner?: SimpleMeal | null;
+  snack?: SimpleMeal | null;
+  dessert?: SimpleMeal | null;
+}
+
+// Union type for meals prop - accepts both formats
+type MealsInput = Meal[] | DayMeals;
+
 interface DayModalProps {
   isOpen: boolean;
   onClose: () => void;
   weekNumber: number;
   dayNumber: number;
   dayName: string;
-  meals: Meal[];
-  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
+  meals: MealsInput;
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone' | 'prova-pa-vecka';
+}
+
+// Helper function to check if meals is in DayMeals format
+function isDayMealsFormat(meals: MealsInput): meals is DayMeals {
+  return !Array.isArray(meals);
+}
+
+// Helper function to get meal type label in Swedish
+function getMealTypeLabel(type: string): string {
+  const labels: Record<string, string> = {
+    breakfast: 'Frukost',
+    lunch: 'Lunch',
+    dinner: 'Middag',
+    snack: 'Mellanmål',
+    dessert: 'Efterrätt'
+  };
+  return labels[type] || type;
+}
+
+// Helper function to get default time for meal type
+function getDefaultTime(type: string): string {
+  const times: Record<string, string> = {
+    breakfast: '08:00',
+    lunch: '12:00',
+    snack: '15:00',
+    dinner: '18:00',
+    dessert: '20:00'
+  };
+  return times[type] || '12:00';
+}
+
+// Convert DayMeals object to Meal[] array
+function normalizeMeals(meals: MealsInput): Meal[] {
+  if (!isDayMealsFormat(meals)) {
+    return meals;
+  }
+  
+  const mealOrder = ['breakfast', 'lunch', 'snack', 'dinner', 'dessert'];
+  const normalizedMeals: Meal[] = [];
+  
+  for (const type of mealOrder) {
+    const meal = meals[type as keyof DayMeals];
+    if (meal) {
+      normalizedMeals.push({
+        mealType: getMealTypeLabel(type),
+        time: getDefaultTime(type),
+        meal: meal.name,
+        calories: '-', // No calorie data in simple format
+        recipeLink: meal.recipeLink
+      });
+    }
+  }
+  
+  return normalizedMeals;
 }
 
 export default function DayModal({
@@ -32,9 +105,12 @@ export default function DayModal({
   weekNumber,
   dayNumber,
   dayName,
-  meals,
+  meals: mealsInput,
   courseType
 }: DayModalProps) {
+  // Normalize meals to always work with Meal[] format internally
+  const meals = normalizeMeals(mealsInput);
+  
   const [hoveredMeal, setHoveredMeal] = useState<number | null>(null);
   const [completedMeals, setCompletedMeals] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
@@ -311,9 +387,12 @@ export default function DayModal({
   };
 
   const totalCalories = meals.reduce((total, meal) => {
+    if (meal.calories === '-') return total; // Skip meals without calorie data
     const match = meal.calories.match(/(\d+)/);
     return total + (match ? parseInt(match[1]) : 0);
   }, 0);
+  
+  const hasCalorieData = meals.some(m => m.calories !== '-');
 
   return (
     <AnimatePresence>
@@ -372,9 +451,11 @@ export default function DayModal({
                       {completedMeals.length} av {meals.length} måltider genomförda
                     </span>
                   </div>
-                  <div className="text-sm text-white/90">
-                    Totalt: <span className="font-semibold">{totalCalories} kcal</span>
-                  </div>
+                  {hasCalorieData && (
+                    <div className="text-sm text-white/90">
+                      Totalt: <span className="font-semibold">{totalCalories} kcal</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Progress Bar */}
@@ -454,10 +535,13 @@ export default function DayModal({
                             <h3 className="text-lg font-bold text-gray-900">
                               {meal.mealType}
                             </h3>
-                            <div className="flex items-center gap-1 text-sm text-gray-600">
-                              <Clock className="text-xs" />
-                              <span>{meal.time}</span>
-                            </div>
+                            {/* Only show time for courses with actual time data */}
+                            {courseType !== 'prova-pa-vecka' && (
+                              <div className="flex items-center gap-1 text-sm text-gray-600">
+                                <Clock className="text-xs" />
+                                <span>{meal.time}</span>
+                              </div>
+                            )}
                           </div>
                           
                           <p className={`text-gray-800 font-medium transition-all
@@ -555,18 +639,20 @@ export default function DayModal({
                           }`} />
                         </motion.button>
 
-                        {/* Calories Badge */}
-                        <motion.div
-                          animate={{ scale: hoveredMeal === index ? 1.1 : 1 }}
-                          className={`px-4 py-2 rounded-full font-semibold text-sm transition-colors
-                            ${completedMeals.includes(index)
-                              ? 'bg-green-200 text-green-800'
-                              : 'bg-white/80 text-gray-700'
-                            }
-                          `}
-                        >
-                          {meal.calories}
-                        </motion.div>
+                        {/* Calories Badge - only show if calorie data exists */}
+                        {meal.calories !== '-' && (
+                          <motion.div
+                            animate={{ scale: hoveredMeal === index ? 1.1 : 1 }}
+                            className={`px-4 py-2 rounded-full font-semibold text-sm transition-colors
+                              ${completedMeals.includes(index)
+                                ? 'bg-green-200 text-green-800'
+                                : 'bg-white/80 text-gray-700'
+                              }
+                            `}
+                          >
+                            {meal.calories}
+                          </motion.div>
+                        )}
                       </div>
                     </div>
                   </motion.div>
@@ -603,7 +689,10 @@ export default function DayModal({
                 </motion.button>
                 
                 <Link 
-                  href={`/dashboard/courses/functional-${courseType}/inkopslista?week=${weekNumber}`}
+                  href={courseType === 'prova-pa-vecka' 
+                    ? `/dashboard/courses/prova-pa-vecka/inkopslista`
+                    : `/dashboard/courses/functional-${courseType}/inkopslista?week=${weekNumber}`
+                  }
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#014421] hover:bg-[#116530] 
                     text-white font-medium rounded-full transition-colors group order-1 sm:order-2"
                 >

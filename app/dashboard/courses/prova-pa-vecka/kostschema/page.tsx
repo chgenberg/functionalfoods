@@ -3,31 +3,24 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Download, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Calendar, Clock, Utensils } from 'lucide-react';
+import DayModal from '../../components/DayModal';
 
-interface MealData {
+interface Meal {
   name: string;
   recipeLink: string;
 }
 
 interface DayMeals {
-  breakfast?: MealData | null;
-  lunch?: MealData | null;
-  dinner?: MealData | null;
-  snack?: MealData | null;
-  dessert?: MealData | null;
+  breakfast?: Meal | null;
+  lunch?: Meal | null;
+  dinner?: Meal | null;
+  snack?: Meal | null;
+  dessert?: Meal | null;
 }
 
 interface MealPlanWeek {
   days: Record<string, DayMeals>;
-}
-
-// Transformed meal for display
-interface DisplayMeal {
-  mealType: string;
-  mealTypeLabel: string;
-  name: string;
-  recipeLink?: string;
 }
 
 const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
@@ -35,7 +28,7 @@ const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag',
 export default function ProvaPaVeckaKostschema() {
   const [mealPlan, setMealPlan] = useState<MealPlanWeek | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedDay, setSelectedDay] = useState<{ dayNumber: number; dayName: string; meals: DisplayMeal[] } | null>(null);
+  const [selectedDay, setSelectedDay] = useState<{ dayNumber: number; dayName: string; meals: DayMeals } | null>(null);
 
   useEffect(() => {
     const fetchMealPlan = async () => {
@@ -75,31 +68,6 @@ export default function ProvaPaVeckaKostschema() {
       dessert: '🍨'
     };
     return emojis[type] || '🍽️';
-  };
-
-  // Transform DayMeals object to DisplayMeal array
-  const transformMealsToArray = (dayMeals: DayMeals): DisplayMeal[] => {
-    const mealOrder = ['breakfast', 'lunch', 'snack', 'dinner', 'dessert'];
-    const meals: DisplayMeal[] = [];
-    
-    for (const type of mealOrder) {
-      const meal = dayMeals[type as keyof DayMeals];
-      if (meal) {
-        meals.push({
-          mealType: type,
-          mealTypeLabel: getMealTypeLabel(type),
-          name: meal.name,
-          recipeLink: meal.recipeLink
-        });
-      }
-    }
-    
-    return meals;
-  };
-
-  const handleDayClick = (dayNumber: number, dayName: string, dayMeals: DayMeals) => {
-    const meals = transformMealsToArray(dayMeals);
-    setSelectedDay({ dayNumber, dayName, meals });
   };
 
   if (loading) {
@@ -166,7 +134,7 @@ export default function ProvaPaVeckaKostschema() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                onClick={() => handleDayClick(index + 1, dayName, dayMeals)}
+                onClick={() => setSelectedDay({ dayNumber: index + 1, dayName, meals: dayMeals })}
                 className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1"
               >
                 <div className="flex items-center justify-between">
@@ -219,66 +187,17 @@ export default function ProvaPaVeckaKostschema() {
         </div>
       </div>
 
-      {/* Custom Day Modal */}
+      {/* Day Modal */}
       {selectedDay && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
-          >
-            {/* Header */}
-            <div className="bg-[#014421] text-white p-6 rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold">{selectedDay.dayName}</h2>
-                  <p className="text-white/80 text-sm">Dag {selectedDay.dayNumber} • Prova på-veckan</p>
-                </div>
-                <button
-                  onClick={() => setSelectedDay(null)}
-                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-
-            {/* Meals */}
-            <div className="p-6 space-y-4">
-              {selectedDay.meals.map((meal, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">{getMealTypeEmoji(meal.mealType)}</span>
-                    <span className="font-semibold text-[#014421]">{meal.mealTypeLabel}</span>
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">{meal.name}</h3>
-                  {meal.recipeLink && (
-                    <Link
-                      href={meal.recipeLink}
-                      className="inline-flex items-center gap-2 text-sm text-[#014421] font-medium hover:underline"
-                    >
-                      Se recept →
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Footer */}
-            <div className="p-6 pt-0">
-              <button
-                onClick={() => setSelectedDay(null)}
-                className="w-full bg-[#014421] text-white py-3 rounded-full font-medium hover:bg-[#116530] transition-colors"
-              >
-                Stäng
-              </button>
-            </div>
-          </motion.div>
-        </div>
+        <DayModal
+          isOpen={true}
+          onClose={() => setSelectedDay(null)}
+          weekNumber={1}
+          dayNumber={selectedDay.dayNumber}
+          dayName={selectedDay.dayName}
+          meals={selectedDay.meals}
+          courseType="prova-pa-vecka"
+        />
       )}
     </div>
   );
