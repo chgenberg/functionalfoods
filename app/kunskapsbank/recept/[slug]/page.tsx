@@ -140,11 +140,20 @@ export default function RecipePage() {
         'basics': 'Functional Basics',
         'flow': 'Functional Gut Health/Flow', 
         'energy': 'Functional Insulin balance/Energy',
-        'hormone': 'Hormonell Balans'
+        'hormone': 'Hormonell Balans',
+        'prova-pa-vecka': 'Prova på vecka'
       };
-      const url = fromCourse === 'hormone'
-        ? `/dashboard/courses/functional-hormone/week/${fromWeek}`
-        : `/dashboard/courses/functional-${fromCourse}/week/${fromWeek}`;
+      
+      // Handle special cases for URL generation
+      let url: string;
+      if (fromCourse === 'prova-pa-vecka') {
+        url = `/dashboard/courses/prova-pa-vecka/week/${fromWeek}`;
+      } else if (fromCourse === 'hormone') {
+        url = `/dashboard/courses/functional-hormone/week/${fromWeek}`;
+      } else {
+        url = `/dashboard/courses/functional-${fromCourse}/week/${fromWeek}`;
+      }
+      
       return {
         url,
         text: `Tillbaka till ${courseNames[fromCourse] || 'kursen'} - Vecka ${fromWeek}`
