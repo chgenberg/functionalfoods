@@ -22,6 +22,36 @@ export default function KnowledgeDocumentPage() {
   const [document, setDocument] = useState<KnowledgeDocument | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    if (!document || downloading) return;
+    
+    setDownloading(true);
+    try {
+      // Use basic course ID since prova-pa-vecka uses basic course documents
+      const response = await fetch(`/api/knowledge/pdf?courseId=functional-basics&slug=${slug}`);
+      
+      if (!response.ok) {
+        throw new Error('PDF generation failed');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = window.document.createElement('a');
+      link.href = url;
+      link.download = `${slug}.pdf`;
+      window.document.body.appendChild(link);
+      link.click();
+      window.document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download failed:', err);
+      alert('Kunde inte ladda ner PDF. Försök igen senare.');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -127,12 +157,22 @@ export default function KnowledgeDocumentPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-4">
               {document.title}
             </h1>
-            {(document.readingTime || document.readTime) && (
-              <div className="flex items-center gap-2 text-gray-500">
-                <Clock className="w-5 h-5" />
-                <span>{document.readingTime || document.readTime} min läsning</span>
-              </div>
-            )}
+            <div className="flex flex-wrap items-center gap-4">
+              {(document.readingTime || document.readTime) && (
+                <div className="flex items-center gap-2 text-gray-500">
+                  <Clock className="w-5 h-5" />
+                  <span>{document.readingTime || document.readTime} min läsning</span>
+                </div>
+              )}
+              <button
+                onClick={handleDownloadPDF}
+                disabled={downloading}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#014421] text-white rounded-full text-sm font-medium hover:bg-[#116530] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Download className="w-4 h-4" />
+                {downloading ? 'Laddar ner...' : 'Ladda ner PDF'}
+              </button>
+            </div>
           </header>
 
           {/* Key Takeaways */}
