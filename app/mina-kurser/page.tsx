@@ -171,6 +171,12 @@ export default function MyCoursesPage() {
 
       const data = await res.json();
       const purchases = data.purchases || data;
+      
+      // Debug logging
+      console.log('📦 API Response - purchases:', purchases);
+      console.log('📦 Course names:', purchases.map((p: any) => p.course?.name));
+      console.log('📦 Available metadata keys:', Object.keys(courseMetadata));
+      
       setPurchases(purchases);
       
       // Smart redirect logic - only redirect if user has exactly one course
