@@ -171,13 +171,6 @@ export default function MyCoursesPage() {
 
       const data = await res.json();
       const purchases = data.purchases || data;
-      
-      // Debug logging
-      console.log('📦 API Response - purchases:', purchases);
-      console.log('📦 Course names:', purchases.map((p: any) => p.course?.name));
-      console.log('📦 Available metadata keys:', Object.keys(courseMetadata));
-      console.log('🔑 DEBUG INFO:', data._debug);
-      
       setPurchases(purchases);
       
       // Smart redirect logic - only redirect if user has exactly one course
@@ -351,9 +344,7 @@ export default function MyCoursesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {purchases.map((purchase, index) => {
                 const metadata = courseMetadata[purchase.course.name];
-                console.log(`Course: "${purchase.course.name}", Metadata found:`, !!metadata);
                 if (!metadata) {
-                  console.log('Available metadata keys:', Object.keys(courseMetadata));
                   return null;
                 }
                 
