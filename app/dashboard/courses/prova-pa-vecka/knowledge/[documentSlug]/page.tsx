@@ -11,6 +11,7 @@ interface KnowledgeDocument {
   title: string;
   content: string;
   readingTime?: number;
+  readTime?: number; // API might return this instead
   headerImage?: string;
   keyTakeaways?: string[];
 }
@@ -25,10 +26,16 @@ export default function KnowledgeDocumentPage() {
   useEffect(() => {
     const fetchDocument = async () => {
       try {
-        const res = await fetch(`/api/knowledge-documents/${slug}`);
+        // Use the correct API endpoint: /api/knowledge?slug=...
+        const res = await fetch(`/api/knowledge?slug=${slug}`);
         if (res.ok) {
           const data = await res.json();
-          setDocument(data);
+          // The API returns { documents: [...] }
+          if (data.documents && data.documents.length > 0) {
+            setDocument(data.documents[0]);
+          } else {
+            setError('Dokumentet hittades inte');
+          }
         } else {
           setError('Dokumentet hittades inte');
         }
@@ -120,10 +127,10 @@ export default function KnowledgeDocumentPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-[#014421] mb-4">
               {document.title}
             </h1>
-            {document.readingTime && (
+            {(document.readingTime || document.readTime) && (
               <div className="flex items-center gap-2 text-gray-500">
                 <Clock className="w-5 h-5" />
-                <span>{document.readingTime} min läsning</span>
+                <span>{document.readingTime || document.readTime} min läsning</span>
               </div>
             )}
           </header>
