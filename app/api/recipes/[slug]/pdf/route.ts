@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit/js/pdfkit.standalone';
 import fs from 'fs';
 import path from 'path';
 
@@ -103,11 +103,6 @@ export async function GET(
     const regularFontExists = fs.existsSync(regularFontPath);
     const boldFontExists = fs.existsSync(boldFontPath);
     
-    if (!regularFontExists || !boldFontExists) {
-      console.error('❌ Recipe PDF: Required fonts not found:', { regularFontExists, boldFontExists });
-      throw new Error('Required fonts not found for PDF generation');
-    }
-    
     // Create PDF with autoFirstPage: false to prevent default font initialization
     const pdf = new PDFDocument({ 
       size: 'A4', 
@@ -117,24 +112,35 @@ export async function GET(
     });
     
     // Register fonts before adding any pages
+    let useCustomFont = false;
     try {
-      pdf.registerFont('OpenSans', regularFontPath);
-      pdf.registerFont('OpenSans-Bold', boldFontPath);
-      console.log('✅ Recipe PDF: Custom fonts registered successfully');
+      if (regularFontExists && boldFontExists) {
+        const regularFont = fs.readFileSync(regularFontPath);
+        const boldFont = fs.readFileSync(boldFontPath);
+        pdf.registerFont('OpenSans', regularFont);
+        pdf.registerFont('OpenSans-Bold', boldFont);
+        useCustomFont = true;
+        console.log('✅ Recipe PDF: Custom fonts registered successfully');
+      } else {
+        console.warn('⚠️ Recipe PDF: Custom fonts not found, falling back to built-in fonts', {
+          regularFontExists,
+          boldFontExists
+        });
+      }
     } catch (fontError: any) {
       console.error('❌ Recipe PDF: Failed to register fonts:', fontError?.message);
-      throw new Error(`Failed to register fonts: ${fontError?.message}`);
+      useCustomFont = false;
     }
     
     // Now add the first page (after fonts are registered)
     pdf.addPage();
     
     // Set default font
-    pdf.font('OpenSans');
+    pdf.font(useCustomFont ? 'OpenSans' : 'Helvetica');
     
-    const boldFont = 'OpenSans-Bold';
-    const regularFont = 'OpenSans';
-    const italicFont = 'OpenSans'; // OpenSans doesn't have italic, use regular
+    const boldFont = useCustomFont ? 'OpenSans-Bold' : 'Helvetica-Bold';
+    const regularFont = useCustomFont ? 'OpenSans' : 'Helvetica';
+    const italicFont = useCustomFont ? 'OpenSans' : 'Helvetica-Oblique'; // OpenSans doesn't have italic, use regular
 
     // Collect PDF chunks - set up BEFORE generating content
     const chunks: Buffer[] = [];

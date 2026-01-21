@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit/js/pdfkit.standalone';
 import fs from 'fs';
 import path from 'path';
 
@@ -201,11 +201,6 @@ export async function GET(req: NextRequest) {
     const regularFontExists = fs.existsSync(regularFontPath);
     const boldFontExists = fs.existsSync(boldFontPath);
     
-    if (!regularFontExists || !boldFontExists) {
-      console.error('❌ PDF: Required fonts not found:', { regularFontExists, boldFontExists });
-      throw new Error('Required fonts not found for PDF generation');
-    }
-    
     // Create PDF with autoFirstPage: false to prevent default font initialization
     // Then register fonts and add page manually
     const pdf = new PDFDocument({ 
@@ -216,22 +211,31 @@ export async function GET(req: NextRequest) {
     });
     
     // Register fonts before adding any pages
+    let useCustomFont = false;
     try {
-      pdf.registerFont('OpenSans', regularFontPath);
-      pdf.registerFont('OpenSans-Bold', boldFontPath);
-      console.log('✅ PDF: Custom fonts registered successfully');
+      if (regularFontExists && boldFontExists) {
+        const regularFont = fs.readFileSync(regularFontPath);
+        const boldFont = fs.readFileSync(boldFontPath);
+        pdf.registerFont('OpenSans', regularFont);
+        pdf.registerFont('OpenSans-Bold', boldFont);
+        useCustomFont = true;
+        console.log('✅ PDF: Custom fonts registered successfully');
+      } else {
+        console.warn('⚠️ PDF: Custom fonts not found, falling back to built-in fonts', {
+          regularFontExists,
+          boldFontExists
+        });
+      }
     } catch (fontError: any) {
       console.error('❌ PDF: Failed to register fonts:', fontError?.message);
-      throw new Error(`Failed to register fonts: ${fontError?.message}`);
+      useCustomFont = false;
     }
     
     // Now add the first page (after fonts are registered)
     pdf.addPage();
     
     // Set the default font
-    pdf.font('OpenSans');
-    
-    const useCustomFont = true;
+    pdf.font(useCustomFont ? 'OpenSans' : 'Helvetica');
 
     // Collect PDF chunks
     const chunks: Buffer[] = [];
