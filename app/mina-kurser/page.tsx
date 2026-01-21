@@ -122,7 +122,7 @@ const courseMetadata: Record<string, {
     bgColor: 'bg-[#014421]/10',
     icon: '🌿',
     dashboardPath: '/dashboard/courses/prova-pa-vecka',
-    duration: '7 dagar',
+    duration: '1 vecka',
     level: 'Nybörjare',
     image: '/kurser/prova-pa/prova-pa.png',
     progress: 0,
