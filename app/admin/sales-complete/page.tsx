@@ -526,6 +526,8 @@ export default function UnifiedSalesPage() {
     const exportData = filteredOrders.map(order => {
       const refund = order.refundAmount || 0;
       const net = order.amount - refund;
+      const couponCode = order.metadata?.couponCode || '';
+      const discountAmount = order.metadata?.discountAmount || '';
       return {
         'Order ID': order.id,
         'Ordernummer': order.orderNumber,
@@ -538,6 +540,8 @@ export default function UnifiedSalesPage() {
         // Keep product list human-friendly (use " | " to avoid CSV/Excel delimiter collisions)
         'Produkter': order.items.map(i => `${i.quantity}x ${i.name}`).join(' | '),
         'Kurser': (order.courses || []).join(' | ') || '',
+        'Rabattkod': couponCode,
+        'Rabatt (SEK)': discountAmount ? Number(discountAmount) : '',
         // Export numeric amounts as numbers (Excel-friendly)
         'Belopp (SEK)': Number(order.amount),
         'Återbetalat (SEK)': Number(refund),
@@ -1262,6 +1266,7 @@ export default function UnifiedSalesPage() {
                 <th className="text-left">Order</th>
                 <th className="text-left">Kund</th>
                 <th className="text-left">Källa</th>
+                <th className="text-left">Rabattkod</th>
                 <th className="text-left">Produkter</th>
                 <th className="text-left">Belopp</th>
                 <th className="text-left">Datum</th>
@@ -1271,7 +1276,7 @@ export default function UnifiedSalesPage() {
             <tbody>
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center text-[var(--text-secondary)]">
+                  <td colSpan={10} className="px-6 py-12 text-center text-[var(--text-secondary)]">
                     Inga transaktioner hittades med valda filter
                   </td>
                 </tr>
@@ -1331,6 +1336,27 @@ export default function UnifiedSalesPage() {
                             {attrInfo.detail && (
                               <p className="text-xs text-gray-500 mt-0.5 truncate max-w-[120px]" title={attrInfo.detail}>
                                 {attrInfo.detail}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </td>
+                    <td className="whitespace-nowrap">
+                      {(() => {
+                        const couponCode = order.metadata?.couponCode;
+                        const discountAmount = order.metadata?.discountAmount;
+                        if (!couponCode) {
+                          return <span className="text-xs text-gray-400">-</span>;
+                        }
+                        return (
+                          <div>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-mono font-medium">
+                              {couponCode}
+                            </span>
+                            {discountAmount && (
+                              <p className="text-xs text-gray-500 mt-0.5">
+                                -{discountAmount} kr
                               </p>
                             )}
                           </div>

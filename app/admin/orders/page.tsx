@@ -323,15 +323,19 @@ export default function AdminOrdersPage() {
 
   // Export orders to CSV
   const exportToCSV = () => {
-    const headers = ['Ordernummer', 'Datum', 'Kund', 'E-post', 'Källa', 'Status', 'Belopp', 'Betalmetod', 'Produkter'];
+    const headers = ['Ordernummer', 'Datum', 'Kund', 'E-post', 'Källa', 'Rabattkod', 'Rabatt', 'Status', 'Belopp', 'Betalmetod', 'Produkter'];
     const rows = filteredOrders.map(order => {
       const attrInfo = getAttributionLabel(order.metadata?.attribution);
+      const couponCode = (order.metadata as any)?.couponCode || '';
+      const discountAmount = (order.metadata as any)?.discountAmount || '';
       return [
         order.orderNumber,
         new Date(order.createdAt).toLocaleString('sv-SE'),
         order.customerName || order.user?.name || 'N/A',
         order.customerEmail || order.user?.email || 'N/A',
         attrInfo.label + (attrInfo.detail ? ` - ${attrInfo.detail}` : ''),
+        couponCode,
+        discountAmount ? `${discountAmount} kr` : '',
         order.status,
         order.totalAmount,
         getPaymentMethodLabel(order),
@@ -530,6 +534,7 @@ export default function AdminOrdersPage() {
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Order</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Kund</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Källa</th>
+                <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Rabattkod</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Produkter</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Betalning</th>
                 <th className="text-left p-4 text-sm font-medium text-[var(--primary-green)]">Betalstatus</th>
@@ -539,7 +544,7 @@ export default function AdminOrdersPage() {
             <tbody className="divide-y divide-[var(--border-light)]">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-[var(--text-secondary)]">
+                  <td colSpan={8} className="p-8 text-center text-[var(--text-secondary)]">
                     {searchTerm ? 'Inga ordrar matchar sökningen' : 'Inga ordrar hittades'}
                   </td>
                 </tr>
@@ -606,6 +611,29 @@ export default function AdminOrdersPage() {
                             {attrInfo.detail && (
                               <div className="text-xs text-[var(--text-secondary)] mt-1">
                                 {attrInfo.detail}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </td>
+
+                    {/* Coupon Code */}
+                    <td className="p-4">
+                      {(() => {
+                        const couponCode = (order.metadata as any)?.couponCode;
+                        const discountAmount = (order.metadata as any)?.discountAmount;
+                        if (!couponCode) {
+                          return <span className="text-xs text-gray-400">-</span>;
+                        }
+                        return (
+                          <div>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-mono font-medium">
+                              {couponCode}
+                            </span>
+                            {discountAmount && (
+                              <div className="text-xs text-[var(--text-secondary)] mt-1">
+                                -{discountAmount} kr
                               </div>
                             )}
                           </div>
