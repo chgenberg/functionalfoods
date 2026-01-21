@@ -94,7 +94,7 @@ export async function GET(
     // Use buffer-based approach matching knowledge PDF route pattern
     let PDFDocument: any;
     try {
-      const pdfkitModule = await import('pdfkit/js/pdfkit.standalone.js');
+      const pdfkitModule = await import('pdfkit');
       PDFDocument = (pdfkitModule as any).default || pdfkitModule;
       if (!PDFDocument) {
         throw new Error('PDFDocument not found in pdfkit module');
@@ -109,6 +109,23 @@ export async function GET(
       margin: 50, 
       info: { Title: recipe.title }
     });
+    
+    // Register custom fonts that support Swedish characters (å, ä, ö)
+    const regularFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Regular.ttf');
+    const boldFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Bold.ttf');
+    const useCustomFont = fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath);
+    
+    if (useCustomFont) {
+      pdf.registerFont('OpenSans', regularFontPath);
+      pdf.registerFont('OpenSans-Bold', boldFontPath);
+      console.log('✅ Recipe PDF: Custom fonts registered successfully');
+    } else {
+      console.warn('⚠️ Recipe PDF: Custom fonts not found, falling back to Helvetica');
+    }
+    
+    const boldFont = useCustomFont ? 'OpenSans-Bold' : 'Helvetica-Bold';
+    const regularFont = useCustomFont ? 'OpenSans' : 'Helvetica';
+    const italicFont = useCustomFont ? 'OpenSans' : 'Helvetica-Oblique';
 
     // Collect PDF chunks - set up BEFORE generating content
     const chunks: Buffer[] = [];
@@ -134,11 +151,11 @@ export async function GET(
     try {
       // Title
       const title = String(recipe.title || 'Okänt recept');
-      pdf.fontSize(24).font('Helvetica-Bold').text(title, { align: 'center' });
+      pdf.fontSize(24).font(boldFont).text(title, { align: 'center' });
       pdf.moveDown(0.5);
       
       // Meta information
-      pdf.fontSize(10).font('Helvetica').fillColor('#555555');
+      pdf.fontSize(10).font(regularFont).fillColor('#555555');
       const metaInfo: string[] = [];
       if (recipe.prepTime) metaInfo.push(`Förberedelse: ${recipe.prepTime}`);
       if (recipe.cookTime) metaInfo.push(`Tillagning: ${recipe.cookTime}`);
@@ -166,7 +183,7 @@ export async function GET(
 
       // Excerpt
       if (recipe.excerpt) {
-        pdf.fontSize(11).font('Helvetica-Italic').fillColor('#666666').text(stripHtmlPreserveNewlines(recipe.excerpt), {
+        pdf.fontSize(11).font(italicFont).fillColor('#666666').text(stripHtmlPreserveNewlines(recipe.excerpt), {
           align: 'left',
           lineGap: 2
         });
@@ -176,9 +193,9 @@ export async function GET(
       // Ingredients
       const ingredients = recipe.ingredients || [];
       if (ingredients.length > 0) {
-        pdf.fontSize(16).font('Helvetica-Bold').fillColor('#000000').text('Ingredienser', { align: 'left' });
+        pdf.fontSize(16).font(boldFont).fillColor('#000000').text('Ingredienser', { align: 'left' });
         pdf.moveDown(0.5);
-        pdf.fontSize(12).font('Helvetica').fillColor('#000000');
+        pdf.fontSize(12).font(regularFont).fillColor('#000000');
         
         ingredients.forEach((ingredient: string) => {
           if (ingredient && ingredient.trim()) {
@@ -190,7 +207,7 @@ export async function GET(
 
       // Instructions
       if (recipe.instructions) {
-        pdf.fontSize(16).font('Helvetica-Bold').fillColor('#000000').text('Instruktioner', { align: 'left' });
+        pdf.fontSize(16).font(boldFont).fillColor('#000000').text('Instruktioner', { align: 'left' });
         pdf.moveDown(0.5);
         
         let instructions: string[] = [];
@@ -200,7 +217,7 @@ export async function GET(
           instructions = recipe.instructions.split('\n').filter((s: string) => s.trim());
         }
 
-        pdf.fontSize(12).font('Helvetica').fillColor('#000000');
+        pdf.fontSize(12).font(regularFont).fillColor('#000000');
         instructions.forEach((step: string, index: number) => {
           if (step && step.trim()) {
             pdf.text(`${index + 1}. ${stripHtmlPreserveNewlines(step.trim())}`, {
@@ -219,9 +236,9 @@ export async function GET(
         const perServing = nutrition.perServing || nutrition;
         
         if (perServing.energy || perServing.calories) {
-          pdf.fontSize(16).font('Helvetica-Bold').fillColor('#000000').text('Näringsvärde per portion', { align: 'left' });
+          pdf.fontSize(16).font(boldFont).fillColor('#000000').text('Näringsvärde per portion', { align: 'left' });
           pdf.moveDown(0.5);
-          pdf.fontSize(11).font('Helvetica').fillColor('#000000');
+          pdf.fontSize(11).font(regularFont).fillColor('#000000');
           
           const nutritionInfo: string[] = [];
           if (perServing.energy || perServing.calories) {
@@ -246,16 +263,16 @@ export async function GET(
 
       // Tips
       if (recipe.tips) {
-        pdf.fontSize(14).font('Helvetica-Bold').fillColor('#000000').text('Tips', { align: 'left' });
+        pdf.fontSize(14).font(boldFont).fillColor('#000000').text('Tips', { align: 'left' });
         pdf.moveDown(0.5);
-        pdf.fontSize(11).font('Helvetica').fillColor('#000000').text(stripHtmlPreserveNewlines(recipe.tips), {
+        pdf.fontSize(11).font(regularFont).fillColor('#000000').text(stripHtmlPreserveNewlines(recipe.tips), {
           align: 'left',
           lineGap: 2
         });
       }
 
       // Footer
-      pdf.fontSize(8).font('Helvetica').fillColor('#999999').text(
+      pdf.fontSize(8).font(regularFont).fillColor('#999999').text(
         `Functional Foods med Ulrika Davidsson • functionalfoods.se • ${new Date().getFullYear()}`,
         { align: 'center' }
       );

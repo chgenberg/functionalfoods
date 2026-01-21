@@ -192,7 +192,7 @@ export async function GET(req: NextRequest) {
     // Dynamically import pdfkit
     let PDFDocument: any;
     try {
-      const pdfkitModule = await import('pdfkit/js/pdfkit.standalone.js');
+      const pdfkitModule = await import('pdfkit');
       PDFDocument = (pdfkitModule as any).default || pdfkitModule;
       if (!PDFDocument) {
         throw new Error('PDFDocument not found in pdfkit module');
@@ -207,6 +207,18 @@ export async function GET(req: NextRequest) {
       margin: 60,
       info: { Title: doc.title }
     });
+    
+    // Register custom fonts that support Swedish characters (å, ä, ö)
+    const regularFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Regular.ttf');
+    const boldFontPath = path.join(process.cwd(), 'public', 'fonts', 'OpenSans-Bold.ttf');
+    
+    if (fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath)) {
+      pdf.registerFont('OpenSans', regularFontPath);
+      pdf.registerFont('OpenSans-Bold', boldFontPath);
+      console.log('✅ PDF: Custom fonts registered successfully');
+    } else {
+      console.warn('⚠️ PDF: Custom fonts not found, falling back to Helvetica');
+    }
 
     // Collect PDF chunks
     const chunks: Buffer[] = [];
@@ -267,11 +279,14 @@ export async function GET(req: NextRequest) {
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'");
       
-      // Use Helvetica which supports basic Latin characters including Swedish
-      // PDFKit handles UTF-8 encoding automatically, but we need to ensure clean text
+      // Use custom font that supports Swedish characters (å, ä, ö)
+      const useCustomFont = fs.existsSync(regularFontPath) && fs.existsSync(boldFontPath);
+      const boldFont = useCustomFont ? 'OpenSans-Bold' : 'Helvetica-Bold';
+      const regularFont = useCustomFont ? 'OpenSans' : 'Helvetica';
+      
       pdf
         .fontSize(28)
-        .font('Helvetica-Bold')
+        .font(boldFont)
         .fillColor(primaryColor)
         .text(title, { 
           align: 'left', 
@@ -293,7 +308,7 @@ export async function GET(req: NextRequest) {
       // Metadata bar - ensure Swedish characters are properly encoded
       pdf
         .fontSize(10)
-        .font('Helvetica')
+        .font(regularFont)
         .fillColor(secondaryColor)
         .text(`${courseName} • ${readTime} min läsning`, { 
           align: 'left'
@@ -332,7 +347,7 @@ export async function GET(req: NextRequest) {
             // Main text with proper encoding
             pdf
               .fontSize(11)
-              .font('Helvetica')
+              .font(regularFont)
               .fillColor('#000000')
               .text(cleanPara, {
                 align: 'left',
@@ -351,7 +366,7 @@ export async function GET(req: NextRequest) {
           const safeText = text.substring(0, 5000);
           pdf
             .fontSize(11)
-            .font('Helvetica')
+            .font(regularFont)
             .fillColor('#000000')
             .text(safeText || 'Innehåll kunde inte visas.', { 
               align: 'left',
@@ -363,7 +378,7 @@ export async function GET(req: NextRequest) {
         console.warn('⚠️ PDF: No content found for document');
         pdf
           .fontSize(11)
-          .font('Helvetica')
+          .font(regularFont)
           .fillColor('#999999')
           .text('Inget innehåll tillgängligt.');
       }
@@ -383,7 +398,7 @@ export async function GET(req: NextRequest) {
       // Footer text - ensure Swedish characters are properly encoded
       pdf
         .fontSize(9)
-        .font('Helvetica')
+        .font(regularFont)
         .fillColor('#999999')
         .text(
           `Functional Foods med Ulrika Davidsson • functionalfoods.se • ${new Date().getFullYear()}`,
@@ -395,7 +410,7 @@ export async function GET(req: NextRequest) {
       // Page number
       pdf
         .fontSize(9)
-        .font('Helvetica')
+        .font(regularFont)
         .fillColor('#cccccc')
         .text(
           `Sida 1`,
