@@ -8,14 +8,20 @@ import { useEffect, useRef } from 'react';
 import { Award, CheckCircle, HelpCircle, Settings, Star, Users } from "lucide-react";;
 
 interface CourseNavigationProps {
-  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone' | 'prova-pa-vecka';
   currentWeek?: number;
 }
 
 export default function CourseNavigation({ courseType, currentWeek = 1 }: CourseNavigationProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const basePath = courseType === 'hormone' ? '/dashboard/courses/functional-hormone' : `/dashboard/courses/functional-${courseType}`;
+  
+  // Determine base path based on course type
+  const basePath = courseType === 'hormone' 
+    ? '/dashboard/courses/functional-hormone' 
+    : courseType === 'prova-pa-vecka'
+    ? '/dashboard/courses/prova-pa-vecka'
+    : `/dashboard/courses/functional-${courseType}`;
   
   // Auto-scroll to left on mobile when component mounts
   useEffect(() => {
@@ -35,14 +41,22 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
     }
   }, [pathname]); // Re-run when pathname changes
   
-  const weeks = [
-    { number: 1, title: courseType === 'basics' ? "Grunden i Functional Foods" : courseType === 'flow' ? "Optimera din energi" : courseType === 'hormone' ? "Vecka 1" : "Introduktion" },
-    { number: 2, title: courseType === 'basics' ? "Proteiner & aminosyror" : courseType === 'flow' ? "Avancerad näringsoptimering" : courseType === 'hormone' ? "Vecka 2" : "Blodsocker & energi" },
-    { number: 3, title: courseType === 'basics' ? "Fetter & kolhydrater" : courseType === 'flow' ? "Prestationshöjande kost" : courseType === 'hormone' ? "Vecka 3" : "Måltidsplanering" },
-    { number: 4, title: courseType === 'basics' ? "Vitaminer & mineraler" : courseType === 'flow' ? "Antiinflammatorisk livsstil" : courseType === 'hormone' ? "Vecka 4" : "Smarta kolhydrater" },
-    { number: 5, title: courseType === 'basics' ? "Antioxidanter & fytokemikalier" : courseType === 'flow' ? "Longevity & återhämtning" : courseType === 'hormone' ? "Vecka 5" : "Energistabila vanor" },
-    { number: 6, title: courseType === 'basics' ? "Att komma igång" : courseType === 'flow' ? "Personlig optimering" : courseType === 'hormone' ? "Vecka 6" : "Långsiktig hållbarhet" }
-  ];
+  // Define weeks based on course type (prova-pa-vecka only has 1 week)
+  const weeks = courseType === 'prova-pa-vecka' 
+    ? [{ number: 1, title: "Prova på-veckan" }]
+    : [
+        { number: 1, title: courseType === 'basics' ? "Grunden i Functional Foods" : courseType === 'flow' ? "Optimera din energi" : courseType === 'hormone' ? "Vecka 1" : "Introduktion" },
+        { number: 2, title: courseType === 'basics' ? "Proteiner & aminosyror" : courseType === 'flow' ? "Avancerad näringsoptimering" : courseType === 'hormone' ? "Vecka 2" : "Blodsocker & energi" },
+        { number: 3, title: courseType === 'basics' ? "Fetter & kolhydrater" : courseType === 'flow' ? "Prestationshöjande kost" : courseType === 'hormone' ? "Vecka 3" : "Måltidsplanering" },
+        { number: 4, title: courseType === 'basics' ? "Vitaminer & mineraler" : courseType === 'flow' ? "Antiinflammatorisk livsstil" : courseType === 'hormone' ? "Vecka 4" : "Smarta kolhydrater" },
+        { number: 5, title: courseType === 'basics' ? "Antioxidanter & fytokemikalier" : courseType === 'flow' ? "Longevity & återhämtning" : courseType === 'hormone' ? "Vecka 5" : "Energistabila vanor" },
+        { number: 6, title: courseType === 'basics' ? "Att komma igång" : courseType === 'flow' ? "Personlig optimering" : courseType === 'hormone' ? "Vecka 6" : "Långsiktig hållbarhet" }
+      ];
+  
+  // Get community link based on course type
+  const communityLink = courseType === 'prova-pa-vecka' 
+    ? 'https://www.facebook.com/groups/provapavecka/'
+    : 'https://www.facebook.com/groups/1168295381877412/';
 
   // Check if we're on specific pages
   const isOnCompletion = pathname.includes('/avslutning');
@@ -124,7 +138,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             </Link>
             
             <a
-              href="https://www.facebook.com/groups/1168295381877412/"
+              href={communityLink}
               target="_blank"
               rel="noopener noreferrer"
               className={`px-3 py-2 text-sm md:px-4 md:py-2.5 lg:px-5 lg:py-3 rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
@@ -254,7 +268,7 @@ export default function CourseNavigation({ courseType, currentWeek = 1 }: Course
             
             {/* Community */}
             <a
-              href="https://www.facebook.com/groups/1168295381877412/"
+              href={communityLink}
               target="_blank"
               rel="noopener noreferrer"
               className={`

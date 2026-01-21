@@ -18,7 +18,7 @@ interface Document {
 }
 
 interface InfoPopupGridProps {
-  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone' | 'prova-pa-vecka';
   courseId: string;
   currentWeek?: number;
 }
@@ -53,6 +53,11 @@ const energyWeekSlugs: Record<number, string[]> = {
   6: []
 };
 
+// Slug mapping for Prova på vecka course
+const provaPaVeckaWeekSlugs: Record<number, string[]> = {
+  1: ['vad-a-r-functional-foods', 'topplista-med-functional-foods', 'att-a-ta-ute-med-functional-foods']
+};
+
 const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, currentWeek }) => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,22 +66,29 @@ const InfoPopupGrid: React.FC<InfoPopupGridProps> = ({ courseType, courseId, cur
     const fetchDocuments = async () => {
       try {
         // Map courseType to API course param
-        const course = courseType === 'basics' ? 'basic' : courseType === 'flow' ? 'flow' : courseType === 'hormone' ? 'hormone' : 'energy';
+        const course = courseType === 'basics' ? 'basic' 
+          : courseType === 'flow' ? 'flow' 
+          : courseType === 'hormone' ? 'hormone' 
+          : courseType === 'prova-pa-vecka' ? 'basic'  // Use basic course documents for prova-pa-vecka
+          : 'energy';
         const res = await fetch(`/api/knowledge?course=${course}`);
         const data = await res.json();
         
         let docs = data.documents || [];
         
         // Filter by current week using slug mappings for all courses
-        if (currentWeek !== undefined) {
+        if (currentWeek !== undefined || courseType === 'prova-pa-vecka') {
           let weekSlugs: string[] = [];
+          const week = currentWeek || 1;
           
           if (courseType === 'basics') {
-            weekSlugs = basicsWeekSlugs[currentWeek] || [];
+            weekSlugs = basicsWeekSlugs[week] || [];
           } else if (courseType === 'flow') {
-            weekSlugs = flowWeekSlugs[currentWeek] || [];
+            weekSlugs = flowWeekSlugs[week] || [];
           } else if (courseType === 'energy') {
-            weekSlugs = energyWeekSlugs[currentWeek] || [];
+            weekSlugs = energyWeekSlugs[week] || [];
+          } else if (courseType === 'prova-pa-vecka') {
+            weekSlugs = provaPaVeckaWeekSlugs[1] || [];
           }
           
           docs = docs.filter((doc: Document) => weekSlugs.includes(doc.slug));

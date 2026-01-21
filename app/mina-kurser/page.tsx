@@ -171,11 +171,6 @@ export default function MyCoursesPage() {
 
       const data = await res.json();
       const purchases = data.purchases || data;
-      
-      // Temporary debug - remove after fixing
-      console.log('🔑 DEBUG from API:', data._debug);
-      console.log('📋 Courses returned:', purchases.map((p: any) => p.course?.name));
-      
       setPurchases(purchases);
       
       // Smart redirect logic - only redirect if user has exactly one course

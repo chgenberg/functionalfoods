@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { HelpCircle, Calendar, Book, ShoppingCart, Users, ChevronRight, Play, CheckCircle } from 'lucide-react';
+import { HelpCircle, Calendar, Book, ShoppingCart, Users, ChevronRight, Play, CheckCircle, BookOpen, Instagram } from 'lucide-react';
 import HelpGuide from '@/app/components/HelpGuide';
+import CourseNavigation from '../../components/CourseNavigation';
+import InfoPopupGrid from '../../components/InfoPopupGrid';
 
 export default function ProvaPaVeckaOverview() {
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -52,77 +54,14 @@ export default function ProvaPaVeckaOverview() {
     }
   }, []);
 
-  const dayNames = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
-
-  const quickLinks = [
-    {
-      title: 'Veckans kostschema',
-      description: 'Se alla måltider för veckan',
-      href: '/dashboard/courses/prova-pa-vecka/kostschema',
-      icon: Calendar,
-      color: 'bg-blue-500'
-    },
-    {
-      title: 'Inköpslista',
-      description: 'Ladda ner veckans inköpslista',
-      href: '/dashboard/courses/prova-pa-vecka/inkopslista',
-      icon: ShoppingCart,
-      color: 'bg-green-500'
-    },
-    {
-      title: 'Kunskapsdokument',
-      description: 'Lär dig grunderna i functional foods',
-      href: '/dashboard/courses/prova-pa-vecka/material',
-      icon: Book,
-      color: 'bg-purple-500'
-    }
-  ];
-
-  const knowledgeDocs = [
-    {
-      title: 'Vad är functional foods?',
-      slug: 'vad-a-r-functional-foods',
-      readTime: '5 min'
-    },
-    {
-      title: 'Topplista med functional foods',
-      slug: 'topplista-med-functional-foods',
-      readTime: '4 min'
-    },
-    {
-      title: 'Att äta ute med functional foods',
-      slug: 'att-a-ta-ute-med-functional-foods',
-      readTime: '3 min'
-    }
-  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3]">
+    <main className="min-h-screen bg-gradient-to-br from-[#F7F5F0] via-[#F7F1E8] to-[#F3EFE3]">
       {/* Top spacer to avoid header overlap */}
       <div className="h-16 md:h-0" />
-
-      {/* Simple Navigation */}
-      <nav className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link href="/mina-kurser" className="text-gray-500 hover:text-gray-700">
-                ← Mina kurser
-              </Link>
-              <span className="text-[#014421] font-bold">Prova på-veckan</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Dag {currentDay} av 7</span>
-              <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#014421] rounded-full transition-all duration-500"
-                  style={{ width: `${(currentDay / 7) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      
+      {/* Navigation - Same style as other courses */}
+      <CourseNavigation courseType="prova-pa-vecka" currentWeek={1} />
 
       {/* Welcome Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8">
@@ -165,16 +104,29 @@ export default function ProvaPaVeckaOverview() {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {/* Course Help Section + Facebook Group */}
           <div className="mt-8 flex items-center justify-center gap-3 flex-wrap">
             <motion.button
               onClick={() => setShowHelpModal(true)}
               className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#014421] to-[#116530] text-white rounded-full font-medium shadow-lg hover:shadow-xl transform transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
             >
-              <HelpCircle className="w-6 h-6" />
-              <span>Så använder du kursen</span>
+              <motion.div
+                className="absolute inset-0 rounded-full bg-[#93C560] opacity-0 group-hover:opacity-20 blur-xl"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+                <HelpCircle className="w-6 h-6" />
+              </motion.div>
+              <span className="relative z-10 text-lg">Så använder du kursen</span>
+              <motion.svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </motion.svg>
             </motion.button>
 
             <a
@@ -182,114 +134,92 @@ export default function ProvaPaVeckaOverview() {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-6 py-4 rounded-full bg-[#1877F2] text-white font-medium shadow-lg hover:shadow-xl transition-all hover:bg-[#166FE1]"
+              aria-label="Gå med i Facebook-gruppen"
             >
-              <Users className="w-5 h-5" />
-              Facebook-community
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.19 8.44 9.94v-7.03H7.9v-2.91h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.75 8.44-4.92 8.44-9.94Z" />
+              </svg>
+              Facebook‑grupp
             </a>
           </div>
         </div>
       </div>
 
-      {/* Quick Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <h2 className="text-2xl font-bold text-[#014421] mb-6">Snabblänkar</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {quickLinks.map((link, index) => (
-            <motion.div
-              key={link.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Link
-                href={link.href}
-                className="block bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-              >
-                <div className={`w-12 h-12 ${link.color} rounded-xl flex items-center justify-center mb-4`}>
-                  <link.icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{link.title}</h3>
-                <p className="text-gray-600 text-sm">{link.description}</p>
-                <div className="mt-4 flex items-center text-[#014421] font-medium">
-                  Öppna <ChevronRight className="w-4 h-4 ml-1" />
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Knowledge Documents */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <h2 className="text-2xl font-bold text-[#014421] mb-6">Veckans läsning</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {knowledgeDocs.map((doc, index) => (
-            <motion.div
-              key={doc.slug}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
-            >
-              <Link
-                href={`/dashboard/courses/prova-pa-vecka/knowledge/${doc.slug}`}
-                className="block bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-[#014421]/10 rounded-lg flex items-center justify-center">
-                    <Book className="w-5 h-5 text-[#014421]" />
-                  </div>
-                  <span className="text-sm text-gray-500">{doc.readTime} läsning</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{doc.title}</h3>
-                <div className="mt-4 flex items-center text-[#014421] font-medium">
-                  Läs mer <ChevronRight className="w-4 h-4 ml-1" />
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Day Progress */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-8">
-        <h2 className="text-2xl font-bold text-[#014421] mb-6">Veckans dagar</h2>
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <div className="grid grid-cols-7 gap-2 md:gap-4">
-            {dayNames.map((day, index) => {
-              const dayNumber = index + 1;
-              const isCompleted = dayNumber < currentDay;
-              const isCurrent = dayNumber === currentDay;
-
-              return (
-                <div
-                  key={day}
-                  className={`text-center p-3 rounded-xl transition-all ${
-                    isCurrent
-                      ? 'bg-[#014421] text-white shadow-lg'
-                      : isCompleted
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-500'
-                  }`}
-                >
-                  <div className="text-xs md:text-sm font-medium mb-1">
-                    {day.slice(0, 3)}
-                  </div>
-                  <div className="text-lg md:text-xl font-bold">
-                    {isCompleted ? (
-                      <CheckCircle className="w-5 h-5 mx-auto" />
-                    ) : (
-                      dayNumber
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        {/* Info Popup Grid - Same as other courses */}
+        <div className="relative z-10">
+          <InfoPopupGrid courseType="prova-pa-vecka" courseId="prova-pa-vecka" />
         </div>
       </div>
 
       {/* Help Modal */}
-      <HelpGuide isOpen={showHelpModal} onClose={() => setShowHelpModal(false)} />
-    </div>
+      {showHelpModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6"
+          >
+            <div className="text-center">
+              <HelpCircle className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Hur navigerar du?</h3>
+              <div className="text-left space-y-3 text-sm text-gray-600">
+                <p>• <strong>Översikt:</strong> Din kursöversikt och välkomstmeddelande</p>
+                <p>• <strong>Vecka 1:</strong> Gå till veckans innehåll</p>
+                <p>• <strong>Kostschema:</strong> Se alla dina dagliga måltider</p>
+                <p>• <strong>Inköpslista:</strong> Veckans ingredienser</p>
+                <p>• <strong>Material:</strong> Kunskapsdokument och läsning</p>
+              </div>
+              <button
+                onClick={() => setShowHelpModal(false)}
+                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors"
+              >
+                Förstått!
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Help Guide Modal */}
+      <HelpGuide 
+        isOpen={showHelpModal} 
+        onClose={() => setShowHelpModal(false)} 
+      />
+
+      {/* Bottom navigation for mobile */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 md:hidden z-20">
+        <div className="grid grid-cols-4 gap-2">
+          <button
+            onClick={() => window.location.href = '/dashboard/courses/prova-pa-vecka'}
+            className="flex flex-col items-center gap-1 text-gray-600 hover:text-[#014421]"
+          >
+            <BookOpen className="w-5 h-5" />
+            <span className="text-xs">Översikt</span>
+          </button>
+          <button
+            onClick={() => window.location.href = '/dashboard/courses/prova-pa-vecka/kostschema'}
+            className="flex flex-col items-center gap-1 text-gray-600 hover:text-[#014421]"
+          >
+            <Calendar className="w-5 h-5" />
+            <span className="text-xs">Kostschema</span>
+          </button>
+          <button
+            onClick={() => window.location.href = '/dashboard/courses/prova-pa-vecka/inkopslista'}
+            className="flex flex-col items-center gap-1 text-gray-600 hover:text-[#014421]"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            <span className="text-xs">Inköpslista</span>
+          </button>
+          <button
+            onClick={() => window.location.href = '/dashboard/courses/prova-pa-vecka/material'}
+            className="flex flex-col items-center gap-1 text-gray-600 hover:text-[#014421]"
+          >
+            <BookOpen className="w-5 h-5" />
+            <span className="text-xs">Material</span>
+          </button>
+        </div>
+      </div>
+    </main>
   );
 }
