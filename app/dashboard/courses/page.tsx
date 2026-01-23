@@ -22,6 +22,7 @@ interface Course {
   gradient: string;
   link: string;
   isPurchased: boolean;
+  onboardingKey?: 'basics' | 'flow' | 'energy';
 }
 
 export default function CoursesPage() {
@@ -56,6 +57,12 @@ export default function CoursesPage() {
         purchases.forEach((p: any) => {
           accessByName[p.course.name] = !!p.isActive;
         });
+        const provaPurchase = purchases.find((p: any) =>
+          (p.course?.name || '').toLowerCase().includes('prova')
+        );
+        const provaCourseName = provaPurchase?.course?.name || 'Prova på vecka med Functional Foods!';
+        const hasProva = !!provaPurchase;
+        const provaActive = provaPurchase ? !!provaPurchase.isActive : false;
         
         const allCourses: Course[] = [
           {
@@ -70,7 +77,8 @@ export default function CoursesPage() {
             color: 'accent',
             gradient: 'from-green-500 to-teal-600',
             link: '/dashboard/courses/functional-basics',
-            isPurchased: purchasedCourseNames.includes('Functional Basics')
+            isPurchased: purchasedCourseNames.includes('Functional Basics'),
+            onboardingKey: 'basics'
           },
           {
             id: 'functional-flow',
@@ -84,7 +92,8 @@ export default function CoursesPage() {
             color: 'primary',
             gradient: 'from-green-800 to-green-900',
             link: '/dashboard/courses/functional-flow',
-            isPurchased: purchasedCourseNames.includes('Functional Gut Health/Flow')
+            isPurchased: purchasedCourseNames.includes('Functional Gut Health/Flow'),
+            onboardingKey: 'flow'
           },
           {
             id: 'functional-energy',
@@ -98,7 +107,8 @@ export default function CoursesPage() {
             color: 'primary',
             gradient: 'from-orange-500 to-red-600',
             link: '/dashboard/courses/functional-energy',
-            isPurchased: purchasedCourseNames.includes('Functional Energy')
+            isPurchased: purchasedCourseNames.includes('Functional Energy'),
+            onboardingKey: 'energy'
           },
           {
             id: 'functional-hormone',
@@ -113,6 +123,20 @@ export default function CoursesPage() {
             gradient: 'from-pink-500 to-purple-600',
             link: '/dashboard/courses/functional-hormone',
             isPurchased: purchasedCourseNames.includes('Hormonell Balans')
+          },
+          {
+            id: 'prova-pa-vecka',
+            title: provaCourseName,
+            description: 'Gratisvecka med ett urval av functional foods-recept',
+            duration: '1 vecka',
+            modules: 1,
+            progress: 0,
+            status: hasProva && provaActive ? 'active' : hasProva ? 'locked' : 'locked',
+            icon: PlayCircle,
+            color: 'primary',
+            gradient: 'from-green-600 to-emerald-700',
+            link: '/dashboard/courses/prova-pa-vecka',
+            isPurchased: hasProva
           }
         ];
         
@@ -161,7 +185,7 @@ export default function CoursesPage() {
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.3 }}
               >
-                <Link href={course.link}>
+                <Link href={course.id === 'prova-pa-vecka' ? '/dashboard/courses/prova-pa-vecka/week/1' : course.link}>
                   <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer">
                     {/* Course Header */}
                     <div 
@@ -224,26 +248,38 @@ export default function CoursesPage() {
 
                       {/* Quick links */}
                       <div className="grid grid-cols-3 gap-2 mb-4">
-                        <Link href={`${course.link}/kostschema?view=week&week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Kostschema</Link>
-                        <Link href={`${course.link}/inkopslista?week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Inköp</Link>
-                        <Link href={`${course.link}/goals`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Mål</Link>
+                        {course.id === 'prova-pa-vecka' ? (
+                          <>
+                            <Link href="/dashboard/courses/prova-pa-vecka/week/1" className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Vecka 1</Link>
+                            <Link href="/dashboard/courses/prova-pa-vecka/inkopslista?week=1" className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Inköp</Link>
+                            <Link href="/dashboard/courses/prova-pa-vecka/avslutning" className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Avslut</Link>
+                          </>
+                        ) : (
+                          <>
+                            <Link href={`${course.link}/kostschema?view=week&week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Kostschema</Link>
+                            <Link href={`${course.link}/inkopslista?week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Inköp</Link>
+                            <Link href={`${course.link}/goals`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Mål</Link>
+                          </>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex gap-2">
-                          <Link href={`${course.link}/kostschema?view=week&week=1`} className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">
+                          <Link href={course.id === 'prova-pa-vecka' ? '/dashboard/courses/prova-pa-vecka/week/1' : `${course.link}/kostschema?view=week&week=1`} className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">
                             Fortsätt
                             <ArrowRight />
                           </Link>
-                          <button
-                            onClick={() => {
-                              setOnboardingCourse(course.id as 'basics' | 'flow' | 'energy');
-                              setShowOnboarding(true);
-                            }}
-                            className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors"
-                          >
-                            <Book className="w-5 h-5 inline text-accent" /> Guide
-                          </button>
+                          {course.onboardingKey && (
+                            <button
+                              onClick={() => {
+                                setOnboardingCourse(course.onboardingKey);
+                                setShowOnboarding(true);
+                              }}
+                              className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors"
+                            >
+                              <Book className="w-5 h-5 inline text-accent" /> Guide
+                            </button>
+                          )}
                         </div>
                         <span className={`text-primary font-medium flex items-center gap-1`}>
                           <Unlock />

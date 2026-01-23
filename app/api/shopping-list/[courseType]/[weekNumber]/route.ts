@@ -252,18 +252,35 @@ export async function GET(
 
             // Parse database items
             const ingredients = dbList.items.map((item: any) => {
-              // Parse "amount unit name" format from database
-              const ingredientStr = item.ingredient || '';
-              const parts = ingredientStr.split(' ');
-              const amount = parts[0] || '1';
-              const unit = parts[1] || 'st';
-              const name = parts.slice(2).join(' ') || ingredientStr;
+              const ingredientStr = (item.ingredient || '').trim();
+              
+              // Try to parse "amount unit name" format (e.g., "1,5 dl keso", "300 g kycklingfärs")
+              // Match: optional number (with comma/dot), optional unit, then the rest is the name
+              const parseMatch = ingredientStr.match(/^(\d+(?:[.,]\d+)?)\s*(dl|ml|l|g|kg|msk|tsk|st|krm|klyftor|skivor|cm|blad|kruka|påse)?\s+(.+)$/i);
+              
+              let amount = '1';
+              let unit = 'st';
+              let name = ingredientStr;
+              
+              if (parseMatch) {
+                amount = parseMatch[1].replace('.', ',');
+                unit = parseMatch[2] || 'st';
+                name = parseMatch[3];
+              } else {
+                // Check if it's just a name without amount (e.g., "Salt", "Svartpeppar")
+                const simpleMatch = ingredientStr.match(/^[A-Za-zÅÄÖåäö\s]+$/);
+                if (simpleMatch) {
+                  name = ingredientStr;
+                  amount = '';
+                  unit = '';
+                }
+              }
               
               return {
-                name: name || item.name || ingredientStr,
-                amount: item.amount || amount,
-                unit: item.unit || unit,
-                category: item.category || categorizeIngredient(name || ingredientStr),
+                name: name,
+                amount: amount,
+                unit: unit,
+                category: item.category || categorizeIngredient(name),
                 checked: false
               };
             });
