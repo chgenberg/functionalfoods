@@ -250,7 +250,11 @@ export async function GET(
               orderedEntries = getRecipeEntriesFromMealPlan(staticMealPlans?.days);
             }
 
-            // Parse database items
+            // Parse database items and scale by servings
+            // Database lists are stored for 1 person (base servings = 1)
+            const baseServings = 1;
+            const scale = targetServings / baseServings;
+            
             const ingredients = dbList.items.map((item: any) => {
               const ingredientStr = (item.ingredient || '').trim();
               
@@ -258,12 +262,12 @@ export async function GET(
               // Match: optional number (with comma/dot), optional unit, then the rest is the name
               const parseMatch = ingredientStr.match(/^(\d+(?:[.,]\d+)?)\s*(dl|ml|l|g|kg|msk|tsk|st|krm|klyftor|skivor|cm|blad|kruka|påse)?\s+(.+)$/i);
               
-              let amount = '1';
+              let baseAmount = 1;
               let unit = 'st';
               let name = ingredientStr;
               
               if (parseMatch) {
-                amount = parseMatch[1].replace('.', ',');
+                baseAmount = parseFloat(parseMatch[1].replace(',', '.')) || 1;
                 unit = parseMatch[2] || 'st';
                 name = parseMatch[3];
               } else {
@@ -271,14 +275,32 @@ export async function GET(
                 const simpleMatch = ingredientStr.match(/^[A-Za-zÅÄÖåäö\s]+$/);
                 if (simpleMatch) {
                   name = ingredientStr;
-                  amount = '';
-                  unit = '';
+                  // For items without amounts (Salt, Svartpeppar), don't scale
+                  return {
+                    name: name,
+                    amount: '',
+                    unit: '',
+                    category: item.category || categorizeIngredient(name),
+                    checked: false
+                  };
                 }
+              }
+              
+              // Scale the amount based on servings
+              const scaledAmount = baseAmount * scale;
+              
+              // Format the amount nicely
+              let formattedAmount: string;
+              if (scaledAmount === Math.floor(scaledAmount)) {
+                formattedAmount = scaledAmount.toString();
+              } else {
+                // Round to 2 decimal places and use comma
+                formattedAmount = scaledAmount.toFixed(2).replace('.', ',').replace(/,?0+$/, '');
               }
               
               return {
                 name: name,
-                amount: amount,
+                amount: formattedAmount,
                 unit: unit,
                 category: item.category || categorizeIngredient(name),
                 checked: false
@@ -292,6 +314,7 @@ export async function GET(
               ingredients,
               generatedAt: new Date().toISOString(),
               source: 'database',
+              servings: targetServings,
               recipes: orderedEntries.map(e => e.slug),
               recipeEntries: orderedEntries
             });
