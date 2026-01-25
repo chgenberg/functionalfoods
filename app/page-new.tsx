@@ -18,6 +18,7 @@ import RecipeCarousel from "./components/RecipeCarousel";
 import CustomerReviews from "./components/CustomerReviews";
 import CustomerTestimonials from "./components/CustomerTestimonials";
 import BlogCarousel from "./components/BlogCarousel";
+import ProvaPaPopup, { ProvaPaFloatingButton } from "./components/ProvaPaPopup";
 import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 import { trackGenerateLead } from "./lib/analytics";
@@ -29,6 +30,7 @@ export default function Home() {
   const [quizResults, setQuizResults] = useState<{ answers: Record<number, string | string[]>; context?: any } | null>(null);
 
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
+  const [showProvaPaPopup, setShowProvaPaPopup] = useState(false);
   const router = useRouter();
   const [showGeoSuggest, setShowGeoSuggest] = useState(false);
   const [suggestedLocale, setSuggestedLocale] = useState<'sv'|'en'|'es'|null>(null);
@@ -609,6 +611,15 @@ export default function Home() {
           <button className="px-3 py-1.5 rounded-lg bg-[#F3EFE3] text-[#112A12] text-sm" onClick={() => setShowGeoSuggest(false)}>{t('home.geo.noThanks','Nej tack')}</button>
         </div>
       )}
+
+      {/* Prova-på popup - shows after 3 seconds */}
+      <ProvaPaPopup 
+        forceOpen={showProvaPaPopup} 
+        onClose={() => setShowProvaPaPopup(false)} 
+      />
+
+      {/* Floating button to reopen popup */}
+      <ProvaPaFloatingButton onClick={() => setShowProvaPaPopup(true)} />
     </div>
   );
 }

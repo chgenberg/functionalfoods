@@ -6,6 +6,17 @@ import { ArrowRight, BookOpen, Clock, TrendingUp } from 'lucide-react';
 export default function UtbildningPage() {
   const courses = [
     {
+      id: 'prova-pa',
+      title: 'Prova på vecka',
+      description: 'Gratis prova-på-kurs med functional foods-recept som ger dig en stabil start. Perfekt för att testa innan du väljer längre kurs.',
+      href: '/utbildning/prova-pa-vecka',
+      image: '/kurser/prova-pa/prova-pa.png',
+      duration: '1 vecka',
+      level: 'Gratis',
+      highlights: ['7 dagars kostschema', '15 näringsrika recept', 'Inköpslista & kunskapsdokument'],
+      isFree: true
+    },
+    {
       id: 'basics',
       title: 'Functional Basics',
       description: 'Lär dig grunderna i Functional Foods och bygg hållbara vanor som ger energi och balans.',
@@ -59,7 +70,13 @@ export default function UtbildningPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {courses.map((course, idx) => (
-            <div key={course.id} className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-shadow">
+            <div key={course.id} className={`group relative overflow-hidden rounded-2xl border ${course.isFree ? 'border-[#014421] ring-2 ring-[#014421]/20' : 'border-gray-100'} bg-white shadow-sm hover:shadow-lg transition-shadow`}>
+              {/* Free badge */}
+              {course.isFree && (
+                <div className="absolute top-4 right-4 z-20 bg-[#014421] text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-lg">
+                  GRATIS!
+                </div>
+              )}
               <div className="relative h-48 md:h-60 w-full overflow-hidden">
                 {/* Make image clickable to course page */}
                 <Link href={course.href} className="absolute inset-0 z-10" aria-label={course.title} />
@@ -104,9 +121,9 @@ export default function UtbildningPage() {
                 <div className="mt-5">
                   <Link
                     href={course.href}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-colors"
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg ${course.isFree ? 'bg-[#014421] hover:bg-[#116530]' : 'bg-primary hover:bg-secondary'} text-white transition-colors`}
                   >
-                    Läs mer
+                    {course.isFree ? 'Starta gratis' : 'Läs mer'}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
