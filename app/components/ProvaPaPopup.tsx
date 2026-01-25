@@ -61,15 +61,18 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
             onClick={handleClose}
           />
 
-          {/* Popup */}
+          {/* Popup container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4, type: 'spring', bounce: 0.3 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-lg"
+            className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
           >
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div 
+              className="w-full max-w-lg pointer-events-auto relative bg-white rounded-3xl shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Close button */}
               <button
                 onClick={handleClose}
