@@ -68,7 +68,7 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.4, type: 'spring', bounce: 0.3 }}
-              className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto"
+              className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -191,7 +191,7 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.3 }}
       onClick={onClick}
-      className="fixed bottom-6 left-6 z-50 bg-[#014421] text-white shadow-xl hover:shadow-2xl hover:bg-[#116530] transition-all rounded-full flex items-center gap-2 group"
+      className="fixed bottom-24 sm:bottom-20 left-6 z-50 bg-[#014421] text-white shadow-xl hover:shadow-2xl hover:bg-[#116530] transition-all rounded-full flex items-center gap-2 group"
     >
       {/* Desktop version */}
       <span className="hidden sm:flex items-center gap-2 px-5 py-3 font-semibold">

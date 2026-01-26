@@ -122,7 +122,7 @@ export default function ChatBot() {
       {/* Chat Button - Now visible on mobile too */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-40 bg-primary text-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'}`}
+        className={`fixed bottom-24 sm:bottom-20 right-6 z-40 bg-primary text-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 ${isOpen ? 'scale-0' : 'scale-100'}`}
         aria-label="Öppna chat"
       >
         <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
