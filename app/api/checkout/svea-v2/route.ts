@@ -156,14 +156,16 @@ export async function POST(req: NextRequest) {
       let keyword = '';
       
       // Match by ID pattern
-      if (id.includes('energy') || id.includes('insulin')) keyword = 'Energy';
+      if (id.includes('prova-pa') || id.includes('prova på')) keyword = 'Prova';
+      else if (id.includes('energy') || id.includes('insulin')) keyword = 'Energy';
       else if (id.includes('basic')) keyword = 'Basics';
       else if (id.includes('flow') || id.includes('gut')) keyword = 'Flow';
       else if (id.includes('hormone') || id.includes('hormon')) keyword = 'Hormonell';
       
       // Fallback: match by name
       if (!keyword) {
-        if (name.includes('energy') || name.includes('insulin')) keyword = 'Energy';
+        if (name.includes('prova på') || name.includes('prova-pa')) keyword = 'Prova';
+        else if (name.includes('energy') || name.includes('insulin')) keyword = 'Energy';
         else if (name.includes('basic')) keyword = 'Basics';
         else if (name.includes('flow') || name.includes('gut')) keyword = 'Flow';
         else if (name.includes('hormon')) keyword = 'Hormonell';
