@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
 import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
 import { emailService } from '@/app/lib/email';
+import { getMailchimpMarketing } from '@/app/lib/mailchimp-marketing';
 import bcrypt from 'bcryptjs';
 import type { SveaCartItem, CreateCheckoutOrderRequest } from '@/app/lib/svea-checkout-service';
 
@@ -681,6 +682,23 @@ export async function POST(req: NextRequest) {
         });
       } catch (e) {
         console.warn('⚠️ Failed to send free-order email (non-critical):', e);
+      }
+
+      // Add to Mailchimp with course tags (for free orders like prova-på-vecka)
+      try {
+        const mailchimpMarketing = getMailchimpMarketing();
+        if (mailchimpMarketing.isConfigured()) {
+          const courseNames = validatedItems
+            .filter(item => item.type === 'course')
+            .map(item => item.name);
+          const nameParts = (customerName || '').split(' ');
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || '';
+          await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames, firstName, lastName);
+          console.log(`✅ Customer added to Mailchimp with course tags (free order): ${customerEmail}`);
+        }
+      } catch (mailchimpError) {
+        console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);
       }
 
       // Return a lightweight GUI snippet similar to simulated payments
