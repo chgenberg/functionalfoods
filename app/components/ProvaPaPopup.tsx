@@ -61,15 +61,16 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
             onClick={handleClose}
           />
 
-          {/* Popup container - centered with transform for reliable cross-browser centering */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.4, type: 'spring', bounce: 0.3 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[calc(100%-2rem)] max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
+          {/* Popup container - wrapper for centering, inner div for animation */}
+          <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.4, type: 'spring', bounce: 0.3 }}
+              className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Close button */}
               <button
                 onClick={handleClose}
@@ -147,7 +148,8 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
                   Ingen betalning krävs • Direkt tillgång
                 </p>
               </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
