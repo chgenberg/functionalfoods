@@ -213,7 +213,8 @@ export async function POST(request: NextRequest) {
           email: customerEmail,
           password: temporaryPassword,
           loginUrl: `${baseUrl}/login`
-        } : undefined
+        } : undefined,
+        isExistingUser: !isNewUser
       });
 
       await prisma.order.update({

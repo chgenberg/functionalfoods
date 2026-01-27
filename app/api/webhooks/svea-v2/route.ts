@@ -643,7 +643,8 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
                   email: emailToUse,
                   password: temporaryPassword,
                   loginUrl: `${baseUrl}/login`
-                } : undefined
+                } : undefined,
+                isExistingUser: !isNewUser
               });
               console.log(`✅ Order confirmation email sent to ${emailToUse}${isNewUser ? ' (new user with login credentials)' : ' (existing user)'}`);
             }

@@ -260,7 +260,8 @@ async function completeOrder(order: any, sveaOrder: any) {
         email: customerEmail,
         password: temporaryPassword,
         loginUrl: `${baseUrl}/login`
-      } : undefined
+      } : undefined,
+      isExistingUser: !isNewUser
     });
     
     console.log(`📧 Order confirmation sent to ${customerEmail}`);

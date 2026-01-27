@@ -578,7 +578,8 @@ export async function POST(req: NextRequest) {
                       email: emailToUse,
                       password: temporaryPassword,
                       loginUrl: `${baseUrl}/login`
-                    } : undefined
+                    } : undefined,
+                    isExistingUser: !isNewUser
                   });
                   console.log(`✅ Order confirmation email sent via verify to ${emailToUse}${isNewUser ? ' (new user with login credentials)' : ' (existing user)'}`);
                 }

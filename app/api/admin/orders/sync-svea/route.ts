@@ -216,7 +216,8 @@ export async function POST(request: NextRequest) {
                   email: customerEmail,
                   password: temporaryPassword,
                   loginUrl: 'https://www.functionalfoods.se/login'
-                } : undefined
+                } : undefined,
+                isExistingUser: !isNewUser
               });
 
               // Mark email as sent

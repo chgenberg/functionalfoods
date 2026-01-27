@@ -357,7 +357,8 @@ export async function POST(request: Request) {
           courses: courses.map(c => ({
             name: c.name,
             price: getEffectivePrice(c)
-          }))
+          })),
+          isExistingUser: !isNewUser
         };
 
         // Include login credentials for new users
