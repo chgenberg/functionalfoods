@@ -497,7 +497,8 @@ async function handleCheckoutSessionCompleted(session: any) {
               email: user.email,
               password: temporaryPassword,
               loginUrl: `${baseUrl}/login`
-            } : undefined
+            } : undefined,
+            isExistingUser: !isNewUser
           });
           console.log(`✅ Order confirmation sent via webhook to ${user.email}${isNewUser ? ' (new user with login credentials)' : ''}`);
         }
@@ -826,7 +827,9 @@ async function handleFreeOrder(session: any) {
             email: user.email,
             password: temporaryPassword,
             loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
-          } : undefined
+          } : undefined,
+          // Flag for existing users to show login reminder
+          isExistingUser: !isNewUser
         });
         console.log(`✅ Order confirmation email sent to: ${user.email} (${isNewUser ? 'new user' : 'existing user'})`);
       } catch (emailError) {
@@ -997,6 +1000,7 @@ async function completePayment(paymentId: string, webhookData: any) {
         orderNumber: payment.order.orderNumber,
         totalAmount: payment.order.totalAmount,
         courses: emailCourses,
+        isExistingUser: !needsLoginCredentials,
         ...(needsLoginCredentials && {
           loginCredentials: {
             email: user.email,

@@ -27,7 +27,7 @@ export default function ProvaPaVeckaPage() {
     name: 'Prova på vecka med Functional Foods!',
     price: 0,
     type: 'course' as const,
-    image: '/kurser/prova-pa/prova-pa.png',
+    image: '/prova-pa/prova-pa.png',
     quantity: 1
   };
 
@@ -144,8 +144,8 @@ export default function ProvaPaVeckaPage() {
             className="relative"
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <Image
-                src="/kurser/prova-pa/prova-pa.png"
+                <Image
+                src="/prova-pa/prova-pa.png"
                 alt="Prova på vecka med Functional Foods"
                 width={800}
                 height={600}

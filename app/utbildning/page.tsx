@@ -10,7 +10,7 @@ export default function UtbildningPage() {
       title: 'Prova på vecka',
       description: 'Gratis prova-på-kurs med functional foods-recept som ger dig en stabil start. Perfekt för att testa innan du väljer längre kurs.',
       href: '/utbildning/prova-pa-vecka',
-      image: '/kurser/prova-pa/prova-pa.png',
+      image: '/prova-pa/prova-pa.png',
       duration: '1 vecka',
       level: 'Gratis',
       highlights: ['7 dagars kostschema', '15 näringsrika recept', 'Inköpslista & kunskapsdokument'],

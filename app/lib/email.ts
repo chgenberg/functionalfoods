@@ -32,6 +32,8 @@ export interface OrderConfirmationData {
     password: string;
     loginUrl: string;
   };
+  // For existing users - show reminder to use existing credentials
+  isExistingUser?: boolean;
 }
 
 export interface WelcomeEmailData {
@@ -148,6 +150,8 @@ export class EmailService {
       </tr>
     `).join('');
 
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+    
     const loginSection = data.loginCredentials ? `
       <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ed 100%); border: 2px solid #9dc46d; border-radius: 12px; padding: 24px; margin: 30px 0; position: relative; overflow: hidden;">
         <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: #9dc46d; border-radius: 50%; opacity: 0.1;"></div>
@@ -164,7 +168,28 @@ export class EmailService {
           Tips: Ändra ditt lösenord efter första inloggningen för ökad säkerhet.
         </p>
       </div>
-    ` : '';
+    ` : (data.isExistingUser ? `
+      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ed 100%); border: 2px solid #9dc46d; border-radius: 12px; padding: 24px; margin: 30px 0; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: #9dc46d; border-radius: 50%; opacity: 0.1;"></div>
+        <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 20px; display: flex; align-items: center;">
+          <span style="display: inline-block; width: 32px; height: 32px; background: #9dc46d; border-radius: 50%; text-align: center; line-height: 36px; color: white; font-size: 18px; margin-right: 12px;">🔓</span>
+          Logga in för att komma åt din kurs
+        </h3>
+        <p style="color: #555; line-height: 1.6; margin: 0 0 16px 0;">
+          Du har redan ett konto hos oss! Logga in med din e-postadress <strong>${data.customerEmail}</strong> och ditt befintliga lösenord för att komma åt din nya kurs.
+        </p>
+        <div style="text-align: center; margin-top: 16px;">
+          <a href="${baseUrl}/login" 
+             style="display: inline-block; background: #9dc46d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            Logga in här
+          </a>
+        </div>
+        <p style="color: #666; font-size: 14px; margin: 16px 0 0 0; font-style: italic;">
+          <span style="display: inline-block; width: 16px; height: 16px; background: #9dc46d; border-radius: 50%; text-align: center; line-height: 16px; color: white; font-size: 10px; margin-right: 6px;">i</span>
+          Har du glömt ditt lösenord? <a href="${baseUrl}/forgot-password" style="color: #1a4324;">Klicka här för att återställa det</a>.
+        </p>
+      </div>
+    ` : '');
 
     const html = `
       <!DOCTYPE html>

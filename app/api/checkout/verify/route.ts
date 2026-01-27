@@ -192,7 +192,8 @@ export async function GET(req: NextRequest) {
                     email: user.email,
                     password: tempPassword,
                     loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
-                  } : undefined
+                  } : undefined,
+                  isExistingUser: !isNewUser
                 });
               } catch (e) {
                 console.error('Email send failed in verify fallback:', e);

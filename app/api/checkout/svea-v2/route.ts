@@ -680,7 +680,8 @@ export async function POST(req: NextRequest) {
             email: customerEmail,
             password: temporaryPassword,
             loginUrl: `${baseUrl}/login`
-          } : undefined
+          } : undefined,
+          isExistingUser: !needsLoginCredentials
         });
       } catch (e) {
         console.warn('⚠️ Failed to send free-order email (non-critical):', e);
