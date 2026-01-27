@@ -124,7 +124,7 @@ const courseMetadata: Record<string, {
     dashboardPath: '/dashboard/courses/prova-pa-vecka',
     duration: '1 vecka',
     level: 'Nybörjare',
-    image: '/kurser/prova-pa/prova-pa.png',
+    image: '/prova-pa/prova-pa.png',
     progress: 0,
     nextLesson: 'Dag 1: Kom igång'
   }

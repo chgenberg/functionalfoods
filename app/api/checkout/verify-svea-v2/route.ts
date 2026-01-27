@@ -431,7 +431,9 @@ export async function POST(req: NextRequest) {
           'functional gut health/flow': 'Functional Flow',
           'functional basics': 'Functional Basics',
           'functional energy': 'Functional Energy',
-          'functional insulin balance/energy': 'Functional Energy'
+          'functional insulin balance/energy': 'Functional Energy',
+          'prova på vecka med functional foods!': 'Prova på vecka med Functional Foods!',
+          'prova på vecka': 'Prova på vecka med Functional Foods!'
         };
         
         for (const item of courseItems) {

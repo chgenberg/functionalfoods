@@ -383,7 +383,6 @@ export async function POST(req: NextRequest) {
             orderNumber: order.orderNumber,
             totalAmount: order.totalAmount,
             courses: purchasedCourses.map(it => ({ name: it.name, price: it.price })),
-            isExistingUser: !needsLoginCredentials,
             ...(needsLoginCredentials && {
               loginCredentials: {
                 email: customer.email,

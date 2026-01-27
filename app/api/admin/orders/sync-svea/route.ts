@@ -133,7 +133,9 @@ export async function POST(request: NextRequest) {
               'functional energy': 'Functional Energy',
               'functional basics': 'Functional Basics',
               'functional flow': 'Functional Flow',
-              'hormonell balans': 'Hormonell Balans'
+              'hormonell balans': 'Hormonell Balans',
+              'prova på vecka med functional foods!': 'Prova på vecka med Functional Foods!',
+              'prova på vecka': 'Prova på vecka med Functional Foods!'
             };
 
             for (const item of order.items) {
