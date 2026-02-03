@@ -74,7 +74,7 @@ export default function Client() {
               dayName: e.day,
               mealType: mealTypeSwedish,
               description: r.description || '',
-              servings: r.servings || 4,
+              servings: r.servings || '',
               cookingTime: r.cookingTime || r.totalTime || r.prepTime || '',
               ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
               instructions: Array.isArray(r.instructions) ? r.instructions : [],
