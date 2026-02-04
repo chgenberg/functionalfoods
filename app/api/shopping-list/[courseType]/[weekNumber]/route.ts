@@ -176,8 +176,8 @@ export async function GET(
     const { courseType, weekNumber } = params;
     const weekNum = parseInt(weekNumber);
     const url = new URL(request.url);
-    const servingsParam = parseInt(url.searchParams.get('servings') || '4');
-    const targetServings = isNaN(servingsParam) || servingsParam <= 0 ? 4 : servingsParam;
+    const servingsParam = parseInt(url.searchParams.get('servings') || '1');
+    const targetServings = isNaN(servingsParam) || servingsParam <= 0 ? 1 : servingsParam;
     
     // Helper to get recipe entries from meal plan
     const getRecipeEntriesFromMealPlan = (days: any) => {
