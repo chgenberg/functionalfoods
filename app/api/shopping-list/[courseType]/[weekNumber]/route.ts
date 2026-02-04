@@ -233,22 +233,21 @@ export async function GET(
             // Get recipe entries from meal plan
             let orderedEntries: Array<{ day: string; mealType: string; slug: string }> = [];
             
-            if (courseType === 'hormone') {
-              // Hormone uses database meal plan
+            if (courseType === 'hormone' || courseType === 'prova-pa-vecka') {
               const dbMealPlan = await (prisma as any).mealPlanWeek?.findUnique({
-                where: { course_weekNumber: { course: 'hormone', weekNumber: weekNum } }
+                where: { course_weekNumber: { course: courseType, weekNumber: weekNum } }
               });
-              orderedEntries = getRecipeEntriesFromMealPlan(dbMealPlan?.days);
-            } else {
-              // Other courses use static meal plans
-              const weekKey = `week${weekNum}`;
-              const staticMealPlans = courseType === 'basics' 
-                ? mealPlans[weekKey]
-                : courseType === 'flow' 
-                ? flowMealPlans[weekKey]
-                : energyMealPlans[weekKey];
-              orderedEntries = getRecipeEntriesFromMealPlan(staticMealPlans?.days);
-            }
+            orderedEntries = getRecipeEntriesFromMealPlan(dbMealPlan?.days);
+          } else {
+            const weekKey = `week${weekNum}`;
+            const staticMealPlans = courseType === 'basics'
+          ? mealPlans[weekKey]
+          : courseType === 'flow'
+          ? flowMealPlans[weekKey]
+          : energyMealPlans[weekKey];
+        orderedEntries = getRecipeEntriesFromMealPlan(staticMealPlans?.days);
+          }
+
 
             // Parse database items and scale by servings
             // Database lists are stored for 1 person (base servings = 1)
