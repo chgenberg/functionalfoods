@@ -20,7 +20,7 @@ interface PrintableMealPlanProps {
   mealPlan: Record<string, DayMeals>;
   weekNumber: number;
   courseName: string;
-  courseType: 'basics' | 'flow' | 'energy' | 'hormone';
+  courseType: 'basics' | 'flow' | 'energy' | 'hormone' | 'prova-pa-vecka';
 }
 
 interface RecipeDetails {
@@ -132,7 +132,9 @@ export default function PrintableMealPlanWithRecipes({ mealPlan, weekNumber, cou
   const handlePrint = async () => {
     // Navigate to dedicated print page instead of popup
     const courseSlug = courseName.includes('Basics') 
-      ? 'basics' 
+      ? 'basics'
+      : courseName.includes('Prova')
+      ? 'prova-pa-vecka'
       : courseName.includes('Flow') 
       ? 'flow' 
       : courseName.includes('Hormonell') || courseName.includes('Balans')
