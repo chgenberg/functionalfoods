@@ -17,19 +17,19 @@ function PrintMealPlanContent() {
     ? 'Functional Flow' 
     : courseType === 'hormone'
     ? 'Hormonell Balans'
+    : courseType === 'prova-pa-vecka'
+    ? 'Prova på vecka'
     : 'Functional Energy';
 
   const [mealPlan, setMealPlan] = useState<any>(null);
 
   useEffect(() => {
-    if (courseType === 'hormone') {
-      fetch(`/api/meal-plans?course=hormone&week=${weekNumber}`)
-        .then(res => res.json())
-        .then(data => {
-          setMealPlan(data?.days || {});
-        })
-        .catch(() => setMealPlan({}));
-    } else {
+    if (courseType === 'hormone' || courseType === 'prova-pa-vecka') {
+  fetch(`/api/meal-plans?course=${courseType}&week=${weekNumber}`)
+    .then(res => res.json())
+    .then(data => setMealPlan(data?.days || {}))
+    .catch(() => setMealPlan({}));
+  } else {
       import('@/app/data/mealPlans').then(module => {
         const getData = courseType === 'basics' 
           ? module.getWeekData 
