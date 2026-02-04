@@ -35,7 +35,7 @@ export default function ShoppingListTemplate({ courseType, weekNumber }: Shoppin
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
-  const [servings, setServings] = useState<number>(4);
+  const [servings, setServings] = useState<number>(1);
 
   useEffect(() => {
     generateShoppingList();
