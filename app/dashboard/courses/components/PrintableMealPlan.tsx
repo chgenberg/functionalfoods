@@ -55,6 +55,8 @@ export default function PrintableMealPlan({ mealPlan, weekNumber, courseName }: 
     // Navigate to dedicated print page to avoid popup blockers
     const courseSlug = courseName.includes('Basics') 
       ? 'basics' 
+      : courseName.includes('Prova')
+      ? 'prova-pa-vecka'
       : courseName.includes('Flow') 
       ? 'flow' 
       : courseName.includes('Hormonell') || courseName.includes('Balans')
