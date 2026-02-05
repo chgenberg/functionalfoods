@@ -29,11 +29,12 @@ export default function Client() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   const week = parseInt(searchParams.get('week') || '1');
-  const course = (searchParams.get('course') || 'basics') as 'basics' | 'flow' | 'energy' | 'hormone';
+  const course = (searchParams.get('course') || 'basics') as 'basics' | 'flow' | 'energy' | 'hormone' | 'prova-pa-vecka';
 
   const courseName = course === 'basics' ? 'Functional Basics'
     : course === 'flow' ? 'Functional Flow'
     : course === 'hormone' ? 'Hormonell Balans'
+    : course === 'prova-pa-vecka' ? 'Prova på vecka'
     : 'Functional Energy';
 
   useEffect(() => {
@@ -44,7 +45,10 @@ export default function Client() {
         const listData = listRes.ok ? await listRes.json() : null;
         
         const entries: Array<{ day: string; mealType: string; slug: string }> = Array.isArray(listData?.recipeEntries) ? listData.recipeEntries : [];
-        const slugs: string[] = entries.map(e => e.slug);
+        const slugs: string[] = Array.isArray(listData?.recipes)
+        ? listData.recipes
+        : entries.map(e => e.slug);
+
 
         let fetched: any[] = [];
         if (slugs.length > 0) {
@@ -74,7 +78,7 @@ export default function Client() {
               dayName: e.day,
               mealType: mealTypeSwedish,
               description: r.description || '',
-              servings: r.servings || 4,
+              servings: r.servings || '',
               cookingTime: r.cookingTime || r.totalTime || r.prepTime || '',
               ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
               instructions: Array.isArray(r.instructions) ? r.instructions : [],

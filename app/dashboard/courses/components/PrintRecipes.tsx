@@ -12,7 +12,9 @@ interface PrintRecipesProps {
 export default function PrintRecipes({ weekNumber, courseName }: PrintRecipesProps) {
   const handlePrint = () => {
     const courseSlug = courseName.includes('Basics') 
-      ? 'basics' 
+      ? 'basics'
+      : courseName.includes('Prova') 
+      ? 'prova-pa-vecka'
       : courseName.includes('Flow') 
       ? 'flow' 
       : courseName.includes('Hormonell') || courseName.includes('Balans')
