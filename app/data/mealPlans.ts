@@ -107,7 +107,7 @@ export const flowMealPlans: Record<string, WeekMealPlan> = { "week1": { "days": 
       }, "Onsdag": { "breakfast": { "name": "Yoghurt med bovetegranola och bär", "recipeLink": "/kunskapsbank/recept/yoghurt-med-bovetegranola-och-bar" }, "lunch": { "name": "Stekt torsk med bearnaisesås och haricot verts (rester)", "recipeLink": "/kunskapsbank/recept/stekt-torsk-med-bearnaisesas-och-haricot-verts" }, "dinner": { "name": "Kycklingfärsbiffar med vitlöksost", "recipeLink": "/kunskapsbank/recept/kycklingfarsbiffar-med-vitloksost" }
       }, "Torsdag": { "breakfast": { "name": "Varm chiagröt med äpple", "recipeLink": "/kunskapsbank/recept/varm-chiagrot-med-apple" }, "lunch": { "name": "Kycklingfärsbiffar med vitlöksost (rester)", "recipeLink": "/kunskapsbank/recept/kycklingfarsbiffar-med-vitloksost" }, "dinner": { "name": "Varma grönsaker med halloumi", "recipeLink": "/kunskapsbank/recept/varma-gronsaker-med-halloumi" }
       }, "Fredag": { "breakfast": { "name": "Ägghack med kallrökt lax", "recipeLink": "/kunskapsbank/recept/agghack-med-kallrokt-lax" }, "lunch": { "name": "Varma grönsaker med halloumi (rester)", "recipeLink": "/kunskapsbank/recept/varma-gronsaker-med-halloumi" }, "dinner": { "name": "Lax med quinoasallad och grapefrukt", "recipeLink": "/kunskapsbank/recept/lax-med-quinoasallad-och-grapefrukt" }
-      }, "Lördag": { "breakfast": { "name": "Smoothiebowl med blåbär och granola", "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola" }, "lunch": { "name": "Lax med quinoasallad och grapefrukt (rester)", "recipeLink": "/kunskapsbank/recept/lax-med-quinoasallad-och-grapefrukt" }, "dinner": { "name": "Hamburgare med grekisk sallad", "recipeLink": "/kunskapsbank/recept/hamburgare-med-grekisk-sallad" }, "dessert": { "name": "Mandelkaka med choklad", "recipeLink": "/kunskapsbank/recept/mandelkaka-med-med-choklad" }
+      }, "Lördag": { "breakfast": { "name": "Smoothiebowl med blåbär och granola", "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola" }, "lunch": { "name": "Lax med quinoasallad och grapefrukt (rester)", "recipeLink": "/kunskapsbank/recept/lax-med-quinoasallad-och-grapefrukt" }, "dinner": { "name": "Hamburgare med grekisk sallad", "recipeLink": "/kunskapsbank/recept/hamburgare-med-grekisk-sallad" }, "dessert": { "name": "Mandelkaka med choklad", "recipeLink": "/kunskapsbank/recept/mandelkaka-med-choklad" }
       }, "Söndag": { "breakfast": { "name": "Smoothiebowl med blåbär och granola (rester)", "recipeLink": "/kunskapsbank/recept/smoothiebowl-med-blabar-och-granola" }, "lunch": { "name": "Hamburgare med grekisk sallad (rester)", "recipeLink": "/kunskapsbank/recept/hamburgare-med-grekisk-sallad" }, "dinner": { "name": "Asiatisk kycklingfärs med grönkål", "recipeLink": "/kunskapsbank/recept/asiatisk-kycklingfars-med-gronkal" }
       }
     }, "title": "Vecka 6" }
@@ -234,7 +234,7 @@ export const energyMealPlans: Record<string, WeekMealPlan> = {
         },
         "dessert": {
           "name": "Mandelkaka med choklad",
-          "recipeLink": "/kunskapsbank/recept/mandelkaka-med-med-choklad"
+          "recipeLink": "/kunskapsbank/recept/mandelkaka-med-choklad"
         }
       },
       "Söndag": {

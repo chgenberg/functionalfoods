@@ -23,6 +23,7 @@ export async function GET(
   try {
     // Map legacy/alias slugs to canonical slugs (Basic course fixes)
     const ALIASES: Record<string, string> = {
+      'mandelkaka-med-med-choklad': 'mandelkaka-med-choklad',
       'tonfisksallad-apple-sallad': 'tonfisksallad-med-apple',
       'squashspagetti-kottfarssas': 'squashspagetti-med-kottfarssas',
       // Map short slug to the correct "Omelett med bär" recipe
