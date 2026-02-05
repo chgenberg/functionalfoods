@@ -16,17 +16,6 @@ export default function UtbildningPage() {
       highlights: ['7 dagars kostschema', '15 näringsrika recept', 'Inköpslista & kunskapsdokument'],
       isFree: true
     },
-      {
-      id: 'ny-testkurs',
-      title: 'Prova på vecka nytt test',
-      description: 'Gratis prova-på-kurs med functional foods-recept som ger dig en stabil start. Perfekt för att testa innan du väljer längre kurs.',
-      href: '/utbildning/ny-testkurs',
-      image: '/prova-pa/prova-pa.png',
-      duration: '1 vecka',
-      level: 'Gratis',
-      highlights: ['7 dagars kostschema', '15 näringsrika recept', 'Inköpslista & kunskapsdokument'],
-      isFree: true
-    },
     {
       id: 'basics',
       title: 'Functional Basics',
