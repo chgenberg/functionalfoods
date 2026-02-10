@@ -68,7 +68,7 @@ class MailchimpEcommerceService {
   private baseUrl: string | null = null;
 
   constructor() {
-    const apiKey = process.env.MAILCHIMP_API_KEY;
+    const apiKey = process.env.MAILCHIMP_MARKETING_API_KEY || process.env.MAILCHIMP_API_KEY;
     const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX;
     const storeId = process.env.MAILCHIMP_STORE_ID;
 
@@ -82,7 +82,7 @@ class MailchimpEcommerceService {
       console.log('✅ Mailchimp E-commerce configured');
     } else {
       console.warn('⚠️ Mailchimp E-commerce not configured - missing env vars');
-      console.warn('Required: MAILCHIMP_API_KEY, MAILCHIMP_SERVER_PREFIX, MAILCHIMP_STORE_ID');
+      console.warn('Required: MAILCHIMP_API_KEY, MAILCHIMP_MARKETING_API_KEY, MAILCHIMP_SERVER_PREFIX, MAILCHIMP_STORE_ID');
     }
   }
 
@@ -109,7 +109,7 @@ class MailchimpEcommerceService {
       const getResponse = await fetch(customerUrl, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -126,7 +126,7 @@ class MailchimpEcommerceService {
     const createResponse = await fetch(`${this.baseUrl}/customers`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.config.apiKey}`,
+        'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -265,7 +265,7 @@ class MailchimpEcommerceService {
       const response = await fetch(orderUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.config!.apiKey}`,
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(order)
@@ -304,7 +304,7 @@ class MailchimpEcommerceService {
       const response = await fetch(productUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.config!.apiKey}`,
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(product)
