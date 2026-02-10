@@ -24,7 +24,7 @@ class MailchimpMarketingService {
   private baseUrl: string | null = null;
 
   constructor() {
-    const apiKey = process.env.MAILCHIMP_API_KEY;
+    const apiKey = process.env.MAILCHIMP_MARKETING_API_KEY || process.env.MAILCHIMP_API_KEY;
     const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX;
     // Support both names to avoid misconfiguration across environments
     // (Mailchimp calls this an "Audience", but the API path uses /lists/:id)
@@ -79,14 +79,17 @@ class MailchimpMarketingService {
       // Note: tags are NOT supported in PUT /members endpoint
       // They must be added via separate API call
 
+      const auth = `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`;
+
       const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+      method: 'PUT',
+      headers: {
+        'Authorization': auth,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
       });
+
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -136,14 +139,18 @@ class MailchimpMarketingService {
         }))
       };
 
+      const auth = `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`;
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
+          'Authorization': auth,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(tagsData)
       });
+
+
 
       if (!response.ok) {
         const errorText = await response.text();
