@@ -25,7 +25,7 @@ interface Episode {
 const demoEpisodes: Episode[] = [
   {
     id: "ep1",
-    title: "Hur kropp och själ hänger samman i en vacker synergi",
+    title: "Ulrika om hur kropp och själ hänger samman i en vacker synergi",
     description:
       "Ulrika Davidsson pratar om sambandet mellan kropp och själ, och hur functional foods kan påverka vårt välmående på djupet.",
     duration: "45:30",
