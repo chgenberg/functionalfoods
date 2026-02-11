@@ -80,9 +80,18 @@ export async function POST(request: NextRequest) {
                          searchParams.get('CheckoutOrderId') ||
                          searchParams.get('orderId') ||
                          searchParams.get('OrderId');
-    const headerOrderId = request.headers.get('x-svea-checkout-orderid') ||
-                          request.headers.get('X-Svea-Checkout-OrderId');
-    
+    const headerOrderId = 
+                          request.headers.get('x-svea-checkout-orderid') ||
+                          request.headers.get('x-svea-checkout-order-id') ||
+                          request.headers.get('x-svea-order-id') ||
+                          request.headers.get('svea-checkout-orderid') ||
+                          request.headers.get('svea-checkout-order-id') ||
+                          request.headers.get('svea-order-id') ||
+                          request.headers.get('X-Svea-Checkout-OrderId') ||
+                          request.headers.get('X-Svea-Checkout-Order-ID') ||
+                          request.headers.get('X-Svea-Order-Id') ||
+                          null;
+
     console.log('📩 Svea webhook received:', {
       hasBody: !!body,
       bodyLength: body.length,
@@ -129,32 +138,43 @@ export async function POST(request: NextRequest) {
     
     // If body is empty/minimal, try to get orderId from query/headers
     if (!webhookData.orderId) {
-      const fallbackOrderId = queryOrderId || headerOrderId;
-      if (fallbackOrderId) {
-        console.log(`🔄 Body empty, using orderId from query/header: ${fallbackOrderId}`);
-        
-        // Fetch order from Svea to get status and merchantData
-        try {
-          const sveaOrder = await sveaCheckout.getOrder(parseInt(fallbackOrderId));
-          console.log('📋 Fetched Svea order:', {
-            orderId: fallbackOrderId,
-            status: sveaOrder.status,
-            merchantData: sveaOrder.merchantData
-          });
-          
-          webhookData = {
-            orderId: parseInt(fallbackOrderId),
-            status: sveaOrder.status,
-            merchantData: sveaOrder.merchantData,
-            paymentType: sveaOrder.paymentType,
-            orderAmount: undefined
-          };
-        } catch (fetchError) {
-          console.error('❌ Failed to fetch Svea order:', fetchError);
-        }
-      }
-    }
+    const fallbackOrderId = queryOrderId || headerOrderId;
 
+    // Guard: Svea orderId must be numeric. Avoid "{checkout.order.id}" → NaN.
+    const fallbackStr = (fallbackOrderId ?? '').toString().trim();
+    const numericId = /^\d+$/.test(fallbackStr) ? parseInt(fallbackStr, 10) : null;
+
+    if (numericId) {
+    console.log(`🔄 Body empty, using numeric orderId from query/header: ${numericId}`);
+
+    // Fetch order from Svea to get status and merchantData
+    try {
+      const sveaOrder = await sveaCheckout.getOrder(numericId);
+      console.log('📋 Fetched Svea order:', {
+        orderId: numericId,
+        status: sveaOrder.status,
+        merchantData: sveaOrder.merchantData
+      });
+
+      webhookData = {
+        orderId: numericId,
+        status: sveaOrder.status,
+        merchantData: sveaOrder.merchantData,
+        paymentType: sveaOrder.paymentType,
+        orderAmount: undefined
+      };
+    } catch (fetchError) {
+      console.error('❌ Failed to fetch Svea order:', fetchError);
+    }
+  } else if (fallbackStr) {
+    console.warn('⚠️ Body empty, but fallbackOrderId is not numeric (ignoring):', {
+      fallbackOrderId: fallbackStr,
+      queryOrderId,
+      headerOrderId
+    });
+  }
+}
+    
     console.log('✅ Webhook normalized:', {
       orderId: webhookData.orderId,
       status: webhookData.status,
