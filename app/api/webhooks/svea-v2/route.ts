@@ -75,22 +75,21 @@ export async function POST(request: NextRequest) {
     const url = request.url;
     const searchParams = new URL(url).searchParams;
     
-    // Svea might send order ID in query params or headers
-    const queryOrderId = searchParams.get('checkoutOrderId') || 
-                         searchParams.get('CheckoutOrderId') ||
-                         searchParams.get('orderId') ||
-                         searchParams.get('OrderId');
-    const headerOrderId = 
-                          request.headers.get('x-svea-checkout-orderid') ||
-                          request.headers.get('x-svea-checkout-order-id') ||
-                          request.headers.get('x-svea-order-id') ||
-                          request.headers.get('svea-checkout-orderid') ||
-                          request.headers.get('svea-checkout-order-id') ||
-                          request.headers.get('svea-order-id') ||
-                          request.headers.get('X-Svea-Checkout-OrderId') ||
-                          request.headers.get('X-Svea-Checkout-Order-ID') ||
-                          request.headers.get('X-Svea-Order-Id') ||
-                          null;
+    const rawQueryOrderId =
+      searchParams.get('checkoutOrderId') ||
+      searchParams.get('CheckoutOrderId') ||
+      searchParams.get('orderId') ||
+      searchParams.get('OrderId');
+
+    const queryOrderId =
+      rawQueryOrderId && /^\d+$/.test(rawQueryOrderId) ? rawQueryOrderId : null;
+
+    const headerOrderId =
+      request.headers.get('x-sveacheckout-orderid') ||
+      request.headers.get('X-SveaCheckout-OrderId') ||
+      request.headers.get('x-svea-checkout-orderid') ||
+      request.headers.get('X-Svea-Checkout-OrderId') ||
+      null;
 
     console.log('📩 Svea webhook received:', {
       hasBody: !!body,
@@ -137,17 +136,16 @@ export async function POST(request: NextRequest) {
     let webhookData = normalizeWebhookPayload(rawWebhookData);
     
     // If body is empty/minimal, try to get orderId from query/headers
-    if (!webhookData.orderId) {
-    const fallbackOrderId = queryOrderId || headerOrderId;
+if (!webhookData.orderId) {
+  const fallbackOrderId = queryOrderId || headerOrderId;
 
-    // Guard: Svea orderId must be numeric. Avoid "{checkout.order.id}" → NaN.
-    const fallbackStr = (fallbackOrderId ?? '').toString().trim();
-    const numericId = /^\d+$/.test(fallbackStr) ? parseInt(fallbackStr, 10) : null;
+  // Guard: must be numeric. Avoid "{checkout.order.id}" → NaN.
+  const fallbackStr = (fallbackOrderId ?? '').toString().trim();
+  const numericId = /^\d+$/.test(fallbackStr) ? parseInt(fallbackStr, 10) : null;
 
-    if (numericId) {
+  if (numericId) {
     console.log(`🔄 Body empty, using numeric orderId from query/header: ${numericId}`);
 
-    // Fetch order from Svea to get status and merchantData
     try {
       const sveaOrder = await sveaCheckout.getOrder(numericId);
       console.log('📋 Fetched Svea order:', {
@@ -166,14 +164,10 @@ export async function POST(request: NextRequest) {
     } catch (fetchError) {
       console.error('❌ Failed to fetch Svea order:', fetchError);
     }
-  } else if (fallbackStr) {
-    console.warn('⚠️ Body empty, but fallbackOrderId is not numeric (ignoring):', {
-      fallbackOrderId: fallbackStr,
-      queryOrderId,
-      headerOrderId
-    });
+  } else if (fallbackOrderId) {
+    console.warn('⚠️ Body empty, but fallback orderId was not numeric:', fallbackOrderId);
   }
-}
+}    
     
     console.log('✅ Webhook normalized:', {
       orderId: webhookData.orderId,
