@@ -96,7 +96,11 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://ulrika-functional-foods-production.up.railway.app';
+    const origin =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXTAUTH_URL ||
+      'https://ulrika-functional-foods-production.up.railway.app';
+
     const orderId = `FF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     const sveaPayload = {
@@ -104,18 +108,23 @@ export async function POST(req: NextRequest) {
         termsUri: `${origin}/anvandarvillkor`,
         checkoutUri: `${origin}/checkout`,
         confirmationUri: `${origin}/checkout/success/svea?checkoutOrderId={checkout.order.id}&orderId=${orderId}`,
-        pushUri: `${origin}/api/webhooks/svea-v2`  // Updated to v2 webhook that handles emails correctly
-      },
-      cart: { items: sveaItems },
-      presetValues: customer?.email ? [{
-        typeName: 'emailAddress',
-        value: customer.email,
-        isReadonly: false
-      }] : [],
-      currency: 'SEK',
-      countryCode: 'SE',
-      locale: 'sv-SE',
-      merchantData: orderId
+        // IMPORTANT: include checkoutOrderId so webhook can always fetch the order even if Svea sends empty body
+        pushUri: `${origin}/api/webhooks/svea-v2?checkoutOrderId={checkout.order.id}`
+    },
+    cart: { items: sveaItems },
+    presetValues: customer?.email
+      ? [
+          {
+          typeName: 'emailAddress',
+          value: customer.email,
+          isReadonly: false
+          }
+        ]
+      : [],
+    currency: 'SEK',
+    countryCode: 'SE',
+    locale: 'sv-SE',
+    merchantData: orderId
     };
 
     console.log('📡 Creating Svea order:', {
