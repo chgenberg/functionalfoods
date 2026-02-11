@@ -531,61 +531,65 @@ export async function POST(req: NextRequest) {
 
           if (!updatedOrder) {
             console.warn(`⚠️ Order not found for email sending: ${order.id}`);
-            // Don't return - continue to return the response
           } else {
             // Determine email address to use - prioritize customerEmail from order or Svea
-            const emailToUse = updatedOrder.customerEmail || 
-                              (updatedOrder.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
-                              (sveaOrder.customer?.email || null);
-            
-            const nameToUse = updatedOrder.customerName || 
-                              (updatedOrder.user?.name || null) ||
-                              `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() ||
-                              emailToUse?.split('@')[0] ||
-                              'Kund';
+            const emailToUse =
+              updatedOrder.customerEmail ||
+              (updatedOrder.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
+              (sveaOrder.customer?.email || null);
+
+            const nameToUse =
+              updatedOrder.customerName ||
+              updatedOrder.user?.name ||
+              `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() ||
+              emailToUse?.split('@')[0] ||
+              'Kund';
 
             if (!emailToUse || isGuestEmail(emailToUse)) {
-              console.warn(`⚠️ No valid email address found for order ${order.id}. customerEmail: ${updatedOrder.customerEmail}, user.email: ${updatedOrder.user?.email}`);
-              // Don't return - continue to return the response
+              console.warn(
+                `⚠️ No valid email address found for order ${order.id}. customerEmail: ${updatedOrder.customerEmail}, user.email: ${updatedOrder.user?.email}`
+              );
             } else {
               const COURSE_VAT_RATE = 0.25;
-              const courseItems = updatedOrder.items.filter(item => item.type === 'course');
-              const emailCourses = courseItems.map(item => ({
+              const courseItems = updatedOrder.items.filter((item) => item.type === 'course');
+              const emailCourses = courseItems.map((item) => ({
                 name: item.name,
-                price: Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100 * (item.quantity || 1)
+                price: (Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100) * (item.quantity || 1)
               }));
 
-              // Check if email was already sent (via metadata flag)
-              const metadata = updatedOrder.metadata as any;
-              const emailAlreadySent = metadata?.confirmationEmailSent;
-              
-              if (emailAlreadySent) {
-                console.log(`ℹ️ Order confirmation email already sent (skipping duplicate)`);
-              } else {
-                console.log(`📧 Preparing to send order confirmation email via verify to: ${emailToUse}, isNewUser: ${isNewUser}`);
-                console.log(`📚 Order contains: ${courseItems.length} courses`);
+              const metadata = (updatedOrder.metadata as any) || {};
+              const emailAlreadySent = metadata.confirmationEmailSent;
 
+              if (emailAlreadySent) {
+                console.log('ℹ️ Order confirmation email already sent (skipping duplicate)');
+              } else {
                 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
 
-                // Send regular order confirmation for course purchases (ALWAYS send if there are courses)
                 if (courseItems.length > 0) {
-                  console.log(`📧 Sending order confirmation for ${courseItems.length} courses, isNewUser: ${isNewUser}, hasPassword: ${!!temporaryPassword}`);
                   await emailService.sendOrderConfirmation({
                     customerEmail: emailToUse,
                     customerName: nameToUse,
                     orderNumber: updatedOrder.orderNumber,
                     totalAmount: displayTotalAmount,
                     courses: emailCourses,
-                    loginCredentials: (isNewUser && temporaryPassword) ? {
-                      email: emailToUse,
-                      password: temporaryPassword,
-                      loginUrl: `${baseUrl}/login`
-                    } : undefined,
+                    loginCredentials:
+                      isNewUser && temporaryPassword
+                        ? {
+                            email: emailToUse,
+                            password: temporaryPassword,
+                            loginUrl: `${baseUrl}/login`
+                          }
+                        : undefined,
                     isExistingUser: !isNewUser
                   });
-                  console.log(`✅ Order confirmation email sent via verify to ${emailToUse}${isNewUser ? ' (new user with login credentials)' : ' (existing user)'}`);
+
+                  console.log(
+                    `✅ Order confirmation email sent via verify to ${emailToUse}${
+                      isNewUser ? ' (new user with login credentials)' : ' (existing user)'
+                    }`
+                  );
                 }
-                
+
                 // Mark email as sent in metadata
                 await prisma.order.update({
                   where: { id: order.id },
@@ -605,7 +609,122 @@ export async function POST(req: NextRequest) {
           // Don't throw - email failure shouldn't fail verification
         }
       }
-    }
+
+      // --- Mailchimp E-commerce purchase tracking (run from verify to avoid webhook dependency) ---
+      try {
+        // Reload latest order state incl user + items (important after linking/creating user above)
+        const updatedOrder = await prisma.order.findUnique({
+          where: { id: order.id },
+          include: { user: true, items: true }
+        });
+
+        if (!updatedOrder) {
+          console.warn('⚠️ Mailchimp E-commerce: order not found after completion:', order.id);
+        } else {
+          // Prefer user.email, but fall back to order.customerEmail so tracking still works
+          // even if the user relation isn't linked yet in this verify-call.
+          const emailForTracking =
+            updatedOrder.user?.email && !updatedOrder.user.email.startsWith('guest-')
+              ? updatedOrder.user.email
+              : updatedOrder.customerEmail && !updatedOrder.customerEmail.startsWith('guest-')
+                ? updatedOrder.customerEmail
+                : null;
+
+          if (!emailForTracking) {
+            console.warn('⚠️ Mailchimp E-commerce: missing email (cannot track):', {
+              orderId: updatedOrder.id,
+              userId: updatedOrder.userId,
+              userEmail: updatedOrder.user?.email,
+              customerEmail: updatedOrder.customerEmail
+            });
+          } else {
+            const metadata = (updatedOrder.metadata as any) || {};
+
+            // Idempotency guard (avoid double tracking on repeated verify calls)
+            if (metadata.mailchimpEcommerceTrackedAt) {
+              console.log('ℹ️ Mailchimp E-commerce already tracked (skipping):', {
+                orderId: updatedOrder.orderNumber,
+                trackedAt: metadata.mailchimpEcommerceTrackedAt
+              });
+            } else {
+              const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
+              const mailchimpEcommerce = getMailchimpEcommerce();
+
+              // Amounts
+              const totalAmount = updatedOrder.totalAmount || 0; // SEK
+              const vatRate = 0.25;
+              const taxTotal = totalAmount * vatRate / (1 + vatRate);
+
+              // Discount total (prefer your stored metadata.discountAmount)
+              let discountTotal = 0;
+              if (typeof metadata.discountAmount === 'number') {
+                discountTotal = metadata.discountAmount;
+              } else if (typeof metadata.discountAmount === 'string') {
+                const parsed = Number(metadata.discountAmount);
+                if (!Number.isNaN(parsed)) discountTotal = parsed;
+              }
+
+              // Attribution → campaign tracking
+              const attribution = metadata.attribution || {};
+              const campaignId = attribution?.mc_cid || undefined;
+              const trackingCode = attribution?.utm_campaign || campaignId || undefined;
+
+              let landingSite: string | undefined;
+              if (attribution?.utm_source || attribution?.utm_campaign || attribution?.mc_cid) {
+                const params = new URLSearchParams();
+                if (attribution.utm_source) params.set('utm_source', attribution.utm_source);
+                if (attribution.utm_medium) params.set('utm_medium', attribution.utm_medium);
+                if (attribution.utm_campaign) params.set('utm_campaign', attribution.utm_campaign);
+                if (attribution.mc_cid) params.set('mc_cid', attribution.mc_cid);
+                landingSite = `https://functionalfoods.se/?${params.toString()}`;
+              }
+
+              await mailchimpEcommerce.trackPurchase({
+                orderId: updatedOrder.orderNumber,
+                customerEmail: emailForTracking, // ✅ fallback-enabled
+                customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
+                items: updatedOrder.items.map((it) => ({
+                  id: it.courseId || it.id,
+                  name: it.name,
+                  price: it.price, // SEK (exkl moms enligt din DB)
+                  quantity: it.quantity,
+                  type: (it.type as any) || 'course'
+                })),
+                totalAmount,
+                currency: updatedOrder.currency || 'SEK',
+                orderDate: updatedOrder.createdAt,
+                discountTotal,
+                shippingTotal: 0,
+                taxTotal,
+                campaignId,
+                landingSite,
+                trackingCode
+              });
+
+              console.log('✅ Mailchimp E-commerce purchase tracked (via verify):', {
+                orderId: updatedOrder.orderNumber,
+                email: emailForTracking,
+                totalAmount,
+                itemsCount: updatedOrder.items.length
+              });
+
+              // Mark as tracked (idempotency)
+              await prisma.order.update({
+                where: { id: updatedOrder.id },
+                data: {
+                  metadata: {
+                    ...metadata,
+                    mailchimpEcommerceTrackedAt: new Date().toISOString()
+                  }
+                }
+              });
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('⚠️ Mailchimp E-commerce tracking failed (verify, non-critical):', e);
+      }
+    } 
 
     console.log('✅ Returning verification response:', {
       success: response.success,
