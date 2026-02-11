@@ -767,8 +767,9 @@ export async function POST(req: NextRequest) {
       merchantSettings: {
         termsUri: `${origin}/anvandarvillkor`,
         checkoutUri: `${origin}/checkout`,
-        confirmationUri: `${origin}/checkout/success/svea-v2?orderId=${orderId}`,
-        pushUri: `${origin}/api/webhooks/svea-v2`
+        confirmationUri: `${origin}/checkout/success/svea-v2?orderId=${encodeURIComponent(orderId)}`,
+        // Viktigt: få in checkoutOrderId i query så webhooken kan fallbacka även när body är {}
+        pushUri: `${origin}/api/webhooks/svea-v2?checkoutOrderId={checkout.order.id}&orderId=${encodeURIComponent(orderId)}`
       },
       cart: {
         items: [...sveaItems] // Explicit copy to ensure it's set
