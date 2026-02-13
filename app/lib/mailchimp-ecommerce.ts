@@ -32,7 +32,7 @@ interface MailchimpOrderLine {
   id: string;
   product_id: string;
   product_title: string;
-  product_variant_id?: string;
+  product_variant_id: string; // ✅ REQUIRED by Mailchimp for orders
   product_variant_title?: string;
   quantity: number;
   price: number;
@@ -118,7 +118,7 @@ class MailchimpEcommerceService {
         const customer = await getResponse.json();
         return customer.id;
       }
-    } catch (error) {
+    } catch {
       // Customer doesn't exist, will create below
     }
 
@@ -178,26 +178,28 @@ class MailchimpEcommerceService {
       return;
     }
 
-    try {
-      const {
-        orderId,
-        customerEmail,
-        customerName,
-        items,
-        totalAmount,
-        currency = 'SEK',
-        orderDate = new Date(),
-        discountTotal = 0,
-        shippingTotal = 0,
-        taxTotal = 0,
-        campaignId,
-        landingSite,
-        trackingCode
-      } = params;
+    const {
+      orderId,
+      customerEmail,
+      customerName,
+      items,
+      totalAmount,
+      currency = 'SEK',
+      orderDate = new Date(),
+      discountTotal = 0,
+      shippingTotal = 0,
+      taxTotal = 0,
+      campaignId,
+      landingSite,
+      trackingCode
+    } = params;
 
-      // Sync products first (if they don't exist, Mailchimp will create them automatically)
-      // This ensures products exist before creating orders
+    try {
+      // Sync products first
+      // IMPORTANT: We create a deterministic "default" variant id.
       for (const item of items) {
+        const variantId = `${item.id}-default`;
+
         try {
           await this.syncProduct({
             id: item.id,
@@ -206,7 +208,7 @@ class MailchimpEcommerceService {
             type: item.type || 'course',
             vendor: 'Functional Foods',
             variants: [{
-              id: `${item.id}-default`,
+              id: variantId,
               title: item.name,
               price: item.price,
               inventory_quantity: 999
@@ -226,14 +228,19 @@ class MailchimpEcommerceService {
       // Get or create customer
       const customerId = await this.getOrCreateCustomer(customerEmail, firstName, lastName);
 
-      // Create order lines
-      const orderLines: MailchimpOrderLine[] = items.map((item, index) => ({
-        id: `${orderId}-${index + 1}`,
-        product_id: item.id,
-        product_title: item.name,
-        quantity: item.quantity,
-        price: item.price
-      }));
+      // ✅ Create order lines with REQUIRED product_variant_id
+      const orderLines: MailchimpOrderLine[] = items.map((item, index) => {
+        const variantId = `${item.id}-default`; // MUST match the synced variant id
+        return {
+          id: `${orderId}-${index + 1}`,
+          product_id: item.id,
+          product_title: item.name,
+          product_variant_id: variantId,          // ✅ REQUIRED (fixes 400)
+          product_variant_title: item.name,       // (nice-to-have)
+          quantity: item.quantity,
+          price: item.price                        // unit price
+        };
+      });
 
       // Create order with campaign attribution
       const order: MailchimpOrder = {
@@ -254,7 +261,6 @@ class MailchimpEcommerceService {
         discount_total: discountTotal,
         shipping_total: shippingTotal,
         tax_total: taxTotal,
-        // Campaign attribution for Mailchimp reports
         campaign_id: campaignId || undefined,
         landing_site: landingSite || undefined,
         tracking_code: trackingCode || campaignId || undefined
@@ -265,7 +271,7 @@ class MailchimpEcommerceService {
       const response = await fetch(orderUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(order)
@@ -276,6 +282,7 @@ class MailchimpEcommerceService {
         throw new Error(`Mailchimp API error: ${response.status} ${errorText}`);
       }
 
+      // ✅ Only log success if Mailchimp accepted the order
       console.log('✅ Mailchimp purchase tracked:', {
         orderId,
         customerEmail,
@@ -304,7 +311,7 @@ class MailchimpEcommerceService {
       const response = await fetch(productUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(product)
@@ -338,4 +345,3 @@ export function getMailchimpEcommerce(): MailchimpEcommerceService {
 }
 
 export type { MailchimpProduct, MailchimpOrder, MailchimpOrderLine };
-
