@@ -273,7 +273,7 @@ class MailchimpMarketingService {
       status: 'subscribed'
     });
   }
-
+}
 // Singleton instance
 let mailchimpMarketingInstance: MailchimpMarketingService | null = null;
 
