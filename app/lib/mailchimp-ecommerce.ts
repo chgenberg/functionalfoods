@@ -235,7 +235,7 @@ class MailchimpEcommerceService {
           id: `${orderId}-${index + 1}`,
           product_id: item.id,
           product_title: item.name,
-          product_variant_id: variantId,          // ✅ REQUIRED (fixes 400)
+          product_variant_id: `${item.id}-default`,    // sends product info to mailchimp
           product_variant_title: item.name,       // (nice-to-have)
           quantity: item.quantity,
           price: item.price                        // unit price
