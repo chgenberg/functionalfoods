@@ -182,60 +182,88 @@ class MailchimpMarketingService {
     });
   }
 
-  /**
+   /**
    * Add customer tag with course-specific tags
-   * @param email - Customer email
-   * @param courseNames - Array of course names purchased
-   * @param firstName - Optional first name
-   * @param lastName - Optional last name
    */
   async addCustomerWithCourseTags(
-    email: string, 
+    email: string,
     courseNames: string[],
     firstName?: string,
     lastName?: string
   ): Promise<boolean> {
-    // Map course IDs/names to readable tag names
+    // --- helpers ---
+    const normalize = (s: string) =>
+      s
+        .toLowerCase()
+        .trim()
+        // Remove diacritics (e.g. Grönberg -> gronberg)
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        // Normalize separators
+        .replace(/[–—]/g, '-')            // long dashes -> hyphen
+        .replace(/[\/]+/g, ' ')           // "/" -> space
+        .replace(/[&]+/g, ' and ')        // "&" -> "and"
+        .replace(/[^a-z0-9\s-]/g, '')     // drop remaining punctuation
+        .replace(/\s+/g, ' ')             // collapse whitespace
+        .trim();
+
     const courseTagMap: Record<string, string> = {
-      'functional-basics': 'Köp – Functional Basics',
-      'functional-flow': 'Köp – Functional Flow',
-      'functional-energy': 'Köp – Functional Energy',
-      'functional-hormone': 'Köp – Hormonell Balans',
-      'hormonell-balans': 'Köp – Hormonell Balans',
-      'prova-pa-vecka': 'Köp – Prova på vecka',
-      // Also handle display names
-      'Functional Basics': 'Köp – Functional Basics',
-      'Functional Gut Health/Flow': 'Köp – Functional Flow',
-      'Functional Insulin balance/Energy': 'Köp – Functional Energy',
-      'Hormonell Balans': 'Köp – Hormonell Balans',
-      'Prova på vecka med Functional Foods!': 'Köp – Prova på vecka',
+      // Slugs / ids / short keys (normalized)
+      [normalize('functional-basics')]: 'Köp – Functional Basics',
+      [normalize('functional-flow')]: 'Köp – Functional Flow',
+      [normalize('functional-energy')]: 'Köp – Functional Energy',
+      [normalize('functional-hormone')]: 'Köp – Hormonell Balans',
+      [normalize('hormonell-balans')]: 'Köp – Hormonell Balans',
+      [normalize('prova-pa-vecka')]: 'Köp – Prova på vecka',
+
+      // Display names (normalized)
+      [normalize('Functional Basics')]: 'Köp – Functional Basics',
+      [normalize('Functional Gut Health/Flow')]: 'Köp – Functional Flow',
+      [normalize('Functional Insulin balance/Energy')]: 'Köp – Functional Energy',
+      [normalize('Hormonell Balans')]: 'Köp – Hormonell Balans',
+      [normalize('Prova på vecka med Functional Foods!')]: 'Köp – Prova på vecka',
+
+      // A few extra common variants (normalized)
+      [normalize('Hormonell balans')]: 'Köp – Hormonell Balans',
+      [normalize('Prova på vecka')]: 'Köp – Prova på vecka',
     };
 
-    // Build tags array
-    const tags = ['kund'];
-    
-    for (const courseName of courseNames) {
-      // Try exact match first
-      let tag = courseTagMap[courseName];
-      
-      // If no exact match, try case-insensitive partial match
+    const tags: string[] = ['kund'];
+
+    const debugCourseNames = (courseNames || []).filter(Boolean);
+    if (debugCourseNames.length === 0) {
+      console.warn('⚠️ Mailchimp Marketing: courseNames empty (only tagging "kund")', { email });
+    }
+
+    for (const rawName of debugCourseNames) {
+      const key = normalize(rawName);
+
+      // 1) Exact match
+      let tag = courseTagMap[key];
+
+      // 2) Partial match (normalized)
       if (!tag) {
-        const lowerName = courseName.toLowerCase();
-        for (const [key, value] of Object.entries(courseTagMap)) {
-          if (lowerName.includes(key.toLowerCase()) || key.toLowerCase().includes(lowerName)) {
-            tag = value;
+        for (const [mapKey, mapValue] of Object.entries(courseTagMap)) {
+          if (key.includes(mapKey) || mapKey.includes(key)) {
+            tag = mapValue;
             break;
           }
         }
       }
-      
-      // Add tag if found and not already in array
-      if (tag && !tags.includes(tag)) {
-        tags.push(tag);
+
+      if (!tag) {
+        console.warn('⚠️ Mailchimp Marketing: no courseTagMap match for course name:', {
+          email,
+          rawName,
+          normalized: key
+        });
+        continue;
       }
+
+      if (!tags.includes(tag)) tags.push(tag);
     }
 
-    console.log(`🏷️ Adding tags to ${email}:`, tags);
+    console.log('🏷️ Mailchimp Marketing tags computed:', { email, tags });
 
     return this.addSubscriber({
       email,
@@ -245,7 +273,6 @@ class MailchimpMarketingService {
       status: 'subscribed'
     });
   }
-}
 
 // Singleton instance
 let mailchimpMarketingInstance: MailchimpMarketingService | null = null;
