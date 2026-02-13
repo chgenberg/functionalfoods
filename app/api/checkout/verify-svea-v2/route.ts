@@ -12,16 +12,15 @@ interface VerifyRequest {
   orderId: string;
 }
 
+const isGuestEmail = (email?: string | null) => !!email && email.startsWith('guest-');
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { checkoutOrderId, orderId: clientOrderId } = body;
+    const { checkoutOrderId, orderId: clientOrderId } = body as VerifyRequest;
 
     if (!checkoutOrderId || !clientOrderId) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
     // If simulation is enabled, treat as completed without contacting Svea
@@ -30,9 +29,9 @@ export async function POST(req: NextRequest) {
         where: { id: clientOrderId },
         include: { items: true, user: true }
       });
-      if (!order) {
-        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-      }
+
+      if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+
       return NextResponse.json({
         success: true,
         paymentCompleted: true,
@@ -43,7 +42,13 @@ export async function POST(req: NextRequest) {
           totalAmount: order.totalAmount,
           customerEmail: order.customerEmail,
           customerName: order.customerName,
-          items: order.items.map(i => ({ productId: i.courseId || i.id, productName: i.name, productType: i.type, quantity: i.quantity, price: i.price }))
+          items: order.items.map((i) => ({
+            productId: i.courseId || i.id,
+            productName: i.name,
+            productType: i.type,
+            quantity: i.quantity,
+            price: i.price
+          }))
         }
       });
     }
@@ -52,8 +57,8 @@ export async function POST(req: NextRequest) {
     const sveaCheckout = getSveaCheckout();
 
     // Get order from Svea
-    const sveaOrder = await sveaCheckout.getOrder(parseInt(checkoutOrderId));
-    
+    const sveaOrder = await sveaCheckout.getOrder(parseInt(checkoutOrderId, 10));
+
     console.log('🔍 Verifying Svea order:', {
       checkoutOrderId,
       orderId: clientOrderId,
@@ -66,24 +71,17 @@ export async function POST(req: NextRequest) {
     // Get our order from database
     let order = await prisma.order.findUnique({
       where: { id: clientOrderId },
-      include: {
-        items: true,
-        user: true
-      }
+      include: { items: true, user: true }
     });
 
     if (!order) {
-      return NextResponse.json(
-        { error: 'Order not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
     // Calculate actual paid amount from SVEA order (includes discounts)
-    // SVEA cart.items contains all items including discount items (negative unitPrice)
     let actualPaidAmount = 0;
     const sveaItemsMap = new Map<string, any>();
-    
+
     if (sveaOrder.cart?.items) {
       for (const sveaItem of sveaOrder.cart.items) {
         // Skip discount items for item mapping, but include in total
@@ -94,20 +92,15 @@ export async function POST(req: NextRequest) {
         actualPaidAmount += (sveaItem.unitPrice || 0) * (sveaItem.quantity || 1);
       }
     }
-    
+
     // Convert from öre to SEK
-    // Svea API should return unitPrice in öre (minor units), but let's be safe
     let actualPaidAmountSEK = actualPaidAmount / 100;
-    
-    // Safety check: if calculated amount is way larger than DB amount (more than 10x),
-    // it might be that the amount is already in SEK or there's a calculation error
-    // In that case, use the original DB amount or recalculate
+
+    // Safety checks
     if (order.totalAmount > 0) {
       const ratio = actualPaidAmountSEK / order.totalAmount;
       if (ratio > 10) {
-        // Amount is likely already in SEK (not öre), or there's an error
-        // Try using the amount as-is (assuming it's already in SEK)
-        actualPaidAmountSEK = actualPaidAmount;
+        actualPaidAmountSEK = actualPaidAmount; // likely already SEK
         console.warn('⚠️ Detected amount might already be in SEK. Using as-is:', {
           original: actualPaidAmount,
           divided: actualPaidAmount / 100,
@@ -115,19 +108,16 @@ export async function POST(req: NextRequest) {
           ratio,
           using: actualPaidAmountSEK
         });
-        
-        // If still way off, use DB amount as fallback
+
         if (Math.abs(actualPaidAmountSEK - order.totalAmount) > order.totalAmount * 0.5) {
           console.warn('⚠️ Calculated amount still seems wrong, using DB amount as fallback');
           actualPaidAmountSEK = order.totalAmount;
         }
       } else if (ratio < 0.1 && actualPaidAmountSEK > 0) {
-        // Amount is way too small, might be double-divided
         console.warn('⚠️ Amount seems too small, might be double-divided');
       }
     }
-    
-    // Final sanity check: ensure amount is reasonable (between 0 and 100000 SEK)
+
     if (actualPaidAmountSEK < 0 || actualPaidAmountSEK > 100000) {
       console.warn('⚠️ Calculated amount is outside reasonable range, using DB amount:', {
         calculated: actualPaidAmountSEK,
@@ -135,7 +125,7 @@ export async function POST(req: NextRequest) {
       });
       actualPaidAmountSEK = order.totalAmount;
     }
-    
+
     console.log('💰 Calculated actual paid amount from SVEA:', {
       actualPaidAmountOre: actualPaidAmount,
       actualPaidAmountSEK,
@@ -150,47 +140,41 @@ export async function POST(req: NextRequest) {
       }))
     });
 
-    // ALWAYS use actual paid amount from SVEA if available (it's the source of truth)
-    // Only fallback to DB if SVEA doesn't return cart items
-    const displayTotalAmount = sveaOrder.cart?.items && sveaOrder.cart.items.length > 0 
-      ? actualPaidAmountSEK 
-      : order.totalAmount;
-    
+    // Use SVEA amount if cart items exist, otherwise DB fallback
+    const displayTotalAmount =
+      sveaOrder.cart?.items && sveaOrder.cart.items.length > 0 ? actualPaidAmountSEK : order.totalAmount;
+
     // Map items with actual prices from SVEA if available
-    const displayItems = order.items.map(item => {
-      // Try to find matching SVEA item
+    const displayItems = order.items.map((item) => {
       let displayPrice = item.price;
-      
-      // Determine VAT rate based on item type (6% for books, 25% for courses)
       const vatRate = item.type === 'book' ? 1.06 : 1.25;
-      
-      // Try to match by article number or name
+
       for (const [articleNumber, sveaItem] of sveaItemsMap.entries()) {
         const itemIdLower = item.id?.toLowerCase() || '';
         const articleLower = articleNumber.toLowerCase();
-        
-        if (itemIdLower.includes(articleLower) || 
-            articleLower.includes(itemIdLower) ||
-            item.name.toLowerCase().includes(articleLower) ||
-            articleLower.includes(item.name.toLowerCase())) {
-          // Found matching SVEA item - use its price
-          // SVEA price is in öre, inkl. moms - convert to SEK, then to exkl. moms for display
+
+        if (
+          itemIdLower.includes(articleLower) ||
+          articleLower.includes(itemIdLower) ||
+          item.name.toLowerCase().includes(articleLower) ||
+          articleLower.includes(item.name.toLowerCase())
+        ) {
           const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
-          displayPrice = priceInclVAT / vatRate; // Convert to exkl. moms using correct VAT rate
+          displayPrice = priceInclVAT / vatRate;
           break;
         }
       }
-      
+
       return {
         productId: item.courseId || item.id,
         productName: item.name,
         productType: item.type,
         quantity: item.quantity,
-        price: Math.round(displayPrice * 100) / 100 // Round to 2 decimals
+        price: Math.round(displayPrice * 100) / 100
       };
     });
-    
-    const response = {
+
+    const response: any = {
       success: true,
       paymentCompleted: isCompleted,
       orderStatus: sveaOrder.status,
@@ -199,80 +183,71 @@ export async function POST(req: NextRequest) {
         status: order.status,
         totalAmount: displayTotalAmount,
         customerEmail: sveaOrder.customer?.email || order.customerEmail,
-        customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
+        customerName:
+          `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
         items: displayItems
       }
     };
 
     // If payment is completed, process the order (create purchases, send email, etc.)
-    // Process even if cart.items is missing (Svea may not return it after payment is final)
     if (isCompleted) {
-      // Update order with actual paid amount from SVEA (even if already COMPLETED)
+      // Update order with paid amount + SVEA metadata
       await prisma.order.update({
         where: { id: order.id },
         data: {
-          totalAmount: displayTotalAmount, // Use calculated display amount (from SVEA)
+          totalAmount: displayTotalAmount,
           metadata: {
-            ...order.metadata as any,
+            ...(order.metadata as any),
             sveaOrderId: sveaOrder.id,
             sveaStatus: sveaOrder.status,
             sveaPaymentType: sveaOrder.paymentType,
             verifiedAt: new Date().toISOString(),
-            actualPaidAmount: actualPaidAmountSEK // Store for reference
+            actualPaidAmount: actualPaidAmountSEK
           }
         }
       });
-      
-      // Also update status if it was PENDING
+
       let orderJustCompleted = false;
       let isNewUser = false;
       let temporaryPassword: string | undefined;
-      
-      const isGuestEmail = (email?: string | null) =>
-        !!email && email.startsWith('guest-');
 
+      // If order was PENDING, fast-track to COMPLETED (and link/create user if needed)
       if (order.status === 'PENDING') {
         orderJustCompleted = true;
-        
-        // Handle user creation/linking if needed
+
         const customerEmail = sveaOrder.customer?.email || order.customerEmail;
-        const customerName = `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName;
-        
+        const customerName =
+          `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName;
+
         const hasGuestUser = isGuestEmail(order.user?.email);
 
-        if (( !order.userId || hasGuestUser) && customerEmail) {
-          // Check if user exists
+        if ((!order.userId || hasGuestUser) && customerEmail) {
           const normalizedEmail = customerEmail.toLowerCase().trim();
+
           const existingUser = await prisma.user.findUnique({
             where: { email: normalizedEmail }
           });
 
           if (existingUser) {
-            // Link order to existing user
             await prisma.order.update({
               where: { id: order.id },
-              data: { 
+              data: {
                 userId: existingUser.id,
                 customerEmail: normalizedEmail,
                 customerName
               }
             });
-            
-            // Reload order to get updated user relation
+
             const updatedOrder = await prisma.order.findUnique({
               where: { id: order.id },
               include: { items: true, user: true }
             });
-            if (updatedOrder) {
-              order = updatedOrder;
-            }
+            if (updatedOrder) order = updatedOrder;
           } else {
-            // Create new user
             temporaryPassword = generateSecurePassword();
             const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
-            
+
             if (order.userId && hasGuestUser) {
-              // Upgrade guest user to real customer
               const updatedUser = await prisma.user.update({
                 where: { id: order.userId },
                 data: {
@@ -289,7 +264,7 @@ export async function POST(req: NextRequest) {
 
               await prisma.order.update({
                 where: { id: order.id },
-                data: { 
+                data: {
                   customerEmail: normalizedEmail,
                   customerName: updatedUser.name || customerName
                 }
@@ -299,28 +274,9 @@ export async function POST(req: NextRequest) {
                 where: { id: order.id },
                 include: { items: true, user: true }
               });
-              if (refreshedOrder) {
-                order = refreshedOrder;
-              }
+              if (refreshedOrder) order = refreshedOrder;
 
               console.log(`📧 Guest user upgraded via verify: ${updatedUser.email}`);
-              
-              // Add to Mailchimp Marketing with "kund" tag + course tags
-              try {
-                const mailchimpMarketing = getMailchimpMarketing();
-                if (mailchimpMarketing.isConfigured()) {
-                  const courseNames = order.items
-                    .filter(item => item.type === 'course')
-                    .map(item => item.name);
-                  const nameParts = (customerName || '').split(' ');
-                  const firstName = nameParts[0] || '';
-                  const lastName = nameParts.slice(1).join(' ') || '';
-                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames, firstName, lastName);
-                  console.log(`✅ Customer added to Mailchimp with course tags: ${normalizedEmail}`);
-                }
-              } catch (mailchimpError) {
-                console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);
-              }
             } else {
               const newUser = await prisma.user.create({
                 data: {
@@ -334,79 +290,135 @@ export async function POST(req: NextRequest) {
 
               isNewUser = true;
 
-              // Link order to new user
               await prisma.order.update({
                 where: { id: order.id },
-                data: { 
+                data: {
                   userId: newUser.id,
                   customerEmail: normalizedEmail,
                   customerName
                 }
               });
-              
-              // Reload order to get user
+
               const updatedOrder = await prisma.order.findUnique({
                 where: { id: order.id },
                 include: { items: true, user: true }
               });
               if (updatedOrder) order = updatedOrder;
-              
+
               console.log(`📧 New user created via verify: ${newUser.email}`);
-              
-              // Add to Mailchimp Marketing with "kund" tag + course tags
-              try {
-                const mailchimpMarketing = getMailchimpMarketing();
-                if (mailchimpMarketing.isConfigured()) {
-                  const courseNames = order.items
-                    .filter(item => item.type === 'course')
-                    .map(item => item.name);
-                  const nameParts = (customerName || '').split(' ');
-                  const firstName = nameParts[0] || '';
-                  const lastName = nameParts.slice(1).join(' ') || '';
-                  await mailchimpMarketing.addCustomerWithCourseTags(normalizedEmail, courseNames, firstName, lastName);
-                  console.log(`✅ Customer added to Mailchimp with course tags: ${normalizedEmail}`);
-                }
-              } catch (mailchimpError) {
-                console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);
-              }
             }
           }
         }
-        
+
         await prisma.order.update({
           where: { id: order.id },
           data: {
             status: 'COMPLETED',
             customerEmail: sveaOrder.customer?.email || order.customerEmail,
-            customerName: `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
+            customerName:
+              `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
             metadata: {
-              ...order.metadata as any,
+              ...(order.metadata as any),
               processedAt: new Date().toISOString()
             }
           }
         });
+
         console.log('⚡ Fast-tracking order completion from verification');
+
+        // Refresh local order after completion update
+        const refreshedAfterCompletion = await prisma.order.findUnique({
+          where: { id: order.id },
+          include: { items: true, user: true }
+        });
+        if (refreshedAfterCompletion) order = refreshedAfterCompletion;
       }
-      
+
+      // ✅ Mailchimp Marketing tagging (post-completion, idempotent)
+      try {
+        const refreshedOrder = await prisma.order.findUnique({
+          where: { id: order.id },
+          include: { items: true, user: true }
+        });
+
+        const metadata = (refreshedOrder?.metadata as any) || {};
+
+        if (refreshedOrder && !metadata.mailchimpMarketingTaggedAt) {
+          const emailToTag =
+            refreshedOrder.user?.email && !isGuestEmail(refreshedOrder.user.email)
+              ? refreshedOrder.user.email
+              : refreshedOrder.customerEmail && !isGuestEmail(refreshedOrder.customerEmail)
+                ? refreshedOrder.customerEmail
+                : null;
+
+          if (!emailToTag) {
+            console.warn('⚠️ Mailchimp Marketing: missing email (cannot tag):', {
+              orderId: refreshedOrder.id,
+              userId: refreshedOrder.userId,
+              userEmail: refreshedOrder.user?.email,
+              customerEmail: refreshedOrder.customerEmail
+            });
+          } else {
+            const mailchimpMarketing = getMailchimpMarketing();
+
+            if (mailchimpMarketing.isConfigured()) {
+              const courseNames = refreshedOrder.items
+                .filter((i) => i.type === 'course')
+                .map((i) => i.name);
+
+              const nameParts = (refreshedOrder.customerName || refreshedOrder.user?.name || '')
+                .trim()
+                .split(' ')
+                .filter(Boolean);
+
+              const firstName = nameParts[0] || '';
+              const lastName = nameParts.slice(1).join(' ') || '';
+
+              await mailchimpMarketing.addCustomerWithCourseTags(emailToTag, courseNames, firstName, lastName);
+
+              await prisma.order.update({
+                where: { id: refreshedOrder.id },
+                data: {
+                  metadata: {
+                    ...metadata,
+                    mailchimpMarketingTaggedAt: new Date().toISOString()
+                  }
+                }
+              });
+
+              console.log(`✅ Mailchimp Marketing tagged (post-completion): ${emailToTag}`);
+            } else {
+              console.warn('⚠️ Mailchimp Marketing not configured (skipping tagging)');
+            }
+          }
+        } else if (refreshedOrder && metadata.mailchimpMarketingTaggedAt) {
+          console.log('ℹ️ Mailchimp Marketing already tagged (skipping):', {
+            orderId: refreshedOrder.orderNumber,
+            taggedAt: metadata.mailchimpMarketingTaggedAt
+          });
+        }
+      } catch (err) {
+        console.warn('⚠️ Mailchimp Marketing tagging failed (non-critical):', err);
+      }
+
       // Update item prices if they differ from SVEA (only if cart.items is available)
       if (actualPaidAmountSEK > 0 && sveaOrder.cart?.items && sveaOrder.cart.items.length > 0) {
         for (const orderItem of order.items) {
-          // Find matching SVEA item
           for (const sveaItem of sveaOrder.cart.items) {
             if (sveaItem.articleNumber === 'DISCOUNT') continue;
-            
+
             const itemIdLower = orderItem.id?.toLowerCase() || '';
             const articleLower = sveaItem.articleNumber.toLowerCase();
-            
-            if (itemIdLower.includes(articleLower) || 
-                articleLower.includes(itemIdLower) ||
-                orderItem.name.toLowerCase().includes(articleLower)) {
-              // Update item price to match SVEA (convert from öre to SEK, then to exkl. VAT)
-              // Use correct VAT rate: 6% for books, 25% for courses
+
+            if (
+              itemIdLower.includes(articleLower) ||
+              articleLower.includes(itemIdLower) ||
+              orderItem.name.toLowerCase().includes(articleLower)
+            ) {
               const vatRate = orderItem.type === 'book' ? 1.06 : 1.25;
               const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
-              const priceExclVAT = priceInclVAT / vatRate; // Remove VAT using correct rate
-              
+              const priceExclVAT = priceInclVAT / vatRate;
+
               if (Math.abs(orderItem.price - priceExclVAT) > 0.01) {
                 await prisma.orderItem.update({
                   where: { id: orderItem.id },
@@ -422,9 +434,8 @@ export async function POST(req: NextRequest) {
 
       // Create purchases for courses if user exists
       if (order.userId) {
-        const courseItems = order.items.filter(item => item.type === 'course');
-        
-        // Course name mapping for exact matching
+        const courseItems = order.items.filter((item) => item.type === 'course');
+
         const courseNameMap: Record<string, string> = {
           'hormonell balans': 'Hormonell Balans',
           'functional flow': 'Functional Flow',
@@ -435,33 +446,24 @@ export async function POST(req: NextRequest) {
           'prova på vecka med functional foods!': 'Prova på vecka med Functional Foods!',
           'prova på vecka': 'Prova på vecka med Functional Foods!'
         };
-        
+
         for (const item of courseItems) {
-          // Use courseId if available, otherwise match by name
           let courseId = item.courseId;
-          
+
           if (!courseId) {
-            // Match course by name using same logic as other webhooks
             const normalizedName = item.name.toLowerCase().trim();
             const mappedName = courseNameMap[normalizedName] || item.name;
-            
-            // Try exact match first (case-insensitive)
+
             let course = await prisma.courseProduct.findFirst({
-              where: {
-                name: { equals: mappedName, mode: 'insensitive' }
-              }
+              where: { name: { equals: mappedName, mode: 'insensitive' } }
             });
-            
-            // If no exact match, try original name
+
             if (!course) {
               course = await prisma.courseProduct.findFirst({
-                where: {
-                  name: { equals: item.name, mode: 'insensitive' }
-                }
+                where: { name: { equals: item.name, mode: 'insensitive' } }
               });
             }
-            
-            // Only use contains as last resort, and be more specific
+
             if (!course && item.name.toLowerCase().includes('functional')) {
               const functionalPart = item.name.split('Functional ')[1]?.trim();
               if (functionalPart) {
@@ -475,41 +477,34 @@ export async function POST(req: NextRequest) {
                 });
               }
             }
-            
+
             if (!course) {
               console.error(`❌ Course not found for: "${item.name}"`);
               continue;
             }
-            
+
             courseId = course.id;
             console.log(`✅ Matched course: "${item.name}" → "${course.name}"`);
-            
-            // Update order item with courseId for future reference
+
             await prisma.orderItem.update({
               where: { id: item.id },
               data: { courseId: course.id }
             });
           }
-          
-          // Check if purchase already exists
+
           const existingPurchase = await prisma.purchase.findUnique({
-            where: {
-              userId_courseId: {
-                userId: order.userId,
-                courseId: courseId
-              }
-            }
+            where: { userId_courseId: { userId: order.userId, courseId } }
           });
 
           if (!existingPurchase) {
             await prisma.purchase.create({
               data: {
                 userId: order.userId,
-                courseId: courseId,
+                courseId,
                 amount: item.price * (item.quantity || 1),
                 status: 'completed',
                 orderId: order.id,
-                accessExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
+                accessExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
               }
             });
             console.log(`✅ Created purchase for course: ${courseId}`);
@@ -518,10 +513,10 @@ export async function POST(req: NextRequest) {
       }
 
       response.order.status = 'COMPLETED';
-      response.order.totalAmount = displayTotalAmount; // Use calculated display amount
-      response.paymentCompleted = true; // Force to true after fast-tracking
-      
-      // Send order confirmation email if order was just completed (webhook might not have fired yet)
+      response.order.totalAmount = displayTotalAmount;
+      response.paymentCompleted = true;
+
+      // Send order confirmation email if order was just completed
       if (orderJustCompleted) {
         try {
           const updatedOrder = await prisma.order.findUnique({
@@ -532,7 +527,6 @@ export async function POST(req: NextRequest) {
           if (!updatedOrder) {
             console.warn(`⚠️ Order not found for email sending: ${order.id}`);
           } else {
-            // Determine email address to use - prioritize customerEmail from order or Svea
             const emailToUse =
               updatedOrder.customerEmail ||
               (updatedOrder.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
@@ -590,7 +584,6 @@ export async function POST(req: NextRequest) {
                   );
                 }
 
-                // Mark email as sent in metadata
                 await prisma.order.update({
                   where: { id: order.id },
                   data: {
@@ -606,13 +599,11 @@ export async function POST(req: NextRequest) {
           }
         } catch (emailError) {
           console.error('❌ Failed to send order confirmation email via verify:', emailError);
-          // Don't throw - email failure shouldn't fail verification
         }
       }
 
       // --- Mailchimp E-commerce purchase tracking (run from verify to avoid webhook dependency) ---
       try {
-        // Reload latest order state incl user + items (important after linking/creating user above)
         const updatedOrder = await prisma.order.findUnique({
           where: { id: order.id },
           include: { user: true, items: true }
@@ -621,8 +612,6 @@ export async function POST(req: NextRequest) {
         if (!updatedOrder) {
           console.warn('⚠️ Mailchimp E-commerce: order not found after completion:', order.id);
         } else {
-          // Prefer user.email, but fall back to order.customerEmail so tracking still works
-          // even if the user relation isn't linked yet in this verify-call.
           const emailForTracking =
             updatedOrder.user?.email && !updatedOrder.user.email.startsWith('guest-')
               ? updatedOrder.user.email
@@ -640,7 +629,6 @@ export async function POST(req: NextRequest) {
           } else {
             const metadata = (updatedOrder.metadata as any) || {};
 
-            // Idempotency guard (avoid double tracking on repeated verify calls)
             if (metadata.mailchimpEcommerceTrackedAt) {
               console.log('ℹ️ Mailchimp E-commerce already tracked (skipping):', {
                 orderId: updatedOrder.orderNumber,
@@ -650,12 +638,10 @@ export async function POST(req: NextRequest) {
               const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
               const mailchimpEcommerce = getMailchimpEcommerce();
 
-              // Amounts
-              const totalAmount = updatedOrder.totalAmount || 0; // SEK
+              const totalAmount = updatedOrder.totalAmount || 0;
               const vatRate = 0.25;
               const taxTotal = totalAmount * vatRate / (1 + vatRate);
 
-              // Discount total (prefer your stored metadata.discountAmount)
               let discountTotal = 0;
               if (typeof metadata.discountAmount === 'number') {
                 discountTotal = metadata.discountAmount;
@@ -664,7 +650,6 @@ export async function POST(req: NextRequest) {
                 if (!Number.isNaN(parsed)) discountTotal = parsed;
               }
 
-              // Attribution → campaign tracking
               const attribution = metadata.attribution || {};
               const campaignId = attribution?.mc_cid || undefined;
               const trackingCode = attribution?.utm_campaign || campaignId || undefined;
@@ -681,12 +666,12 @@ export async function POST(req: NextRequest) {
 
               await mailchimpEcommerce.trackPurchase({
                 orderId: updatedOrder.orderNumber,
-                customerEmail: emailForTracking, // ✅ fallback-enabled
+                customerEmail: emailForTracking,
                 customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
                 items: updatedOrder.items.map((it) => ({
                   id: it.courseId || it.id,
                   name: it.name,
-                  price: it.price, // SEK (exkl moms enligt din DB)
+                  price: it.price,
                   quantity: it.quantity,
                   type: (it.type as any) || 'course'
                 })),
@@ -708,7 +693,6 @@ export async function POST(req: NextRequest) {
                 itemsCount: updatedOrder.items.length
               });
 
-              // Mark as tracked (idempotency)
               await prisma.order.update({
                 where: { id: updatedOrder.id },
                 data: {
@@ -724,7 +708,7 @@ export async function POST(req: NextRequest) {
       } catch (e) {
         console.warn('⚠️ Mailchimp E-commerce tracking failed (verify, non-critical):', e);
       }
-    } 
+    }
 
     console.log('✅ Returning verification response:', {
       success: response.success,
@@ -734,14 +718,13 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(response);
-
   } catch (error) {
     console.error('❌ Verification error:', error);
-    
+
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to verify payment',
         details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
       },
@@ -754,10 +737,10 @@ function generateSecurePassword(): string {
   const length = 16;
   const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
   let password = '';
-  
+
   for (let i = 0; i < length; i++) {
     password += charset.charAt(Math.floor(Math.random() * charset.length));
   }
-  
+
   return password;
 }
