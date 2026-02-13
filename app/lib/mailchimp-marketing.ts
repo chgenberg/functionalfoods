@@ -218,8 +218,10 @@ class MailchimpMarketingService {
 
       // Display names (normalized)
       [normalize('Functional Basics')]: 'Köp – Functional Basics',
+      [normalize('Functional Flow')]: 'Köp – Functional Flow',
       [normalize('Functional Gut Health/Flow')]: 'Köp – Functional Flow',
       [normalize('Functional Insulin balance/Energy')]: 'Köp – Functional Energy',
+      [normalize('Functional Energy')]: 'Köp – Functional Energy',
       [normalize('Hormonell Balans')]: 'Köp – Hormonell Balans',
       [normalize('Prova på vecka med Functional Foods!')]: 'Köp – Prova på vecka',
 
