@@ -332,7 +332,7 @@ export async function POST(req: NextRequest) {
                 type: item.type,
                 quantity: item.quantity,
                 price: item.price,
-                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(tx as any, item.id, item.name) : null
+                courseId: item.type === 'course' ? item.courseId : null
               })))
             }
           }
@@ -971,20 +971,23 @@ export async function POST(req: NextRequest) {
           metadata: {
             items: validatedItems, // Use validated items
             couponCode: appliedCoupon?.code || null,
-            discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
+            discountAmount: discountAmount > 0 
+              ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) 
+              : null,
             attribution: attribution || null
           },
           items: {
-            create: await Promise.all(itemsWithDiscountedPrice.map(async (item) => ({
-              courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null,
+            create: itemsWithDiscountedPrice.map((item) => ({
+              courseId: item.type === 'course' ? item.courseId : null,
               name: item.name,
               quantity: item.quantity,
-              price: item.discountedPrice, // Use discounted price instead of original
+              price: item.discountedPrice,
               type: item.type
-            })))
-          }
-        }
+            })),
+          },
+        },
       });
+      
       console.log('✅ Order stored in database successfully');
     } catch (dbError: any) {
       console.error('❌ Failed to store order in database:', {
@@ -1072,30 +1075,19 @@ export async function POST(req: NextRequest) {
       userMessage = 'Ett fel uppstod vid sparande av order. Kontakta support om problemet kvarstår.';
     }
     
-    return NextResponse.json(
-  {
-    error: userMessage,
-    details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
-    errorType: isConfigError
-      ? 'CONFIG_ERROR'
-      : isSveaError
-        ? 'SVEA_API_ERROR'
-        : isValidationError
-          ? 'VALIDATION_ERROR'
-          : isDbError
-            ? 'DATABASE_ERROR'
-            : 'UNKNOWN_ERROR',
-    fullError:
-      process.env.NODE_ENV === 'development'
-        ? {
-            message: errorMessage,
-            stack: errorStack,
-            name: errorObj.name,
-            code: (error as any)?.code
-          }
+    return NextResponse.json({
+      error: userMessage,
+      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+      errorType: isConfigError
+        ? 'CONFIG_ERROR'
+        : isSveaError
+          ? 'SVEA_API_ERROR'
+          : isValidationError
+            ? 'VALIDATION_ERROR'
+            : isDbError
+              ? 'DATABASE_ERROR'
+              : 'UNKNOWN_ERROR',
+      fullError: process.env.NODE_ENV === 'development'
+        ? { message: errorMessage, stack: errorStack, name: errorObj.name, code: (error as any)?.code }
         : undefined
-      },
-      { status: statusCode }
-    );
-  }
-}
+    }, { status: statusCode });
