@@ -1076,18 +1076,22 @@ export async function POST(req: NextRequest) {
     }
     
     return NextResponse.json({
-      error: userMessage,
-      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
-      errorType: isConfigError
-        ? 'CONFIG_ERROR'
-        : isSveaError
-          ? 'SVEA_API_ERROR'
-          : isValidationError
-            ? 'VALIDATION_ERROR'
-            : isDbError
-              ? 'DATABASE_ERROR'
-              : 'UNKNOWN_ERROR',
-      fullError: process.env.NODE_ENV === 'development'
-        ? { message: errorMessage, stack: errorStack, name: errorObj.name, code: (error as any)?.code }
-        : undefined
-    }, { status: statusCode });
+        error: userMessage,
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+        errorType: isConfigError
+          ? 'CONFIG_ERROR'
+          : isSveaError
+            ? 'SVEA_API_ERROR'
+            : isValidationError
+              ? 'VALIDATION_ERROR'
+              : isDbError
+                ? 'DATABASE_ERROR'
+                : 'UNKNOWN_ERROR',
+          fullError: process.env.NODE_ENV === 'development'
+            ? { message: errorMessage, stack: errorStack, name: errorObj.name, code: (error as any)?.code }
+            : undefined,
+      }, 
+      { status: statusCode }
+    );
+  }
+}
