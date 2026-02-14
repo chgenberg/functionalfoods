@@ -191,21 +191,28 @@ class MailchimpMarketingService {
     firstName?: string,
     lastName?: string
   ): Promise<boolean> {
+    
     // --- helpers ---
-    const normalize = (s: string) =>
-      s
-        .toLowerCase()
-        .trim()
-        // Remove diacritics (e.g. Grönberg -> gronberg)
-        .normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '')
-        // Normalize separators
-        .replace(/[–—]/g, '-')            // long dashes -> hyphen
-        .replace(/[\/]+/g, ' ')           // "/" -> space
-        .replace(/[&]+/g, ' and ')        // "&" -> "and"
-        .replace(/[^a-z0-9\s-]/g, '')     // drop remaining punctuation
-        .replace(/\s+/g, ' ')             // collapse whitespace
-        .trim();
+
+    const stripInvisible = (s: string) =>
+      s
+      .replace(/[\u200B-\u200D\uFEFF]/g, ‘’);
+      .replace(/\u00A0/g, ' ’);
+
+    const normalize = (s: string) =>
+      stripInvisible(s)
+        .toLowerCase()
+        .trim()
+        // Remove diacritics
+        .normalize(‘NFKD’)
+        .replace(/[\u0300-\u036f]/g, ‘’)
+        // Normalize separators
+        .replace(/[–—]/g, ‘-’)            // long dashes -> hyphen
+        .replace(/[\/]+/g, ' ‘)           // “/” -> space
+        .replace(/[&]+/g, ’ and ‘)        // “&” -> “and”
+        .replace(/[^a-z0-9\s-]/g, ‘’)     // drop remaining punctuation
+        .replace(/\s+/g, ' ’)             // collapse whitespace
+        .trim();
 
     const courseTagMap: Record<string, string> = {
       // Slugs / ids / short keys (normalized)
