@@ -203,7 +203,5 @@ export async function POST(req: NextRequest) {
       { error: 'Betalning kunde inte initieras. Försök igen.' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
