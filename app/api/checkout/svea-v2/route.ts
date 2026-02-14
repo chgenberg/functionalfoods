@@ -150,7 +150,11 @@ export async function POST(req: NextRequest) {
     // (Optional) Add non-course products to productMap here if needed in the future.
 
     // Helper function to resolve courseId from cart item (used for both simulated and real orders)
-    async function resolveCourseIdFromCartItem(itemId: string, itemName?: string): Promise<string | null> {
+    async function resolveCourseIdFromCartItem(
+      db: typeof prisma,
+      itemId: string, 
+      itemName?: string
+    ): Promise<string | null> {
       const id = itemId.toLowerCase();
       const name = (itemName || '').toLowerCase();
       let keyword = '';
@@ -172,7 +176,7 @@ export async function POST(req: NextRequest) {
       }
       
       if (!keyword) return null;
-      const cp = await prisma.courseProduct.findFirst({ 
+      const cp = await db.courseProduct.findFirst({ 
         where: { name: { contains: keyword, mode: 'insensitive' } }, 
         select: { id: true } 
       });
@@ -328,7 +332,7 @@ export async function POST(req: NextRequest) {
                 type: item.type,
                 quantity: item.quantity,
                 price: item.price,
-                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null
+                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(tx as any, item.id, item.name) : null
               })))
             }
           }
