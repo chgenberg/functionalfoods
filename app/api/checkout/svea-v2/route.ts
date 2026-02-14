@@ -205,6 +205,7 @@ export async function POST(req: NextRequest) {
           price: product.price, // Use price from database
           name: product.name,   // Use name from database
           vatRate: product.vatRate || 0.25, // Use product VAT rate or default 25%
+          courseId: item.type === 'course' ? product.id : null,
         });
       } catch (itemError) {
         console.error(`❌ Error validating item "${item.id}":`, itemError);
@@ -621,13 +622,13 @@ export async function POST(req: NextRequest) {
               attribution: attribution || null
             },
             items: {
-              create: await Promise.all(validatedItems.map(async (item) => ({
-                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null,
+              create: validatedItems.map((item: any) => ({
+                courseId: item.type === 'course' ? item.courseId : null,
                 name: item.name,
                 quantity: item.quantity,
                 price: 0,
                 type: item.type
-              })))
+              }))
             }
           }
         });
@@ -1085,11 +1086,3 @@ export async function POST(req: NextRequest) {
       },
       { status: statusCode }
     );
-  } finally {
-    try {
-      await prisma.$disconnect();
-    } catch (disconnectError) {
-      console.error('⚠️ Failed to disconnect Prisma:', disconnectError);
-    }
-  }
-}
