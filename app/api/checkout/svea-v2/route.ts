@@ -1090,6 +1090,8 @@ export async function POST(req: NextRequest) {
             code: (error as any)?.code
           }
         : undefined
-  },
-  { status: statusCode }
-);
+      },
+      { status: statusCode }
+    );
+  }
+}
