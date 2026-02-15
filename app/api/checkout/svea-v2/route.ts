@@ -606,9 +606,11 @@ export async function POST(req: NextRequest) {
         userId = created.id;
       }
 
-      // Create order + purchases
-      await prisma.$transaction(async (tx) => {
-        await tx.order.create({
+      const ops: Prisma.PrismaPromise<any>[] = [];
+
+      // 1) FREE Order + order items (BATCH-style)
+      ops.push(
+        prisma.order.create({
           data: {
             id: orderId,
             orderNumber: orderId,
@@ -616,14 +618,17 @@ export async function POST(req: NextRequest) {
             totalAmount: 0,
             currency: 'SEK',
             userId: userId as string,
-            customerEmail: customerEmail,
-            customerName: customerName,
+            customerEmail,
+            customerName,
             metadata: {
               items: validatedItems,
               couponCode: appliedCoupon?.code || null,
-              discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
+              discountAmount:
+                discountAmount > 0
+                ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount)
+                : null,
               freeOrder: true,
-              attribution: attribution || null
+              attribution: attribution || null,
             },
             items: {
               create: validatedItems.map((item: any) => ({
@@ -631,50 +636,52 @@ export async function POST(req: NextRequest) {
                 name: item.name,
                 quantity: item.quantity,
                 price: 0,
-                type: item.type
-              }))
-            }
-          }
-        });
+                type: item.type,
+              })),
+            },
+          },
+        })
+      );
 
-        // Increment coupon usage (only once)
-        if (appliedCoupon) {
-          try {
-            await tx.coupon.update({
-              where: { id: appliedCoupon.id },
-              data: { timesUsed: { increment: 1 } }
-            });
-          } catch (e) {
-            console.warn('⚠️ Failed to increment coupon usage for free order (non-critical):', e);
-          }
-        }
+      // 2) Coupon usage 
+      if (appliedCoupon) {
+        ops.push(
+          prisma.coupon.update({
+            where: { id: appliedCoupon.id },
+            data: { timesUsed: { increment: 1 } },
+          })
+        );
+      }
 
-        // Create purchases for courses (idempotent & no extra reads)
-        for (const item of validatedItems) {
-          if (item.type !== 'course' || !item.courseId) continue;
+      // 3) Purchases (idempotent)
+      for (const item of validatedItems) {
+        if (item.type !== 'course' || !item.courseId) continue;
 
-          await tx.purchase.upsert({
+        ops.push(
+          prisma.purchase.upsert({
             where: {
               userId_courseId: {
                 userId: userId as string,
-                courseId: item.courseId
-            }
-          },
-          update: {}, // do nothing if already exists
-          create: {
-            userId: userId as string,
-            courseId: item.courseId,
-            amount: 0,
-            status: 'completed',
-            orderId: orderId,
-            accessExpiresAt: new Date(
-              new Date().setFullYear(new Date().getFullYear() + 1)
-            ),
-          },
-        });
+                courseId: item.courseId,
+              },
+            },
+            update: {},
+            create: {
+              userId: userId as string,
+              courseId: item.courseId,
+              amount: 0,
+              status: 'completed',
+              orderId,
+              accessExpiresAt: new Date(
+                new Date().setFullYear(new Date().getFullYear() + 1)
+              ),
+            },
+          })
+        );
       }
-    });
-      
+
+      await prisma.$transaction(ops);
+    
       // Send confirmation email
       try {
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
