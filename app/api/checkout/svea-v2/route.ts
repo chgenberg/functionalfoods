@@ -653,11 +653,11 @@ export async function POST(req: NextRequest) {
         for (const item of validatedItems) {
           if (item.type !== 'course' || !item.courseId) continue;
 
-        await tx.purchase.upsert({
-          where: {
-            userId_courseId: {
-              userId: userId as string,
-              courseId: item.courseId
+          await tx.purchase.upsert({
+            where: {
+              userId_courseId: {
+                userId: userId as string,
+                courseId: item.courseId
             }
           },
           update: {}, // do nothing if already exists
@@ -669,11 +669,12 @@ export async function POST(req: NextRequest) {
             orderId: orderId,
             accessExpiresAt: new Date(
               new Date().setFullYear(new Date().getFullYear() + 1)
-            )
-          }
+            ),
+          },
         });
       }
-
+    });
+      
       // Send confirmation email
       try {
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
