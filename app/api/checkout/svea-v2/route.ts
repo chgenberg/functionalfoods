@@ -649,28 +649,30 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Create purchases for courses
-        const order = await tx.order.findUnique({ where: { id: orderId }, include: { items: true } });
-        for (const it of order?.items || []) {
-          if (it.type === 'course' && it.courseId) {
-            const exists = await tx.purchase.findUnique({
-              where: { userId_courseId: { userId: userId as string, courseId: it.courseId } }
-            });
-            if (!exists) {
-              await tx.purchase.create({
-                data: {
-                  userId: userId as string,
-                  courseId: it.courseId,
-                  amount: 0,
-                  status: 'completed',
-                  orderId: orderId,
-                  accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-                }
-              });
+        // Create purchases for courses (idempotent & no extra reads)
+        for (const item of validatedItems) {
+          if (item.type !== 'course' || !item.courseId) continue;
+
+        await tx.purchase.upsert({
+          where: {
+            userId_courseId: {
+              userId: userId as string,
+              courseId: item.courseId
             }
+          },
+          update: {}, // do nothing if already exists
+          create: {
+            userId: userId as string,
+            courseId: item.courseId,
+            amount: 0,
+            status: 'completed',
+            orderId: orderId,
+            accessExpiresAt: new Date(
+              new Date().setFullYear(new Date().getFullYear() + 1)
+            )
           }
-        }
-      });
+        });
+      }
 
       // Send confirmation email
       try {
